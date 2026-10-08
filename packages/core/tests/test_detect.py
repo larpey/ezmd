@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import os
+import random
 import time
 import zipfile
 from pathlib import Path
@@ -42,6 +43,8 @@ def _zip() -> bytes:
     return buf.getvalue()
 
 
+# Seeded so the bytes never start with a real signature (os.urandom occasionally began with a zlib header).
+NOISE = bytes([0xA5]) + random.Random(20261008).randbytes(4095)
 MP3 = b"ID3\x04\x00\x00\x00\x00\x00\x00" + bytes([0xFF, 0xFB, 0x90, 0x64]) + b"\x00" * 400
 CASES: list[tuple[str, bytes, set[str]]] = [
     (
@@ -63,7 +66,7 @@ CASES: list[tuple[str, bytes, set[str]]] = [
     ("a.mp3", MP3, {"audio/mpeg"}),
     ("a.docx", _docx(), {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/zip"}),
     ("empty.txt", b"", {EMPTY_MIME}),
-    ("noise.bin", os.urandom(4096), {OCTET}),
+    ("noise.bin", NOISE, {OCTET}),
     ("script.png", PY, {"text/x-python"}),
     ("image.py", PNG, {"image/png"}),
     ("a.yaml", b"name: intomd\nversion: 1\nitems:\n  - a\n  - b\nnested:\n  key: value\n", {"application/yaml"}),
