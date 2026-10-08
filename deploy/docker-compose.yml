@@ -1,0 +1,197 @@
+# intomd self-host (Phase 0 core profile).
+#   cp deploy/.env.example deploy/.env   # edit INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
+#   docker compose -f deploy/docker-compose.yml up -d --build
+#   deploy/smoke.sh
+#
+# Network model (Part 1 section 8.1):
+#   internal  internal: true, no route to the internet. api, worker-default, purge, redis.
+#   egress    normal bridge. caddy (ACME + clients) and worker-fetch (URL fetches; SSRF guard).
+# worker-default and the API never get general egress. Later phases add worker-media and
+# model-init (profile "media"), postgres/minio profiles, and the public/pi/gpu overlays.
+name: intomd
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt:
+    - no-new-privileges:true
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+x-app: &app
+  <<: *hardening
+  restart: unless-stopped
+  user: "10001:10001"
+  env_file:
+    - path: .env
+      required: false
+  environment:
+    INTOMD_REDIS_URL: redis://:${INTOMD_REDIS_PASSWORD:-}@redis:6379/0
+    INTOMD_TMP: /tmp
+  tmpfs:
+    - /tmp:size=${INTOMD_TMPFS_SIZE:-2g},mode=1777
+  networks: [internal]
+
+x-worker: &worker
+  <<: *app
+  image: ghcr.io/larpey/intomd-worker:${INTOMD_VERSION:-latest}
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile
+    target: worker
+  security_opt:
+    - no-new-privileges:true
+    - seccomp=./seccomp-worker.json
+  volumes:
+    - state:/var/lib/intomd
+    - blobs:/var/lib/intomd/blobs
+  depends_on:
+    redis:
+      condition: service_healthy
+
+services:
+  caddy:
+    <<: *hardening
+    image: caddy:2@sha256:f2a1290d0463aad60660d4ec134943f183ee2a5f6c3eb7bf32dd984f2f020772
+    restart: unless-stopped
+    # Caddy keeps root inside the container but with every capability dropped except
+    # NET_BIND_SERVICE; its state lives on the caddy_data/caddy_config volumes.
+    cap_add: [NET_BIND_SERVICE]
+    ports:
+      - "${INTOMD_HTTP_PORT:-80}:80"
+      - "${INTOMD_HTTPS_PORT:-443}:443"
+      - "${INTOMD_HTTPS_PORT:-443}:443/udp"
+      - "${INTOMD_PLAIN_PORT:-8080}:8080"
+    tmpfs:
+      - /tmp:size=64m
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      INTOMD_SITE_ADDRESS: ${INTOMD_DOMAIN:-:8080}
+      INTOMD_CADDY_EMAIL_DIRECTIVE: ${INTOMD_ACME_EMAIL:+email ${INTOMD_ACME_EMAIL}}
+      INTOMD_CADDY_MAX_BODY: ${INTOMD_CADDY_MAX_BODY:-512MB}
+    networks: [internal, egress]
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:2019/metrics"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 256m, pids: 256 }
+
+  api:
+    <<: *app
+    image: ghcr.io/larpey/intomd-api:${INTOMD_VERSION:-latest}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: api
+    command: ["uvicorn", "intomd_api.main:app", "--host", "0.0.0.0", "--port", "8000",
+              "--workers", "${INTOMD_API_WORKERS:-2}", "--proxy-headers", "--forwarded-allow-ips", "*", "--no-access-log"]
+    expose: ["8000"]
+    environment:
+      INTOMD_REDIS_URL: redis://:${INTOMD_REDIS_PASSWORD:-}@redis:6379/0
+      INTOMD_TMP: /tmp
+      # Retention runs in the `purge` sidecar, not inside every uvicorn worker process.
+      INTOMD_SCHEDULER_ENABLED: "false"
+    volumes:
+      - state:/var/lib/intomd
+      - blobs:/var/lib/intomd/blobs
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys,urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3).status == 200 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "${INTOMD_API_CPUS:-1.0}"
+          memory: ${INTOMD_API_MEM:-1g}
+          pids: 256
+
+  worker-default:
+    <<: *worker
+    command: ["python", "-m", "intomd_api.worker", "--queues", "default"]
+    networks: [internal]
+    deploy:
+      resources:
+        limits:
+          cpus: "${INTOMD_WORKER_DEFAULT_CPUS:-3.0}"
+          memory: ${INTOMD_WORKER_DEFAULT_MEM:-4g}
+          pids: 256
+        reservations:
+          memory: 512m
+
+  worker-fetch:
+    <<: *worker
+    command: ["python", "-m", "intomd_api.worker", "--queues", "fetch"]
+    # The only worker with general egress; every request goes through intomd.core.netguard.
+    networks: [internal, egress]
+    deploy:
+      resources:
+        limits:
+          cpus: "${INTOMD_WORKER_FETCH_CPUS:-1.0}"
+          memory: ${INTOMD_WORKER_FETCH_MEM:-1g}
+          pids: 256
+
+  # Retention purge (Part 1 section 8.4) every INTOMD_PURGE_INTERVAL_S plus the fetch-node claim reaper.
+  purge:
+    <<: *app
+    image: ghcr.io/larpey/intomd-api:${INTOMD_VERSION:-latest}
+    command: ["python", "-m", "intomd_api.purge", "--loop"]
+    volumes:
+      - state:/var/lib/intomd
+      - blobs:/var/lib/intomd/blobs
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      disable: true
+    deploy:
+      resources:
+        limits: { cpus: "0.25", memory: 256m, pids: 64 }
+
+  redis:
+    <<: *hardening
+    image: redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    restart: unless-stopped
+    user: "999:1000"
+    command: ["sh", "-c", "exec redis-server --save '' --appendonly no --maxmemory \"$${INTOMD_REDIS_MAXMEM:-256mb}\" --maxmemory-policy noeviction $${REDISCLI_AUTH:+--requirepass \"$$REDISCLI_AUTH\"}"]
+    environment:
+      INTOMD_REDIS_MAXMEM: ${INTOMD_REDIS_MAXMEM:-256mb}
+      # redis-cli (healthcheck) reads REDISCLI_AUTH; the server command reuses it for requirepass.
+      REDISCLI_AUTH: ${INTOMD_REDIS_PASSWORD:-}
+    expose: ["6379"]
+    networks: [internal]
+    tmpfs:
+      - /data:size=512m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits: { cpus: "0.5", memory: 384m, pids: 64 }
+
+networks:
+  internal:
+    internal: true
+  egress: {}
+
+volumes:
+  state:
+  blobs:
+  caddy_data:
+  caddy_config:

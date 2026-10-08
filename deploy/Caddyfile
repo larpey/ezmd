@@ -1,0 +1,108 @@
+# intomd edge (Part 4 section 4.9.7, Part 1 section 8.4).
+#
+# Site address: INTOMD_SITE_ADDRESS is computed by docker-compose.yml from INTOMD_DOMAIN.
+#   INTOMD_DOMAIN=intomd.example.com -> automatic HTTPS (Let's Encrypt; email from INTOMD_ACME_EMAIL)
+#   INTOMD_DOMAIN=localhost          -> HTTPS with Caddy's internal CA
+#   INTOMD_DOMAIN unset/empty        -> plain HTTP on :8080 (no TLS)
+{
+	# Expands to `email <INTOMD_ACME_EMAIL>` when that is set, and to nothing otherwise
+	# (docker-compose.yml builds INTOMD_CADDY_EMAIL_DIRECTIVE).
+	{$INTOMD_CADDY_EMAIL_DIRECTIVE}
+	admin 127.0.0.1:2019
+	servers {
+		trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22
+		client_ip_headers CF-Connecting-IP X-Forwarded-For
+	}
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Cross-Origin-Opener-Policy same-origin
+		Cross-Origin-Resource-Policy same-origin
+		Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; connect-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'"
+		-Server
+	}
+}
+
+{$INTOMD_SITE_ADDRESS::8080} {
+	encode zstd gzip
+	import security_headers
+
+	# Layer 1 of the three upload caps (Part 1 section 8.2).
+	request_body {
+		max_size {$INTOMD_CADDY_MAX_BODY:512MB}
+	}
+
+	# Fetch-node protocol: only from the Tailscale CGNAT / ULA ranges, judged on the real TCP
+	# peer (remote_ip), never on a forwarded header. Everything else gets 404.
+	@fetchnode_public {
+		path /v1/fetch-node /v1/fetch-node/*
+		not remote_ip 100.64.0.0/10 fd7a:115c:a1e0::/48
+	}
+	handle @fetchnode_public {
+		respond 404
+	}
+
+	# Prometheus scrapes the API on the internal network, never through the edge.
+	handle /metrics {
+		respond 404
+	}
+
+	@static path /assets/* /icons/* /models/* /manifest.webmanifest
+	handle @static {
+		header Cache-Control "public, max-age=31536000, immutable"
+		reverse_proxy api:8000
+	}
+
+	@sse path /v1/jobs/*/events
+	handle @sse {
+		reverse_proxy api:8000 {
+			flush_interval -1
+			transport http {
+				read_timeout 0
+			}
+		}
+	}
+
+	handle {
+		reverse_proxy api:8000 {
+			header_up X-Real-IP {client_ip}
+			transport http {
+				read_timeout 600s
+			}
+		}
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 50mb
+			roll_keep 5
+			roll_keep_for 168h
+		}
+		format filter {
+			wrap json
+			fields {
+				request>headers>Cookie delete
+				request>headers>Authorization delete
+				request>headers>X-Api-Key delete
+				request>remote_ip ip_mask {
+					ipv4 24
+					ipv6 48
+				}
+				request>client_ip ip_mask {
+					ipv4 24
+					ipv6 48
+				}
+				request>uri query {
+					delete token
+					delete key
+				}
+			}
+		}
+	}
+}
