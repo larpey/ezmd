@@ -16,7 +16,7 @@
 **/*.egg-info
 **/.env
 **/.env.*
-!deploy/.env.example
+!deploy/env.example
 **/*.db
 **/*.sqlite
 site/

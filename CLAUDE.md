@@ -51,7 +51,7 @@ The spec was written under the codename "anymd"; the project is named intomd (DE
 - New warning codes go in `intomd/warnings/codes.py` with severity, description, and a user-facing suggestion.
 - Dependencies: allowlisted licenses only in defaults. See `tools/license_allowlist.toml`. Forbidden licenses go in named extras with `notify_once`.
 - Fixtures must be public domain, CC0, CC-BY, or self-generated, with `[provenance]` in meta.toml. No commercial media, no platform-scraped content.
-- Never commit secrets. `deploy/.env.example` lists every env var with a comment.
+- Never commit secrets. `deploy/env.example` lists every env var with a comment.
 - Research step and approach note before every converter or integration.
 - Council (3 reviewers) for architectural decisions and failing converters. Red team before public-facing phases.
 - Do not ask the human unless the decision is irreversible and externally costly.

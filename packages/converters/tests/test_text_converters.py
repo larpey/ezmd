@@ -103,3 +103,17 @@ def test_markdown_nested_ordered_list_and_quote_paragraphs() -> None:
     assert isinstance(lb, ListBlock) and lb.items[0].children_ordered and lb.items[0].children_start == 1
     q = blocks[1]
     assert isinstance(q, Quote) and [s.text for s in q.spans] == ["p1", "\n\n", "p2"]
+
+
+def test_encoding_recorded_in_typed_metadata() -> None:
+    latin = "Prévoir une réunion à l'entrepôt avant la fin du mois.".encode("latin-1")
+    for conv, name in ((PlainTextConverter(), "a.txt"), (MarkdownPassthroughConverter(), "a.md")):
+        ref = InputRef.from_bytes(latin, filename=name)
+        detect(ref)
+        meta = conv.convert(ref, ConvertOptions()).metadata
+        assert meta.encoding and meta.encoding != "utf-8" and "encoding" not in meta.extra
+        assert meta.encoding_confidence is not None and 0.0 <= meta.encoding_confidence <= 1.0
+    ref = InputRef.from_bytes(b"plain ascii", filename="b.txt")
+    detect(ref)
+    meta = PlainTextConverter().convert(ref, ConvertOptions()).metadata
+    assert (meta.encoding, meta.encoding_confidence) == ("utf-8", 1.0)

@@ -29,6 +29,9 @@ ERROR_STATUS: dict[str, int] = {
     "unsupported_media_type": 415,
     "url_blocked": 422,
     "platform_disabled": 422,
+    "experimental_disabled": 422,
+    "fetch_depth_exceeded": 422,
+    "result_too_large": 422,
     "rate_limited": 429,
     "conversion_failed": 500,
     "internal_error": 500,
@@ -46,7 +49,45 @@ DEFAULT_MESSAGES: dict[str, str] = {
     "method_not_allowed": "Method not allowed.",
     "internal_error": "An internal error occurred.",
     "conversion_failed": "Conversion failed.",
+    "experimental_disabled": "This input needs an experimental converter, which is disabled on this instance.",
+    "fetch_depth_exceeded": "The input asked for too many nested fetches.",
+    "result_too_large": "The conversion result exceeds the size limit.",
 }
+
+ERROR_DESCRIPTIONS: dict[str, str] = {
+    "invalid_request": "Malformed body, unknown option, or invalid profile override.",
+    "turnstile_required": "A Turnstile token is required for URL jobs on this instance.",
+    "turnstile_failed": "The Turnstile token was rejected.",
+    "unauthorized": "Missing or unknown API key, or bad fetch-node secret.",
+    "forbidden": "The key or node may not do this (for example residential fetches).",
+    "not_found": "Unknown job, attachment, or route.",
+    "method_not_allowed": "Wrong HTTP method.",
+    "job_not_ready": "The job has not reached the state this call needs.",
+    "input_too_large": "Upload or fetched body over the caller's cap.",
+    "unsupported_media_type": "Executable or unsupported input.",
+    "url_blocked": "The URL (or a URL a converter asked for) failed the SSRF guard.",
+    "platform_disabled": "The site is disabled by this instance's platform policy.",
+    "experimental_disabled": "Only an experimental converter handles this input and experimental converters are off.",
+    "fetch_depth_exceeded": "A converter asked for more nested fetches than intomd.inputs.MAX_FETCH_DEPTH allows.",
+    "result_too_large": "The converter's result exceeded INTOMD_MAX_RESULT_BYTES.",
+    "rate_limited": "Too many requests, jobs, or concurrent jobs; see Retry-After.",
+    "conversion_failed": "Every converter in the chain failed.",
+    "internal_error": "Unexpected server error (logged with the request id).",
+    "not_implemented": "The format exists in the contract but is not built yet (docx).",
+    "fetch_failed": "The URL could not be fetched.",
+    "queue_unavailable": "The queue is down or the instance is at its active-job cap.",
+    "timeout": "The conversion exceeded its time limit.",
+}
+
+
+def error_table_markdown() -> str:
+    """The error-code table embedded in the OpenAPI description."""
+    nl = chr(10)
+    rows = ["| code | status | meaning |", "| --- | --- | --- |"]
+    for code, status in ERROR_STATUS.items():
+        rows.append(f"| `{code}` | {status} | {ERROR_DESCRIPTIONS.get(code, '')} |")
+    return nl.join(rows)
+
 
 _HTTP_STATUS_CODES: dict[int, str] = {
     400: "invalid_request",

@@ -4,9 +4,12 @@ claim tokens bound to one job."""
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pytest
 
+from intomd_api.routes import fetch_node
+from intomd_api.settings import Settings
 from intomd_api.testing import api_client, make_settings, use_in_process_isolation, wait_for_state
 
 SECRET = "fetch-node-secret-0123456789"
@@ -17,6 +20,16 @@ CLAIM = {"node_id": "pi-home-1", "capabilities": ["yt-dlp", "ffmpeg"], "max_dura
 @pytest.fixture(autouse=True)
 def _isolated(monkeypatch: pytest.MonkeyPatch) -> None:
     use_in_process_isolation(monkeypatch)
+    monkeypatch.setattr(fetch_node, "RESOLVER", lambda host, port: ["93.184.216.34"])
+
+
+def _node_settings(tmp_path: Path, **overrides: Any) -> Settings:
+    """Fetch-node settings with a policy that makes video.example.com residential_only."""
+    policy = tmp_path / "platforms.toml"
+    policy.write_text("[hosts]" + chr(10) + '"video.example.com" = "residential_only"' + chr(10), encoding="utf-8")
+    values: dict[str, Any] = {"fetch_node_secret": SECRET, "fetch_node_cidr": "127.0.0.0/8", "platforms_file": policy}
+    values.update(overrides)
+    return make_settings(tmp_path / "data", **values)
 
 
 async def test_routes_absent_without_secret(tmp_path: Path) -> None:
@@ -47,22 +60,21 @@ async def test_right_secret_wrong_network_403(tmp_path: Path) -> None:
 
 
 async def test_claim_upload_flow(tmp_path: Path) -> None:
-    settings = make_settings(tmp_path / "data", fetch_node_secret=SECRET, fetch_node_cidr="127.0.0.0/8")
-    async with api_client(settings) as (client, _):
+    async with api_client(_node_settings(tmp_path)) as (client, _):
         assert (await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)).status_code == 204
         caps = (await client.get("/v1/capabilities")).json()
         assert caps["fetch_node_online"] is True
-        created = await client.post(
-            "/v1/convert", json={"url": "https://www.example.com/watch?v=abc", "prefer_residential": True}
-        )
+        created = await client.post("/v1/convert", json={"url": "https://video.example.com/watch?v=abc"})
         job_id = created.json()["job"]["id"]
         claim = await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)
         assert claim.status_code == 200, claim.text
         body = claim.json()
         assert body["job_id"] == job_id
         assert body["claim_token"].startswith("ct_")
-        assert body["url"] == "https://www.example.com/watch?v=abc"
+        assert body["url"] == "https://video.example.com/watch?v=abc"
         assert body["upload_url"] == "/v1/fetch-node/upload"
+        assert body["platform"] == "video.example.com"
+        assert body["resolved_ip"] == "93.184.216.34"
         # The same job is not handed out twice while claimed.
         assert (await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)).status_code == 204
         hb = await client.post(
@@ -92,9 +104,8 @@ async def test_claim_upload_flow(tmp_path: Path) -> None:
 
 
 async def test_fail_returns_job_once_then_needs_user_action(tmp_path: Path) -> None:
-    settings = make_settings(tmp_path / "data", fetch_node_secret=SECRET, fetch_node_cidr="127.0.0.0/8")
-    async with api_client(settings) as (client, _):
-        payload = {"url": "https://www.example.com/v/1", "prefer_residential": True}
+    async with api_client(_node_settings(tmp_path)) as (client, _):
+        payload = {"url": "https://video.example.com/v/1"}
         created = await client.post("/v1/convert", json=payload)
         job_id = created.json()["job"]["id"]
         for attempt in (1, 2):
@@ -118,3 +129,41 @@ async def test_claim_rate_limited_per_node(tmp_path: Path) -> None:
     async with api_client(settings) as (client, _):
         codes = [(await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)).status_code for _ in range(3)]
         assert codes == [204, 204, 429]
+
+
+async def test_anonymous_prefer_residential_never_reaches_a_node(tmp_path: Path) -> None:
+    """D-0017 item 6: anonymous prefer_residential on a default-policy host is ignored."""
+    async with api_client(_node_settings(tmp_path)) as (client, _):
+        created = await client.post(
+            "/v1/convert", json={"url": "https://www.example.com/lan", "prefer_residential": True}
+        )
+        assert created.status_code == 202
+        assert created.json()["job"]["queue"] != "fetch_residential"
+        assert (await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)).status_code == 204
+
+
+async def test_claim_fails_job_whose_host_now_resolves_private(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    async with api_client(_node_settings(tmp_path)) as (client, _):
+        created = await client.post("/v1/convert", json={"url": "https://video.example.com/rebind"})
+        job_id = created.json()["job"]["id"]
+        monkeypatch.setattr(fetch_node, "RESOLVER", lambda host, port: ["192.168.1.10"])
+        claim = await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)
+        assert claim.status_code == 204
+        body = (await client.get(f"/v1/jobs/{job_id}")).json()
+        assert body["state"] == "failed"
+        assert body["error"]["code"] == "url_blocked"
+        assert "192.168" not in str(body)
+
+
+async def test_claim_without_dns_answer_has_null_ip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def no_dns(host: str, port: int) -> list[str]:
+        raise OSError("no network")
+
+    monkeypatch.setattr(fetch_node, "RESOLVER", no_dns)
+    async with api_client(_node_settings(tmp_path)) as (client, _):
+        created = await client.post("/v1/convert", json={"url": "https://video.example.com/x"})
+        claim = await client.post("/v1/fetch-node/claim", json=CLAIM, headers=AUTH)
+        assert claim.status_code == 200
+        assert claim.json()["job_id"] == created.json()["job"]["id"]
+        assert claim.json()["resolved_ip"] is None
+        assert claim.json()["platform"] == "video.example.com"

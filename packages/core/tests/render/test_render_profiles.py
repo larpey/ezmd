@@ -2,16 +2,19 @@
 
 from __future__ import annotations
 
+import base64
+import json
 import re
 from datetime import UTC, datetime
 
 import pytest
 from render_builders import CONVERTED_AT, harbor_lane, heading, make_result, para
 
-from intomd.ir import Warning, WarningKind
+from intomd.ir import ConversionResult, Warning, WarningKind
 from intomd.profiles import AGENT, COMPACT, FULL, PROFILES, RAG, Profile, get_profile
 from intomd.render import count_tokens, render
 from intomd.render import tokens as tokmod
+from intomd.render.assemble import decode_cursor, encode_cursor
 from intomd.render.frontmatter import COMPACT_KEYS, KEY_ORDER, dump_yaml
 
 
@@ -144,11 +147,62 @@ def test_compact_budget_truncates_at_section_boundary() -> None:
     res = make_result(blocks)
     out = render(res, "compact", max_tokens="700")
     assert out.truncated and out.frontmatter["truncated"] is True
-    assert "truncated_max_tokens" in out.frontmatter["warnings"]  # type: ignore[operator]
-    assert re.search(r"<!-- intomd: truncated at max_tokens=700; \d+ blocks omitted -->\n$", out.body)
+    assert "truncated" in out.frontmatter["warnings"]  # type: ignore[operator]
+    assert any(w.kind == "truncated" and w.detail.get("reason") == "max_tokens" for w in out.warnings)
+    note = '<!-- intomd: truncated at max_tokens=700; [0-9]+ blocks omitted; next_cursor="[A-Za-z0-9_-]+" -->'
+    assert re.search(note + "$", out.body.rstrip("\n"))
     assert out.body.rsplit("\n\n", 2)[-2].startswith("Some words")  # cut before a heading, not mid-section
     full = render(res, "full")
     assert not full.truncated and "truncation" not in full.frontmatter
+
+
+_NEXT = re.compile('next_cursor="([A-Za-z0-9_-]+)" -->$')
+
+
+def _walk(res: ConversionResult, profile: str, budget: int) -> list[str]:
+    """Render every page by following next_cursor; return each page body without its continuation note."""
+    pages: list[str] = []
+    cursor: str | None = None
+    for _ in range(500):
+        kw: dict[str, object] = {"max_tokens": budget}
+        if cursor:
+            kw["cursor"] = cursor
+        body = render(res, profile, **kw).body.rstrip("\n")
+        m = _NEXT.search(body)
+        if m is None:
+            pages.append(body)
+            return pages
+        cursor = m.group(1)
+        pages.append(body[: m.start()].rsplit("\n\n", 1)[0])
+    raise AssertionError("cursor walk did not terminate")
+
+
+def test_cursor_walk_rebuilds_multi_section_body() -> None:
+    blocks = []
+    for i in range(6):
+        blocks += [heading(f"Part {i}", 1), para("Some words in a sentence. " * 40), para("More text. " * 30)]
+    res = make_result(blocks)
+    pages = _walk(res, "full", 300)
+    assert len(pages) > 3
+    assert "\n\n".join(pages) + "\n" == render(res, "full", max_tokens="none").body
+
+
+def test_cursor_walk_splits_inside_long_headingless_body() -> None:
+    res = make_result([para(f"Paragraph {i} has a few words in it. " * 8) for i in range(60)])
+    pages = _walk(res, "full", 250)
+    assert len(pages) > 5
+    assert "\n\n".join(pages) + "\n" == render(res, "full", max_tokens="none").body
+
+
+def test_cursor_is_opaque_and_profile_bound() -> None:
+    cursor = encode_cursor("agent", 3)
+    assert decode_cursor(cursor) == ("agent", 3)
+    assert json.loads(base64.urlsafe_b64decode(cursor + "=" * (-len(cursor) % 4))) == {
+        "profile": "agent",
+        "unit": 3,
+        "v": 1,
+    }
+    assert decode_cursor("sec-4") is None
 
 
 def test_agent_cursor_paging() -> None:
@@ -157,12 +211,19 @@ def test_agent_cursor_paging() -> None:
         blocks += [heading(f"Part {i}", 1), para("Some words in a sentence. " * 40)]
     res = make_result(blocks)
     first = render(res, "agent", max_tokens=700)
-    m = re.search(r'<!-- intomd: continued; next_cursor="(sec-\d+)" -->', first.body)
+    m = re.search('<!-- intomd: continued; next_cursor="([A-Za-z0-9_-]+)" -->', first.body)
     assert m and first.frontmatter["truncation"]["reason"] == "max_tokens"  # type: ignore[index]
+    assert first.frontmatter["truncation"]["next_cursor"] == m.group(1)  # type: ignore[index]
     nxt = render(res, "agent", max_tokens=700, cursor=m.group(1))
-    assert f"{{#{m.group(1)}}}" in nxt.body and "## 1 Part 0" not in nxt.body
+    assert "## 1 Part 0" not in nxt.body and "## 3 Part 2" in nxt.body
+    # A heading anchor is still accepted (the Part 3 example cursor).
+    assert "Part 2" in render(res, "agent", max_tokens=700, cursor="sec-3").body
     with pytest.raises(ValueError, match="unknown cursor"):
         render(res, "agent", cursor="sec-99")
+    with pytest.raises(ValueError, match="unknown cursor"):
+        render(res, "agent", cursor=encode_cursor("agent", 10_000))
+    with pytest.raises(ValueError, match="profile"):
+        render(res, "full", cursor=m.group(1))
 
 
 def test_sidecar_shape() -> None:

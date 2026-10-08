@@ -277,7 +277,7 @@ def test_page_markers_per_profile() -> None:
     res = make_result(
         [
             Paragraph(spans=[span("one")], provenance=prov(source_page=1)),
-            Paragraph(spans=[span("four")], provenance=prov(source_page=4, source_label="iv")),
+            Paragraph(spans=[span("four")], provenance=prov(source_page=4, page_label="iv")),
         ]
     )
     full = render(res, "full").body

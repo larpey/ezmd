@@ -3,8 +3,9 @@
 Phase 0 commands: convert, capabilities, detect, version, serve. Conversion runs in-process through
 `intomd.pipeline.convert_ref`; URLs are fetched through the SSRF guard first.
 
-Exit codes (part4 4.2.2): 0 success; 1 generic failure; 2 bad arguments, missing dependency, or an
-error-severity warning; 4 fetch blocked by platform; 5 input too large; 6 unsupported type; 130 interrupted.
+Exit codes (part4 4.2.2): 0 success; 1 generic failure; 2 bad arguments or missing dependency; 3 partial
+success (a usable result that carries an error-severity warning; Part 4 wins over Part 2 13.6.3, D-0017);
+4 fetch blocked by platform; 5 input too large; 6 unsupported type; 130 interrupted.
 """
 
 from __future__ import annotations
@@ -26,7 +27,7 @@ app = typer.Typer(
     context_settings={"help_option_names": ["-h", "--help"]},
 )
 
-EXIT_FAIL, EXIT_ARGS, EXIT_BLOCKED, EXIT_TOO_LARGE, EXIT_UNSUPPORTED = 1, 2, 4, 5, 6
+EXIT_FAIL, EXIT_ARGS, EXIT_PARTIAL, EXIT_BLOCKED, EXIT_TOO_LARGE, EXIT_UNSUPPORTED = 1, 2, 3, 4, 5, 6
 
 
 def _err(msg: str) -> None:
@@ -96,7 +97,7 @@ def convert(
         raise typer.Exit(EXIT_ARGS) from e
     warnings = rendered.warnings
     if any(w.severity == "error" for w in warnings):
-        status, code = "partial", EXIT_ARGS
+        status, code = "partial", EXIT_PARTIAL
     if out is not None:
         target = _write_out(out, source, rendered, fmt, sidecar)
         payload["out"] = str(target)

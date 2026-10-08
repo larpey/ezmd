@@ -3,12 +3,13 @@
 Every warning code intomd can emit is a member of :class:`WarningKind`, and every member has exactly one
 :class:`CodeSpec` in :data:`CODES` giving its default severity, family, a one-line description of what happened,
 and a one-line suggested action for the user. Codes are stable lowercase snake_case strings. Adding a code means
-adding it here and to ``docs/warnings.md``.
+adding it here and regenerating ``docs/warnings.md``. Retired duplicate spellings live in :data:`ALIASES` and
+normalize through :func:`normalize_code` (D-0017).
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import StrEnum
 from typing import Literal
 
@@ -22,17 +23,13 @@ class WarningKind(StrEnum):
     MISNAMED_FILE = "misnamed_file"
     CONTENT_TYPE_MISMATCH = "content_type_mismatch"
     ENCODING_UNCERTAIN = "encoding_uncertain"
-    ENCODING_GUESSED = "encoding_guessed"
     MULTILINGUAL_CONTENT = "multilingual_content"
     ENGINE_FALLBACK = "engine_fallback"
-    FALLBACK_ENGINE_USED = "fallback_engine_used"
-    ENGINE_DOWNGRADED = "engine_downgraded"
     ENGINE_FAILED = "engine_failed"
     CONVERTER_FAILED = "converter_failed"
     EXTRACTION_EMPTY = "extraction_empty"
     SIZE_CAP = "size_cap"
     PAGE_CAP_REACHED = "page_cap_reached"
-    PAGE_LIMIT_REACHED = "page_limit_reached"
     PAGE_TIMEOUT = "page_timeout"
     ROW_CAP_REACHED = "row_cap_reached"
     TIMEOUT_PARTIAL = "timeout_partial"
@@ -42,11 +39,11 @@ class WarningKind(StrEnum):
     UNSUPPORTED_FEATURE = "unsupported_feature"
     INJECTION_SUSPECTED = "injection_suspected"
     REMOVED_HIDDEN_ELEMENTS = "removed_hidden_elements"
-    REMOVED_INVISIBLE_CHARS = "removed_invisible_chars"
     REMOVED_SCRIPT_OR_MACRO = "removed_script_or_macro"
     PII_COLUMNS_REMOVED = "pii_columns_removed"
     IMAGE_SKIPPED = "image_skipped"
     IMAGE_TOO_LARGE = "image_too_large"
+    NESTING_FLATTENED = "nesting_flattened"
     OTHER = "other"
 
     # PDF
@@ -69,7 +66,6 @@ class WarningKind(StrEnum):
     TEXTBOX_CONTENT_RELOCATED = "textbox_content_relocated"
     HIDDEN_SLIDES_INCLUDED = "hidden_slides_included"
     HIDDEN_SHEETS_INCLUDED = "hidden_sheets_included"
-    HIDDEN_SHEETS = "hidden_sheets"
     FORMULA_UNCALCULATED = "formula_uncalculated"
     FORMULAS_PRESENT = "formulas_present"
     CELL_ERRORS = "cell_errors"
@@ -96,7 +92,6 @@ class WarningKind(StrEnum):
     LATEX_MAIN_AMBIGUOUS = "latex_main_ambiguous"
     LATEX_UNKNOWN_MACRO = "latex_unknown_macro"
     NOTEBOOK_INVALID = "notebook_invalid"
-    OUTPUT_TRUNCATED = "output_truncated"
     MDX_COMPONENTS_STRIPPED = "mdx_components_stripped"
     TABLE_INFERRED = "table_inferred"
     EMPTY_BODY_JS_REQUIRED = "empty_body_js_required"
@@ -219,7 +214,6 @@ class WarningKind(StrEnum):
 
     # OCR
     UNREADABLE_REGION = "unreadable_region"
-    UNREADABLE_REGIONS = "unreadable_regions"
     LAYOUT_OCR_UNAVAILABLE_CPU = "layout_ocr_unavailable_cpu"
     LICENSE_RESTRICTED_ENGINE_USED = "license_restricted_engine_used"
     RECEIPT_TOTALS_MISMATCH = "receipt_totals_mismatch"
@@ -228,14 +222,9 @@ class WarningKind(StrEnum):
     # Rendering and output
     TABLE_STRUCTURE_UNCERTAIN = "table_structure_uncertain"
     MERGED_CELLS_FLATTENED = "merged_cells_flattened"
-    TABLE_MERGED_CELLS_FLATTENED = "table_merged_cells_flattened"
     TABLE_SAMPLED = "table_sampled"
     EQUATION_AS_TEXT = "equation_as_text"
     TRUNCATED = "truncated"
-    TRUNCATED_MAX_TOKENS = "truncated_max_tokens"
-    POSSIBLE_PROMPT_INJECTION = "possible_prompt_injection"
-    INJECTION_PATTERN = "injection_pattern"
-    INJECTION_FLAGGED = "injection_flagged"
 
     # Fetch and policy
     FETCH_DEGRADED = "fetch_degraded"
@@ -256,6 +245,8 @@ class CodeSpec:
     family: str
     description: str
     suggestion: str
+    truncates: bool = False
+    """True when this warning means part of the input or output was cut (sets ConversionResult.truncated)."""
 
 
 # fmt: off
@@ -270,21 +261,12 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.ENCODING_UNCERTAIN, "warning", "core",
              "Text encoding was detected with low confidence; characters may be garbled.",
              "Re-save the file as UTF-8 or pass the source encoding in options."),
-    CodeSpec(WarningKind.ENCODING_GUESSED, "warning", "core",
-             "No encoding was declared; the text encoding was guessed.",
-             "Re-save the file as UTF-8 or declare its charset, then reconvert."),
     CodeSpec(WarningKind.MULTILINGUAL_CONTENT, "info", "core",
              "The document contains substantial text in more than one language.",
              "Pass --lang to pin the primary language if downstream tools need a single one."),
     CodeSpec(WarningKind.ENGINE_FALLBACK, "warning", "core",
              "The preferred engine failed and a fallback engine produced the output.",
              "Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name."),
-    CodeSpec(WarningKind.FALLBACK_ENGINE_USED, "warning", "core",
-             "A lower-fidelity fallback engine was used for this conversion.",
-             "Install the extra for the preferred engine (see `intomd converters list`) and reconvert."),
-    CodeSpec(WarningKind.ENGINE_DOWNGRADED, "warning", "core",
-             "The preferred engine's extra is missing; a lighter engine was used instead.",
-             "Install the missing extra, e.g. pip install 'intomd[docs]', for full-fidelity output."),
     CodeSpec(WarningKind.ENGINE_FAILED, "error", "core",
              "The conversion engine crashed or was killed and produced no output.",
              "Retry with another engine via --engine family=name, or report the file with a fixture."),
@@ -298,9 +280,6 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.PAGE_CAP_REACHED, "warning", "core",
              "The page cap was reached; remaining pages were not converted.",
              "Convert the document in page ranges, or raise the page cap on a self-hosted instance."),
-    CodeSpec(WarningKind.PAGE_LIMIT_REACHED, "warning", "core",
-             "The page limit was reached; later pages were not converted.",
-             "Convert the remaining pages as a separate range, or raise the page limit when self-hosting."),
     CodeSpec(WarningKind.PAGE_TIMEOUT, "warning", "core",
              "Some pages exceeded the per-page time budget and were skipped.",
              "Convert the listed pages separately, or self-host on faster hardware or a GPU."),
@@ -325,14 +304,14 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.REMOVED_HIDDEN_ELEMENTS, "info", "core",
              "Hidden elements (CSS-hidden, aria-hidden, invisible text) were removed.",
              "Inspect the original source if the hidden content matters to you."),
-    CodeSpec(WarningKind.REMOVED_INVISIBLE_CHARS, "info", "core",
-             "Zero-width and other invisible characters were removed.",
-             "Inspect the original file if invisible characters carry meaning."),
     CodeSpec(WarningKind.REMOVED_SCRIPT_OR_MACRO, "info", "core", "Scripts or macros were removed and not executed.",
              "Open the source in its native app if you need to review the macro code."),
     CodeSpec(WarningKind.PII_COLUMNS_REMOVED, "info", "core",
              "Columns detected as personal data were removed from tabular output.",
              "Turn off PII column removal in data options if you are permitted to keep those columns."),
+    CodeSpec(WarningKind.NESTING_FLATTENED, "info", "core",
+             "List nesting deeper than the supported depth was flattened into the deepest level kept.",
+             "No action needed; the text is complete, only the deepest indentation was merged."),
     CodeSpec(WarningKind.IMAGE_SKIPPED, "info", "core", "An image was skipped and appears only as a placeholder.",
              "Enable image OCR or description in options if the image carries information."),
     CodeSpec(WarningKind.IMAGE_TOO_LARGE, "warning", "core", "An image exceeded the pixel limit and was not decoded.",
@@ -387,9 +366,6 @@ _SPECS: tuple[CodeSpec, ...] = (
              "Turn off hidden slide inclusion in the presentation options to omit them."),
     CodeSpec(WarningKind.HIDDEN_SHEETS_INCLUDED, "info", "office", "Hidden sheets were included in the output.",
              "Turn off hidden sheet inclusion in the spreadsheet options to omit them."),
-    CodeSpec(WarningKind.HIDDEN_SHEETS, "info", "office",
-             "The workbook has hidden sheets; they are included and marked (hidden).",
-             "Delete or unhide sheets in the source if the hidden ones should not be shared."),
     CodeSpec(WarningKind.FORMULA_UNCALCULATED, "warning", "office",
              "Formula cells have no cached values and are shown blank or as formulas.",
              "Open and save the workbook in Excel or LibreOffice to compute values, then reconvert."),
@@ -451,8 +427,6 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.NOTEBOOK_INVALID, "warning", "ebooks",
              "The notebook fails nbformat validation and was parsed best-effort.",
              "Open and re-save the notebook in Jupyter to repair it."),
-    CodeSpec(WarningKind.OUTPUT_TRUNCATED, "info", "ebooks", "Long notebook cell outputs were truncated.",
-             "Raise the notebook output limit in options if you need full outputs."),
     CodeSpec(WarningKind.MDX_COMPONENTS_STRIPPED, "info", "ebooks",
              "MDX components were removed, keeping their text children.",
              "Convert the rendered HTML page instead if components carry essential content."),
@@ -729,9 +703,6 @@ _SPECS: tuple[CodeSpec, ...] = (
     # OCR
     CodeSpec(WarningKind.UNREADABLE_REGION, "warning", "ocr", "A region of the page or image could not be read.",
              "Upload a sharper, higher-resolution scan of the marked region."),
-    CodeSpec(WarningKind.UNREADABLE_REGIONS, "warning", "ocr",
-             "Several regions of the page or image could not be read.",
-             "Upload a sharper scan (300 DPI or more), or try a layout OCR engine."),
     CodeSpec(WarningKind.LAYOUT_OCR_UNAVAILABLE_CPU, "warning", "ocr",
              "Layout-aware OCR needs a GPU; basic OCR was used on this CPU-only host.",
              "Run on a host with a GPU, or install a CPU-capable layout model, for complex layouts."),
@@ -750,27 +721,14 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.MERGED_CELLS_FLATTENED, "info", "render",
              "Merged table cells were flattened by repeating their value.",
              "Use the full profile with merged_cells=html to keep spans as an HTML table."),
-    CodeSpec(WarningKind.TABLE_MERGED_CELLS_FLATTENED, "info", "render",
-             "Merged table cells were flattened for this profile.",
-             "Use the full profile with merged_cells=html to keep spans as an HTML table."),
     CodeSpec(WarningKind.TABLE_SAMPLED, "info", "render",
              "A very large table was sampled; full data is in the CSV export.",
              "Use the table's CSV export for every row."),
     CodeSpec(WarningKind.EQUATION_AS_TEXT, "info", "render", "An equation was kept as plain text instead of LaTeX.",
              "Use an engine with formula recognition if you need LaTeX output."),
-    CodeSpec(WarningKind.TRUNCATED, "warning", "render", "Output was truncated at the size cap.",
-             "Download the full result, or self-host with a higher output cap."),
-    CodeSpec(WarningKind.TRUNCATED_MAX_TOKENS, "warning", "render", "Output was truncated at the requested max_tokens.",
-             "Raise max_tokens, or page through the result with the cursor."),
-    CodeSpec(WarningKind.POSSIBLE_PROMPT_INJECTION, "warning", "render",
-             "Text that looks like instructions aimed at an AI was found and kept.",
-             "Treat the flagged text as untrusted; review sidecar injection_findings first."),
-    CodeSpec(WarningKind.INJECTION_PATTERN, "warning", "render",
-             "A known prompt-injection pattern was matched in the content.",
-             "Treat the content as untrusted and use the agent profile's fenced output."),
-    CodeSpec(WarningKind.INJECTION_FLAGGED, "warning", "render",
-             "Some text looks like instructions aimed at an AI; it was kept and flagged.",
-             "Review the flagged spans in the sidecar before passing the output to an AI."),
+    CodeSpec(WarningKind.TRUNCATED, "warning", "render",
+             "Output was truncated at a size, token or output cap; detail.reason says which.",
+             "Raise max_tokens or page through the result with the cursor, or self-host with a higher cap."),
     # Fetch and policy
     CodeSpec(WarningKind.FETCH_DEGRADED, "warning", "fetch",
              "The fetch used a degraded path; content may be incomplete.",
@@ -794,13 +752,64 @@ _SPECS: tuple[CodeSpec, ...] = (
 )
 # fmt: on
 
-CODES: dict[WarningKind, CodeSpec] = {spec.code: spec for spec in _SPECS}
+_TRUNCATING: frozenset[WarningKind] = frozenset(
+    {
+        WarningKind.SIZE_CAP,
+        WarningKind.PAGE_CAP_REACHED,
+        WarningKind.PAGE_TIMEOUT,
+        WarningKind.ROW_CAP_REACHED,
+        WarningKind.TIMEOUT_PARTIAL,
+        WarningKind.TIMEOUT_HARD,
+        WarningKind.SITEMAP_TRUNCATED,
+        WarningKind.COMMENTS_TRUNCATED,
+        WarningKind.TOKEN_BUDGET_APPLIED,
+        WarningKind.LOG_TRUNCATED,
+        WarningKind.ROWS_SAMPLED,
+        WarningKind.COLUMNS_TRUNCATED,
+        WarningKind.DEPTH_TRUNCATED,
+        WarningKind.ARCHIVE_TRUNCATED,
+        WarningKind.DURATION_LIMIT_REACHED,
+        WarningKind.DURATION_CAP_EXCEEDED,
+        WarningKind.TABLE_SAMPLED,
+        WarningKind.TRUNCATED,
+        WarningKind.FETCHED_PARTIAL,
+    }
+)
+
+CODES: dict[WarningKind, CodeSpec] = {spec.code: replace(spec, truncates=spec.code in _TRUNCATING) for spec in _SPECS}
+
+ALIASES: dict[str, WarningKind] = {
+    "fallback_engine_used": WarningKind.ENGINE_FALLBACK,
+    "engine_downgraded": WarningKind.ENGINE_FALLBACK,
+    "page_limit_reached": WarningKind.PAGE_CAP_REACHED,
+    "hidden_sheets": WarningKind.HIDDEN_SHEETS_INCLUDED,
+    "injection_pattern": WarningKind.INJECTION_SUSPECTED,
+    "possible_prompt_injection": WarningKind.INJECTION_SUSPECTED,
+    "injection_flagged": WarningKind.INJECTION_SUSPECTED,
+    "table_merged_cells_flattened": WarningKind.MERGED_CELLS_FLATTENED,
+    "encoding_guessed": WarningKind.ENCODING_UNCERTAIN,
+    "truncated_max_tokens": WarningKind.TRUNCATED,
+    "output_truncated": WarningKind.TRUNCATED,
+    "unreadable_regions": WarningKind.UNREADABLE_REGION,
+    "removed_invisible_chars": WarningKind.REMOVED_HIDDEN_ELEMENTS,
+}
+"""Retired spellings (D-0017 item 3). They still parse and normalize to the canonical Part 2 13.6 code."""
+
+
+def normalize_code(code: str) -> WarningKind:
+    """Return the canonical WarningKind for a code or one of its retired aliases; raise ``ValueError`` otherwise."""
+    if isinstance(code, WarningKind):
+        return code
+    alias = ALIASES.get(code)
+    if alias is not None:
+        return alias
+    return WarningKind(code)
 
 
 def spec_for(kind: WarningKind | str) -> CodeSpec:
     """Return the registry entry for a warning code; raise ``KeyError`` for an unknown code."""
     try:
-        member = WarningKind(kind)
+        member = normalize_code(kind)
     except ValueError:
         raise KeyError(kind) from None
     return CODES[member]

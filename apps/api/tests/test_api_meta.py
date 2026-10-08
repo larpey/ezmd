@@ -1,4 +1,4 @@
-"""Capabilities, OpenAPI staleness, .env.example drift, migrations, static serving."""
+"""Capabilities, OpenAPI staleness, env.example drift, migrations, static serving."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from intomd_api.settings import Settings, env_names
 from intomd_api.testing import api_client
 
 REPO = Path(__file__).resolve().parents[3]
-ENV_EXAMPLE = REPO / "deploy" / ".env.example"
+ENV_EXAMPLE = REPO / "deploy" / "env.example"
 DEPLOY_ONLY_MARKER = "# ---- Deployment"
 ENV_LINE = re.compile(r"^(INTOMD_[A-Z0-9_]+)=")
 
@@ -54,12 +54,12 @@ def _env_example_vars() -> tuple[set[str], set[str]]:
     return settings_vars, deploy_vars
 
 
-@pytest.mark.skipif(not ENV_EXAMPLE.is_file(), reason="deploy/.env.example is missing")
+@pytest.mark.skipif(not ENV_EXAMPLE.is_file(), reason="deploy/env.example is missing")
 def test_env_example_matches_settings() -> None:
     documented, deploy_only = _env_example_vars()
     fields = set(env_names())
-    assert sorted(fields - documented) == [], "Settings fields missing from deploy/.env.example"
-    assert sorted(documented - fields) == [], "deploy/.env.example lists variables Settings does not read"
+    assert sorted(fields - documented) == [], "Settings fields missing from deploy/env.example"
+    assert sorted(documented - fields) == [], "deploy/env.example lists variables Settings does not read"
     assert sorted(deploy_only & fields) == [], "Settings fields must not sit in the deployment-only section"
 
 

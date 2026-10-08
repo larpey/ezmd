@@ -221,7 +221,7 @@ def run(
         env=_minimal_env(env_allowlist, env),
         shell=False,
         preexec_fn=(lambda: _preexec(lim)) if posix else None,
-        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
+        creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) if os.name == "nt" else 0,
     )
     assert proc.stdout is not None and proc.stderr is not None
     out_r = _CappedReader(proc.stdout, output_cap)

@@ -97,10 +97,10 @@ def test_merged_cells_html_in_full_flattened_elsewhere() -> None:
         "<tr><th>Revenue</th><th>Cost</th></tr>\n</thead>\n<tbody>\n<tr><td>East</td><td>10</td><td>4</td>"
         "<td>x</td></tr>\n</tbody>\n</table>"
     ) in full.body
-    assert "table_merged_cells_flattened" not in full.frontmatter["warnings"]  # type: ignore[operator]
+    assert "merged_cells_flattened" not in full.frontmatter["warnings"]  # type: ignore[operator]
     compact = render(res, "compact")
     assert "| Region | Q3 / Revenue | Q3 / Cost | North |\n|---|---:|---:|---|\n| East | 10 | 4 | x |" in compact.body
-    assert "table_merged_cells_flattened" in render(res, "agent").frontmatter["warnings"]  # type: ignore[operator]
+    assert "merged_cells_flattened" in render(res, "agent").frontmatter["warnings"]  # type: ignore[operator]
 
 
 def test_pipe_table_legend_escaping_and_numeric_alignment() -> None:

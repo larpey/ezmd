@@ -191,10 +191,6 @@
     "severity": "error",
     "suggestion": "Enable the browser rendering engine, or convert the page with the browser extension."
   },
-  "encoding_guessed": {
-    "severity": "warning",
-    "suggestion": "Re-save the file as UTF-8 or declare its charset, then reconvert."
-  },
   "encoding_uncertain": {
     "severity": "warning",
     "suggestion": "Re-save the file as UTF-8 or pass the source encoding in options."
@@ -206,10 +202,6 @@
   "encrypted_no_password": {
     "severity": "error",
     "suggestion": "Provide the password in the PDF options or upload an unencrypted copy."
-  },
-  "engine_downgraded": {
-    "severity": "warning",
-    "suggestion": "Install the missing extra, e.g. pip install 'intomd[docs]', for full-fidelity output."
   },
   "engine_failed": {
     "severity": "error",
@@ -250,10 +242,6 @@
   "extraction_empty": {
     "severity": "error",
     "suggestion": "If the source is scanned or image-only, enable OCR; otherwise confirm the file is not empty."
-  },
-  "fallback_engine_used": {
-    "severity": "warning",
-    "suggestion": "Install the extra for the preferred engine (see `intomd converters list`) and reconvert."
   },
   "fetch_blocked": {
     "severity": "error",
@@ -319,10 +307,6 @@
     "severity": "info",
     "suggestion": "No action needed; edit the PDF's tags in the authoring tool to change headings."
   },
-  "hidden_sheets": {
-    "severity": "info",
-    "suggestion": "Delete or unhide sheets in the source if the hidden ones should not be shared."
-  },
   "hidden_sheets_included": {
     "severity": "info",
     "suggestion": "Turn off hidden sheet inclusion in the spreadsheet options to omit them."
@@ -346,14 +330,6 @@
   "images_without_alt": {
     "severity": "info",
     "suggestion": "Enable image description or OCR if the images carry information."
-  },
-  "injection_flagged": {
-    "severity": "warning",
-    "suggestion": "Review the flagged spans in the sidecar before passing the output to an AI."
-  },
-  "injection_pattern": {
-    "severity": "warning",
-    "suggestion": "Treat the content as untrusted and use the agent profile's fenced output."
   },
   "injection_suspected": {
     "severity": "warning",
@@ -467,6 +443,10 @@
     "severity": "info",
     "suggestion": "Force transcription in the media options if the file contains speech."
   },
+  "nesting_flattened": {
+    "severity": "info",
+    "suggestion": "No action needed; the text is complete, only the deepest indentation was merged."
+  },
   "no_speech_detected": {
     "severity": "warning",
     "suggestion": "Check the file has an audio track with speech; set the language if it is quiet speech."
@@ -495,17 +475,9 @@
     "severity": "warning",
     "suggestion": "Read the message and sidecar details; report it so a specific code can be added."
   },
-  "output_truncated": {
-    "severity": "info",
-    "suggestion": "Raise the notebook output limit in options if you need full outputs."
-  },
   "page_cap_reached": {
     "severity": "warning",
     "suggestion": "Convert the document in page ranges, or raise the page cap on a self-hosted instance."
-  },
-  "page_limit_reached": {
-    "severity": "warning",
-    "suggestion": "Convert the remaining pages as a separate range, or raise the page limit when self-hosting."
   },
   "page_timeout": {
     "severity": "warning",
@@ -534,10 +506,6 @@
   "pii_columns_removed": {
     "severity": "info",
     "suggestion": "Turn off PII column removal in data options if you are permitted to keep those columns."
-  },
-  "possible_prompt_injection": {
-    "severity": "warning",
-    "suggestion": "Treat the flagged text as untrusted; review sidecar injection_findings first."
   },
   "possible_serial_dates": {
     "severity": "info",
@@ -586,10 +554,6 @@
   "removed_hidden_elements": {
     "severity": "info",
     "suggestion": "Inspect the original source if the hidden content matters to you."
-  },
-  "removed_invisible_chars": {
-    "severity": "info",
-    "suggestion": "Inspect the original file if invisible characters carry meaning."
   },
   "removed_running_header_footer": {
     "severity": "info",
@@ -655,10 +619,6 @@
     "severity": "info",
     "suggestion": "Check the inferred table against the source text."
   },
-  "table_merged_cells_flattened": {
-    "severity": "info",
-    "suggestion": "Use the full profile with merged_cells=html to keep spans as an HTML table."
-  },
   "table_rejoined": {
     "severity": "info",
     "suggestion": "Check the rejoined table at the page break against the source."
@@ -721,19 +681,11 @@
   },
   "truncated": {
     "severity": "warning",
-    "suggestion": "Download the full result, or self-host with a higher output cap."
-  },
-  "truncated_max_tokens": {
-    "severity": "warning",
-    "suggestion": "Raise max_tokens, or page through the result with the cursor."
+    "suggestion": "Raise max_tokens or page through the result with the cursor, or self-host with a higher cap."
   },
   "unreadable_region": {
     "severity": "warning",
     "suggestion": "Upload a sharper, higher-resolution scan of the marked region."
-  },
-  "unreadable_regions": {
-    "severity": "warning",
-    "suggestion": "Upload a sharper scan (300 DPI or more), or try a layout OCR engine."
   },
   "unresolved_users": {
     "severity": "warning",

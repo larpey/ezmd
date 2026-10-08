@@ -19,14 +19,14 @@ _UNDERLINE = re.compile(r"^(=+|-+)\s*$")
 _MAX_HEADING_CHARS = 200
 
 
-def decode_text(raw: bytes) -> tuple[str, str, bool]:
-    """Decode bytes to str. Returns (text, encoding, uncertain). BOMs win; then strict UTF-8; then
+def decode_text_detailed(raw: bytes) -> tuple[str, str, bool, float]:
+    """Decode bytes to str. Returns (text, encoding, uncertain, confidence). BOMs win; then strict UTF-8; then
     charset-normalizer; finally UTF-8 with replacement."""
     for bom, enc in ((b"\xef\xbb\xbf", "utf-8-sig"), (b"\xff\xfe", "utf-16"), (b"\xfe\xff", "utf-16")):
         if raw.startswith(bom):
-            return raw.decode(enc, errors="replace"), enc, False
+            return raw.decode(enc, errors="replace"), enc, False, 1.0
     try:
-        return raw.decode("utf-8"), "utf-8", False
+        return raw.decode("utf-8"), "utf-8", False, 1.0
     except UnicodeDecodeError:
         pass
     from charset_normalizer import from_bytes
@@ -37,9 +37,16 @@ def decode_text(raw: bytes) -> tuple[str, str, bool]:
     best = from_bytes(raw).best()
     if best is not None:
         text = str(best)
-        return text, best.encoding, (1.0 - float(best.chaos)) < 0.7 and "\ufffd" in text
+        confidence = max(0.0, min(1.0, 1.0 - float(best.chaos)))
+        return text, best.encoding, confidence < 0.7 and "\ufffd" in text, confidence
     text = raw.decode("utf-8", errors="replace")
-    return text, "utf-8", "\ufffd" in text
+    return text, "utf-8", "\ufffd" in text, 0.0
+
+
+def decode_text(raw: bytes) -> tuple[str, str, bool]:
+    """Decode bytes to str. Returns (text, encoding, uncertain); see `decode_text_detailed`."""
+    text, encoding, uncertain, _confidence = decode_text_detailed(raw)
+    return text, encoding, uncertain
 
 
 class PlainTextConverter:
@@ -76,7 +83,7 @@ class PlainTextConverter:
             raise ConversionError(
                 "input looks binary (many NUL bytes)", user_message="This file does not look like text."
             )
-        text, encoding, guessed = decode_text(raw)
+        text, encoding, guessed, confidence = decode_text_detailed(raw)
         stats = CleanStats()
         text = clean_text(text, stats)
         if guessed:
@@ -87,7 +94,8 @@ class PlainTextConverter:
                     detail={"encoding": encoding},
                 )
             )
-        meta.extra["encoding"] = encoding
+        meta.encoding = encoding
+        meta.encoding_confidence = confidence
         doc.blocks.extend(_blocks(text, source))
         if stats.total:
             doc.warnings.append(

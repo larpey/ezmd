@@ -32,6 +32,7 @@
           },
           "prefer_residential": {
             "default": false,
+            "description": "Keyed callers with the residential permission only; ignored for anonymous callers (D-0017)",
             "title": "Prefer Residential",
             "type": "boolean"
           },
@@ -173,6 +174,30 @@
           "max_duration_seconds": {
             "title": "Max Duration Seconds",
             "type": "integer"
+          },
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The platform-policy entry matching the URL's host (for example youtube.com)",
+            "title": "Platform"
+          },
+          "resolved_ip": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Address the VPS resolved and validated at claim time (null when DNS failed). Advisory: the node must re-run netguard itself before fetching (Phase 3).",
+            "title": "Resolved Ip"
           },
           "upload_url": {
             "title": "Upload Url",
@@ -543,7 +568,7 @@
     }
   },
   "info": {
-    "description": "Convert anything to LLM-ready Markdown.",
+    "description": "Convert anything to LLM-ready Markdown.\n\n## Error codes\n\n| code | status | meaning |\n| --- | --- | --- |\n| `invalid_request` | 400 | Malformed body, unknown option, or invalid profile override. |\n| `turnstile_required` | 401 | A Turnstile token is required for URL jobs on this instance. |\n| `turnstile_failed` | 403 | The Turnstile token was rejected. |\n| `unauthorized` | 401 | Missing or unknown API key, or bad fetch-node secret. |\n| `forbidden` | 403 | The key or node may not do this (for example residential fetches). |\n| `not_found` | 404 | Unknown job, attachment, or route. |\n| `method_not_allowed` | 405 | Wrong HTTP method. |\n| `job_not_ready` | 409 | The job has not reached the state this call needs. |\n| `input_too_large` | 413 | Upload or fetched body over the caller's cap. |\n| `unsupported_media_type` | 415 | Executable or unsupported input. |\n| `url_blocked` | 422 | The URL (or a URL a converter asked for) failed the SSRF guard. |\n| `platform_disabled` | 422 | The site is disabled by this instance's platform policy. |\n| `experimental_disabled` | 422 | Only an experimental converter handles this input and experimental converters are off. |\n| `fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than intomd.inputs.MAX_FETCH_DEPTH allows. |\n| `result_too_large` | 422 | The converter's result exceeded INTOMD_MAX_RESULT_BYTES. |\n| `rate_limited` | 429 | Too many requests, jobs, or concurrent jobs; see Retry-After. |\n| `conversion_failed` | 500 | Every converter in the chain failed. |\n| `internal_error` | 500 | Unexpected server error (logged with the request id). |\n| `not_implemented` | 501 | The format exists in the contract but is not built yet (docx). |\n| `fetch_failed` | 502 | The URL could not be fetched. |\n| `queue_unavailable` | 503 | The queue is down or the instance is at its active-job cap. |\n| `timeout` | 504 | The conversion exceeded its time limit. |",
     "title": "intomd API",
     "version": "0.0.1"
   },
@@ -1091,6 +1116,24 @@
               "description": "md | json | txt | zip | docx (501)",
               "title": "Format",
               "type": "string"
+            }
+          },
+          {
+            "description": "Opaque pagination cursor from a previous response; other query keys are profile overrides",
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous response; other query keys are profile overrides",
+              "title": "Cursor"
             }
           }
         ],

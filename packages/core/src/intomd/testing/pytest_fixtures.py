@@ -8,11 +8,15 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from intomd.testing.fixtures import Fixture, discover, fixtures_root, run_fixture
+if TYPE_CHECKING:
+    from intomd.testing.fixtures import Fixture
+
+# Everything from intomd is imported lazily: this plugin is loaded with `-p` before pytest-cov starts
+# measuring, so a module-level import would hide intomd's module-level code from coverage.
 
 
 class FixtureItem(pytest.Item):
@@ -22,6 +26,8 @@ class FixtureItem(pytest.Item):
         self.root = root
 
     def runtest(self) -> None:
+        from intomd.testing.fixtures import run_fixture
+
         run = run_fixture(self.fx, self.root)
         if run.hard_failures:
             raise FixtureFailure("; ".join(run.hard_failures))
@@ -45,6 +51,8 @@ class FixtureFailure(Exception):
 
 class FixtureFile(pytest.File):
     def collect(self) -> Iterator[FixtureItem]:
+        from intomd.testing.fixtures import discover
+
         root = self.path.parent
         for fx in discover(root):
             yield FixtureItem.from_parent(self, name=fx.id, fixture=fx, root=root)
@@ -52,6 +60,8 @@ class FixtureFile(pytest.File):
 
 def pytest_collect_file(parent: pytest.Collector, file_path: Path) -> pytest.Collector | None:
     if file_path.name == "thresholds.toml" and file_path.parent.name == "fixtures":
+        from intomd.testing.fixtures import fixtures_root
+
         try:
             fixtures_root(file_path.parent)
         except Exception:

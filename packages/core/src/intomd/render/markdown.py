@@ -115,10 +115,17 @@ def _build_body(ctx: RenderContext, title: str, options: RenderOptions) -> _Body
     built = build_units(ctx, consumed)
     units = assemble.place_footnotes(ctx, built.units)
     units = assemble.place_page_markers(ctx, units)
-    units = assemble.apply_cursor(units, options.cursor)
-    units, truncation = assemble.apply_budget(ctx, units, profile.max_tokens)
-    head = [*assemble.head_units(ctx, built.summary, units), assemble.title_unit(ctx, title)]
-    tail = assemble.links_units(ctx)
+    units, figures_dropped = assemble.drop_figures_for_budget(ctx, units, profile.max_tokens)
+    start = assemble.cursor_start(units, options.cursor, profile.name)
+    page = assemble.apply_budget(ctx, units, start, profile.max_tokens)
+    truncation = page.truncation
+    if figures_dropped and not truncation:
+        truncation = {"reason": "max_tokens", "limit": profile.max_tokens or 0}
+    # The head (summary, orientation, contents, H1) opens page 1 only; the links list closes the last page,
+    # so concatenating every page rebuilds the unpaged body.
+    head = [*assemble.head_units(ctx, built.summary, units), assemble.title_unit(ctx, title)] if start == 0 else []
+    tail = assemble.links_units(ctx) if page.next_unit is None else []
+    units = page.units
     if profile.untrusted_fence:
         for u in [*head, *units, *tail]:
             u.text, n = defang(u.text)
@@ -161,7 +168,7 @@ def render_markdown(
     if report.warning:
         families = sorted({f.family for f in report.findings})
         ctx.warn(
-            WarningKind.POSSIBLE_PROMPT_INJECTION,
+            WarningKind.INJECTION_SUSPECTED,
             f"The content contains text that looks like instructions to an AI system ({report.risk} risk).",
             risk=report.risk,
             score=report.score,

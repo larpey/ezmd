@@ -24,6 +24,10 @@ KILL_GRACE_SECONDS = 30
 TICK_SECONDS = 5.0
 FSIZE_LIMIT_BYTES = 2 * 1024 * 1024 * 1024
 NPROC_LIMIT = 64
+DEFAULT_MAX_RESULT_BYTES = 256 * 1024 * 1024
+MAX_STATUS_BYTES = 64 * 1024
+# ConversionError codes the child may report as-is; anything else becomes conversion_failed.
+PASSTHROUGH_CONVERSION_CODES = frozenset({"experimental_disabled"})
 
 
 @dataclass(slots=True)
@@ -39,6 +43,7 @@ class ChildRequest:
     max_seconds: float
     mem_mb: int
     max_bytes: int
+    max_result_bytes: int = DEFAULT_MAX_RESULT_BYTES
 
 
 @dataclass(slots=True)
@@ -49,6 +54,8 @@ class ChildOutcome:
     result_json: str | None = None
     fetch_url: str | None = None
     residential: bool = False
+    """What the child claimed. Advisory only: the parent never routes on it (D-0017 item 4)."""
+    fetch_depth: int = 0
     extra: dict[str, Any] = field(default_factory=dict)
 
 
@@ -108,11 +115,23 @@ def child_main(raw: dict[str, Any]) -> None:
     except UnsupportedMediaType as e:
         _write_status(req, {"status": "error", "code": "unsupported_media_type", "message": e.user_message})
     except ConversionError as e:
-        _write_status(req, {"status": "error", "code": "conversion_failed", "message": e.user_message})
+        code = str(getattr(e, "code", "conversion_failed") or "conversion_failed")
+        if code not in PASSTHROUGH_CONVERSION_CODES:
+            code = "conversion_failed"
+        _write_status(req, {"status": "error", "code": code, "message": e.user_message})
     except InputTooLarge:
         _write_status(req, {"status": "error", "code": "input_too_large", "message": "The input is too large."})
     except FetchRequired as e:
-        _write_status(req, {"status": "fetch_required", "url": e.url, "residential": e.residential})
+        depth = getattr(e, "fetch_depth", 0)
+        _write_status(
+            req,
+            {
+                "status": "fetch_required",
+                "url": e.url,
+                "residential": e.residential,
+                "fetch_depth": depth if isinstance(depth, int) else 0,
+            },
+        )
     except MemoryError:
         _write_status(req, {"status": "error", "code": "conversion_failed", "message": "Conversion ran out of memory."})
     except Exception:
@@ -124,13 +143,48 @@ def _read_outcome(req: ChildRequest, exitcode: int | None) -> ChildOutcome:
     status_path = Path(req.out_path + ".status.json")
     if not status_path.is_file():
         return ChildOutcome("crash", "conversion_failed", f"The converter process exited unexpectedly ({exitcode}).")
-    status = json.loads(status_path.read_text(encoding="utf-8"))
+    if status_path.stat().st_size > MAX_STATUS_BYTES:
+        return ChildOutcome("crash", "conversion_failed", "The converter process reported an invalid status.")
+    try:
+        status = json.loads(status_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return ChildOutcome("crash", "conversion_failed", "The converter process reported an invalid status.")
+    if not isinstance(status, dict):
+        return ChildOutcome("crash", "conversion_failed", "The converter process reported an invalid status.")
     kind = status.get("status")
     if kind == "ok":
-        return ChildOutcome("ok", result_json=Path(req.out_path).read_text(encoding="utf-8"))
+        return _read_result(req)
     if kind == "fetch_required":
-        return ChildOutcome("fetch_required", fetch_url=status.get("url"), residential=bool(status.get("residential")))
+        url = status.get("url")
+        depth = status.get("fetch_depth", 0)
+        return ChildOutcome(
+            "fetch_required",
+            fetch_url=url if isinstance(url, str) else None,
+            residential=bool(status.get("residential")),
+            fetch_depth=depth if isinstance(depth, int) and not isinstance(depth, bool) else 0,
+        )
     return ChildOutcome("error", str(status.get("code", "conversion_failed")), str(status.get("message", "")))
+
+
+def _read_result(req: ChildRequest) -> ChildOutcome:
+    """Read the IR JSON, refusing anything over `max_result_bytes` before it is loaded."""
+    out = Path(req.out_path)
+    if not out.is_file():
+        return ChildOutcome("crash", "conversion_failed", "The converter process wrote no result.")
+    size = out.stat().st_size
+    if size > req.max_result_bytes:
+        limit_mb = req.max_result_bytes // (1024 * 1024)
+        return ChildOutcome(
+            "error",
+            "result_too_large",
+            f"The conversion result exceeds the {limit_mb} MB limit.",
+            extra={"limit_bytes": req.max_result_bytes, "result_bytes": size},
+        )
+    with out.open("rb") as fh:
+        data = fh.read(req.max_result_bytes + 1)
+    if len(data) > req.max_result_bytes:
+        return ChildOutcome("error", "result_too_large", "The conversion result exceeds the size limit.")
+    return ChildOutcome("ok", result_json=data.decode("utf-8"))
 
 
 def run_isolated(

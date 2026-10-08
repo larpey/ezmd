@@ -6,7 +6,10 @@ the body, and (compact) the numbered `## Links` list.
 
 from __future__ import annotations
 
+import base64
+import json
 import re
+from dataclasses import dataclass
 
 from intomd.ir import SourceType, WarningKind
 from intomd.render.context import RenderContext, Unit
@@ -14,8 +17,13 @@ from intomd.render.inline import render_spans
 from intomd.render.tokens import count_o200k
 
 __all__ = [
+    "CURSOR_VERSION",
+    "Page",
     "apply_budget",
-    "apply_cursor",
+    "cursor_start",
+    "decode_cursor",
+    "drop_figures_for_budget",
+    "encode_cursor",
     "head_units",
     "links_units",
     "place_footnotes",
@@ -142,48 +150,113 @@ def links_units(ctx: RenderContext) -> list[Unit]:
     return [Unit(text="## Links", kind="heading"), Unit(text=items, kind="links")]
 
 
-def apply_cursor(units: list[Unit], cursor: str | None) -> list[Unit]:
+CURSOR_VERSION = 1
+
+
+@dataclass(frozen=True, slots=True)
+class Page:
+    """One page of the body: the units to emit, the truncation detail, and where the next page starts."""
+
+    units: list[Unit]
+    truncation: dict[str, object]
+    start: int
+    next_unit: int | None
+
+
+def encode_cursor(profile: str, unit: int) -> str:
+    """Opaque pagination cursor: unpadded base64url of {"v", "profile", "unit"} (unit indexes render units)."""
+    raw = json.dumps({"v": CURSOR_VERSION, "profile": profile, "unit": unit}, separators=(",", ":"), sort_keys=True)
+    return base64.urlsafe_b64encode(raw.encode("utf-8")).decode("ascii").rstrip("=")
+
+
+def decode_cursor(cursor: str) -> tuple[str, int] | None:
+    """(profile, unit) for a well-formed cursor, None when `cursor` is not one (it may be a heading anchor)."""
+    try:
+        padded = cursor + "=" * (-len(cursor) % 4)
+        data = json.loads(base64.urlsafe_b64decode(padded.encode("ascii")).decode("utf-8"))
+    except (ValueError, UnicodeError):
+        return None
+    if not isinstance(data, dict) or data.get("v") != CURSOR_VERSION:
+        return None
+    profile, unit = data.get("profile"), data.get("unit")
+    if not isinstance(profile, str) or not isinstance(unit, int) or isinstance(unit, bool):
+        return None
+    return profile, unit
+
+
+def cursor_start(units: list[Unit], cursor: str | None, profile: str) -> int:
+    """Index of the first unit to render. Accepts opaque cursors and, for compatibility with the Part 3
+    example, a heading anchor ("sec-4"). Raises ValueError for anything else."""
     if not cursor:
-        return units
+        return 0
+    decoded = decode_cursor(cursor)
+    if decoded is not None:
+        cprofile, unit = decoded
+        if cprofile != profile:
+            raise ValueError(f"cursor was issued for profile {cprofile!r}, not {profile!r}")
+        if not 0 <= unit < len(units):
+            raise ValueError(f"unknown cursor {cursor!r}")
+        return unit
     for i, u in enumerate(units):
         if u.heading is not None and u.heading.anchor == cursor:
-            return units[i:]
+            return i
     raise ValueError(f"unknown cursor {cursor!r}")
 
 
-def apply_budget(ctx: RenderContext, units: list[Unit], budget: int | None) -> tuple[list[Unit], dict[str, object]]:
-    """Fit the body into `budget` o200k tokens: drop figures first (compact), then truncate trailing sections."""
+def _sizes(units: list[Unit]) -> list[int]:
+    return [count_o200k(u.text) + 1 for u in units]
+
+
+def drop_figures_for_budget(ctx: RenderContext, units: list[Unit], budget: int | None) -> tuple[list[Unit], bool]:
+    """compact: when the whole body exceeds the budget, figures go first. Decided on the whole document so
+    every page indexes the same unit list."""
+    if budget is None or ctx.profile.name != "compact" or sum(_sizes(units)) <= budget:
+        return units, False
+    return [u for u in units if u.kind != "figure"], True
+
+
+def apply_budget(ctx: RenderContext, units: list[Unit], start: int, budget: int | None) -> Page:
+    """Fit units[start:] into `budget` o200k tokens. Cuts at the last section boundary that fits, else at the
+    last unit boundary (so a long section or a headingless body still pages), and always keeps at least one
+    unit. A cut page ends with a marker carrying the opaque `next_cursor`."""
+    rest = units[start:]
     if budget is None:
-        return units, {}
-    sizes = [count_o200k(u.text) + 1 for u in units]
-    original = sum(sizes)
-    if original <= budget:
-        return units, {}
-    if ctx.profile.name == "compact":
-        units = [u for u in units if u.kind != "figure"]
-        sizes = [count_o200k(u.text) + 1 for u in units]
-        if sum(sizes) <= budget:
-            return units, {"reason": "max_tokens", "limit": budget, "original_tokens": original}
+        return Page(rest, {}, start, None)
+    sizes = _sizes(rest)
+    original = sum(_sizes(units))
+    if sum(sizes) <= budget:
+        return Page(rest, {}, start, None)
     total, cut = 0, 0
     for i, size in enumerate(sizes):
         if total + size > budget:
             break
         total += size
         cut = i + 1
-    boundary = max((i for i in range(1, cut + 1) if i < len(units) and units[i].kind == "heading"), default=cut)
-    cut = boundary if boundary > 0 else cut
-    kept, dropped = units[:cut], units[cut:]
-    next_heading = next((u.heading for u in dropped if u.heading is not None), None)
+    boundary = max((i for i in range(1, cut + 1) if i < len(rest) and rest[i].kind == "heading"), default=0)
+    cut = max(boundary or cut, 1)
+    kept, dropped = rest[:cut], rest[cut:]
+    if not dropped:
+        return Page(kept, {}, start, None)
+    next_unit = start + cut
+    cursor = encode_cursor(ctx.profile.name, next_unit)
     ctx.truncated = True
     ctx.warn(
-        WarningKind.TRUNCATED_MAX_TOKENS,
+        WarningKind.TRUNCATED,
         f"Output was truncated at max_tokens={budget}.",
+        reason="max_tokens",
         limit=budget,
         original_tokens=original,
     )
-    if ctx.profile.name == "agent" and next_heading is not None and next_heading.anchor:
-        note = f'<!-- intomd: continued; next_cursor="{next_heading.anchor}" -->'
+    if ctx.profile.name == "agent":
+        note = f'<!-- intomd: continued; next_cursor="{cursor}" -->'
     else:
-        note = f"<!-- intomd: truncated at max_tokens={budget}; {len(dropped)} blocks omitted -->"
-    kept.append(Unit(text=note, kind="note", generated=True))
-    return kept, {"reason": "max_tokens", "limit": budget, "original_tokens": original}
+        note = (
+            f'<!-- intomd: truncated at max_tokens={budget}; {len(dropped)} blocks omitted; next_cursor="{cursor}" -->'
+        )
+    detail: dict[str, object] = {
+        "reason": "max_tokens",
+        "limit": budget,
+        "original_tokens": original,
+        "next_cursor": cursor,
+    }
+    return Page([*kept, Unit(text=note, kind="note", generated=True)], detail, start, next_unit)

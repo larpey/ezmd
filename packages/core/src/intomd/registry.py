@@ -13,8 +13,10 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
+from intomd.context import TIMEOUT_CODE, ConvertContext, Limits
 from intomd.inputs import FetchRequired, InputRef
 from intomd.ir import ConversionResult, Document, Metrics, Warning, WarningKind
+from intomd.warnings.codes import CODES
 
 log = logging.getLogger(__name__)
 
@@ -23,14 +25,29 @@ FAMILIES = frozenset(
 )
 
 
+CONVERSION_FAILED = "conversion_failed"
+EXPERIMENTAL_DISABLED = "experimental_disabled"
+
+
 class ConversionError(Exception):
     """A converter could not produce a Document. `retryable_with_fallback` tells the registry whether
-    to try the next converter in the chain. `user_message` is safe to show to end users."""
+    to try the next converter in the chain. `user_message` is safe to show to end users. `code` is a
+    stable machine-readable reason: "conversion_failed" (default), "experimental_disabled" (only
+    experimental converters could handle the input and options.experimental is False), or "timeout"
+    (raised by ConvertContext.check_deadline)."""
 
-    def __init__(self, message: str, *, user_message: str | None = None, retryable_with_fallback: bool = True) -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        user_message: str | None = None,
+        retryable_with_fallback: bool = True,
+        code: str = CONVERSION_FAILED,
+    ) -> None:
         super().__init__(message)
         self.user_message = user_message or "Conversion failed."
         self.retryable_with_fallback = retryable_with_fallback
+        self.code = code
 
 
 ExtraValue = str | int | float | bool
@@ -63,8 +80,16 @@ class ConvertOptions:
     comments: bool = True
     formulas: bool = True
     gpu: bool = False
+    experimental: bool = True
+    """Allow experimental converters (Part 2 13.7). Self-host default True; public policy sets False."""
     extra: dict[str, ExtraValue] = field(default_factory=dict)
+    ctx: ConvertContext = field(default_factory=ConvertContext)
+    """Progress, deadline, child conversion, limits (intomd.context). The registry binds it per call."""
     _started: float = field(default_factory=time.monotonic)
+
+    def __post_init__(self) -> None:
+        if self.ctx.remaining() is None:
+            self.ctx.bind(self)
 
     def deadline(self) -> float:
         """Seconds remaining. Converters raise ConversionError(retryable_with_fallback=False) when <= 0."""
@@ -81,7 +106,10 @@ class Converter(Protocol):
     id: stable identifier `family.engine`, e.g. `documents.docling_pdf`, `web.trafilatura`.
     family: one of FAMILIES.
     priority: tie-breaker when two converters return equal confidence; higher wins.
-    experimental: when True, every result gets an EXPERIMENTAL_CONVERTER warning.
+    experimental: when True, every result gets an EXPERIMENTAL_CONVERTER warning, and the registry skips
+        the converter when options.experimental is False.
+    limits: optional `intomd.context.Limits` class attribute (read with getattr; not part of the Protocol
+        so existing converters stay valid). Bound into `options.ctx.limits` before `convert()`.
     requires_extras: pip extras needed; the registry skips converters whose imports fail and logs why.
     mimes: mime types (may include wildcards) the converter is designed for; informational, used by
         capabilities. Resolution still goes through `can_handle`.
@@ -191,7 +219,15 @@ class ConverterRegistry:
             raise KeyError(f"converter {converter_id} unavailable: {reg.import_error}")
         return reg.converter
 
-    def candidates(self, ref: InputRef) -> list[tuple[float, Converter]]:
+    def candidates(self, ref: InputRef, options: ConvertOptions | None = None) -> list[tuple[float, Converter]]:
+        """Converters that can handle `ref`, best first. With `options.experimental` False, experimental
+        converters are left out."""
+        ranked = self._ranked(ref)
+        if options is not None and not options.experimental:
+            ranked = [(s, c) for s, c in ranked if not c.experimental]
+        return ranked
+
+    def _ranked(self, ref: InputRef) -> list[tuple[float, Converter]]:
         mime = ref.detected.mime if ref.detected else None
         chain = self.chain_for(mime) if mime else None
         if chain is not None:
@@ -221,8 +257,12 @@ class ConverterRegistry:
                 raise ConversionError(
                     str(e), user_message=f"Unknown converter {converter_id!r}.", retryable_with_fallback=False
                 ) from e
+            if cands[0][1].experimental and not options.experimental:
+                raise _experimental_disabled(ref)
         else:
-            cands = self.candidates(ref)
+            cands = self.candidates(ref, options)
+            if not cands and not options.experimental and self._ranked(ref):
+                raise _experimental_disabled(ref)
         if not cands:
             raise ConversionError(
                 f"no converter for {ref.display} (mime={ref.detected.mime if ref.detected else None})",
@@ -232,14 +272,20 @@ class ConverterRegistry:
         tried: list[str] = []
         last: Exception | None = None
         empty: tuple[int, Converter, Document] | None = None
+        ctx = options.ctx
         for i, (_score, conv) in enumerate(cands):
             tried.append(conv.id)
             t0 = time.monotonic()
+            limits = getattr(conv, "limits", None)
+            ctx.bind(options, self, limits if isinstance(limits, Limits) else Limits())
+            ctx.partial = None
             try:
                 doc = conv.convert(ref, options)
             except FetchRequired:
                 raise
             except ConversionError as e:
+                if e.code == TIMEOUT_CODE and ctx.partial is not None:
+                    return self._result(ref, conv, _timed_out(ctx.partial), i, tried, time.monotonic() - t0)
                 last = e
                 log.info("converter %s failed on %s: %s", conv.id, ref.display, e)
                 if not e.retryable_with_fallback:
@@ -264,7 +310,8 @@ class ConverterRegistry:
             return self._result(ref, conv, doc, i, tried, 0.0)
         msg = f"all converters failed for {ref.display}: tried {tried}; last error: {last}"
         user = last.user_message if isinstance(last, ConversionError) else "Conversion failed."
-        raise ConversionError(msg, user_message=user, retryable_with_fallback=False)
+        code = last.code if isinstance(last, ConversionError) else CONVERSION_FAILED
+        raise ConversionError(msg, user_message=user, retryable_with_fallback=False, code=code)
 
     @staticmethod
     def _result(
@@ -276,7 +323,7 @@ class ConverterRegistry:
         if index > 0:
             pipeline_warnings.append(
                 Warning(
-                    kind=WarningKind.FALLBACK_ENGINE_USED,
+                    kind=WarningKind.ENGINE_FALLBACK,
                     severity="info",
                     message=f"Primary converter failed; used {conv.id}.",
                     detail={"tried": ",".join(tried)},
@@ -290,10 +337,7 @@ class ConverterRegistry:
                     message=f"{conv.id} is experimental; see docs for known limitations.",
                 )
             )
-        truncated = any(
-            w.kind in (WarningKind.TRUNCATED, WarningKind.PAGE_LIMIT_REACHED, WarningKind.DURATION_LIMIT_REACHED)
-            for w in doc.warnings
-        )
+        truncated = doc.truncated or any(CODES[w.kind].truncates for w in [*pipeline_warnings, *doc.warnings])
         doc.converter_id = conv.id
         metrics = Metrics(
             duration_seconds=seconds,
@@ -310,6 +354,31 @@ class ConverterRegistry:
             converter_id=conv.id,
             input_ref=ref.info(),
         )
+
+
+def _experimental_disabled(ref: InputRef) -> ConversionError:
+    return ConversionError(
+        f"only experimental converters handle {ref.display} and experimental converters are disabled",
+        user_message=(
+            "Only an experimental converter supports this input, and experimental converters are disabled "
+            "on this instance. Self-host intomd with INTOMD_EXPERIMENTAL=1 (or pass --experimental) to use it."
+        ),
+        retryable_with_fallback=False,
+        code=EXPERIMENTAL_DISABLED,
+    )
+
+
+def _timed_out(partial: Document) -> Document:
+    """The partial Document a converter published before its deadline, marked truncated (Part 2 13.5.2)."""
+    doc = partial.model_copy(deep=True)
+    doc.truncated = True
+    doc.warnings.append(
+        Warning(
+            kind=WarningKind.TIMEOUT_PARTIAL,
+            message="The conversion hit its time limit; the output covers only what finished.",
+        )
+    )
+    return doc.finalize()
 
 
 class _Broken:

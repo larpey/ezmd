@@ -270,13 +270,54 @@ def fence_id(content_hash: str, source: str, salt: str | None = None) -> str:
     return hashlib.sha256((content_hash + source).encode("utf-8")).hexdigest()[:16]
 
 
-_CLOSING_TAG = re.compile("</untrusted_content(?!\u200b)")
+_ZWSP = chr(0x200B)
+_CLOSE_FOLDED = re.compile("< */ *untrusted_content")
+_FOLD_EXTRA = {
+    **dict.fromkeys((0x2044, 0x2215, 0x29F8, 0x2571), "/"),
+    **dict.fromkeys((0x2039, 0x2329, 0x3008, 0x27E8, 0x276E, 0x02C2), "<"),
+}
+_FOLD_DROP = frozenset((0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF, 0x00AD))
+
+
+def _fold(text: str) -> tuple[str, list[int]]:
+    """Case-folded NFKC view of `text` with odd whitespace collapsed to a space, zero-width characters
+    dropped, and slash/angle lookalikes mapped to ASCII. Returns the view and, per view character, the
+    index of the original character it came from."""
+    out: list[str] = []
+    index: list[int] = []
+    for i, ch in enumerate(text):
+        cp = ord(ch)
+        if cp in _FOLD_DROP:
+            continue
+        folded = _FOLD_EXTRA.get(cp) or unicodedata.normalize("NFKC", ch).casefold()
+        for f in folded:
+            out.append(" " if f.isspace() else f)
+            index.append(i)
+    return "".join(out), index
 
 
 def defang(text: str) -> tuple[str, int]:
-    """Insert a zero-width space into literal closing fence tags (the one deliberate content change).
-    Idempotent: already-defanged tags are left alone."""
-    return _CLOSING_TAG.subn("</untrusted_content\u200b", text)
+    """Insert a zero-width space after every closing fence tag name (the one deliberate content change).
+    Matching is case-insensitive after NFKC, so `</UNTRUSTED_CONTENT>`, fullwidth forms, lookalike slashes,
+    odd whitespace and interleaved zero-width characters are all caught. Idempotent: a tag already followed
+    by a zero-width space is left alone."""
+    folded, index = _fold(text)
+    inserts: list[int] = []
+    for m in _CLOSE_FOLDED.finditer(folded):
+        after = index[m.end() - 1] + 1
+        if after < len(text) and text[after] == _ZWSP:
+            continue
+        inserts.append(after)
+    if not inserts:
+        return text, 0
+    parts: list[str] = []
+    prev = 0
+    for pos in inserts:
+        parts.append(text[prev:pos])
+        parts.append(_ZWSP)
+        prev = pos
+    parts.append(text[prev:])
+    return "".join(parts), len(inserts)
 
 
 def wrap_untrusted(body: str, fid: str, source: str, risk: str) -> str:

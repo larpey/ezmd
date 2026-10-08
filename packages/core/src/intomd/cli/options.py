@@ -6,7 +6,9 @@ import dataclasses
 
 from intomd.registry import ConvertOptions, ExtraValue
 
-_OPTION_FIELDS = {f.name: f for f in dataclasses.fields(ConvertOptions) if not f.name.startswith("_")}
+_OPTION_FIELDS = {
+    f.name: f for f in dataclasses.fields(ConvertOptions) if not f.name.startswith("_") and f.name != "ctx"
+}
 
 
 def _coerce(raw: str) -> ExtraValue:

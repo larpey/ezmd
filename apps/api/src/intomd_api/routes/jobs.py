@@ -21,6 +21,7 @@ from intomd_api.ratelimit import limit_result_fetch, release_sse_slot, sse_slot
 from intomd_api.rendering import (
     FORMATS,
     PROFILES,
+    RENDER_TIME_KEYS,
     RenderUnavailable,
     attachment_index,
     attachment_media_type,
@@ -122,13 +123,13 @@ def job_events(
 
 
 def _overrides_from_query(request: Request) -> dict[str, Any]:
+    """`cursor` plus flat (`max_tokens`) and dotted (`chunks.chunk_tokens`) profile keys. Unknown keys
+    are rejected by the renderer's ValueError (400)."""
     out: dict[str, Any] = {}
     for key, value in request.query_params.items():
         if key in _RESERVED_QUERY:
             continue
-        if "." not in key:
-            raise ApiError("invalid_request", f"Unknown query parameter {key!r}.")
-        out[key] = _coerce(value)
+        out[key] = value if key in RENDER_TIME_KEYS else _coerce(value)
     return out
 
 
@@ -160,6 +161,9 @@ def job_result(
     caller: CallerDep,
     profile: str | None = Query(None, description="full | compact | rag | agent (default: the job's profile)"),
     format: str = Query("md", description="md | json | txt | zip | docx (501)"),
+    cursor: str | None = Query(
+        None, description="Opaque pagination cursor from a previous response; other query keys are profile overrides"
+    ),
 ) -> Response:
     services = services_of(request)
     limit_result_fetch(request, caller)
@@ -174,19 +178,27 @@ def job_result(
     if row.state != DONE or not row.blob_ir:
         raise ApiError("job_not_ready", "The job is not done yet.", detail={"state": row.state})
     query_overrides = _overrides_from_query(request)
-    if query_overrides:
-        try:
-            validate_profile(prof, query_overrides)
-        except (ValueError, TypeError) as e:
-            raise ApiError("invalid_request", f"Invalid profile override: {str(e)[:200]}") from None
+    if cursor is not None:
+        query_overrides["cursor"] = cursor
+    profile_keys = {k: v for k, v in query_overrides.items() if k not in RENDER_TIME_KEYS}
+    if profile_keys:
         overrides = query_overrides
     else:
         stored = json.loads(row.options_json or "{}").get("render", {})
-        overrides = dict(stored) if prof == row.profile else {}
+        overrides = {**(dict(stored) if prof == row.profile else {}), **query_overrides}
+    if query_overrides:
+        try:
+            validate_profile(prof, overrides)
+        except (ValueError, TypeError) as e:
+            raise ApiError("invalid_request", f"Invalid profile override: {str(e)[:200]}") from None
     try:
-        rendered = render_cached(services.blobs, job_id, row.blob_ir, prof, format, overrides)
+        rendered = render_cached(
+            services.blobs, job_id, row.blob_ir, prof, format, overrides, public_mode=services.settings.public_mode
+        )
     except RenderUnavailable:
         raise ApiError("conversion_failed", "Rendering is not available on this instance.") from None
+    except ValueError as e:
+        raise ApiError("invalid_request", f"Invalid render option: {str(e)[:200]}") from None
     if services.settings.retention_hours == 0:
         purge_job(services, job_id)
     return Response(rendered.body, media_type=rendered.media_type, headers=rendered.headers(format, job_id))

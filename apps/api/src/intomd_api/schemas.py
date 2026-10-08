@@ -37,7 +37,10 @@ class ConvertUrlRequest(BaseModel):
     profile: str = "full"
     options: dict[str, Any] = Field(default_factory=dict)
     turnstile_token: str | None = Field(default=None, max_length=4096)
-    prefer_residential: bool = False
+    prefer_residential: bool = Field(
+        default=False,
+        description="Keyed callers with the residential permission only; ignored for anonymous callers (D-0017)",
+    )
 
 
 class InputOut(BaseModel):
@@ -95,6 +98,16 @@ class FetchNodeClaimResponse(BaseModel):
     max_duration_seconds: int
     upload_url: str
     claim_expires_at: str
+    platform: str | None = Field(
+        default=None, description="The platform-policy entry matching the URL's host (for example youtube.com)"
+    )
+    resolved_ip: str | None = Field(
+        default=None,
+        description=(
+            "Address the VPS resolved and validated at claim time (null when DNS failed). Advisory: the node "
+            "must re-run netguard itself before fetching (Phase 3)."
+        ),
+    )
 
 
 class FetchNodeHeartbeat(BaseModel):

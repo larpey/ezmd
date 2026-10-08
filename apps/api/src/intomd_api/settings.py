@@ -1,7 +1,7 @@
 """intomd_api.settings: every INTOMD_* variable the API and its workers read.
 
 Implemented from docs/spec/part1.md sections 7 and 8 and docs/spec/part4.md 4.9.6 / 4.11.1.
-`deploy/.env.example` documents exactly these fields; `tests/test_env_example.py` fails on drift.
+`deploy/env.example` documents exactly these fields; `tests/test_env_example.py` fails on drift.
 """
 
 from __future__ import annotations
@@ -62,6 +62,8 @@ class Settings(BaseSettings):
     worker_media_concurrency: int = Field(default=1, ge=1)
     max_active_jobs: int | None = None
     residential_wait_seconds: int = Field(default=180, ge=0)
+    max_result_bytes: int = Field(default=256 * MIB, ge=1024)
+    """Cap on the IR JSON a conversion child may hand back (D-0017 item 6)."""
 
     # ---- Limits (anonymous callers; API keys carry their own) ----
     anon_max_upload_mb: int = Field(default=200, ge=1)

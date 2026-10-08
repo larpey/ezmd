@@ -13,15 +13,18 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from intomd.warnings.codes import CODES, WarningKind
+from intomd.warnings.codes import CODES, WarningKind, normalize_code
 
 __all__ = [
+    "MAX_CHILD_DEPTH",
+    "MAX_NEST_DEPTH",
     "BBox",
     "Block",
     "BlockBase",
     "CodeBlock",
+    "ColumnType",
     "Comment",
     "ConversionResult",
     "Document",
@@ -35,6 +38,7 @@ __all__ = [
     "InlineStyle",
     "InputKind",
     "InputRefInfo",
+    "LanguageSource",
     "Link",
     "ListBlock",
     "ListItem",
@@ -90,7 +94,13 @@ class Provenance(_Model):
     source: canonical path or URL of the input this block was extracted from. For attachments
         and nested archives this is `<outer>!<inner path>`.
     source_page: 1-based page number (PDF, DOCX page estimate, PPTX slide index, XLSX sheet index).
-    source_label: human label when page numbers are not numeric (sheet name, slide title, chapter id).
+    source_label: name of the containing sheet, slide, or chapter. Only for those names; a printed
+        page label goes in `page_label` (D-0017).
+    page_label: the page label printed on the page when it differs from the physical number ("iv", "A-3").
+    path: location inside a container input: archive member path, repository file path, JSON pointer,
+        or mailbox folder. None for single-file inputs.
+    source_id: stable id of the source item the block came from (message id, post id, notebook cell id).
+    char_start / char_end: 0-based character offsets into the decoded source text, end exclusive.
     bbox: layout box when the engine provides one.
     time_start / time_end: seconds into media for transcript-derived blocks.
     line_start / line_end: 1-based line numbers in text-like sources (code, plain text, line-structured transcripts).
@@ -101,6 +111,11 @@ class Provenance(_Model):
     source: str
     source_page: int | None = None
     source_label: str | None = None
+    page_label: str | None = None
+    path: str | None = None
+    source_id: str | None = None
+    char_start: int | None = Field(default=None, ge=0)
+    char_end: int | None = Field(default=None, ge=0)
     bbox: BBox | None = None
     time_start: float | None = None
     time_end: float | None = None
@@ -108,6 +123,12 @@ class Provenance(_Model):
     line_end: int | None = None
     engine: str | None = None
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+
+    @model_validator(mode="after")
+    def _char_range(self) -> Provenance:
+        if self.char_start is not None and self.char_end is not None and self.char_end < self.char_start:
+            raise ValueError("char_end must be >= char_start")
+        return self
 
 
 # ---------------------------------------------------------------------------
@@ -191,6 +212,10 @@ class TableCell(_Model):
     bbox: BBox | None = None
 
 
+ColumnType = Literal["text", "int", "float", "currency", "date", "percent", "bool"]
+"""Per-column value type a converter knows from the source (XLSX number formats, typed data)."""
+
+
 class Table(BlockBase):
     type: Literal["table"] = "table"
     cells: list[TableCell]
@@ -202,9 +227,13 @@ class Table(BlockBase):
     """Number of leading rows that are headers. 0 means unknown or none."""
     continued_from: str | None = None
     """Block id of the previous fragment when a table spanned pages and the converter joined them."""
+    column_types: list[ColumnType] | None = None
+    """One type per column when known. None means unknown: the renderer infers numeric columns."""
 
     @model_validator(mode="after")
     def _shape(self) -> Table:
+        if self.column_types is not None and len(self.column_types) != self.n_cols:
+            raise ValueError(f"column_types has {len(self.column_types)} entries for {self.n_cols} columns")
         for c in self.cells:
             if c.row + c.row_span > self.n_rows or c.col + c.col_span > self.n_cols:
                 raise ValueError(f"cell at ({c.row},{c.col}) exceeds table shape {self.n_rows}x{self.n_cols}")
@@ -435,6 +464,9 @@ class SourceType(StrEnum):
     OTHER = "other"
 
 
+LanguageSource = Literal["declared", "detected", "hint"]
+
+
 class Metadata(_Model):
     """Document-level metadata. Mirrors the frontmatter schema (Part 3) minus render-time fields."""
 
@@ -448,7 +480,15 @@ class Metadata(_Model):
     modified: datetime | None = None
     fetched: datetime | None = None
     language: str | None = None
-    """BCP-47."""
+    """BCP-47. The majority language when `languages` lists several."""
+    languages: list[str] = Field(default_factory=list)
+    """BCP-47 codes when the document is multilingual (Part 2 13.3), majority first."""
+    language_source: LanguageSource | None = None
+    """Where `language` came from: a structural declaration, detection, or the user's hint."""
+    encoding: str | None = None
+    """Text encoding the source was decoded with (text-like inputs only; Part 2 13.2)."""
+    encoding_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+    """Confidence of the encoding detection; 1.0 for a BOM or a strict UTF-8 decode."""
     license: str | None = None
     pages: int | None = None
     duration_seconds: float | None = None
@@ -475,13 +515,24 @@ class Warning(_Model):
     count: int | None = None
     detail: dict[str, str | int | float] = Field(default_factory=dict)
 
+    @field_validator("kind", mode="before")
+    @classmethod
+    def _canonical_kind(cls, value: Any) -> Any:
+        """Retired spellings (warnings.codes.ALIASES) are accepted and stored as the canonical code."""
+        if isinstance(value, str):
+            try:
+                return normalize_code(value)
+            except ValueError:
+                return value
+        return value
+
     @model_validator(mode="before")
     @classmethod
     def _default_severity(cls, data: Any) -> Any:
         if isinstance(data, dict) and "severity" not in data and "kind" in data:
             try:
-                spec = CODES[WarningKind(data["kind"])]
-            except (KeyError, ValueError):
+                spec = CODES[normalize_code(data["kind"])]
+            except (KeyError, ValueError, TypeError):
                 return data
             return {**data, "severity": spec.severity}
         return data
@@ -549,11 +600,22 @@ _COUNT_FIELD: dict[str, str] = {
 }
 
 
+MAX_NEST_DEPTH = 32
+"""Deepest list level (1-based) that keeps its own structure. finalize() flattens every descendant of a
+level-32 item into that item's children, in text order, and warns `nesting_flattened` (D-0017)."""
+
+MAX_CHILD_DEPTH = 8
+"""Deepest allowed nesting of `Document.children` (archives cap at 3); finalize() raises beyond it."""
+
+
 class Document(_Model):
     """The unit of conversion. One input produces one Document. Attachments and archive members
-    are separate Documents linked via `children`."""
+    are separate Documents linked via `children`.
 
-    schema_version: Literal["1"] = "1"
+    schema_version "1.1" (D-0017) is additive over "1"; readers accept both.
+    """
+
+    schema_version: Literal["1", "1.1"] = "1.1"
     metadata: Metadata
     blocks: list[Block] = Field(default_factory=list)
     warnings: list[Warning] = Field(default_factory=list)
@@ -561,6 +623,9 @@ class Document(_Model):
     converter_id: str = ""
     content_hash: str = ""
     """sha256 of the finalized plain text; set by finalize()."""
+    truncated: bool = False
+    """True when the converter stopped early (a cap or the deadline). ConversionResult.truncated ORs this
+    with every warning whose code spec has `truncates=True`."""
     _finalized: bool = False
 
     @property
@@ -594,8 +659,12 @@ class Document(_Model):
         return "\n".join(p for p in parts if p)
 
     def finalize(self) -> Document:
-        """Assign ids in document order, validate parent references, compute counts and hash.
-        Idempotent. Converters must call this before returning."""
+        """Assign ids in document order, validate parent references, cap list nesting, compute the hash.
+        Idempotent. Converters must call this before returning. Raises ValueError when `children`
+        nest deeper than MAX_CHILD_DEPTH."""
+        if _child_depth(self) > MAX_CHILD_DEPTH:
+            raise ValueError(f"Document.children nest deeper than {MAX_CHILD_DEPTH} levels")
+        self._cap_list_nesting()
         for i, b in enumerate(self.blocks, start=1):
             if not b.id:
                 b.id = f"b{i:04d}"
@@ -611,6 +680,21 @@ class Document(_Model):
             child.finalize()
         self._finalized = True
         return self
+
+    def _cap_list_nesting(self) -> None:
+        flattened = 0
+        for b in self.blocks:
+            if isinstance(b, ListBlock):
+                flattened += _flatten_deep_items(b.items)
+        if flattened and not any(w.kind == WarningKind.NESTING_FLATTENED for w in self.warnings):
+            self.warnings.append(
+                Warning(
+                    kind=WarningKind.NESTING_FLATTENED,
+                    message=f"List nesting deeper than {MAX_NEST_DEPTH} levels was flattened.",
+                    count=flattened,
+                    detail={"max_depth": MAX_NEST_DEPTH},
+                )
+            )
 
     def counts(self) -> ElementCounts:
         values: dict[str, int] = {}
@@ -643,6 +727,43 @@ class Document(_Model):
                 bucket.append(b)
         out.append((current, bucket))
         return out
+
+
+def _child_depth(doc: Document) -> int:
+    """Levels of `children` below `doc` (0 when it has none), computed without recursion."""
+    deepest = 0
+    stack: list[tuple[Document, int]] = [(doc, 0)]
+    while stack:
+        node, depth = stack.pop()
+        deepest = max(deepest, depth)
+        if depth > MAX_CHILD_DEPTH:
+            break
+        stack.extend((c, depth + 1) for c in node.children)
+    return deepest
+
+
+def _flatten_deep_items(items: list[ListItem]) -> int:
+    """Flatten descendants of every level-MAX_NEST_DEPTH item into its children. Returns how many items
+    moved up. Iterative, so arbitrarily deep input cannot exhaust the stack."""
+    moved = 0
+    stack: list[tuple[ListItem, int]] = [(it, 1) for it in items]
+    while stack:
+        item, level = stack.pop()
+        if level < MAX_NEST_DEPTH:
+            stack.extend((c, level + 1) for c in item.children)
+            continue
+        if not any(c.children for c in item.children):
+            continue
+        flat: list[ListItem] = []
+        walk: list[tuple[ListItem, int]] = [(c, 1) for c in reversed(item.children)]
+        while walk:
+            node, rel = walk.pop()
+            if rel > 1:
+                moved += 1
+            flat.append(node.model_copy(update={"children": []}))
+            walk.extend((c, rel + 1) for c in reversed(node.children))
+        item.children = flat
+    return moved
 
 
 def _list_text(items: list[ListItem]) -> list[str]:
@@ -689,8 +810,8 @@ class ConversionResult(_Model):
     warnings live on document.warnings; renderers merge both."""
     metrics: Metrics = Field(default_factory=Metrics)
     truncated: bool = False
-    """True when any cap (pages, duration, bytes, time) cut the input short. Also surfaced as a
-    WarningKind.TRUNCATED warning with detail."""
+    """True when any cap (pages, rows, duration, bytes, time) cut the input short: `document.truncated`
+    OR any warning whose code spec has `truncates=True` (computed by the registry; D-0017)."""
     converter_id: str
     input_ref: InputRefInfo
 

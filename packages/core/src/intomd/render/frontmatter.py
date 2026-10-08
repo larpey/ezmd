@@ -12,7 +12,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from typing import Any
 
-from intomd.ir import ConversionResult, Slide, SourceType
+from intomd.ir import ConversionResult, Slide
+from intomd.render.source_types import frontmatter_source_type
 
 __all__ = ["FrontmatterInputs", "RawScalar", "build_frontmatter", "dump_yaml", "fmt_datetime"]
 
@@ -133,7 +134,6 @@ _EXTRA_SLOTS = {
     "summary_source",
     "source_type",
 }
-_SOURCE_TYPE_MAP = {SourceType.HTML: "web", SourceType.SOCIAL: "post", SourceType.CHAT: "chat_export"}
 _BARE = re.compile(r"^[A-Za-z_][A-Za-z0-9_.\-]*$")
 _YAML_WORDS = {"true", "false", "yes", "no", "on", "off", "null", "~", "y", "n"}
 
@@ -204,6 +204,8 @@ def build_frontmatter(
     doc = result.document
     m = doc.metadata
     extra = dict(m.extra)
+    if m.encoding and "encoding" not in extra:
+        extra["encoding"] = m.encoding
     name, version = _converter(result)
     slides = sum(1 for b in doc.blocks if isinstance(b, Slide))
     authors: object = m.authors if len(m.authors) > 1 else (m.authors[0] if m.authors else m.author)
@@ -214,7 +216,7 @@ def build_frontmatter(
     values: dict[str, object] = {
         "title": inp.title,
         "source": m.source,
-        "source_type": str(extra.get("source_type") or _SOURCE_TYPE_MAP.get(m.source_type, str(m.source_type))),
+        "source_type": frontmatter_source_type(doc),
         "source_url": extra.get("source_url"),
         "platform": extra.get("platform"),
         "converter": name,

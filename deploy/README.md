@@ -11,12 +11,12 @@ Self-host and CI deployment files for intomd (Phase 0: P0-T11, P0-T12).
 | `seccomp-worker.json` | Docker's default seccomp profile plus explicit denials of `ptrace`, the `mount` family, `keyctl`/`add_key`/`request_key`, `bpf`, `userfaultfd`. |
 | `egress-allowlist.sh` | Worker entrypoint wrapper. No-op by default; optional iptables allowlist (see below). |
 | `smoke.sh` | End-to-end check: bring-up, convert a text file, poll, fetch `md` and `json`, verify worker isolation and container hardening. `--remote URL` tests an existing instance. |
-| `.env.example` | Every `INTOMD_*` variable (owned by the API; `tests/test_env_example.py` guards drift). |
+| `env.example` | Every `INTOMD_*` variable (owned by the API; `tests/test_env_example.py` guards drift). |
 
 ## Quick start
 
 ```bash
-cp deploy/.env.example deploy/.env      # set INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
+cp deploy/env.example deploy/.env      # set INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
 echo "INTOMD_REDIS_PASSWORD=$(openssl rand -hex 24)" >> deploy/.env
 docker compose -f deploy/docker-compose.yml up -d --build --wait
 bash deploy/smoke.sh --no-build

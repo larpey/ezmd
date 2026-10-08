@@ -71,7 +71,7 @@ trap cleanup EXIT
 
 if [ -z "$REMOTE" ]; then
   if [ ! -f "$HERE/.env" ]; then
-    if [ -f "$HERE/.env.example" ]; then cp "$HERE/.env.example" "$HERE/.env"; else : > "$HERE/.env"; fi
+    if [ -f "$HERE/env.example" ]; then cp "$HERE/env.example" "$HERE/.env"; else : > "$HERE/.env"; fi
     # Local smoke: plain HTTP on :8080, no ACME, fresh Redis password.
     sed -i.bak -e 's/^INTOMD_DOMAIN=.*/INTOMD_DOMAIN=/' -e 's/^INTOMD_ACME_EMAIL=.*/INTOMD_ACME_EMAIL=/' "$HERE/.env" && rm -f "$HERE/.env.bak"
     echo "INTOMD_REDIS_PASSWORD=$("$PY" -c 'import secrets; print(secrets.token_hex(24))')" >> "$HERE/.env"

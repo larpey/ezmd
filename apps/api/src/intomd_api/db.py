@@ -17,6 +17,9 @@ from sqlalchemy.pool import StaticPool
 
 from intomd_api.util import utcnow
 
+KEY_DEFAULT_MAX_PAGES = 10_000
+"""Page cap for API keys created without an explicit `max_pages`."""
+
 
 class Base(DeclarativeBase):
     pass
@@ -61,6 +64,10 @@ class JobRow(Base):
     claim_node_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
     claim_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     claim_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    fetch_depth: Mapped[int] = mapped_column(Integer, default=0)
+    """How many converter-requested fetches (FetchRequired) this job has followed (D-0017 item 4)."""
+    ir_cache_key: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    """Fingerprint of the IR schema, converter, and engine versions that produced `blob_ir`."""
 
 
 class ApiKeyRow(Base):
@@ -78,6 +85,7 @@ class ApiKeyRow(Base):
     concurrency: Mapped[int] = mapped_column(Integer, default=3)
     max_upload_bytes: Mapped[int] = mapped_column(Integer, default=200 * 1024 * 1024)
     max_audio_seconds: Mapped[int] = mapped_column(Integer, default=3600)
+    max_pages: Mapped[int] = mapped_column(Integer, default=KEY_DEFAULT_MAX_PAGES)
     allowed_families: Mapped[str] = mapped_column(Text, default='["*"]')
     residential_allowed: Mapped[bool] = mapped_column(Boolean, default=False)
 

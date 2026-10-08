@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -121,9 +122,40 @@ async def test_turnstile_off_by_default(client: Any) -> None:
     assert r.status_code == 202
 
 
-async def test_residential_needs_user_action_then_supply(settings_factory: Callable[..., Settings]) -> None:
-    async with api_client(settings_factory(residential_wait_seconds=0)) as (client, app):
-        payload = {"url": "https://www.example.com/watch?v=1", "prefer_residential": True}
+def _residential_policy(tmp_path: Path) -> Path:
+    path = tmp_path / "platforms.toml"
+    path.write_text("[hosts]" + chr(10) + '"video.example.com" = "residential_only"' + chr(10), encoding="utf-8")
+    return path
+
+
+async def test_anonymous_prefer_residential_is_ignored(client: Any) -> None:
+    """D-0017 item 6: an anonymous caller cannot pick the home fetch node for a default-policy host."""
+    r = await client.post("/v1/convert", json={"url": "https://www.example.com/watch?v=1", "prefer_residential": True})
+    assert r.status_code == 202, r.text
+    assert r.json()["job"]["queue"] == "fetch"
+
+
+async def test_keyed_prefer_residential_needs_permission(settings_factory: Callable[..., Settings]) -> None:
+    from intomd_api.auth import create_api_key
+
+    async with api_client(settings_factory()) as (client, app):
+        services = app.state.services
+        plain, _ = create_api_key(services.db, services.settings, "plain", env="test")
+        allowed, _ = create_api_key(services.db, services.settings, "home", env="test", residential_allowed=True)
+        payload = {"url": "https://www.example.com/watch?v=2", "prefer_residential": True}
+        denied = await client.post("/v1/convert", json=payload, headers={"X-API-Key": plain})
+        assert denied.status_code == 403
+        ok = await client.post("/v1/convert", json=payload, headers={"X-API-Key": allowed})
+        assert ok.status_code == 202, ok.text
+        assert ok.json()["job"]["queue"] == "fetch_residential"
+
+
+async def test_residential_needs_user_action_then_supply(
+    settings_factory: Callable[..., Settings], tmp_path: Path
+) -> None:
+    settings = settings_factory(residential_wait_seconds=0, platforms_file=_residential_policy(tmp_path))
+    async with api_client(settings) as (client, app):
+        payload = {"url": "https://video.example.com/watch?v=1"}
         r = await client.post("/v1/convert", json=payload)
         assert r.status_code == 202
         job = r.json()["job"]

@@ -8,17 +8,13 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `misnamed_file` | warning | core | The file extension does not match the detected format; converted by content. | Rename the file with the extension of its real format. |
 | `content_type_mismatch` | warning | core | The server's Content-Type disagrees with the detected format. | Check the URL serves the intended file, or pass --format to force a converter. |
 | `encoding_uncertain` | warning | core | Text encoding was detected with low confidence; characters may be garbled. | Re-save the file as UTF-8 or pass the source encoding in options. |
-| `encoding_guessed` | warning | core | No encoding was declared; the text encoding was guessed. | Re-save the file as UTF-8 or declare its charset, then reconvert. |
 | `multilingual_content` | info | core | The document contains substantial text in more than one language. | Pass --lang to pin the primary language if downstream tools need a single one. |
 | `engine_fallback` | warning | core | The preferred engine failed and a fallback engine produced the output. | Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name. |
-| `fallback_engine_used` | warning | core | A lower-fidelity fallback engine was used for this conversion. | Install the extra for the preferred engine (see `intomd converters list`) and reconvert. |
-| `engine_downgraded` | warning | core | The preferred engine's extra is missing; a lighter engine was used instead. | Install the missing extra, e.g. pip install 'intomd[docs]', for full-fidelity output. |
 | `engine_failed` | error | core | The conversion engine crashed or was killed and produced no output. | Retry with another engine via --engine family=name, or report the file with a fixture. |
 | `converter_failed` | error | core | The converter raised an error and produced no usable output. | Check the sidecar for the error detail, try another engine, or report the file. |
 | `extraction_empty` | error | core | Conversion finished but produced no text. | If the source is scanned or image-only, enable OCR; otherwise confirm the file is not empty. |
 | `size_cap` | warning | core | The input exceeded the size cap; only part of it was processed. | Split the input into smaller files, or self-host with a higher size cap. |
 | `page_cap_reached` | warning | core | The page cap was reached; remaining pages were not converted. | Convert the document in page ranges, or raise the page cap on a self-hosted instance. |
-| `page_limit_reached` | warning | core | The page limit was reached; later pages were not converted. | Convert the remaining pages as a separate range, or raise the page limit when self-hosting. |
 | `page_timeout` | warning | core | Some pages exceeded the per-page time budget and were skipped. | Convert the listed pages separately, or self-host on faster hardware or a GPU. |
 | `row_cap_reached` | warning | core | The row cap was reached; remaining rows were not converted. | Use the CSV export for every row, or raise the row cap in options. |
 | `timeout_partial` | warning | core | Conversion hit its time budget; the output covers only what finished. | Retry with a smaller input or fewer pages, or raise the job timeout when self-hosting. |
@@ -28,9 +24,9 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `unsupported_feature` | warning | core | The source uses a feature this converter does not support; it was skipped. | Export the source to a simpler format (PDF, DOCX, HTML) that keeps the feature, then reconvert. |
 | `injection_suspected` | warning | core | Text matching prompt-injection patterns was found and kept. | Treat the flagged text as untrusted and review sidecar injection_findings before using it. |
 | `removed_hidden_elements` | info | core | Hidden elements (CSS-hidden, aria-hidden, invisible text) were removed. | Inspect the original source if the hidden content matters to you. |
-| `removed_invisible_chars` | info | core | Zero-width and other invisible characters were removed. | Inspect the original file if invisible characters carry meaning. |
 | `removed_script_or_macro` | info | core | Scripts or macros were removed and not executed. | Open the source in its native app if you need to review the macro code. |
 | `pii_columns_removed` | info | core | Columns detected as personal data were removed from tabular output. | Turn off PII column removal in data options if you are permitted to keep those columns. |
+| `nesting_flattened` | info | core | List nesting deeper than the supported depth was flattened into the deepest level kept. | No action needed; the text is complete, only the deepest indentation was merged. |
 | `image_skipped` | info | core | An image was skipped and appears only as a placeholder. | Enable image OCR or description in options if the image carries information. |
 | `image_too_large` | warning | core | An image exceeded the pixel limit and was not decoded. | Downscale the image below 50 megapixels and reconvert. |
 | `other` | warning | core | An uncategorized issue occurred; see the warning message for details. | Read the message and sidecar details; report it so a specific code can be added. |
@@ -51,7 +47,6 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `textbox_content_relocated` | info | office | Text box content was moved to the nearest paragraph position. | Check relocated text box content against the source layout. |
 | `hidden_slides_included` | info | office | Hidden slides were included in the output. | Turn off hidden slide inclusion in the presentation options to omit them. |
 | `hidden_sheets_included` | info | office | Hidden sheets were included in the output. | Turn off hidden sheet inclusion in the spreadsheet options to omit them. |
-| `hidden_sheets` | info | office | The workbook has hidden sheets; they are included and marked (hidden). | Delete or unhide sheets in the source if the hidden ones should not be shared. |
 | `formula_uncalculated` | warning | office | Formula cells have no cached values and are shown blank or as formulas. | Open and save the workbook in Excel or LibreOffice to compute values, then reconvert. |
 | `formulas_present` | info | office | The workbook contains formulas; values and formulas are both recorded. | Set formulas=false in options if you only want computed values. |
 | `cell_errors` | warning | office | Some cells contain errors such as #REF! or #DIV/0!. | Fix the errors in the source workbook; error cells are kept as-is. |
@@ -74,7 +69,6 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `latex_main_ambiguous` | warning | ebooks | Several LaTeX files could be the main document; one was picked. | Name the main .tex file explicitly in the LaTeX options. |
 | `latex_unknown_macro` | info | ebooks | Unknown LaTeX macros were kept verbatim. | Include the .sty or macro definitions in the upload so they can be expanded. |
 | `notebook_invalid` | warning | ebooks | The notebook fails nbformat validation and was parsed best-effort. | Open and re-save the notebook in Jupyter to repair it. |
-| `output_truncated` | info | ebooks | Long notebook cell outputs were truncated. | Raise the notebook output limit in options if you need full outputs. |
 | `mdx_components_stripped` | info | ebooks | MDX components were removed, keeping their text children. | Convert the rendered HTML page instead if components carry essential content. |
 | `table_inferred` | info | ebooks | A table was inferred from aligned plain text. | Check the inferred table against the source text. |
 | `empty_body_js_required` | error | ebooks | The page body is empty without JavaScript rendering. | Enable the browser rendering engine, or convert the page with the browser extension. |
@@ -177,21 +171,15 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `fillers_removed` | info | media | Filler words (um, uh) were removed from the transcript. | Enable verbatim mode to keep filler words. |
 | `verbatim_mode` | info | media | The transcript is verbatim, with fillers and false starts kept. | Turn off verbatim mode for a cleaner, more readable transcript. |
 | `unreadable_region` | warning | ocr | A region of the page or image could not be read. | Upload a sharper, higher-resolution scan of the marked region. |
-| `unreadable_regions` | warning | ocr | Several regions of the page or image could not be read. | Upload a sharper scan (300 DPI or more), or try a layout OCR engine. |
 | `layout_ocr_unavailable_cpu` | warning | ocr | Layout-aware OCR needs a GPU; basic OCR was used on this CPU-only host. | Run on a host with a GPU, or install a CPU-capable layout model, for complex layouts. |
 | `license_restricted_engine_used` | info | ocr | A license-restricted OCR engine (non-commercial or OpenRAIL) was used. | Check the engine license allows your use, or unset INTOMD_ALLOW_RESTRICTED_MODELS. |
 | `receipt_totals_mismatch` | warning | ocr | Receipt line items, tax and total do not add up. | Check the flagged values against the receipt; rescan if digits are blurred. |
 | `chat_screenshot_decorations_removed` | info | ocr | Chat app UI elements (status bar, buttons) were removed. | No action needed; crop the screenshot yourself if something was wrongly removed. |
 | `table_structure_uncertain` | warning | render | Table structure was detected with low confidence; cells may be misaligned. | Check the table against the source, or try a layout-aware engine. |
 | `merged_cells_flattened` | info | render | Merged table cells were flattened by repeating their value. | Use the full profile with merged_cells=html to keep spans as an HTML table. |
-| `table_merged_cells_flattened` | info | render | Merged table cells were flattened for this profile. | Use the full profile with merged_cells=html to keep spans as an HTML table. |
 | `table_sampled` | info | render | A very large table was sampled; full data is in the CSV export. | Use the table's CSV export for every row. |
 | `equation_as_text` | info | render | An equation was kept as plain text instead of LaTeX. | Use an engine with formula recognition if you need LaTeX output. |
-| `truncated` | warning | render | Output was truncated at the size cap. | Download the full result, or self-host with a higher output cap. |
-| `truncated_max_tokens` | warning | render | Output was truncated at the requested max_tokens. | Raise max_tokens, or page through the result with the cursor. |
-| `possible_prompt_injection` | warning | render | Text that looks like instructions aimed at an AI was found and kept. | Treat the flagged text as untrusted; review sidecar injection_findings first. |
-| `injection_pattern` | warning | render | A known prompt-injection pattern was matched in the content. | Treat the content as untrusted and use the agent profile's fenced output. |
-| `injection_flagged` | warning | render | Some text looks like instructions aimed at an AI; it was kept and flagged. | Review the flagged spans in the sidecar before passing the output to an AI. |
+| `truncated` | warning | render | Output was truncated at a size, token or output cap; detail.reason says which. | Raise max_tokens or page through the result with the cursor, or self-host with a higher cap. |
 | `fetch_degraded` | warning | fetch | The fetch used a degraded path; content may be incomplete. | Retry later, or upload the file directly for complete content. |
 | `fetched_partial` | warning | fetch | Only part of the remote content was fetched. | Retry, or download the content in your browser and upload it. |
 | `fetch_blocked_by_platform` | error | fetch | The platform blocked the server's fetch. | Upload the file directly, or install the browser extension to fetch from your own connection. |
@@ -199,3 +187,23 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `fetch_refused_private_network` | error | fetch | The URL resolves to a private or local network address and was refused. | Use a public URL, or upload the file; self-host to convert intranet URLs. |
 | `fetch_refused_scheme` | error | fetch | The URL scheme is not allowed; only http and https are fetched. | Use an http or https URL, or upload the file directly. |
 | `url_blocked_by_policy` | error | fetch | The URL matches this instance's blocklist and was refused. | Upload the content as a file, or contact the instance operator if this is a mistake. |
+
+## Retired spellings
+
+These older codes are still accepted on input and normalize to the canonical code (DECISIONS.md D-0017).
+
+| Alias | Canonical code |
+|---|---|
+| `encoding_guessed` | `encoding_uncertain` |
+| `engine_downgraded` | `engine_fallback` |
+| `fallback_engine_used` | `engine_fallback` |
+| `hidden_sheets` | `hidden_sheets_included` |
+| `injection_flagged` | `injection_suspected` |
+| `injection_pattern` | `injection_suspected` |
+| `output_truncated` | `truncated` |
+| `page_limit_reached` | `page_cap_reached` |
+| `possible_prompt_injection` | `injection_suspected` |
+| `removed_invisible_chars` | `removed_hidden_elements` |
+| `table_merged_cells_flattened` | `merged_cells_flattened` |
+| `truncated_max_tokens` | `truncated` |
+| `unreadable_regions` | `unreadable_region` |

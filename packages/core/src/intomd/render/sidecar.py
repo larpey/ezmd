@@ -122,8 +122,4 @@ def build_sidecar(
 
 def _upstream_nonprinting(ctx: RenderContext) -> int:
     """Characters a converter already stripped, reported through its removed_hidden_elements warning."""
-    return sum(
-        w.count or 0
-        for w in ctx.result.all_warnings
-        if w.kind in (WarningKind.REMOVED_HIDDEN_ELEMENTS, WarningKind.REMOVED_INVISIBLE_CHARS)
-    )
+    return sum(w.count or 0 for w in ctx.result.all_warnings if w.kind == WarningKind.REMOVED_HIDDEN_ELEMENTS)

@@ -101,7 +101,9 @@ def _build_grid(ctx: RenderContext, table: Table) -> _Grid:
         if not name or name in headers:
             name = f"col_{c + 1}"
         headers.append(name)
-    types = [t.strip().lower() for t in table.attrs.get("column_types", "").split(",") if t.strip()]
+    types: list[str] = list(table.column_types or [])
+    if not types:  # pre-1.1 converters put a comma list in attrs (D-0014); kept as a fallback
+        types = [t.strip().lower() for t in table.attrs.get("column_types", "").split(",") if t.strip()]
     numeric: list[bool] = []
     for c in range(cols):
         if len(types) == cols:
@@ -197,7 +199,7 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
     rules = ctx.profile.tables
     if table.has_merged_cells and rep != "html":
         ctx.warn(
-            WarningKind.TABLE_MERGED_CELLS_FLATTENED,
+            WarningKind.MERGED_CELLS_FLATTENED,
             f"Merged cells in table {number} were flattened.",
             block_id=table.id,
         )
@@ -262,7 +264,9 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
         "rows": n_data,
         "columns": table.n_cols,
         "header": grid.headers,
-        "column_types": ["number" if n else "text" for n in grid.numeric],
+        "column_types": list(table.column_types)
+        if table.column_types
+        else ["number" if n else "text" for n in grid.numeric],
         "csv": path if wants_csv else None,
         "tokens": count_o200k(text),
         "formulas": [{"row": c.row, "col": c.col, "formula": c.formula} for c in table.cells if c.formula],

@@ -278,8 +278,8 @@ def build_units(ctx: RenderContext, consumed: set[str]) -> BuildResult:
                     u.page = page_hint if b.provenance.source_page is None else b.provenance.source_page
                 if u.page is not None:
                     page_hint = u.page
-                label = b.provenance.source_label
-                if label and u.page is not None and label != str(u.page) and not isinstance(b, Heading):
+                label = b.provenance.page_label
+                if label and u.page is not None and label != str(u.page):
                     u.page_label = label
             out.units.extend(units)
     return out

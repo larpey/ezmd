@@ -1,5 +1,5 @@
 # intomd self-host (Phase 0 core profile).
-#   cp deploy/.env.example deploy/.env   # edit INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
+#   cp deploy/env.example deploy/.env   # edit INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
 #   docker compose -f deploy/docker-compose.yml up -d --build
 #   deploy/smoke.sh
 #

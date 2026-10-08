@@ -20,7 +20,7 @@ RANGES = [
     (0xE0000, 0xE007F),
 ]
 BAD = re.compile("[" + "".join(f"{chr(a)}-{chr(b)}" for a, b in RANGES) + "]")
-SKIP = {".venv", "node_modules", "dist", ".git", "fixtures"}
+SKIP = {".venv", "node_modules", "dist", ".git", "fixtures", "site"}
 BACKSLASH = chr(92)
 
 

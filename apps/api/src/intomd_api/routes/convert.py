@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import time
 from datetime import timedelta
+from functools import partial
 from typing import Any
 
 from fastapi import APIRouter, Query, Request
@@ -12,10 +13,13 @@ from fastapi.responses import JSONResponse, Response
 from pydantic import ValidationError
 from starlette.concurrency import run_in_threadpool
 
+from intomd_api import ircache
 from intomd_api import queue as q
 from intomd_api.auth import CHALLENGE_COOKIE, Caller, CallerDep, require_url_challenge
 from intomd_api.db import JobRow
 from intomd_api.errors import ApiError, error_response
+from intomd_api.fetching import input_key, route_residential
+from intomd_api.fetchpolicy import DISABLED, policy_state, wants_residential
 from intomd_api.jobs import DONE, FAILED, NEEDS_USER_ACTION, QUEUED
 from intomd_api.ratelimit import admit_job, limit_job_creation
 from intomd_api.rendering import FORMATS, RenderUnavailable, render_cached
@@ -31,7 +35,6 @@ from intomd_api.schemas import ConvertResponse, ConvertUrlRequest, compact_json,
 from intomd_api.services import Services
 from intomd_api.uploads import UploadedFile, parse_multipart
 from intomd_api.util import keyed_hash, new_job_id, normalize_url, sha256_hex, strip_fragment, utcnow
-from intomd_api.worker import input_key, route_residential
 
 router = APIRouter(tags=["convert"])
 
@@ -76,7 +79,7 @@ def _dedup_scope_ip(caller: Caller, services: Services) -> str | None:
 def _find_existing(
     services: Services, caller: Caller, sha: str, options_json: str, profile: str, idem: str | None
 ) -> JobRow | None:
-    return services.jobs.find_existing(
+    existing = services.jobs.find_existing(
         api_key_id=caller.key_id,
         client_ip_hash=_dedup_scope_ip(caller, services),
         input_sha256=sha,
@@ -84,6 +87,9 @@ def _find_existing(
         profile=profile,
         idempotency_key=idem,
     )
+    if existing is not None and idem is None and not ircache.is_fresh(existing):
+        return None  # cached IR from another schema, converter, or engine version (D-0017 item 6)
+    return existing
 
 
 def _new_row(caller: Caller, services: Services, **fields: Any) -> JobRow:
@@ -137,7 +143,13 @@ async def _respond(
             try:
                 overrides = _render_overrides(final)
                 rendered = await run_in_threadpool(
-                    render_cached, services.blobs, final.id, final.blob_ir or "", profile, fmt, overrides
+                    partial(render_cached, public_mode=services.settings.public_mode),
+                    services.blobs,
+                    final.id,
+                    final.blob_ir or "",
+                    profile,
+                    fmt,
+                    overrides,
                 )
             except RenderUnavailable:
                 raise ApiError("conversion_failed", "Rendering is not available on this instance.") from None
@@ -249,13 +261,20 @@ async def _create_from_url(request: Request, services: Services, caller: Caller,
         validated = netguard.validate_url(body.url, allow_private=settings.allow_private_networks)
     except netguard.UrlBlocked:
         raise ApiError("url_blocked", "This URL is not allowed.") from None
-    residential = body.prefer_residential
-    if settings.platforms_file:
-        state = netguard.PlatformPolicy.load(settings.platforms_file).state(validated.host)
-        if state == "disabled":
-            raise ApiError("platform_disabled", "This site is disabled on this instance.")
-        residential = residential or state == "residential_only"
-    if residential and caller.api_key is not None and not caller.api_key.residential_allowed:
+    state = policy_state(settings, validated.host)
+    if state == DISABLED:
+        raise ApiError("platform_disabled", "This site is disabled on this instance.")
+    key = caller.api_key
+    if body.prefer_residential and key is not None and not key.residential_allowed:
+        raise ApiError("forbidden", "This API key may not use residential fetches.")
+    # Anonymous `prefer_residential` is ignored (D-0017 item 6).
+    residential = wants_residential(
+        state,
+        prefer_residential=body.prefer_residential,
+        keyed=key is not None,
+        key_residential_allowed=bool(key is not None and key.residential_allowed),
+    )
+    if residential and key is not None and not key.residential_allowed:
         raise ApiError("forbidden", "This API key may not use residential fetches.")
     challenge_jwt = require_url_challenge(request, caller, body.turnstile_token)
     options = dict(body.options)

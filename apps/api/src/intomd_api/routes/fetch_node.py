@@ -3,10 +3,15 @@
 Mounted only when INTOMD_FETCH_NODE_SECRET is set. Every route requires the bearer secret AND a
 source address inside INTOMD_FETCH_NODE_CIDR. Claims are bound to a per-job claim token (stored
 hashed) and expire after 10 minutes without an upload or heartbeat.
+
+At claim time the VPS re-validates the job URL with netguard (and resolves it) and returns the
+matching `platform` and the `resolved_ip`. These are hints: the node must re-run netguard on the URL
+and on every redirect itself before fetching (Phase 3), because DNS can change between the two.
 """
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, Request
@@ -17,6 +22,8 @@ from intomd_api import queue as q
 from intomd_api.auth import require_fetch_node
 from intomd_api.db import JobRow
 from intomd_api.errors import ApiError
+from intomd_api.fetching import input_key
+from intomd_api.fetchpolicy import platform_for
 from intomd_api.jobs import CONVERTING, FETCHING
 from intomd_api.purge import MAX_CLAIM_ATTEMPTS, needs_upload
 from intomd_api.ratelimit import enforce
@@ -25,12 +32,36 @@ from intomd_api.schemas import FetchNodeClaimRequest, FetchNodeClaimResponse, Fe
 from intomd_api.services import Services
 from intomd_api.uploads import parse_multipart
 from intomd_api.util import iso, keyed_hash, new_claim_token, utcnow
-from intomd_api.worker import input_key
 
 router = APIRouter(prefix="/v1/fetch-node", tags=["fetch-node"], dependencies=[Depends(require_fetch_node)])
 
 CLAIM_TTL = timedelta(minutes=10)
 MEDIA_MAX_BYTES = 500 * 1024 * 1024
+RESOLVER: Callable[[str, int], list[str]] | None = None
+"""DNS resolver for claim-time validation; None means `netguard.system_resolver`. Tests replace it."""
+
+
+class _ClaimBlocked(Exception):
+    pass
+
+
+def _claim_target(services: Services, url: str) -> tuple[str | None, str | None]:
+    """(platform, resolved_ip) for a claimed URL. Raises _ClaimBlocked when netguard rejects it."""
+    from intomd.core import netguard
+
+    allow_private = services.settings.allow_private_networks
+    try:
+        validated = netguard.validate_url(url, allow_private=allow_private)
+    except netguard.UrlBlocked:
+        raise _ClaimBlocked from None
+    resolver = RESOLVER or netguard.system_resolver
+    try:
+        ip: str | None = netguard.resolve_checked(validated, resolver=resolver, allow_private=allow_private)
+    except netguard.UrlBlocked:
+        raise _ClaimBlocked from None
+    except netguard.NetguardError:
+        ip = None
+    return platform_for(services.settings, validated.host), ip
 
 
 def _claim_hash(services: Services, token: str) -> str:
@@ -86,6 +117,12 @@ def claim(body: FetchNodeClaimRequest, request: Request) -> Response:
         row.stage_message = "Fetching on a residential node"
         row.updated_at = now
         job_id, url = row.id, row.input_url or ""
+    try:
+        platform, resolved_ip = _claim_target(services, url)
+    except _ClaimBlocked:
+        services.jobs.update(job_id, claim_token_hash=None, claim_expires_at=None, claim_node_id=None)
+        services.jobs.fail(job_id, "url_blocked", "This URL is not allowed.")
+        return Response(status_code=204)
     max_duration = min(body.max_duration_seconds or s.anon_max_duration_s, s.anon_max_duration_s)
     resp = FetchNodeClaimResponse(
         job_id=job_id,
@@ -96,6 +133,8 @@ def claim(body: FetchNodeClaimRequest, request: Request) -> Response:
         max_duration_seconds=max_duration,
         upload_url="/v1/fetch-node/upload",
         claim_expires_at=iso(now + CLAIM_TTL) or "",
+        platform=platform,
+        resolved_ip=resolved_ip,
     )
     return JSONResponse(resp.model_dump(mode="json"))
 

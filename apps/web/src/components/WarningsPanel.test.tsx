@@ -34,13 +34,13 @@ describe("WarningsPanel", () => {
   });
 
   it("accepts `code` in place of `kind`", () => {
-    render(<WarningsPanel expanded warnings={[{ kind: undefined as unknown as string, code: "injection_flagged", message: "m" }]} />);
-    expect(screen.getByText("injection_flagged")).toBeInTheDocument();
-    expect(screen.getByText(SUGGESTED_ACTIONS.injection_flagged!)).toBeInTheDocument();
+    render(<WarningsPanel expanded warnings={[{ kind: undefined as unknown as string, code: "injection_suspected", message: "m" }]} />);
+    expect(screen.getByText("injection_suspected")).toBeInTheDocument();
+    expect(screen.getByText(SUGGESTED_ACTIONS.injection_suspected!)).toBeInTheDocument();
   });
 
   it("covers the warning kinds required by the spec", () => {
-    for (const kind of ["fetch_blocked_by_platform", "pages_without_text", "duration_cap_exceeded", "injection_flagged", "truncated"]) {
+    for (const kind of ["fetch_blocked_by_platform", "pages_without_text", "duration_cap_exceeded", "injection_suspected", "truncated"]) {
       expect(SUGGESTED_ACTIONS[kind]).toBeTruthy();
     }
   });

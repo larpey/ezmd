@@ -98,7 +98,7 @@ def test_fallback_to_next_converter(behavior: str) -> None:
     res = registry(first, second).convert(ref(), ConvertOptions())
     assert res.converter_id == "text.second"
     assert res.metrics.engines_tried == ["text.first", "text.second"]
-    assert [w.kind for w in res.warnings] == [WarningKind.FALLBACK_ENGINE_USED]
+    assert [w.kind for w in res.warnings] == [WarningKind.ENGINE_FALLBACK]
     assert res.document.converter_id == "text.second"
 
 

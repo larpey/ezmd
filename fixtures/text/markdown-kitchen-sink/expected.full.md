@@ -1,7 +1,7 @@
 ---
 title: "Kitchen Sink"
 source: "input.md"
-source_type: markup
+source_type: markdown
 converter: text.markdown_passthrough
 converter_version: "0.0.1"
 intomd_version: "0.0.1"

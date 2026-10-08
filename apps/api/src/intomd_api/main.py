@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from intomd_api import __version__
-from intomd_api.errors import error_body, install_handlers
+from intomd_api.errors import error_body, error_table_markdown, install_handlers
 from intomd_api.logs import configure_logging
 from intomd_api.purge import Scheduler
 from intomd_api.ratelimit import rate_headers
@@ -31,6 +31,8 @@ from intomd_api.static import mount_static
 from intomd_api.util import new_request_id
 
 log = logging.getLogger("intomd.api")
+
+_DESCRIPTION_HEAD = "Convert anything to LLM-ready Markdown." + chr(10) * 2 + "## Error codes" + chr(10) * 2
 
 SECURITY_HEADERS: dict[str, str] = {
     "Content-Security-Policy": (
@@ -156,7 +158,7 @@ def create_app(settings: Settings | None = None, *, redis_client: Any = None) ->
     app = FastAPI(
         title="intomd API",
         version=__version__,
-        description="Convert anything to LLM-ready Markdown.",
+        description=_DESCRIPTION_HEAD + error_table_markdown(),
         lifespan=lifespan,
         docs_url=None,
         redoc_url=None,

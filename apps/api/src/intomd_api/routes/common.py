@@ -44,8 +44,10 @@ def parse_options(raw: Any, caller: Caller, services: Services, default_profile:
     except (ValueError, TypeError) as e:
         raise ApiError("invalid_request", f"Invalid profile options: {str(e)[:200]}") from None
     s = services.settings
-    max_pages = s.anon_max_pages
-    max_duration = float(caller.api_key.max_audio_seconds if caller.api_key else s.anon_max_duration_s)
+    key = caller.api_key
+    # Keyed callers get their key's limits, not the anonymous caps (D-0017 item 6).
+    max_pages = int(key.max_pages) if key is not None else s.anon_max_pages
+    max_duration = float(key.max_audio_seconds if key is not None else s.anon_max_duration_s)
     convert["max_pages"] = min(int(convert.get("max_pages", max_pages)), max_pages)
     convert["max_duration_seconds"] = min(float(convert.get("max_duration_seconds", max_duration)), max_duration)
     return profile, canonical_json({"convert": convert, "render": render})

@@ -8,7 +8,7 @@ const UI_OVERRIDES: Readonly<Record<string, string>> = {
     "This platform blocked our server. Upload the file directly, or install the browser extension to fetch from your own connection.",
   pages_without_text: "Some pages had no text layer and OCR is off on this instance. Self-host with the `ocr` extra to read them.",
   duration_cap_exceeded: "This instance caps audio length. The transcript covers only the first part.",
-  injection_flagged: "Some text looks like instructions aimed at an AI. It was kept, not removed, and is flagged in the sidecar.",
+  injection_suspected: "Some text looks like instructions aimed at an AI. It was kept, not removed, and is flagged in the sidecar.",
   truncated: "Output was truncated at the size cap. Download the full result or self-host.",
 };
 

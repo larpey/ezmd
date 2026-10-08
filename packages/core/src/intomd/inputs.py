@@ -21,15 +21,24 @@ class InputTooLarge(Exception):
     pass
 
 
+MAX_FETCH_DEPTH = 2
+"""Most fetch round trips one job may chain (a fetched body asking for another fetch). D-0017 item 4."""
+
+
 class FetchRequired(Exception):
     """Raised by a converter when it needs the body of a URL that has not been fetched yet.
-    The pipeline catches it and enqueues a fetch (ordinary or residential) before retrying."""
+    The pipeline catches it and enqueues a fetch (ordinary or residential) before retrying.
 
-    def __init__(self, url: str, residential: bool, reason: str) -> None:
+    `url` and `residential` are requests, not instructions: the parent re-validates the URL with netguard
+    and the platform policy and decides residential routing itself. `fetch_depth` counts the fetches
+    already chained for this job; the caller refuses once it would exceed MAX_FETCH_DEPTH."""
+
+    def __init__(self, url: str, residential: bool, reason: str, *, fetch_depth: int = 0) -> None:
         super().__init__(reason)
         self.url = url
         self.residential = residential
         self.reason = reason
+        self.fetch_depth = fetch_depth
 
 
 @dataclass(slots=True)

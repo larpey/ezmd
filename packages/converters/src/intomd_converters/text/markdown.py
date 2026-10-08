@@ -41,7 +41,7 @@ from intomd.ir import (
     WarningKind,
 )
 from intomd.registry import ConvertOptions
-from intomd_converters.text.plain import decode_text
+from intomd_converters.text.plain import decode_text_detailed
 
 
 def footnote_id(label: str) -> str:
@@ -369,10 +369,11 @@ class MarkdownPassthroughConverter:
                 Warning(kind=WarningKind.EXTRACTION_EMPTY, severity="error", message="The file contains no text.")
             )
             return doc.finalize()
-        text, encoding, guessed = decode_text(raw)
+        text, encoding, guessed, confidence = decode_text_detailed(raw)
         stats = CleanStats()
         text = clean_text(text, stats)
-        meta.extra["encoding"] = encoding
+        meta.encoding = encoding
+        meta.encoding_confidence = confidence
         blocks, extras = parse_markdown(text, ref.display)
         doc.blocks.extend(blocks)
         if "front_matter" in extras:

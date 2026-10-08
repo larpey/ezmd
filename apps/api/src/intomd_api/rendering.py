@@ -23,6 +23,8 @@ FORMATS = ("md", "json", "txt", "zip")
 UNIMPLEMENTED_FORMATS = ("docx",)
 _SAFE_SEGMENT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 _INLINE_ATTACHMENT_MIMES = frozenset({"image/png", "image/jpeg", "image/gif", "image/webp", "text/csv"})
+RENDER_TIME_KEYS = frozenset({"cursor"})
+"""Overrides that are render-time options (passed to `intomd.render.render`), not profile fields."""
 
 MEDIA_TYPES = {
     "md": "text/markdown; charset=utf-8",
@@ -70,7 +72,12 @@ class Rendered:
 
 
 def validate_profile(profile: str, overrides: dict[str, Any]) -> None:
-    """Raise ValueError for an unknown profile or an invalid dotted override."""
+    """Raise ValueError for an unknown profile or an invalid override (flat or dotted). Render-time
+    keys (`cursor`) must be strings and are otherwise checked by the renderer."""
+    overrides = dict(overrides)
+    for key in RENDER_TIME_KEYS & set(overrides):
+        if not isinstance(overrides.pop(key), str):
+            raise ValueError(f"{key!r} must be a string")
     if profile not in PROFILES:
         raise ValueError(f"unknown profile {profile!r}; expected one of {', '.join(PROFILES)}")
     try:
@@ -80,6 +87,15 @@ def validate_profile(profile: str, overrides: dict[str, Any]) -> None:
             raise ValueError("profile overrides are not supported by this deployment") from None
         return
     get_profile(profile, **overrides)
+
+
+def effective_overrides(profile: str, overrides: dict[str, Any], *, public_mode: bool) -> dict[str, Any]:
+    """The overrides actually rendered. Public mode forces a random agent fence id (D-0017 item 5) so
+    a content author cannot compute the fence and close it early."""
+    out = dict(overrides)
+    if public_mode and profile == "agent":
+        out["agent_salt"] = "random"
+    return out
 
 
 def overrides_hash(overrides: dict[str, Any]) -> str:
@@ -178,8 +194,18 @@ def load_ir(blobs: BlobStore, key: str) -> ConversionResult:
 
 
 def render_cached(
-    blobs: BlobStore, job_id: str, ir_key: str, profile: str, fmt: str, overrides: dict[str, Any]
+    blobs: BlobStore,
+    job_id: str,
+    ir_key: str,
+    profile: str,
+    fmt: str,
+    overrides: dict[str, Any],
+    *,
+    public_mode: bool = False,
 ) -> Rendered:
+    """Render (or load the cached render of) one job. Raises ValueError for invalid overrides or an
+    invalid cursor, RenderUnavailable when the renderer is not installed."""
+    overrides = effective_overrides(profile, overrides, public_mode=public_mode)
     body_key, meta_key = _keys(job_id, profile, fmt, overrides)
     if blobs.exists(body_key) and blobs.exists(meta_key):
         meta = json.loads(blobs.get_bytes(meta_key))
