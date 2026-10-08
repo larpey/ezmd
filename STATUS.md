@@ -1,15 +1,15 @@
 # Status
 
 Last updated: 2026-10-08 by agent
-Current phase: 1 (not started; owner check-in after Phase 0)
-Current task: none (Phase 0 closed; awaiting owner go-ahead for Phase 1)
-Overall: 13 / 81 tasks done
+Current phase: 1
+Current task: P1 wave 2 (email, EDGAR/social, SDK/UI, deploy, CI/release, shadow-run, docs, fixture corpus)
+Overall: 22 / 81 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
 | 0 | Foundation | done | 13/13 | v0.0.1 |
-| 1 | Permissive core, CLI, library, MCP, UI v1, compose | pending | 0/19 | |
+| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 9/19 | |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
 | 4 | Public instance launch | pending | 0/12 | |
@@ -40,17 +40,17 @@ Overall: 13 / 81 tasks done
 | P0-T11 | Docker and Compose | done | 121f7e2 | api 443 MB (budget 480, D-0012), worker 621 MB, fetch-node 164 MB; local smoke PASS |
 | P0-T12 | CI and release workflow | done | 036ab66 | CI green on ubuntu 3.12/3.13, macOS, Windows + ts, licenses, audit, images, compose smoke (run 37819863068) |
 | P0-T13 | Docs skeleton and Phase 0 close | done | 036ab66 | mkdocs --strict clean; council D-0017 applied; v0.0.1 |
-| P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | pending | |  |
-| P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | pending | |  |
-| P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | pending | |  |
+| P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | done | 4bb08b6 | PDF (pdfium text + Docling extra), Office (DOCX/PPTX/XLSX/ODF/RTF/LibreOffice), EPUB; D-0027, D-0030, D-0031 |
+| P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | done | 74f33f6 | Trafilatura + rules + raw; hidden-content stripping; 12 fixtures; D-0028 |
+| P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | done | 14016c0 | source files, repo packing, secret redaction; 8 fixtures; D-0025 |
 | P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | pending | |  |
-| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | pending | |  |
-| P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | pending | |  |
+| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | done | f891980 | CSV/JSON/YAML/TOML/XML/SQLite/Parquet; 14 fixtures exact; D-0029 |
+| P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | done | d8bab1e | notebooks, archives with bomb limits (markdown/plain from P0); D-0031 |
 | P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | pending | |  |
-| P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | pending | |  |
-| P1-T09 | CLI (4.2): `convert`, `batch`, `serve`, `doctor`, `capabilities`, `version`; config.toml; exit codes; completions | pending | |  |
-| P1-T10 | API (Part 3): routes, SSE, SQLite, RQ and inline queue, blobs FS, reaper, keys.json, rate limiting, admin, metrics, OpenAPI annotations | pending | |  |
-| P1-T11 | MCP server (4.4): five tools, pagination, stdio and HTTP, auth, `server.json`, client docs | pending | |  |
+| P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | done | f437312 | intomd.convert/convert_async/convert_many/Result/Options; light import |
+| P1-T09 | CLI (4.2): `convert`, `batch`, `serve`, `doctor`, `capabilities`, `version`; config.toml; exit codes; completions | done | 47a72b2 | convert/batch/doctor/config/remote/completions; D-0022 |
+| P1-T10 | API (Part 3): routes, SSE, SQLite, RQ and inline queue, blobs FS, reaper, keys.json, rate limiting, admin, metrics, OpenAPI annotations | done | 47473ec | keys.json, intomd-admin, /metrics, /v1/warnings, OpenAPI (Spectral clean); D-0023 |
+| P1-T11 | MCP server (4.4): five tools, pagination, stdio and HTTP, auth, `server.json`, client docs | done | 22d97e0 | MCP server, local+remote, paging, HTTP auth; D-0024 |
 | P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | pending | |  |
 | P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | pending | |  |
 | P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | pending | |  |
@@ -110,7 +110,7 @@ Overall: 13 / 81 tasks done
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | pending | |  |
 
 ## Fixture scorecard (latest)
-exact: n/a, threshold: 4/4 (100%) — text.plain x3, text.markdown_passthrough x1, all 1.000 at threshold 0.95
+59 fixtures across 8 families (text, pdf, office, ebooks, archives, web, code, data); all pass; 3 skip without optional extras (data, 7z) — 2026-10-08
 
 ## Phase 0 summary
 Foundation complete and tagged v0.0.1 (2026-10-08). The project was renamed anymd -> intomd (npm name taken; D-0001).
