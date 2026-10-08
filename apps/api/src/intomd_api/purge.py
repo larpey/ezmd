@@ -12,6 +12,7 @@ import json
 import logging
 import threading
 from datetime import timedelta
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from sqlalchemy import select
@@ -106,8 +107,10 @@ def reap_residential(services: Services) -> int:
 class Scheduler:
     """Background thread: residential reaper every 30 s, retention purge every INTOMD_PURGE_INTERVAL_S."""
 
-    def __init__(self, services: Services) -> None:
+    def __init__(self, services: Services, heartbeat: Path | None = None) -> None:
         self.services = services
+        self.heartbeat = heartbeat
+        """When set, touched after every tick so a container healthcheck can verify the loop is alive."""
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._run, name="intomd-scheduler", daemon=True)
 
@@ -130,7 +133,17 @@ class Scheduler:
                     last_purge = time.monotonic()
             except Exception:
                 log.exception("scheduler tick failed")
+            else:
+                self._beat()
             self._stop.wait(REAPER_INTERVAL_SECONDS)
+
+    def _beat(self) -> None:
+        if self.heartbeat is None:
+            return
+        try:
+            self.heartbeat.touch()
+        except OSError:
+            log.warning("could not write scheduler heartbeat %s", self.heartbeat)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -144,6 +157,12 @@ def main(argv: list[str] | None = None) -> None:
 
     parser = argparse.ArgumentParser(prog="intomd-purge", description="Purge expired intomd jobs.")
     parser.add_argument("--loop", action="store_true", help="run forever instead of a single pass")
+    parser.add_argument(
+        "--heartbeat",
+        type=Path,
+        default=None,
+        help="file touched after every successful tick (for container healthchecks)",
+    )
     args = parser.parse_args(argv)
     settings = Settings()
     configure_logging(settings)
@@ -154,7 +173,7 @@ def main(argv: list[str] | None = None) -> None:
         purge_expired(services)
         services.close()
         return
-    scheduler = Scheduler(services)
+    scheduler = Scheduler(services, heartbeat=args.heartbeat)
     scheduler.start()
     try:
         threading.Event().wait()

@@ -155,7 +155,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
       target: api
-    command: ["python", "-m", "intomd_api.purge", "--loop"]
+    command: ["python", "-m", "intomd_api.purge", "--loop", "--heartbeat", "/tmp/intomd-purge.heartbeat"]
     volumes:
       - state:/var/lib/intomd
       - blobs:/var/lib/intomd-blobs
@@ -163,7 +163,12 @@ services:
       api:
         condition: service_healthy
     healthcheck:
-      disable: true
+      # The loop touches the heartbeat after every tick (30 s); stale for 2 minutes means it is stuck.
+      test: ["CMD", "python", "-c", "import os, sys, time; p = '/tmp/intomd-purge.heartbeat'; sys.exit(0 if os.path.exists(p) and time.time() - os.path.getmtime(p) < 120 else 1)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
     deploy:
       resources:
         limits: { cpus: "0.25", memory: 256m, pids: 64 }
