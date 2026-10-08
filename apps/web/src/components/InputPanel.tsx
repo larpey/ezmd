@@ -44,7 +44,10 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
   const canSubmit = !submitting && (files.length > 0 || text.kind !== "empty");
 
   const addFiles = (list: FileList | File[] | null): void => {
-    if (list && list.length) setFiles((prev) => [...prev, ...Array.from(list)]);
+    if (!list || !list.length) return;
+    // Copy now: a live FileList empties when the input is reset, and the updater may run later.
+    const picked = Array.from(list);
+    setFiles((prev) => [...prev, ...picked]);
   };
 
   const submit = (e?: FormEvent): void => {

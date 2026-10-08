@@ -20,11 +20,8 @@ test("converts an uploaded Markdown file and shows the rendered result", async (
   await expect(card.getByRole("tabpanel")).toContainText('"blocks"');
 });
 
-// Known issue (docs/decisions/P1-T15.md): InputPanel's addFiles reads the input's live FileList inside a
-// state updater after `e.target.value = ""` has emptied it. When React cannot compute the update eagerly
-// (another state change is pending, e.g. right after a profile click), the chosen files are dropped.
+// Regression (docs/decisions/P1-T15.md finding 2): files picked right after a profile click were dropped.
 test("files chosen right after a profile change are kept", async ({ page }) => {
-  test.fail(true, "addFiles copies the FileList lazily, after the input was reset");
   await openApp(page);
   await page.getByTestId("profile-full").check();
   await chooseFiles(page, KITCHEN_SINK);
