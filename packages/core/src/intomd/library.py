@@ -165,7 +165,8 @@ class Result:
 
     def chunks(self, chunk_tokens: int = 400, overlap: int = 0) -> list[Any]:
         """RAG chunks (`intomd.render.Chunk`) using the `rag` profile."""
-        out = self.render("rag", **{"chunks.chunk_tokens": chunk_tokens, "chunks.overlap_tokens": overlap})
+        overrides: dict[str, object] = {"chunks.chunk_tokens": chunk_tokens, "chunks.overlap_tokens": overlap}
+        out = self.render("rag", "md", **overrides)
         return list(out.chunks)
 
     def save(self, path: str | Path, *, sidecar: bool = True) -> Path:
@@ -193,7 +194,7 @@ def _ref(source: Source, *, filename: str | None, opts: Options) -> InputRef:
     if isinstance(source, bytes):
         return InputRef.from_bytes(source, filename=filename or "input", max_bytes=opts.max_bytes)
     if isinstance(source, (io.IOBase, io.BufferedIOBase)) or hasattr(source, "read"):
-        data = source.read(opts.max_bytes + 1)  # type: ignore[union-attr]
+        data = source.read(opts.max_bytes + 1)
         if not isinstance(data, bytes):
             raise TypeError("file objects must be opened in binary mode")
         return InputRef.from_bytes(data, filename=filename or "input", max_bytes=opts.max_bytes)
