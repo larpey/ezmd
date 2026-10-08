@@ -1,0 +1,10 @@
+converter = "text.plain"
+max_seconds = 10
+hand_edited = false
+notes = "Latin-1 encoded French text; exercises charset detection. A clean cp1252/Latin-1 decode is not uncertain (part2 13.2), so no warning is expected."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = ""

@@ -1,0 +1,342 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Field Notes on Cold Storage"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 4,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The depot keeps three walk-in freezers at minus eighteen degrees. Each is\nchecked twice per shift, and readings go into the paper log by the door."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 8,
+          "line_start": 7,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Door Seals"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 11,
+          "line_start": 10,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Seals on freezer two were replaced in March. The technician noted frost\nbuild-up near the hinge side; the café staff were asked to keep the door shut."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 15,
+          "line_start": 13,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Temperatures above minus fifteen for more than ten minutes trigger an alarm —\nit rings at the front desk and on the manager's phone. Résumé of the last\nincident: alarm at 02:14, door found ajar, closed at 02:19, no stock lost."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 17,
+          "line_start": 17,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Emoji and symbols survive too: ✓ checked, € budget, 日本語 label."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:d86729354093baefa36a7e93e892ba121be9c75a3deb62b1fab3cc48ac330d99",
+    "converter_id": "text.plain",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "extra": {
+        "encoding": "utf-8"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "license": null,
+      "mime": "text/plain",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.txt",
+      "source_type": "text",
+      "speakers": [],
+      "title": "Field Notes on Cold Storage"
+    },
+    "schema_version": "1",
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:cafdca215c491e9c5c9b2905f06177438fb873dad26f19585eb0f62153684408",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "text.plain",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.txt",
+    "source_hash": "sha256:43a3a25c6942916d2f4ab5357de8242ee513e0e0cd208d47583908dabed2d631",
+    "source_type": "text",
+    "title": "Field Notes on Cold Storage",
+    "tokens": {
+      "cl100k_base": 162,
+      "claude_approx": 171,
+      "o200k_base": 158
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 112
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 2,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 4,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 112
+    },
+    "duration_seconds": 0.0,
+    "engine": "text.plain",
+    "engines_tried": [
+      "text.plain"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 686
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 2,
+      "line_start": 1,
+      "source": "input.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 5,
+      "line_start": 4,
+      "source": "input.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "line_end": 8,
+      "line_start": 7,
+      "source": "input.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "line_end": 11,
+      "line_start": 10,
+      "source": "input.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0005",
+      "line_end": 15,
+      "line_start": 13,
+      "source": "input.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "line_end": 17,
+      "line_start": 17,
+      "source": "input.txt",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 670,
+      "offset_start": 186,
+      "original_level": 2,
+      "original_title": "Door Seals",
+      "time_end": null,
+      "time_start": null,
+      "title": "Door Seals"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 402,
+  "warnings": []
+}

@@ -1,0 +1,272 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Inventaire de l'entrepôt"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 4,
+          "line_start": 4,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Le responsable a vérifié les étagères à 8h. Les cartons abîmés ont été déplacés près du quai numéro trois."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 7,
+          "line_start": 6,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Remarques"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 9,
+          "line_start": 9,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Prévoir une réunion jeudi pour réviser les procédures de réception. Coût estimé : 450 francs."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:52f904c8bc7c9a24806bd36cb662d7c0f905d135cb6c7d42d495104b840d8d75",
+    "converter_id": "text.plain",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "extra": {
+        "encoding": "cp1252"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "license": null,
+      "mime": "text/plain",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.txt",
+      "source_type": "text",
+      "speakers": [],
+      "title": "Inventaire de l'entrepôt"
+    },
+    "schema_version": "1",
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:aa3b1a6f31d41137160e9039b2f3a3243b1b49efec56a6bf7c91f62e860862db",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "text.plain",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "cp1252"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.txt",
+    "source_hash": "sha256:f85e27ff727fe0528e69472c8a203d789834a5a9827d6a430735c07bbf914997",
+    "source_type": "text",
+    "title": "Inventaire de l'entrepôt",
+    "tokens": {
+      "cl100k_base": 90,
+      "claude_approx": 81,
+      "o200k_base": 75
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 40
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 2,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 38
+    },
+    "duration_seconds": 0.0470000000204891,
+    "engine": "text.plain",
+    "engines_tried": [
+      "text.plain"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 274
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 2,
+      "line_start": 1,
+      "source": "input.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 4,
+      "line_start": 4,
+      "source": "input.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "line_end": 7,
+      "line_start": 6,
+      "source": "input.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "line_end": 9,
+      "line_start": 9,
+      "source": "input.txt",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 283,
+      "offset_start": 157,
+      "original_level": 2,
+      "original_title": "Remarques",
+      "time_end": null,
+      "time_start": null,
+      "title": "Remarques"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 328,
+  "warnings": []
+}

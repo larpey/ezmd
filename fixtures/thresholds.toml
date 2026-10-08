@@ -1,0 +1,7 @@
+# Per-converter golden thresholds (docs/spec/part1.md 2.4). Default 0.85.
+# Upward overrides are allowed for trivial converters (P0-T06); per-fixture overrides in meta.toml may only lower.
+default = 0.85
+
+[converters]
+"text.plain" = 0.95
+"text.markdown_passthrough" = 0.95

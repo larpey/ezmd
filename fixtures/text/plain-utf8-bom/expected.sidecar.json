@@ -1,0 +1,252 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 1
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Shift handover"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 4,
+          "line_start": 4,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "All pallets on aisle 4 were wrapped before the evening shift."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 6,
+          "line_start": 6,
+          "source": "input.txt",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The forklift charger in bay 2 is faulty; use bay 3 until it is repaired."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:64d5a063241e81e13de1163d38bac2cbaf66a25736a94d4e6396210a99c0b18a",
+    "converter_id": "text.plain",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "extra": {
+        "encoding": "utf-8-sig"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "license": null,
+      "mime": "text/plain",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.txt",
+      "source_type": "text",
+      "speakers": [],
+      "title": "Shift handover"
+    },
+    "schema_version": "1",
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "control": 0,
+          "invisible": 1,
+          "surrogates": 0
+        },
+        "kind": "removed_hidden_elements",
+        "message": "Removed 1 control or invisible characters.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:e70e260c0fa5359176329f2d31e9e43d19a46a7a523f10c362fa97bd6a187987",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "text.plain",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8-sig"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.txt",
+    "source_hash": "sha256:0af0e4017ef40b79251caf87e510fbae36324fca478695b9d7dd9ddd3a8d8f71",
+    "source_type": "text",
+    "title": "Shift handover",
+    "tokens": {
+      "cl100k_base": 43,
+      "claude_approx": 43,
+      "o200k_base": 40
+    },
+    "truncated": false,
+    "warnings": [
+      "removed_hidden_elements"
+    ],
+    "word_count": 29
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 28
+    },
+    "duration_seconds": 0.0,
+    "engine": "text.plain",
+    "engines_tried": [
+      "text.plain"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 173
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 2,
+      "line_start": 1,
+      "source": "input.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 4,
+      "line_start": 4,
+      "source": "input.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "line_end": 6,
+      "line_start": 6,
+      "source": "input.txt",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 294,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "control": 0,
+        "invisible": 1,
+        "surrogates": 0
+      },
+      "kind": "removed_hidden_elements",
+      "message": "Removed 1 control or invisible characters.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

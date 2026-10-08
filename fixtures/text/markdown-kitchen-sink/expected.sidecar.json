@@ -1,0 +1,1489 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 6,
+          "line_start": 6,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Kitchen Sink"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 9,
+          "line_start": 8,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "An opening paragraph with "
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "bold"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", "
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "italic"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", "
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "code"
+            ],
+            "text": "inline code"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", "
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "strike"
+            ],
+            "text": "struck"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " text and a "
+          },
+          {
+            "footnote_ref": null,
+            "href": "https://example.org/docs",
+            "math": null,
+            "styles": [],
+            "text": "link"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ". It continues on a second line."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 11,
+          "line_start": 11,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Lists"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 13,
+              "line_start": 13,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "First item"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": 15,
+                  "line_start": 15,
+                  "source": "input.md",
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Nested item A"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [
+                  {
+                    "checked": null,
+                    "children": [],
+                    "children_ordered": false,
+                    "children_start": 1,
+                    "provenance": {
+                      "bbox": null,
+                      "confidence": null,
+                      "engine": null,
+                      "line_end": 17,
+                      "line_start": 17,
+                      "source": "input.md",
+                      "source_label": null,
+                      "source_page": null,
+                      "time_end": null,
+                      "time_start": null
+                    },
+                    "spans": [
+                      {
+                        "footnote_ref": null,
+                        "href": null,
+                        "math": null,
+                        "styles": [],
+                        "text": "Deep ordered one"
+                      }
+                    ]
+                  },
+                  {
+                    "checked": null,
+                    "children": [],
+                    "children_ordered": false,
+                    "children_start": 1,
+                    "provenance": {
+                      "bbox": null,
+                      "confidence": null,
+                      "engine": null,
+                      "line_end": 18,
+                      "line_start": 18,
+                      "source": "input.md",
+                      "source_label": null,
+                      "source_page": null,
+                      "time_end": null,
+                      "time_start": null
+                    },
+                    "spans": [
+                      {
+                        "footnote_ref": null,
+                        "href": null,
+                        "math": null,
+                        "styles": [],
+                        "text": "Deep ordered two"
+                      }
+                    ]
+                  }
+                ],
+                "children_ordered": true,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": 18,
+                  "line_start": 16,
+                  "source": "input.md",
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Nested item B"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 18,
+              "line_start": 14,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Second item"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 20,
+              "line_start": 19,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Third item"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 20,
+          "line_start": 13,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 21,
+              "line_start": 21,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Ordered starting at three"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 23,
+              "line_start": 22,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Ordered four"
+              }
+            ]
+          }
+        ],
+        "ordered": true,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 23,
+          "line_start": 21,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 3,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "items": [
+          {
+            "checked": true,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 24,
+              "line_start": 24,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Done task"
+              }
+            ]
+          },
+          {
+            "checked": false,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 26,
+              "line_start": 25,
+              "source": "input.md",
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Open task"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 26,
+          "line_start": 24,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 27,
+          "line_start": 27,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Code"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "def greet(name: str) -> str:\n    return f\"Hello, {name}\"",
+        "filename": null,
+        "id": "b0008",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 32,
+          "line_start": 29,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 34,
+          "line_start": 34,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Quote"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attribution": null,
+        "attrs": {},
+        "depth": 1,
+        "id": "b0010",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 38,
+          "line_start": 36,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Simplicity is prerequisite for reliability."
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "\n\n"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "A second quoted paragraph."
+          }
+        ],
+        "type": "quote"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 40,
+          "line_start": 40,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Table"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Region"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Q1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Q2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "North"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "120"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "135"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "South"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "98"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "101"
+              }
+            ]
+          }
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0012",
+        "n_cols": 3,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 45,
+          "line_start": 42,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 47,
+          "line_start": 47,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Image"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "alt": "A small diagram",
+        "attrs": {
+          "title": "Figure 1"
+        },
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0014",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 49,
+          "line_start": 49,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "images/diagram.png",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 51,
+          "line_start": 51,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Footnotes"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 53,
+          "line_start": 53,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "A claim that needs a source."
+          },
+          {
+            "footnote_ref": "fn-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[^1]"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " And another one."
+          },
+          {
+            "footnote_ref": "fn-note",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[^note]"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "content": "<div class=\"aside\">Raw HTML block.</div>",
+        "format": "html",
+        "id": "b0017",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 58,
+          "line_start": 58,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "raw"
+      },
+      {
+        "attrs": {},
+        "id": "fn-1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The first footnote."
+          }
+        ],
+        "type": "footnote"
+      },
+      {
+        "attrs": {},
+        "id": "fn-note",
+        "marker": "note",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "source": "input.md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "A named footnote with "
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "emphasis"
+          },
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "footnote"
+      }
+    ],
+    "content_hash": "sha256:e659c2f007e8274f12b57cdf4232485bc2828f778005f317c668605c8230cb18",
+    "converter_id": "text.markdown_passthrough",
+    "metadata": {
+      "author": "intomd fixtures",
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "extra": {
+        "encoding": "utf-8",
+        "front_matter": "title: Kitchen Sink\nauthor: intomd fixtures"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "license": null,
+      "mime": "text/markdown",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.md",
+      "source_type": "markup",
+      "speakers": [],
+      "title": "Kitchen Sink"
+    },
+    "schema_version": "1",
+    "warnings": []
+  },
+  "figures": [
+    {
+      "alt": "A small diagram",
+      "bbox": null,
+      "block_id": "b0014",
+      "caption": null,
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 1046,
+      "offset_start": 962,
+      "page": null,
+      "ref": "images/diagram.png"
+    }
+  ],
+  "footnotes": [
+    {
+      "block_id": "fn-1",
+      "number": 1,
+      "source_marker": "1"
+    },
+    {
+      "block_id": "fn-note",
+      "number": 2,
+      "source_marker": "note"
+    }
+  ],
+  "frontmatter": {
+    "author": "intomd fixtures",
+    "content_hash": "sha256:fd8be2c3ae23327454ad1d09e2fb30e74fff96d856fef1789a4545c1cea1bae4",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "text.markdown_passthrough",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8",
+      "front_matter": "title: Kitchen Sink\nauthor: intomd fixtures"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.md",
+    "source_hash": "sha256:186a2ac6addb6269e4049da85f4f3cd2787039c3ffeaae465297cf0eb2de2559",
+    "source_type": "markup",
+    "title": "Kitchen Sink",
+    "tokens": {
+      "cl100k_base": 425,
+      "claude_approx": 460,
+      "o200k_base": 426
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 160
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://example.org/docs",
+      "original_href": "https://example.org/docs",
+      "text": "link"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 2,
+      "headings": 7,
+      "images": 1,
+      "links": 0,
+      "list_items": 11,
+      "lists": 3,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 1,
+      "raw": 1,
+      "slides": 0,
+      "table_cells": 9,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 105
+    },
+    "duration_seconds": 0.015999999828636646,
+    "engine": "text.markdown_passthrough",
+    "engines_tried": [
+      "text.markdown_passthrough"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 936
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 6,
+      "line_start": 6,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 9,
+      "line_start": 8,
+      "source": "input.md",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "line_end": 11,
+      "line_start": 11,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "line_end": 20,
+      "line_start": 13,
+      "source": "input.md",
+      "type": "list"
+    },
+    {
+      "block_id": "b0005",
+      "line_end": 23,
+      "line_start": 21,
+      "source": "input.md",
+      "type": "list"
+    },
+    {
+      "block_id": "b0006",
+      "line_end": 26,
+      "line_start": 24,
+      "source": "input.md",
+      "type": "list"
+    },
+    {
+      "block_id": "b0007",
+      "line_end": 27,
+      "line_start": 27,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0008",
+      "line_end": 32,
+      "line_start": 29,
+      "source": "input.md",
+      "type": "code"
+    },
+    {
+      "block_id": "b0009",
+      "line_end": 34,
+      "line_start": 34,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0010",
+      "line_end": 38,
+      "line_start": 36,
+      "source": "input.md",
+      "type": "quote"
+    },
+    {
+      "block_id": "b0011",
+      "line_end": 40,
+      "line_start": 40,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 45,
+      "line_start": 42,
+      "source": "input.md",
+      "type": "table"
+    },
+    {
+      "block_id": "b0013",
+      "line_end": 47,
+      "line_start": 47,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0014",
+      "line_end": 49,
+      "line_start": 49,
+      "source": "input.md",
+      "type": "image"
+    },
+    {
+      "block_id": "b0015",
+      "line_end": 51,
+      "line_start": 51,
+      "source": "input.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0016",
+      "line_end": 53,
+      "line_start": 53,
+      "source": "input.md",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0017",
+      "line_end": 58,
+      "line_start": 58,
+      "source": "input.md",
+      "type": "raw"
+    },
+    {
+      "block_id": "fn-1",
+      "source": "input.md",
+      "type": "footnote"
+    },
+    {
+      "block_id": "fn-note",
+      "source": "input.md",
+      "type": "footnote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 635,
+      "offset_start": 398,
+      "original_level": 2,
+      "original_title": "Lists",
+      "time_end": null,
+      "time_start": null,
+      "title": "Lists"
+    },
+    {
+      "block_id": "b0007",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 727,
+      "offset_start": 635,
+      "original_level": 2,
+      "original_title": "Code",
+      "time_end": null,
+      "time_start": null,
+      "title": "Code"
+    },
+    {
+      "block_id": "b0009",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 826,
+      "offset_start": 727,
+      "original_level": 2,
+      "original_title": "Quote",
+      "time_end": null,
+      "time_start": null,
+      "title": "Quote"
+    },
+    {
+      "block_id": "b0011",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 941,
+      "offset_start": 826,
+      "original_level": 2,
+      "original_title": "Table",
+      "time_end": null,
+      "time_start": null,
+      "title": "Table"
+    },
+    {
+      "block_id": "b0013",
+      "id": "sec-5",
+      "level": 2,
+      "number": "5",
+      "offset_end": 1048,
+      "offset_start": 941,
+      "original_level": 2,
+      "original_title": "Image",
+      "time_end": null,
+      "time_start": null,
+      "title": "Image"
+    },
+    {
+      "block_id": "b0015",
+      "id": "sec-6",
+      "level": 2,
+      "number": "6",
+      "offset_end": 1248,
+      "offset_start": 1048,
+      "original_level": 2,
+      "original_title": "Footnotes",
+      "time_end": null,
+      "time_start": null,
+      "title": "Footnotes"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0012",
+      "column_types": [
+        "text",
+        "number",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Region",
+        "Q1",
+        "Q2"
+      ],
+      "number": 1,
+      "offset_end": 939,
+      "offset_start": 847,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 41
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 700,
+  "warnings": []
+}
