@@ -45,7 +45,8 @@ async def test_blocked_urls_422(client: Any, url: str) -> None:
     r = await client.post("/v1/convert", json={"url": url})
     assert r.status_code == 422
     assert r.json()["error"]["code"] == "url_blocked"
-    assert "pw" not in r.text
+    # the credential must not be echoed back; a bare "pw" check is flaky (random request ids can contain it)
+    assert "user:pw" not in r.text and ":pw@" not in r.text
 
 
 async def test_url_job_fetches_and_converts(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:

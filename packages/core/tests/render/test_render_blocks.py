@@ -299,7 +299,11 @@ def test_json_and_txt_formats() -> None:
     txt = render(res, "full", format="txt").markdown
     assert txt.startswith("Test document\n\n1 Section\n\nHello **world**")
     assert "---" not in txt and "<!--" not in txt
-    assert render(res, "full", format="markdown").markdown == render(res, "full").markdown
+    pinned = "2026-01-01T00:00:00Z"
+    assert (
+        render(res, "full", format="markdown", converted_at=pinned).markdown
+        == render(res, "full", converted_at=pinned).markdown
+    )
     with pytest.raises(ValueError, match="unknown format"):
         render(res, "full", format="docx")
 

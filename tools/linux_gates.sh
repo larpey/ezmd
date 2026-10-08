@@ -9,6 +9,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Git Bash on Windows rewrites Unix-looking arguments (-w /src) into Windows paths; turn that off and
+# hand Docker a native path for the bind mount instead.
+export MSYS_NO_PATHCONV=1
+if command -v cygpath >/dev/null 2>&1; then ROOT="$(cygpath -m "$ROOT")"; fi
 IMAGE="python:3.12-slim-bookworm"
 UV_VERSION="0.12.23"
 
