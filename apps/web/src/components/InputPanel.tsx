@@ -17,9 +17,13 @@ interface InputPanelProps {
   onSubmit: (payload: SubmitPayload) => void;
 }
 
-function describe(files: readonly File[], text: ReturnType<typeof classifyText>): string {
+// Files that arrived through a paste event, so the chip can say "Image from clipboard".
+const pasted = new WeakSet<File>();
+
+export function describeInput(files: readonly File[], text: ReturnType<typeof classifyText>): string {
   const parts: string[] = [];
-  if (files.length === 1 && files[0]!.type.startsWith("image/") && files[0]!.name === "image.png") parts.push("Image from clipboard");
+  const fromClipboard = files.length > 0 && files.every((f) => pasted.has(f) && f.type.startsWith("image/"));
+  if (fromClipboard) parts.push(files.length === 1 ? "Image from clipboard" : `${files.length} images from clipboard`);
   else if (files.length) parts.push(`${files.length} file${files.length > 1 ? "s" : ""}, ${formatBytes(files.reduce((n, f) => n + f.size, 0))}`);
   if (text.kind === "url") parts.push("URL");
   if (text.kind === "text") parts.push(`Text, ${text.words.toLocaleString()} words`);
@@ -36,7 +40,7 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
   const [ocr, setOcr] = useState<"default" | "on" | "off">("default");
 
   const text = classifyText(value);
-  const chip = describe(files, text);
+  const chip = describeInput(files, text);
   const canSubmit = !submitting && (files.length > 0 || text.kind !== "empty");
 
   const addFiles = (list: FileList | File[] | null): void => {
@@ -66,7 +70,9 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
   const onPaste = (e: ClipboardEvent<HTMLTextAreaElement>): void => {
     if (e.clipboardData.files.length) {
       e.preventDefault();
-      addFiles(e.clipboardData.files);
+      const list = Array.from(e.clipboardData.files);
+      list.forEach((f) => pasted.add(f));
+      addFiles(list);
     }
   };
 
@@ -77,9 +83,10 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
   };
 
   return (
-    <form className="input-panel" onSubmit={submit} aria-label="Convert">
+    <form className="input-panel" onSubmit={submit} aria-label="Convert" data-testid="input-form">
       <div
         className={`dropzone${dragging ? " dragging" : ""}`}
+        data-testid="dropzone"
         onDragOver={(e) => {
           e.preventDefault();
           setDragging(true);
@@ -92,6 +99,7 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
         </label>
         <textarea
           id={`${ids}-text`}
+          data-testid="input-text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
@@ -101,12 +109,13 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
           aria-describedby={`${ids}-chip`}
         />
         <div className="dropzone-row">
-          <button type="button" className="btn secondary" onClick={() => fileInputRef.current?.click()}>
+          <button type="button" className="btn secondary" onClick={() => fileInputRef.current?.click()} data-testid="input-choose-files" aria-label="Choose files, or drop them on this box">
             Choose files
           </button>
           <input
             ref={fileInputRef}
             id={`${ids}-file`}
+            data-testid="input-file"
             type="file"
             multiple
             className="visually-hidden"
@@ -117,11 +126,11 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
               e.target.value = "";
             }}
           />
-          <span id={`${ids}-chip`} className="chip" aria-live="polite">
+          <span id={`${ids}-chip`} className="chip" aria-live="polite" data-testid="input-chip">
             {chip || "Nothing selected"}
           </span>
           {files.length > 0 && (
-            <button type="button" className="btn ghost" onClick={() => setFiles([])}>
+            <button type="button" className="btn ghost" onClick={() => setFiles([])} data-testid="input-clear-files">
               Clear files
             </button>
           )}
@@ -132,7 +141,7 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
         <legend>Profile</legend>
         {profiles.map((p) => (
           <label key={p} className={`segment${p === profile ? " selected" : ""}`}>
-            <input type="radio" name={`${ids}-profile`} value={p} checked={p === profile} onChange={() => setProfile(p)} />
+            <input type="radio" data-testid={`profile-${p}`} name={`${ids}-profile`} value={p} checked={p === profile} onChange={() => setProfile(p)} />
             {p}
           </label>
         ))}
@@ -156,7 +165,7 @@ export function InputPanel({ profiles, maxPagesLimit, submitting, fileInputRef, 
         </div>
       </details>
 
-      <button type="submit" className="btn primary convert" disabled={!canSubmit}>
+      <button type="submit" className="btn primary convert" disabled={!canSubmit} data-testid="convert-button">
         {submitting ? "Converting..." : "Convert"}
       </button>
     </form>

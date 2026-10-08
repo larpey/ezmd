@@ -32,7 +32,7 @@ export function Progress({ state, progress, message, converter }: ProgressProps)
   const determinate = pct > 0;
   const label = stateLabel(state, converter);
   return (
-    <div className="progress" role="status" aria-live="polite">
+    <div className="progress" role="status" aria-live="polite" data-testid="job-progress" data-state={state}>
       <div className="progress-text">
         <strong>{label}</strong>
         {message && message !== label && <span className="muted"> {message}</span>}

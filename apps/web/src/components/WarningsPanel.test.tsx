@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { SUGGESTED_ACTIONS, mergeWarnings } from "../lib/warnings";
+import { WarningRegistryContext } from "../lib/warning-context";
+import { mergeWarnings, registryFrom, suggestedAction } from "../lib/warnings";
 import { WarningsPanel } from "./WarningsPanel";
 
 describe("WarningsPanel", () => {
@@ -18,31 +19,42 @@ describe("WarningsPanel", () => {
         ]}
       />,
     );
-    expect(screen.getByText("2 warnings")).toBeInTheDocument();
+    expect(screen.getByTestId("warnings-summary")).toHaveTextContent("2 warnings");
     expect(screen.getByText("Output exceeded 2 MB and was cut.")).toBeInTheDocument();
     expect(screen.getByText("Exact text from the server.")).toBeInTheDocument();
-    expect(screen.getByText(SUGGESTED_ACTIONS.truncated!)).toBeInTheDocument();
+    expect(screen.getByText(suggestedAction({ kind: "truncated", message: "" }))).toBeInTheDocument();
     expect(screen.getByText("Check the result against the original.")).toBeInTheDocument();
     expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.getByTestId("warnings-panel")).not.toHaveAttribute("open");
   });
 
   it("expands and announces when any warning is an error", () => {
-    const { container } = render(<WarningsPanel warnings={[{ kind: "pages_without_text", severity: "error", message: "3 pages unreadable.", page: 4 }]} />);
+    render(<WarningsPanel warnings={[{ kind: "pages_without_text", severity: "error", message: "3 pages unreadable.", page: 4 }]} />);
     expect(screen.getByRole("alert")).toBeInTheDocument();
-    expect(container.querySelector("details")).toHaveAttribute("open");
+    expect(screen.getByTestId("warnings-panel")).toHaveAttribute("open");
     expect(screen.getByText("page 4")).toBeInTheDocument();
   });
 
-  it("accepts `code` in place of `kind`", () => {
-    render(<WarningsPanel expanded warnings={[{ kind: undefined as unknown as string, code: "injection_suspected", message: "m" }]} />);
-    expect(screen.getByText("injection_suspected")).toBeInTheDocument();
-    expect(screen.getByText(SUGGESTED_ACTIONS.injection_suspected!)).toBeInTheDocument();
+  it("accepts `code` in place of `kind` and normalizes aliases", () => {
+    render(<WarningsPanel expanded warnings={[{ kind: undefined as unknown as string, code: "injection_flagged", message: "m" }]} />);
+    expect(screen.getByText("injection_flagged")).toBeInTheDocument();
+    expect(screen.getByTestId("warning-item")).toHaveAttribute("data-code", "injection_suspected");
+    expect(screen.getByTestId("warning-action")).toHaveTextContent("instructions aimed at an AI");
   });
 
-  it("covers the warning kinds required by the spec", () => {
-    for (const kind of ["fetch_blocked_by_platform", "pages_without_text", "duration_cap_exceeded", "injection_suspected", "truncated"]) {
-      expect(SUGGESTED_ACTIONS[kind]).toBeTruthy();
-    }
+  it("links the extension docs for platform blocks", () => {
+    render(<WarningsPanel expanded warnings={[{ kind: "fetch_blocked_by_platform", message: "403" }]} />);
+    expect(screen.getByRole("link", { name: "About the browser extension" })).toHaveAttribute("href", "/docs/extension");
+  });
+
+  it("uses the server registry from context for severity", () => {
+    const reg = registryFrom([{ code: "x_new", severity: "error", family: "f", description: "d", suggestion: "Fix it.", truncates: false, aliases: [] }]);
+    render(
+      <WarningRegistryContext.Provider value={reg}>
+        <WarningsPanel warnings={[{ kind: "x_new", message: "bad" }]} />
+      </WarningRegistryContext.Provider>,
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent("Fix it.");
   });
 
   it("dedupes warnings merged from SSE and the sidecar", () => {

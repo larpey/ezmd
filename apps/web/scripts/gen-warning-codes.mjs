@@ -1,4 +1,4 @@
-// Extracts warning code -> {severity, suggestion} from the canonical Python registry
+// Extracts warning code -> {severity, suggestion, aliases} from the canonical Python registry
 // (packages/core/src/intomd/warnings/codes.py) into src/generated/warning-codes.json, so the UI's
 // suggested actions cannot drift from core. Run after codes.py changes: `pnpm -F @intomd/web gen:warnings`.
 import { readFileSync, writeFileSync } from "node:fs";
@@ -21,8 +21,15 @@ export function parseCodes(py) {
   const codes = {};
   for (const m of py.matchAll(SPEC_RE)) {
     const value = members.get(m[1]);
-    if (value) codes[value] = { severity: m[2], suggestion: joinLiterals(m[4]) };
+    if (value) codes[value] = { severity: m[2], suggestion: joinLiterals(m[4]), aliases: [] };
   }
+  const aliasStart = py.indexOf("ALIASES: dict[str, WarningKind] = {");
+  const aliasBody = aliasStart >= 0 ? py.slice(aliasStart, py.indexOf("}", aliasStart)) : "";
+  for (const m of aliasBody.matchAll(/"([a-z0-9_]+)"\s*:\s*WarningKind\.(\w+)/g)) {
+    const target = codes[members.get(m[2])];
+    if (target) target.aliases.push(m[1]);
+  }
+  for (const spec of Object.values(codes)) spec.aliases.sort();
   return { members: [...members.values()], codes };
 }
 

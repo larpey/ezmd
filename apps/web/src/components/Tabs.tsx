@@ -52,6 +52,7 @@ export function Tabs({ tabs, active, onChange, label }: TabsProps) {
             aria-controls={`${base}-panel-${t.id}`}
             tabIndex={i === index ? 0 : -1}
             className="tab"
+            data-testid={`tab-${t.id}`}
             onClick={() => onChange(t.id)}
           >
             {t.label}

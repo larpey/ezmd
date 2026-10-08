@@ -3,6 +3,8 @@ import type { IntomdClient, IntomdWarning, JobEvent, JobState, JsonResult, Needs
 import { useCallback, useEffect, useState } from "react";
 import { errorMessage } from "../lib/api";
 import { downloadName, saveBlob } from "../lib/input";
+import { stripFrontmatter } from "../lib/markdown";
+import { PREVIEW_CHARS } from "../lib/storage";
 import { mergeWarnings } from "../lib/warnings";
 import { Progress } from "./Progress";
 import { ResultView } from "./ResultView";
@@ -12,6 +14,15 @@ export interface JobSummary {
   id: string;
   title: string;
   profile: Profile;
+  /** Set when re-opened from a kept local copy after the server TTL; no requests are made. */
+  local?: { markdown: string };
+}
+
+export interface ResultInfo {
+  tokens?: number;
+  preview: string;
+  title?: string;
+  markdown: string;
 }
 
 interface JobCardProps {
@@ -19,7 +30,7 @@ interface JobCardProps {
   job: JobSummary;
   profiles: readonly Profile[];
   formats: readonly ResultFormat[];
-  onResult: (id: string, info: { tokens?: number; preview: string; title?: string }) => void;
+  onResult: (id: string, info: ResultInfo) => void;
   onRemove: (id: string) => void;
   onUploadInstead: () => void;
 }
@@ -31,11 +42,38 @@ interface LiveState {
   converter?: string | null;
 }
 
+const LOCAL_FORMATS: readonly ResultFormat[] = ["md", "txt"];
+
 function numberOrUndefined(v: unknown): number | undefined {
   return typeof v === "number" && Number.isFinite(v) ? v : undefined;
 }
 
-export function JobCard({ client, job, profiles, formats, onResult, onRemove, onUploadInstead }: JobCardProps) {
+/** Progress events carry 0..100 from this API; tolerate a 0..1 fraction too (spec part4 4.1.2 step 5). */
+export function toPercent(p: number): number {
+  return p > 0 && p < 1 ? p * 100 : p;
+}
+
+function LocalJobCard({ job, onRemove }: Pick<JobCardProps, "job" | "onRemove">) {
+  const markdown = job.local?.markdown ?? "";
+  const download = (format: ResultFormat): void => {
+    const body = format === "txt" ? stripFrontmatter(markdown) : markdown;
+    saveBlob(new Blob([body], { type: format === "txt" ? "text/plain" : "text/markdown" }), downloadName(job.title, job.id, format));
+  };
+  return (
+    <article className="job-card" aria-label={`Job ${job.title}`} data-testid="job-card" data-job-id={job.id} data-state="local">
+      <header className="job-head">
+        <h3 className="job-title">{job.title}</h3>
+        <button type="button" className="btn ghost" onClick={() => onRemove(job.id)} aria-label={`Close ${job.title}`} data-testid="job-close">
+          Close
+        </button>
+      </header>
+      <p className="notice">Expired on the server. Showing the copy kept on this device.</p>
+      <ResultView markdown={markdown} sidecar={null} warnings={[]} profile={job.profile} profiles={[job.profile]} formats={LOCAL_FORMATS} onProfileChange={() => {}} onDownload={download} />
+    </article>
+  );
+}
+
+function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onUploadInstead }: JobCardProps) {
   const [live, setLive] = useState<LiveState>({ state: "queued", progress: 0 });
   const [liveWarnings, setLiveWarnings] = useState<IntomdWarning[]>([]);
   const [result, setResult] = useState<JsonResult | null>(null);
@@ -48,13 +86,15 @@ export function JobCard({ client, job, profiles, formats, onResult, onRemove, on
     async (p: Profile, signal?: AbortSignal) => {
       setBusy(true);
       try {
+        // Re-renders from the server's cached IR; never creates a new job (spec part4 4.1.3).
         const res = await client.getResult(job.id, "json", { profile: p, signal });
         setResult(res);
         setError(null);
         onResult(job.id, {
           tokens: numberOrUndefined(res.frontmatter?.tokens),
-          preview: res.markdown.slice(0, 200),
+          preview: stripFrontmatter(res.markdown).trimStart().slice(0, PREVIEW_CHARS),
           title: typeof res.frontmatter?.title === "string" ? res.frontmatter.title : undefined,
+          markdown: res.markdown,
         });
       } catch (err) {
         if ((err as Error).name !== "AbortError") setError(errorMessage(err));
@@ -68,14 +108,14 @@ export function JobCard({ client, job, profiles, formats, onResult, onRemove, on
   useEffect(() => {
     const ctrl = new AbortController();
     const onEvent = (ev: JobEvent): void => {
-      if (ev.type === "progress") setLive((s) => ({ ...s, progress: ev.progress, message: ev.stage_message ?? s.message }));
+      if (ev.type === "progress") setLive((s) => ({ ...s, progress: toPercent(ev.progress), message: ev.stage_message ?? s.message }));
       else if (ev.type === "state") setLive((s) => ({ ...s, state: ev.state }));
       else if (ev.type === "warning") setLiveWarnings((ws) => [...ws, ev.warning]);
     };
     client
       .waitForJob(job.id, { onEvent, signal: ctrl.signal })
       .then((final) => {
-        setLive({ state: final.state, progress: final.progress, message: final.stage_message, converter: final.converter_id });
+        setLive({ state: final.state, progress: toPercent(final.progress), message: final.stage_message, converter: final.converter_id });
         if (final.state === "done") return loadResult(job.profile, ctrl.signal);
         if (final.state === "needs_user_action") setNeeds(final.needs_action ?? null);
         else if (final.state === "failed") setError(final.error?.message ?? "Conversion failed.");
@@ -114,16 +154,16 @@ export function JobCard({ client, job, profiles, formats, onResult, onRemove, on
   const finished = live.state === "done" || live.state === "failed" || live.state === "expired" || live.state === "needs_user_action";
 
   return (
-    <article className="job-card" aria-label={`Job ${job.title}`}>
+    <article className="job-card" aria-label={`Job ${job.title}`} data-testid="job-card" data-job-id={job.id} data-state={result ? "done" : live.state}>
       <header className="job-head">
         <h3 className="job-title">{job.title}</h3>
-        <button type="button" className="btn ghost" onClick={() => onRemove(job.id)} aria-label={`Close ${job.title}`}>
+        <button type="button" className="btn ghost" onClick={() => onRemove(job.id)} aria-label={`Close ${job.title}`} data-testid="job-close">
           Close
         </button>
       </header>
       {!result && <Progress state={live.state} progress={finished ? 100 : live.progress} message={live.message} converter={live.converter} />}
       {needs && (
-        <div className="notice" role="alert">
+        <div className="notice" role="alert" data-testid="job-needs-action">
           <p>{needs.reason}</p>
           {needs.kind === "upload_file" && (
             <button type="button" className="btn" onClick={onUploadInstead}>
@@ -133,7 +173,7 @@ export function JobCard({ client, job, profiles, formats, onResult, onRemove, on
         </div>
       )}
       {error && (
-        <p className="error" role="alert">
+        <p className="error" role="alert" data-testid="job-error">
           {error}
         </p>
       )}
@@ -156,3 +196,6 @@ export function JobCard({ client, job, profiles, formats, onResult, onRemove, on
   );
 }
 
+export function JobCard(props: JobCardProps) {
+  return props.job.local ? <LocalJobCard job={props.job} onRemove={props.onRemove} /> : <RemoteJobCard {...props} />;
+}

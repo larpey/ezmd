@@ -36,16 +36,33 @@ export interface HistoryEntry {
   profile: string;
   tokens?: number;
   expires_at: string;
+  /** First 200 characters of the result; full bodies never go to localStorage. */
   preview?: string;
+  /** "Keep result on this device": the full body is in IndexedDB (lib/localstore). */
+  keep?: boolean;
+}
+
+export const PREVIEW_CHARS = 200;
+
+function isEntry(v: unknown): v is HistoryEntry {
+  const e = v as Partial<HistoryEntry> | null;
+  return typeof e?.id === "string" && typeof e.title === "string";
+}
+
+/** True when the server TTL has passed (unknown expiry counts as live; the server answers 404 if not). */
+export function isExpired(e: Pick<HistoryEntry, "expires_at">, now: number = Date.now()): boolean {
+  const at = Date.parse(e.expires_at);
+  return Number.isFinite(at) && at < now;
 }
 
 export function loadHistory(): HistoryEntry[] {
   const list = readJson<unknown>(HISTORY_KEY, []);
-  return Array.isArray(list) ? (list as HistoryEntry[]).slice(0, HISTORY_LIMIT) : [];
+  return Array.isArray(list) ? list.filter(isEntry).slice(0, HISTORY_LIMIT) : [];
 }
 
-export function upsertHistory(list: readonly HistoryEntry[], entry: HistoryEntry): HistoryEntry[] {
-  const prev = list.find((e) => e.id === entry.id);
-  const merged = prev ? { ...prev, ...entry } : entry;
+export function upsertHistory(list: readonly HistoryEntry[], entry: HistoryEntry, opts: { moveToTop?: boolean } = {}): HistoryEntry[] {
+  const index = list.findIndex((e) => e.id === entry.id);
+  const merged = index >= 0 ? { ...list[index], ...entry } : entry;
+  if (index >= 0 && opts.moveToTop === false) return list.map((e, i) => (i === index ? merged : e));
   return [merged, ...list.filter((e) => e.id !== entry.id)].slice(0, HISTORY_LIMIT);
 }

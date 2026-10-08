@@ -162,3 +162,6 @@ progress { width: 100%; height: 10px; accent-color: var(--accent); }
 .footer { border-top: 1px solid var(--border); margin-top: 24px; padding: 12px 0 24px; color: var(--muted); font-size: 0.9rem; }
 .footer nav { display: flex; flex-wrap: wrap; gap: 16px; }
 .footer a { min-height: var(--tap); display: inline-flex; align-items: center; }
+
+.history-main { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.history-title { font-weight: 600; }
