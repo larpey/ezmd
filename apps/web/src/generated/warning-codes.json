@@ -591,6 +591,10 @@
     "severity": "warning",
     "suggestion": "Split the input into smaller files, or self-host with a higher size cap."
   },
+  "slide_cap_reached": {
+    "severity": "warning",
+    "suggestion": "Split the deck, or raise office.max_slides when self-hosting."
+  },
   "smartart_flattened": {
     "severity": "info",
     "suggestion": "Check the source if the diagram's layout carries meaning."
