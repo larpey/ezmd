@@ -19,11 +19,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from intomd_api import __version__
+from intomd_api.apidoc import SECURITY_SCHEMES, TAGS
 from intomd_api.errors import error_body, error_table_markdown, install_handlers
 from intomd_api.logs import configure_logging
+from intomd_api.options import link_options_schema
 from intomd_api.purge import Scheduler
 from intomd_api.ratelimit import rate_headers
-from intomd_api.routes import convert, fetch_node, jobs, meta
+from intomd_api.routes import convert, fetch_node, jobs, meta, metrics
 from intomd_api.schemas import EXTRA_SCHEMA_MODELS
 from intomd_api.services import Services, build_services
 from intomd_api.settings import Settings
@@ -32,7 +34,18 @@ from intomd_api.util import new_request_id
 
 log = logging.getLogger("intomd.api")
 
-_DESCRIPTION_HEAD = "Convert anything to LLM-ready Markdown." + chr(10) * 2 + "## Error codes" + chr(10) * 2
+_NL2 = chr(10) * 2
+_DESCRIPTION_HEAD = (
+    "Convert anything to LLM-ready Markdown."
+    + _NL2
+    + "Create a job with `POST /v1/convert` (multipart upload or JSON URL), follow it with "
+    + "`GET /v1/jobs/{job_id}/events` (SSE) or by polling `GET /v1/jobs/{job_id}`, then fetch "
+    + "`GET /v1/jobs/{job_id}/result`. The job id is the capability; jobs created with an API key "
+    + "also require that key. Every response carries `X-Request-Id`; every error uses the schema below."
+    + _NL2
+    + "## Error codes"
+    + _NL2
+)
 
 SECURITY_HEADERS: dict[str, str] = {
     "Content-Security-Policy": (
@@ -163,6 +176,10 @@ def create_app(settings: Settings | None = None, *, redis_client: Any = None) ->
         docs_url=None,
         redoc_url=None,
         openapi_url="/openapi.json",
+        openapi_tags=TAGS,
+        license_info={"name": "Apache-2.0", "identifier": "Apache-2.0"},
+        contact={"name": "intomd", "url": settings.public_url},
+        servers=[{"url": settings.public_url, "description": "This instance"}],
     )
     app.state.settings = settings
     app.state.services = services
@@ -172,6 +189,8 @@ def create_app(settings: Settings | None = None, *, redis_client: Any = None) ->
     app.include_router(jobs.router)
     if settings.fetch_node_secret is not None:
         app.include_router(fetch_node.router)
+    if settings.metrics_token is not None:
+        app.include_router(metrics.router)
     mount_static(app, settings.web_dist)
     _extend_openapi(app)
     if settings.cors_origins:
@@ -197,15 +216,32 @@ def _extend_openapi(app: FastAPI) -> None:
         if app.openapi_schema:
             return app.openapi_schema
         schema = original()
-        components = schema.setdefault("components", {}).setdefault("schemas", {})
+        schema.setdefault("components", {})["securitySchemes"] = SECURITY_SCHEMES
+        components = schema["components"].setdefault("schemas", {})
         for model in EXTRA_SCHEMA_MODELS:
             js = model.model_json_schema(ref_template="#/components/schemas/{model}")
             components.update(js.pop("$defs", {}))
             components[model.__name__] = js
+        link_options_schema(components)
+        _drop_fastapi_validation_responses(schema)
         app.openapi_schema = schema
         return schema
 
     app.openapi = openapi  # type: ignore[method-assign]
+
+
+def _drop_fastapi_validation_responses(schema: dict[str, Any]) -> None:
+    """Request validation errors are 400 `invalid_request` here (errors.install_handlers), so FastAPI's
+    automatic 422 HTTPValidationError responses are wrong; drop them and their component schemas."""
+    marker = "#/components/schemas/HTTPValidationError"
+    for ops in schema.get("paths", {}).values():
+        for op in ops.values():
+            resp = op.get("responses", {}).get("422")
+            if resp and resp.get("content", {}).get("application/json", {}).get("schema", {}).get("$ref") == marker:
+                del op["responses"]["422"]
+    components = schema.get("components", {}).get("schemas", {})
+    components.pop("HTTPValidationError", None)
+    components.pop("ValidationError", None)
 
 
 def services_of(app: FastAPI) -> Services:

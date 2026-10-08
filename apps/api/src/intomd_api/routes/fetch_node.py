@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse, Response
 from sqlalchemy import or_, select
 
 from intomd_api import queue as q
+from intomd_api.apidoc import FETCH_NODE_AUTH, errors
 from intomd_api.auth import require_fetch_node
 from intomd_api.db import JobRow
 from intomd_api.errors import ApiError
@@ -37,6 +38,8 @@ router = APIRouter(prefix="/v1/fetch-node", tags=["fetch-node"], dependencies=[D
 
 CLAIM_TTL = timedelta(minutes=10)
 MEDIA_MAX_BYTES = 500 * 1024 * 1024
+_AUTH = {"security": FETCH_NODE_AUTH}
+_NODE_ERRORS = ("unauthorized", "forbidden")
 RESOLVER: Callable[[str, int], list[str]] | None = None
 """DNS resolver for claim-time validation; None means `netguard.system_resolver`. Tests replace it."""
 
@@ -84,8 +87,15 @@ def _job_for_claim(services: Services, token: str) -> JobRow:
 @router.post(
     "/claim",
     response_model=FetchNodeClaimResponse,
-    responses={204: {"description": "The queue is empty"}},
+    responses={204: {"description": "The queue is empty"}, **errors(*_NODE_ERRORS, "rate_limited")},
+    operation_id="fetchNodeClaim",
     summary="Claim the next residential fetch job",
+    description=(
+        "Returns the oldest unclaimed `fetch_residential` job with a single-use claim token (valid 10 minutes, "
+        "extended by heartbeats), or 204 when there is none. The URL is re-validated by the SSRF guard at claim "
+        "time; `platform` and `resolved_ip` are hints the node must re-check itself."
+    ),
+    openapi_extra=_AUTH,
 )
 def claim(body: FetchNodeClaimRequest, request: Request) -> Response:
     services = services_of(request)
@@ -139,7 +149,16 @@ def claim(body: FetchNodeClaimRequest, request: Request) -> Response:
     return JSONResponse(resp.model_dump(mode="json"))
 
 
-@router.post("/heartbeat", status_code=204, summary="Liveness and capabilities; extends an active claim")
+@router.post(
+    "/heartbeat",
+    status_code=204,
+    operation_id="fetchNodeHeartbeat",
+    response_class=Response,
+    summary="Liveness and capabilities; extends an active claim",
+    description="Marks the node online for 60 s and, with `claim_token`, pushes that claim's expiry 10 minutes out.",
+    responses={204: {"description": "Recorded"}, **errors(*_NODE_ERRORS)},
+    openapi_extra=_AUTH,
+)
 def heartbeat(body: FetchNodeHeartbeat, request: Request) -> Response:
     services = services_of(request)
     services.state.node_heartbeat(body.node_id, {"capabilities": body.capabilities})
@@ -152,8 +171,16 @@ def heartbeat(body: FetchNodeHeartbeat, request: Request) -> Response:
 @router.post(
     "/upload",
     status_code=202,
+    operation_id="fetchNodeUpload",
+    response_class=Response,
     summary="Upload fetched media for a claimed job",
+    description="Stores the media under the job and enqueues it on `media` (or `default`); consumes the claim token.",
+    responses={
+        202: {"description": "Accepted for conversion"},
+        **errors(*_NODE_ERRORS, "input_too_large", "unsupported_media_type", "queue_unavailable"),
+    },
     openapi_extra={
+        "security": FETCH_NODE_AUTH,
         "requestBody": {
             "required": True,
             "content": {
@@ -169,7 +196,7 @@ def heartbeat(body: FetchNodeHeartbeat, request: Request) -> Response:
                     }
                 }
             },
-        }
+        },
     },
 )
 async def upload(request: Request) -> Response:
@@ -207,7 +234,16 @@ async def upload(request: Request) -> Response:
     return Response(status_code=202)
 
 
-@router.post("/fail", status_code=204, summary="Report a failed fetch with a reason code")
+@router.post(
+    "/fail",
+    status_code=204,
+    operation_id="fetchNodeFail",
+    response_class=Response,
+    summary="Report a failed fetch with a reason code",
+    description="Returns the job to the queue once; after that the job moves to `needs_user_action`.",
+    responses={204: {"description": "Recorded"}, **errors(*_NODE_ERRORS)},
+    openapi_extra=_AUTH,
+)
 def fail(body: FetchNodeFail, request: Request) -> Response:
     services = services_of(request)
     row = _job_for_claim(services, body.claim_token)

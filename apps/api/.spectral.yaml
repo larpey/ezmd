@@ -1,0 +1,15 @@
+# Spectral ruleset for docs/api/openapi.json (P1-T10). Run:
+#   npx -y @stoplight/spectral-cli@6.15.0 lint docs/api/openapi.json --ruleset apps/api/.spectral.yaml --fail-severity hint
+extends: ["spectral:oas"]
+rules:
+  # Every operation must say what it does and which errors it returns.
+  operation-description: error
+  operation-operationId: error
+  operation-tags: error
+  operation-success-response: error
+  info-contact: error
+  info-description: error
+  info-license: error
+  oas3-api-servers: error
+  tag-description: error
+  oas3-unused-component: error

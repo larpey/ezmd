@@ -15,7 +15,11 @@ dependencies = [
     "rq>=2.0",
     "python-multipart>=0.0.18",
     "pyjwt>=2.10",
+    "typer>=0.15",
 ]
+
+[project.scripts]
+intomd-admin = "intomd_api.admin:main"
 
 [project.optional-dependencies]
 s3 = ["boto3>=1.35"]

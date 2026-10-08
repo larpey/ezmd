@@ -15,6 +15,7 @@ from starlette.concurrency import run_in_threadpool
 
 from intomd_api import ircache
 from intomd_api import queue as q
+from intomd_api.apidoc import OPTIONAL_API_KEY, errors, rate_limit_headers
 from intomd_api.auth import CHALLENGE_COOKIE, Caller, CallerDep, require_url_challenge
 from intomd_api.db import JobRow
 from intomd_api.errors import ApiError, error_response
@@ -40,6 +41,16 @@ router = APIRouter(tags=["convert"])
 
 MAX_WAIT_SECONDS = 60.0
 _OPENAPI_BODY: dict[str, Any] = {
+    "security": OPTIONAL_API_KEY,
+    "parameters": [
+        {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": False,
+            "description": "Repeat-safe creation: the same key (per caller) returns the same job",
+            "schema": {"type": "string", "maxLength": 255},
+        }
+    ],
     "requestBody": {
         "required": True,
         "content": {
@@ -48,15 +59,49 @@ _OPENAPI_BODY: dict[str, Any] = {
                     "type": "object",
                     "required": ["file"],
                     "properties": {
-                        "file": {"type": "string", "format": "binary"},
-                        "options": {"type": "string", "description": "JSON object of options and profile"},
+                        "file": {"type": "string", "format": "binary", "description": "The file to convert"},
+                        "options": {
+                            "type": "string",
+                            "description": "JSON object: ConvertOptionsIn fields, `profile`, and dotted overrides",
+                            "example": '{"profile": "rag", "chunks.chunk_tokens": 512, "max_pages": 200}',
+                        },
                         "profile": {"type": "string", "enum": ["full", "compact", "rag", "agent"]},
                     },
                 }
             },
             "application/json": {"schema": {"$ref": "#/components/schemas/ConvertUrlRequest"}},
         },
-    }
+    },
+}
+_CREATE_RESPONSES: dict[int | str, dict[str, Any]] = {
+    200: {
+        "description": (
+            "Deduplicated: an existing finished job with the same input and options. With `wait`, the rendered "
+            "result itself when the job finished in time (job envelope in `X-Intomd-Job`)."
+        ),
+        "model": ConvertResponse,
+        "content": {"text/markdown": {"schema": {"type": "string"}}},
+        "headers": {
+            "X-Intomd-Job": {"description": "Compact JobOut JSON (wait results only)", "schema": {"type": "string"}}
+        },
+    },
+    202: {"description": "Job accepted", "headers": rate_limit_headers()},
+    **errors(
+        "turnstile_required",
+        "turnstile_failed",
+        "unauthorized",
+        "forbidden",
+        "input_too_large",
+        "unsupported_media_type",
+        "url_blocked",
+        "platform_disabled",
+        "rate_limited",
+        "conversion_failed",
+        "not_implemented",
+        "fetch_failed",
+        "queue_unavailable",
+        "timeout",
+    ),
 }
 
 
@@ -176,13 +221,25 @@ def _check_format(fmt: str) -> None:
     status_code=202,
     response_model=ConvertResponse,
     openapi_extra=_OPENAPI_BODY,
+    operation_id="createJob",
     summary="Create a conversion job from an upload (multipart) or a URL (JSON)",
+    description=(
+        "Send `multipart/form-data` with a `file` part (and an optional `options` JSON part), or JSON with a `url`. "
+        "Returns 202 with the job envelope, or 200 when an identical finished job is reused. URL inputs from "
+        "anonymous callers need a Turnstile token when the instance requires one. With `wait=N` the call blocks up "
+        "to N seconds (max 60) and returns the rendered result directly if the job finishes in time."
+    ),
+    responses=_CREATE_RESPONSES,
 )
 async def create_job(
     request: Request,
     caller: CallerDep,
-    wait: float = Query(0, ge=0, description="Block up to this many seconds (max 60) and return the result"),
-    format: str = Query("md", description="Result format when `wait` returns a result"),
+    wait: float = Query(
+        0, ge=0, description="Block up to this many seconds (max 60) and return the result", examples=[30]
+    ),
+    format: str = Query(
+        "md", description="Result format when `wait` returns a result: md, json, txt, zip", examples=["md"]
+    ),
 ) -> Response:
     services = services_of(request)
     _check_format(format)
@@ -265,6 +322,8 @@ async def _create_from_url(request: Request, services: Services, caller: Caller,
     if state == DISABLED:
         raise ApiError("platform_disabled", "This site is disabled on this instance.")
     key = caller.api_key
+    if key is not None and not key.allows_source(validated.host):
+        raise ApiError("forbidden", "This API key may not fetch from this site.")
     if body.prefer_residential and key is not None and not key.residential_allowed:
         raise ApiError("forbidden", "This API key may not use residential fetches.")
     # Anonymous `prefer_residential` is ignored (D-0017 item 6).

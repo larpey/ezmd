@@ -2,15 +2,20 @@
 
 `purge_expired()` deletes the blobs (prefix `jobs/{id}/`) and rows of jobs past `expires_at`.
 `reap_residential()` returns expired fetch-node claims to the queue once and moves jobs that cannot
-be fetched to `needs_user_action`. `Scheduler` runs both on a background thread; run
-`python -m intomd_api.purge` for one pass (or `--loop`) as its own process instead.
+be fetched to `needs_user_action`. `reap_stale()` fails jobs whose worker stopped updating them for
+longer than the queue's wall time (docs/spec/part4.md 4.11.3), and `clean_temp()` removes orphaned
+job and upload temp directories. `Scheduler` runs the first three on a background thread; run
+`python -m intomd_api.purge` for one pass (or `--loop`) as its own process, or `intomd-admin reap`.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import shutil
+import tempfile
 import threading
+import time
 from datetime import timedelta
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -19,7 +24,7 @@ from sqlalchemy import select
 
 from intomd_api.blobs import job_prefix
 from intomd_api.db import JobRow
-from intomd_api.jobs import EXPIRED, FETCHING, NEEDS_USER_ACTION, InvalidTransition, JobGone
+from intomd_api.jobs import CONVERTING, EXPIRED, FETCHING, NEEDS_USER_ACTION, RENDERING, InvalidTransition, JobGone
 from intomd_api.util import as_utc, utcnow
 
 if TYPE_CHECKING:
@@ -29,6 +34,9 @@ log = logging.getLogger("intomd.api.purge")
 
 REAPER_INTERVAL_SECONDS = 30.0
 MAX_CLAIM_ATTEMPTS = 2
+STALE_GRACE_SECONDS = 150
+"""Added to a queue's timeout before a job nobody updates counts as abandoned (covers the 30 s kill grace)."""
+TEMP_PREFIXES = ("intomd-job-", "intomd-upload-")
 NO_NODE_REASON = "No residential fetch node is online and this site blocks datacenter requests."
 UPLOAD_NEEDED = {
     "kind": "upload_file",
@@ -104,6 +112,48 @@ def reap_residential(services: Services) -> int:
     return changed
 
 
+def reap_stale(services: Services, *, now_grace: bool = False) -> int:
+    """Fail fetching/converting/rendering jobs (not residential fetches, which `reap_residential` owns) whose
+    row was not touched for longer than the queue's timeout plus STALE_GRACE_SECONDS: the worker died or
+    hung past its own watchdog. `now_grace=True` drops the grace (operator `reap --now`)."""
+    now = utcnow()
+    with services.db.session() as s:
+        rows = list(
+            s.execute(
+                select(JobRow)
+                .where(JobRow.state.in_((FETCHING, CONVERTING, RENDERING)), JobRow.queue != "fetch_residential")
+                .limit(1000)
+            ).scalars()
+        )
+    reaped = 0
+    for row in rows:
+        limit = services.settings.queue_timeout(row.queue) + (0 if now_grace else STALE_GRACE_SECONDS)
+        if as_utc(row.updated_at) + timedelta(seconds=limit) <= now:
+            if services.queue.waiting(row.id, row.rq_job_id):
+                continue  # handed off and still queued behind other work, not abandoned
+            if services.jobs.fail(row.id, "timeout", "The conversion exceeded its time limit.") is not None:
+                reaped += 1
+    if reaped:
+        log.info("reaped stale jobs", extra={"count": reaped})
+    return reaped
+
+
+def clean_temp(max_age_seconds: float, root: Path | None = None) -> int:
+    """Remove intomd job/upload temp directories older than `max_age_seconds`. Returns how many."""
+    base = root or Path(tempfile.gettempdir())
+    cutoff = time.time() - max_age_seconds
+    removed = 0
+    for prefix in TEMP_PREFIXES:
+        for path in base.glob(prefix + "*"):
+            try:
+                if path.is_dir() and not path.is_symlink() and path.stat().st_mtime < cutoff:
+                    shutil.rmtree(path, ignore_errors=True)
+                    removed += 1
+            except OSError:
+                log.debug("could not inspect temp dir %s", path.name)
+    return removed
+
+
 class Scheduler:
     """Background thread: residential reaper every 30 s, retention purge every INTOMD_PURGE_INTERVAL_S."""
 
@@ -123,11 +173,10 @@ class Scheduler:
 
     def _run(self) -> None:
         last_purge = 0.0
-        import time
-
         while not self._stop.is_set():
             try:
                 reap_residential(self.services)
+                reap_stale(self.services)
                 if time.monotonic() - last_purge >= self.services.settings.purge_interval_s:
                     purge_expired(self.services)
                     last_purge = time.monotonic()
@@ -170,6 +219,7 @@ def main(argv: list[str] | None = None) -> None:
     services.db.create_all()
     if not args.loop:
         reap_residential(services)
+        reap_stale(services)
         purge_expired(services)
         services.close()
         return

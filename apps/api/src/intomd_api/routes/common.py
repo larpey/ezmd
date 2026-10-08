@@ -12,8 +12,8 @@ from intomd_api.auth import Caller
 from intomd_api.db import JobRow
 from intomd_api.errors import ApiError
 from intomd_api.jobs import FAILED, JobGone
+from intomd_api.options import validate_client_options
 from intomd_api.rendering import validate_profile
-from intomd_api.schemas import ConvertOptionsIn
 from intomd_api.services import Services
 from intomd_api.util import canonical_json, is_job_id
 
@@ -36,7 +36,7 @@ def parse_options(raw: Any, caller: Caller, services: Services, default_profile:
         raise ApiError("invalid_request", "`profile` must be a string.")
     render = {k: opts.pop(k) for k in list(opts) if "." in k}
     try:
-        convert = ConvertOptionsIn.model_validate(opts).model_dump(exclude_none=True)
+        convert = validate_client_options(opts)
         validate_profile(profile, render)
     except ValidationError as e:
         fields = [{"field": ".".join(str(p) for p in err["loc"]), "problem": err["msg"]} for err in e.errors()[:20]]

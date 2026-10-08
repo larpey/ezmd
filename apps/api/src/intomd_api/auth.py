@@ -1,7 +1,8 @@
 """intomd_api.auth: callers (client IP hash + optional API key), API keys, Turnstile, fetch-node auth
 (docs/spec/part1.md section 7.4).
 
-- API keys look like `ak_<env>_<22 base62>` and are stored only as HMAC-SHA256(pepper, key).
+- API keys come from the `api_keys` table or the `keys.json` bootstrap file (`intomd_api.keys`); both
+  store only HMAC-SHA256(pepper, key). A key may restrict the client IP and User-Agent.
 - Raw client IPs are never stored; `client_ip_hash` is a salted sha256.
 - Turnstile is implemented but off unless `INTOMD_TURNSTILE_SECRET` is set (or public mode demands it).
   A verified token yields a short-lived signed JWT cookie so one solve covers one job creation.
@@ -13,22 +14,37 @@ from __future__ import annotations
 
 import hmac
 import ipaddress
-import json
 import logging
 import secrets
 import time
 from dataclasses import dataclass
-from typing import Annotated, Any
+from typing import Annotated
 
 import httpx
 import jwt
 from fastapi import Depends, Request
-from sqlalchemy import select
 
-from intomd_api.db import ApiKeyRow, Database
 from intomd_api.errors import ApiError
+from intomd_api.keys import (
+    KeyRecord,
+    create_api_key,
+    generate_api_key,
+    hash_api_key,
+    lookup_api_key,
+)
 from intomd_api.settings import Settings
-from intomd_api.util import as_utc, keyed_hash, random_base62, utcnow
+from intomd_api.util import keyed_hash
+
+__all__ = [
+    "Caller",
+    "CallerDep",
+    "KeyRecord",
+    "create_api_key",
+    "generate_api_key",
+    "get_caller",
+    "hash_api_key",
+    "lookup_api_key",
+]
 
 log = logging.getLogger("intomd.api.auth")
 
@@ -41,7 +57,7 @@ _EPHEMERAL_JWT_KEY = secrets.token_bytes(32)
 @dataclass(frozen=True, slots=True)
 class Caller:
     ip_hash: str
-    api_key: ApiKeyRow | None = None
+    api_key: KeyRecord | None = None
 
     @property
     def key_id(self) -> str | None:
@@ -89,53 +105,20 @@ def hash_ip(settings: Settings, ip: str) -> str:
     return keyed_hash(settings.ip_salt, ip)
 
 
-def _pepper(settings: Settings) -> bytes:
-    return (settings.key_pepper.get_secret_value() or "intomd-local-pepper").encode()
-
-
-def hash_api_key(settings: Settings, key: str) -> str:
-    return keyed_hash(_pepper(settings), key)
-
-
-def generate_api_key(env: str = "live") -> str:
-    return f"ak_{env}_{random_base62(16, 22)}"
-
-
-def create_api_key(db: Database, settings: Settings, name: str, *, env: str = "live", **limits: Any) -> tuple[str, str]:
-    """Create a key (for the `intomd keys create` CLI). Returns (plaintext key, key id). The plaintext
-    is shown once and never stored."""
-    key = generate_api_key(env)
-    key_id = "key_" + random_base62(12, 17)
-    families = limits.pop("allowed_families", None)
-    row = ApiKeyRow(id=key_id, name=name[:128], key_hash=hash_api_key(settings, key), **limits)
-    if families is not None:
-        row.allowed_families = json.dumps(list(families))
-    with db.session() as s:
-        s.add(row)
-    return key, key_id
-
-
-def lookup_api_key(db: Database, settings: Settings, key: str) -> ApiKeyRow | None:
-    digest = hash_api_key(settings, key)
-    with db.session() as s:
-        row = s.execute(select(ApiKeyRow).where(ApiKeyRow.key_hash == digest)).scalar_one_or_none()
-    if row is None or row.revoked_at is not None:
-        return None
-    if row.expires_at is not None and as_utc(row.expires_at) <= utcnow():
-        return None
-    return row
-
-
 def get_caller(request: Request) -> Caller:
     """FastAPI dependency: who is calling. Rejects unknown keys; enforces INTOMD_REQUIRE_API_KEY."""
     settings = _settings(request)
-    ip_hash = hash_ip(settings, client_ip(request, settings))
+    ip = client_ip(request, settings)
+    ip_hash = hash_ip(settings, ip)
     raw = request.headers.get("x-api-key")
     if raw:
-        row = lookup_api_key(request.app.state.services.db, settings, raw.strip())
-        if row is None:
+        services = request.app.state.services
+        record = lookup_api_key(services.db, settings, raw.strip(), services.keys)
+        if record is None:
             raise ApiError("unauthorized", "The API key is invalid, revoked, or expired.")
-        return Caller(ip_hash=ip_hash, api_key=row)
+        if not record.allows_ip(ip) or not record.allows_user_agent(request.headers.get("user-agent", "")):
+            raise ApiError("forbidden", "This API key may not be used from this client.")
+        return Caller(ip_hash=ip_hash, api_key=record)
     if settings.require_api_key:
         raise ApiError("unauthorized", "This instance requires an API key (X-API-Key header).")
     return Caller(ip_hash=ip_hash)

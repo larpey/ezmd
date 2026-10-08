@@ -59,6 +59,8 @@ class JobRow(Base):
     client_ip_hash: Mapped[str] = mapped_column(String(64), index=True)
     metrics_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     warnings_count: Mapped[int] = mapped_column(Integer, default=0)
+    warning_codes: Mapped[str] = mapped_column(Text, default="[]")
+    """JSON list of the canonical warning codes the conversion emitted (first-seen order, unique)."""
     truncated: Mapped[bool] = mapped_column(Boolean, default=False)
     claim_token_hash: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     claim_node_id: Mapped[str | None] = mapped_column(String(128), nullable=True)

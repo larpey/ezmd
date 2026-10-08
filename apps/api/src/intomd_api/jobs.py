@@ -169,6 +169,10 @@ class JobStore:
             for k, v in fields.items():
                 setattr(row, k, v)
         self.state.append_event(job_id, "state", {"state": target})
+        if target in TERMINAL_EVENT_STATES:
+            from intomd_api.metrics import record_finished
+
+            record_finished(self.state, target, row.queue)
         if target == DONE:
             data = {"result_url": result_url(job_id, row.profile), **(event_data or {})}
             self.state.append_event(job_id, "done", data)

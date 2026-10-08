@@ -10,6 +10,7 @@ from fastapi import Request
 
 from intomd_api.auth import Caller
 from intomd_api.errors import ApiError
+from intomd_api.metrics import record_rate_limited
 from intomd_api.services import Services
 from intomd_api.state import RateResult
 
@@ -40,6 +41,7 @@ def enforce(request: Request, bucket: str, identity: str, limit: int, window_s: 
     result = _services(request).state.rate_hit(f"{bucket}:{window_s}:{identity}", limit, window_s)
     _record(request, result)
     if not result.allowed:
+        record_rate_limited(_services(request).state, bucket)
         headers = {**rate_headers(result), "Retry-After": str(result.retry_after)}
         raise ApiError(
             "rate_limited",
@@ -56,8 +58,9 @@ def limit_job_creation(request: Request, caller: Caller) -> None:
     if caller.unlimited:
         return
     if caller.api_key is not None:
-        enforce(request, "create", caller.identity, caller.api_key.requests_per_minute, 60)
-        enforce(request, "create", caller.identity, caller.api_key.requests_per_day, DAY)
+        key = caller.api_key
+        enforce(request, "create", caller.identity, key.requests_per_window, key.window_s)
+        enforce(request, "create", caller.identity, key.requests_per_day, DAY)
     else:
         enforce(request, "create", caller.identity, s.anon_ratelimit_max, s.anon_ratelimit_window_s)
         enforce(request, "create", caller.identity, s.anon_daily_max, DAY)
@@ -75,6 +78,7 @@ def admit_job(request: Request, caller: Caller) -> None:
             limit = s.anon_concurrency
             active = services.jobs.count_active(client_ip_hash=caller.ip_hash)
         if active >= limit:
+            record_rate_limited(services.state, "concurrency")
             raise ApiError(
                 "rate_limited",
                 "Your previous conversion is still running. Try again when it finishes.",
@@ -82,6 +86,7 @@ def admit_job(request: Request, caller: Caller) -> None:
                 headers={"Retry-After": "5"},
             )
     if services.jobs.count_active() >= s.active_job_cap:
+        record_rate_limited(services.state, "active_job_cap")
         raise ApiError(
             "queue_unavailable",
             "The server is busy. Try again shortly.",
@@ -93,8 +98,10 @@ def limit_result_fetch(request: Request, caller: Caller) -> None:
     if caller.unlimited:
         return
     s = _services(request).settings
-    limit = caller.api_key.requests_per_minute if caller.api_key is not None else s.anon_result_ratelimit_max
-    enforce(request, "result", caller.identity, limit, 60)
+    if caller.api_key is not None:
+        enforce(request, "result", caller.identity, caller.api_key.requests_per_window, caller.api_key.window_s)
+        return
+    enforce(request, "result", caller.identity, s.anon_result_ratelimit_max, 60)
 
 
 def sse_slot(request: Request, caller: Caller) -> str:
@@ -104,6 +111,7 @@ def sse_slot(request: Request, caller: Caller) -> str:
     count = services.state.gauge_incr(key, 3600)
     if not caller.unlimited and count > services.settings.anon_sse_max:
         services.state.gauge_decr(key)
+        record_rate_limited(services.state, "sse")
         raise ApiError(
             "rate_limited",
             "Too many open event streams.",

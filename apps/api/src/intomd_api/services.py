@@ -8,6 +8,7 @@ from typing import Any
 from intomd_api.blobs import BlobStore, build_blob_store
 from intomd_api.db import Database
 from intomd_api.jobs import JobStore
+from intomd_api.keys import KeyStore
 from intomd_api.queue import InlineQueue, JobQueue, RQQueue
 from intomd_api.settings import Settings
 from intomd_api.state import MemoryState, RedisState, StateBackend
@@ -22,6 +23,8 @@ class Services:
     jobs: JobStore
     queue: JobQueue
     redis: Any = None
+    keys: KeyStore | None = None
+    """Keys from INTOMD_KEYS_FILE (None when unset)."""
 
     def close(self) -> None:
         self.queue.shutdown()
@@ -55,6 +58,12 @@ def build_services(settings: Settings, *, redis_client: Any = None) -> Services:
         queue = InlineQueue(runner, max_workers=settings.worker_default_concurrency)
     else:
         queue = RQQueue(redis)
-    services = Services(settings=settings, db=db, blobs=blobs, state=state, jobs=jobs, queue=queue, redis=redis)
+    keys = None
+    if settings.keys_file is not None:
+        keys = KeyStore(settings)
+        keys.load()  # a malformed keys file stops startup (KeysFileError)
+    services = Services(
+        settings=settings, db=db, blobs=blobs, state=state, jobs=jobs, queue=queue, redis=redis, keys=keys
+    )
     holder["services"] = services
     return services

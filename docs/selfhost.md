@@ -139,6 +139,7 @@ Field `foo_bar` is read from `INTOMD_FOO_BAR`. Comma lists are plain comma-separ
 | `INTOMD_KEY_PEPPER` | secret | empty | Secret pepper for hashing API keys (secret). At least 32 bytes in public mode. |
 | `INTOMD_JWT_SECRET` | secret | empty | Secret for signing the short-lived challenge cookie (secret). At least 32 bytes in public mode. |
 | `INTOMD_IP_HASH_SALT` | secret | empty | Salt for client IP hashes (secret). Unset: falls back to the key pepper, then a fixed local salt. |
+| `INTOMD_KEYS_FILE` | path | unset | keys.json of API keys with per-key limits (hashed; docs/api.md). Unset: database keys only. |
 
 ### Challenge
 
@@ -172,5 +173,6 @@ Field `foo_bar` is read from `INTOMD_FOO_BAR`. Comma lists are plain comma-separ
 |---|---|---|---|
 | `INTOMD_LOG_LEVEL` | debug / info / warning / error | `info` | Log level. |
 | `INTOMD_LOG_FORMAT` | json / text | `json` | `json` (one object per line) or `text`. |
+| `INTOMD_METRICS_TOKEN` | secret | unset | Bearer token (16+ chars, secret) for GET /metrics. Unset: /metrics is not mounted. |
 
 <!-- END gen_env_doc -->

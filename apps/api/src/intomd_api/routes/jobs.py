@@ -13,6 +13,7 @@ from pydantic import ValidationError
 from starlette.concurrency import run_in_threadpool
 
 from intomd_api import queue as q
+from intomd_api.apidoc import OPTIONAL_API_KEY, errors, rate_limit_headers
 from intomd_api.auth import CallerDep
 from intomd_api.errors import ApiError
 from intomd_api.jobs import DONE, NEEDS_USER_ACTION, QUEUED, TERMINAL_EVENT_STATES, JobStore, result_url
@@ -44,9 +45,22 @@ SSE_MAX_SECONDS = 3600.0
 SSE_POLL_SECONDS = 1.0
 _TERMINAL_EVENTS = ("done", "failed", "needs_user_action")
 _RESERVED_QUERY = frozenset({"profile", "format"})
+_AUTH = {"security": OPTIONAL_API_KEY}
+_JOB_ID_DOC = "The job id returned by POST /v1/convert"
 
 
-@router.get("/v1/jobs/{job_id}", response_model=JobOut, summary="Job state and metadata")
+@router.get(
+    "/v1/jobs/{job_id}",
+    response_model=JobOut,
+    operation_id="getJob",
+    summary="Job state and metadata",
+    description=(
+        "State, progress, input metadata, warning codes, and, depending on the state, `needs_action` (what the "
+        "client must supply) or `error`. Unknown ids and ids owned by another API key both return 404."
+    ),
+    responses=errors("unauthorized", "forbidden", "not_found"),
+    openapi_extra=_AUTH,
+)
 def get_job(job_id: str, request: Request, caller: CallerDep) -> JobOut:
     return job_out(job_for_caller(services_of(request), job_id, caller))
 
@@ -100,9 +114,32 @@ async def _event_stream(
 
 @router.get(
     "/v1/jobs/{job_id}/events",
+    operation_id="streamJobEvents",
     summary="Server-sent events: progress, state, warning, done, failed, needs_user_action",
+    description=(
+        "A `text/event-stream` of numbered events: `state`, `progress`, `warning` (a Warning JSON), and one terminal "
+        "`done`, `failed`, or `needs_user_action`, after which the stream closes. A `: keepalive` comment is sent "
+        "every 15 s. Reconnect with `Last-Event-ID` (or `last_event_id`) to resume; the buffer keeps 500 events."
+    ),
     response_class=StreamingResponse,
-    responses={200: {"content": {"text/event-stream": {}}}},
+    responses={
+        200: {
+            "description": "The event stream",
+            "content": {
+                "text/event-stream": {
+                    "schema": {"type": "string"},
+                    "example": "event: progress"
+                    + chr(10)
+                    + "id: 4"
+                    + chr(10)
+                    + 'data: {"progress":42,"stage_message":"Converting page 84 of 200"}'
+                    + chr(10),
+                }
+            },
+        },
+        **errors("unauthorized", "forbidden", "not_found", "rate_limited"),
+    },
+    openapi_extra=_AUTH,
 )
 def job_events(
     job_id: str,
@@ -149,18 +186,43 @@ def _coerce(value: str) -> Any:
 
 @router.get(
     "/v1/jobs/{job_id}/result",
+    operation_id="getJobResult",
+    response_class=Response,
     summary="Rendered output",
+    description=(
+        "The job's output in any profile and format, rendered from the cached IR (other profiles render on demand "
+        "without re-converting). Extra query keys are profile overrides, flat (`max_tokens=2000`) or dotted "
+        "(`chunks.chunk_tokens=512`). Markdown responses carry `X-Markdown-Tokens`, `X-Intomd-Truncated`, "
+        "`X-Intomd-Warnings`, and `X-Intomd-Injection-Risk`. Returns 409 until the job is done."
+    ),
     responses={
-        200: {"content": {"text/markdown": {}, "application/json": {}, "text/plain": {}, "application/zip": {}}},
-        409: {"description": "The job is not done"},
+        200: {
+            "description": "The rendered result",
+            "content": {
+                "text/markdown": {"schema": {"type": "string"}, "example": "---" + chr(10) + "title: Notes" + chr(10)},
+                "application/json": {"schema": {"type": "object"}},
+                "text/plain": {"schema": {"type": "string"}},
+                "application/zip": {"schema": {"type": "string", "format": "binary"}},
+            },
+            "headers": {
+                "X-Markdown-Tokens": {"description": "Token count of the body", "schema": {"type": "integer"}},
+                "X-Intomd-Truncated": {"description": "true when content was cut", "schema": {"type": "string"}},
+                "X-Intomd-Warnings": {"description": "Number of warnings", "schema": {"type": "integer"}},
+                **rate_limit_headers(),
+            },
+        },
+        **errors("unauthorized", "forbidden", "not_found", "job_not_ready", "rate_limited", "not_implemented"),
     },
+    openapi_extra=_AUTH,
 )
 def job_result(
     job_id: str,
     request: Request,
     caller: CallerDep,
-    profile: str | None = Query(None, description="full | compact | rag | agent (default: the job's profile)"),
-    format: str = Query("md", description="md | json | txt | zip | docx (501)"),
+    profile: str | None = Query(
+        None, description="full | compact | rag | agent (default: the job's profile)", examples=["rag"]
+    ),
+    format: str = Query("md", description="md | json | txt | zip | docx (501)", examples=["md"]),
     cursor: str | None = Query(
         None, description="Opaque pagination cursor from a previous response; other query keys are profile overrides"
     ),
@@ -204,7 +266,24 @@ def job_result(
     return Response(rendered.body, media_type=rendered.media_type, headers=rendered.headers(format, job_id))
 
 
-@router.get("/v1/jobs/{job_id}/attachments/{path:path}", summary="CSV sidecars and extracted images")
+@router.get(
+    "/v1/jobs/{job_id}/attachments/{path:path}",
+    operation_id="getJobAttachment",
+    response_class=Response,
+    summary="CSV sidecars and extracted images",
+    description=(
+        "A file the conversion produced (table CSVs, extracted images), by the relative path listed in the sidecar. "
+        "Images are served inline; everything else as an attachment with `nosniff`."
+    ),
+    responses={
+        200: {
+            "description": "The attachment bytes",
+            "content": {"application/octet-stream": {"schema": {"type": "string", "format": "binary"}}},
+        },
+        **errors("unauthorized", "forbidden", "not_found", "rate_limited"),
+    },
+    openapi_extra=_AUTH,
+)
 def job_attachment(job_id: str, path: str, request: Request, caller: CallerDep) -> Response:
     services = services_of(request)
     limit_result_fetch(request, caller)
@@ -230,16 +309,32 @@ def job_attachment(job_id: str, path: str, request: Request, caller: CallerDep) 
     "/v1/jobs/{job_id}/supply",
     status_code=202,
     response_model=JobOut,
+    operation_id="supplyJobInput",
     summary="Supply a file or caption JSON for a needs_user_action job",
+    description=(
+        "When a job is in `needs_user_action` (for example no residential fetch node could fetch a video), upload "
+        "the file as multipart `file`, or send caption JSON from the browser extension. The job returns to `queued`."
+    ),
+    responses=errors(
+        "unauthorized",
+        "forbidden",
+        "not_found",
+        "job_not_ready",
+        "input_too_large",
+        "unsupported_media_type",
+        "queue_unavailable",
+    ),
     openapi_extra={
+        "security": OPTIONAL_API_KEY,
         "requestBody": {
+            "required": True,
             "content": {
                 "multipart/form-data": {
                     "schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}}}
                 },
                 "application/json": {"schema": {"$ref": "#/components/schemas/SupplyCaptions"}},
-            }
-        }
+            },
+        },
     },
 )
 async def supply(job_id: str, request: Request, caller: CallerDep) -> JSONResponse:
@@ -294,7 +389,16 @@ async def supply(job_id: str, request: Request, caller: CallerDep) -> JSONRespon
     return JSONResponse(job_out(updated).model_dump(mode="json"), status_code=202)
 
 
-@router.delete("/v1/jobs/{job_id}", status_code=204, summary="Purge the job and its blobs now")
+@router.delete(
+    "/v1/jobs/{job_id}",
+    status_code=204,
+    operation_id="deleteJob",
+    response_class=Response,
+    summary="Purge the job and its blobs now",
+    description="Deletes the job row, its input, IR, rendered results, attachments, and buffered events.",
+    responses={204: {"description": "Purged"}, **errors("unauthorized", "forbidden", "not_found")},
+    openapi_extra=_AUTH,
+)
 def delete_job(job_id: str, request: Request, caller: CallerDep) -> Response:
     services = services_of(request)
     job_for_caller(services, job_id, caller)

@@ -1,9 +1,295 @@
 {
   "components": {
     "schemas": {
+      "CapabilitiesOut": {
+        "description": "What this instance can do (`GET /v1/capabilities`). Limits are the anonymous caps.",
+        "properties": {
+          "challenge": {
+            "anyOf": [
+              {
+                "const": "turnstile",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Challenge"
+          },
+          "converters": {
+            "items": {
+              "$ref": "#/components/schemas/ConverterOut"
+            },
+            "title": "Converters",
+            "type": "array"
+          },
+          "fetch_node_online": {
+            "title": "Fetch Node Online",
+            "type": "boolean"
+          },
+          "formats": {
+            "examples": [
+              [
+                "md",
+                "json",
+                "txt",
+                "zip"
+              ]
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Formats",
+            "type": "array"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/LimitsOut"
+          },
+          "profiles": {
+            "examples": [
+              [
+                "full",
+                "compact",
+                "rag",
+                "agent"
+              ]
+            ],
+            "items": {
+              "type": "string"
+            },
+            "title": "Profiles",
+            "type": "array"
+          },
+          "public_mode": {
+            "title": "Public Mode",
+            "type": "boolean"
+          },
+          "residential_platforms": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Residential Platforms",
+            "type": "array"
+          },
+          "turnstile_site_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Turnstile Site Key"
+          },
+          "version": {
+            "examples": [
+              "0.0.1"
+            ],
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "converters",
+          "profiles",
+          "formats",
+          "limits",
+          "fetch_node_online",
+          "residential_platforms",
+          "public_mode"
+        ],
+        "title": "CapabilitiesOut",
+        "type": "object"
+      },
+      "ConvertOptionsIn": {
+        "additionalProperties": false,
+        "description": "Conversion options a client may set (a subset of `intomd.library.Options`; omitted fields use the library default). Dotted keys such as `chunks.chunk_tokens` are profile overrides and are accepted alongside these fields in the same object.",
+        "patternProperties": {
+          "^[a-z_]+([.][a-z_]+)+$": {
+            "description": "Profile override, for example `chunks.chunk_tokens`: 512"
+          }
+        },
+        "properties": {
+          "asr_model": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Speech-recognition model id (for example `small`).",
+            "examples": [
+              "small"
+            ],
+            "title": "Asr Model"
+          },
+          "comments": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Include document comments.",
+            "examples": [
+              true
+            ],
+            "title": "Comments"
+          },
+          "diarize": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Label speakers in transcripts when supported.",
+            "examples": [
+              true
+            ],
+            "title": "Diarize"
+          },
+          "extract_images": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Extract embedded images as attachments.",
+            "examples": [
+              true
+            ],
+            "title": "Extract Images"
+          },
+          "formulas": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Keep spreadsheet formulas next to their values.",
+            "examples": [
+              false
+            ],
+            "title": "Formulas"
+          },
+          "languages": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "BCP-47 language hints; empty means auto-detect.",
+            "examples": [
+              [
+                "en"
+              ]
+            ],
+            "title": "Languages"
+          },
+          "max_duration_seconds": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Audio/video duration cap in seconds; clamped to the caller's limit.",
+            "examples": [
+              900
+            ],
+            "title": "Max Duration Seconds"
+          },
+          "max_pages": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Stop after this many pages; clamped to the caller's page limit.",
+            "examples": [
+              200
+            ],
+            "title": "Max Pages"
+          },
+          "ocr": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Allow OCR when a page has no text layer.",
+            "examples": [
+              true
+            ],
+            "title": "Ocr"
+          },
+          "tracked_changes": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Include tracked insertions and deletions (Office).",
+            "examples": [
+              true
+            ],
+            "title": "Tracked Changes"
+          }
+        },
+        "title": "ConvertOptionsIn",
+        "type": "object"
+      },
       "ConvertResponse": {
+        "description": "The job envelope returned by `POST /v1/convert` (202, or 200 when deduplicated).",
         "properties": {
           "deduplicated": {
+            "description": "True when an existing finished job with the same input was returned",
             "title": "Deduplicated",
             "type": "boolean"
           },
@@ -24,11 +310,26 @@
       },
       "ConvertUrlRequest": {
         "additionalProperties": false,
+        "description": "JSON body of `POST /v1/convert` for a URL input.",
+        "examples": [
+          {
+            "options": {
+              "max_pages": 100
+            },
+            "prefer_residential": false,
+            "profile": "compact",
+            "url": "https://example.com/reports/q3-fleet.pdf"
+          }
+        ],
         "properties": {
           "options": {
-            "additionalProperties": true,
-            "title": "Options",
-            "type": "object"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConvertOptionsIn"
+              }
+            ],
+            "default": {},
+            "description": "ConvertOptionsIn fields plus dotted profile overrides such as `chunks.chunk_tokens`."
           },
           "prefer_residential": {
             "default": false,
@@ -38,6 +339,13 @@
           },
           "profile": {
             "default": "full",
+            "description": "Output profile.",
+            "enum": [
+              "full",
+              "compact",
+              "rag",
+              "agent"
+            ],
             "title": "Profile",
             "type": "string"
           },
@@ -52,9 +360,11 @@
               }
             ],
             "default": null,
+            "description": "Cloudflare Turnstile token; required for anonymous URL jobs.",
             "title": "Turnstile Token"
           },
           "url": {
+            "description": "http(s) URL to fetch and convert. Private addresses are refused.",
             "maxLength": 8192,
             "title": "Url",
             "type": "string"
@@ -66,9 +376,62 @@
         "title": "ConvertUrlRequest",
         "type": "object"
       },
+      "ConverterOut": {
+        "properties": {
+          "experimental": {
+            "title": "Experimental",
+            "type": "boolean"
+          },
+          "extras": {
+            "description": "pip extras that provide the converter's engine",
+            "items": {
+              "type": "string"
+            },
+            "title": "Extras",
+            "type": "array"
+          },
+          "family": {
+            "examples": [
+              "text"
+            ],
+            "title": "Family",
+            "type": "string"
+          },
+          "id": {
+            "examples": [
+              "text.markdown"
+            ],
+            "title": "Id",
+            "type": "string"
+          },
+          "loaded": {
+            "description": "False when the converter's optional extra is not installed",
+            "title": "Loaded",
+            "type": "boolean"
+          },
+          "mimes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Mimes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "family",
+          "mimes",
+          "experimental",
+          "loaded",
+          "extras"
+        ],
+        "title": "ConverterOut",
+        "type": "object"
+      },
       "ErrorDetail": {
         "properties": {
           "code": {
+            "description": "Stable machine-readable code (see the table in the API description)",
             "title": "Code",
             "type": "string"
           },
@@ -82,10 +445,12 @@
             "type": "string"
           },
           "message": {
+            "description": "Human-readable; never contains stack traces or server paths",
             "title": "Message",
             "type": "string"
           },
           "request_id": {
+            "description": "Matches the X-Request-Id response header",
             "title": "Request Id",
             "type": "string"
           },
@@ -106,6 +471,20 @@
       },
       "ErrorResponse": {
         "description": "The error schema of docs/spec/part1.md section 7.5.",
+        "examples": [
+          {
+            "error": {
+              "code": "input_too_large",
+              "detail": {
+                "limit_bytes": 26214400
+              },
+              "docs": "https://intomd.example.com/docs/errors#input_too_large",
+              "message": "Upload exceeds the 25 MB limit for anonymous requests.",
+              "request_id": "req_3fQ9xL2mVb7Kp1Zt",
+              "status": 413
+            }
+          }
+        ],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/ErrorDetail"
@@ -118,6 +497,16 @@
         "type": "object"
       },
       "FetchNodeClaimRequest": {
+        "examples": [
+          {
+            "capabilities": [
+              "yt-dlp",
+              "ffmpeg"
+            ],
+            "max_duration_seconds": 10800,
+            "node_id": "pi-home-1"
+          }
+        ],
         "properties": {
           "capabilities": {
             "items": {
@@ -200,6 +589,9 @@
             "title": "Resolved Ip"
           },
           "upload_url": {
+            "examples": [
+              "/v1/fetch-node/upload"
+            ],
             "title": "Upload Url",
             "type": "string"
           },
@@ -208,6 +600,10 @@
             "type": "string"
           },
           "want": {
+            "description": "audio, video, or page",
+            "examples": [
+              "audio"
+            ],
             "title": "Want",
             "type": "string"
           }
@@ -245,6 +641,9 @@
             "title": "Message"
           },
           "reason_code": {
+            "examples": [
+              "bot_check"
+            ],
             "maxLength": 64,
             "pattern": "^[a-z0-9_]+$",
             "title": "Reason Code",
@@ -278,6 +677,7 @@
                 "type": "null"
               }
             ],
+            "description": "Extends this claim when present",
             "title": "Claim Token"
           },
           "node_id": {
@@ -294,26 +694,33 @@
         "title": "FetchNodeHeartbeat",
         "type": "object"
       },
-      "HTTPValidationError": {
+      "HealthOut": {
         "properties": {
-          "detail": {
-            "items": {
-              "$ref": "#/components/schemas/ValidationError"
-            },
-            "title": "Detail",
-            "type": "array"
+          "status": {
+            "const": "ok",
+            "default": "ok",
+            "title": "Status",
+            "type": "string"
           }
         },
-        "title": "HTTPValidationError",
+        "title": "HealthOut",
         "type": "object"
       },
       "InputOut": {
         "properties": {
           "display": {
+            "description": "File name or redacted URL",
+            "examples": [
+              "q3-fleet.pdf"
+            ],
             "title": "Display",
             "type": "string"
           },
           "kind": {
+            "description": "bytes, url, residential_fetch, or captions_json3",
+            "examples": [
+              "bytes"
+            ],
             "title": "Kind",
             "type": "string"
           },
@@ -326,6 +733,10 @@
                 "type": "null"
               }
             ],
+            "description": "Detected media type",
+            "examples": [
+              "application/pdf"
+            ],
             "title": "Mime"
           },
           "sha256": {
@@ -337,6 +748,7 @@
                 "type": "null"
               }
             ],
+            "description": "Input digest (uploads only, omitted on create)",
             "title": "Sha256"
           },
           "size_bytes": {
@@ -347,6 +759,9 @@
               {
                 "type": "null"
               }
+            ],
+            "examples": [
+              1834022
             ],
             "title": "Size Bytes"
           }
@@ -359,6 +774,32 @@
         "type": "object"
       },
       "JobOut": {
+        "description": "A job's state and metadata (`GET /v1/jobs/{job_id}`).",
+        "examples": [
+          {
+            "converter_id": "text.markdown",
+            "created_at": "2026-10-12T18:40:00Z",
+            "expires_at": "2026-10-13T18:40:00Z",
+            "id": "job_7Kx2mQp9Lw3nRt5vYb8cDe",
+            "input": {
+              "display": "notes.md",
+              "kind": "bytes",
+              "mime": "text/markdown",
+              "size_bytes": 2048
+            },
+            "profile": "full",
+            "progress": 100,
+            "queue": "default",
+            "stage_message": "Done",
+            "state": "done",
+            "truncated": false,
+            "updated_at": "2026-10-12T18:40:02Z",
+            "warnings": [
+              "encoding_uncertain"
+            ],
+            "warnings_count": 1
+          }
+        ],
         "properties": {
           "converter_id": {
             "anyOf": [
@@ -368,6 +809,9 @@
               {
                 "type": "null"
               }
+            ],
+            "examples": [
+              "documents.docling_pdf"
             ],
             "title": "Converter Id"
           },
@@ -392,6 +836,7 @@
                 "type": "null"
               }
             ],
+            "description": "Present in failed: the error object (7.5)",
             "title": "Error"
           },
           "expires_at": {
@@ -403,9 +848,14 @@
                 "type": "null"
               }
             ],
+            "description": "When the job and its results are purged",
             "title": "Expires At"
           },
           "id": {
+            "description": "Unguessable job id; possession is the capability",
+            "examples": [
+              "job_7Kx2mQp9Lw3nRt5vYb8cDe"
+            ],
             "title": "Id",
             "type": "string"
           },
@@ -422,30 +872,57 @@
                 "type": "null"
               }
             ],
+            "description": "Present in needs_user_action: what the client must supply and where",
             "title": "Needs Action"
           },
           "profile": {
+            "description": "Requested profile",
+            "examples": [
+              "rag"
+            ],
             "title": "Profile",
             "type": "string"
           },
           "progress": {
+            "description": "Percent complete",
+            "maximum": 100.0,
+            "minimum": 0.0,
             "title": "Progress",
             "type": "integer"
           },
           "queue": {
+            "description": "default, media, fetch, or fetch_residential",
+            "examples": [
+              "default"
+            ],
             "title": "Queue",
             "type": "string"
           },
           "stage_message": {
+            "description": "Human-readable stage",
+            "examples": [
+              "Converting page 84 of 200"
+            ],
             "title": "Stage Message",
             "type": "string"
           },
           "state": {
+            "enum": [
+              "queued",
+              "fetching",
+              "converting",
+              "rendering",
+              "done",
+              "failed",
+              "needs_user_action",
+              "expired"
+            ],
             "title": "State",
             "type": "string"
           },
           "truncated": {
             "default": false,
+            "description": "True when part of the input or output was cut",
             "title": "Truncated",
             "type": "boolean"
           },
@@ -460,8 +937,17 @@
             ],
             "title": "Updated At"
           },
+          "warnings": {
+            "description": "Canonical warning codes the conversion emitted, first-seen order (see GET /v1/warnings)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          },
           "warnings_count": {
             "default": 0,
+            "description": "Number of warnings the conversion emitted",
             "title": "Warnings Count",
             "type": "integer"
           }
@@ -478,17 +964,59 @@
         "title": "JobOut",
         "type": "object"
       },
+      "LimitsOut": {
+        "properties": {
+          "max_audio_seconds": {
+            "title": "Max Audio Seconds",
+            "type": "integer"
+          },
+          "max_pages": {
+            "title": "Max Pages",
+            "type": "integer"
+          },
+          "max_upload_bytes": {
+            "title": "Max Upload Bytes",
+            "type": "integer"
+          },
+          "max_url_bytes": {
+            "title": "Max Url Bytes",
+            "type": "integer"
+          },
+          "retention_hours": {
+            "title": "Retention Hours",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "max_upload_bytes",
+          "max_url_bytes",
+          "max_audio_seconds",
+          "max_pages",
+          "retention_hours"
+        ],
+        "title": "LimitsOut",
+        "type": "object"
+      },
       "LinksOut": {
         "properties": {
           "events": {
+            "examples": [
+              "/v1/jobs/job_7Kx2mQp9Lw3nRt5vYb8cDe/events"
+            ],
             "title": "Events",
             "type": "string"
           },
           "result": {
+            "examples": [
+              "/v1/jobs/job_7Kx2mQp9Lw3nRt5vYb8cDe/result?profile=rag&format=md"
+            ],
             "title": "Result",
             "type": "string"
           },
           "self": {
+            "examples": [
+              "/v1/jobs/job_7Kx2mQp9Lw3nRt5vYb8cDe"
+            ],
             "title": "Self",
             "type": "string"
           }
@@ -501,8 +1029,41 @@
         "title": "LinksOut",
         "type": "object"
       },
+      "ReadyOut": {
+        "properties": {
+          "checks": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "examples": [
+              {
+                "database": true,
+                "state": true,
+                "workers": true
+              }
+            ],
+            "title": "Checks",
+            "type": "object"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "not_ready"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "checks"
+        ],
+        "title": "ReadyOut",
+        "type": "object"
+      },
       "SupplyCaptions": {
         "additionalProperties": false,
+        "description": "Caption JSON supplied by the browser extension for a needs_user_action job.",
         "properties": {
           "captions": {
             "items": {
@@ -525,50 +1086,109 @@
         "title": "SupplyCaptions",
         "type": "object"
       },
-      "ValidationError": {
+      "WarningCodeOut": {
         "properties": {
-          "ctx": {
-            "title": "Context",
-            "type": "object"
-          },
-          "input": {
-            "title": "Input"
-          },
-          "loc": {
+          "aliases": {
+            "description": "Retired spellings that still normalize to this code",
             "items": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "integer"
-                }
-              ]
+              "type": "string"
             },
-            "title": "Location",
+            "title": "Aliases",
             "type": "array"
           },
-          "msg": {
-            "title": "Message",
+          "code": {
+            "examples": [
+              "encoding_uncertain"
+            ],
+            "title": "Code",
             "type": "string"
           },
-          "type": {
-            "title": "Error Type",
+          "description": {
+            "title": "Description",
             "type": "string"
+          },
+          "family": {
+            "examples": [
+              "core"
+            ],
+            "title": "Family",
+            "type": "string"
+          },
+          "severity": {
+            "description": "Default severity",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "suggestion": {
+            "description": "What the user can do about it",
+            "title": "Suggestion",
+            "type": "string"
+          },
+          "truncates": {
+            "description": "True when this warning means content was cut (sets `truncated`)",
+            "title": "Truncates",
+            "type": "boolean"
           }
         },
         "required": [
-          "loc",
-          "msg",
-          "type"
+          "code",
+          "severity",
+          "family",
+          "description",
+          "suggestion",
+          "truncates",
+          "aliases"
         ],
-        "title": "ValidationError",
+        "title": "WarningCodeOut",
         "type": "object"
+      },
+      "WarningsOut": {
+        "description": "The warning code registry (`intomd.warnings.codes`).",
+        "properties": {
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/WarningCodeOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "warnings"
+        ],
+        "title": "WarningsOut",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "description": "Optional API key (`ak_<env>_...`). Keyed callers get the key's limits and skip Turnstile.",
+        "in": "header",
+        "name": "X-API-Key",
+        "type": "apiKey"
+      },
+      "FetchNodeBearer": {
+        "description": "INTOMD_FETCH_NODE_SECRET; requests must also come from INTOMD_FETCH_NODE_CIDR.",
+        "scheme": "bearer",
+        "type": "http"
       }
     }
   },
   "info": {
-    "description": "Convert anything to LLM-ready Markdown.\n\n## Error codes\n\n| code | status | meaning |\n| --- | --- | --- |\n| `invalid_request` | 400 | Malformed body, unknown option, or invalid profile override. |\n| `turnstile_required` | 401 | A Turnstile token is required for URL jobs on this instance. |\n| `turnstile_failed` | 403 | The Turnstile token was rejected. |\n| `unauthorized` | 401 | Missing or unknown API key, or bad fetch-node secret. |\n| `forbidden` | 403 | The key or node may not do this (for example residential fetches). |\n| `not_found` | 404 | Unknown job, attachment, or route. |\n| `method_not_allowed` | 405 | Wrong HTTP method. |\n| `job_not_ready` | 409 | The job has not reached the state this call needs. |\n| `input_too_large` | 413 | Upload or fetched body over the caller's cap. |\n| `unsupported_media_type` | 415 | Executable or unsupported input. |\n| `url_blocked` | 422 | The URL (or a URL a converter asked for) failed the SSRF guard. |\n| `platform_disabled` | 422 | The site is disabled by this instance's platform policy. |\n| `experimental_disabled` | 422 | Only an experimental converter handles this input and experimental converters are off. |\n| `fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than intomd.inputs.MAX_FETCH_DEPTH allows. |\n| `result_too_large` | 422 | The converter's result exceeded INTOMD_MAX_RESULT_BYTES. |\n| `rate_limited` | 429 | Too many requests, jobs, or concurrent jobs; see Retry-After. |\n| `conversion_failed` | 500 | Every converter in the chain failed. |\n| `internal_error` | 500 | Unexpected server error (logged with the request id). |\n| `not_implemented` | 501 | The format exists in the contract but is not built yet (docx). |\n| `fetch_failed` | 502 | The URL could not be fetched. |\n| `queue_unavailable` | 503 | The queue is down or the instance is at its active-job cap. |\n| `timeout` | 504 | The conversion exceeded its time limit. |",
+    "contact": {
+      "name": "intomd",
+      "url": "https://intomd.example.com/"
+    },
+    "description": "Convert anything to LLM-ready Markdown.\n\nCreate a job with `POST /v1/convert` (multipart upload or JSON URL), follow it with `GET /v1/jobs/{job_id}/events` (SSE) or by polling `GET /v1/jobs/{job_id}`, then fetch `GET /v1/jobs/{job_id}/result`. The job id is the capability; jobs created with an API key also require that key. Every response carries `X-Request-Id`; every error uses the schema below.\n\n## Error codes\n\n| code | status | meaning |\n| --- | --- | --- |\n| `invalid_request` | 400 | Malformed body, unknown option, or invalid profile override. |\n| `turnstile_required` | 401 | A Turnstile token is required for URL jobs on this instance. |\n| `turnstile_failed` | 403 | The Turnstile token was rejected. |\n| `unauthorized` | 401 | Missing or unknown API key, or bad fetch-node secret. |\n| `forbidden` | 403 | The key or node may not do this (for example residential fetches). |\n| `not_found` | 404 | Unknown job, attachment, or route. |\n| `method_not_allowed` | 405 | Wrong HTTP method. |\n| `job_not_ready` | 409 | The job has not reached the state this call needs. |\n| `input_too_large` | 413 | Upload or fetched body over the caller's cap. |\n| `unsupported_media_type` | 415 | Executable or unsupported input. |\n| `url_blocked` | 422 | The URL (or a URL a converter asked for) failed the SSRF guard. |\n| `platform_disabled` | 422 | The site is disabled by this instance's platform policy. |\n| `experimental_disabled` | 422 | Only an experimental converter handles this input and experimental converters are off. |\n| `fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than intomd.inputs.MAX_FETCH_DEPTH allows. |\n| `result_too_large` | 422 | The converter's result exceeded INTOMD_MAX_RESULT_BYTES. |\n| `rate_limited` | 429 | Too many requests, jobs, or concurrent jobs; see Retry-After. |\n| `conversion_failed` | 500 | Every converter in the chain failed. |\n| `internal_error` | 500 | Unexpected server error (logged with the request id). |\n| `not_implemented` | 501 | The format exists in the contract but is not built yet (docx). |\n| `fetch_failed` | 502 | The URL could not be fetched. |\n| `queue_unavailable` | 503 | The queue is down or the instance is at its active-job cap. |\n| `timeout` | 504 | The conversion exceeded its time limit. |",
+    "license": {
+      "identifier": "Apache-2.0",
+      "name": "Apache-2.0"
+    },
     "title": "intomd API",
     "version": "0.0.1"
   },
@@ -576,23 +1196,41 @@
   "paths": {
     "/healthz": {
       "get": {
-        "operationId": "healthz_healthz_get",
+        "description": "200 whenever the process is serving requests. Does not check dependencies.",
+        "operationId": "healthz",
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "additionalProperties": {
-                    "type": "string"
-                  },
-                  "title": "Response Healthz Healthz Get",
-                  "type": "object"
+                  "$ref": "#/components/schemas/HealthOut"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [],
         "summary": "Liveness",
         "tags": [
           "meta"
@@ -601,17 +1239,51 @@
     },
     "/readyz": {
       "get": {
-        "operationId": "readyz_readyz_get",
+        "description": "200 when the database and state backend answer and a worker heartbeated in the last 60 s; else 503.",
+        "operationId": "readyz",
         "responses": {
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyOut"
+                }
               }
             },
             "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadyOut"
+                }
+              }
+            },
+            "description": "A dependency is down; `checks` says which."
           }
         },
+        "security": [],
         "summary": "Readiness: database, Redis, and a live worker",
         "tags": [
           "meta"
@@ -620,21 +1292,41 @@
     },
     "/v1/capabilities": {
       "get": {
-        "operationId": "capabilities_v1_capabilities_get",
+        "description": "Lists every registered converter (including ones whose optional extra is missing, with `loaded: false`), the output profiles and formats, the anonymous limits, and whether a residential fetch node is online. The web UI reads this on load.",
+        "operationId": "getCapabilities",
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "additionalProperties": true,
-                  "title": "Response Capabilities V1 Capabilities Get",
-                  "type": "object"
+                  "$ref": "#/components/schemas/CapabilitiesOut"
                 }
               }
             },
             "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [],
         "summary": "Converters, profiles, formats, limits, fetch-node status",
         "tags": [
           "meta"
@@ -643,7 +1335,8 @@
     },
     "/v1/convert": {
       "post": {
-        "operationId": "create_job_v1_convert_post",
+        "description": "Send `multipart/form-data` with a `file` part (and an optional `options` JSON part), or JSON with a `url`. Returns 202 with the job envelope, or 200 when an identical finished job is reused. URL inputs from anonymous callers need a Turnstile token when the instance requires one. With `wait=N` the call blocks up to N seconds (max 60) and returns the rendered result directly if the job finishes in time.",
+        "operationId": "createJob",
         "parameters": [
           {
             "description": "Block up to this many seconds (max 60) and return the result",
@@ -653,20 +1346,36 @@
             "schema": {
               "default": 0,
               "description": "Block up to this many seconds (max 60) and return the result",
+              "examples": [
+                30
+              ],
               "minimum": 0,
               "title": "Wait",
               "type": "number"
             }
           },
           {
-            "description": "Result format when `wait` returns a result",
+            "description": "Result format when `wait` returns a result: md, json, txt, zip",
             "in": "query",
             "name": "format",
             "required": false,
             "schema": {
               "default": "md",
-              "description": "Result format when `wait` returns a result",
+              "description": "Result format when `wait` returns a result: md, json, txt, zip",
+              "examples": [
+                "md"
+              ],
               "title": "Format",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Repeat-safe creation: the same key (per caller) returns the same job",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "maxLength": 255,
               "type": "string"
             }
           }
@@ -682,11 +1391,13 @@
               "schema": {
                 "properties": {
                   "file": {
+                    "description": "The file to convert",
                     "format": "binary",
                     "type": "string"
                   },
                   "options": {
-                    "description": "JSON object of options and profile",
+                    "description": "JSON object: ConvertOptionsIn fields, `profile`, and dotted overrides",
+                    "example": "{\"profile\": \"rag\", \"chunks.chunk_tokens\": 512, \"max_pages\": 200}",
                     "type": "string"
                   },
                   "profile": {
@@ -709,6 +1420,29 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConvertResponse"
+                }
+              },
+              "text/markdown": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Deduplicated: an existing finished job with the same input and options. With `wait`, the rendered result itself when the job finished in time (job envelope in `X-Intomd-Job`).",
+            "headers": {
+              "X-Intomd-Job": {
+                "description": "Compact JobOut JSON (wait results only)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "202": {
             "content": {
               "application/json": {
@@ -717,19 +1451,155 @@
                 }
               }
             },
-            "description": "Successful Response"
+            "description": "Job accepted",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "description": "Requests allowed in the most restrictive window checked",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "description": "Requests left in that window",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "description": "Unix time when the window resets",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`turnstile_required`: A Turnstile token is required for URL jobs on this instance. `unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`turnstile_failed`: The Turnstile token was rejected. `forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`input_too_large`: Upload or fetched body over the caller's cap."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unsupported_media_type`: Executable or unsupported input."
           },
           "422": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`url_blocked`: The URL (or a URL a converter asked for) failed the SSRF guard. `platform_disabled`: The site is disabled by this instance's platform policy."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`rate_limited`: Too many requests, jobs, or concurrent jobs; see Retry-After."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`conversion_failed`: Every converter in the chain failed. `internal_error`: Unexpected server error (logged with the request id)."
+          },
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_implemented`: The format exists in the contract but is not built yet (docx)."
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`fetch_failed`: The URL could not be fetched."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`queue_unavailable`: The queue is down or the instance is at its active-job cap."
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`timeout`: The conversion exceeded its time limit."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "Create a conversion job from an upload (multipart) or a URL (JSON)",
         "tags": [
           "convert"
@@ -738,7 +1608,8 @@
     },
     "/v1/fetch-node/claim": {
       "post": {
-        "operationId": "claim_v1_fetch_node_claim_post",
+        "description": "Returns the oldest unclaimed `fetch_residential` job with a single-use claim token (valid 10 minutes, extended by heartbeats), or 204 when there is none. The URL is re-validated by the SSRF guard at claim time; `platform` and `resolved_ip` are hints the node must re-check itself.",
+        "operationId": "fetchNodeClaim",
         "requestBody": {
           "content": {
             "application/json": {
@@ -763,17 +1634,62 @@
           "204": {
             "description": "The queue is empty"
           },
-          "422": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`rate_limited`: Too many requests, jobs, or concurrent jobs; see Retry-After."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {
+            "FetchNodeBearer": []
+          }
+        ],
         "summary": "Claim the next residential fetch job",
         "tags": [
           "fetch-node"
@@ -782,7 +1698,8 @@
     },
     "/v1/fetch-node/fail": {
       "post": {
-        "operationId": "fail_v1_fetch_node_fail_post",
+        "description": "Returns the job to the queue once; after that the job moves to `needs_user_action`.",
+        "operationId": "fetchNodeFail",
         "requestBody": {
           "content": {
             "application/json": {
@@ -795,19 +1712,54 @@
         },
         "responses": {
           "204": {
-            "description": "Successful Response"
+            "description": "Recorded"
           },
-          "422": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {
+            "FetchNodeBearer": []
+          }
+        ],
         "summary": "Report a failed fetch with a reason code",
         "tags": [
           "fetch-node"
@@ -816,7 +1768,8 @@
     },
     "/v1/fetch-node/heartbeat": {
       "post": {
-        "operationId": "heartbeat_v1_fetch_node_heartbeat_post",
+        "description": "Marks the node online for 60 s and, with `claim_token`, pushes that claim's expiry 10 minutes out.",
+        "operationId": "fetchNodeHeartbeat",
         "requestBody": {
           "content": {
             "application/json": {
@@ -829,19 +1782,54 @@
         },
         "responses": {
           "204": {
-            "description": "Successful Response"
+            "description": "Recorded"
           },
-          "422": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {
+            "FetchNodeBearer": []
+          }
+        ],
         "summary": "Liveness and capabilities; extends an active claim",
         "tags": [
           "fetch-node"
@@ -850,7 +1838,8 @@
     },
     "/v1/fetch-node/upload": {
       "post": {
-        "operationId": "upload_v1_fetch_node_upload_post",
+        "description": "Stores the media under the job and enqueues it on `media` (or `default`); consumes the claim token.",
+        "operationId": "fetchNodeUpload",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -880,14 +1869,84 @@
         },
         "responses": {
           "202": {
+            "description": "Accepted for conversion"
+          },
+          "400": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
               }
             },
-            "description": "Successful Response"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`input_too_large`: Upload or fetched body over the caller's cap."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unsupported_media_type`: Executable or unsupported input."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`queue_unavailable`: The queue is down or the instance is at its active-job cap."
           }
         },
+        "security": [
+          {
+            "FetchNodeBearer": []
+          }
+        ],
         "summary": "Upload fetched media for a claimed job",
         "tags": [
           "fetch-node"
@@ -896,7 +1955,8 @@
     },
     "/v1/jobs/{job_id}": {
       "delete": {
-        "operationId": "delete_job_v1_jobs__job_id__delete",
+        "description": "Deletes the job row, its input, IR, rendered results, attachments, and buffered events.",
+        "operationId": "deleteJob",
         "parameters": [
           {
             "in": "path",
@@ -910,26 +1970,73 @@
         ],
         "responses": {
           "204": {
-            "description": "Successful Response"
+            "description": "Purged"
           },
-          "422": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_found`: Unknown job, attachment, or route."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "Purge the job and its blobs now",
         "tags": [
           "jobs"
         ]
       },
       "get": {
-        "operationId": "get_job_v1_jobs__job_id__get",
+        "description": "State, progress, input metadata, warning codes, and, depending on the state, `needs_action` (what the client must supply) or `error`. Unknown ids and ids owned by another API key both return 404.",
+        "operationId": "getJob",
         "parameters": [
           {
             "in": "path",
@@ -952,17 +2059,63 @@
             },
             "description": "Successful Response"
           },
-          "422": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_found`: Unknown job, attachment, or route."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "Job state and metadata",
         "tags": [
           "jobs"
@@ -971,7 +2124,8 @@
     },
     "/v1/jobs/{job_id}/attachments/{path}": {
       "get": {
-        "operationId": "job_attachment_v1_jobs__job_id__attachments__path__get",
+        "description": "A file the conversion produced (table CSVs, extracted images), by the relative path listed in the sidecar. Images are served inline; everything else as an attachment with `nosniff`.",
+        "operationId": "getJobAttachment",
         "parameters": [
           {
             "in": "path",
@@ -995,23 +2149,82 @@
         "responses": {
           "200": {
             "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "format": "binary",
+                  "type": "string"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "The attachment bytes"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_found`: Unknown job, attachment, or route."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`rate_limited`: Too many requests, jobs, or concurrent jobs; see Retry-After."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "CSV sidecars and extracted images",
         "tags": [
           "jobs"
@@ -1020,7 +2233,8 @@
     },
     "/v1/jobs/{job_id}/events": {
       "get": {
-        "operationId": "job_events_v1_jobs__job_id__events_get",
+        "description": "A `text/event-stream` of numbered events: `state`, `progress`, `warning` (a Warning JSON), and one terminal `done`, `failed`, or `needs_user_action`, after which the stream closes. A `: keepalive` comment is sent every 15 s. Reconnect with `Last-Event-ID` (or `last_event_id`) to resume; the buffer keeps 500 events.",
+        "operationId": "streamJobEvents",
         "parameters": [
           {
             "in": "path",
@@ -1054,21 +2268,82 @@
         "responses": {
           "200": {
             "content": {
-              "text/event-stream": {}
-            },
-            "description": "Successful Response"
-          },
-          "422": {
-            "content": {
-              "application/json": {
+              "text/event-stream": {
+                "example": "event: progress\nid: 4\ndata: {\"progress\":42,\"stage_message\":\"Converting page 84 of 200\"}\n",
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "type": "string"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "The event stream"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_found`: Unknown job, attachment, or route."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`rate_limited`: Too many requests, jobs, or concurrent jobs; see Retry-After."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "Server-sent events: progress, state, warning, done, failed, needs_user_action",
         "tags": [
           "jobs"
@@ -1077,7 +2352,8 @@
     },
     "/v1/jobs/{job_id}/result": {
       "get": {
-        "operationId": "job_result_v1_jobs__job_id__result_get",
+        "description": "The job's output in any profile and format, rendered from the cached IR (other profiles render on demand without re-converting). Extra query keys are profile overrides, flat (`max_tokens=2000`) or dotted (`chunks.chunk_tokens=512`). Markdown responses carry `X-Markdown-Tokens`, `X-Intomd-Truncated`, `X-Intomd-Warnings`, and `X-Intomd-Injection-Risk`. Returns 409 until the job is done.",
+        "operationId": "getJobResult",
         "parameters": [
           {
             "in": "path",
@@ -1103,6 +2379,9 @@
                 }
               ],
               "description": "full | compact | rag | agent (default: the job's profile)",
+              "examples": [
+                "rag"
+              ],
               "title": "Profile"
             }
           },
@@ -1114,6 +2393,9 @@
             "schema": {
               "default": "md",
               "description": "md | json | txt | zip | docx (501)",
+              "examples": [
+                "md"
+              ],
               "title": "Format",
               "type": "string"
             }
@@ -1141,28 +2423,155 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
-              },
-              "application/zip": {},
-              "text/markdown": {},
-              "text/plain": {}
-            },
-            "description": "Successful Response"
-          },
-          "409": {
-            "description": "The job is not done"
-          },
-          "422": {
-            "content": {
-              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "type": "object"
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              },
+              "text/markdown": {
+                "example": "---\ntitle: Notes\n",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "The rendered result",
+            "headers": {
+              "X-Intomd-Truncated": {
+                "description": "true when content was cut",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Intomd-Warnings": {
+                "description": "Number of warnings",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Markdown-Tokens": {
+                "description": "Token count of the body",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Limit": {
+                "description": "Requests allowed in the most restrictive window checked",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "description": "Requests left in that window",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "description": "Unix time when the window resets",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_found`: Unknown job, attachment, or route."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`job_not_ready`: The job has not reached the state this call needs."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`rate_limited`: Too many requests, jobs, or concurrent jobs; see Retry-After."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
+          },
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_implemented`: The format exists in the contract but is not built yet (docx)."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "Rendered output",
         "tags": [
           "jobs"
@@ -1171,7 +2580,8 @@
     },
     "/v1/jobs/{job_id}/supply": {
       "post": {
-        "operationId": "supply_v1_jobs__job_id__supply_post",
+        "description": "When a job is in `needs_user_action` (for example no residential fetch node could fetch a video), upload the file as multipart `file`, or send caption JSON from the browser extension. The job returns to `queued`.",
+        "operationId": "supplyJobInput",
         "parameters": [
           {
             "in": "path",
@@ -1201,7 +2611,8 @@
                 "type": "object"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "202": {
@@ -1214,22 +2625,175 @@
             },
             "description": "Successful Response"
           },
-          "422": {
+          "400": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             },
-            "description": "Validation Error"
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unauthorized`: Missing or unknown API key, or bad fetch-node secret."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`forbidden`: The key or node may not do this (for example residential fetches)."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`not_found`: Unknown job, attachment, or route."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`job_not_ready`: The job has not reached the state this call needs."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`input_too_large`: Upload or fetched body over the caller's cap."
+          },
+          "415": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`unsupported_media_type`: Executable or unsupported input."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`queue_unavailable`: The queue is down or the instance is at its active-job cap."
           }
         },
+        "security": [
+          {},
+          {
+            "ApiKey": []
+          }
+        ],
         "summary": "Supply a file or caption JSON for a needs_user_action job",
         "tags": [
           "jobs"
         ]
       }
+    },
+    "/v1/warnings": {
+      "get": {
+        "description": "Every warning code a conversion can emit, with its default severity, a description, a suggested action, whether it means content was truncated, and the retired spellings (aliases) that normalize to it. `JobOut.warnings`, SSE `warning` events, and the sidecar use these codes.",
+        "operationId": "listWarningCodes",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarningsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`invalid_request`: Malformed body, unknown option, or invalid profile override."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "`internal_error`: Unexpected server error (logged with the request id)."
+          }
+        },
+        "security": [],
+        "summary": "The warning code registry",
+        "tags": [
+          "meta"
+        ]
+      }
     }
-  }
+  },
+  "servers": [
+    {
+      "description": "This instance",
+      "url": "https://intomd.example.com"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Create conversion jobs from uploads or URLs.",
+      "name": "convert"
+    },
+    {
+      "description": "Job state, server-sent events, results, attachments, supply, and purge.",
+      "name": "jobs"
+    },
+    {
+      "description": "Capabilities, the warning code registry, liveness, and readiness.",
+      "name": "meta"
+    },
+    {
+      "description": "Residential fetch-node protocol. Mounted only when INTOMD_FETCH_NODE_SECRET is set.",
+      "name": "fetch-node"
+    }
+  ]
 }

@@ -83,6 +83,10 @@ class Settings(BaseSettings):
     key_pepper: SecretStr = SecretStr("")
     jwt_secret: SecretStr = SecretStr("")
     ip_hash_salt: SecretStr = SecretStr("")
+    keys_file: Path | None = Field(
+        default=None,
+        description="keys.json of API keys with per-key limits (hashed; docs/api.md). Unset: database keys only.",
+    )
 
     # ---- Challenge ----
     turnstile_sitekey: str = ""
@@ -104,6 +108,10 @@ class Settings(BaseSettings):
     # ---- Observability ----
     log_level: Literal["debug", "info", "warning", "error"] = "info"
     log_format: Literal["json", "text"] = "json"
+    metrics_token: SecretStr | None = Field(
+        default=None,
+        description="Bearer token (16+ chars, secret) for GET /metrics. Unset: /metrics is not mounted.",
+    )
 
     @field_validator("fetch_node_cidr", "cors_origins", "trusted_proxies", mode="before")
     @classmethod
@@ -117,7 +125,7 @@ class Settings(BaseSettings):
             ipaddress.ip_network(cidr, strict=False)
         return value
 
-    @field_validator("fetch_node_secret", mode="before")
+    @field_validator("fetch_node_secret", "metrics_token", mode="before")
     @classmethod
     def _empty_secret_is_none(cls, value: object) -> object:
         return None if value in ("", None) else value
@@ -138,6 +146,8 @@ class Settings(BaseSettings):
                     )
         if self.fetch_node_secret is not None and len(self.fetch_node_secret.get_secret_value()) < 16:
             raise ValueError("INTOMD_FETCH_NODE_SECRET must be at least 16 characters")
+        if self.metrics_token is not None and len(self.metrics_token.get_secret_value()) < 16:
+            raise ValueError("INTOMD_METRICS_TOKEN must be at least 16 characters")
         return self
 
     # ---- Derived values ----

@@ -15,6 +15,7 @@ import logging
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from intomd_api import ircache
 from intomd_api import queue as q
@@ -32,6 +33,7 @@ from intomd_api.jobs import (
     InvalidTransition,
     JobGone,
 )
+from intomd_api.metrics import record_conversion
 from intomd_api.rendering import RenderUnavailable, render_cached
 from intomd_api.services import Services
 from intomd_api.settings import Settings
@@ -147,6 +149,20 @@ def _convert(services: Services, job_id: str) -> None:
     _finish(services, job_id, outcome.result_json)
 
 
+def warning_codes(warnings: list[Any]) -> list[str]:
+    """Canonical warning codes in first-seen order, without duplicates (unknown codes become `other`)."""
+    from intomd.warnings.codes import normalize_code
+
+    seen: dict[str, None] = {}
+    for w in warnings:
+        try:
+            code = normalize_code(str(w.kind)).value
+        except ValueError:
+            code = "other"
+        seen.setdefault(code, None)
+    return list(seen)
+
+
 def _finish(services: Services, job_id: str, result_json: str) -> None:
     from intomd.ir import ConversionResult
 
@@ -154,6 +170,8 @@ def _finish(services: Services, job_id: str, result_json: str) -> None:
     result = ConversionResult.model_validate_json(result_json)
     services.blobs.put_bytes(ir_key(job_id), result_json.encode("utf-8"))
     warnings = result.all_warnings
+    codes = warning_codes(warnings)
+    record_conversion(services.state, result.converter_id, result.metrics.duration_seconds, codes)
     row = jobs.transition(
         job_id,
         RENDERING,
@@ -164,6 +182,7 @@ def _finish(services: Services, job_id: str, result_json: str) -> None:
         ir_cache_key=ircache.ir_cache_key(str(result.document.schema_version), result.converter_id),
         mime=result.input_ref.mime,
         warnings_count=len(warnings),
+        warning_codes=json.dumps(codes),
         truncated=result.truncated,
         metrics_json=result.metrics.model_dump_json(),
     )

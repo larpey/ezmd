@@ -2,7 +2,8 @@
 (docs/spec/part1.md section 8.1).
 
 The child applies POSIX resource limits (address space, CPU, process count, file size) before it
-imports any engine, converts through `intomd.pipeline.convert_ref`, and writes the IR as JSON
+imports any engine, builds `intomd.library.Options` from the stored options, converts through
+`intomd.pipeline.convert_ref`, and writes the IR as JSON
 (never pickle) plus a small status file. The parent enforces the wall-clock limit with SIGKILL
 (TerminateProcess on Windows) after `max_seconds + 30`, so a hung or crashing engine only takes
 down the child.
@@ -94,7 +95,8 @@ def child_main(raw: dict[str, Any]) -> None:
 
     from intomd.inputs import FetchRequired, InputRef, InputTooLarge
     from intomd.pipeline import UnsupportedMediaType, convert_ref
-    from intomd.registry import ConversionError, ConvertOptions
+    from intomd.registry import ConversionError
+    from intomd_api.options import to_convert_options
 
     try:
         body = Path(req.input_path)
@@ -108,7 +110,7 @@ def child_main(raw: dict[str, Any]) -> None:
             declared_mime=req.declared_mime,
             max_bytes=req.max_bytes,
         )
-        options = ConvertOptions(**req.convert_options, max_seconds=req.max_seconds)
+        options = to_convert_options(req.convert_options, max_seconds=req.max_seconds)
         result = convert_ref(ref, options, converter_id=req.converter_id)
         Path(req.out_path).write_text(result.model_dump_json(), encoding="utf-8")
         _write_status(req, {"status": "ok"})

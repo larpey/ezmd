@@ -243,3 +243,9 @@ Task: P1-T09
 Status: accepted
 Decision: The CLI is a thin client over `intomd.library` (convert/batch/doctor/capabilities/version/detect/serve, config file with env and flag precedence, remote mode over REST, `--json` on failure). Interactive default profile is `compact` only when Markdown goes to a terminal; file and machine output default to `full` (part4 4.0 rule 3). Batch idempotency compares the input sha256 with the previous manifest line and the sidecar's `source_hash` (the spec's `content_hash` hashes the output, so it cannot be checked before converting). Exit code 3 = partial success (D-0017). Details and alternatives: `docs/decisions/P1-T09.md`.
 Deferred: an `Options.engines` per-family preference so the config `[engines]` table applies per input (today `--engine` maps to a single forced converter).
+
+## D-0023: API additions (P1-T10)
+Date: 2026-10-08
+Task: P1-T10
+Status: accepted
+Decision: REST options are derived from `intomd.library.Options` (client-settable subset plus hostile-input caps; server-controlled fields listed with reasons; a drift test fails on any unclassified field). API keys also load from `INTOMD_KEYS_FILE` (keys.json; HMAC-SHA256 with the pepper; per-key limits, IP/UA restrictions, expiry; hot reload keeps the last good file). Host-only `intomd-admin` CLI (keys, jobs, reap); no admin HTTP endpoints (part1 7.4). `/metrics` exists only when `INTOMD_METRICS_TOKEN` (16+ chars) is set and requires it as a bearer token; counters live in Redis so API and workers share them. `GET /v1/warnings` and `JobOut.warnings` added (deferred by D-0017). OpenAPI: operationId/summary/description/tag/security/error responses on every route; Spectral 6.15.0 clean; a Python lint test runs on every test run. Name `INTOMD_KEYS_FILE` (Part 4 says INTOMD_API_KEYS_FILE) kept for continuity. Details: `docs/decisions/P1-T10.md`.

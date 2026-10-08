@@ -1,5 +1,6 @@
 """intomd_api.state: ephemeral shared state: sliding-window rate limits, gauges, fetch-node
-heartbeats, and the per-job event buffer with pub/sub (docs/spec/part1.md sections 7.2, 7.3, 7.6).
+heartbeats, the per-job event buffer with pub/sub (docs/spec/part1.md sections 7.2, 7.3, 7.6), and
+the cumulative metric counters behind GET /metrics (shared by the API and every worker process).
 
 `RedisState` is used with `INTOMD_QUEUE=rq` (and with fakeredis in tests). `MemoryState` serves the
 single-process inline mode where no Redis exists.
@@ -18,6 +19,7 @@ from typing import Any, Protocol
 EVENT_BUFFER_CAP = 500
 EVENT_TTL_SECONDS = 7 * 24 * 3600
 NODE_ONLINE_SECONDS = 60
+METRICS_KEY = "intomd:metrics"
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +65,8 @@ class StateBackend(Protocol):
     def events_since(self, job_id: str, last_id: int) -> list[Event]: ...
     def subscribe(self, job_id: str) -> Subscription: ...
     def delete_job(self, job_id: str) -> None: ...
+    def metric_add_many(self, increments: dict[str, float]) -> None: ...
+    def metric_snapshot(self) -> dict[str, float]: ...
 
 
 # ---------------------------------------------------------------------------
@@ -98,9 +102,19 @@ class MemoryState:
         self._nodes: dict[str, float] = {}
         self._events: dict[str, list[Event]] = defaultdict(list)
         self._seq: dict[str, int] = defaultdict(int)
+        self._metrics: dict[str, float] = defaultdict(float)
 
     def ping(self) -> bool:
         return True
+
+    def metric_add_many(self, increments: dict[str, float]) -> None:
+        with self._lock:
+            for name, amount in increments.items():
+                self._metrics[name] += amount
+
+    def metric_snapshot(self) -> dict[str, float]:
+        with self._lock:
+            return dict(self._metrics)
 
     def rate_hit(self, key: str, limit: int, window_s: int) -> RateResult:
         now = time.time()
@@ -199,6 +213,22 @@ class RedisState:
             return bool(self.redis.ping())
         except Exception:
             return False
+
+    def metric_add_many(self, increments: dict[str, float]) -> None:
+        if not increments:
+            return
+        pipe = self.redis.pipeline(transaction=False)
+        for name, amount in increments.items():
+            pipe.hincrbyfloat(METRICS_KEY, name, amount)
+        pipe.execute()
+
+    def metric_snapshot(self) -> dict[str, float]:
+        raw = self.redis.hgetall(METRICS_KEY)
+        out: dict[str, float] = {}
+        for k, v in raw.items():
+            key = k.decode() if isinstance(k, bytes) else str(k)
+            out[key] = float(v.decode() if isinstance(v, bytes) else v)
+        return out
 
     def rate_hit(self, key: str, limit: int, window_s: int) -> RateResult:
         now = time.time()
