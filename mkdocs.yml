@@ -1,0 +1,70 @@
+site_name: intomd
+site_description: Convert anything to LLM-ready Markdown. No silent loss. Apache-2.0.
+repo_url: https://github.com/larpey/intomd
+repo_name: larpey/intomd
+edit_uri: edit/main/docs/
+docs_dir: docs
+site_dir: site
+strict: true
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Home: index.md
+  - Getting started:
+      - Quickstart: quickstart.md
+      - Output format: output-format.md
+  - Self-host:
+      - Self-hosting and configuration: selfhost.md
+      - Security: security.md
+  - API:
+      - REST API, jobs, and SSE: api.md
+      - Errors: errors.md
+  - Converters:
+      - Converter matrix: converters/README.md
+      - Writing a converter plugin: plugins.md
+  - Reference:
+      - CLI: cli.md
+      - Warning codes: warnings.md
+  - Legal:
+      - Licenses: licenses.md
+  - Specification:
+      - Overview: spec/README.md
+      - "Part 1: Mission, rules, foundation": spec/part1.md
+      - "Part 2: Converter families": spec/part2.md
+      - "Part 3: Media, OCR, output format": spec/part3.md
+      - "Part 4: Interfaces, deployment, roadmap": spec/part4.md
