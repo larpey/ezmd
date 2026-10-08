@@ -41,10 +41,6 @@ up() {
   env_set INTOMD_ANON_RESULT_RATELIMIT_MAX 2000
   env_set INTOMD_ANON_SSE_MAX 50
   env_set INTOMD_ALLOW_PRIVATE_NETWORKS false
-  # env.example ships `INTOMD_WEB_DIST=` (empty); through env_file that empty value replaces the api
-  # image's ENV and the API falls back to a path that does not exist in the image, so `/` answers 404.
-  # Reported in docs/decisions/P1-T15.md; pin the image path until deploy/ is fixed.
-  [ -n "$(env_get INTOMD_WEB_DIST)" ] || env_set INTOMD_WEB_DIST /app/apps/web/dist
   bash "$DEPLOY_DIR/bootstrap.sh" --plain-http --build --key-out "$KEY_FILE"
 }
 

@@ -121,5 +121,6 @@ def test_compose_core_profile_shape() -> None:
         svc = services[name]
         assert svc["user"] == "10001:10001", name
         assert svc["environment"]["INTOMD_BLOB_FS_ROOT"] == "/var/lib/intomd-blobs", name
+        assert svc["environment"]["INTOMD_WEB_DIST"] == "${INTOMD_WEB_DIST:-/app/apps/web/dist}", name
         assert svc["env_file"][0]["path"] == "${INTOMD_ENV_FILE:-.env}", name
         assert "egress" not in svc["networks"] or name == "worker-fetch", f"{name} must not have egress"

@@ -7,7 +7,7 @@
 #   deploy/smoke.sh --no-up               test the running stack (no compose up)
 #   deploy/smoke.sh --remote https://host test an existing instance (no bring-up, no container checks)
 #
-# Checks: /readyz, upload of a small text file to /v1/convert, job polling until `done`,
+# Checks: /readyz, the web UI at / (200 HTML), upload of a small text file to /v1/convert, job polling until `done`,
 # Markdown result contains the expected heading, JSON result parses, and (local mode) the
 # worker-default container has no route to the internet and every app container runs as
 # uid 10001 with a read-only root filesystem and no capabilities. Exits non-zero on any failure.
@@ -107,6 +107,13 @@ until [ "$("${CURL[@]}" -o /dev/null -w '%{http_code}' "$BASE/readyz" 2>/dev/nul
   sleep 2
 done
 ok "readyz $BASE"
+
+# 1b. the web UI is served at /
+ui="$("${CURL[@]}" -o /dev/null -w '%{http_code} %{content_type}' "$BASE/")" || fail "GET / failed"
+case "$ui" in
+  "200 text/html"*) ok "web UI at /" ;;
+  *) fail "GET / returned '$ui'; expected 200 text/html (is INTOMD_WEB_DIST pointing at the built UI?)" ;;
+esac
 
 # 2. convert a small text file
 TMPD="$(mktemp -d)"

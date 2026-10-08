@@ -154,7 +154,7 @@ Field `foo_bar` is read from `INTOMD_FOO_BAR`. Comma lists are plain comma-separ
 | `INTOMD_PUBLIC_MODE` | bool | `false` | Public-instance mode. Requires `INTOMD_JWT_SECRET` and `INTOMD_KEY_PEPPER` of at least 32 bytes, requires a Turnstile challenge for URL jobs, and never deduplicates anonymous jobs across clients. |
 | `INTOMD_PUBLIC_URL` | str | `http://localhost:8000` | Externally visible base URL. Used for links in error documents and to decide whether cookies are marked `Secure`. |
 | `INTOMD_DATA_DIR` | path | `~/.intomd` | Base directory for the default SQLite database and filesystem blob store. |
-| `INTOMD_WEB_DIST` | path | unset | Directory with the built web UI (`apps/web/dist`) to serve at `/`. Unset: no UI is served. |
+| `INTOMD_WEB_DIST` | path | unset | Directory with the built web UI (`apps/web/dist`) to serve at `/`. Unset: `apps/web/dist` next to the source tree when present, else no UI. The compose stack defaults it to the image's `/app/apps/web/dist`. |
 | `INTOMD_SCHEDULER_ENABLED` | bool | `true` | Run the retention purge inside the API process. Compose sets `false` and runs the separate `purge` service instead. |
 
 ### Storage

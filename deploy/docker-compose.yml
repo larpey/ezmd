@@ -30,6 +30,9 @@ x-app-env: &app-env
   INTOMD_TMP: /tmp
   INTOMD_DATA_DIR: /var/lib/intomd
   INTOMD_BLOB_FS_ROOT: /var/lib/intomd-blobs
+  # env_file would let env.example's empty INTOMD_WEB_DIST= replace the image ENV (404 on /); ':-' keeps
+  # the image path unless the env file names a real directory.
+  INTOMD_WEB_DIST: ${INTOMD_WEB_DIST:-/app/apps/web/dist}
 
 x-app: &app
   <<: *hardening

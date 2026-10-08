@@ -38,7 +38,10 @@ DESCRIPTIONS: dict[str, str] = {
     "public_url": "Externally visible base URL. Used for links in error documents and to decide whether "
     "cookies are marked `Secure`.",
     "data_dir": "Base directory for the default SQLite database and filesystem blob store.",
-    "web_dist": "Directory with the built web UI (`apps/web/dist`) to serve at `/`. Unset: no UI is served.",
+    "web_dist": (
+        "Directory with the built web UI (`apps/web/dist`) to serve at `/`. Unset: `apps/web/dist` next to the "
+        "source tree when present, else no UI. The compose stack defaults it to the image's `/app/apps/web/dist`."
+    ),
     "scheduler_enabled": "Run the retention purge inside the API process. Compose sets `false` and runs the "
     "separate `purge` service instead.",
     "database_url": "Database URL. Unset: SQLite at `<data_dir>/intomd.db`.",
