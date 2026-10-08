@@ -1,7 +1,8 @@
 [project]
 name = "intomd-converters"
-version = "0.0.1"
+version = "0.1.0rc1"
 description = "Built-in converter families for intomd."
+readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 # Imports `intomd` at runtime; the dependency is declared by `intomd` itself to avoid a
@@ -22,6 +23,13 @@ dependencies = [
     "trafilatura>=2.3.1,<3",
 ]
 
+
+[project.urls]
+Homepage = "https://github.com/larpey/intomd"
+Documentation = "https://github.com/larpey/intomd/tree/main/docs"
+Repository = "https://github.com/larpey/intomd"
+Issues = "https://github.com/larpey/intomd/issues"
+Changelog = "https://github.com/larpey/intomd/blob/main/CHANGELOG.md"
 [project.optional-dependencies]
 # 7z archives (docs/spec/part2.md section 12): py7zr is LGPL-2.1-or-later, used unmodified as a separate
 # package (dynamic use), kept out of the default install as the spec requires.

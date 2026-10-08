@@ -1,19 +1,26 @@
 [project]
 name = "intomd-mcp"
-version = "0.0.1"
+version = "0.1.0rc1"
 description = "MCP server for intomd: convert files, URLs and text to LLM-ready Markdown from any MCP client."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 authors = [{ name = "intomd contributors" }]
 dependencies = [
-    "intomd",
+    "intomd==0.1.0rc1",
     "mcp>=2.2,<3",
     "httpx>=0.28",
     "starlette>=0.48",
     "uvicorn>=0.31",
 ]
 
+
+[project.urls]
+Homepage = "https://github.com/larpey/intomd"
+Documentation = "https://github.com/larpey/intomd/tree/main/docs"
+Repository = "https://github.com/larpey/intomd"
+Issues = "https://github.com/larpey/intomd/issues"
+Changelog = "https://github.com/larpey/intomd/blob/main/CHANGELOG.md"
 [project.scripts]
 intomd-mcp = "intomd_mcp.cli:main"
 

@@ -1485,7 +1485,7 @@ wheels = [
 
 [[package]]
 name = "intomd"
-version = "0.0.1"
+version = "0.1.0rc1"
 source = { editable = "packages/core" }
 dependencies = [
     { name = "httpx" },
@@ -1549,7 +1549,7 @@ provides-extras = ["docs", "data", "7z", "mcp", "all", "nonfree"]
 
 [[package]]
 name = "intomd-api"
-version = "0.0.1"
+version = "0.1.0rc1"
 source = { editable = "apps/api" }
 dependencies = [
     { name = "alembic" },
@@ -1589,7 +1589,7 @@ provides-extras = ["s3"]
 
 [[package]]
 name = "intomd-converters"
-version = "0.0.1"
+version = "0.1.0rc1"
 source = { editable = "packages/converters" }
 dependencies = [
     { name = "charset-normalizer" },
@@ -1647,7 +1647,7 @@ provides-extras = ["7z", "docs", "data", "nonfree"]
 
 [[package]]
 name = "intomd-fetch-node"
-version = "0.0.1"
+version = "0.1.0rc1"
 source = { editable = "apps/fetch-node" }
 dependencies = [
     { name = "httpx" },
@@ -1658,7 +1658,7 @@ requires-dist = [{ name = "httpx", specifier = ">=0.28" }]
 
 [[package]]
 name = "intomd-mcp"
-version = "0.0.1"
+version = "0.1.0rc1"
 source = { editable = "packages/mcp" }
 dependencies = [
     { name = "httpx" },

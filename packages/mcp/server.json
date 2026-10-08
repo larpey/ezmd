@@ -9,13 +9,13 @@
     "subfolder": "packages/mcp"
   },
   "websiteUrl": "https://github.com/larpey/intomd",
-  "version": "0.0.1",
+  "version": "0.1.0rc1",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "intomd-mcp",
-      "version": "0.0.1",
+      "version": "0.1.0rc1",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"
@@ -25,7 +25,12 @@
           "name": "INTOMD_PROFILE",
           "description": "Default output profile: full, compact, rag or agent",
           "default": "agent",
-          "choices": ["full", "compact", "rag", "agent"]
+          "choices": [
+            "full",
+            "compact",
+            "rag",
+            "agent"
+          ]
         },
         {
           "name": "INTOMD_MCP_ALLOWED_DIRS",

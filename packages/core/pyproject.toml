@@ -1,13 +1,13 @@
 [project]
 name = "intomd"
-version = "0.0.1"
+version = "0.1.0rc1"
 description = "Convert anything to LLM-ready Markdown."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 authors = [{ name = "intomd contributors" }]
 dependencies = [
-    "intomd-converters",
+    "intomd-converters==0.1.0rc1",
     "pydantic>=2.9",
     "pyyaml>=6.0",
     "tiktoken>=0.8",
@@ -21,6 +21,13 @@ dependencies = [
     "markdown-it-py>=3.0",
 ]
 
+
+[project.urls]
+Homepage = "https://github.com/larpey/intomd"
+Documentation = "https://github.com/larpey/intomd/tree/main/docs"
+Repository = "https://github.com/larpey/intomd"
+Issues = "https://github.com/larpey/intomd/issues"
+Changelog = "https://github.com/larpey/intomd/blob/main/CHANGELOG.md"
 [project.optional-dependencies]
 # docs/spec/part4.md 4.3.3: users install `intomd[<extra>]`; the converter extras live on intomd-converters
 # (D-0003), so intomd forwards them. media, ocr, web and fetch arrive with their phases; server needs intomd-api,

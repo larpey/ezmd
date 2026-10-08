@@ -1,6 +1,6 @@
 [project]
 name = "intomd-api"
-version = "0.0.1"
+version = "0.1.0rc1"
 description = "intomd HTTP API and RQ workers."
 requires-python = ">=3.12"
 license = "Apache-2.0"

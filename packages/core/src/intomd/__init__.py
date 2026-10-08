@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-__version__ = "0.0.1"
+__version__ = "0.1.0rc1"
 
 __all__ = [
     "Options",
