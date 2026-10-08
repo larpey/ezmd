@@ -1,0 +1,3 @@
+[converters]
+"text.plain" = 0.95
+"text.markdown_passthrough" = 0.95

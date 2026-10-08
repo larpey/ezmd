@@ -176,6 +176,9 @@ class ConverterRegistry:
     def register(self, converter: Converter, *, source: str = "builtin") -> None:
         if converter.id in self._regs:
             raise ValueError(f"duplicate converter id {converter.id}")
+        if isinstance(converter, Unavailable):
+            self._regs[converter.id] = Registration(converter=converter, source=source, import_error=converter.reason)
+            return
         self._regs[converter.id] = Registration(converter=converter, source=source)
 
     def set_chain(self, mime: str, converter_ids: list[str]) -> None:
@@ -381,6 +384,38 @@ def _timed_out(partial: Document) -> Document:
     return doc.finalize()
 
 
+class Unavailable:
+    """A built-in converter whose optional engine is not installed (docs/spec/part4.md 4.3.3).
+
+    Families return these from `converters()` instead of raising, so `intomd capabilities` and
+    `GET /v1/capabilities` list the converter with the reason and the extra that would enable it,
+    and resolution falls through to the next converter in the chain.
+    """
+
+    def __init__(
+        self,
+        *,
+        id: str,
+        family: str,
+        reason: str,
+        requires_extras: tuple[str, ...] = (),
+        mimes: tuple[str, ...] = (),
+    ) -> None:
+        self.id = id
+        self.family = family
+        self.reason = reason
+        self.priority = -1
+        self.experimental = False
+        self.requires_extras = requires_extras
+        self.mimes = mimes
+
+    def can_handle(self, ref: InputRef) -> float:
+        return 0.0
+
+    def convert(self, ref: InputRef, options: ConvertOptions) -> Document:
+        raise ConversionError(self.reason, user_message="This converter is not installed.")
+
+
 class _Broken:
     """Placeholder so `GET /v1/capabilities` can list plugins that failed to import."""
 
@@ -411,9 +446,9 @@ def default_registry() -> ConverterRegistry:
 
         register_builtins(reg)
         reg.load_entry_points()
-        from intomd.chains import DEFAULT_CHAINS
+        from intomd.chains import default_chains
 
-        for mime, ids in DEFAULT_CHAINS.items():
+        for mime, ids in default_chains().items():
             reg.set_chain(mime, ids)
         _default = reg
     return _default

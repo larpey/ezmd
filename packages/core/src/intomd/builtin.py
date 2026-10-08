@@ -23,4 +23,4 @@ def register_builtins(reg: ConverterRegistry) -> None:
         log.warning("intomd-converters is not installed; no built-in converters: %s", e)
         return
     for conv in builtin_converters():
-        reg.register(conv, source="builtin")
+        reg.register(conv, source="builtin")  # Unavailable entries are recorded with their reason

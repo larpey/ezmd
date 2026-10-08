@@ -189,3 +189,27 @@ def test_deadline() -> None:
     assert 99 < o.deadline() <= 100
     o2 = ConvertOptions(max_seconds=0)
     assert o2.deadline() <= 0
+
+
+def test_unavailable_converter_is_listed_and_skipped() -> None:
+    from intomd.registry import Unavailable
+
+    reg = ConverterRegistry()
+    reg.register(
+        Unavailable(id="text.heavy", family="text", reason="needs the [docs] extra", requires_extras=("docs",))
+    )
+    reg.register(Fake("text.light", 0.5))
+    reg.set_chain("text/plain", ["text.heavy", "text.light"])
+    regs = {r.converter.id: r for r in reg.registrations()}
+    assert regs["text.heavy"].import_error == "needs the [docs] extra"
+    assert [c.id for c in reg.available()] == ["text.light"]
+    assert reg.convert(ref(), ConvertOptions()).converter_id == "text.light"
+
+
+def test_family_discovery_and_chains() -> None:
+    import intomd_converters
+
+    assert "text" in intomd_converters.family_names()
+    ids = {c.id for c in intomd_converters.builtin_converters()}
+    assert {"text.plain", "text.markdown_passthrough"} <= ids
+    assert intomd_converters.builtin_chains()["text/markdown"][0] == "text.markdown_passthrough"

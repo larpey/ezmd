@@ -219,3 +219,11 @@ Task: P0-T11
 Status: accepted
 Decision: (1) The blobs volume mounts at `/var/lib/intomd-blobs` (`INTOMD_BLOB_FS_ROOT`) instead of inside the state volume: a volume nested in another volume makes every container start create the mountpoint in the shared parent, and concurrent starts fail with "file exists". (2) `deploy/env.example` keeps comments on their own lines: Compose's env-file parser returns `# comment` as the value of an empty variable, which crashed Settings validation; a test enforces this. (3) CI's smoke job sets `INTOMD_WORKER_DEFAULT_CPUS=1.5` for 2-CPU runners. (4) pandoc is dropped from CI installs until the Office converters need it (a stalled mirror download cost 11 minutes).
 Consequences: local and CI smoke run against the real template.
+
+## D-0020: Converter families self-register; parallel Phase 1 build on task branches
+Date: 2026-10-08
+Task: P1 (setup)
+Status: accepted
+Context: Phase 1 adds about ten converter families. A single shared `builtin_converters()` list, `DEFAULT_CHAINS` dict, and `fixtures/thresholds.toml` would make every family edit the same lines.
+Decision: Each `intomd_converters.<family>` package exposes `converters()` (returning `Converter` or `intomd.registry.Unavailable` for missing extras, which capabilities lists with the reason) and `CHAINS`; families are discovered with pkgutil and a failing family is isolated. A mime may have a chain in only one family (enforced). Thresholds live in `fixtures/<family>/thresholds.toml`. Families are built in parallel by subagents in separate git worktrees on `task/P1-Txx-*` branches; each records its approach notes in `docs/decisions/P1-Txx.md`, which the orchestrator folds into this log at merge, and goldens get a Skeptic review at merge time.
+Consequences: adding a family touches only its own package, fixtures directory, and optional-dependency group; `uv.lock` is regenerated at each merge.

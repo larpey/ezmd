@@ -112,8 +112,17 @@ def discover(root: Path) -> list[Fixture]:
 
 
 def thresholds(root: Path) -> tuple[float, dict[str, float]]:
+    """Root `thresholds.toml` sets the default; each `fixtures/<family>/thresholds.toml` adds a
+    `[converters]` table for that family's converter ids (D-0020). An id defined twice is an error."""
     data = tomllib.loads((root / "thresholds.toml").read_text(encoding="utf-8"))
-    return float(data.get("default", 0.85)), {k: float(v) for k, v in data.get("converters", {}).items()}
+    per = {k: float(v) for k, v in data.get("converters", {}).items()}
+    for fam in sorted(root.glob("*/thresholds.toml")):
+        extra = tomllib.loads(fam.read_text(encoding="utf-8")).get("converters", {})
+        for k, v in extra.items():
+            if k in per:
+                raise FixtureError(f"threshold for {k} defined twice ({fam})")
+            per[k] = float(v)
+    return float(data.get("default", 0.85)), per
 
 
 def threshold_for(fx: Fixture, root: Path) -> float:

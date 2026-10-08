@@ -1,15 +1,27 @@
 """intomd.chains: default fallback chains per mime type (docs/spec/part1.md section 5.3).
 
-Exact keys are matched before wildcard keys (`audio/*`). Part 2 fills this per family.
+Exact keys are matched before wildcard keys (`audio/*`). Each converter family declares the chains for
+the mimes it owns in `intomd_converters.<family>.CHAINS` (D-0020); `DEFAULT_CHAINS` holds only chains
+that span families or exist without intomd-converters installed.
 """
 
 from __future__ import annotations
 
-DEFAULT_CHAINS: dict[str, list[str]] = {
-    "text/plain": ["text.plain"],
-    "text/markdown": ["text.markdown_passthrough", "text.plain"],
-    # Filled by Part 2. Examples of the intended shape:
-    # "application/pdf": ["documents.docling_pdf", "documents.pypdfium2_text", "images.ocr_pages"],
-    # "text/html": ["web.trafilatura", "web.readability", "web.html_raw"],
-    # "audio/*": ["media.asr_local", "media.asr_hosted"],
-}
+import logging
+
+log = logging.getLogger(__name__)
+
+DEFAULT_CHAINS: dict[str, list[str]] = {}
+
+
+def default_chains() -> dict[str, list[str]]:
+    chains = dict(DEFAULT_CHAINS)
+    try:
+        from intomd_converters import builtin_chains
+    except ImportError:
+        return chains
+    for mime, ids in builtin_chains().items():
+        if mime in chains:
+            log.warning("family chain for %s overrides the core default", mime)
+        chains[mime] = ids
+    return chains
