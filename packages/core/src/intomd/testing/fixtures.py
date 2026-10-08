@@ -13,6 +13,7 @@ notes = "what this fixture tests"
 expected_errors = []              # error-severity warning codes that are expected (others are hard failures)
 requires = ["docs"]               # optional extras the fixture needs; skipped when not installed
 requires_modules = ["pyarrow"]    # optional importable modules the fixture needs; skipped when missing
+requires_binaries = ["soffice"]   # optional executables on PATH the fixture needs; skipped when missing
 
 [provenance]                       # required (part4 4.14.7)
 origin = "self-generated"         # self-generated | public-domain | cc0 | cc-by
@@ -27,6 +28,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import shutil
 import time
 import tomllib
 from dataclasses import dataclass, field
@@ -109,11 +111,16 @@ def _importable(module: str) -> bool:
 
 
 def missing_requirements(meta: dict[str, Any]) -> str | None:
-    """Skip reason for `requires` (extras, probed through EXTRA_PROBES) and `requires_modules`."""
+    """Skip reason for `requires` (extras, probed through EXTRA_PROBES), `requires_modules`, and
+    `requires_binaries` (executables looked up on PATH)."""
     extras = meta.get("requires", [])
     modules = meta.get("requires_modules", [])
-    if not isinstance(extras, list) or not isinstance(modules, list):
-        return "meta.toml `requires` and `requires_modules` must be lists of strings"
+    binaries = meta.get("requires_binaries", [])
+    if not all(isinstance(v, list) for v in (extras, modules, binaries)):
+        return "meta.toml `requires`, `requires_modules` and `requires_binaries` must be lists of strings"
+    for binary in binaries:
+        if shutil.which(str(binary)) is None:
+            return f"requires the {binary!r} executable on PATH"
     for extra in extras:
         probe = EXTRA_PROBES.get(str(extra))
         if probe is None:

@@ -76,9 +76,9 @@ def _archive() -> ConversionResult:
 def test_children_render_as_sections_after_the_parent() -> None:
     out = render(_archive(), "full")
     body = out.body
-    order = [body.index(s) for s in ("## 1 Bundle {#sec-1}", "## 2 docs/a.md {#sec-2}", "## 3 b.txt {#sec-3}")]
+    order = [body.index(s) for s in ("## 1 Bundle {#sec-1}", "## 2 docs/a.md: Alpha {#sec-2}", "## 3 b.txt {#sec-3}")]
     assert order == sorted(order)
-    assert "# Alpha" not in body  # the child's title H1 became the section heading
+    assert "# Alpha\n" not in body  # the title H1 is folded into the section heading, not dropped
     assert "### 2.1 Part one {#sec-2-1}" in body
     assert "### 2.2 inner/c.txt {#sec-2-2}" in body
     assert "See note[^1]" in body and "[^1]: Alpha footnote." in body

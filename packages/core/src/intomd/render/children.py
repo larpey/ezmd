@@ -195,11 +195,16 @@ def _walk(doc: Document, parts: list[str], depth: int, flat: _Flat) -> None:
         title = _title(child)
         consumed = _consumed(child, title)
         section_id = prefix + "section"
+        # A consumed title heading must not vanish from the body: the section heading carries it
+        # (`README.md: Survey Kit`) unless it would only repeat the path.
+        label = path
+        if consumed and title and title.casefold() not in (path.casefold(), path.rsplit("/", 1)[-1].casefold()):
+            label = f"{path}: {title}"
         flat.blocks.append(
             Heading(
                 id=section_id,
                 level=min(depth, 6),
-                spans=[InlineSpan(text=path)],
+                spans=[InlineSpan(text=label)],
                 provenance=Provenance(source=child.metadata.source or path, path=path),
                 attrs={CHILD_SECTION_ATTR: path},
             )

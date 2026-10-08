@@ -77,3 +77,11 @@ def test_typescript_is_not_misnamed() -> None:
     src = b"export function greet(name: string): string {\n  return `Hello, ${name}`;\n}\n" * 5
     r = convert_ref(InputRef.from_bytes(src, filename="greet.ts"), converter_id="text.plain")
     assert WarningKind.MISNAMED_FILE not in [w.kind for w in r.all_warnings]
+
+
+def test_fixture_requires_binaries() -> None:
+    from intomd.testing.fixtures import missing_requirements
+
+    assert missing_requirements({"requires_binaries": ["definitely-not-a-real-tool-xyz"]}) is not None
+    assert missing_requirements({"requires_binaries": []}) is None
+    assert missing_requirements({"requires_binaries": "soffice"}) is not None
