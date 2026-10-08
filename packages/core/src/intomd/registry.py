@@ -244,7 +244,16 @@ class ConverterRegistry:
                 if score > 0:
                     ordered.append((score, reg.converter))
             if ordered:
-                return ordered
+                # A chain pins the order of its own members. A converter outside the chain that is more
+                # confident than every member (a specialist, e.g. code.source_file for a Rust file that
+                # detection called text/plain) still goes first; the chain stays as its fallback (D-0021).
+                best = max(score for score, _ in ordered)
+                in_chain = {c.id for _, c in ordered} | set(chain)
+                specialists = [
+                    (sc, c) for c in self.available() if c.id not in in_chain and (sc := c.can_handle(ref)) > best
+                ]
+                specialists.sort(key=lambda sc: (-sc[0], -sc[1].priority, sc[1].id))
+                return [*specialists, *ordered]
         scored = [(c.can_handle(ref), c) for c in self.available()]
         scored = [(s, c) for s, c in scored if s > 0]
         scored.sort(key=lambda sc: (-sc[0], -sc[1].priority, sc[1].id))

@@ -213,3 +213,12 @@ def test_family_discovery_and_chains() -> None:
     ids = {c.id for c in intomd_converters.builtin_converters()}
     assert {"text.plain", "text.markdown_passthrough"} <= ids
     assert intomd_converters.builtin_chains()["text/markdown"][0] == "text.markdown_passthrough"
+
+
+def test_specialist_outranks_chain_members() -> None:
+    reg = registry(Fake("text.generic", 0.9), Fake("code.special", 0.95), Fake("code.weak", 0.3))
+    reg.set_chain("text/plain", ["text.generic"])
+    assert [c.id for _, c in reg.candidates(ref())] == ["code.special", "text.generic"]
+    reg2 = registry(Fake("text.generic", 0.9), Fake("code.weaker", 0.5))
+    reg2.set_chain("text/plain", ["text.generic"])
+    assert [c.id for _, c in reg2.candidates(ref())] == ["text.generic"]

@@ -69,3 +69,11 @@ def test_fixture_input_url_and_options(tmp_path: Path) -> None:
     }
     r = convert_fixture(Fixture(path=d, meta=meta))
     assert r.input_ref.display == "https://example.org/a/page"
+
+
+def test_typescript_is_not_misnamed() -> None:
+    from intomd.ir import WarningKind
+
+    src = b"export function greet(name: string): string {\n  return `Hello, ${name}`;\n}\n" * 5
+    r = convert_ref(InputRef.from_bytes(src, filename="greet.ts"), converter_id="text.plain")
+    assert WarningKind.MISNAMED_FILE not in [w.kind for w in r.all_warnings]

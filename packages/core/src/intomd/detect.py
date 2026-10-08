@@ -81,6 +81,13 @@ _EXTENSION_MIMES: dict[str, str] = {
     ".epub": "application/epub+zip",
     ".ipynb": "application/x-ipynb+json",
     ".py": "text/x-python",
+    ".ts": "application/typescript",
+    ".mts": "application/typescript",
+    ".cts": "application/typescript",
+    ".tsx": "application/typescript",
+    ".js": "application/javascript",
+    ".mjs": "application/javascript",
+    ".cjs": "application/javascript",
     ".rtf": "application/rtf",
     ".eml": "message/rfc822",
 }
@@ -139,6 +146,37 @@ def extension_mime(name: str) -> str | None:
 
 def is_executable(mime: str) -> bool:
     return mime in EXECUTABLE_MIMES
+
+
+_TEXTUAL_APPLICATION = frozenset(
+    {
+        "application/json",
+        "application/jsonl",
+        "application/xml",
+        "application/yaml",
+        "application/toml",
+        "application/javascript",
+        "application/typescript",
+        "application/x-sh",
+        "application/x-httpd-php",
+        "application/sql",
+        "application/x-ipynb+json",
+        "application/rtf",
+    }
+)
+
+
+def is_textual(mime: str) -> bool:
+    """True for text formats (text/*, JSON/XML/YAML/TOML, source code mimes, +json/+xml suffixes)."""
+    return (
+        mime.startswith("text/")
+        or mime in _TEXTUAL_APPLICATION
+        or mime.endswith(("+json", "+xml"))
+        or (mime.startswith("application/x-") and mime.split("/", 1)[1][2:] in _CODE_SUBTYPES)
+    )
+
+
+_CODE_SUBTYPES = frozenset({"python", "rust", "golang", "ruby", "perl", "lua", "kotlin", "scala", "csharp", "dart"})
 
 
 class _Engines:

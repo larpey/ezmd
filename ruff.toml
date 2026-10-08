@@ -1,6 +1,6 @@
 line-length = 120
 target-version = "py312"
-extend-exclude = ["docs/spec", "fixtures/**/input.*", "**/node_modules", "apps/web", "packages/sdk-ts", "apps/extension"]
+extend-exclude = ["docs/spec", "fixtures/**/input.*", "fixtures/**/expected.*", "**/node_modules", "apps/web", "packages/sdk-ts", "apps/extension"]
 
 [lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "S", "C4", "SIM", "RUF"]

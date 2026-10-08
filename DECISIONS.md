@@ -227,3 +227,12 @@ Status: accepted
 Context: Phase 1 adds about ten converter families. A single shared `builtin_converters()` list, `DEFAULT_CHAINS` dict, and `fixtures/thresholds.toml` would make every family edit the same lines.
 Decision: Each `intomd_converters.<family>` package exposes `converters()` (returning `Converter` or `intomd.registry.Unavailable` for missing extras, which capabilities lists with the reason) and `CHAINS`; families are discovered with pkgutil and a failing family is isolated. A mime may have a chain in only one family (enforced). Thresholds live in `fixtures/<family>/thresholds.toml`. Families are built in parallel by subagents in separate git worktrees on `task/P1-Txx-*` branches; each records its approach notes in `docs/decisions/P1-Txx.md`, which the orchestrator folds into this log at merge, and goldens get a Skeptic review at merge time.
 Consequences: adding a family touches only its own package, fixtures directory, and optional-dependency group; `uv.lock` is regenerated at each merge.
+
+## D-0021: Specialist converters outrank a pinned chain; textual mime equivalence
+Date: 2026-10-08
+Task: P1-T03
+Status: accepted
+Context: The code family found that a Rust/Kotlin/C# file that Magika labels `text/plain` never reached `code.source_file`, because the `text/plain` chain pins `text.plain`; and that `.ts` mapped to MPEG-TS via mimetypes, producing a spurious `misnamed_file`.
+Decision: In `ConverterRegistry._ranked`, when a chain applies, any available converter outside the chain whose `can_handle` confidence is strictly greater than every chain member's goes first; the chain stays as the fallback. Detection maps .ts/.tsx/.mts/.cts to application/typescript and .js/.mjs/.cjs to application/javascript. `detect.is_textual()` treats text/*, JSON/XML/YAML/TOML, +json/+xml, and source-code mimes as one family for the declared-vs-detected and misnamed-file checks. Root ruff config excludes `fixtures/**/expected.*` (ruff was reformatting code fences in goldens). Tracked zero-byte junk files from shell redirects were removed and `tests/test_repo_hygiene.py` now fails on any empty tracked file.
+Alternatives: add `code.source_file` to the text family's chain (couples two families); per-extension chains (chains are per mime).
+Consequences: chains still fully decide order among their own members.

@@ -6,7 +6,7 @@ contain conversion logic of their own (docs/spec/part4.md section 4.0 rule 1).
 
 from __future__ import annotations
 
-from intomd.detect import EMPTY_MIME, detect, is_executable, normalize_mime
+from intomd.detect import EMPTY_MIME, detect, is_executable, is_textual, normalize_mime
 from intomd.inputs import InputRef
 from intomd.ir import ConversionResult, Warning, WarningKind
 from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions, default_registry
@@ -52,7 +52,7 @@ def convert_ref(
         declared
         and declared not in ("application/octet-stream", detected)
         and detected not in (EMPTY_MIME, "text/x-uri")
-        and not (declared.startswith("text/") and detected.startswith("text/"))
+        and not (is_textual(declared) and is_textual(detected))
     ):
         extra.append(
             Warning(
@@ -66,7 +66,7 @@ def convert_ref(
         ext_mime
         and ext_mime != detected
         and detected not in (EMPTY_MIME,)
-        and not (ext_mime.startswith("text/") and detected.startswith("text/"))
+        and not (is_textual(ext_mime) and is_textual(detected))
     ):
         extra.append(
             Warning(
