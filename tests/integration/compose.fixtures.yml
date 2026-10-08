@@ -1,0 +1,36 @@
+# Integration-test overlay (P1-T15; docs/spec/part4.md 4.14.3). Never use it in production.
+#
+# Adds `fixtures`: a static HTTP server for fixtures/web on the internal network, reachable from the
+# workers as http://web.fixtures.example:8000/. The name is dotted and not on the netguard hostname
+# blocklist, so it passes URL validation at submit time and is refused only when the worker resolves
+# it to a private address. tests/security (network tier) relies on that refusal; with
+# INTOMD_ALLOW_PRIVATE_NETWORKS=true (tests/integration/stack.sh private) the URL tests fetch it.
+# Paths are relative to deploy/ (the first compose file's directory).
+services:
+  fixtures:
+    image: ghcr.io/larpey/intomd-api:${INTOMD_VERSION:-latest}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: api
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    user: "10001:10001"
+    command: ["python", "-m", "http.server", "8000", "--bind", "0.0.0.0", "--directory", "/srv/fixtures"]
+    volumes:
+      - ../fixtures/web:/srv/fixtures:ro
+    networks:
+      internal:
+        aliases: [web.fixtures.example]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys,urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/', timeout=3).status == 200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    deploy:
+      resources:
+        limits: { cpus: "0.25", memory: 128m, pids: 32 }

@@ -1,0 +1,91 @@
+# Integration, network-tier security and browser tests against the compose stack
+# (docs/spec/part4.md 4.14.3, 4.14.5, 4.14.6; ROADMAP P1-T15). Runs on merge to main, nightly, and on demand.
+# The fast security tier runs in ci.yml with the unit tests (`pytest packages apps tests`).
+#
+# Phase 1 (stack as shipped, INTOMD_ALLOW_PRIVATE_NETWORKS=false): network-tier SSRF and edge-header
+# tests, the API suite with the owner key, then the anonymous rate limit on a fresh window.
+# Phase 2 (`stack.sh private`): private fetches allowed so URL jobs can reach the in-network fixture
+# server, anonymous creation limit raised for the browser suite; URL tests, then Playwright.
+# Actions are pinned by commit SHA; Renovate (helpers:pinGitHubActionDigests) keeps them current.
+name: integration
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+env:
+  UV_FROZEN: "1"
+  PYTHONUTF8: "1"
+
+jobs:
+  compose:
+    name: compose stack (core profile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # GitHub-hosted runners have 2 CPUs; compose defaults assume a larger box.
+      INTOMD_WORKER_DEFAULT_CPUS: "1.5"
+      CI: "true"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0 (version from packageManager)
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "22", cache: pnpm }
+      - name: system deps
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends libmagic1
+      - run: uv sync --all-packages
+      - run: pnpm install --frozen-lockfile
+
+      - name: stack up (bootstrap --plain-http --build, migrate, owner key, smoke)
+        run: bash tests/integration/stack.sh up
+      - name: test environment
+        run: bash tests/integration/stack.sh env >> "$GITHUB_ENV"
+
+      - name: security (network tier)
+        run: uv run pytest tests/security -m network -q -p no:cacheprovider
+      - name: integration (REST API)
+        run: uv run pytest tests/integration -m "integration and not private_fetch and not ratelimit" -q -p no:cacheprovider
+      - name: integration (anonymous rate limit)
+        run: uv run pytest tests/integration -m ratelimit -q -p no:cacheprovider
+
+      - name: phase 2 (private fetch, browser limits)
+        run: bash tests/integration/stack.sh private
+      - name: integration (URL inputs via the fixture server)
+        env:
+          INTOMD_PRIVATE_FETCH: "1"
+        run: uv run pytest tests/integration -m private_fetch -q -p no:cacheprovider
+      - name: playwright browsers
+        run: pnpm --filter @intomd/web exec playwright install --with-deps chromium
+      - name: playwright
+        env:
+          INTOMD_PRIVATE_FETCH: "1"
+        run: pnpm --filter @intomd/web e2e
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            apps/web/playwright-report
+            apps/web/test-results
+          if-no-files-found: ignore
+      - name: compose logs
+        if: failure()
+        run: bash tests/integration/stack.sh logs > "$RUNNER_TEMP/compose.log" 2>&1 || true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with: { name: compose-logs, path: "${{ runner.temp }}/compose.log", if-no-files-found: ignore }
+      - name: tear down
+        if: always()
+        run: bash tests/integration/stack.sh down || true
