@@ -100,12 +100,12 @@ Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
 - Not done: `olefile` DOC text extraction and `xlrd` for `.xls`. Without LibreOffice these formats have no
   converter.
 
-## Review follow-ups (after main 3b3add1, D-0026)
+## Review follow-ups (after main 8d0e0cd, D-0026)
 - DOCX and ODT tracked insertions and deletions are inline `InlineSpan.change` spans, with
   `change_author` and `change_id` (moves: `moveFrom:<id>` / `moveTo:<id>`). `TrackedChange` blocks remain
   for whole-paragraph changes and moves (`attrs.scope="paragraph"`) and for formatting-only changes.
 - `Metadata.sheets` (XLSX, ODS) and `Metadata.slides` (PPTX, ODP) are set; `pages` is not.
-- No LibreOffice fixture: main supports `requires_binaries = ["soffice"]` (c2e183f), but no machine used
+- No LibreOffice fixture: main supports `requires_binaries = ["soffice"]` (016d147), but no machine used
   for this task has LibreOffice, and a fixture without a golden hard-fails. Follow-up for a host with
   `soffice`: add `office/doc-legacy` (a small `.doc` written by LibreOffice) with `requires_binaries`.
 

@@ -19,7 +19,7 @@ Overall: 32 / 85 tasks done
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
 | G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
-| G1 | blocked on owner | 2026-10-08 | Done: 19/19 P1 tasks; 94 fixtures pass (2 skip without py7zr/pyarrow); CI 37847449194 and integration (compose + Playwright) green on dafa282. Owner steps left: v0.1.0 publish to PyPI/npm/GHCR (setup in Blocked on human), `uvx intomd-mcp` manual check in Claude Desktop, docs site hosting (GitHub Pages on a private repo needs a paid plan or a public repo). |
+| G1 | blocked on owner | 2026-10-08 | Done: 19/19 P1 tasks; 94 fixtures pass (2 skip without py7zr/pyarrow); CI 37847449194 and integration (compose + Playwright) green on fa16fa8. Owner steps left: v0.1.0 publish to PyPI/npm/GHCR (setup in Blocked on human), `uvx intomd-mcp` manual check in Claude Desktop, docs site hosting (GitHub Pages on a private repo needs a paid plan or a public repo). |
 | G2 | open | | |
 | G3 | open | | |
 | G4 | open | | |
@@ -28,37 +28,37 @@ Overall: 32 / 85 tasks done
 | ID | Task | State | Last commit | Notes |
 |---|---|---|---|---|
 | P0-T01 | Name availability check | done | | intomd free on PyPI, npm, GitHub; intomd.dev unregistered; D-0001 |
-| P0-T02 | Repository scaffold | done | 38b13f7 | uv + pnpm workspaces; spec split into docs/spec |
-| P0-T03 | Core IR | done | 41650a7 | IR schema 1.1 after council (D-0017); 181 warning codes + aliases |
-| P0-T04 | Detection | done | 798280f | Magika+libmagic; 10 MB detect well under 200 ms |
-| P0-T05 | Inputs, registry, chains, sandbox, netguard | done | 471000e | registry, chains, sandbox, netguard (39 SSRF tests), redaction, ConvertContext |
-| P0-T06 | Plain text and Markdown passthrough converters | done | 56b0953 | text.plain, text.markdown_passthrough; 4 fixtures at 1.0 (threshold 0.95), Skeptic-reviewed |
-| P0-T07 | Profiles, renderer skeleton, scoring | done | 8ddf3b3 | 4 profiles; Harbor Lane example byte-identical; render+profiles cov 94% |
-| P0-T08 | CLI | done | 2c1a2e9 | convert/capabilities/detect/version/serve; exit codes per Part 4 |
-| P0-T09 | API | done | ffa2fd7 | FastAPI+RQ+SSE; 162 API tests; openapi.json committed |
-| P0-T10 | Web UI | done | 4221d77 | React UI + @intomd/sdk (2.9 KB gz); 33 JS tests |
-| P0-T11 | Docker and Compose | done | 121f7e2 | api 443 MB (budget 480, D-0012), worker 621 MB, fetch-node 164 MB; local smoke PASS |
-| P0-T12 | CI and release workflow | done | 036ab66 | CI green on ubuntu 3.12/3.13, macOS, Windows + ts, licenses, audit, images, compose smoke (run 37819863068) |
-| P0-T13 | Docs skeleton and Phase 0 close | done | 036ab66 | mkdocs --strict clean; council D-0017 applied; v0.0.1 |
-| P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | done | 4bb08b6 | PDF (pdfium text + Docling extra), Office (DOCX/PPTX/XLSX/ODF/RTF/LibreOffice), EPUB; D-0027, D-0030, D-0031 |
-| P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | done | 74f33f6 | Trafilatura + rules + raw; hidden-content stripping; 12 fixtures; D-0028 |
-| P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | done | 14016c0 | source files, repo packing, secret redaction; 8 fixtures; D-0025 |
-| P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | done | 663f62e | EML, MBOX, native MSG on olefile; extract-msg nonfree; D-0035 |
-| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | done | f891980 | CSV/JSON/YAML/TOML/XML/SQLite/Parquet; 14 fixtures exact; D-0029 |
-| P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | done | d8bab1e | notebooks, archives with bomb limits (markdown/plain from P0); D-0031 |
-| P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | done | fbaaf4c | EDGAR on the endpoints directly (edgartools pulls GPL Unidecode); social stubs behind a flag; D-0033 |
-| P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | done | f437312 | intomd.convert/convert_async/convert_many/Result/Options; light import |
-| P1-T09 | CLI (4.2): `convert`, `batch`, `serve`, `doctor`, `capabilities`, `version`; config.toml; exit codes; completions | done | 47a72b2 | convert/batch/doctor/config/remote/completions; D-0022 |
-| P1-T10 | API (Part 3): routes, SSE, SQLite, RQ and inline queue, blobs FS, reaper, keys.json, rate limiting, admin, metrics, OpenAPI annotations | done | 47473ec | keys.json, intomd-admin, /metrics, /v1/warnings, OpenAPI (Spectral clean); D-0023 |
-| P1-T11 | MCP server (4.4): five tools, pagination, stdio and HTTP, auth, `server.json`, client docs | done | 22d97e0 | MCP server, local+remote, paging, HTTP auth; D-0024 |
-| P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | done | 3d53738 | OpenAPI-generated types with drift checks, events iterator, 3.4 KB gzipped |
-| P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | done | 34e4298 | server warning registry, zip-all, kept results, history, test ids; 90 KB gzipped |
-| P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | done | b034142 | bootstrap/backup/restore/upgrade tested on Docker, rollback verified; D-0034 |
-| P1-T15 | Integration workflow (compose in CI), security tests fast and network tiers, Playwright suite | done | 8694593 | integration workflow on compose, security tiers, Playwright with axe; D-0036 |
-| P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | done | b034142 | digest push, Trivy, SBOM, cosign; OIDC publish gated on owner setup; D-0034 |
-| P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | done | 1e38bb6 | README, CONTRIBUTING, SECURITY, CoC, strict MkDocs, generated matrix; D-0036 |
-| P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | done | 33460bc | every available engine per file, scored against the registry's choice |
-| P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | done | a0041e9 | 94 fixtures, provenance check, nightly scorecard; D-0036 |
+| P0-T02 | Repository scaffold | done | 73cb1fe | uv + pnpm workspaces; spec split into docs/spec |
+| P0-T03 | Core IR | done | 013f5ed | IR schema 1.1 after council (D-0017); 181 warning codes + aliases |
+| P0-T04 | Detection | done | ce1ef5d | Magika+libmagic; 10 MB detect well under 200 ms |
+| P0-T05 | Inputs, registry, chains, sandbox, netguard | done | b7fcf01 | registry, chains, sandbox, netguard (39 SSRF tests), redaction, ConvertContext |
+| P0-T06 | Plain text and Markdown passthrough converters | done | 714715b | text.plain, text.markdown_passthrough; 4 fixtures at 1.0 (threshold 0.95), Skeptic-reviewed |
+| P0-T07 | Profiles, renderer skeleton, scoring | done | 6226b8e | 4 profiles; Harbor Lane example byte-identical; render+profiles cov 94% |
+| P0-T08 | CLI | done | 590cab5 | convert/capabilities/detect/version/serve; exit codes per Part 4 |
+| P0-T09 | API | done | 6e4a333 | FastAPI+RQ+SSE; 162 API tests; openapi.json committed |
+| P0-T10 | Web UI | done | 5f7b1c2 | React UI + @intomd/sdk (2.9 KB gz); 33 JS tests |
+| P0-T11 | Docker and Compose | done | 0f7e0f9 | api 443 MB (budget 480, D-0012), worker 621 MB, fetch-node 164 MB; local smoke PASS |
+| P0-T12 | CI and release workflow | done | 4baab0a | CI green on ubuntu 3.12/3.13, macOS, Windows + ts, licenses, audit, images, compose smoke (run 37819863068) |
+| P0-T13 | Docs skeleton and Phase 0 close | done | 4baab0a | mkdocs --strict clean; council D-0017 applied; v0.0.1 |
+| P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | done | 01c21de | PDF (pdfium text + Docling extra), Office (DOCX/PPTX/XLSX/ODF/RTF/LibreOffice), EPUB; D-0027, D-0030, D-0031 |
+| P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | done | f858b5f | Trafilatura + rules + raw; hidden-content stripping; 12 fixtures; D-0028 |
+| P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | done | 93d2557 | source files, repo packing, secret redaction; 8 fixtures; D-0025 |
+| P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | done | 2aef928 | EML, MBOX, native MSG on olefile; extract-msg nonfree; D-0035 |
+| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | done | 6d422fe | CSV/JSON/YAML/TOML/XML/SQLite/Parquet; 14 fixtures exact; D-0029 |
+| P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | done | cb0531d | notebooks, archives with bomb limits (markdown/plain from P0); D-0031 |
+| P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | done | 4672985 | EDGAR on the endpoints directly (edgartools pulls GPL Unidecode); social stubs behind a flag; D-0033 |
+| P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | done | 650c0d1 | intomd.convert/convert_async/convert_many/Result/Options; light import |
+| P1-T09 | CLI (4.2): `convert`, `batch`, `serve`, `doctor`, `capabilities`, `version`; config.toml; exit codes; completions | done | 5f9c6d4 | convert/batch/doctor/config/remote/completions; D-0022 |
+| P1-T10 | API (Part 3): routes, SSE, SQLite, RQ and inline queue, blobs FS, reaper, keys.json, rate limiting, admin, metrics, OpenAPI annotations | done | 37f3761 | keys.json, intomd-admin, /metrics, /v1/warnings, OpenAPI (Spectral clean); D-0023 |
+| P1-T11 | MCP server (4.4): five tools, pagination, stdio and HTTP, auth, `server.json`, client docs | done | e17fe8d | MCP server, local+remote, paging, HTTP auth; D-0024 |
+| P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | done | e4f859a | OpenAPI-generated types with drift checks, events iterator, 3.4 KB gzipped |
+| P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | done | 52a9207 | server warning registry, zip-all, kept results, history, test ids; 90 KB gzipped |
+| P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | done | 1c4e90e | bootstrap/backup/restore/upgrade tested on Docker, rollback verified; D-0034 |
+| P1-T15 | Integration workflow (compose in CI), security tests fast and network tiers, Playwright suite | done | 224bd9c | integration workflow on compose, security tiers, Playwright with axe; D-0036 |
+| P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | done | 1c4e90e | digest push, Trivy, SBOM, cosign; OIDC publish gated on owner setup; D-0034 |
+| P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | done | 65d4324 | README, CONTRIBUTING, SECURITY, CoC, strict MkDocs, generated matrix; D-0036 |
+| P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | done | 5a159e6 | every available engine per file, scored against the registry's choice |
+| P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | done | ff11260 | 94 fixtures, provenance check, nightly scorecard; D-0036 |
 | P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `intomd models pull/list/rm/export`; license gate | pending | |  |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | pending | |  |
 | P2-T03 | Diarization: pyannote community-1 with midpoint alignment; `exclusive` mode; `DIARIZATION` setting | pending | |  |
