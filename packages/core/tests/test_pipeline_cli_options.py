@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from intomd.cli.options import parse_opts, split_options
@@ -53,3 +55,17 @@ def test_opts_parsing() -> None:
         parse_opts(["novalue"])
     with pytest.raises(ValueError):
         parse_opts(["=x"])
+
+
+def test_fixture_input_url_and_options(tmp_path: Path) -> None:
+    from intomd.testing.fixtures import Fixture, convert_fixture
+
+    d = tmp_path / "web" / "page"
+    d.mkdir(parents=True)
+    (d / "input.txt").write_text("Hello\n=====\n\nbody\n", encoding="utf-8")
+    meta = {
+        "converter": "text.plain",
+        "input": {"url": "https://example.org/a/page", "options": {"max_pages": 3, "extra.flag": True}},
+    }
+    r = convert_fixture(Fixture(path=d, meta=meta))
+    assert r.input_ref.display == "https://example.org/a/page"

@@ -33,7 +33,7 @@ from typing import Any
 from intomd.inputs import InputRef
 from intomd.ir import ConversionResult
 from intomd.pipeline import convert_ref
-from intomd.registry import ConversionError, ConvertOptions
+from intomd.registry import ConversionError, ConvertOptions, ExtraValue
 from intomd.testing.score import Score, parse, score
 
 PINNED_TIME = "2026-01-01T00:00:00Z"
@@ -139,12 +139,35 @@ def threshold_for(fx: Fixture, root: Path) -> float:
 
 
 def convert_fixture(fx: Fixture) -> ConversionResult:
+    """Convert a fixture input. `[input] url = "https://..."` in meta.toml makes the input behave like a
+    fetched URL (frozen body, `ref.url` and display set to the URL) so web converters can resolve links;
+    `[input] options = {...}` passes ConvertOptions fields (`extra.*` keys go to options.extra)."""
     ref = InputRef.from_path(fx.input_path)
     ref.display = fx.input_path.name
+    spec = fx.meta.get("input", {})
+    url = spec.get("url") if isinstance(spec, dict) else None
+    if isinstance(url, str) and url:
+        ref.url = url
+        ref.display = url
+    options = _options(spec.get("options", {}) if isinstance(spec, dict) else {})
     try:
-        return convert_ref(ref, ConvertOptions(), converter_id=fx.converter)
+        return convert_ref(ref, options, converter_id=fx.converter)
     finally:
         ref.cleanup()
+
+
+def _options(raw: object) -> ConvertOptions:
+    if not isinstance(raw, dict):
+        raise FixtureError("[input] options must be a table")
+    from intomd.cli.options import split_options
+
+    flat: dict[str, ExtraValue] = {str(k): v for k, v in raw.items() if isinstance(v, str | int | float | bool)}
+    if len(flat) != len(raw):
+        raise FixtureError('[input] options values must be scalars (use dotted keys like "extra.x")')
+    options, profile = split_options(flat)
+    if profile:
+        raise FixtureError(f"unknown [input] options: {sorted(profile)}")
+    return options
 
 
 def render_full(result: ConversionResult) -> tuple[str, dict[str, object] | None]:
