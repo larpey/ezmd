@@ -231,17 +231,35 @@ def scan(
                 findings.append(f)
     if hidden_text:
         # Text a converter removed as hidden (part3 18 phase 1): severity rises one level, and the
-        # scorer counts it double.
+        # scorer counts it double. Line-start structural patterns ("System: ...") apply here too.
         for f in _scan(hidden_text, "hidden"):
             f.severity = _RAISE[f.severity]
             findings.append(f)
+        for family, sev, pat in _structural():
+            if chat and family == "system_prompt_line":
+                continue
+            for m in pat.finditer(hidden_text):
+                findings.append(Finding(family, _RAISE[sev], -1, m.group(0)[:80], "hidden", pat.pattern[:60]))
+    sources: tuple[tuple[Location, str], ...] = (("body", body), ("hidden", hidden_text))
+    for where, source in sources:
+        # Unicode tag characters (U+E0020..U+E007E) can spell ASCII invisibly; decode and scan them.
+        decoded = "".join(chr(ord(c) - 0xE0000) for c in _TAGS.findall(source) if 0xE0020 <= ord(c) <= 0xE007E)
+        if len(decoded) >= 4:
+            hits = _scan(decoded, "decoded")
+            for f in hits:
+                f.pattern = f"tags:{f.pattern}"
+                f.family = "encoding"
+                f.severity = "high" if where == "hidden" else "medium"
+                findings.append(f)
+            if not hits:
+                findings.append(Finding("encoding", "medium", -1, f"tag-character text: {decoded[:60]}", where))
     for kind, dec in _decoded_blobs(text):
         for f in _scan(dec, "decoded"):
             f.pattern = f"{kind}:{f.pattern}"
             f.family = "encoding"
             f.severity = "medium"
             findings.append(f)
-    if bidi_or_tags or _BIDI.search(body) or _TAGS.search(body):
+    if bidi_or_tags or _BIDI.search(body) or _TAGS.search(body) or _TAGS.search(hidden_text):
         findings.append(Finding("encoding", "medium", -1, "bidi or tag characters present", "body"))
     return _score(findings)
 

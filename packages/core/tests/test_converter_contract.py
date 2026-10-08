@@ -102,7 +102,14 @@ def test_hostile_text_is_clean(conv: Converter) -> None:
 
 
 @pytest.mark.parametrize("conv", CONVERTERS, ids=_ids())
+# Converters that are only available when a system tool is installed, and whose golden therefore has to
+# be generated on a machine that has it. Tracked for the fixture corpus task (P1-T19).
+NEEDS_TOOL_FOR_FIXTURE = {"documents.libreoffice": "soffice (LibreOffice) is needed to generate the golden"}
+
+
 def test_has_fixture(conv: Converter) -> None:
+    if conv.id in NEEDS_TOOL_FOR_FIXTURE:
+        pytest.skip(NEEDS_TOOL_FOR_FIXTURE[conv.id])
     metas = list((ROOT / "fixtures").glob("*/*/meta.toml"))
     used = {tomllib.loads(m.read_text(encoding="utf-8")).get("converter") for m in metas}
     assert conv.id in used, f"{conv.id} has no fixture under fixtures/"
