@@ -28,6 +28,7 @@ from intomd.render.tables import render_table
 from intomd.render.text import collapse_ws, escape_inline, fence_for
 
 __all__ = [
+    "DEFINITION_KIND",
     "annotation_text",
     "render_code",
     "render_equation",
@@ -56,9 +57,7 @@ def render_paragraph(ctx: RenderContext, p: Paragraph) -> Unit | None:
     if callout:
         label = callout.strip().title() if callout.strip().lower() not in _CALLOUTS else callout.strip().capitalize()
         return Unit(text=f"> **{label}:** {text}", kind="quote", block_ids=[p.id], page=p.provenance.source_page)
-    if p.attrs.get("slide_part") == "notes":
-        text = f"**Notes:** {text}"
-    elif p.role == "title":
+    if p.role == "title":
         text = f"**{plain_spans(ctx, p.spans)}**"
     elif p.role == "subtitle":
         text = f"*{text}*"
@@ -78,9 +77,51 @@ def _item_lines(ctx: RenderContext, items: list[ListItem], ordered: bool, start:
     return lines
 
 
+_NL = chr(10)
+DEFINITION_KIND = "definition"
+"""`ListBlock.attrs["kind"]` value for a definition list: item spans are the term, children the definitions."""
+
+
+def _definition_lines(ctx: RenderContext, items: list[ListItem], depth: int) -> list[str]:
+    lines: list[str] = []
+    for item in items:
+        text = render_spans(ctx, item.spans)
+        if text:
+            lines.append("    " * depth + text)
+        lines.extend(_definition_lines(ctx, item.children, depth + 1))
+    return lines
+
+
+def _render_definitions(ctx: RenderContext, block: ListBlock) -> Unit | None:
+    """`**term**` then each definition on its own line indented four spaces. The definitions are lazy
+    continuation lines of the term's paragraph (no blank line), so CommonMark never reads them as an
+    indented code block; entries are separated by a blank line. The same in every profile."""
+    entries: list[str] = []
+    for item in block.items:
+        term = render_spans(ctx, item.spans)
+        lines = []
+        if term:
+            bold = term.startswith("**") and term.endswith("**") and len(term) > 4
+            lines.append(term if bold else f"**{term}**")
+        lines.extend(_definition_lines(ctx, item.children, 1))
+        if lines:
+            entries.append(_NL.join(lines))
+    if not entries:
+        return None
+    return Unit(
+        text=(_NL * 2).join(entries),
+        kind="list",
+        block_ids=[block.id],
+        page=block.provenance.source_page,
+        list_items=entries,
+    )
+
+
 def render_list(ctx: RenderContext, block: ListBlock) -> Unit | None:
     if not block.items:
         return None
+    if block.attrs.get("kind") == DEFINITION_KIND:
+        return _render_definitions(ctx, block)
     page = block.provenance.source_page
     only = block.items[0]
     if ctx.profile.compact_lists and len(block.items) == 1 and not only.children and only.checked is None:

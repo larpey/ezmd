@@ -21,6 +21,7 @@ from intomd.render.tokens import count_o200k
 
 __all__ = ["chunk_units"]
 
+_NL = chr(10)
 _SENTENCE = re.compile(r"(?<=[.!?])\s+")
 
 
@@ -57,13 +58,24 @@ def _sections(units: list[Unit]) -> list[_Section]:
     return [s for s in sections if s.units]
 
 
+def _child_key(section: _Section) -> str | None:
+    """Child Document a section belongs to; sections of different children never merge (rule 2), so every
+    chunk stays inside one archive member or attachment."""
+    return section.heading.child if section.heading is not None else None
+
+
 def _merge_short(sections: list[_Section], min_tokens: int, budget: int) -> list[_Section]:
     out = list(sections)
     result: list[_Section] = []
     i = 0
     while i < len(out):
         sec = out[i]
-        if sec.tokens < min_tokens and i + 1 < len(out) and sec.tokens + out[i + 1].tokens <= budget:
+        if (
+            sec.tokens < min_tokens
+            and i + 1 < len(out)
+            and sec.tokens + out[i + 1].tokens <= budget
+            and _child_key(sec) == _child_key(out[i + 1])
+        ):
             nxt = out[i + 1]
             out[i + 1] = _Section(
                 [*sec.units, *nxt.units],
@@ -114,14 +126,15 @@ def _split_unit(u: Unit, budget: int, first_budget: int | None = None) -> list[_
         return drafts
     if u.kind == "list" and u.list_items and len(u.list_items) > 1:
         drafts = []
+        sep = _NL * 2 if (_NL * 2).join(u.list_items) == u.text else _NL
         items: list[str] = []
         for item in u.list_items:
-            if items and count_o200k("\n".join([*items, item])) > budget:
-                drafts.append(_Draft([Unit("\n".join(items), "list", u.block_ids, u.page)]))
+            if items and count_o200k(sep.join([*items, item])) > budget:
+                drafts.append(_Draft([Unit(sep.join(items), "list", u.block_ids, u.page)]))
                 items = []
             items.append(item)
         if items:
-            drafts.append(_Draft([Unit("\n".join(items), "list", u.block_ids, u.page)]))
+            drafts.append(_Draft([Unit(sep.join(items), "list", u.block_ids, u.page)]))
         return drafts
     return [_Draft([u], oversized=True)]
 

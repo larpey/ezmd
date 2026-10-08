@@ -28,6 +28,10 @@ def _score(
     root = fixtures_root(target)
     failed = 0
     for fx in _fixtures(target):
+        reason = fx.skip_reason
+        if reason:
+            typer.echo(f"{fx.id}: SKIP {reason}")
+            continue
         run = run_fixture(fx, root)
         if run.score is None:
             typer.echo(f"{fx.id}: FAIL {'; '.join(run.hard_failures)}")

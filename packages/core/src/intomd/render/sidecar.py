@@ -7,7 +7,7 @@ document itself. Byte offsets (`offset_start`, `offset_end`) are relative to the
 
 from __future__ import annotations
 
-from intomd.ir import Slide, WarningKind
+from intomd.ir import RESERVED_SIDECAR_KEYS, Slide, WarningKind
 from intomd.render.base import Chunk
 from intomd.render.context import RenderContext, Unit
 from intomd.render.injection import InjectionReport
@@ -78,7 +78,8 @@ def build_sidecar(
             name, idx = u.sidecar_key
             lists[name][idx]["offset_start"], lists[name][idx]["offset_end"] = offsets[i]
     doc = ctx.doc
-    dump = doc.model_dump(mode="json", exclude={"children"})
+    source_doc = ctx.children.source or doc
+    dump = source_doc.model_dump(mode="json", exclude={"children", "sidecar_extra"})
     if ctx.profile.name != "full":
         for block in dump.get("blocks", []):
             if isinstance(block, dict) and block.get("type") == "transcript_segment":
@@ -104,7 +105,7 @@ def build_sidecar(
         "provenance": provenance,
         "injection_findings": [f.to_dict() for f in report.findings],
         "counts": {
-            "furniture_removed": ctx.furniture_removed,
+            "furniture_removed": ctx.furniture_removed + _upstream_furniture(ctx),
             "images_dropped_decorative": ctx.images_dropped_decorative,
             "removed_nonprinting": ctx.stats.removed_nonprinting + _upstream_nonprinting(ctx),
             "fence_defanged": ctx.fence_defanged,
@@ -117,9 +118,32 @@ def build_sidecar(
     }
     if ctx.profile.chunks.enabled:
         sidecar["chunks"] = [c.to_dict() for c in chunks]
+    if ctx.children:
+        sidecar["children"] = [info.to_dict() for info in ctx.children.infos]
+    for key, entries in doc.sidecar_extra.items():
+        if key in sidecar or key in RESERVED_SIDECAR_KEYS:
+            raise ValueError(f"sidecar_extra key {key!r} collides with a built-in sidecar key")
+        sidecar[key] = [dict(e) for e in entries]
     return sidecar
 
 
+_NONPRINTING_PARTS = ("control", "invisible", "surrogates")
+
+
+def _nonprinting(detail: dict[str, str | int | float]) -> int:
+    chars = detail.get("invisible_chars")
+    if isinstance(chars, int):
+        return chars
+    return sum(v for k in _NONPRINTING_PARTS if isinstance(v := detail.get(k), int))
+
+
 def _upstream_nonprinting(ctx: RenderContext) -> int:
-    """Characters a converter already stripped, reported through its removed_hidden_elements warning."""
-    return sum(w.count or 0 for w in ctx.result.all_warnings if w.kind == WarningKind.REMOVED_HIDDEN_ELEMENTS)
+    """Characters a converter already stripped, from its removed_hidden_elements warning detail:
+    `invisible_chars` when present, else `control` + `invisible` + `surrogates`, else 0. Never the
+    warning's `count`, which counts removed elements for web and document converters."""
+    return sum(_nonprinting(w.detail) for w in ctx.result.all_warnings if w.kind == WarningKind.REMOVED_HIDDEN_ELEMENTS)
+
+
+def _upstream_furniture(ctx: RenderContext) -> int:
+    """Running headers and footers a converter removed before the IR (PDF)."""
+    return sum(w.count or 0 for w in ctx.result.all_warnings if w.kind == WarningKind.REMOVED_RUNNING_HEADER_FOOTER)

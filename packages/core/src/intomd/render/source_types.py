@@ -1,9 +1,10 @@
 """intomd.render.source_types: map IR SourceType onto the frontmatter `source_type` enum (D-0017 item 5).
 
-The frontmatter enum is docs/spec/part3.md section 13, amended with `text` and `markdown`:
+The frontmatter enum is docs/spec/part3.md section 13, amended with `text`, `markdown` and `archive`
+(P1-core-renderer):
 
     web, pdf, docx, pptx, xlsx, epub, image, audio, video, podcast, post, thread, chat_export, email,
-    code, data, notebook, text, markdown, other
+    code, data, notebook, text, markdown, archive, other
 
 Full mapping (IR SourceType -> frontmatter source_type):
 
@@ -34,7 +35,7 @@ Full mapping (IR SourceType -> frontmatter source_type):
     finance_xml  -> data
     calendar     -> data
     notes        -> other        (exports mix Markdown, HTML and proprietary formats)
-    archive      -> other
+    archive      -> archive
     text         -> text
     other        -> other
 
@@ -69,6 +70,7 @@ FRONTMATTER_SOURCE_TYPES: frozenset[str] = frozenset(
         "notebook",
         "text",
         "markdown",
+        "archive",
         "other",
     }
 )
@@ -99,7 +101,7 @@ _DIRECT: dict[SourceType, str] = {
     SourceType.FINANCE_XML: "data",
     SourceType.CALENDAR: "data",
     SourceType.NOTES: "other",
-    SourceType.ARCHIVE: "other",
+    SourceType.ARCHIVE: "archive",
     SourceType.TEXT: "text",
     SourceType.OTHER: "other",
 }

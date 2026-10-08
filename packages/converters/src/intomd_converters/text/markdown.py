@@ -394,6 +394,7 @@ class MarkdownPassthroughConverter:
                     severity="info",
                     message=f"Removed {stats.total} control or invisible characters.",
                     count=stats.total,
+                    detail={"control": stats.control, "invisible": stats.invisible, "surrogates": stats.surrogates},
                 )
             )
         return doc.finalize()

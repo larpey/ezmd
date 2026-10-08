@@ -34,7 +34,7 @@ def test_every_source_type_maps_into_the_enum() -> None:
         (SourceType.MEDIA_URL, "video"),
         (SourceType.REPO, "code"),
         (SourceType.FINANCE_XML, "data"),
-        (SourceType.ARCHIVE, "other"),
+        (SourceType.ARCHIVE, "archive"),
     ],
 )
 def test_source_type_mapping(st: SourceType, expected: str) -> None:

@@ -17,6 +17,7 @@ from intomd.ir import ConversionResult, Image, SourceType, WarningKind
 from intomd.profiles import Profile
 from intomd.render import assemble
 from intomd.render.base import Chunk, RenderedOutput, TokenCounter
+from intomd.render.children import flatten_children
 from intomd.render.chunker import chunk_units
 from intomd.render.context import RenderContext, Unit
 from intomd.render.frontmatter import FrontmatterInputs, build_frontmatter, dump_yaml
@@ -27,7 +28,7 @@ from intomd.render.tokens import TiktokenCounter, count_tokens
 from intomd.render.transcript import prepare_speakers
 from intomd.render.units import build_units
 
-__all__ = ["MarkdownRenderer", "RenderOptions", "render_markdown"]
+__all__ = ["MarkdownRenderer", "RenderOptions", "hidden_text", "make_context", "render_markdown"]
 
 _COMMENT = re.compile(r"<!--.*?-->", re.S)
 _FENCE_TAG = re.compile(r"^</?untrusted_content\b[^\n]*$", re.M)
@@ -51,6 +52,29 @@ def ensure_finalized(result: ConversionResult) -> ConversionResult:
     if doc.content_hash and all(b.id for b in doc.blocks):
         return result
     return result.model_copy(update={"document": doc.model_copy(deep=True).finalize()})
+
+
+def make_context(result: ConversionResult, profile: Profile) -> RenderContext:
+    """Finalize (on a copy) when needed, flatten `Document.children`, and build the render context."""
+    flat, index = flatten_children(ensure_finalized(result))
+    return RenderContext(profile=profile, result=flat, base_url=_base_url(flat), children=index)
+
+
+HIDDEN_TEXT_CAP = 10 * 1024
+"""Characters of `removed_hidden_elements` detail["hidden_text"] scanned per warning."""
+
+
+def hidden_text(result: ConversionResult) -> str:
+    """Text a converter removed as hidden (web: CSS-hidden elements), for the injection scanner only.
+    Never rendered into the body."""
+    parts: list[str] = []
+    for w in result.all_warnings:
+        if w.kind != WarningKind.REMOVED_HIDDEN_ELEMENTS:
+            continue
+        value = w.detail.get("hidden_text")
+        if isinstance(value, str) and value.strip():
+            parts.append(value[:HIDDEN_TEXT_CAP])
+    return (chr(10) * 2).join(parts)
 
 
 def _base_url(result: ConversionResult) -> str | None:
@@ -117,13 +141,17 @@ def _build_body(ctx: RenderContext, title: str, options: RenderOptions) -> _Body
     units = assemble.place_page_markers(ctx, units)
     units, figures_dropped = assemble.drop_figures_for_budget(ctx, units, profile.max_tokens)
     start = assemble.cursor_start(units, options.cursor, profile.name)
-    page = assemble.apply_budget(ctx, units, start, profile.max_tokens)
+    # The head (summary, orientation, contents, H1) opens page 1 only and counts against max_tokens; the
+    # links list closes the last page, so concatenating every page rebuilds the unpaged body.
+    head: list[Unit] = []
+    reserve = 0
+    if start == 0:
+        head = [*assemble.head_units(ctx, built.summary, units), assemble.title_unit(ctx, title)]
+        head, reserve = assemble.fit_head(head, profile.max_tokens)
+    page = assemble.apply_budget(ctx, units, start, profile.max_tokens, reserve)
     truncation = page.truncation
     if figures_dropped and not truncation:
         truncation = {"reason": "max_tokens", "limit": profile.max_tokens or 0}
-    # The head (summary, orientation, contents, H1) opens page 1 only; the links list closes the last page,
-    # so concatenating every page rebuilds the unpaged body.
-    head = [*assemble.head_units(ctx, built.summary, units), assemble.title_unit(ctx, title)] if start == 0 else []
     tail = assemble.links_units(ctx) if page.next_unit is None else []
     units = page.units
     if profile.untrusted_fence:
@@ -154,14 +182,15 @@ def render_markdown(
     counter: TokenCounter | None = None,
 ) -> RenderedOutput:
     options = options or RenderOptions()
-    result = ensure_finalized(result)
-    ctx = RenderContext(profile=profile, result=result, base_url=_base_url(result))
+    ctx = make_context(result, profile)
+    result = ctx.result
     title = resolve_title(ctx)
     built = _build_body(ctx, title, options)
     meta = result.document.metadata
     report: InjectionReport = scan(
         built.inner,
         _scan_metadata(result),
+        hidden_text(result),
         bidi_or_tags=ctx.stats.bidi_or_tags,
         chat=meta.source_type == SourceType.CHAT,
     )
@@ -182,7 +211,7 @@ def render_markdown(
         body = wrap_untrusted(built.inner, fid, meta.source, report.risk)
     tokens_map = count_tokens(body)
     converted = (options.converted_at or datetime.now(UTC)).replace(microsecond=0)
-    truncated = result.truncated or ctx.truncated
+    truncated = result.truncated or ctx.truncated or ctx.children.truncated
     inputs = FrontmatterInputs(
         title=title,
         word_count=word_count(body),

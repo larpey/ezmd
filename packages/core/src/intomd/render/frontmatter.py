@@ -207,7 +207,10 @@ def build_frontmatter(
     if m.encoding and "encoding" not in extra:
         extra["encoding"] = m.encoding
     name, version = _converter(result)
-    slides = sum(1 for b in doc.blocks if isinstance(b, Slide))
+    slides = m.slides or sum(1 for b in doc.blocks if isinstance(b, Slide))
+    sheets = list(m.sheets) or (
+        [s.strip() for s in str(extra["sheets"]).split(",") if s.strip()] if extra.get("sheets") else []
+    )
     authors: object = m.authors if len(m.authors) > 1 else (m.authors[0] if m.authors else m.author)
     description = m.description
     if description and len(description) > 1000:
@@ -236,7 +239,7 @@ def build_frontmatter(
         "duration_seconds": m.duration_seconds,
         "pages": m.pages,
         "slides": slides or None,
-        "sheets": [s.strip() for s in str(extra["sheets"]).split(",")] if extra.get("sheets") else None,
+        "sheets": sheets or None,
         "word_count": inp.word_count,
         "tokens": inp.tokens,
         "content_hash": inp.content_hash,

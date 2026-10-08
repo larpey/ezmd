@@ -53,7 +53,7 @@ _BR = ""
 
 def _cell_md(ctx: RenderContext, spans: list[InlineSpan], formula: str | None) -> str:
     marked = [s.model_copy(update={"text": s.text.replace("\n", f" {_BR} ")}) if "\n" in s.text else s for s in spans]
-    text = render_spans(ctx, marked).replace("|", "\\|")
+    text = render_spans(ctx, marked, line_start=False).replace("|", "\\|")
     text = re.sub(rf"\s*{_BR}\s*", "<br>", text)
     if formula and ctx.profile.formulas == "inline":
         text = f"{text} (={formula.lstrip('=')})"
@@ -89,7 +89,7 @@ def _build_grid(ctx: RenderContext, table: Table) -> _Grid:
                 break
         header_rows = lead or (1 if _infer_header(plain) else 0)
     header_rows = min(header_rows, rows)
-    synthesized = header_rows == 0
+    synthesized = header_rows == 0 or table.attrs.get("header_synthesized") == "true"
     headers: list[str] = []
     for c in range(cols):
         parts: list[str] = []

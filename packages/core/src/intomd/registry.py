@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import importlib.metadata as md
 import logging
+import re
 import time
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
@@ -16,7 +17,7 @@ from typing import Protocol, runtime_checkable
 from intomd.context import TIMEOUT_CODE, ConvertContext, Limits
 from intomd.inputs import FetchRequired, InputRef
 from intomd.ir import ConversionResult, Document, Metrics, Warning, WarningKind
-from intomd.warnings.codes import CODES
+from intomd.warnings.codes import ALIASES, CODES, normalize_code
 
 log = logging.getLogger(__name__)
 
@@ -230,6 +231,23 @@ class ConverterRegistry:
             ranked = [(s, c) for s, c in ranked if not c.experimental]
         return ranked
 
+    def unavailable_for(self, ref: InputRef) -> list[Unavailable]:
+        """Unavailable registrations that would have claimed `ref`: their `mimes` match the detected mime, or
+        the mime's chain names them. Chain order first, then by id."""
+        mime = ref.detected.mime if ref.detected else None
+        if not mime:
+            return []
+        out: list[Unavailable] = []
+        for cid in self.chain_for(mime) or []:
+            reg = self._regs.get(cid)
+            if reg is not None and isinstance(reg.converter, Unavailable) and reg.converter not in out:
+                out.append(reg.converter)
+        for reg in sorted(self._regs.values(), key=lambda r: r.converter.id):
+            conv = reg.converter
+            if isinstance(conv, Unavailable) and conv not in out and any(mime_matches(m, mime) for m in conv.mimes):
+                out.append(conv)
+        return out
+
     def _ranked(self, ref: InputRef) -> list[tuple[float, Converter]]:
         mime = ref.detected.mime if ref.detected else None
         chain = self.chain_for(mime) if mime else None
@@ -276,6 +294,9 @@ class ConverterRegistry:
             if not cands and not options.experimental and self._ranked(ref):
                 raise _experimental_disabled(ref)
         if not cands:
+            blocked = self.unavailable_for(ref) if converter_id is None else []
+            if blocked:
+                raise _unavailable_error(ref, blocked)
             raise ConversionError(
                 f"no converter for {ref.display} (mime={ref.detected.mime if ref.detected else None})",
                 user_message="This file type is not supported yet.",
@@ -391,6 +412,39 @@ def _timed_out(partial: Document) -> Document:
         )
     )
     return doc.finalize()
+
+
+_CODE_TOKEN = re.compile(r"[a-z][a-z0-9]*(?:_[a-z0-9]+)+")
+
+
+def _reason_code(reason: str) -> str | None:
+    """A known warning code named by an Unavailable reason (the whole reason or a token in it)."""
+    for token in [reason.strip(), *_CODE_TOKEN.findall(reason)]:
+        if token in CODES or token in ALIASES:
+            return str(normalize_code(token))
+    return None
+
+
+def _unavailable_error(ref: InputRef, blocked: list[Unavailable]) -> ConversionError:
+    """Every converter for this input is missing an optional engine: say which and how to install it."""
+    first = blocked[0]
+    code = _reason_code(first.reason)
+    reason = first.reason.strip().rstrip(".")
+    if code is not None and reason == code:
+        reason = CODES[normalize_code(code)].description.rstrip(".")
+    message = reason if code is None or code in reason else f"{reason} ({code})"
+    extras = sorted({e for b in blocked for e in b.requires_extras})
+    if extras:
+        message += ". Install it with: pip install " + " ".join(f"'intomd[{e}]'" for e in extras)
+    elif code is not None:
+        message += ". " + CODES[normalize_code(code)].suggestion.rstrip(".")
+    mime = ref.detected.mime if ref.detected else None
+    return ConversionError(
+        f"no available converter for {ref.display} (mime={mime}); unavailable: {', '.join(b.id for b in blocked)}",
+        user_message=message + ".",
+        retryable_with_fallback=False,
+        code=code or CONVERSION_FAILED,
+    )
 
 
 class Unavailable:

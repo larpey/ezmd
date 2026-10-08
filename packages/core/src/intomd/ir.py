@@ -9,6 +9,7 @@ Implemented from docs/spec/part1.md section 4. Deviations are logged in DECISION
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Iterator
 from datetime import datetime
 from enum import StrEnum
 from typing import Annotated, Any, Literal
@@ -20,6 +21,7 @@ from intomd.warnings.codes import CODES, WarningKind, normalize_code
 __all__ = [
     "MAX_CHILD_DEPTH",
     "MAX_NEST_DEPTH",
+    "RESERVED_SIDECAR_KEYS",
     "BBox",
     "Block",
     "BlockBase",
@@ -57,6 +59,8 @@ __all__ = [
     "TranscriptSegment",
     "Warning",
     "WarningKind",
+    "block_spans",
+    "inline_link_count",
     "spans_text",
 ]
 
@@ -155,6 +159,51 @@ class InlineSpan(_Model):
     href: str | None = None
     footnote_ref: str | None = None
     math: str | None = None
+    change: Literal["insert", "delete"] | None = None
+    """Inline tracked change (schema 1.1, additive): the span was inserted or deleted in a revision. The
+    renderer shows it per profile `tracked_changes` (accept: inserts kept, deletes dropped; reject: the
+    reverse; annotate: `{++text++}` / `{--text--}` in place)."""
+    change_author: str | None = None
+    change_id: str | None = None
+
+
+def block_spans(block: BlockBase) -> Iterator[InlineSpan]:
+    """Every InlineSpan inside a block: its own spans, list items (nested), table cells and captions,
+    image captions and chart tables."""
+    for group in _span_groups(block):
+        yield from group
+
+
+def _span_groups(block: BlockBase) -> Iterator[list[InlineSpan]]:
+    spans = getattr(block, "spans", None)
+    if isinstance(spans, list):
+        yield spans
+    if isinstance(block, ListBlock):
+        stack = list(block.items)
+        while stack:
+            item = stack.pop()
+            yield item.spans
+            stack.extend(item.children)
+    if isinstance(block, Table):
+        yield block.caption or []
+        for cell in block.cells:
+            yield cell.spans
+    if isinstance(block, Image):
+        yield block.caption or []
+        if block.chart_data is not None:
+            yield from _span_groups(block.chart_data)
+
+
+def inline_link_count(block: BlockBase) -> int:
+    """Inline links in a block: runs of consecutive spans with the same `href` count once."""
+    n = 0
+    for group in _span_groups(block):
+        prev: str | None = None
+        for span in group:
+            if span.href and span.href != prev:
+                n += 1
+            prev = span.href
+    return n
 
 
 def spans_text(spans: list[InlineSpan]) -> str:
@@ -491,6 +540,10 @@ class Metadata(_Model):
     """Confidence of the encoding detection; 1.0 for a BOM or a strict UTF-8 decode."""
     license: str | None = None
     pages: int | None = None
+    slides: int | None = None
+    """Slide count for decks (schema 1.1, additive). The renderer falls back to counting Slide blocks."""
+    sheets: list[str] = Field(default_factory=list)
+    """Sheet names for workbooks, in workbook order (schema 1.1, additive)."""
     duration_seconds: float | None = None
     speakers: list[str] = Field(default_factory=list)
     description: str | None = None
@@ -608,6 +661,40 @@ MAX_CHILD_DEPTH = 8
 """Deepest allowed nesting of `Document.children` (archives cap at 3); finalize() raises beyond it."""
 
 
+RESERVED_SIDECAR_KEYS: frozenset[str] = frozenset(
+    {
+        "schema",
+        "profile",
+        "frontmatter",
+        "heading_shift",
+        "sections",
+        "tables",
+        "figures",
+        "links",
+        "speakers",
+        "segments",
+        "slides",
+        "footnotes",
+        "warnings",
+        "provenance",
+        "injection_findings",
+        "counts",
+        "tokens_total",
+        "tokens_estimated",
+        "metrics",
+        "document",
+        "chunks",
+        "children",
+        "adapter_trace",
+        "engine_trace",
+    }
+)
+"""Top-level sidecar keys the renderer writes itself (plus the two Part 3 names reserved for later).
+`Document.sidecar_extra` may not use them."""
+
+SidecarScalar = str | int | float | bool | None
+
+
 class Document(_Model):
     """The unit of conversion. One input produces one Document. Attachments and archive members
     are separate Documents linked via `children`.
@@ -623,6 +710,10 @@ class Document(_Model):
     converter_id: str = ""
     content_hash: str = ""
     """sha256 of the finalized plain text; set by finalize()."""
+    sidecar_extra: dict[str, list[dict[str, SidecarScalar]]] = Field(default_factory=dict)
+    """Converter-specific sidecar lists written verbatim under their own top-level keys (for example the
+    code family's `redactions`). Additive in schema 1.1; keys in RESERVED_SIDECAR_KEYS are rejected by
+    finalize() and by the renderer."""
     truncated: bool = False
     """True when the converter stopped early (a cap or the deadline). ConversionResult.truncated ORs this
     with every warning whose code spec has `truncates=True`."""
@@ -664,6 +755,9 @@ class Document(_Model):
         nest deeper than MAX_CHILD_DEPTH."""
         if _child_depth(self) > MAX_CHILD_DEPTH:
             raise ValueError(f"Document.children nest deeper than {MAX_CHILD_DEPTH} levels")
+        reserved = sorted(RESERVED_SIDECAR_KEYS.intersection(self.sidecar_extra))
+        if reserved:
+            raise ValueError(f"sidecar_extra keys collide with built-in sidecar keys: {reserved}")
         self._cap_list_nesting()
         for i, b in enumerate(self.blocks, start=1):
             if not b.id:
@@ -701,6 +795,9 @@ class Document(_Model):
         for b in self.blocks:
             name = _COUNT_FIELD[b.type]
             values[name] = values.get(name, 0) + 1
+            inline = inline_link_count(b)
+            if inline:
+                values["links"] = values.get("links", 0) + inline
             match b:
                 case Table():
                     values["table_cells"] = values.get("table_cells", 0) + len(b.cells)

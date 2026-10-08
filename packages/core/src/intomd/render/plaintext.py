@@ -33,7 +33,7 @@ from intomd.render.base import RenderedOutput, TokenCounter
 from intomd.render.context import RenderContext
 from intomd.render.headings import plan_headings, resolve_title
 from intomd.render.inline import plain_spans
-from intomd.render.markdown import RenderOptions, ensure_finalized, render_markdown
+from intomd.render.markdown import RenderOptions, make_context, render_markdown
 from intomd.render.text import fmt_time
 from intomd.render.tokens import TiktokenCounter
 from intomd.render.transcript import prepare_speakers, transcript_paragraphs
@@ -49,6 +49,28 @@ def _items(ctx: RenderContext, items: list[ListItem], ordered: bool, start: int,
         lines.append("    " * depth + f"{marker} {check}{plain_spans(ctx, it.spans)}".rstrip())
         lines.extend(_items(ctx, it.children, False, 1, depth + 1))
     return lines
+
+
+_NL = chr(10)
+
+
+def _definition_lines(ctx: RenderContext, items: list[ListItem], depth: int) -> list[str]:
+    lines: list[str] = []
+    for it in items:
+        text = plain_spans(ctx, it.spans)
+        if text:
+            lines.append("    " * depth + text)
+        lines.extend(_definition_lines(ctx, it.children, depth + 1))
+    return lines
+
+
+def _definitions(ctx: RenderContext, items: list[ListItem]) -> str:
+    """Definition list (ListBlock attrs kind=definition): the term on its own line, definitions indented."""
+    entries = []
+    for it in items:
+        lines = [plain_spans(ctx, it.spans), *_definition_lines(ctx, it.children, 1)]
+        entries.append(_NL.join(line for line in lines if line.strip()))
+    return (_NL * 2).join(e for e in entries if e)
 
 
 def _table(ctx: RenderContext, table: Table) -> str:
@@ -97,6 +119,8 @@ def _block(ctx: RenderContext, b: Block) -> list[str]:
             return [plain_spans(ctx, b.spans)]
         case Quote():
             return [plain_spans(ctx, b.spans) + (f" ({b.attribution})" if b.attribution else "")]
+        case ListBlock() if b.attrs.get("kind") == "definition":
+            return [_definitions(ctx, b.items)]
         case ListBlock():
             return ["\n".join(_items(ctx, b.items, b.ordered, b.start, 0))]
         case CodeBlock():
@@ -159,9 +183,8 @@ class TextRenderer:
         self.options = options or RenderOptions()
 
     def render(self, result: ConversionResult, profile: Profile) -> RenderedOutput:
-        result = ensure_finalized(result)
         md = render_markdown(result, profile, self.options, self.counter)
-        ctx = RenderContext(profile=profile, result=result)
+        ctx = make_context(result, profile)
         text = render_text(md, ctx, resolve_title(ctx))
         return RenderedOutput(
             markdown=text,

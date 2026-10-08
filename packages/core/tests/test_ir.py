@@ -141,7 +141,7 @@ def test_counts_on_every_block_type() -> None:
     assert (c.headings, c.paragraphs, c.tables, c.table_cells) == (1, 2, 1, 3)
     assert (c.lists, c.list_items, c.code_blocks, c.images, c.figures) == (1, 3, 1, 1, 1)
     assert (c.footnotes, c.equations, c.page_breaks, c.transcript_segments) == (1, 1, 1, 1)
-    assert (c.slides, c.comments, c.tracked_changes, c.links, c.quotes, c.raw) == (1, 1, 1, 1, 1, 1)
+    assert (c.slides, c.comments, c.tracked_changes, c.links, c.quotes, c.raw) == (1, 1, 1, 2, 1, 1)
     assert c.words == len(every_block_document().plain_text().split())
 
 

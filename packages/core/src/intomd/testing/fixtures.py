@@ -11,6 +11,8 @@ max_seconds = 30                  # hard failure when exceeded
 hand_edited = false               # true when the golden was hand-edited after review
 notes = "what this fixture tests"
 expected_errors = []              # error-severity warning codes that are expected (others are hard failures)
+requires = ["docs"]               # optional extras the fixture needs; skipped when not installed
+requires_modules = ["pyarrow"]    # optional importable modules the fixture needs; skipped when missing
 
 [provenance]                       # required (part4 4.14.7)
 origin = "self-generated"         # self-generated | public-domain | cc0 | cc-by
@@ -23,6 +25,7 @@ source = ""                       # URL when not self-generated
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import time
 import tomllib
@@ -38,6 +41,10 @@ from intomd.testing.score import Score, parse, score
 
 PINNED_TIME = "2026-01-01T00:00:00Z"
 ALLOWED_ORIGINS = frozenset({"self-generated", "public-domain", "cc0", "cc-by"})
+
+
+EXTRA_PROBES: dict[str, str] = {"docs": "docling", "data": "pyarrow", "7z": "py7zr"}
+"""Optional extra -> module whose presence means the extra is installed (`requires = [...]`)."""
 
 
 class FixtureError(Exception):
@@ -65,6 +72,11 @@ class Fixture:
         return inputs[0]
 
     @property
+    def skip_reason(self) -> str | None:
+        """Why this fixture cannot run here (a required extra or module is missing), else None."""
+        return missing_requirements(self.meta)
+
+    @property
     def expected_md(self) -> Path:
         return self.path / "expected.full.md"
 
@@ -87,6 +99,31 @@ class FixtureRun:
     @property
     def passed(self) -> bool:
         return not self.hard_failures and self.score is not None and self.score.overall >= self.threshold
+
+
+def _importable(module: str) -> bool:
+    try:
+        return importlib.util.find_spec(module) is not None
+    except (ImportError, ValueError):
+        return False
+
+
+def missing_requirements(meta: dict[str, Any]) -> str | None:
+    """Skip reason for `requires` (extras, probed through EXTRA_PROBES) and `requires_modules`."""
+    extras = meta.get("requires", [])
+    modules = meta.get("requires_modules", [])
+    if not isinstance(extras, list) or not isinstance(modules, list):
+        return "meta.toml `requires` and `requires_modules` must be lists of strings"
+    for extra in extras:
+        probe = EXTRA_PROBES.get(str(extra))
+        if probe is None:
+            return f"requires unknown extra {extra!r} (no import probe is defined for it)"
+        if not _importable(probe):
+            return f"requires the {extra!r} extra (module {probe!r} is not installed)"
+    for module in modules:
+        if not _importable(str(module)):
+            return f"requires module {module!r}, which is not installed"
+    return None
 
 
 def fixtures_root(start: Path | None = None) -> Path:

@@ -33,6 +33,7 @@ from intomd.ir import (
     TrackedChange,
     TranscriptSegment,
     WarningKind,
+    block_spans,
 )
 from intomd.render import blocks as br
 from intomd.render.context import HeadingInfo, RenderContext, Unit
@@ -73,6 +74,8 @@ def _prepass(ctx: RenderContext) -> set[str]:
         elif isinstance(b, Paragraph) and b.role in ("header", "footer"):
             key = re.sub(r"\d+", "#", plain_spans(ctx, b.spans).casefold())
             pages_by_text.setdefault(key, set()).add(b.provenance.source_page or 0)
+        if not has_changes and any(sp.change is not None for sp in block_spans(b)):
+            has_changes = True
     if has_changes:
         ctx.warn(
             WarningKind.TRACKED_CHANGES_PRESENT,
@@ -106,6 +109,9 @@ def _slide_units(ctx: RenderContext, slide: Slide, has_headings: bool) -> list[U
     parent = ctx.current_heading
     level = min(6, parent.level + 1) if (has_headings and parent and parent.level <= 6) else 2
     title = f"Slide {slide.index}: {slide.title}" if slide.title else f"Slide {slide.index}"
+    if slide.attrs.get("hidden") == "true":
+        title += " (hidden)"
+    ctx.current_slide = (slide.id, level)
     info = HeadingInfo(
         block_id=slide.id,
         level=level,
@@ -164,7 +170,7 @@ def _heading_units(ctx: RenderContext, b: Heading) -> list[Unit]:
     ctx.current_heading = info
     label = b.provenance.source_label
     marker = ""
-    if ctx.doc.metadata.source_type == SourceType.XLSX and label and ctx.profile.page_markers:
+    if ctx.source_type_of(b.id) == SourceType.XLSX and label and ctx.profile.page_markers:
         marker = f'<!-- sheet "{label.replace(chr(34), chr(39))}" -->\n'
     units = [
         Unit(
@@ -189,7 +195,24 @@ def _paragraph_unit(ctx: RenderContext, b: Paragraph) -> list[Unit]:
             ctx.furniture_removed += 1
             return []
     unit = br.render_paragraph(ctx, b)
-    return [unit] if unit else []
+    if unit is None:
+        return []
+    if b.attrs.get("slide_part") == "notes":
+        return [*_notes_heading(ctx, b), unit]
+    return [unit]
+
+
+def _notes_heading(ctx: RenderContext, b: Paragraph) -> list[Unit]:
+    """A `Notes` heading one level below the slide, once per slide (part2 section 19). It carries no
+    HeadingInfo: it is not numbered, not in Contents, and never starts a chunk of its own."""
+    slide_id, slide_level = ctx.current_slide or ("", 1)
+    owner = b.parent_id or slide_id
+    if ctx.notes_for == owner:
+        return []
+    ctx.notes_for = owner
+    level = slide_level + 1
+    text = "#" * level + " Notes" if level <= 6 else "**Notes**"
+    return [Unit(text=text, kind="heading", block_ids=[b.id], page=b.provenance.source_page)]
 
 
 def _annotation_unit(ctx: RenderContext, b: Comment | TrackedChange) -> list[Unit]:
@@ -246,6 +269,8 @@ def build_units(ctx: RenderContext, consumed: set[str]) -> BuildResult:
         if isinstance(b, PageBreak):
             page_hint = b.page_number
             continue
+        if isinstance(b, Heading) and b.id in ctx.headings and ctx.headings[b.id].child_section:
+            page_hint = None  # a child Document's pages are its own
         if isinstance(b, Image) and b.ref in decorative:
             ctx.images_dropped_decorative += 1
             continue

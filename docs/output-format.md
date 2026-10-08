@@ -41,6 +41,14 @@ alphabetical) and keys with empty values are omitted unless required.
 The sidecar JSON (`<name>.intomd.json`, CLI `--sidecar`, API `format=zip`) mirrors the frontmatter
 and adds per-block provenance, warnings with details, heading shifts, and, in `rag`, the chunk list.
 
+Converter-specific sidecar lists come from `Document.sidecar_extra` (`{key: [ {scalar fields} ]}`, for
+example the code family's `redactions`) and are written verbatim under their own top-level key. Keys that
+collide with built-in sidecar keys (`sections`, `tables`, `counts`, `children`, ...; the full list is
+`intomd.ir.RESERVED_SIDECAR_KEYS`) are rejected with `ValueError` by `Document.finalize()` and by the
+renderer. `counts.removed_nonprinting` adds the characters converters stripped (`removed_hidden_elements`
+detail `invisible_chars`, else `control` + `invisible` + `surrogates`; never the element `count`), and
+`counts.furniture_removed` adds the `count` of `removed_running_header_footer` warnings.
+
 ## Profiles
 
 | | `full` | `compact` | `rag` | `agent` |
@@ -81,7 +89,49 @@ Markers are HTML comments on their own line: `<!-- page N -->`, `<!-- slide N --
 Page and slide markers need paged sources (Planned, Phase 1).
 
 Inline formatting is CommonMark: `**bold**`, `*italic*`, `` `code` ``, `~~strike~~`. Lists use `-`
-and `1.` with four-space nesting and task lists (`- [x]`). Code is fenced with the source language
+and `1.` with four-space nesting and task lists (`- [x]`).
+
+Definition lists: a converter marks a `ListBlock` with `attrs["kind"] = "definition"`; each item's
+spans are the term and its `children` are the definitions. Every profile renders the term in bold and
+each definition on its own line indented four spaces, with a blank line between entries:
+
+```text
+**Berth**
+    A place where a ship docks.
+
+**Pallet**
+    A flat platform.
+    Also a skid.
+```
+
+The definition lines follow the term without a blank line, so CommonMark reads them as continuation
+lines of the term's paragraph (never as an indented code block). The `txt` format writes the same layout
+without the bold markers.
+
+Inline tracked changes: an `InlineSpan` with `change` set to `insert` or `delete` is shown per the
+`tracked_changes` option: `accept` (default) and `drop` keep inserts and drop deletes, `reject` does the
+reverse, and `annotate` writes `{++text++}` / `{--text--}` in place. `tracked_changes_present` is added
+whenever any exist. Anchored `TrackedChange` blocks work as before.
+
+Hidden content: a `Heading` or `Slide` with `attrs["hidden"] = "true"` (hidden sheet or slide) gets
+` (hidden)` after its text. Slide notes (`Paragraph` with `attrs["slide_part"] = "notes"`) appear under a
+`Notes` heading one level below the slide (H3 under an H2 slide); that heading is not numbered, not in
+Contents and never starts a chunk. Decks report `N slides` (not pages) in the orientation line, and the
+frontmatter `slides` and `sheets` come from `Metadata.slides` / `Metadata.sheets`.
+
+## Archives and attachments (`Document.children`)
+
+Child Documents (archive members, later email attachments) are rendered after the parent body, each as a
+section headed by its path (the child's `metadata.source` after the last `!`, else the first block's
+`provenance.path`). A direct child is a top-level section (`## 3 docs/a.md {#sec-3}`), a grandchild one
+level deeper. The child's title H1 becomes that section heading; its other headings shift under it, and
+numbering, anchors and footnote numbers continue from the parent. Page markers restart inside each child
+(they are the child's own pages). Child warnings are merged into the frontmatter and sidecar with
+`detail.child = <path>`. `rag` never merges sections of different children into one chunk, and `compact`
+and `txt` keep the children too. The sidecar gains `children[]`: `{path, converter, title, block_count,
+depth, source_type, section_block_id}`; child blocks appear in `provenance[]` with ids prefixed `c1-`,
+`c1.2-` (grandchild), while `document` holds the parent IR only. The frontmatter `source_type` of an
+archive is `archive` (the Part 3 enum is amended with `text`, `markdown` and `archive`). Code is fenced with the source language
 when known. Raw HTML blocks from the source are shown in an `html` code fence, never passed through.
 Non-printing and bidi control characters are removed and counted (`removed_hidden_elements`).
 
@@ -99,13 +149,20 @@ Non-printing and bidi control characters are removed and counted (`removed_hidde
 - **CSV sidecars** (`tables/table-NN.csv`) for tables wider than 6 columns or longer than 50 rows,
   and for every table in `agent`. Cell strings are never reformatted.
 
+Pipe and key:value cells keep inline Markdown (`code`, **bold**, links per profile) and are never
+escaped as if they started a line (`#REF!` stays verbatim). Minimal HTML tables keep plain-text cells,
+as Part 3 section 15 rule 3 allows only structural tags. A converter that synthesized header names sets
+`Table.attrs["header_synthesized"] = "true"`; the renderer then adds `<!-- intomd: header synthesized -->`
+and names empty header cells `col_N`, as it does for headers it synthesizes itself.
+
 Tables are atomic: no chunk boundary or page marker falls inside one.
 
 ## Footnotes
 
 References are `[^N]`, numbered sequentially through the document regardless of source labels.
 Definitions `[^N]: text` are placed at the end of the section that first references them, so chunks
-stay self-contained.
+stay self-contained. A footnote referenced before the first heading is defined at the end of that
+preamble, before the first heading.
 
 ## The `agent` fence
 
@@ -122,6 +179,16 @@ The id is deterministic (derived from a hash of the inner body and the source, D
 in the frontmatter as `untrusted_content_id`; `agent_salt=random` uses a random id instead. The
 frontmatter stays outside the fence. Text flagged by the prompt-injection scanner is never removed;
 it raises `injection_risk` and adds `possible_prompt_injection`.
+
+Hidden text a converter removed (web: CSS-hidden elements) travels in the `removed_hidden_elements`
+warning's `detail.hidden_text` (at most 10 KB). The scanner reads it but it is never rendered; its findings
+are tagged `hidden: true` and `location: hidden` in `injection_findings[]`, their severity is raised one
+level, and they count double (Part 3 section 18).
+
+## Token budget
+
+`max_tokens` covers the whole body of a page, including page 1's head blocks (summary, orientation line,
+Contents, H1). When those head blocks alone exceed the budget, Contents is left out of that page.
 
 ## `rag` chunks
 

@@ -79,7 +79,22 @@ _EXTENSION_MIMES: dict[str, str] = {
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     ".epub": "application/epub+zip",
+    ".docm": "application/vnd.ms-word.document.macroenabled.12",
+    ".dotx": "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+    ".dotm": "application/vnd.ms-word.template.macroenabled.12",
+    ".xlsm": "application/vnd.ms-excel.sheet.macroenabled.12",
+    ".xltx": "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+    ".xltm": "application/vnd.ms-excel.template.macroenabled.12",
+    ".pptm": "application/vnd.ms-powerpoint.presentation.macroenabled.12",
+    ".potx": "application/vnd.openxmlformats-officedocument.presentationml.template",
+    ".potm": "application/vnd.ms-powerpoint.template.macroenabled.12",
+    ".ppsx": "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+    ".ppsm": "application/vnd.ms-powerpoint.slideshow.macroenabled.12",
     ".ipynb": "application/x-ipynb+json",
+    ".sqlite": "application/vnd.sqlite3",
+    ".sqlite3": "application/vnd.sqlite3",
+    ".db": "application/vnd.sqlite3",
+    ".parquet": "application/vnd.apache.parquet",
     ".py": "text/x-python",
     ".ts": "application/typescript",
     ".mts": "application/typescript",
@@ -111,6 +126,12 @@ _ALIASES: dict[str, str] = {
     "application/csv": "text/csv",
     "application/x-pdf": "application/pdf",
     "inode/x-empty": EMPTY_MIME,
+    "text/rtf": "application/rtf",
+    "application/x-rtf": "application/rtf",
+    "application/x-sqlite3": "application/vnd.sqlite3",
+    "application/vnd.sqlite3": "application/vnd.sqlite3",
+    "application/x-parquet": "application/vnd.apache.parquet",
+    "application/vnd.apache.parquet": "application/vnd.apache.parquet",
 }
 
 # Magika labels whose mime we override (Magika reports generic or legacy mimes for these).
@@ -124,6 +145,9 @@ _MAGIKA_LABEL_MIMES: dict[str, str] = {
     "jsonl": "application/jsonl",
     "csv": "text/csv",
     "tsv": "text/tab-separated-values",
+    "ipynb": "application/x-ipynb+json",
+    "sqlite": "application/vnd.sqlite3",
+    "parquet": "application/vnd.apache.parquet",
 }
 
 
@@ -142,6 +166,38 @@ def extension_mime(name: str) -> str | None:
         return _EXTENSION_MIMES[suffix]
     guess, _ = mimetypes.guess_type(f"x{suffix}", strict=False)
     return normalize_mime(guess)
+
+
+# Macro-enabled and template OOXML variants -> the base document type a converter handles. Detectors
+# report the base type for these (same container, same parts), so the pair is not a misnamed file.
+_OOXML = "application/vnd.openxmlformats-officedocument."
+_DOCX = _OOXML + "wordprocessingml.document"
+_XLSX = _OOXML + "spreadsheetml.sheet"
+_PPTX = _OOXML + "presentationml.presentation"
+_MIME_FAMILY: dict[str, str] = {
+    "application/vnd.ms-word.document.macroenabled.12": _DOCX,
+    _OOXML + "wordprocessingml.template": _DOCX,
+    "application/vnd.ms-word.template.macroenabled.12": _DOCX,
+    "application/vnd.ms-excel.sheet.macroenabled.12": _XLSX,
+    _OOXML + "spreadsheetml.template": _XLSX,
+    "application/vnd.ms-excel.template.macroenabled.12": _XLSX,
+    "application/vnd.ms-powerpoint.presentation.macroenabled.12": _PPTX,
+    _OOXML + "presentationml.template": _PPTX,
+    "application/vnd.ms-powerpoint.template.macroenabled.12": _PPTX,
+    _OOXML + "presentationml.slideshow": _PPTX,
+    "application/vnd.ms-powerpoint.slideshow.macroenabled.12": _PPTX,
+}
+
+
+def mime_family(mime: str) -> str:
+    """The base mime a variant belongs to (`docm`/`dotx` -> docx), after alias normalization."""
+    m = normalize_mime(mime) or mime
+    return _MIME_FAMILY.get(m, m)
+
+
+def same_family(a: str, b: str) -> bool:
+    """True when two mimes name the same format family (identical, aliases, or OOXML variants)."""
+    return mime_family(a) == mime_family(b)
 
 
 def is_executable(mime: str) -> bool:

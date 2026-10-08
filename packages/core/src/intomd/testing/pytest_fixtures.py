@@ -28,6 +28,9 @@ class FixtureItem(pytest.Item):
     def runtest(self) -> None:
         from intomd.testing.fixtures import run_fixture
 
+        reason = self.fx.skip_reason
+        if reason:
+            pytest.skip(f"{self.fx.id}: {reason}")
         run = run_fixture(self.fx, self.root)
         if run.hard_failures:
             raise FixtureFailure("; ".join(run.hard_failures))

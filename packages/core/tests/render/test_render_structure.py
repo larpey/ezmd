@@ -194,7 +194,7 @@ def test_slides_marker_heading_and_notes() -> None:
     )
     full = render(res, "full").body
     assert "<!-- slide 4 -->\n### Slide 4: Quarterly results [00:05:30 - 00:08:12] {#slide-4}" in full
-    assert "**Notes:** Speaker notes here" in full
+    assert "#### Notes\n\nSpeaker notes here" in full  # one level below the H3 slide
     assert "<!-- slide" not in render(res, "compact").body
 
 

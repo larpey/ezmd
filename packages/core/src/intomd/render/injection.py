@@ -36,6 +36,7 @@ __all__ = [
 Risk = Literal["none", "low", "medium", "high"]
 Location = Literal["body", "metadata", "hidden", "decoded", "code"]
 SEV_WEIGHT: dict[str, float] = {"low": 1, "medium": 3, "high": 6}
+_RAISE: dict[Severity, Severity] = {"low": "medium", "medium": "high", "high": "high"}
 
 _ZERO_WIDTH = re.compile("[\u200b\u200c\u200d\u2060\ufeff\u00ad]")
 _BIDI = re.compile("[\u202a-\u202e\u2066-\u2069]")
@@ -95,6 +96,7 @@ class Finding:
             "snippet": self.snippet,
             "location": self.location,
             "regex": self.pattern,
+            "hidden": self.location == "hidden",
         }
 
 
@@ -228,7 +230,11 @@ def scan(
                 f.snippet = f"{key}: {f.snippet}"[:80]
                 findings.append(f)
     if hidden_text:
-        findings.extend(_scan(hidden_text, "hidden"))
+        # Text a converter removed as hidden (part3 18 phase 1): severity rises one level, and the
+        # scorer counts it double.
+        for f in _scan(hidden_text, "hidden"):
+            f.severity = _RAISE[f.severity]
+            findings.append(f)
     for kind, dec in _decoded_blobs(text):
         for f in _scan(dec, "decoded"):
             f.pattern = f"{kind}:{f.pattern}"

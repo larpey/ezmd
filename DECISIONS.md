@@ -264,3 +264,24 @@ Date: 2026-10-08
 Task: P1-T03
 Status: accepted
 Decision: `code.source_file` (about 43 code mimes, chains `[code.source_file, text.plain]`, specialist ranking per D-0021) and `code.repo_pack` (zip/tar.gz repos, GitHub URLs via a codeload FetchRequired, gitignore, budget actions, signatures-only) with Secretlint-style secret redaction that preserves source line numbering. Sizes are source bytes; `packed_bytes` reports emitted size. Goldens: 8 fixtures, Skeptic-accepted after two review rounds (line numbering, byte counts). The sidecar `redactions` list (part2 8b.4) waits for the core `Document.sidecar_extra` hook. Details: `docs/decisions/P1-T03-code.md`.
+
+## D-0026: Core renderer and IR changes requested by the converter families
+Date: 2026-10-08
+Task: P1-T01..P1-T06 (core support)
+Status: accepted
+Context: Skeptic reviews of the Phase 1 family goldens found defects that belong in core, not in converters.
+Decision (additive IR, schema stays "1.1"):
+- Render `Document.children` (archives, later email attachments) as `## <path>` sections after the parent body, headings shifted beneath, warnings merged with the child path, a sidecar `children` index; the child's title becomes the section heading.
+- Definition lists: `ListBlock.attrs["kind"]="definition"` renders `**term**` plus 4-space-indented definition lines.
+- `Document.sidecar_extra` for family-specific sidecar lists (e.g. code `redactions`); reserved keys rejected.
+- `InlineSpan.change` (`insert`/`delete`, with author/id) renders in place: accepted by default, CriticMarkup on request.
+- `Metadata.slides` and `Metadata.sheets`; ` (hidden)` suffix for hidden headings/slides; slide notes under a `Notes` heading one level below the slide; `Table.attrs["header_synthesized"]`.
+- Hidden text from `removed_hidden_elements` `detail.hidden_text` is scanned for injection (findings tagged hidden) but never rendered; `counts.removed_nonprinting` reads warning detail, never element counts; `counts.furniture_removed` adds converter-reported `removed_running_header_footer` counts; `counts.links` includes inline links.
+- Footnotes referenced before the first heading are defined at the end of the preamble.
+- Pipe/KV table cells keep inline Markdown and are never line-start-escaped; minimal HTML tables keep cells plain text (part3 15 rule 3).
+- Detection: Magika `ipynb`/`sqlite`/`parquet` labels and `.sqlite/.db/.parquet` extensions mapped; OOXML macro-enabled variants and text/rtf vs application/rtf are not "misnamed".
+- When only Unavailable converters claim a mime, the error names the reason and what to install (`code` set to the reason's warning code when it is one).
+- Fixture `requires`/`requires_modules` skip fixtures whose extras are missing.
+- Frontmatter `source_type` enum amended with `archive` (as with `text` and `markdown`, D-0017).
+- Token-budget pagination counts page 1's head blocks; Contents is dropped first when they alone exceed the budget.
+Details: `docs/decisions/P1-core-renderer.md`.

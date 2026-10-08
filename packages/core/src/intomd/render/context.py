@@ -10,9 +10,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-from intomd.ir import ConversionResult, Document, Footnote, Warning, WarningKind
+from intomd.ir import ConversionResult, Document, Footnote, SourceType, Warning, WarningKind
 from intomd.profiles import Profile
 from intomd.render.base import Attachment
+from intomd.render.children import ChildIndex
 from intomd.render.links import LinkCollector
 from intomd.render.text import TextStats
 
@@ -53,6 +54,10 @@ class HeadingInfo:
     time_end: float | None = None
     overflow: str | None = None
     """Full text of a heading longer than 200 chars, emitted as the next paragraph."""
+    child: str | None = None
+    """Block-id prefix of the child Document this heading belongs to (None for the parent's own)."""
+    child_section: bool = False
+    """True for the synthetic `<child path>` section heading of a child Document."""
 
     @property
     def label(self) -> str:
@@ -110,10 +115,22 @@ class RenderContext:
     show_speakers: bool = False
     fence_defanged: int = 0
     keep_furniture: set[str] = field(default_factory=set)
+    children: ChildIndex = field(default_factory=ChildIndex)
+    current_slide: tuple[str, int] | None = None
+    """(slide block id, heading level) of the slide being rendered, for its Notes heading."""
+    notes_for: str | None = None
+    """Slide whose Notes heading was already emitted."""
 
     @property
     def doc(self) -> Document:
         return self.result.document
+
+    def is_child_block(self, block_id: str) -> bool:
+        return self.children.is_child_block(block_id)
+
+    def source_type_of(self, block_id: str) -> SourceType:
+        """Source type of the Document a block came from (a child's own type for flattened children)."""
+        return self.children.source_type_of(block_id, self.doc.metadata.source_type)
 
     def warn(
         self, kind: WarningKind, message: str, *, block_id: str | None = None, **detail: str | int | float
