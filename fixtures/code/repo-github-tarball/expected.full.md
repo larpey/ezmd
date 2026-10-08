@@ -3,32 +3,32 @@ title: "acme/stockroom at main"
 source: "https://codeload.github.com/acme/stockroom/tar.gz/main"
 source_type: code
 converter: code.repo_pack
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 1559
-tokens: {o200k_base: 3804, cl100k_base: 3805, claude_approx: 4108}
-content_hash: "sha256:4c0e414ed5743355411645ac239d017d16e15a754803a63000666e71d8dd283d"
-source_hash: "sha256:a0b48298e08e572fa1330597aa1e18d2ff9ce8e9d4177af477b6773c4b90b106"
+tokens: {o200k_base: 3803, cl100k_base: 3804, claude_approx: 4107}
+content_hash: "sha256:880fc324dac02a239b3400468257117c17f5d03f7c97ff8e871c66a013c77fb5"
+source_hash: "sha256:a41064f88fcc703ec81ad0800b0678561321e9146a4b68903f573493392fc886"
 truncated: false
 warnings: []
-description: "Tiny inventory service (intomd fixture)."
+description: "Tiny inventory service (ezmd fixture)."
 injection_risk: none
 extra:
-  bytes: 11448
-  commit: "93ef68d3a7144adbcaa6bdb010256d0af9e81d49"
+  bytes: 11442
+  commit: "0e76f7757c5d6830073b0d1c0d4c407d365cd410"
   files: 7
   languages: python
   license_file: LICENSE
-  packed_bytes: 11440
+  packed_bytes: 11434
   project: stockroom
   ref: main
   repo: "acme/stockroom"
-  tokens: 3276
+  tokens: 3273
 ---
 > Sections: 1 Directory tree, 2 Files.
 
@@ -46,7 +46,7 @@ extra:
 
 # acme/stockroom at main {#doc}
 
-7 files packed (11,448 source bytes, 3,276 tokens). Languages: python 100%. Commit 93ef68d3a714.
+7 files packed (11,442 source bytes, 3,273 tokens). Languages: python 100%. Commit 0e76f7757c5d.
 
 ## 1 Directory tree {#sec-1}
 
@@ -72,7 +72,7 @@ File: `README.md`
 ```markdown
 # stockroom
 
-A small inventory service used as an intomd repo-pack fixture.
+A small inventory service used as an ezmd repo-pack fixture.
 
 Run `python -m stockroom` to print items that need reordering.
 ```
@@ -105,7 +105,7 @@ File: `pyproject.toml`
 [project]
 name = "stockroom"
 version = "0.1.0"
-description = "Tiny inventory service (intomd fixture)."
+description = "Tiny inventory service (ezmd fixture)."
 requires-python = ">=3.12"
 ```
 
@@ -123,7 +123,7 @@ File: `src/stockroom/inventory.py`
 
 ```python
 #!/usr/bin/env python3
-# inventory.py: a tiny stock ledger used as an intomd fixture.
+# inventory.py: a tiny stock ledger used as an ezmd fixture.
 """Track stock levels per SKU and report items that need reordering."""
 
 from __future__ import annotations

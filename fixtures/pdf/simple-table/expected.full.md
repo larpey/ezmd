@@ -3,19 +3,19 @@ title: "Quarterly cargo throughput"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 pages: 1
 word_count: 50
 tokens: {o200k_base: 118, cl100k_base: 121, claude_approx: 127}
 content_hash: "sha256:f61408e10bbf6ef5c0538357ae68f98c6eaf3e4ae5783f5b172a95deb0091390"
-source_hash: "sha256:eb6b156bb86d5a21304da38471a702fd7acb7d73eac915ad5f5bb2a1f9509bd7"
+source_hash: "sha256:a6f0bd07145417a63c5c7e2cf51719b600d174b175047422a71bfc32d99ec325"
 truncated: false
 warnings: [engine_fallback]
 injection_risk: none

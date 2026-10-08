@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 import pytest
 from core_factories import P, S
 
-from intomd.inputs import Detected, FetchRequired, InputRef
-from intomd.ir import Document, Metadata, Paragraph, SourceType, Warning, WarningKind
-from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions, mime_matches
+from ezmd.inputs import Detected, FetchRequired, InputRef
+from ezmd.ir import Document, Metadata, Paragraph, SourceType, Warning, WarningKind
+from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions, mime_matches
 
 
 @dataclass
@@ -180,7 +180,7 @@ def test_broken_entry_point_is_isolated() -> None:
 
 
 def test_entry_point_group_name() -> None:
-    assert ConverterRegistry.ENTRY_POINT_GROUP == "intomd.converters"
+    assert ConverterRegistry.ENTRY_POINT_GROUP == "ezmd.converters"
     assert isinstance(md.entry_points(group=ConverterRegistry.ENTRY_POINT_GROUP), md.EntryPoints)
 
 
@@ -192,7 +192,7 @@ def test_deadline() -> None:
 
 
 def test_unavailable_converter_is_listed_and_skipped() -> None:
-    from intomd.registry import Unavailable
+    from ezmd.registry import Unavailable
 
     reg = ConverterRegistry()
     reg.register(
@@ -207,12 +207,12 @@ def test_unavailable_converter_is_listed_and_skipped() -> None:
 
 
 def test_family_discovery_and_chains() -> None:
-    import intomd_converters
+    import ezmd_converters
 
-    assert "text" in intomd_converters.family_names()
-    ids = {c.id for c in intomd_converters.builtin_converters()}
+    assert "text" in ezmd_converters.family_names()
+    ids = {c.id for c in ezmd_converters.builtin_converters()}
     assert {"text.plain", "text.markdown_passthrough"} <= ids
-    assert intomd_converters.builtin_chains()["text/markdown"][0] == "text.markdown_passthrough"
+    assert ezmd_converters.builtin_chains()["text/markdown"][0] == "text.markdown_passthrough"
 
 
 def test_specialist_outranks_chain_members() -> None:

@@ -1,4 +1,4 @@
-"""`intomd batch` (docs/spec/part4.md 4.2.2 item 2 and the idempotency acceptance criterion)."""
+"""`ezmd batch` (docs/spec/part4.md 4.2.2 item 2 and the idempotency acceptance criterion)."""
 
 from __future__ import annotations
 
@@ -8,8 +8,8 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from intomd.cli import app
-from intomd.cli.batch import default_workers
+from ezmd.cli import app
+from ezmd.cli.batch import default_workers
 
 runner = CliRunner()
 ELF = bytes([0x7F]) + b"ELF" + bytes([2, 1, 1, 0]) + bytes(8) + bytes([2, 0, 0x3E, 0]) + bytes(200)
@@ -34,7 +34,7 @@ def test_mirrors_tree_and_writes_manifest(tmp_path: Path) -> None:
     res = runner.invoke(app, ["batch", str(src), "--out", str(out), "--recursive", "--workers", "1"])
     assert res.exit_code == 0, res.output
     assert (out / "note0.md").is_file() and (out / "sub" / "deep.md").is_file()
-    assert (out / "sub" / "deep.intomd.json").is_file()
+    assert (out / "sub" / "deep.ezmd.json").is_file()
     assert not (out / ".hidden.md").exists()
     lines = _manifest(out / "manifest.jsonl")
     assert len(lines) == 4

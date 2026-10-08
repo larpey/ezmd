@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -45,9 +48,9 @@
       {
         "attrs": {
           "lines": "22",
-          "tokens": "135"
+          "tokens": "134"
         },
-        "code": "# settings.py: application settings with planted fake secrets (intomd fixture).\nimport os\n\nDEBUG = os.environ.get(\"APP_DEBUG\", \"0\") == \"1\"\nAPI_SECRET_KEY = \"[REDACTED:generic_secret]\"\nSERVICE_TOKEN = [REDACTED:generic_secret]\nDATABASE_PASSWORD = \"changeme\"  # placeholder, must stay visible\nMAX_TOKENS = 4096\n\nSIGNING_KEY_PEM = '''\n[REDACTED:private_key]\n\n\n\n\n\n\n'''\n\n\ndef database_url(host: str) -> str:\n    return f\"postgresql://app:[REDACTED:basic_auth_url]@{host}/app\"",
+        "code": "# settings.py: application settings with planted fake secrets (ezmd fixture).\nimport os\n\nDEBUG = os.environ.get(\"APP_DEBUG\", \"0\") == \"1\"\nAPI_SECRET_KEY = \"[REDACTED:generic_secret]\"\nSERVICE_TOKEN = [REDACTED:generic_secret]\nDATABASE_PASSWORD = \"changeme\"  # placeholder, must stay visible\nMAX_TOKENS = 4096\n\nSIGNING_KEY_PEM = '''\n[REDACTED:private_key]\n\n\n\n\n\n\n'''\n\n\ndef database_url(host: str) -> str:\n    return f\"postgresql://app:[REDACTED:basic_auth_url]@{host}/app\"",
         "filename": "input.py",
         "id": "b0002",
         "language": "python",
@@ -72,7 +75,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:9ec9b86b15ed4980d6dfb8b3a51776669d368f6c7e64e5019b9eedcbf4aef3e8",
+    "content_hash": "sha256:fcff8ecc8eeb76b9d57fc0405c1c1d8ddaf678e01a4ddd246e80797f1258683e",
     "converter_id": "code.source_file",
     "metadata": {
       "author": null,
@@ -83,10 +86,10 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "bytes": 814,
+        "bytes": 800,
         "language": "python",
         "lines": 22,
-        "tokens": 135
+        "tokens": 134
       },
       "fetched": null,
       "keywords": [],
@@ -98,7 +101,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.py",
       "source_type": "code",
       "speakers": [],
@@ -126,31 +131,31 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:72d3e2b6a2037eb58ca39cb6cfbcaf493d823007b577caa93c4e24548c12dc36",
+    "content_hash": "sha256:4f9a05980bd56b25df1e8890821e9b9070a4e2114e22c553c987fd781e370701",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 814,
+      "bytes": 800,
       "encoding": "utf-8",
       "language": "python",
       "lines": 22,
-      "tokens": 135
+      "tokens": 134
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.py",
-    "source_hash": "sha256:3845209bd860f02ab74a7d4e320464c86ddee7f422f253e56bbc453977e51616",
+    "source_hash": "sha256:e349ab440f07388ce956ecb4d8f648ba71357a6042730b022275c07d05493b53",
     "source_type": "code",
     "title": "input.py",
     "tokens": {
-      "cl100k_base": 153,
-      "claude_approx": 167,
-      "o200k_base": 155
+      "cl100k_base": 152,
+      "claude_approx": 166,
+      "o200k_base": 154
     },
     "truncated": false,
     "warnings": [
@@ -184,14 +189,14 @@
       "transcript_segments": 0,
       "words": 48
     },
-    "duration_seconds": 0.0940000000409782,
+    "duration_seconds": 0.10899999993853271,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 814
+    "input_bytes": 800
   },
   "profile": "full",
   "provenance": [
@@ -212,14 +217,14 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 421,
+  "tokens_total": 422,
   "warnings": [
     {
       "block_id": null,

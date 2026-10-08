@@ -1,12 +1,12 @@
 # CLI reference
 
-Generated from the `intomd` typer app by `tools/gen_cli_doc.py`; do not edit by hand.
-In a source checkout run commands as `uv run intomd ...`.
+Generated from the `ezmd` typer app by `tools/gen_cli_doc.py`; do not edit by hand.
+In a source checkout run commands as `uv run ezmd ...`.
 
-## intomd
+## ezmd
 
 ```text
-Usage: intomd [OPTIONS] COMMAND [ARGS]...
+Usage: ezmd [OPTIONS] COMMAND [ARGS]...
 
   Convert anything to LLM-ready Markdown.
 
@@ -27,10 +27,10 @@ Commands:
   shadow-run    Convert inputs with every engine that handles them and compare the outputs.
 ```
 
-## intomd convert
+## ezmd convert
 
 ```text
-Usage: intomd convert [OPTIONS] SOURCE
+Usage: ezmd convert [OPTIONS] SOURCE
 
   Convert one input to Markdown (stdout, or a file with --out).
 
@@ -41,21 +41,21 @@ Options:
   -p, --profile TEXT        full | compact | rag | agent [default: auto]
   -o, --out PATH            Output file, or directory for <title>.md.
   -f, --format TEXT         md | txt | json [default: md]
-  --sidecar / --no-sidecar  Write <name>.intomd.json beside --out.
+  --sidecar / --no-sidecar  Write <name>.ezmd.json beside --out.
   --engine TEXT             Engine as family=name, e.g. pdf=docling.
   --converter TEXT          Force a converter id.
   --lang TEXT               Language hint(s), e.g. en or en,de.
-  --remote TEXT             Convert on this intomd instance.
+  --remote TEXT             Convert on this ezmd instance.
   --opt TEXT                key=value converter or profile option.
   --json                    One JSON object on stdout.
   -q, --quiet               No progress or warnings on stderr.
   -h, --help                Show this message and exit.
 ```
 
-## intomd batch
+## ezmd batch
 
 ```text
-Usage: intomd batch [OPTIONS] INPUTS
+Usage: ezmd batch [OPTIONS] INPUTS
 
   Convert many files; unchanged inputs are skipped on re-runs.
 
@@ -77,10 +77,10 @@ Options:
   -h, --help                   Show this message and exit.
 ```
 
-## intomd doctor
+## ezmd doctor
 
 ```text
-Usage: intomd doctor [OPTIONS]
+Usage: ezmd doctor [OPTIONS]
 
   Check the environment: Python, extras, ffmpeg, pandoc, models, cache, Redis.
 
@@ -90,23 +90,23 @@ Options:
   -h, --help   Show this message and exit.
 ```
 
-## intomd capabilities
+## ezmd capabilities
 
 ```text
-Usage: intomd capabilities [OPTIONS]
+Usage: ezmd capabilities [OPTIONS]
 
   List converters (loaded or unavailable, with the reason).
 
 Options:
-  --remote TEXT  Ask this intomd instance instead.
+  --remote TEXT  Ask this ezmd instance instead.
   --json         As JSON.
   -h, --help     Show this message and exit.
 ```
 
-## intomd detect
+## ezmd detect
 
 ```text
-Usage: intomd detect [OPTIONS] PATH
+Usage: ezmd detect [OPTIONS] PATH
 
   Show the detected content type of a file (always JSON).
 
@@ -117,10 +117,10 @@ Options:
   -h, --help  Show this message and exit.
 ```
 
-## intomd version
+## ezmd version
 
 ```text
-Usage: intomd version [OPTIONS]
+Usage: ezmd version [OPTIONS]
 
   Print the version, commit, and build date.
 
@@ -129,10 +129,10 @@ Options:
   -h, --help  Show this message and exit.
 ```
 
-## intomd serve
+## ezmd serve
 
 ```text
-Usage: intomd serve [OPTIONS]
+Usage: ezmd serve [OPTIONS]
 
   Run the HTTP API and web UI in-process (inline queue without Redis).
 
@@ -143,10 +143,10 @@ Options:
   -h, --help               Show this message and exit.
 ```
 
-## intomd shadow-run
+## ezmd shadow-run
 
 ```text
-Usage: intomd shadow-run [OPTIONS] INPUTS...
+Usage: ezmd shadow-run [OPTIONS] INPUTS...
 
   Convert inputs with every engine that handles them and compare the outputs.
 

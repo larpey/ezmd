@@ -3,8 +3,8 @@ title: "Fuel Budget"
 source: "input.xlsx"
 source_type: xlsx
 converter: documents.xlsx
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
@@ -13,8 +13,8 @@ converted_at: 2026-01-01T00:00:00Z
 author: "Transit Desk"
 sheets: ["Budget", "Check"]
 word_count: 37
-tokens: {o200k_base: 183, cl100k_base: 183, claude_approx: 198}
-content_hash: "sha256:19cd8cc9b011f434244e183e6946b85d7169b835bfef688ce697042384d4d9af"
+tokens: {o200k_base: 182, cl100k_base: 182, claude_approx: 197}
+content_hash: "sha256:f72cf5d66e2aa67ef5761b995fd5758f0f342191168b447ebcfde6303f093be0"
 source_hash: "sha256:9889cbb504266939eaea65f92691cc7dc1facfa4f7d08ea087eb10a2eac7b43a"
 truncated: false
 warnings: [formula_uncalculated, formulas_present]
@@ -38,7 +38,7 @@ injection_risk: none
 ## 2 Check {#sec-2}
 
 **Table 2**
-<!-- intomd: header synthesized -->
+<!-- ezmd: header synthesized -->
 
 | col_1 | col_2 |
 |---|---|

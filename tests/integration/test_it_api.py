@@ -35,7 +35,7 @@ SMOKE_CORPUS = [
     "edgar/tva-8k",
 ]
 
-# Job states in pipeline order (apps/api/src/intomd_api/jobs.py); SSE `state` events must not go back.
+# Job states in pipeline order (apps/api/src/ezmd_api/jobs.py); SSE `state` events must not go back.
 STATE_ORDER = ["queued", "fetching", "converting", "rendering", "done"]
 HEADING = re.compile(r"^#{1,6} (.+?)(?: \{#[^}]*\})?$", re.MULTILINE)
 
@@ -74,7 +74,7 @@ def test_health_ready_capabilities(stack: Stack) -> None:
 
 
 def test_owner_key_present(stack: Stack) -> None:
-    assert stack.has_owner_key, "INTOMD_API_KEY or INTOMD_API_KEY_FILE must name the stack's owner key"
+    assert stack.has_owner_key, "EZMD_API_KEY or EZMD_API_KEY_FILE must name the stack's owner key"
 
 
 @pytest.mark.parametrize("fixture", SMOKE_CORPUS)
@@ -155,7 +155,7 @@ def test_warnings_reach_job_and_sidecar(owner: httpx.Client) -> None:
     job = owner.get(f"/v1/jobs/{job_id}").json()
     assert "secret_redacted" in job["warnings"]
     md = owner.get(f"/v1/jobs/{job_id}/result", params={"format": "md"})
-    assert int(md.headers["x-intomd-warnings"]) >= 1
+    assert int(md.headers["x-ezmd-warnings"]) >= 1
     assert "a4e3770643c072829845a0b6c58a00aa6f78e8b5" not in md.text
     sidecar = owner.get(f"/v1/jobs/{job_id}/result", params={"format": "json"}).json()["sidecar"]
     codes = {w.get("code") or w.get("kind") for w in sidecar["warnings"]}

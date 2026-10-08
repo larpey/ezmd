@@ -1,22 +1,22 @@
 # MCP server
 
-`intomd-mcp` exposes intomd to any [Model Context Protocol](https://modelcontextprotocol.io) client. It is
-a thin client: in **local mode** (the default) it calls the intomd library in-process; in **remote mode**
-(`--remote URL`) it forwards to an intomd instance over the REST API. It never contains conversion logic of
+`ezmd-mcp` exposes ezmd to any [Model Context Protocol](https://modelcontextprotocol.io) client. It is
+a thin client: in **local mode** (the default) it calls the ezmd library in-process; in **remote mode**
+(`--remote URL`) it forwards to an ezmd instance over the REST API. It never contains conversion logic of
 its own.
 
 ```bash
-uvx intomd-mcp                       # stdio, local mode
+uvx ezmd-mcp                       # stdio, local mode
 ```
 
 !!! note "Before the first release"
-    `intomd-mcp` is not on PyPI yet, so `uvx intomd-mcp` does not work. From a source checkout (see
-    [Install](install.md)), replace `uvx intomd-mcp` in every example below with
-    `uv --directory /path/to/intomd run intomd-mcp`; in JSON configs that is
-    `"command": "uv", "args": ["--directory", "/path/to/intomd", "run", "intomd-mcp", ...]`. For example:
+    `ezmd-mcp` is not on PyPI yet, so `uvx ezmd-mcp` does not work. From a source checkout (see
+    [Install](install.md)), replace `uvx ezmd-mcp` in every example below with
+    `uv --directory /path/to/ezmd run ezmd-mcp`; in JSON configs that is
+    `"command": "uv", "args": ["--directory", "/path/to/ezmd", "run", "ezmd-mcp", ...]`. For example:
 
     ```bash
-    claude mcp add intomd -- uv --directory /path/to/intomd run intomd-mcp
+    claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp
     ```
 
 ## Client configuration
@@ -28,10 +28,10 @@ uvx intomd-mcp                       # stdio, local mode
 ```json
 {
   "mcpServers": {
-    "intomd": {
+    "ezmd": {
       "command": "uvx",
-      "args": ["intomd-mcp", "--allowed-dirs", "/Users/you/Documents"],
-      "env": { "INTOMD_PROFILE": "agent" }
+      "args": ["ezmd-mcp", "--allowed-dirs", "/Users/you/Documents"],
+      "env": { "EZMD_PROFILE": "agent" }
     }
   }
 }
@@ -43,9 +43,9 @@ you want `convert_file` to read.
 ### Claude Code
 
 ```bash
-claude mcp add intomd -- uvx intomd-mcp
+claude mcp add ezmd -- uvx ezmd-mcp
 # a remote instance over streamable HTTP:
-claude mcp add --transport http intomd https://intomd.example/mcp --header "Authorization: Bearer $INTOMD_API_KEY"
+claude mcp add --transport http ezmd https://ezmd.example/mcp --header "Authorization: Bearer $EZMD_API_KEY"
 ```
 
 or commit a project-scoped `.mcp.json`:
@@ -53,7 +53,7 @@ or commit a project-scoped `.mcp.json`:
 ```json
 {
   "mcpServers": {
-    "intomd": { "command": "uvx", "args": ["intomd-mcp"] }
+    "ezmd": { "command": "uvx", "args": ["ezmd-mcp"] }
   }
 }
 ```
@@ -67,7 +67,7 @@ Claude Code starts the server in the project directory, which is the default all
 ```json
 {
   "mcpServers": {
-    "intomd": { "command": "uvx", "args": ["intomd-mcp", "--allowed-dirs", "${workspaceFolder}"] }
+    "ezmd": { "command": "uvx", "args": ["ezmd-mcp", "--allowed-dirs", "${workspaceFolder}"] }
   }
 }
 ```
@@ -79,7 +79,7 @@ Claude Code starts the server in the project directory, which is the default all
 ```json
 {
   "mcpServers": {
-    "intomd": { "command": "uvx", "args": ["intomd-mcp", "--allowed-dirs", "/path/to/project"] }
+    "ezmd": { "command": "uvx", "args": ["ezmd-mcp", "--allowed-dirs", "/path/to/project"] }
   }
 }
 ```
@@ -91,10 +91,10 @@ Claude Code starts the server in the project directory, which is the default all
 ```json
 {
   "servers": {
-    "intomd": {
+    "ezmd": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["intomd-mcp", "--allowed-dirs", "${workspaceFolder}"]
+      "args": ["ezmd-mcp", "--allowed-dirs", "${workspaceFolder}"]
     }
   }
 }
@@ -102,8 +102,8 @@ Claude Code starts the server in the project directory, which is the default all
 
 ### Any other client
 
-stdio: run `uvx intomd-mcp` (or `intomd-mcp` after `pip install intomd-mcp`) as the server command.
-Streamable HTTP: start `intomd-mcp --transport http` and point the client at `http://127.0.0.1:8765/mcp`
+stdio: run `uvx ezmd-mcp` (or `ezmd-mcp` after `pip install ezmd-mcp`) as the server command.
+Streamable HTTP: start `ezmd-mcp --transport http` and point the client at `http://127.0.0.1:8765/mcp`
 with the header `Authorization: Bearer <token>`.
 
 ### A remote instance from a stdio client
@@ -111,16 +111,16 @@ with the header `Authorization: Bearer <token>`.
 ```json
 {
   "mcpServers": {
-    "intomd": {
+    "ezmd": {
       "command": "uvx",
-      "args": ["intomd-mcp", "--remote", "https://intomd.example"],
-      "env": { "INTOMD_API_KEY": "imd_..." }
+      "args": ["ezmd-mcp", "--remote", "https://ezmd.example"],
+      "env": { "EZMD_API_KEY": "imd_..." }
     }
   }
 }
 ```
 
-The server sends `User-Agent: intomd-mcp/<version>` and `X-API-Key`. Remote mode never falls back to local
+The server sends `User-Agent: ezmd-mcp/<version>` and `X-API-Key`. Remote mode never falls back to local
 conversion.
 
 ## Tools
@@ -181,8 +181,8 @@ unexpected exceptions are logged to stderr and reported as `internal_error`.
 
 ### Resources and prompt
 
-- `intomd://jobs/{id}`: the full Markdown of a job (default profile, unpaged).
-- `intomd://jobs/{id}/sidecar`: the sidecar JSON (sections, tables, provenance, warnings).
+- `ezmd://jobs/{id}`: the full Markdown of a job (default profile, unpaged).
+- `ezmd://jobs/{id}/sidecar`: the sidecar JSON (sections, tables, provenance, warnings).
 - Prompt `summarize_with_provenance(job_id?)`: summarize while citing section ids and page markers.
 
 Local jobs live in memory (the 32 most recent) for the life of the server process.
@@ -191,14 +191,14 @@ Local jobs live in memory (the 32 most recent) for the life of the server proces
 
 - **stdio** (default): no authentication; the server is a local child process of the client. stdout
   carries only the MCP protocol; logs go to stderr.
-- **Streamable HTTP**: `intomd-mcp --transport http [--host H] [--port P] [--token T]`. It binds
-  `127.0.0.1:8765` unless `--host` or `INTOMD_MCP_BIND` says otherwise. A bearer token is checked on every
-  request (`401` without it). Without `--token`/`INTOMD_MCP_TOKEN` on a loopback host the server generates
+- **Streamable HTTP**: `ezmd-mcp --transport http [--host H] [--port P] [--token T]`. It binds
+  `127.0.0.1:8765` unless `--host` or `EZMD_MCP_BIND` says otherwise. A bearer token is checked on every
+  request (`401` without it). Without `--token`/`EZMD_MCP_TOKEN` on a loopback host the server generates
   one and prints it to stderr; binding a non-loopback host without an explicit token refuses to start.
   `--no-auth` is accepted on loopback hosts only. Tokens must be at least 16 characters.
 - **SSE** is not implemented: it is deprecated in the MCP specification in favour of streamable HTTP.
 - **Files**: `convert_file` reads only regular files under the allowed directories (default: the working
-  directory; set `--allowed-dirs` or `INTOMD_MCP_ALLOWED_DIRS`). Paths must be absolute, may not contain
+  directory; set `--allowed-dirs` or `EZMD_MCP_ALLOWED_DIRS`). Paths must be absolute, may not contain
   `..`, are resolved with symlinks followed before the check, and `/etc`, `/proc`, `/sys`, `/dev`, `/boot`,
   `/root` and `/run` are always refused.
 - **URLs**: fetched by the library with the same SSRF guard as the server (resolve-once pinning, redirects
@@ -207,26 +207,26 @@ Local jobs live in memory (the 32 most recent) for the life of the server proces
   suspected prompt injection as a warning; the text itself is never altered or removed.
 
 The API container mounts the same HTTP app at `/mcp` behind its API-key middleware
-(`intomd_mcp.http.build_http_app(server, token=None)`), so a remote instance is one URL for REST and MCP.
+(`ezmd_mcp.http.build_http_app(server, token=None)`), so a remote instance is one URL for REST and MCP.
 
 ## Options and environment
 
 | Flag | Environment | Default | Meaning |
 | --- | --- | --- | --- |
-| `--profile` | `INTOMD_PROFILE` | `agent` | Default profile for every tool |
-| `--allowed-dirs DIR...` | `INTOMD_MCP_ALLOWED_DIRS` (OS path separator) | working directory | Roots `convert_file` may read |
-| `--remote URL` | `INTOMD_REMOTE` | none | Forward to an intomd instance |
-| `--api-key KEY` | `INTOMD_API_KEY` | none | Sent as `X-API-Key` in remote mode |
-| `--wait-seconds S` | `INTOMD_MCP_WAIT_SECONDS` | `120` | Remote: wait this long before returning `status: running` |
+| `--profile` | `EZMD_PROFILE` | `agent` | Default profile for every tool |
+| `--allowed-dirs DIR...` | `EZMD_MCP_ALLOWED_DIRS` (OS path separator) | working directory | Roots `convert_file` may read |
+| `--remote URL` | `EZMD_REMOTE` | none | Forward to an ezmd instance |
+| `--api-key KEY` | `EZMD_API_KEY` | none | Sent as `X-API-Key` in remote mode |
+| `--wait-seconds S` | `EZMD_MCP_WAIT_SECONDS` | `120` | Remote: wait this long before returning `status: running` |
 | `--transport` | | `stdio` | `stdio` or `http` |
-| `--host` | `INTOMD_MCP_BIND` | `127.0.0.1` | HTTP bind host |
-| `--port` | `INTOMD_MCP_PORT` | `8765` | HTTP port |
-| `--token` | `INTOMD_MCP_TOKEN` | generated (loopback) | HTTP bearer token |
+| `--host` | `EZMD_MCP_BIND` | `127.0.0.1` | HTTP bind host |
+| `--port` | `EZMD_MCP_PORT` | `8765` | HTTP port |
+| `--token` | `EZMD_MCP_TOKEN` | generated (loopback) | HTTP bearer token |
 | `--no-auth` | | off | HTTP without a token (loopback only) |
 | `--allow-private-networks` | | off | Let tool calls set `options.allow_private_networks` |
 | `--log-level` | | `WARNING` | stderr log level |
 
 ## Registry
 
-The package is listed in the official MCP registry as `io.github.larpey/intomd` (`packages/mcp/server.json`,
+The package is listed in the official MCP registry as `io.github.larpey/ezmd` (`packages/mcp/server.json`,
 validated against the registry schema in the test suite and with `mcp-publisher validate` in CI).

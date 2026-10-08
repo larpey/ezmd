@@ -13,9 +13,9 @@ import httpx
 import pytest
 from fastapi import FastAPI
 
-from intomd_api.main import SECURITY_HEADERS
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, make_settings, upload, use_in_process_isolation, wait_for_state
+from ezmd_api.main import SECURITY_HEADERS
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, make_settings, upload, use_in_process_isolation, wait_for_state
 
 ELF = b"\x7fELF\x02\x01\x01\x00" + b"\x00" * 8 + struct.pack("<HHI", 2, 0x3E, 1) + b"\x00" * 200
 PE = b"MZ\x90\x00\x03" + b"\x00" * 55 + struct.pack("<I", 64) + b"PE\x00\x00" + b"\x4c\x01" + b"\x00" * 200
@@ -82,7 +82,7 @@ async def test_unexpected_errors_do_not_leak(pair: tuple[httpx.AsyncClient, Fast
     client, app = pair
 
     def boom() -> None:
-        raise RuntimeError("secret path /srv/intomd/engine.py line 42")
+        raise RuntimeError("secret path /srv/ezmd/engine.py line 42")
 
     app.add_api_route("/v1/boom", boom)
     app.router.routes.insert(0, app.router.routes.pop())
@@ -154,7 +154,7 @@ async def test_control_characters_stripped_from_raw_filename(pair: tuple[httpx.A
 
 
 def test_sanitize_filename_unit() -> None:
-    from intomd_api.util import sanitize_filename
+    from ezmd_api.util import sanitize_filename
 
     assert sanitize_filename("a/b/c.md") == "c.md"
     assert sanitize_filename("\u202eexe.txt") == "exe.txt"
@@ -191,7 +191,7 @@ async def test_cors_allows_listed_origin(tmp_path: Path) -> None:
 
 
 async def test_api_key_never_logged(pair: tuple[httpx.AsyncClient, FastAPI], caplog: pytest.LogCaptureFixture) -> None:
-    from intomd.core.logging import RedactionFilter
+    from ezmd.core.logging import RedactionFilter
 
     client, _ = pair
     caplog.handler.addFilter(RedactionFilter())
@@ -199,7 +199,7 @@ async def test_api_key_never_logged(pair: tuple[httpx.AsyncClient, FastAPI], cap
     key = "ak_live_" + "A" * 22
     r = await upload(client, b"x", "a.txt", headers={"X-API-Key": key})
     assert r.status_code == 401
-    logging.getLogger("intomd.api").info("probe X-API-Key: " + key)
+    logging.getLogger("ezmd.api").info("probe X-API-Key: " + key)
     assert key not in caplog.text
 
 
@@ -211,7 +211,7 @@ async def test_invalid_api_key_401(pair: tuple[httpx.AsyncClient, FastAPI]) -> N
 
 async def test_require_api_key(tmp_path: Path) -> None:
     async with api_client(make_settings(tmp_path / "data", require_api_key=True)) as (client, app):
-        from intomd_api.auth import create_api_key
+        from ezmd_api.auth import create_api_key
 
         r = await upload(client, b"x\n", "a.txt")
         _assert_error_shape(r, "unauthorized", 401)
@@ -222,8 +222,8 @@ async def test_require_api_key(tmp_path: Path) -> None:
 def test_api_keys_stored_hashed(tmp_path: Path) -> None:
     from sqlalchemy import select
 
-    from intomd_api.auth import create_api_key, lookup_api_key
-    from intomd_api.db import ApiKeyRow, Database
+    from ezmd_api.auth import create_api_key, lookup_api_key
+    from ezmd_api.db import ApiKeyRow, Database
 
     settings = make_settings(tmp_path / "data", key_pepper="p" * 32)
     db = Database(settings.resolved_database_url)
@@ -239,7 +239,7 @@ def test_api_keys_stored_hashed(tmp_path: Path) -> None:
 
 
 def test_client_ip_hash_is_salted_and_raw_ip_not_stored(tmp_path: Path) -> None:
-    from intomd_api.auth import hash_ip
+    from ezmd_api.auth import hash_ip
 
     a = make_settings(tmp_path, ip_hash_salt="one")
     b = make_settings(tmp_path, ip_hash_salt="two")
@@ -256,11 +256,11 @@ async def test_raw_ip_absent_from_database(tmp_path: Path) -> None:
     assert b"203.0.113.77" not in raw
 
 
-@pytest.mark.parametrize("name", ["INTOMD_JWT_SECRET", "INTOMD_KEY_PEPPER"])
+@pytest.mark.parametrize("name", ["EZMD_JWT_SECRET", "EZMD_KEY_PEPPER"])
 def test_public_mode_refuses_short_secrets(tmp_path: Path, name: str) -> None:
     good = "k" * 32
     values = {"jwt_secret": good, "key_pepper": good}
-    values[name.removeprefix("INTOMD_").lower()] = "short"
+    values[name.removeprefix("EZMD_").lower()] = "short"
     with pytest.raises(ValueError, match=name):
         Settings(public_mode=True, data_dir=tmp_path, **values)  # type: ignore[arg-type]
     Settings(public_mode=True, data_dir=tmp_path, jwt_secret=good, key_pepper=good)  # type: ignore[arg-type]

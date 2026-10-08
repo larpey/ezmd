@@ -12,18 +12,18 @@
   whose `include` is True/False/None, which lets nested ignore files override parents (deepest decision wins)
   and keeps `!negation` semantics. Known issues: gitignore's rule that a file under an excluded directory cannot
   be re-included is approximated per file. Fallback: none needed (pure Python, no native code).
-- Tokens: tiktoken `cl100k_base` through `intomd.render.tokens.TiktokenCounter` (already a core dependency;
+- Tokens: tiktoken `cl100k_base` through `ezmd.render.tokens.TiktokenCounter` (already a core dependency;
   falls back to estimates offline).
 - Secrets: native `re` rules modeled on Secretlint and detect-secrets plugins instead of a `detect-secrets`
   dependency. Reasons: detect-secrets runs its own file walking and plugin loading, its high-entropy plugin is
   noisy on lockfiles and hashes, and the rules we need fit in about 120 lines that run on text already in memory.
-  Mitigation for coverage gaps: the rules table is one tuple (`intomd_converters.code.secrets.RULES`) that later
+  Mitigation for coverage gaps: the rules table is one tuple (`ezmd_converters.code.secrets.RULES`) that later
   tasks can extend; `detect-secrets` (Apache-2.0) stays the documented upgrade if parity becomes a requirement.
 - Signatures-only: stdlib `ast` for Python; the spec's regex heuristic for other languages. Tree-sitter with
   `tree-sitter-language-pack` (8b) is deferred to Phase 2 as the spec allows (8i): grammar wheels were not
   evaluated on all three CI platforms within this task.
 - Archives: a minimal reader in the family (no archives package exists in main yet) enforcing part1 8.2:
-  10,000 entries, `INTOMD_ARCHIVE_MAX_BYTES` (500 MB) total, 100:1 ratio per zip entry and per gzip stream,
+  10,000 entries, `EZMD_ARCHIVE_MAX_BYTES` (500 MB) total, 100:1 ratio per zip entry and per gzip stream,
   no links, devices, absolute, drive-letter, or `..` paths, encrypted zip entries skipped, nothing extracted
   to disk, nested archives never opened. When an archives family lands, its reader can replace this one.
 - GitHub: `github.com/<o>/<r>[/tree/<ref>[/<path>]]` maps to `https://codeload.github.com/<o>/<r>/tar.gz/<ref>`
@@ -59,7 +59,7 @@
   `secret_redacted` warning detail (`rule.<name>` counts plus a `locations` string of `file:line`, capped at
   200), which the sidecar already serializes. Core change needed: a sidecar hook, for example a
   `Document.sidecar_extra: dict[str, list[dict[str, str | int]]]` (or `ConversionResult` field) that
-  `intomd.render.sidecar` emits verbatim under its key, so the converter can publish
+  `ezmd.render.sidecar` emits verbatim under its key, so the converter can publish
   `redactions: [{file, line, rule}, ...]` without the 200-entry cap or string encoding.
 
 ## Dependencies

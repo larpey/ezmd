@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from intomd.cli.options import parse_opts, split_options
-from intomd.inputs import InputRef
-from intomd.ir import WarningKind
-from intomd.pipeline import UnsupportedMediaType, convert_ref
-from intomd.registry import ConversionError
+from ezmd.cli.options import parse_opts, split_options
+from ezmd.inputs import InputRef
+from ezmd.ir import WarningKind
+from ezmd.pipeline import UnsupportedMediaType, convert_ref
+from ezmd.registry import ConversionError
 
 ELF = b"\x7fELF\x02\x01\x01\x00" + b"\x00" * 8 + b"\x02\x00\x3e\x00" + b"\x00" * 200
 
@@ -58,7 +58,7 @@ def test_opts_parsing() -> None:
 
 
 def test_fixture_input_url_and_options(tmp_path: Path) -> None:
-    from intomd.testing.fixtures import Fixture, convert_fixture
+    from ezmd.testing.fixtures import Fixture, convert_fixture
 
     d = tmp_path / "web" / "page"
     d.mkdir(parents=True)
@@ -72,7 +72,7 @@ def test_fixture_input_url_and_options(tmp_path: Path) -> None:
 
 
 def test_typescript_is_not_misnamed() -> None:
-    from intomd.ir import WarningKind
+    from ezmd.ir import WarningKind
 
     src = b"export function greet(name: string): string {\n  return `Hello, ${name}`;\n}\n" * 5
     r = convert_ref(InputRef.from_bytes(src, filename="greet.ts"), converter_id="text.plain")
@@ -80,7 +80,7 @@ def test_typescript_is_not_misnamed() -> None:
 
 
 def test_fixture_requires_binaries() -> None:
-    from intomd.testing.fixtures import missing_requirements
+    from ezmd.testing.fixtures import missing_requirements
 
     assert missing_requirements({"requires_binaries": ["definitely-not-a-real-tool-xyz"]}) is not None
     assert missing_requirements({"requires_binaries": []}) is None
@@ -88,8 +88,8 @@ def test_fixture_requires_binaries() -> None:
 
 
 def test_counts_include_children() -> None:
-    from intomd.ir import Document, Metadata, Paragraph, Provenance, SourceType
-    from intomd.ir import InlineSpan as Span
+    from ezmd.ir import Document, Metadata, Paragraph, Provenance, SourceType
+    from ezmd.ir import InlineSpan as Span
 
     child = Document(
         metadata=Metadata(source="a.zip!x.txt", source_type=SourceType.TEXT),
@@ -102,7 +102,7 @@ def test_counts_include_children() -> None:
 
 
 def test_archive_extensions_map_to_archive_mimes() -> None:
-    from intomd.detect import extension_mime
+    from ezmd.detect import extension_mime
 
     assert extension_mime("a.7z") == "application/x-7z-compressed"
     assert extension_mime("a.tar") == "application/x-tar"

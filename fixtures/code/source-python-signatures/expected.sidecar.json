@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -46,9 +49,9 @@
         "attrs": {
           "compressed": "true",
           "lines": "67",
-          "tokens": "289"
+          "tokens": "288"
         },
-        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an intomd fixture.\n\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        ...\n\n    def restock(self, amount: int) -> None:\n        ...\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        ...\n\n    def add(self, item: Item) -> None:\n        ...\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        ...\n\n    def to_json(self) -> str:\n        ...\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    ...\n\ndef main() -> None:\n    ...",
+        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an ezmd fixture.\n\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        ...\n\n    def restock(self, amount: int) -> None:\n        ...\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        ...\n\n    def add(self, item: Item) -> None:\n        ...\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        ...\n\n    def to_json(self) -> str:\n        ...\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    ...\n\ndef main() -> None:\n    ...",
         "filename": "input.py",
         "id": "b0002",
         "language": "python",
@@ -73,7 +76,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:77cef6902234f0e7da881c307b8538751a14fa9034daca4a6fcfffb6eb9e2dcc",
+    "content_hash": "sha256:76282dbd673c7864598d1119e97c81260692ade34420ff167a3723ad24dd2eff",
     "converter_id": "code.source_file",
     "metadata": {
       "author": null,
@@ -84,11 +87,11 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "bytes": 1856,
+        "bytes": 1854,
         "language": "python",
         "lines": 67,
         "shebang": "python3",
-        "tokens": 289
+        "tokens": 288
       },
       "fetched": null,
       "keywords": [],
@@ -100,7 +103,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.py",
       "source_type": "code",
       "speakers": [],
@@ -113,32 +118,32 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:71c9ef5a145022a86a1f57fe8a0ad1bbcb34d0ec56345ab77a1b652e508e2a2c",
+    "content_hash": "sha256:84fe0f4c8a4e888f051055c55aeb708875689e127e69752aa1614e081eab5993",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 1856,
+      "bytes": 1854,
       "encoding": "utf-8",
       "language": "python",
       "lines": 67,
       "shebang": "python3",
-      "tokens": 289
+      "tokens": 288
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.py",
-    "source_hash": "sha256:1152da8b3c3e5170b60e26fdaa7c8617e05ab2be323f443a546fc45ba0556374",
+    "source_hash": "sha256:fd7370ea1153d12b95a08b3f0a6b49f4ad2cc10b2252faca6af756b4fb171170",
     "source_type": "code",
     "title": "input.py (signatures only)",
     "tokens": {
-      "cl100k_base": 312,
-      "claude_approx": 335,
-      "o200k_base": 310
+      "cl100k_base": 311,
+      "claude_approx": 334,
+      "o200k_base": 309
     },
     "truncated": false,
     "warnings": [],
@@ -177,7 +182,7 @@
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 1856
+    "input_bytes": 1854
   },
   "profile": "full",
   "provenance": [
@@ -198,13 +203,13 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 591,
+  "tokens_total": 589,
   "warnings": []
 }

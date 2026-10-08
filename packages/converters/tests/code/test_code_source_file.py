@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import Detected, InputRef
-from intomd.ir import CodeBlock, Document, Heading, ListBlock, WarningKind
-from intomd.pipeline import convert_ref
-from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions
-from intomd_converters.code import CHAINS
-from intomd_converters.code.languages import language_for, shebang
-from intomd_converters.code.signatures import outline, signatures
-from intomd_converters.code.source_file import SourceFileConverter
-from intomd_converters.text.plain import PlainTextConverter
+from ezmd.detect import detect
+from ezmd.inputs import Detected, InputRef
+from ezmd.ir import CodeBlock, Document, Heading, ListBlock, WarningKind
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions
+from ezmd_converters.code import CHAINS
+from ezmd_converters.code.languages import language_for, shebang
+from ezmd_converters.code.signatures import outline, signatures
+from ezmd_converters.code.source_file import SourceFileConverter
+from ezmd_converters.text.plain import PlainTextConverter
 
 PY = b'import os\n\nLIMIT = 3\n\n\ndef add(a: int, b: int) -> int:\n    """Add."""\n    return a + b\n'
 GO = b'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("hi")\n}\n'

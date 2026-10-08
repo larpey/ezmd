@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from intomd.ir import (
+from ezmd.ir import (
     CodeBlock,
     Equation,
     Figure,
@@ -15,10 +15,10 @@ from intomd.ir import (
     Table,
     spans_text,
 )
-from intomd_converters.web.build import Builder
-from intomd_converters.web.dom import body_of, parse_html
-from intomd_converters.web.html_blocks import convert_children, register_footnotes
-from intomd_converters.web.hygiene import pre_clean
+from ezmd_converters.web.build import Builder
+from ezmd_converters.web.dom import body_of, parse_html
+from ezmd_converters.web.html_blocks import convert_children, register_footnotes
+from ezmd_converters.web.hygiene import pre_clean
 
 BASE = "https://site.test/a/b/page.html"
 

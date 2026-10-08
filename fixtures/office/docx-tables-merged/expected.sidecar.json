@@ -1328,17 +1328,17 @@
   "footnotes": [],
   "frontmatter": {
     "author": "Transit Desk",
-    "content_hash": "sha256:fd37ac514f0de05fd34ed00b510951b4c0c9bcd169b4ea5ed8637e99759b6eda",
+    "content_hash": "sha256:cda67b170c7c682ee371c3fc01e8bc039bfe338ff6300f66b373e6d0d8e42eb7",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.docx",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2026-01-01",
     "extra": {
       "revision": "3"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "modified_at": "2026-01-02",
     "profile": "full",
     "provenance": "block",
@@ -1348,9 +1348,9 @@
     "source_type": "docx",
     "title": "Harbour Bus Timetable",
     "tokens": {
-      "cl100k_base": 443,
-      "claude_approx": 476,
-      "o200k_base": 441
+      "cl100k_base": 442,
+      "claude_approx": 475,
+      "o200k_base": 440
     },
     "truncated": false,
     "warnings": [],
@@ -1382,7 +1382,7 @@
       "transcript_segments": 0,
       "words": 81
     },
-    "duration_seconds": 0.0,
+    "duration_seconds": 0.01600000006146729,
     "engine": "documents.docx",
     "engines_tried": [
       "documents.docx"
@@ -1454,7 +1454,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0002",
@@ -1487,7 +1487,7 @@
       "id": "sec-3",
       "level": 2,
       "number": "3",
-      "offset_end": 1204,
+      "offset_end": 1202,
       "offset_start": 993,
       "original_level": 1,
       "original_title": "Contacts",
@@ -1583,15 +1583,15 @@
         "col_2"
       ],
       "number": 4,
-      "offset_end": 1165,
+      "offset_end": 1163,
       "offset_start": 1017,
       "page": null,
       "representation": "pipe",
       "rows": 2,
-      "tokens": 45
+      "tokens": 44
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 720,
+  "tokens_total": 723,
   "warnings": []
 }

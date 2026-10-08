@@ -10,7 +10,7 @@ from typing import Any
 import httpx
 import pytest
 
-from intomd_api.testing import upload, wait_for_state
+from ezmd_api.testing import upload, wait_for_state
 
 MD = b"# Fleet report\n\nQuarterly numbers for the fleet.\n\n- trucks: 12\n- vans: 4\n"
 
@@ -67,9 +67,9 @@ async def test_result_profiles_and_formats(client: httpx.AsyncClient, profile: s
     expected = {"md": "text/markdown; charset=utf-8", "json": "application/json", "txt": "text/plain; charset=utf-8"}
     assert r.headers["content-type"] == expected[fmt]
     assert int(r.headers["x-markdown-tokens"]) > 0
-    assert r.headers["x-intomd-truncated"] in ("true", "false")
-    assert r.headers["x-intomd-warnings"].isdigit()
-    assert r.headers["x-intomd-injection-risk"] in ("none", "low", "medium", "high")
+    assert r.headers["x-ezmd-truncated"] in ("true", "false")
+    assert r.headers["x-ezmd-warnings"].isdigit()
+    assert r.headers["x-ezmd-injection-risk"] in ("none", "low", "medium", "high")
     assert r.headers["x-content-type-options"] == "nosniff"
     if fmt == "json":
         payload = r.json()
@@ -151,7 +151,7 @@ async def test_sse_receives_done(client: httpx.AsyncClient) -> None:
 
 async def test_sse_keepalive(monkeypatch: pytest.MonkeyPatch, client_app: tuple[httpx.AsyncClient, Any]) -> None:
     client, app = client_app
-    from intomd_api.routes import jobs as jobs_routes
+    from ezmd_api.routes import jobs as jobs_routes
 
     monkeypatch.setattr(jobs_routes, "SSE_KEEPALIVE_SECONDS", 0.05)
     monkeypatch.setattr(jobs_routes, "SSE_MAX_SECONDS", 0.3)
@@ -170,7 +170,7 @@ async def test_wait_returns_result_body(client: httpx.AsyncClient) -> None:
     assert r.status_code == 200, r.text
     assert r.headers["content-type"] == "text/markdown; charset=utf-8"
     assert "Quarterly numbers" in r.text
-    envelope = json.loads(r.headers["x-intomd-job"])
+    envelope = json.loads(r.headers["x-ezmd-job"])
     assert envelope["state"] == "done"
 
 
@@ -180,7 +180,7 @@ async def test_wait_returns_error_for_failed_job(client: httpx.AsyncClient) -> N
     )
     assert r.status_code == 500
     assert r.json()["error"]["code"] == "conversion_failed"
-    assert json.loads(r.headers["x-intomd-job"])["state"] == "failed"
+    assert json.loads(r.headers["x-ezmd-job"])["state"] == "failed"
 
 
 async def test_failed_job_exposes_error(client: httpx.AsyncClient) -> None:

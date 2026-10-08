@@ -86,7 +86,7 @@ def test_release_candidates_reach_testpypi_only(release: dict[str, Any]) -> None
 def test_publish_gate_requires_reviewers(release: dict[str, Any]) -> None:
     gate = release["jobs"]["publish-gate"]
     script = "".join(s.get("run", "") for s in _steps(gate))
-    assert "vars.INTOMD_PUBLISH_ENABLED" in str(gate)
+    assert "vars.EZMD_PUBLISH_ENABLED" in str(gate)
     assert "environments/release" in script and "required_reviewers" in script
 
 
@@ -169,7 +169,7 @@ def test_release_version_checks_packages(tmp_path: Path) -> None:
             f'[project]\nname = "{pkg.split("/")[-1]}"\nversion = "1.2.0rc1"\n', encoding="utf-8"
         )
     (tmp_path / "packages" / "sdk-ts").mkdir(parents=True)
-    (tmp_path / mod.NPM_PACKAGE).write_text('{"name": "@intomd/sdk", "version": "1.1.0"}', encoding="utf-8")
+    (tmp_path / mod.NPM_PACKAGE).write_text('{"name": "@ezmd/sdk", "version": "1.1.0"}', encoding="utf-8")
     assert mod.check_versions(tmp_path, "1.2.0rc1", "1.2.0-rc1", True) == []  # npm not checked for rc
     problems = mod.check_versions(tmp_path, "1.2.0", "1.2.0", False)
     assert len(problems) == 4 and any("sdk" in p for p in problems)

@@ -4,7 +4,7 @@ fast     every test here not marked `network`. Runs on every PR (`pytest tests/s
          part of the plain `pytest tests` run). A guard refuses any socket connect outside loopback, so
          a fast test that reaches the network fails instead of passing on a networked runner.
 network  marked `network`; runs in the integration workflow against the compose stack and skips unless
-         INTOMD_NETWORK_TESTS=1 and INTOMD_BASE_URL are set (`tests/integration/stack.sh env`).
+         EZMD_NETWORK_TESTS=1 and EZMD_BASE_URL are set (`tests/integration/stack.sh env`).
 """
 
 from __future__ import annotations
@@ -47,8 +47,8 @@ def _is_local(address: Any) -> bool:
 @pytest.fixture(autouse=True)
 def _security_tier(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
     if request.node.get_closest_marker("network"):
-        if os.environ.get("INTOMD_NETWORK_TESTS") != "1" or not os.environ.get("INTOMD_BASE_URL"):
-            pytest.skip("network tier: set INTOMD_NETWORK_TESTS=1 and INTOMD_BASE_URL (tests/integration/stack.sh)")
+        if os.environ.get("EZMD_NETWORK_TESTS") != "1" or not os.environ.get("EZMD_BASE_URL"):
+            pytest.skip("network tier: set EZMD_NETWORK_TESTS=1 and EZMD_BASE_URL (tests/integration/stack.sh)")
         yield
         return
 

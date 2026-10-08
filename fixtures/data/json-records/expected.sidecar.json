@@ -2411,7 +2411,7 @@
     "content_hash": "sha256:2164d9cdde6274ef30ddfb3277d935597cb6e1d54924b1105a05a3424f00b99e",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.json",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "exports": {
       "tables": [
         "tables/table-02.csv"
@@ -2422,9 +2422,9 @@
       "encoding": "utf-8",
       "format": "JSON"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -2515,7 +2515,7 @@
       "type": "table"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -2610,6 +2610,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 740,
+  "tokens_total": 743,
   "warnings": []
 }

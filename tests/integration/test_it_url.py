@@ -1,6 +1,6 @@
 """URL inputs fetched by worker-fetch from the in-network fixture server (tests/integration/compose.fixtures.yml).
 
-Needs the stack restarted with INTOMD_ALLOW_PRIVATE_NETWORKS=true (`stack.sh private`, INTOMD_PRIVATE_FETCH=1):
+Needs the stack restarted with EZMD_ALLOW_PRIVATE_NETWORKS=true (`stack.sh private`, EZMD_PRIVATE_FETCH=1):
 the fixture server lives on a private Docker network, which the SSRF guard refuses by default (that
 refusal is asserted by tests/security/test_net_stack.py before the restart).
 """

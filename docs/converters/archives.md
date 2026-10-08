@@ -1,11 +1,11 @@
 # Archives
 
-Package `intomd_converters.archives`, converter family `archives` (spec: docs/spec/part2.md section 12 steps
+Package `ezmd_converters.archives`, converter family `archives` (spec: docs/spec/part2.md section 12 steps
 27-28, docs/spec/part1.md 8.2).
 
 | Converter | Formats | Status | Engine |
 |---|---|---|---|
-| `archives.archive` | zip; tar, tar.gz/tgz, tar.bz2, tar.xz; single-file `.gz`/`.bz2`/`.xz`; 7z with the `7z` extra | Stable | stdlib `zipfile`, `tarfile`, `gzip`, `bz2`, `lzma`; `py7zr` (LGPL-2.1-or-later) only with `pip install 'intomd-converters[7z]'` |
+| `archives.archive` | zip; tar, tar.gz/tgz, tar.bz2, tar.xz; single-file `.gz`/`.bz2`/`.xz`; 7z with the `7z` extra | Stable | stdlib `zipfile`, `tarfile`, `gzip`, `bz2`, `lzma`; `py7zr` (LGPL-2.1-or-later) only with `pip install 'ezmd-converters[7z]'` |
 | `archives.sevenzip` | listed as unavailable when py7zr is missing | Unavailable entry | capabilities shows the reason and the `7z` extra |
 
 Formats are detected by magic bytes. Plain zips have no pinned chain on purpose: zip-based documents (EPUB,
@@ -37,7 +37,7 @@ and children (`outer.zip!inner.zip!file.txt`). Metadata `extra` records `archive
 
 | Limit | Default | Override |
 |---|---|---|
-| Total uncompressed bytes, shared by every nested archive | 500 MB | `INTOMD_ARCHIVE_MAX_BYTES`, or `specialized.archive_max_total` in `ConvertOptions.extra` |
+| Total uncompressed bytes, shared by every nested archive | 500 MB | `EZMD_ARCHIVE_MAX_BYTES`, or `specialized.archive_max_total` in `ConvertOptions.extra` |
 | One member held in memory | 100 MB (never above the total) | `specialized.archive_max_entry` |
 | Entries | 10,000 | `specialized.archive_max_entries` |
 | Nesting depth | 3 (the top archive is level 1) | `specialized.archive_max_depth` |

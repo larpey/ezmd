@@ -6,8 +6,8 @@ from collections.abc import Callable
 
 import httpx
 
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, upload, wait_for_state
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, upload, wait_for_state
 
 BODY = b"Dedup me please.\n"
 
@@ -71,7 +71,7 @@ async def test_self_host_dedups_across_ips(settings_factory: Callable[..., Setti
 
 
 async def test_dedup_never_crosses_api_keys(settings_factory: Callable[..., Settings]) -> None:
-    from intomd_api.auth import create_api_key
+    from ezmd_api.auth import create_api_key
 
     async with api_client(settings_factory()) as (client, app):
         services = app.state.services

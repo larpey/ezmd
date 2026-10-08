@@ -1,6 +1,6 @@
 """Generate the ebooks fixtures (self-authored text, CC0). Run: uv run python fixtures/ebooks/_generate.py
 
-Writes input files only; goldens come from `uv run intomd-golden fixtures/ebooks/<name> --write`.
+Writes input files only; goldens come from `uv run ezmd-golden fixtures/ebooks/<name> --write`.
 Output is deterministic (fixed zip timestamps) so re-running produces identical bytes.
 """
 
@@ -73,7 +73,7 @@ def epub3_novel() -> None:
     <dc:language>en</dc:language>
     <dc:date>2024-03-15</dc:date>
     <dc:publisher>Fixture Press</dc:publisher>
-    <dc:description>A short novel written for the intomd test corpus.</dc:description>
+    <dc:description>A short novel written for the ezmd test corpus.</dc:description>
     <meta property="dcterms:modified">2024-03-15T00:00:00Z</meta>
   </metadata>
   <manifest>

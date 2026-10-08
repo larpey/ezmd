@@ -1,14 +1,14 @@
 # Social and forums (Phase 1 stub)
 
-Package `intomd_converters.social`, converters `web.social_reddit` and `web.social_hn`, family `web` (spec:
+Package `ezmd_converters.social`, converters `web.social_reddit` and `web.social_hn`, family `web` (spec:
 docs/spec/part2.md section 7; ROADMAP P1-T07). The full adapters (comment `more` expansion, Markdown bodies,
 listings, user pages, rate limiting, Stack Exchange, Bluesky, Mastodon, feeds) are Phase 3 (P3-T02).
 
 ## Family flag
 
-`INTOMD_ENABLE_SOCIAL` (off by default).
+`EZMD_ENABLE_SOCIAL` (off by default).
 
-- Off: both converters are registered as unavailable; `intomd capabilities` lists them with the reason, and
+- Off: both converters are registered as unavailable; `ezmd capabilities` lists them with the reason, and
   Reddit and Hacker News pages fall through to the web family as ordinary HTML.
 - On (`1`, `true`, `yes`, `on`; self-host testing only): experimental stub converters claim thread URLs.
 
@@ -21,7 +21,7 @@ listings, user pages, rate limiting, Stack Exchange, Bluesky, Mastodon, feeds) a
 
 No network of their own: without a body the converter raises `FetchRequired` for the API URL; with a body
 (the fetched API response or an uploaded recorded response) it parses the JSON and renders the shared thread
-model (`intomd_converters.social.model.ThreadNode`): H1 title, the link (link posts), the post body,
+model (`ezmd_converters.social.model.ThreadNode`): H1 title, the link (link posts), the post body,
 `Comments (N)`, then one `Comment` block per node in display order with `attrs` `depth`, `score`,
 `parent_id`, `flags`. Deleted, removed, and dead comments are kept as placeholders. Provenance: `source_id` =
 post or comment id, `path` = `comments/<id>`.

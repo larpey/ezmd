@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from intomd.core import sandbox
-from intomd.core.sandbox import SandboxError, SandboxTimeout, run
+from ezmd.core import sandbox
+from ezmd.core.sandbox import SandboxError, SandboxTimeout, run
 
 PY = sys.executable
 
@@ -45,8 +45,8 @@ def test_output_capped() -> None:
 
 
 def test_minimal_env(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_SECRET_THING", "leak")
-    r = run([PY, "-c", "import os; print(os.environ.get('INTOMD_SECRET_THING'))"], timeout=30)
+    monkeypatch.setenv("EZMD_SECRET_THING", "leak")
+    r = run([PY, "-c", "import os; print(os.environ.get('EZMD_SECRET_THING'))"], timeout=30)
     assert r.stdout.strip() == b"None"
     r2 = run([PY, "-c", "import os; print(os.environ['X'])"], timeout=30, env={"X": "y"})
     assert r2.stdout.strip() == b"y"

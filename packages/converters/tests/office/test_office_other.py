@@ -7,9 +7,9 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import (
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import (
     Comment,
     Document,
     Footnote,
@@ -22,12 +22,12 @@ from intomd.ir import (
     TrackedChange,
     WarningKind,
 )
-from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions
-from intomd_converters import office
-from intomd_converters.office import iwork, libreoffice
-from intomd_converters.office.libreoffice import LibreOfficeConverter, find_soffice
-from intomd_converters.office.odf import OdfConverter
-from intomd_converters.office.rtf import RtfConverter
+from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions
+from ezmd_converters import office
+from ezmd_converters.office import iwork, libreoffice
+from ezmd_converters.office.libreoffice import LibreOfficeConverter, find_soffice
+from ezmd_converters.office.odf import OdfConverter
+from ezmd_converters.office.rtf import RtfConverter
 
 Run = Callable[..., Document]
 BS = chr(92)
@@ -135,7 +135,7 @@ def test_odf_without_content(run: Run) -> None:
 
 
 def test_rtf(run: Run, fixture_bytes: Callable[[str], bytes], monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_DISABLE_LIBREOFFICE", "1")
+    monkeypatch.setenv("EZMD_DISABLE_LIBREOFFICE", "1")
     doc = run(RtfConverter(), fixture_bytes("rtf-simple"), "r.rtf")
     assert isinstance(doc.blocks[0], Heading) and doc.metadata.title == "Pond Visit Report"
     assert doc.metadata.author == "Field Team"
@@ -151,11 +151,11 @@ def test_rtf(run: Run, fixture_bytes: Callable[[str], bytes], monkeypatch: pytes
 def test_libreoffice_missing_and_native(
     run: Run, fixture_bytes: Callable[[str], bytes], monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    monkeypatch.setenv("INTOMD_DISABLE_LIBREOFFICE", "1")
+    monkeypatch.setenv("EZMD_DISABLE_LIBREOFFICE", "1")
     assert find_soffice() is None
     doc = run(LibreOfficeConverter(), b"\xd0\xcf\x11\xe0legacy", "old.doc")
     assert doc.blocks == [] and doc.warnings[0].kind == WarningKind.LIBREOFFICE_MISSING
-    monkeypatch.delenv("INTOMD_DISABLE_LIBREOFFICE")
+    monkeypatch.delenv("EZMD_DISABLE_LIBREOFFICE")
     fake = tmp_path / "soffice"
     fake.write_text("x")
     monkeypatch.setenv("LIBREOFFICE_PATH", str(fake))
@@ -174,7 +174,7 @@ def test_libreoffice_missing_and_native(
 
 
 def test_libreoffice_run_argv(monkeypatch: pytest.MonkeyPatch) -> None:
-    from intomd.core import sandbox
+    from ezmd.core import sandbox
 
     captured: dict[str, object] = {}
 
@@ -221,7 +221,7 @@ def test_iwork_unavailable() -> None:
 def test_registry_resolution(
     name: str, expected: str, fixture_bytes: Callable[[str], bytes], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv("INTOMD_DISABLE_LIBREOFFICE", "1")
+    monkeypatch.setenv("EZMD_DISABLE_LIBREOFFICE", "1")
     reg = ConverterRegistry()
     for c in office.converters():
         reg.register(c)
@@ -238,7 +238,7 @@ def test_registry_resolution(
 def test_rtf_chain_falls_back_without_libreoffice(
     fixture_bytes: Callable[[str], bytes], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv("INTOMD_DISABLE_LIBREOFFICE", "1")
+    monkeypatch.setenv("EZMD_DISABLE_LIBREOFFICE", "1")
     reg = ConverterRegistry()
     for c in office.converters():
         reg.register(c)
@@ -258,7 +258,7 @@ def test_rtf_chain_falls_back_without_libreoffice(
 def test_libreoffice_available_when_soffice_found(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     fake = tmp_path / "soffice"
     fake.write_text("x")
-    monkeypatch.delenv("INTOMD_DISABLE_LIBREOFFICE", raising=False)
+    monkeypatch.delenv("EZMD_DISABLE_LIBREOFFICE", raising=False)
     monkeypatch.setenv("LIBREOFFICE_PATH", str(fake))
     conv = next(c for c in office.converters() if c.id == "documents.libreoffice")
     assert isinstance(conv, LibreOfficeConverter)

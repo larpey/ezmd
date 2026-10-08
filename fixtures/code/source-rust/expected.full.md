@@ -3,28 +3,28 @@ title: "input.rs"
 source: "input.rs"
 source_type: code
 converter: code.source_file
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 104
-tokens: {o200k_base: 351, cl100k_base: 351, claude_approx: 379}
-content_hash: "sha256:1aae81014c3dae0f2bdeb40872a5b1b6f8aec83ac293e711629303784ff34bfa"
-source_hash: "sha256:94b87e222e47f635c0f0546b20c21598dc831e21d9afd7eb08cf0f2031507d5e"
+tokens: {o200k_base: 350, cl100k_base: 350, claude_approx: 378}
+content_hash: "sha256:b6f4edfc210a5c3421d64564ef40d5a7ddf984daea429fa72402dba49f94dd05"
+source_hash: "sha256:eca22c320bc92c9e91a0ca9d1966dc31b04431e9b2f8ec78f33e9648dfcd91c7"
 truncated: false
 warnings: []
 injection_risk: none
-extra: {bytes: 1136, encoding: utf-8, language: rust, lines: 45, tokens: 333}
+extra: {bytes: 1134, encoding: utf-8, language: rust, lines: 45, tokens: 332}
 ---
 # input.rs {#doc}
 
 File: `input.rs`
 
 ```rust
-//! ledger.rs: a fixed-point ledger (intomd fixture).
+//! ledger.rs: a fixed-point ledger (ezmd fixture).
 use std::collections::BTreeMap;
 use std::fmt;
 

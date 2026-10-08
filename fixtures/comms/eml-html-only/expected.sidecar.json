@@ -1002,7 +1002,7 @@
     "content_hash": "sha256:a760b4881e5025ab18934168450e3af831a4fef2fba90de967ad77840b34a7b3",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "comms.eml",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2024-09-30T12:30:00Z",
     "extra": {
       "attachments": 0,
@@ -1011,9 +1011,9 @@
       "encoding": "utf-8",
       "message_id": "<html-1@example.org>"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -1056,7 +1056,7 @@
       "transcript_segments": 0,
       "words": 69
     },
-    "duration_seconds": 0.09300000010989606,
+    "duration_seconds": 0.15699999989010394,
     "engine": "comms.eml",
     "engines_tried": [
       "comms.eml"
@@ -1138,7 +1138,7 @@
       "type": "quote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
@@ -1188,6 +1188,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 509,
+  "tokens_total": 512,
   "warnings": []
 }

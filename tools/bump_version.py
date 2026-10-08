@@ -1,10 +1,10 @@
 """Set one release version everywhere it is recorded (the counterpart of tools/release_version.py).
 
-    python tools/bump_version.py 0.1.0rc1     # PEP 440: Python packages, intomd.__version__, server.json
+    python tools/bump_version.py 0.1.0rc1     # PEP 440: Python packages, ezmd.__version__, server.json
     python tools/bump_version.py 0.1.0 --npm  # also the npm SDK (final releases only; npm takes the semver)
 
-The published Python packages pin each other exactly (`intomd` -> `intomd-converters==V`,
-`intomd-mcp` -> `intomd==V`) so an install never mixes releases. Run `uv lock` afterwards.
+The published Python packages pin each other exactly (`ezmd` -> `ezmd-converters==V`,
+`ezmd-mcp` -> `ezmd==V`) so an install never mixes releases. Run `uv lock` afterwards.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PEP440 = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(rc[1-9][0-9]*)?$")
 PYPROJECTS = ("packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node")
-PINS = {"packages/core": "intomd-converters", "packages/mcp": "intomd"}
+PINS = {"packages/core": "ezmd-converters", "packages/mcp": "ezmd"}
 
 
 def _sub_once(text: str, pattern: str, repl: str, where: str) -> str:
@@ -41,7 +41,7 @@ def bump(root: Path, version: str, *, npm: bool) -> list[str]:
             text = _sub_once(text, rf'^    "{dep}(==[^"]*)?",$', f'    "{PINS[pkg]}=={version}",', str(path))
         path.write_text(text, encoding="utf-8", newline="\n")
         changed.append(str(path.relative_to(root)))
-    init = root / "packages/core/src/intomd/__init__.py"
+    init = root / "packages/core/src/ezmd/__init__.py"
     init.write_text(
         _sub_once(init.read_text(encoding="utf-8"), r'^__version__ = "[^"]*"', f'__version__ = "{version}"', str(init)),
         encoding="utf-8",

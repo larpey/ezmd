@@ -1,0 +1,389 @@
+"""POST /v1/convert: create a job from a multipart upload or a JSON URL request
+(docs/spec/part1.md sections 7.1, 7.3, 8.2)."""
+
+from __future__ import annotations
+
+import time
+from datetime import timedelta
+from functools import partial
+from typing import Any
+
+from fastapi import APIRouter, Query, Request
+from fastapi.responses import JSONResponse, Response
+from pydantic import ValidationError
+from starlette.concurrency import run_in_threadpool
+
+from ezmd_api import ircache
+from ezmd_api import queue as q
+from ezmd_api.apidoc import OPTIONAL_API_KEY, errors, rate_limit_headers
+from ezmd_api.auth import CHALLENGE_COOKIE, Caller, CallerDep, require_url_challenge
+from ezmd_api.db import JobRow
+from ezmd_api.errors import ApiError, error_response
+from ezmd_api.fetching import input_key, route_residential
+from ezmd_api.fetchpolicy import DISABLED, policy_state, wants_residential
+from ezmd_api.jobs import DONE, FAILED, NEEDS_USER_ACTION, QUEUED
+from ezmd_api.ratelimit import admit_job, limit_job_creation
+from ezmd_api.rendering import FORMATS, RenderUnavailable, render_cached
+from ezmd_api.routes.common import (
+    enqueue_or_fail,
+    job_error,
+    load_json_field,
+    max_upload_for,
+    parse_options,
+    services_of,
+)
+from ezmd_api.schemas import ConvertResponse, ConvertUrlRequest, compact_json, convert_response, job_out
+from ezmd_api.services import Services
+from ezmd_api.uploads import UploadedFile, parse_multipart
+from ezmd_api.util import keyed_hash, new_job_id, normalize_url, sha256_hex, strip_fragment, utcnow
+
+router = APIRouter(tags=["convert"])
+
+MAX_WAIT_SECONDS = 60.0
+_OPENAPI_BODY: dict[str, Any] = {
+    "security": OPTIONAL_API_KEY,
+    "parameters": [
+        {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": False,
+            "description": "Repeat-safe creation: the same key (per caller) returns the same job",
+            "schema": {"type": "string", "maxLength": 255},
+        }
+    ],
+    "requestBody": {
+        "required": True,
+        "content": {
+            "multipart/form-data": {
+                "schema": {
+                    "type": "object",
+                    "required": ["file"],
+                    "properties": {
+                        "file": {"type": "string", "format": "binary", "description": "The file to convert"},
+                        "options": {
+                            "type": "string",
+                            "description": "JSON object: ConvertOptionsIn fields, `profile`, and dotted overrides",
+                            "example": '{"profile": "rag", "chunks.chunk_tokens": 512, "max_pages": 200}',
+                        },
+                        "profile": {"type": "string", "enum": ["full", "compact", "rag", "agent"]},
+                    },
+                }
+            },
+            "application/json": {"schema": {"$ref": "#/components/schemas/ConvertUrlRequest"}},
+        },
+    },
+}
+_CREATE_RESPONSES: dict[int | str, dict[str, Any]] = {
+    200: {
+        "description": (
+            "Deduplicated: an existing finished job with the same input and options. With `wait`, the rendered "
+            "result itself when the job finished in time (job envelope in `X-Ezmd-Job`)."
+        ),
+        "model": ConvertResponse,
+        "content": {"text/markdown": {"schema": {"type": "string"}}},
+        "headers": {
+            "X-Ezmd-Job": {"description": "Compact JobOut JSON (wait results only)", "schema": {"type": "string"}}
+        },
+    },
+    202: {"description": "Job accepted", "headers": rate_limit_headers()},
+    **errors(
+        "turnstile_required",
+        "turnstile_failed",
+        "unauthorized",
+        "forbidden",
+        "input_too_large",
+        "unsupported_media_type",
+        "url_blocked",
+        "platform_disabled",
+        "rate_limited",
+        "conversion_failed",
+        "not_implemented",
+        "fetch_failed",
+        "queue_unavailable",
+        "timeout",
+    ),
+}
+
+
+def _idempotency(request: Request, caller: Caller, services: Services) -> str | None:
+    key = request.headers.get("idempotency-key")
+    if not key:
+        return None
+    if len(key) > 255:
+        raise ApiError("invalid_request", "Idempotency-Key must be at most 255 characters.")
+    return keyed_hash(services.settings.ip_salt, f"{caller.identity}|{key}")
+
+
+def _dedup_scope_ip(caller: Caller, services: Services) -> str | None:
+    """Public mode never dedups anonymous requests across different client IP hashes."""
+    if caller.api_key is None and services.settings.public_mode:
+        return caller.ip_hash
+    return None
+
+
+def _find_existing(
+    services: Services, caller: Caller, sha: str, options_json: str, profile: str, idem: str | None
+) -> JobRow | None:
+    existing = services.jobs.find_existing(
+        api_key_id=caller.key_id,
+        client_ip_hash=_dedup_scope_ip(caller, services),
+        input_sha256=sha,
+        options_json=options_json,
+        profile=profile,
+        idempotency_key=idem,
+    )
+    if existing is not None and idem is None and not ircache.is_fresh(existing):
+        return None  # cached IR from another schema, converter, or engine version (D-0017 item 6)
+    return existing
+
+
+def _new_row(caller: Caller, services: Services, **fields: Any) -> JobRow:
+    now = utcnow()
+    return JobRow(
+        state=QUEUED,
+        created_at=now,
+        updated_at=now,
+        expires_at=now + timedelta(seconds=services.settings.retention_seconds),
+        client_ip_hash=caller.ip_hash,
+        api_key_id=caller.key_id,
+        progress=0,
+        stage_message="Queued",
+        warnings_count=0,
+        truncated=False,
+        claim_attempts=0,
+        **fields,
+    )
+
+
+async def _wait_for(services: Services, job_id: str, timeout: float) -> JobRow | None:
+    deadline = time.monotonic() + timeout
+    sub = services.state.subscribe(job_id)
+    try:
+        while True:
+            row = services.jobs.get(job_id)
+            if row is None or row.state in (DONE, FAILED, NEEDS_USER_ACTION):
+                return row
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return row
+            await run_in_threadpool(sub.wait, min(1.0, remaining))
+    finally:
+        sub.close()
+
+
+async def _respond(
+    request: Request, services: Services, row: JobRow, *, deduplicated: bool, wait: float, fmt: str, profile: str
+) -> Response:
+    envelope = convert_response(row, deduplicated=deduplicated, profile=profile)
+    if wait > 0:
+        final = await _wait_for(services, row.id, min(wait, MAX_WAIT_SECONDS))
+        if final is not None and final.state in (DONE, FAILED):
+            header = {"X-Ezmd-Job": compact_json(job_out(final, include_sha=False))}
+            if final.state == FAILED:
+                err = job_error(final)
+                err.headers.update(header)
+                return error_response(request, err)
+            if fmt == "docx":
+                raise ApiError("not_implemented", "DOCX output is not available yet.")
+            try:
+                overrides = _render_overrides(final)
+                rendered = await run_in_threadpool(
+                    partial(render_cached, public_mode=services.settings.public_mode),
+                    services.blobs,
+                    final.id,
+                    final.blob_ir or "",
+                    profile,
+                    fmt,
+                    overrides,
+                )
+            except RenderUnavailable:
+                raise ApiError("conversion_failed", "Rendering is not available on this instance.") from None
+            headers = {**rendered.headers(fmt, final.id), **header}
+            return Response(rendered.body, media_type=rendered.media_type, headers=headers)
+        if final is not None:
+            envelope = convert_response(final, deduplicated=deduplicated, profile=profile)
+    return JSONResponse(envelope.model_dump(mode="json"), status_code=200 if deduplicated else 202)
+
+
+def _render_overrides(row: JobRow) -> dict[str, Any]:
+    import json
+
+    return dict(json.loads(row.options_json or "{}").get("render", {}))
+
+
+def _check_format(fmt: str) -> None:
+    if fmt not in (*FORMATS, "docx"):
+        raise ApiError("invalid_request", f"Unknown format {fmt!r}.")
+
+
+@router.post(
+    "/v1/convert",
+    status_code=202,
+    response_model=ConvertResponse,
+    openapi_extra=_OPENAPI_BODY,
+    operation_id="createJob",
+    summary="Create a conversion job from an upload (multipart) or a URL (JSON)",
+    description=(
+        "Send `multipart/form-data` with a `file` part (and an optional `options` JSON part), or JSON with a `url`. "
+        "Returns 202 with the job envelope, or 200 when an identical finished job is reused. URL inputs from "
+        "anonymous callers need a Turnstile token when the instance requires one. With `wait=N` the call blocks up "
+        "to N seconds (max 60) and returns the rendered result directly if the job finishes in time."
+    ),
+    responses=_CREATE_RESPONSES,
+)
+async def create_job(
+    request: Request,
+    caller: CallerDep,
+    wait: float = Query(
+        0, ge=0, description="Block up to this many seconds (max 60) and return the result", examples=[30]
+    ),
+    format: str = Query(
+        "md", description="Result format when `wait` returns a result: md, json, txt, zip", examples=["md"]
+    ),
+) -> Response:
+    services = services_of(request)
+    _check_format(format)
+    limit_job_creation(request, caller)
+    ctype = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+    if ctype == "multipart/form-data":
+        return await _create_from_upload(request, services, caller, wait, format)
+    if ctype == "application/json":
+        return await _create_from_url(request, services, caller, wait, format)
+    raise ApiError("invalid_request", "Send multipart/form-data with a `file` part, or JSON with a `url`.")
+
+
+async def _create_from_upload(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:
+    form = await parse_multipart(request, max_file_bytes=max_upload_for(caller, services))
+    try:
+        upload = form.files.get("file")
+        if upload is None:
+            raise ApiError("invalid_request", "Multipart body is missing the `file` part.")
+        options = load_json_field(form.fields.get("options"), "options") or {}
+        if "profile" in form.fields and isinstance(options, dict):
+            options.setdefault("profile", form.fields["profile"])
+        profile, options_json = parse_options(options, caller, services)
+        mime = await run_in_threadpool(_detect_upload, upload)
+        idem = _idempotency(request, caller, services)
+        existing = _find_existing(services, caller, upload.sha256, options_json, profile, idem)
+        if existing is not None:
+            return await _respond(request, services, existing, deduplicated=True, wait=wait, fmt=fmt, profile=profile)
+        admit_job(request, caller)
+        job_id = new_job_id()
+        services.blobs.put_file(input_key(job_id), upload.path)
+        queue = q.queue_for_mime(mime)
+        row = _new_row(
+            caller,
+            services,
+            id=job_id,
+            input_kind="bytes",
+            input_display=upload.filename,
+            input_size=upload.size,
+            input_sha256=upload.sha256,
+            idempotency_key=idem,
+            mime=mime,
+            declared_mime=upload.content_type,
+            profile=profile,
+            options_json=options_json,
+            queue=queue,
+            blob_input=input_key(job_id),
+        )
+    finally:
+        form.cleanup()
+    services.jobs.create(row)
+    enqueue_or_fail(services, job_id, queue)
+    return await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+
+
+def _detect_upload(upload: UploadedFile) -> str:
+    from ezmd.detect import detect, is_executable
+    from ezmd.inputs import InputRef
+
+    ref = InputRef(kind="bytes", display=upload.filename, local_path=upload.path, declared_mime=upload.content_type)
+    mime = detect(ref).mime
+    if is_executable(mime):
+        raise ApiError("unsupported_media_type", "Executable files are not accepted.", detail={"mime": mime})
+    return mime
+
+
+async def _create_from_url(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:
+    from ezmd.core import netguard
+
+    try:
+        body = ConvertUrlRequest.model_validate_json(await _read_json_body(request))
+    except ValidationError as e:
+        fields = [{"field": ".".join(str(p) for p in err["loc"]), "problem": err["msg"]} for err in e.errors()[:20]]
+        raise ApiError("invalid_request", "Invalid JSON body.", detail={"fields": fields}) from None
+    settings = services.settings
+    try:
+        validated = netguard.validate_url(body.url, allow_private=settings.allow_private_networks)
+    except netguard.UrlBlocked:
+        raise ApiError("url_blocked", "This URL is not allowed.") from None
+    state = policy_state(settings, validated.host)
+    if state == DISABLED:
+        raise ApiError("platform_disabled", "This site is disabled on this instance.")
+    key = caller.api_key
+    if key is not None and not key.allows_source(validated.host):
+        raise ApiError("forbidden", "This API key may not fetch from this site.")
+    if body.prefer_residential and key is not None and not key.residential_allowed:
+        raise ApiError("forbidden", "This API key may not use residential fetches.")
+    # Anonymous `prefer_residential` is ignored (D-0017 item 6).
+    residential = wants_residential(
+        state,
+        prefer_residential=body.prefer_residential,
+        keyed=key is not None,
+        key_residential_allowed=bool(key is not None and key.residential_allowed),
+    )
+    if residential and key is not None and not key.residential_allowed:
+        raise ApiError("forbidden", "This API key may not use residential fetches.")
+    challenge_jwt = require_url_challenge(request, caller, body.turnstile_token)
+    options = dict(body.options)
+    options.setdefault("profile", body.profile)
+    profile, options_json = parse_options(options, caller, services)
+    sha = sha256_hex("url:" + normalize_url(body.url))
+    idem = _idempotency(request, caller, services)
+    existing = _find_existing(services, caller, sha, options_json, profile, idem)
+    if existing is not None:
+        return await _respond(request, services, existing, deduplicated=True, wait=wait, fmt=fmt, profile=profile)
+    admit_job(request, caller)
+    queue = q.queue_for_url(residential)
+    row = _new_row(
+        caller,
+        services,
+        id=new_job_id(),
+        input_kind="url",
+        input_display=netguard.redact_url(body.url),
+        input_url=strip_fragment(body.url),
+        input_sha256=sha,
+        idempotency_key=idem,
+        profile=profile,
+        options_json=options_json,
+        queue=queue,
+    )
+    services.jobs.create(row)
+    if queue == q.FETCH_RESIDENTIAL:
+        route_residential(services, row.id)
+        row = services.jobs.require(row.id)
+    else:
+        enqueue_or_fail(services, row.id, queue)
+    response = await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    if challenge_jwt:
+        response.set_cookie(
+            CHALLENGE_COOKIE,
+            challenge_jwt,
+            max_age=settings.turnstile_jwt_ttl_s,
+            httponly=True,
+            secure=settings.public_url.startswith("https://"),
+            samesite="strict",
+        )
+    return response
+
+
+async def _read_json_body(request: Request, limit: int = 256 * 1024) -> bytes:
+    chunks: list[bytes] = []
+    size = 0
+    async for chunk in request.stream():
+        size += len(chunk)
+        if size > limit:
+            raise ApiError("input_too_large", "JSON body is too large.", detail={"limit_bytes": limit})
+        chunks.append(chunk)
+    return b"".join(chunks)

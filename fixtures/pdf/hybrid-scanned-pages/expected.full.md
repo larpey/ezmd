@@ -3,19 +3,19 @@ title: "Pilotage incident review"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 pages: 3
 word_count: 79
 tokens: {o200k_base: 121, cl100k_base: 122, claude_approx: 131}
 content_hash: "sha256:768fa03b859ee8e1ca8f1b077eb2c6edfa756ee1ef43add839c51d2f68279ac3"
-source_hash: "sha256:253184c8b323694a607a9eb4c58eb9049da4dbe8f86739378ad108540089a611"
+source_hash: "sha256:12bc22896843a90eb8a33bef2da328bf7b0ba6b7588c3c0db7c9afc08472d7cb"
 truncated: false
 warnings: [engine_fallback, pages_without_text, ocr_unavailable]
 injection_risk: none

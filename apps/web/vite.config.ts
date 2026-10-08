@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string };
-const API_TARGET = process.env.INTOMD_API_PROXY ?? "http://127.0.0.1:8000";
+const API_TARGET = process.env.EZMD_API_PROXY ?? "http://127.0.0.1:8000";
 const proxy = Object.fromEntries(["/v1", "/healthz", "/readyz"].map((p) => [p, { target: API_TARGET, changeOrigin: false }]));
 
 export default defineConfig({
@@ -13,7 +13,7 @@ export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   resolve: {
     // Consume the SDK from source so the web app never depends on a prebuilt dist.
-    alias: { "@intomd/sdk": fileURLToPath(new URL("../../packages/sdk-ts/src/index.ts", import.meta.url)) },
+    alias: { "@ezmd/sdk": fileURLToPath(new URL("../../packages/sdk-ts/src/index.ts", import.meta.url)) },
   },
   server: { proxy },
   preview: { proxy },

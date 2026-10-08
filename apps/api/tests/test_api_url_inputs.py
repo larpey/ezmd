@@ -8,13 +8,13 @@ from typing import Any
 
 import pytest
 
-from intomd_api.purge import reap_residential
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, wait_for_state
+from ezmd_api.purge import reap_residential
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, wait_for_state
 
 
 def _fake_fetch(body: bytes, content_type: str = "text/plain") -> Callable[..., Any]:
-    from intomd.core.netguard import FetchResult
+    from ezmd.core.netguard import FetchResult
 
     def fetch(url: str, **kwargs: Any) -> FetchResult:
         return FetchResult(
@@ -50,7 +50,7 @@ async def test_blocked_urls_422(client: Any, url: str) -> None:
 
 
 async def test_url_job_fetches_and_converts(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     monkeypatch.setattr(netguard, "fetch", _fake_fetch(b"Plain text from the web.\n"))
     r = await client.post(
@@ -70,7 +70,7 @@ async def test_url_job_fetches_and_converts(monkeypatch: pytest.MonkeyPatch, cli
 
 
 async def test_fetch_errors_map_to_codes(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     def blocked(url: str, **kwargs: Any) -> Any:
         raise netguard.UrlBlocked("resolves to 10.0.0.1", url=url)
@@ -84,7 +84,7 @@ async def test_fetch_errors_map_to_codes(monkeypatch: pytest.MonkeyPatch, client
 
 
 async def test_fetched_executable_rejected(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     elf = b"\x7fELF\x02\x01\x01\x00" + b"\x00" * 8 + b"\x02\x00\x3e\x00\x01\x00\x00\x00" + b"\x00" * 200
     monkeypatch.setattr(netguard, "fetch", _fake_fetch(elf, "application/octet-stream"))
@@ -96,7 +96,7 @@ async def test_fetched_executable_rejected(monkeypatch: pytest.MonkeyPatch, clie
 async def test_turnstile_required_in_public_mode(
     monkeypatch: pytest.MonkeyPatch, settings_factory: Callable[..., Settings]
 ) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     monkeypatch.setattr(netguard, "fetch", _fake_fetch(b"hi\n"))
     secret = "s" * 32
@@ -111,7 +111,7 @@ async def test_turnstile_required_in_public_mode(
         assert bad.json()["error"]["code"] == "turnstile_failed"
         ok = await client.post("/v1/convert", json={"url": "https://example.com/a.txt", "turnstile_token": "good"})
         assert ok.status_code == 202
-        assert "intomd_challenge" in ok.headers.get("set-cookie", "")
+        assert "ezmd_challenge" in ok.headers.get("set-cookie", "")
         assert "httponly" in ok.headers["set-cookie"].lower()
         # The challenge cookie covers the next creation without a new token.
         again = await client.post("/v1/convert", json={"url": "https://example.com/b.txt"})
@@ -137,7 +137,7 @@ async def test_anonymous_prefer_residential_is_ignored(client: Any) -> None:
 
 
 async def test_keyed_prefer_residential_needs_permission(settings_factory: Callable[..., Settings]) -> None:
-    from intomd_api.auth import create_api_key
+    from ezmd_api.auth import create_api_key
 
     async with api_client(settings_factory()) as (client, app):
         services = app.state.services

@@ -15,7 +15,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@intomd/sdk':
+      '@ezmd/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk-ts
       dompurify:

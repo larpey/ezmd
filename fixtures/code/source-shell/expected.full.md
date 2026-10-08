@@ -3,21 +3,21 @@ title: "input.sh"
 source: "input.sh"
 source_type: code
 converter: code.source_file
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 64
-tokens: {o200k_base: 191, cl100k_base: 188, claude_approx: 206}
-content_hash: "sha256:4154153bca58d4d93cca38c1fde5cb8acabfe63b65fd263b7769c7095bd4aad9"
-source_hash: "sha256:8bec98acc54768a22d0807e29d8344b54a6900ab3b2560978f290c0d0f069379"
+tokens: {o200k_base: 190, cl100k_base: 187, claude_approx: 205}
+content_hash: "sha256:5647f2437544f2eb15acfb9d7355591f19297750344847c430eacff6bafce7fc"
+source_hash: "sha256:fe92131f08a1746e84898ad6d2e8a9c0ae968f7acc0aec3ab783797bba11eb0e"
 truncated: false
 warnings: []
 injection_risk: none
-extra: {bytes: 515, encoding: utf-8, language: bash, lines: 24, shebang: bash, tokens: 169}
+extra: {bytes: 513, encoding: utf-8, language: bash, lines: 24, shebang: bash, tokens: 168}
 ---
 # input.sh {#doc}
 
@@ -25,7 +25,7 @@ File: `input.sh`
 
 ```bash
 #!/usr/bin/env bash
-# backup.sh: rotate nightly database dumps (intomd fixture).
+# backup.sh: rotate nightly database dumps (ezmd fixture).
 set -euo pipefail
 
 BACKUP_DIR="${BACKUP_DIR:-/var/backups/app}"

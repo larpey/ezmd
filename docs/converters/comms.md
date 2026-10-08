@@ -8,7 +8,7 @@ Chat exports, ICS, and VCF are separate tasks.
 | `comms.eml` | `.eml`, `message/rfc822`, `message/global`, text that starts with RFC 5322 headers | stdlib `email` (`policy.default`) | default |
 | `comms.mbox` | `.mbox`, `.mbx`, any file that starts with a `From ` line followed by headers | stdlib `mailbox` | default |
 | `comms.msg` | Outlook `.msg` (OLE2 with `__substg1.0_` streams) | native MS-OXMSG reader on olefile 0.47 (BSD-2-Clause) | default |
-| `comms.msg_extract` | the same, second in the chain: runs only when the native reader fails | extract-msg 0.56 (GPL-3.0) | `pip install 'intomd[nonfree]'`; listed as unavailable otherwise |
+| `comms.msg_extract` | the same, second in the chain: runs only when the native reader fails | extract-msg 0.56 (GPL-3.0) | `pip install 'ezmd[nonfree]'`; listed as unavailable otherwise |
 
 Gmail "Show original" / "Download message" gives an EML file; Gmail Takeout gives an MBOX.
 

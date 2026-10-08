@@ -1,6 +1,6 @@
 # Ebooks and notebooks
 
-Package `intomd_converters.ebooks`, converter family `documents` (spec: docs/spec/part2.md section 4).
+Package `ezmd_converters.ebooks`, converter family `documents` (spec: docs/spec/part2.md section 4).
 Markdown and plain text are handled by the [text family](README.md).
 
 | Converter | Mime types | Status | Engine |

@@ -8,7 +8,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from intomd_api.openapi import openapi_document
+from ezmd_api.openapi import openapi_document
 
 OUTPUT = Path(__file__).resolve().parents[3] / "docs" / "api" / "openapi.json"
 

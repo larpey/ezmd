@@ -1,4 +1,4 @@
-"""REST options vs `intomd.library.Options`: they cannot drift (P1-T10)."""
+"""REST options vs `ezmd.library.Options`: they cannot drift (P1-T10)."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from intomd.library import Options
-from intomd.registry import ConvertOptions
-from intomd_api.options import (
+from ezmd.library import Options
+from ezmd.registry import ConvertOptions
+from ezmd_api.options import (
     API_TIGHTENING,
     CLIENT_FIELDS,
     FIELD_DOCS,

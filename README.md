@@ -1,14 +1,14 @@
-# intomd
+# ezmd
 
 Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
 tools. No silent loss. Apache-2.0.
 
-[![ci](https://github.com/larpey/intomd/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/larpey/intomd/actions/workflows/ci.yml)
+[![ci](https://github.com/larpey/ezmd/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/larpey/ezmd/actions/workflows/ci.yml)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-intomd turns an input into an intermediate representation and renders it as Markdown with YAML
+ezmd turns an input into an intermediate representation and renders it as Markdown with YAML
 frontmatter under one of four output profiles, plus a JSON sidecar with block provenance and an explicit
-list of warnings. When something cannot be converted, intomd says so instead of dropping it quietly.
+list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
 
 > **Status: Phase 1, pre-release.** The repository is private and nothing is published yet: there is no
 > PyPI package, npm package, container image, or public instance. Install from source as shown below.
@@ -21,7 +21,7 @@ From source (needs [uv](https://docs.astral.sh/uv/) and Python 3.12 or newer):
 
 <!-- readme: skip (clones from the network) -->
 ```sh
-git clone https://github.com/larpey/intomd && cd intomd
+git clone https://github.com/larpey/ezmd && cd ezmd
 ```
 
 <!-- readme: skip (installs packages; the test environment is already synced) -->
@@ -35,18 +35,18 @@ Check what is available on your machine (converters, extras, and system programs
 
 <!-- readme: run -->
 ```sh
-uv run intomd capabilities
-uv run intomd doctor
+uv run ezmd capabilities
+uv run ezmd doctor
 ```
 
 After the first release (not available yet):
 
 <!-- readme: skip (not published yet) -->
 ```sh
-pip install intomd
-uvx intomd convert https://example.com
-uvx intomd-mcp
-npm install @intomd/sdk
+pip install ezmd
+uvx ezmd convert https://example.com
+uvx ezmd-mcp
+npm install @ezmd/sdk
 ```
 
 ## Quickstart
@@ -55,19 +55,19 @@ npm install @intomd/sdk
 
 <!-- readme: run -->
 ```sh
-uv run intomd convert fixtures/office/docx-review/input.docx --profile compact
-uv run intomd convert fixtures/pdf/born-digital-report/input.pdf --profile rag
-uv run intomd convert fixtures/text/markdown-kitchen-sink/input.md --json
-uv run intomd detect fixtures/pdf/born-digital-report/input.pdf
-uv run intomd batch fixtures/text --recursive --out out/text
+uv run ezmd convert fixtures/office/docx-review/input.docx --profile compact
+uv run ezmd convert fixtures/pdf/born-digital-report/input.pdf --profile rag
+uv run ezmd convert fixtures/text/markdown-kitchen-sink/input.md --json
+uv run ezmd detect fixtures/pdf/born-digital-report/input.pdf
+uv run ezmd batch fixtures/text --recursive --out out/text
 ```
 
-Warnings go to stderr as `WARN [code] message`. `intomd batch` skips unchanged inputs when run again. URLs
+Warnings go to stderr as `WARN [code] message`. `ezmd batch` skips unchanged inputs when run again. URLs
 work too; they are fetched through an SSRF guard that refuses private and loopback addresses:
 
 <!-- readme: skip (needs network access) -->
 ```sh
-uv run intomd convert https://example.com --profile compact
+uv run ezmd convert https://example.com --profile compact
 ```
 
 Every command and option is in the [CLI reference](docs/cli.md).
@@ -76,9 +76,9 @@ Every command and option is in the [CLI reference](docs/cli.md).
 
 <!-- readme: run -->
 ```python
-import intomd
+import ezmd
 
-result = intomd.convert(
+result = ezmd.convert(
     "fixtures/office/docx-review/input.docx",
     profile="compact",
     on_progress=lambda p: print(p.stage, p.progress),
@@ -93,11 +93,11 @@ print(len(result.chunks(chunk_tokens=200)), "rag chunks")  # other profiles rend
 
 ### MCP server
 
-From a source checkout, point your MCP client at `uv run intomd-mcp`. Claude Code:
+From a source checkout, point your MCP client at `uv run ezmd-mcp`. Claude Code:
 
 <!-- readme: skip (needs the Claude Code CLI) -->
 ```sh
-claude mcp add intomd -- uv --directory /path/to/intomd run intomd-mcp
+claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp
 ```
 
 Claude Desktop (`claude_desktop_config.json`):
@@ -105,15 +105,15 @@ Claude Desktop (`claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
-    "intomd": {
+    "ezmd": {
       "command": "uv",
-      "args": ["--directory", "/path/to/intomd", "run", "intomd-mcp", "--allowed-dirs", "/Users/you/Documents"]
+      "args": ["--directory", "/path/to/ezmd", "run", "ezmd-mcp", "--allowed-dirs", "/Users/you/Documents"]
     }
   }
 }
 ```
 
-After the first release the command becomes `uvx intomd-mcp`. Other clients, tools, and the HTTP
+After the first release the command becomes `uvx ezmd-mcp`. Other clients, tools, and the HTTP
 transport: [docs/mcp.md](docs/mcp.md).
 
 ### REST API and web UI
@@ -122,7 +122,7 @@ Run the API in-process (inline queue, no Redis), then convert with `curl`:
 
 <!-- readme: skip (starts a long-running server) -->
 ```sh
-uv run intomd serve --port 8080
+uv run ezmd serve --port 8080
 ```
 
 <!-- readme: skip (needs the server from the previous block) -->
@@ -134,7 +134,7 @@ The web UI is served at `/` once it is built (needs Node 22 and pnpm); then open
 
 <!-- readme: skip (installs Node packages from the network) -->
 ```sh
-pnpm install && pnpm --filter @intomd/web build
+pnpm install && pnpm --filter @ezmd/web build
 ```
 
 API reference: [docs/api.md](docs/api.md) and [docs/api/openapi.json](docs/api/openapi.json).
@@ -177,7 +177,7 @@ The full list, with engines, extras, status, fixture counts, and thresholds, is 
 
 Details: [docs/output-format.md](docs/output-format.md).
 
-## Why intomd
+## Why ezmd
 
 - No silent loss: every dropped or degraded element becomes a structured warning with a code and a suggestion.
 - Permissive by default: the default install pulls only allowlisted licenses; anything else is an opt-in extra.

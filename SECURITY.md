@@ -1,10 +1,10 @@
 # Security policy
 
-intomd converts untrusted files and URLs, so security reports are welcome and taken seriously.
+ezmd converts untrusted files and URLs, so security reports are welcome and taken seriously.
 
 ## Supported versions
 
-intomd has not had a release yet. Until it does, only `main` is supported. After the first release, the
+ezmd has not had a release yet. Until it does, only `main` is supported. After the first release, the
 latest minor version receives security fixes.
 
 | Version | Supported |
@@ -18,7 +18,7 @@ latest minor version receives security fixes.
 Report privately; do not open a public issue, discussion, or pull request.
 
 - Preferred: a private security advisory on the GitHub repository (Security, Report a vulnerability).
-- Email: security@intomd.dev. This address is a placeholder until the project domain is set up; until
+- Email: security@ezmd.dev. This address is a placeholder until the project domain is set up; until
   then use the private advisory. A PGP key will be published here with the address.
 
 Include the affected version or commit, the component (converter, API, worker, MCP server, web UI,
@@ -45,9 +45,9 @@ Out of scope:
 
 - volumetric or load testing against the public instance, and denial of service by sheer traffic;
 - social engineering, and physical attacks;
-- findings in third-party engines that intomd already isolates as documented in `docs/security.md`, unless
-  intomd's handling makes them exploitable (report those upstream, and tell us if intomd should mitigate);
-- optional `nonfree` engines' own license or security posture beyond how intomd invokes them.
+- findings in third-party engines that ezmd already isolates as documented in `docs/security.md`, unless
+  ezmd's handling makes them exploitable (report those upstream, and tell us if ezmd should mitigate);
+- optional `nonfree` engines' own license or security posture beyond how ezmd invokes them.
 
 ## Safe harbor
 

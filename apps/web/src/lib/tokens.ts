@@ -12,7 +12,7 @@ export interface TokenBadge {
   tokenizer: string | null;
 }
 
-/** The tokenizer the rest of intomd counts with (chunk budgets, `rag` per-chunk counts). */
+/** The tokenizer the rest of ezmd counts with (chunk budgets, `rag` per-chunk counts). */
 export const PREFERRED_TOKENIZER = "o200k_base";
 
 function isCount(v: unknown): v is number {

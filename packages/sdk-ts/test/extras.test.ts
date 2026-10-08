@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { IntomdClient } from "../src/index.js";
+import { EzmdClient } from "../src/index.js";
 import type { EventSourceLike, Job, JobEvent } from "../src/index.js";
 import { convertPath } from "../src/node.js";
 
@@ -44,7 +44,7 @@ function recorder(handler: (url: string, init: RequestInit) => Response) {
 describe("events()", () => {
   it("yields stream events and ends after the terminal event", async () => {
     const { fn } = recorder(() => json(job({ state: "done" })));
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeES });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeES });
     const seen: JobEvent[] = [];
     const iter = client.events("job_abc");
     const first = iter.next();
@@ -59,7 +59,7 @@ describe("events()", () => {
 
   it("synthesizes a terminal event when it falls back to polling", async () => {
     const { fn } = recorder(() => json(job({ state: "failed", error: { code: "conversion_failed", message: "Bad.", status: 500 } })));
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeES });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeES });
     const iter = client.events("job_abc", { pollIntervalMs: 1 });
     const firstP = iter.next();
     FakeES.last!.onerror?.(new Event("error"));
@@ -70,7 +70,7 @@ describe("events()", () => {
 
   it("stops the stream when the consumer breaks early", async () => {
     const { fn } = recorder(() => json(job()));
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeES });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeES });
     const iter = client.events("job_abc");
     const p = iter.next();
     const es = FakeES.last!;
@@ -84,7 +84,7 @@ describe("events()", () => {
     const { fn } = recorder(() => json(job()));
     const ctrl = new AbortController();
     ctrl.abort();
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeES });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeES });
     await expect(client.waitForJob("job_abc", { signal: ctrl.signal })).rejects.toMatchObject({ name: "AbortError" });
   });
 });
@@ -93,32 +93,32 @@ describe("other endpoints", () => {
   it("lists warning codes", async () => {
     const entry = { code: "truncated", severity: "warning", family: "core", description: "d", suggestion: "s", truncates: true, aliases: [] };
     const { fn, calls } = recorder(() => json({ warnings: [entry] }));
-    expect(await new IntomdClient({ fetch: fn }).warningCodes()).toEqual([entry]);
+    expect(await new EzmdClient({ fetch: fn }).warningCodes()).toEqual([entry]);
     expect(calls[0]!.url).toBe("/v1/warnings");
   });
 
   it("deletes a job", async () => {
     const { fn, calls } = recorder(() => new Response(null, { status: 204 }));
-    await new IntomdClient({ fetch: fn, baseUrl: "https://x.example" }).deleteJob("job/1");
+    await new EzmdClient({ fetch: fn, baseUrl: "https://x.example" }).deleteJob("job/1");
     expect(calls[0]!.url).toBe("https://x.example/v1/jobs/job%2F1");
     expect(calls[0]!.init.method).toBe("DELETE");
   });
 
   it("result() takes the spec's options object", async () => {
     const { fn, calls } = recorder(() => new Response("plain"));
-    expect(await new IntomdClient({ fetch: fn }).result("job_abc", { profile: "agent", format: "txt" })).toBe("plain");
+    expect(await new EzmdClient({ fetch: fn }).result("job_abc", { profile: "agent", format: "txt" })).toBe("plain");
     expect(calls[0]!.url).toBe("/v1/jobs/job_abc/result?format=txt&profile=agent");
   });
 });
 
-describe("@intomd/sdk/node", () => {
+describe("@ezmd/sdk/node", () => {
   it("convertPath uploads a file from disk with its basename", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "intomd-sdk-"));
+    const dir = mkdtempSync(join(tmpdir(), "ezmd-sdk-"));
     const path = join(dir, "notes.md");
     writeFileSync(path, "# Notes\n");
     const envelope = { job: job(), deduplicated: false, links: { self: "s", events: "e", result: "r" } };
     const { fn, calls } = recorder(() => json(envelope, 202));
-    const created = await convertPath(new IntomdClient({ fetch: fn }), path, { profile: "rag" });
+    const created = await convertPath(new EzmdClient({ fetch: fn }), path, { profile: "rag" });
     expect(created.id).toBe("job_abc");
     const file = (calls[0]!.init.body as FormData).get("file") as File;
     expect(file.name).toBe("notes.md");

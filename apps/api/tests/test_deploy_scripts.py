@@ -61,7 +61,7 @@ def test_scripts_share_lib(name: str) -> None:
 
 def test_bootstrap_never_rotates_secrets() -> None:
     text = (DEPLOY / "bootstrap.sh").read_text(encoding="utf-8")
-    for key in ("INTOMD_KEY_PEPPER", "INTOMD_JWT_SECRET", "INTOMD_REDIS_PASSWORD", "INTOMD_METRICS_TOKEN"):
+    for key in ("EZMD_KEY_PEPPER", "EZMD_JWT_SECRET", "EZMD_REDIS_PASSWORD", "EZMD_METRICS_TOKEN"):
         assert f"ensure_secret {key} " in text, key
     assert 'if [ -z "$(env_get "$key")" ]' in text
     assert "keys create --store file" in text and "stackctl has-keys" in text
@@ -69,7 +69,7 @@ def test_bootstrap_never_rotates_secrets() -> None:
 
 def test_upgrade_backs_up_first_and_rolls_back() -> None:
     text = (DEPLOY / "upgrade.sh").read_text(encoding="utf-8")
-    assert text.index("backup.sh") < text.index('env_set INTOMD_VERSION "$NEW"')
+    assert text.index("backup.sh") < text.index('env_set EZMD_VERSION "$NEW"')
     assert "rollback()" in text and "restore.sh" in text
     assert "--no-build" in text, "upgrade must never fall back to building from source"
 
@@ -82,14 +82,14 @@ def test_restore_verifies_before_stopping() -> None:
 
 def test_backup_contents_and_retention() -> None:
     text = (DEPLOY / "backup.sh").read_text(encoding="utf-8")
-    for part in ("app.tar", "caddy_data.tar", "SHA256SUMS", "INTOMD_BACKUP_KEEP", "chmod 700", "chmod 600"):
+    for part in ("app.tar", "caddy_data.tar", "SHA256SUMS", "EZMD_BACKUP_KEEP", "chmod 700", "chmod 600"):
         assert part in text, part
 
 
 def test_deploy_only_env_vars_documented() -> None:
     text = (DEPLOY / "env.example").read_text(encoding="utf-8")
     section = text.split("# ---- Deployment", 1)[1]
-    for var in ("INTOMD_BACKUP_DIR", "INTOMD_BACKUP_KEEP"):
+    for var in ("EZMD_BACKUP_DIR", "EZMD_BACKUP_KEEP"):
         assert f"\n{var}=" in section, var
 
 
@@ -120,7 +120,7 @@ def test_compose_core_profile_shape() -> None:
     for name in ("api", "worker-default", "worker-fetch", "purge"):
         svc = services[name]
         assert svc["user"] == "10001:10001", name
-        assert svc["environment"]["INTOMD_BLOB_FS_ROOT"] == "/var/lib/intomd-blobs", name
-        assert svc["environment"]["INTOMD_WEB_DIST"] == "${INTOMD_WEB_DIST:-/app/apps/web/dist}", name
-        assert svc["env_file"][0]["path"] == "${INTOMD_ENV_FILE:-.env}", name
+        assert svc["environment"]["EZMD_BLOB_FS_ROOT"] == "/var/lib/ezmd-blobs", name
+        assert svc["environment"]["EZMD_WEB_DIST"] == "${EZMD_WEB_DIST:-/app/apps/web/dist}", name
+        assert svc["env_file"][0]["path"] == "${EZMD_ENV_FILE:-.env}", name
         assert "egress" not in svc["networks"] or name == "worker-fetch", f"{name} must not have egress"

@@ -4,9 +4,9 @@ from collections.abc import Callable
 
 import pytest
 
-from intomd.ir import CodeBlock, Document, Heading, Table, WarningKind
-from intomd.registry import ConversionError
-from intomd_converters.data.xml_conv import XmlConverter
+from ezmd.ir import CodeBlock, Document, Heading, Table, WarningKind
+from ezmd.registry import ConversionError
+from ezmd_converters.data.xml_conv import XmlConverter
 
 NL = chr(10)
 Convert = Callable[..., Document]

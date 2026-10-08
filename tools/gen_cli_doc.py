@@ -1,4 +1,4 @@
-"""Generate docs/cli.md from the `intomd` typer app (a test asserts the committed file is current).
+"""Generate docs/cli.md from the `ezmd` typer app (a test asserts the committed file is current).
 
 Help text is captured with typer's CliRunner with Rich formatting disabled and a fixed terminal
 width, so the output is the same on every machine.
@@ -14,7 +14,7 @@ import typer.core
 import typer.main
 from typer.testing import CliRunner
 
-from intomd.cli import app
+from ezmd.cli import app
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "docs" / "cli.md"
@@ -40,14 +40,14 @@ def _help(args: list[str]) -> str:
         result = CliRunner().invoke(
             app,
             [*args, "--help"],
-            prog_name="intomd",
+            prog_name="ezmd",
             env={"COLUMNS": str(WIDTH), "NO_COLOR": "1"},
             terminal_width=WIDTH,
         )
     finally:
         typer.core.HAS_RICH = previous
     if result.exit_code != 0:
-        raise SystemExit(f"intomd {' '.join(args)} --help exited {result.exit_code}: {result.output}")
+        raise SystemExit(f"ezmd {' '.join(args)} --help exited {result.exit_code}: {result.output}")
     return "\n".join(line.rstrip() for line in result.output.strip("\n").splitlines())
 
 
@@ -60,17 +60,17 @@ def render() -> str:
     lines = [
         "# CLI reference",
         "",
-        "Generated from the `intomd` typer app by `tools/gen_cli_doc.py`; do not edit by hand.",
-        "In a source checkout run commands as `uv run intomd ...`.",
+        "Generated from the `ezmd` typer app by `tools/gen_cli_doc.py`; do not edit by hand.",
+        "In a source checkout run commands as `uv run ezmd ...`.",
         "",
-        "## intomd",
+        "## ezmd",
         "",
         FENCE + "text",
         _help([]),
         FENCE,
     ]
     for name in commands():
-        lines += ["", f"## intomd {name}", "", FENCE + "text", _help([name]), FENCE]
+        lines += ["", f"## ezmd {name}", "", FENCE + "text", _help([name]), FENCE]
     lines += ["", "## Exit codes", "", "| Code | Meaning |", "|---|---|"]
     lines += [f"| {code} | {meaning} |" for code, meaning in EXIT_CODES]
     lines += [

@@ -3,8 +3,8 @@ title: "Harbour Bus Timetable"
 source: "input.docx"
 source_type: docx
 converter: documents.docx
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
@@ -14,8 +14,8 @@ fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 author: "Transit Desk"
 word_count: 105
-tokens: {o200k_base: 441, cl100k_base: 443, claude_approx: 476}
-content_hash: "sha256:fd37ac514f0de05fd34ed00b510951b4c0c9bcd169b4ea5ed8637e99759b6eda"
+tokens: {o200k_base: 440, cl100k_base: 442, claude_approx: 475}
+content_hash: "sha256:cda67b170c7c682ee371c3fc01e8bc039bfe338ff6300f66b373e6d0d8e42eb7"
 source_hash: "sha256:356ec083dc3238db5295089e22e61e53f36e94399a02f2a8465b3ca07b825a7c"
 truncated: false
 warnings: []
@@ -63,7 +63,7 @@ Columns: Route, Weekday / First, Weekday / Last, Weekend / First, Weekend / Last
 ## 3 Contacts {#sec-3}
 
 **Table 4**
-<!-- intomd: header synthesized -->
+<!-- ezmd: header synthesized -->
 
 | col_1 | col_2 |
 |---|---|

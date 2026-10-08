@@ -3,25 +3,25 @@ title: "stockroom"
 source: "input.repo.zip"
 source_type: code
 converter: code.repo_pack
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 611
-tokens: {o200k_base: 1812, cl100k_base: 1814, claude_approx: 1957}
-content_hash: "sha256:93e7a2698ac113932a7541e50a5c35e8d402d4235a90893564d2df29c0a40d8e"
-source_hash: "sha256:20fcfe3c3805a06de500cb6971bb058f55f3105890b75bc091fe9797f03f3244"
+tokens: {o200k_base: 1807, cl100k_base: 1809, claude_approx: 1952}
+content_hash: "sha256:3e48ef4c6e4ff3b166b8ee4040338ec07282bdb2b6f17d1192840b49b8a5d9c7"
+source_hash: "sha256:6253e7ab6c47bab5c67d074fbb0a02e7e0094a9355279c35cbd43c8440cf1689"
 truncated: true
 warnings: [token_budget_applied, secret_file_excluded]
-description: "Tiny inventory service (intomd fixture)."
+description: "Tiny inventory service (ezmd fixture)."
 injection_risk: none
 extra:
   budget_actions:
     "dropped 3 lockfile, generated, or minified file(s) | dropped 2 test file(s) | compressed 1 file(s) over 300 lines to signatures | truncated 2 file(s) to their first 40 lines | dropped 2 file(s) from the deepest directories"
-  bytes: 11900
+  bytes: 11892
   excluded.binary: 1
   excluded.default_excluded: 3
   excluded.gitignored: 4
@@ -30,10 +30,10 @@ extra:
   files: 10
   languages: "python, javascript, typescript"
   license_file: LICENSE
-  packed_bytes: 3009
+  packed_bytes: 3001
   project: stockroom
   repo: stockroom
-  tokens: 835
+  tokens: 831
 ---
 > Sections: 1 Directory tree, 2 Files.
 
@@ -54,7 +54,7 @@ extra:
 
 # stockroom {#doc}
 
-10 files packed (11,900 source bytes, 835 tokens). Languages: python 68%, javascript 30%, typescript 2%. Not packed: 1 binary; 3 in default-excluded directories; 4 ignored by .gitignore/.intomdignore; 1 minified or source maps; 2 credential files. 7 files left out to fit the token budget (still listed in the tree).
+10 files packed (11,892 source bytes, 831 tokens). Languages: python 68%, javascript 30%, typescript 2%. Not packed: 1 binary; 3 in default-excluded directories; 4 ignored by .gitignore/.ezmdignore; 1 minified or source maps; 2 credential files. 7 files left out to fit the token budget (still listed in the tree).
 
 ## 1 Directory tree {#sec-1}
 
@@ -103,7 +103,7 @@ File: `README.md`
 ```markdown
 # stockroom
 
-A small inventory service used as an intomd repo-pack fixture.
+A small inventory service used as an ezmd repo-pack fixture.
 
 Run `python -m stockroom` to print items that need reordering.
 ```
@@ -144,7 +144,7 @@ File: `pyproject.toml`
 [project]
 name = "stockroom"
 version = "0.1.0"
-description = "Tiny inventory service (intomd fixture)."
+description = "Tiny inventory service (ezmd fixture)."
 requires-python = ">=3.12"
 ```
 
@@ -153,7 +153,7 @@ requires-python = ">=3.12"
 File: `web/greeter.ts`
 
 ```typescript
-// greeter.ts: a tiny TypeScript module (intomd fixture).
+// greeter.ts: a tiny TypeScript module (ezmd fixture).
 import { format } from "./format";
 
 export interface Greeting {
@@ -183,7 +183,7 @@ File: `src/stockroom/inventory.py`
 
 ```python
 #!/usr/bin/env python3
-# inventory.py: a tiny stock ledger used as an intomd fixture.
+# inventory.py: a tiny stock ledger used as an ezmd fixture.
 """Track stock levels per SKU and report items that need reordering."""
 
 from __future__ import annotations

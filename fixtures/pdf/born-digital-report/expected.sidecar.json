@@ -1158,9 +1158,9 @@
     "content_hash": "sha256:53a2382d646462240975894dd519405a0419a73e2e288d0c87dc33d5f8ce7e8a",
     "converter_id": "documents.pdfium_text",
     "metadata": {
-      "author": "intomd fixtures",
+      "author": "ezmd fixtures",
       "authors": [
-        "intomd fixtures"
+        "ezmd fixtures"
       ],
       "canonical_url": null,
       "description": null,
@@ -1204,7 +1204,7 @@
           "wanted": "docling"
         },
         "kind": "engine_fallback",
-        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
         "page": null,
         "severity": "warning"
       },
@@ -1224,11 +1224,11 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "author": "intomd fixtures",
+    "author": "ezmd fixtures",
     "content_hash": "sha256:1416b0adade01223fdd1ad6b583a689a07c0ec1231cb22b2ed762bfa4631aca1",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "pdf_heading_source": "font_size",
       "pdf_page_modes": "born_digital=3,hybrid=1",
@@ -1236,15 +1236,15 @@
       "pdf_running_headers": 12,
       "pdf_tagged": false
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "pages": 4,
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.pdf",
-    "source_hash": "sha256:4e843c4ebec8c9b371d72ea162fcca1cbae7bac0053d8e89734ca00c061a1023",
+    "source_hash": "sha256:886780651d0df06ff88ed76d943f8355b96752524be28f8caff66dcc66f75934",
     "source_type": "pdf",
     "title": "Harbor Lane Annual Report",
     "tokens": {
@@ -1291,14 +1291,14 @@
       "transcript_segments": 0,
       "words": 316
     },
-    "duration_seconds": 0.03100000019185245,
+    "duration_seconds": 0.04699999978765845,
     "engine": "documents.pdfium_text",
     "engines_tried": [
       "documents.pdfium_text"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 4193
+    "input_bytes": 4191
   },
   "profile": "full",
   "provenance": [
@@ -1657,7 +1657,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -1756,7 +1756,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 927,
+  "tokens_total": 924,
   "warnings": [
     {
       "block_id": null,
@@ -1767,7 +1767,7 @@
         "wanted": "docling"
       },
       "kind": "engine_fallback",
-      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
       "page": null,
       "severity": "warning"
     },

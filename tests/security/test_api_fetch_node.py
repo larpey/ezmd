@@ -8,9 +8,9 @@ from typing import Any
 
 import pytest
 
-from intomd_api.routes import fetch_node
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, make_settings, use_in_process_isolation, wait_for_state
+from ezmd_api.routes import fetch_node
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, make_settings, use_in_process_isolation, wait_for_state
 
 SECRET = "fetch-node-secret-0123456789"
 AUTH = {"Authorization": f"Bearer {SECRET}"}

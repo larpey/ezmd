@@ -1156,7 +1156,7 @@
     "content_hash": "sha256:1cd10bcb04ec1387d9ef6244a18c433e122fbf880728c3a0ce3011fe7dbbc636",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "comms.msg",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2024-10-01T09:00:00Z",
     "extra": {
       "attachments": 3,
@@ -1166,9 +1166,9 @@
       "engine": "olefile 0.47",
       "message_id": "<plan-1@example.org>"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -1211,7 +1211,7 @@
       "transcript_segments": 0,
       "words": 99
     },
-    "duration_seconds": 0.10899999993853271,
+    "duration_seconds": 0.2029999999795109,
     "engine": "comms.msg",
     "engines_tried": [
       "comms.msg"
@@ -1321,7 +1321,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0006",
@@ -1470,6 +1470,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 688,
+  "tokens_total": 691,
   "warnings": []
 }

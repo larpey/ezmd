@@ -2,7 +2,7 @@
 // localStorage, because transcripts can be megabytes. Every call resolves (never rejects): with storage
 // blocked or unavailable the UI simply has no local copy.
 
-const DB_NAME = "intomd";
+const DB_NAME = "ezmd";
 const STORE = "results";
 const VERSION = 1;
 

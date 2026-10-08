@@ -2,7 +2,7 @@
 
 Writes `plaintext-structured/input.txt` and `markdown-obsidian/input.md` only; the older text fixtures
 (plain-utf8, plain-latin1, plain-utf8-bom, markdown-kitchen-sink) were written by hand and are not touched.
-Goldens come from `uv run intomd-golden fixtures/text/<name> --write`. Output is LF-only and deterministic.
+Goldens come from `uv run ezmd-golden fixtures/text/<name> --write`. Output is LF-only and deterministic.
 """
 
 from __future__ import annotations

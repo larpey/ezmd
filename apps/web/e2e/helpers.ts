@@ -40,7 +40,7 @@ export const test = base.extend<Fixtures>({
   stack: [
     // eslint-disable-next-line no-empty-pattern -- Playwright fixtures must destructure their dependencies
     async ({}, provide, testInfo) => {
-      testInfo.skip(!(await stackReachable()), `intomd not reachable at ${BASE_URL}/healthz; start it or set PLAYWRIGHT_BASE_URL`);
+      testInfo.skip(!(await stackReachable()), `ezmd not reachable at ${BASE_URL}/healthz; start it or set PLAYWRIGHT_BASE_URL`);
       await provide();
     },
     { auto: true },

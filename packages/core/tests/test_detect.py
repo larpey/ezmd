@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import EMPTY_MIME, OCTET, URI_MIME, detect, extension_mime, is_executable, normalize_mime
-from intomd.inputs import InputRef
+from ezmd.detect import EMPTY_MIME, OCTET, URI_MIME, detect, extension_mime, is_executable, normalize_mime
+from ezmd.inputs import InputRef
 
 PNG = bytes.fromhex(
     "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d4944415478da63f8ff"
@@ -58,7 +58,7 @@ CASES: list[tuple[str, bytes, set[str]]] = [
         {"text/markdown"},
     ),
     ("a.csv", b"name,qty,price\napple,3,1.20\npear,5,0.80\nplum,9,2.10\nfig,1,3.00\n", {"text/csv"}),
-    ("a.json", b'{"name": "intomd", "items": [1, 2, 3], "nested": {"ok": true, "v": null}}\n', {"application/json"}),
+    ("a.json", b'{"name": "ezmd", "items": [1, 2, 3], "nested": {"ok": true, "v": null}}\n', {"application/json"}),
     ("a.html", b"<!DOCTYPE html><html><head><title>T</title></head><body><p>Hello</p></body></html>\n", {"text/html"}),
     ("a.pdf", b"%PDF-1.7\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n" * 3 + b"%%EOF\n", {"application/pdf"}),
     ("a.zip", _zip(), {"application/zip"}),
@@ -69,14 +69,14 @@ CASES: list[tuple[str, bytes, set[str]]] = [
     ("noise.bin", NOISE, {OCTET}),
     ("script.png", PY, {"text/x-python"}),
     ("image.py", PNG, {"image/png"}),
-    ("a.yaml", b"name: intomd\nversion: 1\nitems:\n  - a\n  - b\nnested:\n  key: value\n", {"application/yaml"}),
+    ("a.yaml", b"name: ezmd\nversion: 1\nitems:\n  - a\n  - b\nnested:\n  key: value\n", {"application/yaml"}),
     (
         "a.xml",
         b'<?xml version="1.0" encoding="UTF-8"?>\n<root><item id="1">a</item><item id="2">b</item></root>\n',
         {"application/xml"},
     ),
     ("noext", b"Just some plain words written without any file extension at all, several lines.\n" * 4, {"text/plain"}),
-    ("a.toml", b'[project]\nname = "intomd"\nversion = "0.1.0"\n\n[tool.x]\nkey = true\n', {"application/toml"}),
+    ("a.toml", b'[project]\nname = "ezmd"\nversion = "0.1.0"\n\n[tool.x]\nkey = true\n', {"application/toml"}),
     (
         "a.svg",
         b'<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>\n',

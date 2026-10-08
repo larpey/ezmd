@@ -1,4 +1,4 @@
-# intomd developer entry points. Every gate CI runs is reachable from here.
+# ezmd developer entry points. Every gate CI runs is reachable from here.
 # Requires: uv, pnpm (corepack), docker (for up/smoke/images). Use a POSIX shell (Git Bash on Windows).
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
@@ -46,20 +46,20 @@ golden:  ## fixture (golden) tests
 licenses:  ## license allowlist for the default dependency trees
 	uv run python tools/license_check.py
 ifeq ($(HAS_PNPM),yes)
-	pnpm licenses list --prod --json > $(TMPDIR)/intomd-nodelic.json
-	if [ -f tools/license_check.mjs ]; then node tools/license_check.mjs < $(TMPDIR)/intomd-nodelic.json; \
-	else uv run python tools/license_check.py --skip-python --pnpm-json $(TMPDIR)/intomd-nodelic.json; fi
+	pnpm licenses list --prod --json > $(TMPDIR)/ezmd-nodelic.json
+	if [ -f tools/license_check.mjs ]; then node tools/license_check.mjs < $(TMPDIR)/ezmd-nodelic.json; \
+	else uv run python tools/license_check.py --skip-python --pnpm-json $(TMPDIR)/ezmd-nodelic.json; fi
 endif
 
 audit:  ## pip-audit on the locked default tree, pnpm audit
-	uv export --frozen --no-dev --all-packages --format requirements-txt --no-emit-workspace > $(TMPDIR)/intomd-req.txt
-	uv run pip-audit --strict --disable-pip -r $(TMPDIR)/intomd-req.txt $$(uv run --no-project python -c "import tomllib,datetime as d; t=tomllib.load(open('tools/audit_ignore.toml','rb')); print(' '.join('--ignore-vuln '+e['id'] for e in t.get('pip',[]) if d.date.fromisoformat(str(e['expires']))>=d.date.today()))")
+	uv export --frozen --no-dev --all-packages --format requirements-txt --no-emit-workspace > $(TMPDIR)/ezmd-req.txt
+	uv run pip-audit --strict --disable-pip -r $(TMPDIR)/ezmd-req.txt $$(uv run --no-project python -c "import tomllib,datetime as d; t=tomllib.load(open('tools/audit_ignore.toml','rb')); print(' '.join('--ignore-vuln '+e['id'] for e in t.get('pip',[]) if d.date.fromisoformat(str(e['expires']))>=d.date.today()))")
 ifeq ($(HAS_PNPM),yes)
 	pnpm audit --audit-level=high --prod
 endif
 
 images:  ## build all runtime images locally
-	for t in api worker fetch-node; do docker build -f deploy/Dockerfile --target $$t -t ghcr.io/larpey/intomd-$$t:dev .; done
+	for t in api worker fetch-node; do docker build -f deploy/Dockerfile --target $$t -t ghcr.io/larpey/ezmd-$$t:dev .; done
 
 up:  ## build and start the compose stack
 	$(COMPOSE) up -d --build --wait

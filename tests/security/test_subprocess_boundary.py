@@ -1,4 +1,4 @@
-"""docs/spec/part1.md 8.4: `subprocess` is imported only in intomd.core.sandbox."""
+"""docs/spec/part1.md 8.4: `subprocess` is imported only in ezmd.core.sandbox."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ALLOWED = {ROOT / "packages/core/src/intomd/core/sandbox.py"}
+ALLOWED = {ROOT / "packages/core/src/ezmd/core/sandbox.py"}
 PATTERN = re.compile(r"^\s*(import subprocess|from subprocess import)|os\.system\(|os\.popen\(", re.M)
 
 

@@ -6,10 +6,10 @@ from email.message import EmailMessage
 
 import pytest
 
-from intomd.inputs import InputRef
-from intomd.ir import ConversionResult
-from intomd.pipeline import convert_ref
-from intomd.registry import ConvertOptions
+from ezmd.inputs import InputRef
+from ezmd.ir import ConversionResult
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConvertOptions
 
 
 def make_message(

@@ -1,4 +1,4 @@
-import type { ConvertOptions, Profile } from "@intomd/sdk";
+import type { ConvertOptions, Profile } from "@ezmd/sdk";
 import { useId, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type RefObject } from "react";
 import { classifyText, formatBytes } from "../lib/input";
 

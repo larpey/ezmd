@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from intomd_converters.code.common import secret_warning
-from intomd_converters.code.secrets import is_secret_file, redact
+from ezmd_converters.code.common import secret_warning
+from ezmd_converters.code.secrets import is_secret_file, redact
 
 # Provider-format values are assembled at runtime so no committed file contains a token-shaped string.
 AWS_ID = "AK" + "IA" + "Q3EXAMPLE7VALUE9Z"[:16]

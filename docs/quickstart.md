@@ -6,7 +6,7 @@ you can paste them as they are.
 ## CLI
 
 ```sh
-uv run intomd convert fixtures/office/docx-review/input.docx --profile compact
+uv run ezmd convert fixtures/office/docx-review/input.docx --profile compact
 ```
 
 ```markdown
@@ -41,14 +41,14 @@ WARN [comments_present] The source contains review comments; they were omitted.
 Useful variations:
 
 ```sh
-uv run intomd convert report.pdf -p rag -o out/             # writes out/<title>.md
-uv run intomd convert report.pdf -o report.md --sidecar      # also writes report.intomd.json
-uv run intomd convert report.pdf --json                      # one JSON object on stdout
-uv run intomd convert report.pdf --converter documents.docling_pdf   # force a converter (docs extra)
-cat notes.txt | uv run intomd convert -                      # stdin
-uv run intomd convert https://example.com                    # URL, fetched through the SSRF guard
-uv run intomd batch ./reports --recursive --out ./md         # many files; unchanged ones are skipped
-uv run intomd shadow-run report.pdf                          # compare every engine that handles a file
+uv run ezmd convert report.pdf -p rag -o out/             # writes out/<title>.md
+uv run ezmd convert report.pdf -o report.md --sidecar      # also writes report.ezmd.json
+uv run ezmd convert report.pdf --json                      # one JSON object on stdout
+uv run ezmd convert report.pdf --converter documents.docling_pdf   # force a converter (docs extra)
+cat notes.txt | uv run ezmd convert -                      # stdin
+uv run ezmd convert https://example.com                    # URL, fetched through the SSRF guard
+uv run ezmd batch ./reports --recursive --out ./md         # many files; unchanged ones are skipped
+uv run ezmd shadow-run report.pdf                          # compare every engine that handles a file
 ```
 
 Exit codes and every option are in the [CLI reference](cli.md). The output profiles are
@@ -57,9 +57,9 @@ explained in [Output format](output-format.md).
 ## Python
 
 ```python
-import intomd
+import ezmd
 
-result = intomd.convert("fixtures/office/docx-review/input.docx", profile="compact")
+result = ezmd.convert("fixtures/office/docx-review/input.docx", profile="compact")
 print(result.markdown)
 for w in result.warnings:
     print(w.severity, w.kind, w.message)
@@ -72,7 +72,7 @@ More in [Python library](library.md).
 Start the API in-process (inline queue, no Redis or Docker needed):
 
 ```sh
-uv run intomd serve --port 8080
+uv run ezmd serve --port 8080
 ```
 
 Upload a file and wait up to 30 seconds for the result:
@@ -115,11 +115,11 @@ See [REST API](api.md) for jobs, events, and options, and [Errors](errors.md) fo
 
 ## Web UI
 
-`intomd serve` and the Compose stack serve the web UI at `/` once it is built:
+`ezmd serve` and the Compose stack serve the web UI at `/` once it is built:
 
 ```sh
-pnpm install && pnpm --filter @intomd/web build
-uv run intomd serve --port 8080
+pnpm install && pnpm --filter @ezmd/web build
+uv run ezmd serve --port 8080
 ```
 
 Then open http://127.0.0.1:8080: paste a link, drop a file, or paste text.
@@ -127,7 +127,7 @@ Then open http://127.0.0.1:8080: paste a link, drop a file, or paste text.
 ## MCP
 
 ```sh
-claude mcp add intomd -- uv --directory /path/to/intomd run intomd-mcp
+claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp
 ```
 
 Other clients: [MCP server](mcp.md).

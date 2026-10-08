@@ -1,6 +1,6 @@
 # SEC EDGAR
 
-Package `intomd_converters.edgar`, converter `specialized.edgar`, family `specialized` (spec: docs/spec/part2.md
+Package `ezmd_converters.edgar`, converter `specialized.edgar`, family `specialized` (spec: docs/spec/part2.md
 section 12, EdgarConverter; ROADMAP P1-T07). Implemented directly against the documented EDGAR endpoints;
 `edgartools` is not used (it hard-depends on Unidecode, GPL-2.0+; see docs/decisions/P1-T07.md). No new
 dependencies.
@@ -31,12 +31,12 @@ to the web chain.
   pipeline fetches them; accession and company lookups fail with a message asking for network access or the
   Archives URL.
 - With `allow_network` on, every request carries the declared identity as the User-Agent. The identity comes
-  from `extra.specialized.edgar_identity`, else `INTOMD_EDGAR_IDENTITY`, and must contain a contact email
+  from `extra.specialized.edgar_identity`, else `EZMD_EDGAR_IDENTITY`, and must contain a contact email
   (`"Name you@example.com"`). Without it the conversion fails immediately (`edgar_identity_missing`), before
   any request.
 - Requests are spaced to 5 per second per process (the SEC limit is 10). HTTP 403 or 429 fails at once with
   a `rate_limited` message; it is never retried in a loop. Every request goes through
-  `intomd.core.netguard.fetch` (SSRF guard, redirect re-validation, byte cap 25 MB) and checks the deadline.
+  `ezmd.core.netguard.fetch` (SSRF guard, redirect re-validation, byte cap 25 MB) and checks the deadline.
 
 ## Output
 
@@ -68,7 +68,7 @@ Provenance: `path` = `cover`, `part/<n>`, `item/<id>`, `signatures`, `exhibits`,
 
 | Key | Default | Meaning |
 |---|---|---|
-| `specialized.edgar_identity` | `INTOMD_EDGAR_IDENTITY` | declared SEC identity (`Name email`) |
+| `specialized.edgar_identity` | `EZMD_EDGAR_IDENTITY` | declared SEC identity (`Name email`) |
 | `specialized.edgar_form` | `10-K` | form for ticker/CIK lookups |
 | `specialized.edgar_year` | none | restrict ticker/CIK lookups to a report year |
 | `specialized.edgar_exhibits` | `false` | convert exhibits as child documents (network) |

@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -66,6 +69,9 @@
         "role": "body",
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -73,6 +79,9 @@
             "text": "An opening paragraph with "
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -82,6 +91,9 @@
             "text": "bold"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -89,6 +101,9 @@
             "text": ", "
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -98,6 +113,9 @@
             "text": "italic"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -105,6 +123,9 @@
             "text": ", "
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -114,6 +135,9 @@
             "text": "inline code"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -121,6 +145,9 @@
             "text": ", "
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -130,6 +157,9 @@
             "text": "struck"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -137,6 +167,9 @@
             "text": " text and a "
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": "https://example.org/docs",
             "math": null,
@@ -144,6 +177,9 @@
             "text": "link"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -178,6 +214,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -215,6 +254,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -250,6 +292,9 @@
                 },
                 "spans": [
                   {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
                     "footnote_ref": null,
                     "href": null,
                     "math": null,
@@ -285,6 +330,9 @@
                     },
                     "spans": [
                       {
+                        "change": null,
+                        "change_author": null,
+                        "change_id": null,
                         "footnote_ref": null,
                         "href": null,
                         "math": null,
@@ -317,6 +365,9 @@
                     },
                     "spans": [
                       {
+                        "change": null,
+                        "change_author": null,
+                        "change_id": null,
                         "footnote_ref": null,
                         "href": null,
                         "math": null,
@@ -347,6 +398,9 @@
                 },
                 "spans": [
                   {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
                     "footnote_ref": null,
                     "href": null,
                     "math": null,
@@ -377,6 +431,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -409,6 +466,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -468,6 +528,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -500,6 +563,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -559,6 +625,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -591,6 +660,9 @@
             },
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -647,6 +719,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -707,6 +782,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -741,6 +819,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -748,6 +829,9 @@
             "text": "Simplicity is prerequisite for reliability."
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -755,6 +839,9 @@
             "text": "\n\n"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -789,6 +876,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -813,6 +903,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -832,6 +925,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -851,6 +947,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -870,6 +969,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -889,6 +991,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -908,6 +1013,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -927,6 +1035,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -946,6 +1057,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -965,6 +1079,9 @@
             "row_span": 1,
             "spans": [
               {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
                 "footnote_ref": null,
                 "href": null,
                 "math": null,
@@ -1026,6 +1143,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1094,6 +1214,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1127,6 +1250,9 @@
         "role": "body",
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1134,6 +1260,9 @@
             "text": "A claim that needs a source."
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": "fn-1",
             "href": null,
             "math": null,
@@ -1141,6 +1270,9 @@
             "text": "[^1]"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1148,6 +1280,9 @@
             "text": " And another one."
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": "fn-note",
             "href": null,
             "math": null,
@@ -1207,6 +1342,9 @@
         "section_id": null,
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1241,6 +1379,9 @@
         "section_id": null,
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1248,6 +1389,9 @@
             "text": "A named footnote with "
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1257,6 +1401,9 @@
             "text": "emphasis"
           },
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -1270,7 +1417,7 @@
     "content_hash": "sha256:e659c2f007e8274f12b57cdf4232485bc2828f778005f317c668605c8230cb18",
     "converter_id": "text.markdown_passthrough",
     "metadata": {
-      "author": "intomd fixtures",
+      "author": "ezmd fixtures",
       "authors": [],
       "canonical_url": null,
       "description": null,
@@ -1278,7 +1425,7 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "front_matter": "title: Kitchen Sink\nauthor: intomd fixtures"
+        "front_matter": "title: Kitchen Sink\nauthor: ezmd fixtures"
       },
       "fetched": null,
       "keywords": [],
@@ -1290,7 +1437,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.md",
       "source_type": "markup",
       "speakers": [],
@@ -1328,23 +1477,23 @@
     }
   ],
   "frontmatter": {
-    "author": "intomd fixtures",
+    "author": "ezmd fixtures",
     "content_hash": "sha256:fd8be2c3ae23327454ad1d09e2fb30e74fff96d856fef1789a4545c1cea1bae4",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "text.markdown_passthrough",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "encoding": "utf-8",
-      "front_matter": "title: Kitchen Sink\nauthor: intomd fixtures"
+      "front_matter": "title: Kitchen Sink\nauthor: ezmd fixtures"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.md",
-    "source_hash": "sha256:186a2ac6addb6269e4049da85f4f3cd2787039c3ffeaae465297cf0eb2de2559",
+    "source_hash": "sha256:bd86dc43b6a19318b6460d42e06bc6333d6a26c3cfd3f6d349c7cefb948a15eb",
     "source_type": "markdown",
     "title": "Kitchen Sink",
     "tokens": {
@@ -1374,7 +1523,7 @@
       "footnotes": 2,
       "headings": 7,
       "images": 1,
-      "links": 0,
+      "links": 1,
       "list_items": 11,
       "lists": 3,
       "page_breaks": 0,
@@ -1388,14 +1537,14 @@
       "transcript_segments": 0,
       "words": 105
     },
-    "duration_seconds": 0.01600000006146729,
+    "duration_seconds": 0.015999999828636646,
     "engine": "text.markdown_passthrough",
     "engines_tried": [
       "text.markdown_passthrough"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 936
+    "input_bytes": 934
   },
   "profile": "full",
   "provenance": [
@@ -1529,7 +1678,7 @@
       "type": "footnote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -1639,6 +1788,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 700,
+  "tokens_total": 706,
   "warnings": []
 }

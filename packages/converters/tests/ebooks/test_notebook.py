@@ -6,12 +6,12 @@ from typing import Any
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import CodeBlock, Document, Footnote, Heading, Image, Paragraph, Raw, Table, WarningKind, spans_text
-from intomd.pipeline import convert_ref
-from intomd.registry import ConversionError, ConvertOptions
-from intomd_converters.ebooks.notebook import NotebookConverter
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import CodeBlock, Document, Footnote, Heading, Image, Paragraph, Raw, Table, WarningKind, spans_text
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.ebooks.notebook import NotebookConverter
 
 ROOT = Path(__file__).resolve().parents[4]
 FIXTURE = ROOT / "fixtures" / "ebooks" / "ipynb-analysis" / "input.ipynb"
@@ -82,7 +82,7 @@ def test_math_display_and_inline() -> None:
 
 
 def test_raw_cell_language_names() -> None:
-    from intomd_converters.ebooks.notebook import raw_language
+    from ezmd_converters.ebooks.notebook import raw_language
 
     assert raw_language("text/x-rst") == "rst"
     assert raw_language("text/latex") == "latex"

@@ -9,14 +9,14 @@ from pathlib import Path
 
 import pytest
 
-from intomd_api.db import Base, Database
-from intomd_api.migrate import SchemaDrift, ensure_schema, head_revision
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client
+from ezmd_api.db import Base, Database
+from ezmd_api.migrate import SchemaDrift, ensure_schema, head_revision
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client
 
 
 def _url(tmp_path: Path) -> str:
-    return f"sqlite:///{(tmp_path / 'state' / 'intomd.sqlite').as_posix()}"
+    return f"sqlite:///{(tmp_path / 'state' / 'ezmd.sqlite').as_posix()}"
 
 
 def _revision(url: str) -> str | None:

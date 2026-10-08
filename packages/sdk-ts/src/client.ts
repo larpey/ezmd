@@ -1,4 +1,4 @@
-import { IntomdError, errorFromBody, errorFromResponse } from "./errors.js";
+import { EzmdError, errorFromBody, errorFromResponse } from "./errors.js";
 import { openStream } from "./sse.js";
 import { SDK_VERSION } from "./version.js";
 import type {
@@ -7,13 +7,13 @@ import type {
 } from "./types.js";
 import { TERMINAL_STATES } from "./types.js";
 
-export interface IntomdClientOptions {
+export interface EzmdClientOptions {
   /** API origin; defaults to same-origin ("") in browsers. */
   baseUrl?: string;
   apiKey?: string;
   /** Called before URL submissions when the instance requires Turnstile. */
   turnstileToken?: () => Promise<string | undefined>;
-  /** Client identity sent as `X-Intomd-Client` (and `User-Agent` outside browsers), e.g. `intomd-web/0.1.0`. */
+  /** Client identity sent as `X-Ezmd-Client` (and `User-Agent` outside browsers), e.g. `ezmd-web/0.1.0`. */
   clientName?: string;
   /** Retry once on 429/503 honoring `Retry-After`. */
   retry?: boolean;
@@ -45,12 +45,12 @@ const isTerminalEvent = (ev: JobEvent): boolean => ev.type === "done" || ev.type
 const MAX_POLL_MS = 10_000;
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
-export class IntomdClient {
+export class EzmdClient {
   private readonly base: string;
-  private readonly opts: IntomdClientOptions;
+  private readonly opts: EzmdClientOptions;
   private readonly fetchImpl: typeof fetch;
 
-  constructor(opts: IntomdClientOptions = {}) {
+  constructor(opts: EzmdClientOptions = {}) {
     this.opts = opts;
     this.base = (opts.baseUrl ?? "").replace(/\/+$/, "");
     const f = opts.fetch ?? globalThis.fetch;
@@ -58,8 +58,8 @@ export class IntomdClient {
   }
 
   private headers(extra: Record<string, string> = {}): Record<string, string> {
-    const name = this.opts.clientName ?? `intomd-sdk-ts/${SDK_VERSION}`;
-    const h: Record<string, string> = { "X-Intomd-Client": name, ...extra };
+    const name = this.opts.clientName ?? `ezmd-sdk-ts/${SDK_VERSION}`;
+    const h: Record<string, string> = { "X-Ezmd-Client": name, ...extra };
     if (typeof window === "undefined") h["User-Agent"] = name;
     if (this.opts.apiKey) h["X-API-Key"] = this.opts.apiKey;
     return h;
@@ -71,7 +71,7 @@ export class IntomdClient {
       res = await this.fetchImpl(this.base + path, { ...init, headers: this.headers(init.headers as Record<string, string>) });
     } catch (err) {
       if ((err as Error)?.name === "AbortError") throw err;
-      throw new IntomdError({ code: "network_error", message: "Could not reach the intomd API.", status: 0 });
+      throw new EzmdError({ code: "network_error", message: "Could not reach the ezmd API.", status: 0 });
     }
     if (res.ok) return res;
     const error = await errorFromResponse(res);
@@ -121,7 +121,7 @@ export class IntomdClient {
     return new Promise<Job>((resolve, reject) => {
       let settled = false;
       let stop = (): void => {};
-      const timer = wait.timeoutMs ? setTimeout(() => finish(new IntomdError({ code: "timeout", message: `Job ${id} did not finish within ${wait.timeoutMs} ms.`, status: 504 })), wait.timeoutMs) : undefined;
+      const timer = wait.timeoutMs ? setTimeout(() => finish(new EzmdError({ code: "timeout", message: `Job ${id} did not finish within ${wait.timeoutMs} ms.`, status: 504 })), wait.timeoutMs) : undefined;
       const onAbort = (): void => finish(new DOMException("Aborted", "AbortError"));
       wait.signal?.addEventListener("abort", onAbort);
       const finish = (outcome: Job | Error): void => {
@@ -154,7 +154,7 @@ export class IntomdClient {
             }
             if (TERMINAL_STATES.includes(job.state)) return finish(job);
           } catch (err) {
-            if (!(err instanceof IntomdError) || err.code !== "network_error") return finish(err as Error);
+            if (!(err instanceof EzmdError) || err.code !== "network_error") return finish(err as Error);
           }
           await sleep(delay);
           delay = Math.min(delay * 1.5, MAX_POLL_MS);

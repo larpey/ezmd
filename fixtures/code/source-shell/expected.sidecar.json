@@ -48,9 +48,9 @@
       {
         "attrs": {
           "lines": "24",
-          "tokens": "169"
+          "tokens": "168"
         },
-        "code": "#!/usr/bin/env bash\n# backup.sh: rotate nightly database dumps (intomd fixture).\nset -euo pipefail\n\nBACKUP_DIR=\"${BACKUP_DIR:-/var/backups/app}\"\nKEEP_DAYS=14\n\nlog() {\n  printf \"%s %s\" \"$(date -u +%FT%TZ)\" \"$*\" >&2\n}\n\nrotate() {\n  find \"$BACKUP_DIR\" -name \"*.sql.gz\" -mtime +\"$KEEP_DAYS\" -print -delete\n}\n\ncat <<'EOF' > /tmp/backup-banner.txt\nNightly backup: do not interrupt.\nEOF\n\ncase \"${1:-run}\" in\n  run) log starting; rotate ;;\n  dry-run) log dry run only ;;\n  *) echo \"usage: $0 [run|dry-run]\"; exit 2 ;;\nesac",
+        "code": "#!/usr/bin/env bash\n# backup.sh: rotate nightly database dumps (ezmd fixture).\nset -euo pipefail\n\nBACKUP_DIR=\"${BACKUP_DIR:-/var/backups/app}\"\nKEEP_DAYS=14\n\nlog() {\n  printf \"%s %s\" \"$(date -u +%FT%TZ)\" \"$*\" >&2\n}\n\nrotate() {\n  find \"$BACKUP_DIR\" -name \"*.sql.gz\" -mtime +\"$KEEP_DAYS\" -print -delete\n}\n\ncat <<'EOF' > /tmp/backup-banner.txt\nNightly backup: do not interrupt.\nEOF\n\ncase \"${1:-run}\" in\n  run) log starting; rotate ;;\n  dry-run) log dry run only ;;\n  *) echo \"usage: $0 [run|dry-run]\"; exit 2 ;;\nesac",
         "filename": "input.sh",
         "id": "b0002",
         "language": "bash",
@@ -75,7 +75,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:f112e3c1dbbbbbdf1ad8c90d4ed4335668018815c4085cf1d88bbf93db0bb096",
+    "content_hash": "sha256:450e71c58ca558caf1e20d37b893f40d1917a672a59ee053602e0cb4ef7a6960",
     "converter_id": "code.source_file",
     "metadata": {
       "author": null,
@@ -86,11 +86,11 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "bytes": 515,
+        "bytes": 513,
         "language": "bash",
         "lines": 24,
         "shebang": "bash",
-        "tokens": 169
+        "tokens": 168
       },
       "fetched": null,
       "keywords": [],
@@ -117,32 +117,32 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:4154153bca58d4d93cca38c1fde5cb8acabfe63b65fd263b7769c7095bd4aad9",
+    "content_hash": "sha256:5647f2437544f2eb15acfb9d7355591f19297750344847c430eacff6bafce7fc",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 515,
+      "bytes": 513,
       "encoding": "utf-8",
       "language": "bash",
       "lines": 24,
       "shebang": "bash",
-      "tokens": 169
+      "tokens": 168
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.sh",
-    "source_hash": "sha256:8bec98acc54768a22d0807e29d8344b54a6900ab3b2560978f290c0d0f069379",
+    "source_hash": "sha256:fe92131f08a1746e84898ad6d2e8a9c0ae968f7acc0aec3ab783797bba11eb0e",
     "source_type": "code",
     "title": "input.sh",
     "tokens": {
-      "cl100k_base": 188,
-      "claude_approx": 206,
-      "o200k_base": 191
+      "cl100k_base": 187,
+      "claude_approx": 205,
+      "o200k_base": 190
     },
     "truncated": false,
     "warnings": [],
@@ -174,14 +174,14 @@
       "transcript_segments": 0,
       "words": 71
     },
-    "duration_seconds": 0.125,
+    "duration_seconds": 0.10999999986961484,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 515
+    "input_bytes": 513
   },
   "profile": "full",
   "provenance": [
@@ -202,13 +202,13 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 459,
+  "tokens_total": 462,
   "warnings": []
 }

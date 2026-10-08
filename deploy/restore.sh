@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# intomd restore (docs/spec/part4.md 4.9.9).
+# ezmd restore (docs/spec/part4.md 4.9.9).
 #
 #   deploy/restore.sh [--with-env] [--verify-only] [--no-smoke] <backup.tar.gz>
 #
@@ -58,13 +58,13 @@ if [ "$WITH_ENV" = 1 ]; then
 elif [ ! -f "$ENV_FILE" ]; then
   die "no env file at $ENV_FILE; rerun with --with-env to restore the backed-up one"
 else
-  backed_pepper="$(ENV_FILE="$WORK/env" env_get INTOMD_KEY_PEPPER)"
-  if [ "$backed_pepper" != "$(env_get INTOMD_KEY_PEPPER)" ]; then
-    warn "INTOMD_KEY_PEPPER differs from the backup's; restored API keys will not validate (use --with-env)"
+  backed_pepper="$(ENV_FILE="$WORK/env" env_get EZMD_KEY_PEPPER)"
+  if [ "$backed_pepper" != "$(env_get EZMD_KEY_PEPPER)" ]; then
+    warn "EZMD_KEY_PEPPER differs from the backup's; restored API keys will not validate (use --with-env)"
   fi
 fi
 
-# The image must exist before stackctl can verify app.tar; it runs with the current INTOMD_VERSION.
+# The image must exist before stackctl can verify app.tar; it runs with the current EZMD_VERSION.
 stackctl verify <"$WORK/app.tar" || die "app.tar failed verification"
 if [ "$VERIFY_ONLY" = 1 ]; then
   log "backup verified; nothing changed (--verify-only)"
@@ -88,7 +88,7 @@ compose run --rm --no-deps -T --entrypoint sh caddy -c \
 
 # 4. start -------------------------------------------------------------------------------------------
 log "starting the stack"
-compose up -d --no-build --wait --wait-timeout "${INTOMD_WAIT_TIMEOUT_S:-300}" ||
+compose up -d --no-build --wait --wait-timeout "${EZMD_WAIT_TIMEOUT_S:-300}" ||
   { compose ps >&2; die "the stack did not become healthy after the restore"; }
 wait_ready 120 || die "$(stack_url)/readyz did not answer 200 after the restore"
 

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { IntomdClient, IntomdError } from "../src/index.js";
+import { EzmdClient, EzmdError } from "../src/index.js";
 import type { EventSourceLike, Job, JobEvent } from "../src/index.js";
 import { readSse, toJobEvent } from "../src/sse.js";
 
@@ -56,14 +56,14 @@ class FakeEventSource implements EventSourceLike {
 describe("convert", () => {
   it("uploads files as multipart with options and client header", async () => {
     const { fn, calls } = mockFetch(json(envelope, 202));
-    const client = new IntomdClient({ baseUrl: "http://api/", fetch: fn, clientName: "intomd-web/0.1.0" });
+    const client = new EzmdClient({ baseUrl: "http://api/", fetch: fn, clientName: "ezmd-web/0.1.0" });
     const created = await client.convert({ file: new Blob(["# hi"], { type: "text/markdown" }), filename: "a.md", profile: "compact", options: { ocr: true } });
     expect(created.id).toBe("job_abc");
     expect(created.links.events).toContain("/events");
     expect(calls[0]!.url).toBe("http://api/v1/convert");
     const headers = calls[0]!.init.headers as Record<string, string>;
-    expect(headers["X-Intomd-Client"]).toBe("intomd-web/0.1.0");
-    expect(headers["User-Agent"]).toBe("intomd-web/0.1.0");
+    expect(headers["X-Ezmd-Client"]).toBe("ezmd-web/0.1.0");
+    expect(headers["User-Agent"]).toBe("ezmd-web/0.1.0");
     const form = calls[0]!.init.body as FormData;
     expect((form.get("file") as File).name).toBe("a.md");
     expect(JSON.parse(form.get("options") as string)).toEqual({ profile: "compact", ocr: true });
@@ -71,7 +71,7 @@ describe("convert", () => {
 
   it("sends URLs as JSON with a Turnstile token and API key", async () => {
     const { fn, calls } = mockFetch(json(envelope, 202));
-    const client = new IntomdClient({ fetch: fn, apiKey: "ak_test_x", turnstileToken: async () => "tok" });
+    const client = new EzmdClient({ fetch: fn, apiKey: "ak_test_x", turnstileToken: async () => "tok" });
     await client.convert({ url: "https://example.com/a.pdf", profile: "rag", options: { max_pages: 5 }, idempotencyKey: "k1" });
     const headers = calls[0]!.init.headers as Record<string, string>;
     expect(headers["Content-Type"]).toBe("application/json");
@@ -82,7 +82,7 @@ describe("convert", () => {
 
   it("sends pasted text as a file part", async () => {
     const { fn, calls } = mockFetch(json(envelope, 202));
-    await new IntomdClient({ fetch: fn }).convert({ text: "hello", sourceHint: "text/markdown" });
+    await new EzmdClient({ fetch: fn }).convert({ text: "hello", sourceHint: "text/markdown" });
     const file = (calls[0]!.init.body as FormData).get("file") as File;
     expect(file.name).toBe("pasted.md");
     expect(await file.text()).toBe("hello");
@@ -90,24 +90,24 @@ describe("convert", () => {
 });
 
 describe("errors", () => {
-  it("throws IntomdError from the error schema", async () => {
+  it("throws EzmdError from the error schema", async () => {
     const body = { error: { code: "input_too_large", message: "Too big.", status: 413, request_id: "req_1", detail: { limit_bytes: 1 } } };
     const { fn } = mockFetch(json(body, 413));
-    const err = await new IntomdClient({ fetch: fn }).getCapabilities().catch((e: unknown) => e);
-    expect(err).toBeInstanceOf(IntomdError);
+    const err = await new EzmdClient({ fetch: fn }).getCapabilities().catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(EzmdError);
     expect(err).toMatchObject({ code: "input_too_large", status: 413, requestId: "req_1", message: "Too big.", detail: { limit_bytes: 1 } });
   });
 
   it("maps non-JSON errors by status and parses Retry-After", async () => {
     const { fn } = mockFetch(new Response("nope", { status: 503, headers: { "Retry-After": "7" } }));
-    const err = (await new IntomdClient({ fetch: fn }).getCapabilities().catch((e: unknown) => e)) as IntomdError;
+    const err = (await new EzmdClient({ fetch: fn }).getCapabilities().catch((e: unknown) => e)) as EzmdError;
     expect(err.code).toBe("queue_unavailable");
     expect(err.retryAfter).toBe(7);
   });
 
   it("retries once on 429 when retry is enabled", async () => {
     const { fn, calls } = mockFetch(new Response("", { status: 429, headers: { "Retry-After": "0" } }), json({ version: "0.1.0" }));
-    const caps = await new IntomdClient({ fetch: fn, retry: true }).getCapabilities();
+    const caps = await new EzmdClient({ fetch: fn, retry: true }).getCapabilities();
     expect(caps.version).toBe("0.1.0");
     expect(calls).toHaveLength(2);
   });
@@ -116,14 +116,14 @@ describe("errors", () => {
     const fn = (async () => {
       throw new TypeError("fetch failed");
     }) as unknown as typeof fetch;
-    await expect(new IntomdClient({ fetch: fn }).getJob("job_x")).rejects.toMatchObject({ code: "network_error" });
+    await expect(new EzmdClient({ fetch: fn }).getJob("job_x")).rejects.toMatchObject({ code: "network_error" });
   });
 });
 
 describe("waitForJob", () => {
   it("follows SSE events and resolves with the final job", async () => {
     const { fn } = mockFetch(json(job({ state: "done", progress: 100 })));
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeEventSource });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeEventSource });
     const events: JobEvent[] = [];
     const pending = client.waitForJob("job_abc", { onEvent: (e) => events.push(e) });
     const es = FakeEventSource.last!;
@@ -141,7 +141,7 @@ describe("waitForJob", () => {
 
   it("falls back to polling when the stream errors", async () => {
     const { fn, calls } = mockFetch(json(job({ state: "converting", progress: 50 })), json(job({ state: "done", progress: 100 })));
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeEventSource });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeEventSource });
     const events: JobEvent[] = [];
     const pending = client.waitForJob("job_abc", { onEvent: (e) => events.push(e), pollIntervalMs: 1 });
     FakeEventSource.last!.onerror?.(new Event("error"));
@@ -154,7 +154,7 @@ describe("waitForJob", () => {
   it("uses a fetch stream when an API key must be sent", async () => {
     const sse = "event: progress\nid: 1\ndata: {\"progress\":10,\"stage_message\":\"x\"}\n\n: keepalive\n\nevent: done\ndata: {}\n\n";
     const { fn, calls } = mockFetch((c) => (c.url.endsWith("/events") ? new Response(sse) : json(job({ state: "done" }))));
-    const client = new IntomdClient({ fetch: fn, apiKey: "ak_x", EventSource: FakeEventSource });
+    const client = new EzmdClient({ fetch: fn, apiKey: "ak_x", EventSource: FakeEventSource });
     const events: JobEvent[] = [];
     const final = await client.waitForJob("job_abc", { onEvent: (e) => events.push(e) });
     expect(final.state).toBe("done");
@@ -164,7 +164,7 @@ describe("waitForJob", () => {
 
   it("times out", async () => {
     const { fn } = mockFetch(json(job()));
-    const client = new IntomdClient({ fetch: fn, EventSource: FakeEventSource });
+    const client = new EzmdClient({ fetch: fn, EventSource: FakeEventSource });
     await expect(client.waitForJob("job_abc", { timeoutMs: 5 })).rejects.toMatchObject({ code: "timeout" });
   });
 });
@@ -172,26 +172,26 @@ describe("waitForJob", () => {
 describe("results and capabilities", () => {
   it("returns markdown text with profile and format params", async () => {
     const { fn, calls } = mockFetch(new Response("# Title\n"));
-    const md = await new IntomdClient({ fetch: fn }).getResult("job_abc", "md", { profile: "rag" });
+    const md = await new EzmdClient({ fetch: fn }).getResult("job_abc", "md", { profile: "rag" });
     expect(md).toBe("# Title\n");
     expect(calls[0]!.url).toBe("/v1/jobs/job_abc/result?format=md&profile=rag");
   });
 
   it("parses the json payload and exposes the sidecar", async () => {
-    const payload = { markdown: "# T", frontmatter: { title: "T" }, sidecar: { schema: "intomd.sidecar/1", warnings: [] }, chunks: [] };
+    const payload = { markdown: "# T", frontmatter: { title: "T" }, sidecar: { schema: "ezmd.sidecar/1", warnings: [] }, chunks: [] };
     const { fn } = mockFetch(json(payload));
-    const client = new IntomdClient({ fetch: fn });
+    const client = new EzmdClient({ fetch: fn });
     expect((await client.getResult("job_abc", "json")).frontmatter).toEqual({ title: "T" });
-    expect((await client.sidecar("job_abc"))?.schema).toBe("intomd.sidecar/1");
+    expect((await client.sidecar("job_abc"))?.schema).toBe("ezmd.sidecar/1");
   });
 
   it("fetches capabilities", async () => {
     const { fn } = mockFetch(json({ version: "0.1.0", converters: [], profiles: ["compact"], formats: ["md"], limits: {} }));
-    expect((await new IntomdClient({ fetch: fn }).capabilities()).profiles).toEqual(["compact"]);
+    expect((await new EzmdClient({ fetch: fn }).capabilities()).profiles).toEqual(["compact"]);
   });
 
   it("assertDone throws the job error", () => {
-    expect(() => IntomdClient.assertDone(job({ state: "failed", error: { code: "conversion_failed", message: "Bad file.", status: 500 } }))).toThrow("Bad file.");
+    expect(() => EzmdClient.assertDone(job({ state: "failed", error: { code: "conversion_failed", message: "Bad file.", status: 500 } }))).toThrow("Bad file.");
   });
 });
 

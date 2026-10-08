@@ -1440,14 +1440,14 @@
     "content_hash": "sha256:69b90ee91fd6f791d8f20dec28fcb819150212e7b380e5ec64cfc2d4a100ec13",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.docx",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2026-01-01",
     "extra": {
       "revision": "3"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "modified_at": "2026-01-02",
     "profile": "full",
     "provenance": "block",
@@ -1635,7 +1635,7 @@
       "type": "footnote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0002",
@@ -1732,7 +1732,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 773,
+  "tokens_total": 776,
   "warnings": [
     {
       "block_id": null,

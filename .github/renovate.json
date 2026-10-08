@@ -13,7 +13,7 @@
     { "matchManagers": ["dockerfile", "docker-compose"], "groupName": "base images", "automerge": true, "matchUpdateTypes": ["patch", "digest"] },
     { "matchUpdateTypes": ["major"], "automerge": false, "labels": ["dependencies", "major"] },
     { "matchPackageNames": ["yt-dlp"], "schedule": ["at any time"], "automerge": true, "labels": ["dependencies", "yt-dlp"] },
-    { "matchPackageNames": ["docling", "faster-whisper", "ctranslate2", "torch", "transformers"], "automerge": false, "labels": ["dependencies", "engine"], "prBodyNotes": ["Engine update: run `intomd fixtures run --tier full` locally and attach the scorecard diff."] }
+    { "matchPackageNames": ["docling", "faster-whisper", "ctranslate2", "torch", "transformers"], "automerge": false, "labels": ["dependencies", "engine"], "prBodyNotes": ["Engine update: run `ezmd fixtures run --tier full` locally and attach the scorecard diff."] }
   ],
   "vulnerabilityAlerts": { "enabled": true, "labels": ["security"], "schedule": ["at any time"], "automerge": true }
 }

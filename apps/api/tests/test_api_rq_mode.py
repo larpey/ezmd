@@ -8,11 +8,11 @@ from collections.abc import Callable
 import fakeredis
 import pytest
 
-from intomd_api import queue as q
-from intomd_api.settings import Settings
-from intomd_api.state import EVENT_BUFFER_CAP, RedisState
-from intomd_api.testing import api_client, upload
-from intomd_api.worker import process_job
+from ezmd_api import queue as q
+from ezmd_api.settings import Settings
+from ezmd_api.state import EVENT_BUFFER_CAP, RedisState
+from ezmd_api.testing import api_client, upload
+from ezmd_api.worker import process_job
 
 
 @pytest.fixture
@@ -86,7 +86,7 @@ def test_redis_sliding_window(redis: fakeredis.FakeRedis) -> None:
     assert [r.allowed for r in results] == [True, True, True, False]
     assert [r.remaining for r in results] == [2, 1, 0, 0]
     assert results[-1].retry_after >= 1
-    assert redis.zcard("intomd:rl:k") == 3
+    assert redis.zcard("ezmd:rl:k") == 3
 
 
 def test_redis_event_buffer_capped_and_published(redis: fakeredis.FakeRedis) -> None:
@@ -101,7 +101,7 @@ def test_redis_event_buffer_capped_and_published(redis: fakeredis.FakeRedis) -> 
     sub.close()
     tail = [e.id for e in state.events_since("job_x", EVENT_BUFFER_CAP + 18)]
     assert tail == [EVENT_BUFFER_CAP + 19, EVENT_BUFFER_CAP + 20]
-    raw = redis.lrange("intomd:job:job_x:events", -1, -1)[0]
+    raw = redis.lrange("ezmd:job:job_x:events", -1, -1)[0]
     assert json.loads(raw)["event"] == "progress"
 
 
@@ -112,7 +112,7 @@ def test_redis_gauges_and_nodes(redis: fakeredis.FakeRedis) -> None:
     state.gauge_decr("g")
     state.gauge_decr("g")
     state.gauge_decr("g")
-    assert int(redis.get("intomd:gauge:g")) == 0
+    assert int(redis.get("ezmd:gauge:g")) == 0
     assert state.nodes_online() == []
     state.node_heartbeat("pi-1", {"capabilities": ["yt-dlp"]})
     assert state.nodes_online() == ["pi-1"]

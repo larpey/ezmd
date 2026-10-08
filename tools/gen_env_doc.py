@@ -1,4 +1,4 @@
-"""Rewrite the environment variable table in docs/selfhost.md from intomd_api.settings.Settings.
+"""Rewrite the environment variable table in docs/selfhost.md from ezmd_api.settings.Settings.
 
 The table sits between the BEGIN/END markers below; everything else in the page is hand-written.
 Sections come from the `# ---- Name ----` comments in settings.py. Descriptions come from the field's
@@ -18,8 +18,8 @@ from typing import Any, Literal
 from pydantic import SecretStr
 from pydantic_core import PydanticUndefined
 
-from intomd_api import settings as settings_mod
-from intomd_api.settings import ENV_PREFIX, Settings
+from ezmd_api import settings as settings_mod
+from ezmd_api.settings import ENV_PREFIX, Settings
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "docs" / "selfhost.md"
@@ -30,10 +30,10 @@ _SECTION = re.compile(r"^\s*# ---- (.+?) ----\s*$")
 _FIELD = re.compile(r"^    ([a-z_][a-z0-9_]*)\s*:")
 
 # Defaults that depend on the machine are shown symbolically.
-DEFAULT_OVERRIDES: dict[str, str] = {"data_dir": "`~/.intomd`"}
+DEFAULT_OVERRIDES: dict[str, str] = {"data_dir": "`~/.ezmd`"}
 
 DESCRIPTIONS: dict[str, str] = {
-    "public_mode": "Public-instance mode. Requires `INTOMD_JWT_SECRET` and `INTOMD_KEY_PEPPER` of at least 32 bytes, "
+    "public_mode": "Public-instance mode. Requires `EZMD_JWT_SECRET` and `EZMD_KEY_PEPPER` of at least 32 bytes, "
     "requires a Turnstile challenge for URL jobs, and never deduplicates anonymous jobs across clients.",
     "public_url": "Externally visible base URL. Used for links in error documents and to decide whether "
     "cookies are marked `Secure`.",
@@ -44,7 +44,7 @@ DESCRIPTIONS: dict[str, str] = {
     ),
     "scheduler_enabled": "Run the retention purge inside the API process. Compose sets `false` and runs the "
     "separate `purge` service instead.",
-    "database_url": "Database URL. Unset: SQLite at `<data_dir>/intomd.db`.",
+    "database_url": "Database URL. Unset: SQLite at `<data_dir>/ezmd.db`.",
     "blob_backend": "Where inputs, IR, and rendered results are stored: local filesystem or S3-compatible storage.",
     "blob_fs_root": "Root of the filesystem blob store. Unset: `<data_dir>/blobs`.",
     "s3_endpoint": "S3 endpoint URL (for MinIO or another S3-compatible service). Unset: the AWS default.",
@@ -56,7 +56,7 @@ DESCRIPTIONS: dict[str, str] = {
     "(it is kept for at most one hour otherwise).",
     "purge_interval_s": "Seconds between retention purge runs.",
     "redis_url": "Redis URL for the RQ queues, job events, and rate limits. Compose builds it from "
-    "`INTOMD_REDIS_PASSWORD`.",
+    "`EZMD_REDIS_PASSWORD`.",
     "queue": "`rq` sends jobs to RQ workers; `inline` converts in the API process (development and tests).",
     "job_timeout_s": "Upper bound on any job's wall-clock time. Per-queue timeouts (default 600 s, media "
     "3600 s, fetch 120 s) are capped by it.",
@@ -97,7 +97,7 @@ DESCRIPTIONS: dict[str, str] = {
     "fetch_node_cidr": "Comma-separated CIDRs fetch nodes may connect from (the Tailscale range by default).",
     "cors_origins": "Comma-separated origins allowed by CORS. Empty: same-origin only.",
     "trust_proxy_header": "Header carrying the client IP (for example `X-Forwarded-For` or `CF-Connecting-IP`). "
-    "Honored only when the peer is in `INTOMD_TRUSTED_PROXIES`.",
+    "Honored only when the peer is in `EZMD_TRUSTED_PROXIES`.",
     "trusted_proxies": "Comma-separated CIDRs of reverse proxies whose client-IP header is trusted.",
     "log_level": "Log level.",
     "log_format": "`json` (one object per line) or `text`.",

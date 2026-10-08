@@ -1,10 +1,10 @@
-import { IntomdClient } from "@intomd/sdk";
+import { EzmdClient } from "@ezmd/sdk";
 
-export const CLIENT_NAME = `intomd-web/${__APP_VERSION__}`;
+export const CLIENT_NAME = `ezmd-web/${__APP_VERSION__}`;
 
 /** Creates the SDK client used by the whole UI. The UI never calls fetch directly. */
-export function createClient(turnstileToken: () => Promise<string | undefined>): IntomdClient {
-  return new IntomdClient({
+export function createClient(turnstileToken: () => Promise<string | undefined>): EzmdClient {
+  return new EzmdClient({
     baseUrl: import.meta.env.VITE_API_BASE ?? "",
     clientName: CLIENT_NAME,
     turnstileToken,

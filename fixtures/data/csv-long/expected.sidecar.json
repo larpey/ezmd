@@ -105815,10 +105815,10 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:f364a424383b64d515d6bb86a6716dab68b931ec7cf2ded4615208adca6c1ffc",
+    "content_hash": "sha256:a062658d05604b5fae4212dd7864b70cc2706a40d584a3c65ee95dc189b935f4",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.csv",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "exports": {
       "tables": [
         "tables/table-01.csv"
@@ -105834,9 +105834,9 @@
       "header_row": true,
       "rows": 1200
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -105845,9 +105845,9 @@
     "source_type": "data",
     "title": "input.csv",
     "tokens": {
-      "cl100k_base": 614,
-      "claude_approx": 646,
-      "o200k_base": 598
+      "cl100k_base": 613,
+      "claude_approx": 645,
+      "o200k_base": 597
     },
     "truncated": true,
     "warnings": [
@@ -105881,7 +105881,7 @@
       "transcript_segments": 0,
       "words": 4805
     },
-    "duration_seconds": 0.030999999959021807,
+    "duration_seconds": 0.06200000015087426,
     "engine": "data.csv",
     "engines_tried": [
       "data.csv"
@@ -105907,7 +105907,7 @@
       "type": "table"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
@@ -105931,16 +105931,16 @@
         "qty"
       ],
       "number": 1,
-      "offset_end": 1540,
+      "offset_end": 1538,
       "offset_start": 20,
       "page": null,
       "representation": "sampled",
       "rows": 1200,
-      "tokens": 590
+      "tokens": 589
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 888,
+  "tokens_total": 892,
   "warnings": [
     {
       "block_id": "b0002",

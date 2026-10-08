@@ -8,12 +8,12 @@ import zipfile
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import Detected, InputRef
-from intomd.ir import Document, ListBlock, Table, WarningKind
-from intomd.pipeline import convert_ref
-from intomd.registry import ConvertOptions
-from intomd_converters.archives.converter import ArchiveConverter
+from ezmd.detect import detect
+from ezmd.inputs import Detected, InputRef
+from ezmd.ir import Document, ListBlock, Table, WarningKind
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConvertOptions
+from ezmd_converters.archives.converter import ArchiveConverter
 
 STAMP = (2024, 1, 1, 0, 0, 0)
 
@@ -157,7 +157,7 @@ def test_epub_inside_zip_is_converted_by_the_epub_converter() -> None:
 
 
 def test_corrupt_archive_raises_conversion_error() -> None:
-    from intomd.registry import ConversionError
+    from ezmd.registry import ConversionError
 
     ref = InputRef.from_bytes(b"PK\x03\x04" + b"\x00" * 40, filename="bad.zip")
     detect(ref)
@@ -166,7 +166,7 @@ def test_corrupt_archive_raises_conversion_error() -> None:
 
 
 def test_sevenzip_without_extra_reports_extra_required(monkeypatch: pytest.MonkeyPatch) -> None:
-    from intomd_converters.archives import sevenzip
+    from ezmd_converters.archives import sevenzip
 
     monkeypatch.setattr(sevenzip, "available", lambda: False)
     ref = InputRef.from_bytes(b"7z\xbc\xaf\x27\x1c" + b"\x00" * 64, filename="x.7z")

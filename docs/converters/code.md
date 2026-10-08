@@ -25,7 +25,7 @@ name detected as `text/plain`, above `text.plain`'s 0.9).
    the emitted text. Each file is a `###` heading with its path (plus `(signatures only)` when compressed) and one fenced
    code block with `filename`, `language`, and provenance `path` plus `line_start`/`line_end`.
 
-Filtering, in order: nested `.gitignore` and `.intomdignore` files (gitwildmatch via pathspec; the deepest
+Filtering, in order: nested `.gitignore` and `.ezmdignore` files (gitwildmatch via pathspec; the deepest
 matching rule wins, so `!negations` work), default-excluded directories (`.git`, `node_modules`, `vendor`,
 `dist`, `build`, `.venv`, `venv`, `__pycache__`, tool caches), include/exclude globs, credential files,
 binaries (by extension or NUL bytes; UTF-16 with a BOM is text), files over `max_file_bytes`, `*.min.js`,
@@ -33,7 +33,7 @@ binaries (by extension or NUL bytes; UTF-16 with a BOM is text), files over `max
 treated as minified and only its first 2,000 characters are kept.
 
 Archive safety (docs/spec/part1.md 8.2): members are read into memory, never extracted; at most 10,000 entries;
-total uncompressed size `INTOMD_ARCHIVE_MAX_BYTES` (500 MB); a zip entry or a gzip stream expanding more than
+total uncompressed size `EZMD_ARCHIVE_MAX_BYTES` (500 MB); a zip entry or a gzip stream expanding more than
 100:1 aborts the conversion; symlinks, hard links, devices, absolute paths, drive letters, and `..` components
 are skipped; encrypted zip entries are skipped; nested archives are treated as binary and never opened.
 
@@ -62,7 +62,7 @@ Pass with `--opt extra.<key>=<value>` (the `code.` prefix, `extra.code.<key>`, a
 | `outline` | auto (on above 500 lines) | source_file | Symbol list (`name (kind) line N`) before the code |
 | `token_budget` | none | repo_pack | Budget actions in order: drop lockfiles, generated, and minified files; drop tests; compress files over 300 lines; truncate every file to its first N lines (N >= 40); drop files from the deepest directories |
 | `max_file_bytes` | 524288 | repo_pack | Larger files are listed but not read |
-| `respect_gitignore` | true | repo_pack | Apply `.gitignore` / `.intomdignore` |
+| `respect_gitignore` | true | repo_pack | Apply `.gitignore` / `.ezmdignore` |
 | `include`, `exclude` | none | repo_pack | Comma-separated gitwildmatch globs |
 | `tests_first` | false | repo_pack | Put test files right after the root config |
 | `subpath` | none | repo_pack | Pack only this subtree (ignore files above it still apply) |

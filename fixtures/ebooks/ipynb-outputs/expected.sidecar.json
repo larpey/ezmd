@@ -600,14 +600,14 @@
     "content_hash": "sha256:c5bff97ea8ece4712804196129e1b95c9866ed94b01d9769d8ee35913afdb89c",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.ipynb",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "kernel_language": "r",
       "nbformat": 4
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -764,7 +764,7 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
@@ -793,6 +793,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 456,
+  "tokens_total": 459,
   "warnings": []
 }

@@ -6,7 +6,7 @@ from collections.abc import Callable
 
 import pytest
 
-from intomd.ir import (
+from ezmd.ir import (
     CodeBlock,
     Comment,
     Document,
@@ -19,10 +19,10 @@ from intomd.ir import (
     TrackedChange,
     WarningKind,
 )
-from intomd.registry import ConversionError
-from intomd_converters.office._package import OfficePackage
-from intomd_converters.office.docx import DocxConverter
-from intomd_converters.office.omml import omml_to_latex
+from ezmd.registry import ConversionError
+from ezmd_converters.office._package import OfficePackage
+from ezmd_converters.office.docx import DocxConverter
+from ezmd_converters.office.omml import omml_to_latex
 
 Run = Callable[..., Document]
 
@@ -147,7 +147,7 @@ def test_zip_limits() -> None:
 
 
 def test_total_size_limit(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_ARCHIVE_MAX_BYTES", "100")
+    monkeypatch.setenv("EZMD_ARCHIVE_MAX_BYTES", "100")
     with pytest.raises(ConversionError, match="uncompressed size"):
         OfficePackage(_zip({"a.xml": b"y" * 200}))
 
@@ -174,7 +174,7 @@ def test_missing_body_and_parts(run: Run) -> None:
 
 
 def test_size_cap(run: Run, monkeypatch: pytest.MonkeyPatch, fixture_bytes: Callable[[str], bytes]) -> None:
-    from intomd.context import Limits
+    from ezmd.context import Limits
 
     monkeypatch.setattr(DocxConverter, "limits", Limits(max_bytes=10))
     with pytest.raises(ConversionError, match="exceeds"):

@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -45,9 +48,9 @@
       {
         "attrs": {
           "lines": "14",
-          "tokens": "83"
+          "tokens": "82"
         },
-        "code": "// greeter.ts: a tiny TypeScript module (intomd fixture).\nimport { format } from \"./format\";\n\nexport interface Greeting {\n  name: string;\n  excited?: boolean;\n}\n\nexport function greet(g: Greeting): string {\n  const base = format(`Hello, ${g.name}`);\n  return g.excited ? base + \"!\" : base;\n}\n\nexport const DEFAULT_NAME = 'world';",
+        "code": "// greeter.ts: a tiny TypeScript module (ezmd fixture).\nimport { format } from \"./format\";\n\nexport interface Greeting {\n  name: string;\n  excited?: boolean;\n}\n\nexport function greet(g: Greeting): string {\n  const base = format(`Hello, ${g.name}`);\n  return g.excited ? base + \"!\" : base;\n}\n\nexport const DEFAULT_NAME = 'world';",
         "filename": "input.ts",
         "id": "b0002",
         "language": "typescript",
@@ -72,7 +75,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:15e07b808bb583650c9d205a40092c716c77d1545848b520432ce6ba1ff7a816",
+    "content_hash": "sha256:f9bfe13c2f3ba33edc71970ae387aa2e2f4d1c9898f0b2a82b9f334fd71411d9",
     "converter_id": "code.source_file",
     "metadata": {
       "author": null,
@@ -83,10 +86,10 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "bytes": 330,
+        "bytes": 328,
         "language": "typescript",
         "lines": 14,
-        "tokens": 83
+        "tokens": 82
       },
       "fetched": null,
       "keywords": [],
@@ -98,7 +101,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.ts",
       "source_type": "code",
       "speakers": [],
@@ -111,31 +116,31 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:d88a0a2c8fac9f3a647d98279235ed3eb4b26e81b6e56ed9d03cf33e78c73e22",
+    "content_hash": "sha256:c9a47a48942c077bf59152373f221dfb073ecfd3125322515c29d76b869de48b",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 330,
+      "bytes": 328,
       "encoding": "utf-8",
       "language": "typescript",
       "lines": 14,
-      "tokens": 83
+      "tokens": 82
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.ts",
-    "source_hash": "sha256:519601b26f9c6fe8b0b4c525af803f1dfa27b6e47b8cefebb9cf15e74c3b477a",
+    "source_hash": "sha256:3e7675358fddb7ac50a374120d233f2a140f137edf15ef8d7363470d7a89f1d7",
     "source_type": "code",
     "title": "input.ts",
     "tokens": {
-      "cl100k_base": 101,
-      "claude_approx": 108,
-      "o200k_base": 100
+      "cl100k_base": 100,
+      "claude_approx": 107,
+      "o200k_base": 99
     },
     "truncated": false,
     "warnings": [],
@@ -167,14 +172,14 @@
       "transcript_segments": 0,
       "words": 49
     },
-    "duration_seconds": 0.10899999993853271,
+    "duration_seconds": 0.0779999999795109,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 330
+    "input_bytes": 328
   },
   "profile": "full",
   "provenance": [
@@ -195,13 +200,13 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 374,
+  "tokens_total": 364,
   "warnings": []
 }

@@ -1057,11 +1057,11 @@
     "content_hash": "sha256:cb508b2116f15231f7e68b6623e42f3a1a6b167f694941959b2a9b7a806cfa12",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pptx",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2026-01-01",
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "modified_at": "2026-01-01",
     "profile": "full",
     "provenance": "block",
@@ -1108,7 +1108,7 @@
       "transcript_segments": 0,
       "words": 78
     },
-    "duration_seconds": 0.01500000013038516,
+    "duration_seconds": 0.014999999897554517,
     "engine": "documents.pptx",
     "engines_tried": [
       "documents.pptx"
@@ -1256,7 +1256,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0001",
@@ -1402,7 +1402,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 772,
+  "tokens_total": 775,
   "warnings": [
     {
       "block_id": null,

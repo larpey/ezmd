@@ -18,12 +18,12 @@ resolution-markers = [
 
 [manifest]
 members = [
-    "intomd",
-    "intomd-api",
-    "intomd-converters",
-    "intomd-fetch-node",
-    "intomd-mcp",
-    "intomd-workspace",
+    "ezmd",
+    "ezmd-api",
+    "ezmd-converters",
+    "ezmd-fetch-node",
+    "ezmd-mcp",
+    "ezmd-workspace",
 ]
 
 [[package]]
@@ -1093,6 +1093,251 @@ wheels = [
 ]
 
 [[package]]
+name = "ezmd"
+version = "0.1.0rc1"
+source = { editable = "packages/core" }
+dependencies = [
+    { name = "ezmd-converters" },
+    { name = "httpx" },
+    { name = "magika" },
+    { name = "markdown-it-py" },
+    { name = "pydantic" },
+    { name = "python-magic", marker = "sys_platform != 'win32'" },
+    { name = "python-magic-bin", marker = "sys_platform == 'win32'" },
+    { name = "pyyaml" },
+    { name = "rapidfuzz" },
+    { name = "rich" },
+    { name = "tiktoken" },
+    { name = "typer" },
+]
+
+[package.optional-dependencies]
+7z = [
+    { name = "ezmd-converters", extra = ["7z"] },
+]
+all = [
+    { name = "ezmd-converters", extra = ["7z", "data", "docs"] },
+    { name = "ezmd-mcp" },
+]
+data = [
+    { name = "ezmd-converters", extra = ["data"] },
+]
+docs = [
+    { name = "ezmd-converters", extra = ["docs"] },
+]
+mcp = [
+    { name = "ezmd-mcp" },
+]
+nonfree = [
+    { name = "ezmd-converters", extra = ["nonfree"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "ezmd-converters", editable = "packages/converters" },
+    { name = "ezmd-converters", extras = ["7z"], marker = "extra == '7z'", editable = "packages/converters" },
+    { name = "ezmd-converters", extras = ["data"], marker = "extra == 'data'", editable = "packages/converters" },
+    { name = "ezmd-converters", extras = ["docs"], marker = "extra == 'docs'", editable = "packages/converters" },
+    { name = "ezmd-converters", extras = ["docs", "data", "7z"], marker = "extra == 'all'", editable = "packages/converters" },
+    { name = "ezmd-converters", extras = ["nonfree"], marker = "extra == 'nonfree'", editable = "packages/converters" },
+    { name = "ezmd-mcp", marker = "extra == 'all'", editable = "packages/mcp" },
+    { name = "ezmd-mcp", marker = "extra == 'mcp'", editable = "packages/mcp" },
+    { name = "httpx", specifier = ">=0.28" },
+    { name = "magika", specifier = ">=0.6" },
+    { name = "markdown-it-py", specifier = ">=3.0" },
+    { name = "pydantic", specifier = ">=2.9" },
+    { name = "python-magic", marker = "sys_platform != 'win32'", specifier = ">=0.4.27" },
+    { name = "python-magic-bin", marker = "sys_platform == 'win32'", specifier = ">=0.4.14" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "rapidfuzz", specifier = ">=3.10" },
+    { name = "rich", specifier = ">=13.9" },
+    { name = "tiktoken", specifier = ">=0.8" },
+    { name = "typer", specifier = ">=0.15" },
+]
+provides-extras = ["docs", "data", "7z", "mcp", "all", "nonfree"]
+
+[[package]]
+name = "ezmd-api"
+version = "0.1.0rc1"
+source = { editable = "apps/api" }
+dependencies = [
+    { name = "alembic" },
+    { name = "ezmd" },
+    { name = "fastapi" },
+    { name = "pydantic-settings" },
+    { name = "pyjwt" },
+    { name = "python-multipart" },
+    { name = "redis" },
+    { name = "rq" },
+    { name = "sqlalchemy" },
+    { name = "typer" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.optional-dependencies]
+s3 = [
+    { name = "boto3" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "alembic", specifier = ">=1.14" },
+    { name = "boto3", marker = "extra == 's3'", specifier = ">=1.35" },
+    { name = "ezmd", editable = "packages/core" },
+    { name = "fastapi", specifier = ">=0.115" },
+    { name = "pydantic-settings", specifier = ">=2.6" },
+    { name = "pyjwt", specifier = ">=2.10" },
+    { name = "python-multipart", specifier = ">=0.0.18" },
+    { name = "redis", specifier = ">=5.2" },
+    { name = "rq", specifier = ">=2.0" },
+    { name = "sqlalchemy", specifier = ">=2.0.36" },
+    { name = "typer", specifier = ">=0.15" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
+]
+provides-extras = ["s3"]
+
+[[package]]
+name = "ezmd-converters"
+version = "0.1.0rc1"
+source = { editable = "packages/converters" }
+dependencies = [
+    { name = "charset-normalizer" },
+    { name = "defusedxml" },
+    { name = "lxml" },
+    { name = "markdown-it-py" },
+    { name = "mdit-py-plugins" },
+    { name = "olefile" },
+    { name = "openpyxl" },
+    { name = "pathspec" },
+    { name = "pikepdf" },
+    { name = "pypdfium2" },
+    { name = "pyyaml" },
+    { name = "striprtf" },
+    { name = "trafilatura" },
+]
+
+[package.optional-dependencies]
+7z = [
+    { name = "py7zr" },
+]
+data = [
+    { name = "pyarrow" },
+]
+docs = [
+    { name = "docling-slim", extra = ["convert-core", "format-pdf", "models-local"] },
+    { name = "opencv-python-headless" },
+]
+nonfree = [
+    { name = "extract-msg" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "charset-normalizer", specifier = ">=3.4" },
+    { name = "defusedxml", specifier = ">=0.7.1" },
+    { name = "docling-slim", extras = ["format-pdf", "models-local", "convert-core"], marker = "extra == 'docs'", specifier = ">=2.135,<3" },
+    { name = "extract-msg", marker = "extra == 'nonfree'", specifier = ">=0.56.1,<0.57" },
+    { name = "lxml", specifier = ">=6.1.3" },
+    { name = "markdown-it-py", specifier = ">=3.0" },
+    { name = "mdit-py-plugins", specifier = ">=0.4" },
+    { name = "olefile", specifier = ">=0.47,<0.48" },
+    { name = "opencv-python-headless", marker = "extra == 'docs'", specifier = ">=4.10" },
+    { name = "openpyxl", specifier = ">=3.1" },
+    { name = "pathspec", specifier = ">=0.12.1" },
+    { name = "pikepdf", specifier = ">=10.0,<11" },
+    { name = "py7zr", marker = "extra == '7z'", specifier = ">=1.1,<2" },
+    { name = "pyarrow", marker = "extra == 'data'", specifier = ">=17.0" },
+    { name = "pypdfium2", specifier = ">=5.0,<6" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "striprtf", specifier = ">=0.0.26" },
+    { name = "trafilatura", specifier = ">=2.3.1,<3" },
+]
+provides-extras = ["7z", "docs", "data", "nonfree"]
+
+[[package]]
+name = "ezmd-fetch-node"
+version = "0.1.0rc1"
+source = { editable = "apps/fetch-node" }
+dependencies = [
+    { name = "httpx" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "httpx", specifier = ">=0.28" }]
+
+[[package]]
+name = "ezmd-mcp"
+version = "0.1.0rc1"
+source = { editable = "packages/mcp" }
+dependencies = [
+    { name = "ezmd" },
+    { name = "httpx" },
+    { name = "mcp" },
+    { name = "starlette" },
+    { name = "uvicorn" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "ezmd", editable = "packages/core" },
+    { name = "httpx", specifier = ">=0.28" },
+    { name = "mcp", specifier = ">=2.2,<3" },
+    { name = "starlette", specifier = ">=0.48" },
+    { name = "uvicorn", specifier = ">=0.31" },
+]
+
+[[package]]
+name = "ezmd-workspace"
+version = "0.0.0"
+source = { virtual = "." }
+
+[package.dev-dependencies]
+dev = [
+    { name = "ezmd" },
+    { name = "ezmd-api" },
+    { name = "ezmd-converters" },
+    { name = "ezmd-fetch-node" },
+    { name = "ezmd-mcp" },
+    { name = "fakeredis" },
+    { name = "hypothesis" },
+    { name = "mkdocs" },
+    { name = "mkdocs-material" },
+    { name = "mkdocs-swagger-ui-tag" },
+    { name = "mypy" },
+    { name = "pip-audit" },
+    { name = "pip-licenses" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "types-pyyaml" },
+]
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "ezmd", editable = "packages/core" },
+    { name = "ezmd-api", editable = "apps/api" },
+    { name = "ezmd-converters", editable = "packages/converters" },
+    { name = "ezmd-fetch-node", editable = "apps/fetch-node" },
+    { name = "ezmd-mcp", editable = "packages/mcp" },
+    { name = "fakeredis", specifier = ">=2.26" },
+    { name = "hypothesis", specifier = ">=6.120" },
+    { name = "mkdocs", specifier = ">=1.6,<2" },
+    { name = "mkdocs-material", specifier = ">=9.5" },
+    { name = "mkdocs-swagger-ui-tag", specifier = ">=0.7" },
+    { name = "mypy", specifier = ">=1.13" },
+    { name = "pip-audit", specifier = ">=2.7" },
+    { name = "pip-licenses", specifier = ">=5.0" },
+    { name = "pytest", specifier = ">=8.3" },
+    { name = "pytest-asyncio", specifier = ">=0.25" },
+    { name = "pytest-cov", specifier = ">=6.0" },
+    { name = "ruff", specifier = ">=0.8" },
+    { name = "types-pyyaml" },
+]
+
+[[package]]
 name = "fakeredis"
 version = "2.39.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1481,251 +1726,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/01/e1/2069291243c926a2ff1cd706c7f3eeb9b62144bf60f77c9fb9ff2fb26bd3/iniconfig-2.3.1.tar.gz", hash = "sha256:67f4b9c50da0dedf52af349e7749a80a9057a5031199791b906c3bb3ae878960", size = 21209, upload-time = "2026-10-06T22:48:38.076Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/56/43/4ca9e49d27a1fcf6bece6f6aec0ea46bb9112489b93d4b688fb415457bdb/iniconfig-2.3.1-py3-none-any.whl", hash = "sha256:9121e2c1fdb355232495be3194c8dfe87ccc2d5dee45947b78e68f499790d7a7", size = 7552, upload-time = "2026-10-06T22:48:36.959Z" },
-]
-
-[[package]]
-name = "intomd"
-version = "0.1.0rc1"
-source = { editable = "packages/core" }
-dependencies = [
-    { name = "httpx" },
-    { name = "intomd-converters" },
-    { name = "magika" },
-    { name = "markdown-it-py" },
-    { name = "pydantic" },
-    { name = "python-magic", marker = "sys_platform != 'win32'" },
-    { name = "python-magic-bin", marker = "sys_platform == 'win32'" },
-    { name = "pyyaml" },
-    { name = "rapidfuzz" },
-    { name = "rich" },
-    { name = "tiktoken" },
-    { name = "typer" },
-]
-
-[package.optional-dependencies]
-7z = [
-    { name = "intomd-converters", extra = ["7z"] },
-]
-all = [
-    { name = "intomd-converters", extra = ["7z", "data", "docs"] },
-    { name = "intomd-mcp" },
-]
-data = [
-    { name = "intomd-converters", extra = ["data"] },
-]
-docs = [
-    { name = "intomd-converters", extra = ["docs"] },
-]
-mcp = [
-    { name = "intomd-mcp" },
-]
-nonfree = [
-    { name = "intomd-converters", extra = ["nonfree"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "httpx", specifier = ">=0.28" },
-    { name = "intomd-converters", editable = "packages/converters" },
-    { name = "intomd-converters", extras = ["7z"], marker = "extra == '7z'", editable = "packages/converters" },
-    { name = "intomd-converters", extras = ["data"], marker = "extra == 'data'", editable = "packages/converters" },
-    { name = "intomd-converters", extras = ["docs"], marker = "extra == 'docs'", editable = "packages/converters" },
-    { name = "intomd-converters", extras = ["docs", "data", "7z"], marker = "extra == 'all'", editable = "packages/converters" },
-    { name = "intomd-converters", extras = ["nonfree"], marker = "extra == 'nonfree'", editable = "packages/converters" },
-    { name = "intomd-mcp", marker = "extra == 'all'", editable = "packages/mcp" },
-    { name = "intomd-mcp", marker = "extra == 'mcp'", editable = "packages/mcp" },
-    { name = "magika", specifier = ">=0.6" },
-    { name = "markdown-it-py", specifier = ">=3.0" },
-    { name = "pydantic", specifier = ">=2.9" },
-    { name = "python-magic", marker = "sys_platform != 'win32'", specifier = ">=0.4.27" },
-    { name = "python-magic-bin", marker = "sys_platform == 'win32'", specifier = ">=0.4.14" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "rapidfuzz", specifier = ">=3.10" },
-    { name = "rich", specifier = ">=13.9" },
-    { name = "tiktoken", specifier = ">=0.8" },
-    { name = "typer", specifier = ">=0.15" },
-]
-provides-extras = ["docs", "data", "7z", "mcp", "all", "nonfree"]
-
-[[package]]
-name = "intomd-api"
-version = "0.1.0rc1"
-source = { editable = "apps/api" }
-dependencies = [
-    { name = "alembic" },
-    { name = "fastapi" },
-    { name = "intomd" },
-    { name = "pydantic-settings" },
-    { name = "pyjwt" },
-    { name = "python-multipart" },
-    { name = "redis" },
-    { name = "rq" },
-    { name = "sqlalchemy" },
-    { name = "typer" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.optional-dependencies]
-s3 = [
-    { name = "boto3" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "alembic", specifier = ">=1.14" },
-    { name = "boto3", marker = "extra == 's3'", specifier = ">=1.35" },
-    { name = "fastapi", specifier = ">=0.115" },
-    { name = "intomd", editable = "packages/core" },
-    { name = "pydantic-settings", specifier = ">=2.6" },
-    { name = "pyjwt", specifier = ">=2.10" },
-    { name = "python-multipart", specifier = ">=0.0.18" },
-    { name = "redis", specifier = ">=5.2" },
-    { name = "rq", specifier = ">=2.0" },
-    { name = "sqlalchemy", specifier = ">=2.0.36" },
-    { name = "typer", specifier = ">=0.15" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
-]
-provides-extras = ["s3"]
-
-[[package]]
-name = "intomd-converters"
-version = "0.1.0rc1"
-source = { editable = "packages/converters" }
-dependencies = [
-    { name = "charset-normalizer" },
-    { name = "defusedxml" },
-    { name = "lxml" },
-    { name = "markdown-it-py" },
-    { name = "mdit-py-plugins" },
-    { name = "olefile" },
-    { name = "openpyxl" },
-    { name = "pathspec" },
-    { name = "pikepdf" },
-    { name = "pypdfium2" },
-    { name = "pyyaml" },
-    { name = "striprtf" },
-    { name = "trafilatura" },
-]
-
-[package.optional-dependencies]
-7z = [
-    { name = "py7zr" },
-]
-data = [
-    { name = "pyarrow" },
-]
-docs = [
-    { name = "docling-slim", extra = ["convert-core", "format-pdf", "models-local"] },
-    { name = "opencv-python-headless" },
-]
-nonfree = [
-    { name = "extract-msg" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "charset-normalizer", specifier = ">=3.4" },
-    { name = "defusedxml", specifier = ">=0.7.1" },
-    { name = "docling-slim", extras = ["format-pdf", "models-local", "convert-core"], marker = "extra == 'docs'", specifier = ">=2.135,<3" },
-    { name = "extract-msg", marker = "extra == 'nonfree'", specifier = ">=0.56.1,<0.57" },
-    { name = "lxml", specifier = ">=6.1.3" },
-    { name = "markdown-it-py", specifier = ">=3.0" },
-    { name = "mdit-py-plugins", specifier = ">=0.4" },
-    { name = "olefile", specifier = ">=0.47,<0.48" },
-    { name = "opencv-python-headless", marker = "extra == 'docs'", specifier = ">=4.10" },
-    { name = "openpyxl", specifier = ">=3.1" },
-    { name = "pathspec", specifier = ">=0.12.1" },
-    { name = "pikepdf", specifier = ">=10.0,<11" },
-    { name = "py7zr", marker = "extra == '7z'", specifier = ">=1.1,<2" },
-    { name = "pyarrow", marker = "extra == 'data'", specifier = ">=17.0" },
-    { name = "pypdfium2", specifier = ">=5.0,<6" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "striprtf", specifier = ">=0.0.26" },
-    { name = "trafilatura", specifier = ">=2.3.1,<3" },
-]
-provides-extras = ["7z", "docs", "data", "nonfree"]
-
-[[package]]
-name = "intomd-fetch-node"
-version = "0.1.0rc1"
-source = { editable = "apps/fetch-node" }
-dependencies = [
-    { name = "httpx" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "httpx", specifier = ">=0.28" }]
-
-[[package]]
-name = "intomd-mcp"
-version = "0.1.0rc1"
-source = { editable = "packages/mcp" }
-dependencies = [
-    { name = "httpx" },
-    { name = "intomd" },
-    { name = "mcp" },
-    { name = "starlette" },
-    { name = "uvicorn" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "httpx", specifier = ">=0.28" },
-    { name = "intomd", editable = "packages/core" },
-    { name = "mcp", specifier = ">=2.2,<3" },
-    { name = "starlette", specifier = ">=0.48" },
-    { name = "uvicorn", specifier = ">=0.31" },
-]
-
-[[package]]
-name = "intomd-workspace"
-version = "0.0.0"
-source = { virtual = "." }
-
-[package.dev-dependencies]
-dev = [
-    { name = "fakeredis" },
-    { name = "hypothesis" },
-    { name = "intomd" },
-    { name = "intomd-api" },
-    { name = "intomd-converters" },
-    { name = "intomd-fetch-node" },
-    { name = "intomd-mcp" },
-    { name = "mkdocs" },
-    { name = "mkdocs-material" },
-    { name = "mkdocs-swagger-ui-tag" },
-    { name = "mypy" },
-    { name = "pip-audit" },
-    { name = "pip-licenses" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-    { name = "types-pyyaml" },
-]
-
-[package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "fakeredis", specifier = ">=2.26" },
-    { name = "hypothesis", specifier = ">=6.120" },
-    { name = "intomd", editable = "packages/core" },
-    { name = "intomd-api", editable = "apps/api" },
-    { name = "intomd-converters", editable = "packages/converters" },
-    { name = "intomd-fetch-node", editable = "apps/fetch-node" },
-    { name = "intomd-mcp", editable = "packages/mcp" },
-    { name = "mkdocs", specifier = ">=1.6,<2" },
-    { name = "mkdocs-material", specifier = ">=9.5" },
-    { name = "mkdocs-swagger-ui-tag", specifier = ">=0.7" },
-    { name = "mypy", specifier = ">=1.13" },
-    { name = "pip-audit", specifier = ">=2.7" },
-    { name = "pip-licenses", specifier = ">=5.0" },
-    { name = "pytest", specifier = ">=8.3" },
-    { name = "pytest-asyncio", specifier = ">=0.25" },
-    { name = "pytest-cov", specifier = ">=6.0" },
-    { name = "ruff", specifier = ">=0.8" },
-    { name = "types-pyyaml" },
 ]
 
 [[package]]

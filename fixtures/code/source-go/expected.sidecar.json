@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -98,7 +101,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.go",
       "source_type": "code",
       "speakers": [],
@@ -114,7 +119,7 @@
     "content_hash": "sha256:4467f0b55d8ac0055620946bfcb3432452debcf51b524f3d162f70ea0e10951e",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "bytes": 246,
       "encoding": "utf-8",
@@ -122,9 +127,9 @@
       "lines": 14,
       "tokens": 63
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -167,7 +172,7 @@
       "transcript_segments": 0,
       "words": 44
     },
-    "duration_seconds": 0.0940000000409782,
+    "duration_seconds": 0.09399999980814755,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
@@ -195,13 +200,13 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 343,
+  "tokens_total": 346,
   "warnings": []
 }

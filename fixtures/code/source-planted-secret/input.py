@@ -1,22 +1,22 @@
-# settings.py: application settings with planted fake secrets (intomd fixture).
+# settings.py: application settings with planted fake secrets (ezmd fixture).
 import os
 
 DEBUG = os.environ.get("APP_DEBUG", "0") == "1"
-API_SECRET_KEY = "a4e3770643c072829845a0b6c58a00aa6f78e8b5"
-SERVICE_TOKEN = ff92775fbcbc69fb116ec46bcb2846a2
+API_SECRET_KEY = "ad06f8903f370cf234e586d9381a388ef14dd0fb"
+SERVICE_TOKEN = c77c8f7e7cc1d8bf91f4689898ca5138
 DATABASE_PASSWORD = "changeme"  # placeholder, must stay visible
 MAX_TOKENS = 4096
 
 SIGNING_KEY_PEM = '''
 -----BEGIN PRIVATE KEY-----
-aW50b21kIGZha2Uga2V5IG1hdGVyaWFsIGZvciBzZXR0aW5nczsgbm90IGEgcmVh
-bCBrZXkuIGludG9tZCBmYWtlIGtleSBtYXRlcmlhbCBmb3Igc2V0dGluZ3M7IG5v
-dCBhIHJlYWwga2V5LiBpbnRvbWQgZmFrZSBrZXkgbWF0ZXJpYWwgZm9yIHNldHRp
-bmdzOyBub3QgYSByZWFsIGtleS4gaW50b21kIGZha2Uga2V5IG1hdGVyaWFsIGZv
-ciBzZXR0aW5nczsgbm90IGEgcmVhbCBrZXkuIA==
+ZXptZCBmYWtlIGtleSBtYXRlcmlhbCBmb3Igc2V0dGluZ3M7IG5vdCBhIHJlYWwg
+a2V5LiBlem1kIGZha2Uga2V5IG1hdGVyaWFsIGZvciBzZXR0aW5nczsgbm90IGEg
+cmVhbCBrZXkuIGV6bWQgZmFrZSBrZXkgbWF0ZXJpYWwgZm9yIHNldHRpbmdzOyBu
+b3QgYSByZWFsIGtleS4gZXptZCBmYWtlIGtleSBtYXRlcmlhbCBmb3Igc2V0dGlu
+Z3M7IG5vdCBhIHJlYWwga2V5LiA=
 -----END PRIVATE KEY-----
 '''
 
 
 def database_url(host: str) -> str:
-    return f"postgresql://app:ed7ffd066c2e371dfc24@{host}/app"
+    return f"postgresql://app:a8c0da6ef6257a09614f@{host}/app"

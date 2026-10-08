@@ -1,4 +1,4 @@
-"""Every IR block type renders (no `intomd-unrendered`), deterministically, in every profile and format."""
+"""Every IR block type renders (no `ezmd-unrendered`), deterministically, in every profile and format."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from render_builders import heading, make_result, para, prov, span
 
-from intomd.ir import (
+from ezmd.ir import (
     CodeBlock,
     Comment,
     ConversionResult,
@@ -30,7 +30,7 @@ from intomd.ir import (
     SourceType,
     TrackedChange,
 )
-from intomd.render import render
+from ezmd.render import render
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from core_factories import every_block_document
@@ -48,7 +48,7 @@ def _every_block() -> ConversionResult:
 @pytest.mark.parametrize("fmt", ["md", "json", "txt"])
 def test_every_block_renders_without_fallback(profile: str, fmt: str) -> None:
     out = render(_every_block(), profile, format=fmt)
-    assert "intomd-unrendered" not in out.markdown
+    assert "ezmd-unrendered" not in out.markdown
     assert out.markdown.endswith("\n") and not out.markdown.endswith("\n\n")
     assert all(line == line.rstrip() for line in out.markdown.split("\n"))
     assert "\r" not in out.markdown
@@ -151,7 +151,7 @@ def test_raw_fenced_or_dropped_and_equation_forms() -> None:
     full = render(res, "full").body
     assert "```latex\n\\foo\n```" in full
     assert "$$\na^2+b^2\n$$" in full
-    assert "`x squared`\n<!-- intomd: equation not converted -->" in full
+    assert "`x squared`\n<!-- ezmd: equation not converted -->" in full
     dropped = render(res, "full", raw_blocks="drop").body
     assert "\\foo" not in dropped
 
@@ -213,7 +213,7 @@ def test_anchor_links_rewritten_to_derived_anchor() -> None:
 
 
 def test_images_decorative_caption_forms_and_comment() -> None:
-    from intomd.ir import BBox
+    from ezmd.ir import BBox
 
     blocks = [Image(ref="logo.png", alt="Logo", provenance=prov(source_page=p)) for p in (1, 2, 3)] + [
         Image(ref="icon.png", alt="i", width=16, height=16, provenance=prov(source_page=1)),
@@ -309,12 +309,12 @@ def test_json_and_txt_formats() -> None:
 
 
 def test_unknown_object_uses_unrendered_fence_only_for_non_blocks() -> None:
-    from intomd.render.context import RenderContext
-    from intomd.render.units import _block_units
+    from ezmd.render.context import RenderContext
+    from ezmd.render.units import _block_units
 
     res = make_result([para("x")])
-    from intomd.profiles import FULL
+    from ezmd.profiles import FULL
 
     ctx = RenderContext(profile=FULL, result=res)
     units = _block_units(ctx, InlineSpan(text="not a block"), False)  # type: ignore[arg-type]
-    assert units[0].text.startswith("```intomd-unrendered")
+    assert units[0].text.startswith("```ezmd-unrendered")

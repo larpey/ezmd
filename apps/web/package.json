@@ -1,5 +1,5 @@
 {
-  "name": "@intomd/web",
+  "name": "@ezmd/web",
   "private": true,
   "version": "0.1.0",
   "license": "Apache-2.0",
@@ -15,7 +15,7 @@
     "e2e": "playwright test"
   },
   "dependencies": {
-    "@intomd/sdk": "workspace:*",
+    "@ezmd/sdk": "workspace:*",
     "dompurify": "3.4.16",
     "fflate": "0.8.3",
     "marked": "18.1.0",

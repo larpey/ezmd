@@ -20,7 +20,7 @@ steps 35 to 37 for CSV), 13.4 caps, part1 8.2 input validation.
 
 ### JSON, JSON Lines (`data.json`), YAML (`data.yaml`), TOML (`data.toml`)
 - Libraries: stdlib `json` and `tomllib` (PSF-2.0); PyYAML 6.0.3 (MIT, `licenses/LICENSE` read), already a
-  core dependency, now also declared by intomd-converters.
+  core dependency, now also declared by ezmd-converters.
 - Entry points: `json.loads(parse_int=RawNumber, parse_float=RawNumber, parse_constant=RawNumber)`;
   `tomllib.loads(parse_float=RawNumber)`; a `yaml.SafeLoader` subclass.
 - YAML loader decision: the brief says `yaml.safe_load` only. We use a `SafeLoader` subclass (so the same
@@ -84,8 +84,8 @@ steps 35 to 37 for CSV), 13.4 caps, part1 8.2 input validation.
 - Library: pyarrow 25.0.1 (Apache-2.0; `LICENSE.txt` at github.com/apache/arrow read). Entry points
   `pyarrow.parquet.ParquetFile`, `.metadata`, `.schema_arrow`, `.iter_batches`, `.read_row_group`.
 - Size decision: the cp312 wheels are 27 MB (Windows) to 50 MB (manylinux x86_64) compressed, well over
-  100 MB installed, which alone breaks the `pip install intomd` budget of under 120 MB (part4 4.3.3). So
-  pyarrow lives in a new optional extra `data` on intomd-converters, and without it the converter is an
+  100 MB installed, which alone breaks the `pip install ezmd` budget of under 120 MB (part4 4.3.3). So
+  pyarrow lives in a new optional extra `data` on ezmd-converters, and without it the converter is an
   `Unavailable` entry naming the extra.
 - Known issue: converting zone-aware timestamps needs a time zone database; Windows has none without
   `tzdata`, and pyarrow raises `ArrowInvalid`. Mitigation: zone-aware columns are cast to naive UTC

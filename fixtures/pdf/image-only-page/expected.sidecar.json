@@ -192,9 +192,9 @@
     "content_hash": "sha256:569a9667913c6b395efce2b918f766fef72f008d17b1a0f560e170bfb1170dbd",
     "converter_id": "documents.pdfium_text",
     "metadata": {
-      "author": "intomd fixtures",
+      "author": "ezmd fixtures",
       "authors": [
-        "intomd fixtures"
+        "ezmd fixtures"
       ],
       "canonical_url": null,
       "description": null,
@@ -238,7 +238,7 @@
           "wanted": "docling"
         },
         "kind": "engine_fallback",
-        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
         "page": null,
         "severity": "warning"
       },
@@ -269,11 +269,11 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "author": "intomd fixtures",
+    "author": "ezmd fixtures",
     "content_hash": "sha256:9ec1e121a4a55c0e83968db2bbab0b23db5faefdd23f6c7c1075daac44512d02",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "pdf_heading_source": "font_size",
       "pdf_page_modes": "hybrid=1,scanned=1",
@@ -281,15 +281,15 @@
       "pdf_pages_without_text": "2",
       "pdf_tagged": false
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "pages": 2,
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.pdf",
-    "source_hash": "sha256:a183d32b7cff380baeebc849c5a195cf42aad2166ab5e37aba7222fa23faebd6",
+    "source_hash": "sha256:83a0a14674c02d30615b3194ffdc2c992bca9a2e67b8d1ea53970f3c5e2d8753",
     "source_type": "pdf",
     "title": "Inspection photographs",
     "tokens": {
@@ -338,7 +338,7 @@
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 2348
+    "input_bytes": 2346
   },
   "profile": "full",
   "provenance": [
@@ -399,14 +399,14 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 360,
+  "tokens_total": 371,
   "warnings": [
     {
       "block_id": null,
@@ -417,7 +417,7 @@
         "wanted": "docling"
       },
       "kind": "engine_fallback",
-      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
       "page": null,
       "severity": "warning"
     },

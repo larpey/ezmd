@@ -1,4 +1,4 @@
-# Contributing to intomd
+# Contributing to ezmd
 
 Thanks for helping. This guide covers setup, conventions, the converter contract, and the two processes
 specific to this project: the council and the fixture process. The build specification lives in
@@ -7,7 +7,7 @@ specific to this project: the council and the fixture process. The build specifi
 ## Setup
 
 ```sh
-git clone https://github.com/larpey/intomd && cd intomd
+git clone https://github.com/larpey/ezmd && cd ezmd
 uv sync --all-packages          # Python workspace, with the dev tools
 pnpm install                    # web UI, TypeScript SDK, extension (Node 22)
 make gates                      # every CI gate, in CI order
@@ -41,15 +41,15 @@ uv run mkdocs build --strict
 
 ## Adding a converter
 
-- Implement the `Converter` protocol (`intomd.registry`): a stable `id` (`family.engine`), `can_handle`
+- Implement the `Converter` protocol (`ezmd.registry`): a stable `id` (`family.engine`), `can_handle`
   that does no I/O, and `convert` that returns a finalized `Document` or raises `ConversionError`. A family
-  is a subpackage of `intomd_converters` exposing `converters()` and `CHAINS`; an engine whose optional
+  is a subpackage of `ezmd_converters` exposing `converters()` and `CHAINS`; an engine whose optional
   dependency is missing is returned as `Unavailable(...)` with the extra that provides it.
 - Every input is hostile: enforce the size, entry, and depth limits before handing bytes to an engine, and
-  run external programs only through `intomd.core.sandbox.run([...])` (a test forbids `subprocess`
+  run external programs only through `ezmd.core.sandbox.run([...])` (a test forbids `subprocess`
   anywhere else).
 - Every block carries `Provenance`. Every loss is a structured warning with a code from
-  `packages/core/src/intomd/warnings/codes.py` (severity, description, suggestion). Never return an empty
+  `packages/core/src/ezmd/warnings/codes.py` (severity, description, suggestion). Never return an empty
   document silently.
 - Research first: before adding an engine, record its version, its LICENSE file (not the README), known
   issues, and the fallback in an approach note. Default dependencies must be on the allowlist in
@@ -60,7 +60,7 @@ uv run mkdocs build --strict
   and the docs navigation. A test fails when the matrix is stale.
 - The contract test (`packages/core/tests/test_converter_contract.py`) runs against every converter.
 
-Third-party converters can be packaged as plugins through the `intomd.converters` entry point group; see
+Third-party converters can be packaged as plugins through the `ezmd.converters` entry point group; see
 `docs/plugins.md`.
 
 ## The council process
@@ -83,7 +83,7 @@ A council is required for:
 
 The pull request carries a council section with:
 
-1. the fixture scorecard diff (`uv run intomd-score fixtures/<family>` before and after);
+1. the fixture scorecard diff (`uv run ezmd-score fixtures/<family>` before and after);
 2. the license check output (`uv run python tools/license_check.py`);
 3. answers to four questions: what is preserved that was not before, what could be lost, which warnings
    change, and what the token cost impact is.
@@ -128,8 +128,8 @@ Provenance rules:
 Generate the expected outputs from the converter, then review them:
 
 ```sh
-uv run intomd-golden fixtures/office/docx-review --write
-uv run intomd-score fixtures/office/docx-review
+uv run ezmd-golden fixtures/office/docx-review --write
+uv run ezmd-score fixtures/office/docx-review
 ```
 
 A golden is never committed on the converter's word alone. Review it against the input for every

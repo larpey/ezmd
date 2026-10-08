@@ -1,4 +1,4 @@
-"""The host-only `intomd-admin` CLI (P1-T10): keys create|list|revoke, jobs list|kill, reap."""
+"""The host-only `ezmd-admin` CLI (P1-T10): keys create|list|revoke, jobs list|kill, reap."""
 
 from __future__ import annotations
 
@@ -11,13 +11,13 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from intomd_api import admin
-from intomd_api.db import JobRow
-from intomd_api.keys import hash_api_key, lookup_api_key
-from intomd_api.services import build_services
-from intomd_api.settings import Settings
-from intomd_api.testing import make_settings
-from intomd_api.util import new_job_id, utcnow
+from ezmd_api import admin
+from ezmd_api.db import JobRow
+from ezmd_api.keys import hash_api_key, lookup_api_key
+from ezmd_api.services import build_services
+from ezmd_api.settings import Settings
+from ezmd_api.testing import make_settings
+from ezmd_api.util import new_job_id, utcnow
 
 runner = CliRunner()
 
@@ -147,11 +147,11 @@ def test_reap_fails_stale_jobs_and_cleans_temp(
 
     monkeypatch.setattr(tempfile, "tempdir", str(tmp_path / "tmp"))
     (tmp_path / "tmp").mkdir()
-    old = tmp_path / "tmp" / "intomd-job-orphan"
+    old = tmp_path / "tmp" / "ezmd-job-orphan"
     old.mkdir()
     past = time.time() - 10 * 3600
     os.utime(old, (past, past))
-    fresh = tmp_path / "tmp" / "intomd-upload-live"
+    fresh = tmp_path / "tmp" / "ezmd-upload-live"
     fresh.mkdir()
     timeout = settings.queue_timeout("default")
     stale = _job(settings, "converting", updated_ago=timeout + 1000)

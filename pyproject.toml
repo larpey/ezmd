@@ -1,7 +1,7 @@
 [project]
-name = "intomd-workspace"
+name = "ezmd-workspace"
 version = "0.0.0"
-description = "intomd monorepo workspace root (not published)"
+description = "ezmd monorepo workspace root (not published)"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 
@@ -12,19 +12,19 @@ package = false
 members = ["packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node"]
 
 [tool.uv.sources]
-intomd = { workspace = true }
-intomd-converters = { workspace = true }
-intomd-api = { workspace = true }
-intomd-mcp = { workspace = true }
-intomd-fetch-node = { workspace = true }
+ezmd = { workspace = true }
+ezmd-converters = { workspace = true }
+ezmd-api = { workspace = true }
+ezmd-mcp = { workspace = true }
+ezmd-fetch-node = { workspace = true }
 
 [dependency-groups]
 dev = [
-    "intomd",
-    "intomd-converters",
-    "intomd-api",
-    "intomd-mcp",
-    "intomd-fetch-node",
+    "ezmd",
+    "ezmd-converters",
+    "ezmd-api",
+    "ezmd-mcp",
+    "ezmd-fetch-node",
     "pytest>=8.3",
     "pytest-cov>=6.0",
     "pytest-asyncio>=0.25",
@@ -41,11 +41,11 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-p intomd.testing.pytest_fixtures"
+addopts = "-p ezmd.testing.pytest_fixtures"
 testpaths = ["packages", "apps", "tests", "fixtures"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [
-    "network: test needs real network access (skipped unless INTOMD_NETWORK_TESTS=1)",
+    "network: test needs real network access (skipped unless EZMD_NETWORK_TESTS=1)",
     "slow: slow test",
 ]

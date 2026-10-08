@@ -1,11 +1,11 @@
 # PDF converters
 
-Family `documents`, package `intomd_converters.pdf`. Mime `application/pdf` (also `.pdf` files whose detected
+Family `documents`, package `ezmd_converters.pdf`. Mime `application/pdf` (also `.pdf` files whose detected
 type is something else, at lower confidence). Chain: `documents.docling_pdf` then `documents.pdfium_text`.
 
 | Converter | Engine | Install | Notes |
 |---|---|---|---|
-| `documents.docling_pdf` | Docling (MIT), docling-parse backend, layout + TableFormer models | `pip install 'intomd[docs]'` (torch, ~1.2 GB) | Default when installed. Registered `unavailable` otherwise. |
+| `documents.docling_pdf` | Docling (MIT), docling-parse backend, layout + TableFormer models | `pip install 'ezmd[docs]'` (torch, ~1.2 GB) | Default when installed. Registered `unavailable` otherwise. |
 | `documents.pdfium_text` | pypdfium2 (BSD-3-Clause / Apache-2.0) text layer + layout heuristics | default | Always available; emits `engine_fallback` when Docling is not installed. |
 
 ## Pipeline (both engines)
@@ -61,14 +61,14 @@ empty formulas warn `equation_unrecognized`), Footnote, caption paragraphs. Page
 dropped and counted. Pictures are counted in `pdf_pictures` (no image payloads yet).
 Models are never downloaded during conversion unless `allow_network` is true (`HF_HUB_OFFLINE=1` is set before
 Docling loads). Pre-fetch with `docling-tools models download layout tableformer -o DIR` and set
-`INTOMD_DOCLING_ARTIFACTS=DIR`. Any Docling error is retryable, so the registry falls back to the text-layer
-engine (`engine_fallback`). `INTOMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
+`EZMD_DOCLING_ARTIFACTS=DIR`. Any Docling error is retryable, so the registry falls back to the text-layer
+engine (`engine_fallback`). `EZMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
 
 ## Options (`ConvertOptions.extra`, CLI `--pdf.<name>=...`)
 
 | Option | Values (default first) | |
 |---|---|---|
-| `pdf.engine` | `docling`, `pdfium` (`pypdf` is an alias) | also `INTOMD_PDF_ENGINE` |
+| `pdf.engine` | `docling`, `pdfium` (`pypdf` is an alias) | also `EZMD_PDF_ENGINE` |
 | `pdf.ocr` | `auto`, `force`, `off` | `off` when `ConvertOptions.ocr` is false |
 | `pdf.max_pages` | int | can only lower `ConvertOptions.max_pages` (default 500; spec local cap 2000) |
 | `pdf.batch_pages` | 25 | Docling batch size |
@@ -97,6 +97,6 @@ engine (`engine_fallback`). `INTOMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engi
 - `pdf.page_range`, `pdf.academic` (DOI/arXiv/citations), `pdf.forms=inline`, and embedded-file conversion as
   child documents are not implemented; embedded files are removed by sanitization (part1 8.2 wins over part2
   1c step 14).
-- OCR is a hook only (`intomd_converters.pdf.ocr.ocr_page`), live when `intomd.ocr.pipeline` exists (Phase 2).
+- OCR is a hook only (`ezmd_converters.pdf.ocr.ocr_page`), live when `ezmd.ocr.pipeline` exists (Phase 2).
 - Per-page decisions are summarized as counts in `metadata.extra` (Metadata has no nested dicts).
 - Docling engine is tested against synthetic fixtures only and only when the `docs` extra and models are present.

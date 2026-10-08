@@ -52,7 +52,7 @@ Status: proposed
 - Removed zero-width/bidi/tag characters get a second `removed_hidden_elements` warning (D-0015 aliases
   `removed_invisible_chars` to that code) with `detail.invisible_chars`.
 - The renderer's scanner does not yet receive hidden text, so the converter scans it with
-  `intomd.render.injection.scan(hidden_text=...)` and adds `injection_suspected` with `detail.location=hidden`.
+  `ezmd.render.injection.scan(hidden_text=...)` and adds `injection_suspected` with `detail.location=hidden`.
 - The warning is emitted whenever something was removed (info severity), not only when a removed element had
   over 20 words (part3 18 phase 1); always reporting is more transparent and costs nothing at info level.
 - White-on-white is detected only when the background is declared inline on the element or an ancestor:

@@ -1,6 +1,6 @@
 ---
 title: Kitchen Sink
-author: intomd fixtures
+author: ezmd fixtures
 ---
 
 # Kitchen Sink

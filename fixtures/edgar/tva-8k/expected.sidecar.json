@@ -2655,10 +2655,10 @@
   ],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:91bbf4ffb0722559a229484cf4b34c2046bdc5db6e6a423f7fde2ccce8da8a54",
+    "content_hash": "sha256:79f61390ceb0c3c8ee15bde8b71d7b3620a2de2845b609154ce53eadbe30f462",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "specialized.edgar",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "edgar.accession": "0001376986-26-000026",
       "edgar.cik": "1376986",
@@ -2668,9 +2668,9 @@
       "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
       "encoding": "utf-8"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -2679,9 +2679,9 @@
     "source_type": "web",
     "title": "TENNESSEE VALLEY AUTHORITY 8-K April 24, 2026",
     "tokens": {
-      "cl100k_base": 1943,
-      "claude_approx": 2065,
-      "o200k_base": 1912
+      "cl100k_base": 1940,
+      "claude_approx": 2062,
+      "o200k_base": 1909
     },
     "truncated": false,
     "warnings": [
@@ -2726,7 +2726,7 @@
       "transcript_segments": 0,
       "words": 896
     },
-    "duration_seconds": 0.015999999828636646,
+    "duration_seconds": 0.01600000006146729,
     "engine": "specialized.edgar",
     "engines_tried": [
       "specialized.edgar"
@@ -3074,14 +3074,14 @@
       "type": "table"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
       "id": "sec-1",
       "level": 2,
       "number": "1",
-      "offset_end": 3449,
+      "offset_end": 3445,
       "offset_start": 913,
       "original_level": 2,
       "original_title": "Cover page",
@@ -3094,8 +3094,8 @@
       "id": "sec-2",
       "level": 2,
       "number": "2",
-      "offset_end": 6219,
-      "offset_start": 3449,
+      "offset_end": 6215,
+      "offset_start": 3445,
       "original_level": 2,
       "original_title": "Item 5.02 Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers.",
       "time_end": null,
@@ -3107,8 +3107,8 @@
       "id": "sec-3",
       "level": 2,
       "number": "3",
-      "offset_end": 6428,
-      "offset_start": 6219,
+      "offset_end": 6424,
+      "offset_start": 6215,
       "original_level": 2,
       "original_title": "Item 9.01 Financial Statements and Exhibits.",
       "time_end": null,
@@ -3120,8 +3120,8 @@
       "id": "sec-4",
       "level": 2,
       "number": "4",
-      "offset_end": 6899,
-      "offset_start": 6428,
+      "offset_end": 6893,
+      "offset_start": 6424,
       "original_level": 2,
       "original_title": "SIGNATURES",
       "time_end": null,
@@ -3133,8 +3133,8 @@
       "id": "sec-4-1",
       "level": 3,
       "number": "4.1",
-      "offset_end": 7307,
-      "offset_start": 6899,
+      "offset_end": 7301,
+      "offset_start": 6893,
       "original_level": 3,
       "original_title": "EXHIBIT INDEX",
       "time_end": null,
@@ -3183,12 +3183,12 @@
         "col_3"
       ],
       "number": 2,
-      "offset_end": 1946,
+      "offset_end": 1944,
       "offset_start": 1514,
       "page": null,
       "representation": "pipe",
       "rows": 2,
-      "tokens": 112
+      "tokens": 111
     },
     {
       "block_id": "b0025",
@@ -3206,12 +3206,12 @@
         "col_3"
       ],
       "number": 3,
-      "offset_end": 2920,
-      "offset_start": 2724,
+      "offset_end": 2916,
+      "offset_start": 2722,
       "page": null,
       "representation": "pipe",
       "rows": 2,
-      "tokens": 62
+      "tokens": 61
     },
     {
       "block_id": "b0036",
@@ -3227,8 +3227,8 @@
         "DESCRIPTION OF EXHIBIT"
       ],
       "number": 4,
-      "offset_end": 6426,
-      "offset_start": 6278,
+      "offset_end": 6422,
+      "offset_start": 6274,
       "page": null,
       "representation": "pipe",
       "rows": 1,
@@ -3248,12 +3248,12 @@
         "col_2"
       ],
       "number": 5,
-      "offset_end": 6897,
-      "offset_start": 6639,
+      "offset_end": 6891,
+      "offset_start": 6635,
       "page": null,
       "representation": "pipe",
       "rows": 5,
-      "tokens": 79
+      "tokens": 78
     },
     {
       "block_id": "b0042",
@@ -3269,8 +3269,8 @@
         "DESCRIPTION OF EXHIBIT"
       ],
       "number": 6,
-      "offset_end": 7306,
-      "offset_start": 6986,
+      "offset_end": 7300,
+      "offset_start": 6980,
       "page": null,
       "representation": "pipe",
       "rows": 1,
@@ -3278,7 +3278,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 2312,
+  "tokens_total": 2310,
   "warnings": [
     {
       "block_id": null,

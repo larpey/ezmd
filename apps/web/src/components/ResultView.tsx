@@ -1,4 +1,4 @@
-import type { IntomdWarning, Profile, ResultFormat, Sidecar } from "@intomd/sdk";
+import type { EzmdWarning, Profile, ResultFormat, Sidecar } from "@ezmd/sdk";
 import { useMemo, useState } from "react";
 import { renderMarkdown } from "../lib/markdown";
 import { Tabs } from "./Tabs";
@@ -7,7 +7,7 @@ import { WarningsPanel } from "./WarningsPanel";
 export interface ResultViewProps {
   markdown: string;
   sidecar: Sidecar | null;
-  warnings: readonly IntomdWarning[];
+  warnings: readonly EzmdWarning[];
   tokens?: number;
   /** Tokenizer behind `tokens` (e.g. o200k_base); shown as the badge tooltip. */
   tokenizer?: string;

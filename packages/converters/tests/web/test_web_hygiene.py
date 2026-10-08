@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from intomd_converters.web.dom import parse_html
-from intomd_converters.web.hygiene import HIDDEN_TEXT_CAP, pre_clean
+from ezmd_converters.web.dom import parse_html
+from ezmd_converters.web.hygiene import HIDDEN_TEXT_CAP, pre_clean
 
 
 def _clean(body: str) -> tuple[str, dict[str, int], str, int]:
@@ -97,7 +97,7 @@ def test_scripts_styles_iframes() -> None:
     )
     rep = pre_clean(root)
     assert rep.elements == 0
-    links = list(root.iter("intomd-link"))
+    links = list(root.iter("ezmd-link"))
     assert len(links) == 1 and links[0].get("href") == "https://www.youtube.com/embed/abc"
     assert root.find(".//script") is None and root.find(".//iframe") is None
 
@@ -105,7 +105,7 @@ def test_scripts_styles_iframes() -> None:
 def test_math_script_captured_before_scripts_removed() -> None:
     root = parse_html('<html><body><p>see <script type="math/tex; mode=display">a^2</script></p></body></html>')
     pre_clean(root)
-    m = root.find(".//intomd-math")
+    m = root.find(".//ezmd-math")
     assert m is not None and m.get("data-latex") == "a^2" and m.get("data-display") == "block"
 
 

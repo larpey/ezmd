@@ -1,10 +1,10 @@
 // Extracts warning code -> {severity, suggestion, aliases} from the canonical Python registry
-// (packages/core/src/intomd/warnings/codes.py) into src/generated/warning-codes.json, so the UI's
-// suggested actions cannot drift from core. Run after codes.py changes: `pnpm -F @intomd/web gen:warnings`.
+// (packages/core/src/ezmd/warnings/codes.py) into src/generated/warning-codes.json, so the UI's
+// suggested actions cannot drift from core. Run after codes.py changes: `pnpm -F @ezmd/web gen:warnings`.
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const SRC = fileURLToPath(new URL("../../../packages/core/src/intomd/warnings/codes.py", import.meta.url));
+const SRC = fileURLToPath(new URL("../../../packages/core/src/ezmd/warnings/codes.py", import.meta.url));
 const OUT = fileURLToPath(new URL("../src/generated/warning-codes.json", import.meta.url));
 
 const STR = String.raw`"(?:[^"\\]|\\.)*"`;

@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import { convertAndWait, expect, openApp, test, uniqueText } from "./helpers";
 
-const HISTORY_KEY = "intomd.history.v1";
+const HISTORY_KEY = "ezmd.history.v1";
 
 async function openHistory(page: Page): Promise<void> {
   const history = page.getByTestId("history");
@@ -23,7 +23,7 @@ async function keptIds(page: Page): Promise<string[]> {
   return page.evaluate(
     () =>
       new Promise<string[]>((resolve) => {
-        const req = indexedDB.open("intomd", 1);
+        const req = indexedDB.open("ezmd", 1);
         req.onerror = () => resolve([]);
         req.onsuccess = () => {
           const db = req.result;

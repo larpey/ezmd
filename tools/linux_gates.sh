@@ -16,12 +16,12 @@ if command -v cygpath >/dev/null 2>&1; then ROOT="$(cygpath -m "$ROOT")"; fi
 IMAGE="python:3.12-slim-bookworm"
 UV_VERSION="0.12.23"
 # One virtualenv volume per checkout, so parallel worktrees never share (and corrupt) a venv.
-VENV_VOLUME="intomd-linux-venv-$(basename "$ROOT" | tr -c "A-Za-z0-9_.-" "_" | tr "A-Z" "a-z")"
+VENV_VOLUME="ezmd-linux-venv-$(basename "$ROOT" | tr -c "A-Za-z0-9_.-" "_" | tr "A-Z" "a-z")"
 
 exec docker run --rm \
   -v "$ROOT":/src \
   -v "$VENV_VOLUME":/venv \
-  -v intomd-linux-uv-cache:/root/.cache/uv \
+  -v ezmd-linux-uv-cache:/root/.cache/uv \
   -e UV_PROJECT_ENVIRONMENT=/venv \
   -e UV_LINK_MODE=copy \
   -e PYTHONDONTWRITEBYTECODE=1 \
@@ -35,7 +35,7 @@ exec docker run --rm \
     echo "== ruff";        uv run ruff check . && uv run ruff format --check .
     echo "== mypy";        uv run mypy --strict packages/core/src && uv run mypy apps/api/src packages/converters/src packages/mcp/src
     echo "== tests";       uv run pytest packages apps tests -q -p no:cacheprovider \
-                             --cov=intomd --cov=intomd_api --cov=intomd_converters --cov-fail-under=80 "$@"
+                             --cov=ezmd --cov=ezmd_api --cov=ezmd_converters --cov-fail-under=80 "$@"
     echo "== fixtures";    uv run pytest fixtures -q -p no:cacheprovider
     echo "== licenses";    uv run python tools/license_check.py
     echo "== invisible";   python tools/check_invisible_chars.py

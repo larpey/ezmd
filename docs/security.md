@@ -1,6 +1,6 @@
 # Security
 
-intomd treats every input as hostile. The public instance and self-hosted instances get the same
+ezmd treats every input as hostile. The public instance and self-hosted instances get the same
 defaults; self-hosters may loosen limits through environment variables, never the sandbox. To report
 a vulnerability, follow `SECURITY.md` in the repository root.
 
@@ -16,9 +16,9 @@ operators and users. Items marked Planned are specified but not built yet.
 - `worker-default` and the API sit on an internal network with no route to the internet. Only
   `worker-fetch` (and Caddy) can reach the internet, and every fetch goes through the SSRF guard.
 - Each conversion runs in a spawned child process with resource limits (address space
-  `INTOMD_JOB_MEM_MB`, CPU time, process count, file size). A crashing or hanging engine kills only
+  `EZMD_JOB_MEM_MB`, CPU time, process count, file size). A crashing or hanging engine kills only
   that child; the parent enforces the wall-clock timeout.
-- External programs are started only through `intomd.core.sandbox.run` with a list argv, no shell,
+- External programs are started only through `ezmd.core.sandbox.run` with a list argv, no shell,
   a minimal environment, no stdin, output caps, and a timeout. bubblewrap is used where it works;
   inside the hardened containers the container itself is the sandbox (D-0013).
 
@@ -39,7 +39,7 @@ operators and users. Items marked Planned are specified but not built yet.
 
 ## SSRF protection
 
-`intomd.core.netguard` guards every URL fetch:
+`ezmd.core.netguard` guards every URL fetch:
 
 1. Only `http` and `https`; URLs with userinfo are rejected.
 2. IP literals and resolved addresses in private, loopback, link-local, multicast, reserved, CGNAT
@@ -48,9 +48,9 @@ operators and users. Items marked Planned are specified but not built yet.
 3. DNS is resolved once and the connection is pinned to the checked address (no rebinding).
 4. At most 5 redirects, each re-checked; credentials are dropped across hosts.
 5. Response bodies are capped and time-limited; executable content types are rejected.
-6. A `platforms.toml` (`INTOMD_PLATFORMS_FILE`) can mark hosts `disabled` or `residential_only`.
+6. A `platforms.toml` (`EZMD_PLATFORMS_FILE`) can mark hosts `disabled` or `residential_only`.
 
-`INTOMD_ALLOW_PRIVATE_NETWORKS=true` lifts the private-range block. Leave it off unless the instance
+`EZMD_ALLOW_PRIVATE_NETWORKS=true` lifts the private-range block. Leave it off unless the instance
 is on a trusted network.
 
 ## Application hardening
@@ -58,17 +58,17 @@ is on a trusted network.
 - No shell interpolation of user data; `subprocess` is imported only in the sandbox module, and a
   test enforces it.
 - Secrets come only from the environment. In public mode the API refuses to start when
-  `INTOMD_JWT_SECRET` or `INTOMD_KEY_PEPPER` is shorter than 32 bytes.
+  `EZMD_JWT_SECRET` or `EZMD_KEY_PEPPER` is shorter than 32 bytes.
 - Security headers on every response: a strict Content-Security-Policy, `X-Content-Type-Options:
   nosniff`, `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`, `Permissions-Policy`,
   `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy`, plus HSTS at Caddy.
-- CORS is same-origin unless `INTOMD_CORS_ORIGINS` lists origins.
+- CORS is same-origin unless `EZMD_CORS_ORIGINS` lists origins.
 - Per-client rate limits and a global active-job cap (`queue_unavailable` with `Retry-After`).
 - Prompt-injection flagging: results are scanned, `injection_risk` is set, and the `agent` profile
   wraps the body in an `<untrusted_content>` fence. Flagged text is never removed.
 - Logs are redacted (API keys, `Authorization`, Turnstile and claim tokens, URL userinfo) and never
   contain document content. Client IPs are stored only as salted hashes.
-- Retention: jobs and blobs are purged after `INTOMD_RETENTION_HOURS` (default 24);
+- Retention: jobs and blobs are purged after `EZMD_RETENTION_HOURS` (default 24);
   `DELETE /v1/jobs/{id}` purges immediately.
 - Dependency audit (`pip-audit`, `pnpm audit`) and the license check run in CI.
 - Planned: MCP server auth defaults (Phase 1); extension data minimization (Phase 3).

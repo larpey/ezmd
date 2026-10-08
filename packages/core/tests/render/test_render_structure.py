@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from render_builders import heading, make_result, para, prov, span
 
-from intomd.ir import Footnote, Paragraph, TranscriptSegment
-from intomd.render import render
+from ezmd.ir import Footnote, Paragraph, TranscriptSegment
+from ezmd.render import render
 
 
 def _headings_chaos():  # type: ignore[no-untyped-def]
@@ -181,7 +181,7 @@ def test_chapter_headings_carry_time_ranges() -> None:
 
 
 def test_slides_marker_heading_and_notes() -> None:
-    from intomd.ir import Slide
+    from ezmd.ir import Slide
 
     res = make_result(
         [
@@ -199,7 +199,7 @@ def test_slides_marker_heading_and_notes() -> None:
 
 
 def test_spreadsheet_sheet_markers() -> None:
-    from intomd.ir import Heading, SourceType
+    from ezmd.ir import Heading, SourceType
 
     res = make_result(
         [Heading(level=1, spans=[span("Budget")], provenance=prov(source_label="Budget")), para("cells")],

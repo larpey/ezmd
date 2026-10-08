@@ -1,13 +1,13 @@
 [project]
-name = "intomd-mcp"
+name = "ezmd-mcp"
 version = "0.1.0rc1"
-description = "MCP server for intomd: convert files, URLs and text to LLM-ready Markdown from any MCP client."
+description = "MCP server for ezmd: convert files, URLs and text to LLM-ready Markdown from any MCP client."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-authors = [{ name = "intomd contributors" }]
+authors = [{ name = "ezmd contributors" }]
 dependencies = [
-    "intomd==0.1.0rc1",
+    "ezmd==0.1.0rc1",
     "mcp>=2.2,<3",
     "httpx>=0.28",
     "starlette>=0.48",
@@ -16,17 +16,17 @@ dependencies = [
 
 
 [project.urls]
-Homepage = "https://github.com/larpey/intomd"
-Documentation = "https://github.com/larpey/intomd/tree/main/docs"
-Repository = "https://github.com/larpey/intomd"
-Issues = "https://github.com/larpey/intomd/issues"
-Changelog = "https://github.com/larpey/intomd/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/larpey/ezmd"
+Documentation = "https://github.com/larpey/ezmd/tree/main/docs"
+Repository = "https://github.com/larpey/ezmd"
+Issues = "https://github.com/larpey/ezmd/issues"
+Changelog = "https://github.com/larpey/ezmd/blob/main/CHANGELOG.md"
 [project.scripts]
-intomd-mcp = "intomd_mcp.cli:main"
+ezmd-mcp = "ezmd_mcp.cli:main"
 
 [build-system]
 requires = ["hatchling>=1.26"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/intomd_mcp"]
+packages = ["src/ezmd_mcp"]

@@ -10,14 +10,14 @@ import httpx
 import pytest
 from sqlalchemy import create_engine, inspect
 
-from intomd_api.db import Base
-from intomd_api.settings import Settings, env_names
-from intomd_api.testing import api_client
+from ezmd_api.db import Base
+from ezmd_api.settings import Settings, env_names
+from ezmd_api.testing import api_client
 
 REPO = Path(__file__).resolve().parents[3]
 ENV_EXAMPLE = REPO / "deploy" / "env.example"
 DEPLOY_ONLY_MARKER = "# ---- Deployment"
-ENV_LINE = re.compile(r"^(INTOMD_[A-Z0-9_]+)=")
+ENV_LINE = re.compile(r"^(EZMD_[A-Z0-9_]+)=")
 
 
 async def test_capabilities(client: httpx.AsyncClient) -> None:
@@ -35,7 +35,7 @@ async def test_capabilities(client: httpx.AsyncClient) -> None:
 
 
 def test_openapi_committed_file_is_fresh() -> None:
-    from intomd_api.openapi import openapi_document
+    from ezmd_api.openapi import openapi_document
 
     committed = (REPO / "docs" / "api" / "openapi.json").read_text(encoding="utf-8")
     assert committed == openapi_document(), "stale: run `uv run python apps/api/scripts/export_openapi.py`"
@@ -64,7 +64,7 @@ def test_env_example_matches_settings() -> None:
 
 
 def test_alembic_migration_matches_models(tmp_path: Path) -> None:
-    from intomd_api.migrate import upgrade
+    from ezmd_api.migrate import upgrade
 
     url = f"sqlite:///{(tmp_path / 'm.db').as_posix()}"
     upgrade(url)
@@ -78,16 +78,16 @@ def test_alembic_migration_matches_models(tmp_path: Path) -> None:
 async def test_static_spa_fallback(tmp_path: Path, settings_factory: Callable[..., Settings]) -> None:
     dist = tmp_path / "dist"
     (dist / "assets").mkdir(parents=True)
-    (dist / "index.html").write_text("<!doctype html><title>intomd</title>", encoding="utf-8")
+    (dist / "index.html").write_text("<!doctype html><title>ezmd</title>", encoding="utf-8")
     (dist / "assets" / "app-123.js").write_text("console.log(1)", encoding="utf-8")
     async with api_client(settings_factory(web_dist=dist)) as (client, _):
         index = await client.get("/")
-        assert index.status_code == 200 and "intomd" in index.text
+        assert index.status_code == 200 and "ezmd" in index.text
         assert index.headers["cache-control"] == "no-cache"
         asset = await client.get("/assets/app-123.js")
         assert "immutable" in asset.headers["cache-control"]
         deep = await client.get("/jobs/job_abc")
-        assert deep.status_code == 200 and "intomd" in deep.text
+        assert deep.status_code == 200 and "ezmd" in deep.text
         assert (await client.get("/assets/missing.js")).status_code == 404
         api_miss = await client.get("/v1/nope")
         assert api_miss.status_code == 404 and api_miss.json()["error"]["code"] == "not_found"
@@ -104,7 +104,7 @@ async def test_static_fallback_404s_reserved_paths(
 ) -> None:
     dist = tmp_path / "dist"
     dist.mkdir()
-    (dist / "index.html").write_text("<!doctype html><title>intomd</title>", encoding="utf-8")
+    (dist / "index.html").write_text("<!doctype html><title>ezmd</title>", encoding="utf-8")
     async with api_client(settings_factory(web_dist=dist)) as (client, _):
         r = await client.get(path)
         assert r.status_code == 404, path

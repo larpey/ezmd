@@ -48,9 +48,9 @@
       {
         "attrs": {
           "lines": "45",
-          "tokens": "333"
+          "tokens": "332"
         },
-        "code": "//! ledger.rs: a fixed-point ledger (intomd fixture).\nuse std::collections::BTreeMap;\nuse std::fmt;\n\n/// Amounts are stored in cents to avoid floating-point drift.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]\npub struct Cents(pub i64);\n\nimpl fmt::Display for Cents {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        write!(f, \"{}.{:02}\", self.0 / 100, (self.0 % 100).abs())\n    }\n}\n\npub trait Account {\n    fn balance(&self) -> Cents;\n}\n\n#[derive(Default)]\npub struct Ledger<'a> {\n    entries: BTreeMap<&'a str, Vec<Cents>>,\n}\n\nimpl<'a> Ledger<'a> {\n    pub fn post(&mut self, account: &'a str, amount: Cents) {\n        self.entries.entry(account).or_default().push(amount);\n    }\n\n    pub fn total(&self, account: &str) -> Option<Cents> {\n        self.entries.get(account).map(|v| Cents(v.iter().map(|c| c.0).sum()))\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn totals_in_cents() {\n        let mut l = Ledger::default();\n        l.post(\"cash\", Cents(1050));\n        l.post(\"cash\", Cents(-25));\n        assert_eq!(l.total(\"cash\").unwrap().to_string(), \"10.25\");\n    }\n}",
+        "code": "//! ledger.rs: a fixed-point ledger (ezmd fixture).\nuse std::collections::BTreeMap;\nuse std::fmt;\n\n/// Amounts are stored in cents to avoid floating-point drift.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]\npub struct Cents(pub i64);\n\nimpl fmt::Display for Cents {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        write!(f, \"{}.{:02}\", self.0 / 100, (self.0 % 100).abs())\n    }\n}\n\npub trait Account {\n    fn balance(&self) -> Cents;\n}\n\n#[derive(Default)]\npub struct Ledger<'a> {\n    entries: BTreeMap<&'a str, Vec<Cents>>,\n}\n\nimpl<'a> Ledger<'a> {\n    pub fn post(&mut self, account: &'a str, amount: Cents) {\n        self.entries.entry(account).or_default().push(amount);\n    }\n\n    pub fn total(&self, account: &str) -> Option<Cents> {\n        self.entries.get(account).map(|v| Cents(v.iter().map(|c| c.0).sum()))\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn totals_in_cents() {\n        let mut l = Ledger::default();\n        l.post(\"cash\", Cents(1050));\n        l.post(\"cash\", Cents(-25));\n        assert_eq!(l.total(\"cash\").unwrap().to_string(), \"10.25\");\n    }\n}",
         "filename": "input.rs",
         "id": "b0002",
         "language": "rust",
@@ -75,7 +75,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:ee5b68372a08caec0980ed76431361fcb8bcd01f3779ab7c1c43b0b4886ff1e8",
+    "content_hash": "sha256:0df34c2c49ed7e8e6d5e984640aed503c5151a770f82981ff5dd11eeeefa5118",
     "converter_id": "code.source_file",
     "metadata": {
       "author": null,
@@ -86,10 +86,10 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "bytes": 1136,
+        "bytes": 1134,
         "language": "rust",
         "lines": 45,
-        "tokens": 333
+        "tokens": 332
       },
       "fetched": null,
       "keywords": [],
@@ -116,31 +116,31 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:1aae81014c3dae0f2bdeb40872a5b1b6f8aec83ac293e711629303784ff34bfa",
+    "content_hash": "sha256:b6f4edfc210a5c3421d64564ef40d5a7ddf984daea429fa72402dba49f94dd05",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 1136,
+      "bytes": 1134,
       "encoding": "utf-8",
       "language": "rust",
       "lines": 45,
-      "tokens": 333
+      "tokens": 332
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.rs",
-    "source_hash": "sha256:94b87e222e47f635c0f0546b20c21598dc831e21d9afd7eb08cf0f2031507d5e",
+    "source_hash": "sha256:eca22c320bc92c9e91a0ca9d1966dc31b04431e9b2f8ec78f33e9648dfcd91c7",
     "source_type": "code",
     "title": "input.rs",
     "tokens": {
-      "cl100k_base": 351,
-      "claude_approx": 379,
-      "o200k_base": 351
+      "cl100k_base": 350,
+      "claude_approx": 378,
+      "o200k_base": 350
     },
     "truncated": false,
     "warnings": [],
@@ -172,14 +172,14 @@
       "transcript_segments": 0,
       "words": 126
     },
-    "duration_seconds": 0.0940000000409782,
+    "duration_seconds": 0.10900000017136335,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 1136
+    "input_bytes": 1134
   },
   "profile": "full",
   "provenance": [
@@ -200,13 +200,13 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 617,
+  "tokens_total": 622,
   "warnings": []
 }

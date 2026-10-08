@@ -13,7 +13,7 @@ from mcp import Client, StdioServerParameters
 @pytest.mark.slow
 async def test_stdio_server_answers_list_capabilities(tmp_path: Path) -> None:
     params = StdioServerParameters(
-        command=sys.executable, args=["-m", "intomd_mcp.cli", "--allowed-dirs", str(tmp_path)], cwd=str(tmp_path)
+        command=sys.executable, args=["-m", "ezmd_mcp.cli", "--allowed-dirs", str(tmp_path)], cwd=str(tmp_path)
     )
     start = time.monotonic()
     async with Client(params) as client:

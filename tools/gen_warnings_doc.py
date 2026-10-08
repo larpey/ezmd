@@ -1,11 +1,11 @@
-"""Generate docs/warnings.md from intomd.warnings.codes (a test asserts the committed file is current)."""
+"""Generate docs/warnings.md from ezmd.warnings.codes (a test asserts the committed file is current)."""
 
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-from intomd.warnings.codes import ALIASES, CODES
+from ezmd.warnings.codes import ALIASES, CODES
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "docs" / "warnings.md"
@@ -16,8 +16,8 @@ def render() -> str:
     lines = [
         "# Warning codes",
         "",
-        "Every loss or degradation intomd knows about is reported as a structured warning with one of these codes.",
-        "Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnings_doc.py`; do not edit.",
+        "Every loss or degradation ezmd knows about is reported as a structured warning with one of these codes.",
+        "Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings_doc.py`; do not edit.",
         "",
         "| Code | Severity | Family | Meaning | What you can do |",
         "|---|---|---|---|---|",

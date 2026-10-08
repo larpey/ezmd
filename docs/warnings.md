@@ -1,7 +1,7 @@
 # Warning codes
 
-Every loss or degradation intomd knows about is reported as a structured warning with one of these codes.
-Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnings_doc.py`; do not edit.
+Every loss or degradation ezmd knows about is reported as a structured warning with one of these codes.
+Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings_doc.py`; do not edit.
 
 | Code | Severity | Family | Meaning | What you can do |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `row_cap_reached` | warning | core | The row cap was reached; remaining rows were not converted. | Use the CSV export for every row, or raise the row cap in options. |
 | `timeout_partial` | warning | core | Conversion hit its time budget; the output covers only what finished. | Retry with a smaller input or fewer pages, or raise the job timeout when self-hosting. |
 | `timeout_hard` | error | core | Conversion exceeded the hard time limit and was stopped. | Split the input into smaller parts, or self-host with a longer timeout. |
-| `extra_required` | error | core | This format needs an optional extra that is not installed. | Install the extra named in the message, e.g. pip install 'intomd[docs]'. |
+| `extra_required` | error | core | This format needs an optional extra that is not installed. | Install the extra named in the message, e.g. pip install 'ezmd[docs]'. |
 | `experimental_converter` | info | core | The output came from an experimental converter. | Review the output closely and report problems so the converter can graduate. |
 | `unsupported_feature` | warning | core | The source uses a feature this converter does not support; it was skipped. | Export the source to a simpler format (PDF, DOCX, HTML) that keeps the feature, then reconvert. |
 | `injection_suspected` | warning | core | Text matching prompt-injection patterns was found and kept. | Treat the flagged text as untrusted and review sidecar injection_findings before using it. |
@@ -33,7 +33,7 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `encrypted_no_password` | error | pdf | The PDF is encrypted and no password was supplied. | Provide the password in the PDF options or upload an unencrypted copy. |
 | `copy_restricted_ignored` | info | pdf | The PDF's copy-restriction flag was ignored for extraction. | Make sure you have the right to extract text from this document. |
 | `pages_without_text` | warning | pdf | Some pages have no text layer; their content is missing. | Enable OCR or upload a text-layer PDF. |
-| `ocr_unavailable` | warning | pdf | OCR was needed but no OCR engine is available. | Install the ocr extra, e.g. pip install 'intomd[ocr]', or use an instance with OCR enabled. |
+| `ocr_unavailable` | warning | pdf | OCR was needed but no OCR engine is available. | Install the ocr extra, e.g. pip install 'ezmd[ocr]', or use an instance with OCR enabled. |
 | `ocr_confidence_low` | warning | pdf | OCR confidence was low on some pages or regions; text may be wrong. | Upload a higher-resolution scan (300 DPI or more) or try a layout OCR engine. |
 | `reading_order_uncertain` | warning | pdf | Reading order of a multi-column or complex layout may be wrong. | Try a layout-aware engine such as --engine pdf=docling, and check column order. |
 | `heading_source_structure_tree` | info | pdf | Headings came from the PDF's tagged structure tree. | No action needed; edit the PDF's tags in the authoring tool to change headings. |
@@ -135,7 +135,7 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `kindle_clip_limit` | warning | notes | Kindle highlights are cut off at the publisher's export limit. | Copy the full passage from the book itself; the export cannot recover it. |
 | `clippings_deduped` | info | notes | Duplicate Kindle highlights were merged. | Check merged highlights if you edited a highlight and expected both versions. |
 | `xbrl_statement_mismatch` | warning | specialized | XBRL facts disagree with the rendered statement. | Compare the flagged values with the filing's official XBRL viewer. |
-| `ixt_format_unknown` | warning | specialized | Inline XBRL used an unknown transformation format. | Check the flagged facts by hand; upgrade intomd in case the format was added. |
+| `ixt_format_unknown` | warning | specialized | Inline XBRL used an unknown transformation format. | Check the flagged facts by hand; upgrade ezmd in case the format was added. |
 | `reconciliation_failed` | error | specialized | Statement totals do not reconcile with the extracted rows. | Review the flagged page against the source; try a layout OCR engine for scans. |
 | `amount_corrected_by_reconciliation` | warning | specialized | An amount was corrected so totals reconcile. | Verify the corrected amount against the source document. |
 | `columns_swapped_by_reconciliation` | warning | specialized | Debit and credit columns were swapped so totals reconcile. | Verify the column assignment against the source document. |
@@ -145,7 +145,7 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `word_index_dropped` | info | specialized | A back-of-book word index was dropped. | Convert the index pages separately if you need them. |
 | `fulltext_unavailable` | warning | specialized | Full text was unavailable; only metadata or the abstract was converted. | Upload the full-text PDF, or use an open-access link. |
 | `bibtex_duplicate_keys` | warning | specialized | The BibTeX file has duplicate citation keys. | Rename the duplicate keys in the .bib file. |
-| `phi_refused` | error | specialized | The content appears to contain protected health information and was refused. | Self-host intomd to process health records under your own compliance controls. |
+| `phi_refused` | error | specialized | The content appears to contain protected health information and was refused. | Self-host ezmd to process health records under your own compliance controls. |
 | `phi_possible` | warning | specialized | The content may contain protected health information. | Review and redact before sharing, and self-host for regulated data. |
 | `music_summary_only` | info | specialized | The music file was summarized (tags, duration) without transcription. | Force transcription in the media options if the file contains speech. |
 | `archive_encrypted` | warning | specialized | Encrypted archive entries could not be read. | Provide the archive password, or upload an unencrypted archive. |
@@ -173,7 +173,7 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `verbatim_mode` | info | media | The transcript is verbatim, with fillers and false starts kept. | Turn off verbatim mode for a cleaner, more readable transcript. |
 | `unreadable_region` | warning | ocr | A region of the page or image could not be read. | Upload a sharper, higher-resolution scan of the marked region. |
 | `layout_ocr_unavailable_cpu` | warning | ocr | Layout-aware OCR needs a GPU; basic OCR was used on this CPU-only host. | Run on a host with a GPU, or install a CPU-capable layout model, for complex layouts. |
-| `license_restricted_engine_used` | info | ocr | A license-restricted OCR engine (non-commercial or OpenRAIL) was used. | Check the engine license allows your use, or unset INTOMD_ALLOW_RESTRICTED_MODELS. |
+| `license_restricted_engine_used` | info | ocr | A license-restricted OCR engine (non-commercial or OpenRAIL) was used. | Check the engine license allows your use, or unset EZMD_ALLOW_RESTRICTED_MODELS. |
 | `receipt_totals_mismatch` | warning | ocr | Receipt line items, tax and total do not add up. | Check the flagged values against the receipt; rescan if digits are blurred. |
 | `chat_screenshot_decorations_removed` | info | ocr | Chat app UI elements (status bar, buttons) were removed. | No action needed; crop the screenshot yourself if something was wrongly removed. |
 | `table_structure_uncertain` | warning | render | Table structure was detected with low confidence; cells may be misaligned. | Check the table against the source, or try a layout-aware engine. |

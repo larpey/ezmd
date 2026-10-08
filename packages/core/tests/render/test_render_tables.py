@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from render_builders import make_result, prov, span, table
 
-from intomd.ir import Paragraph, Table, TableCell
-from intomd.render import render
+from ezmd.ir import Paragraph, Table, TableCell
+from ezmd.render import render
 
 
 def _wide() -> Table:
@@ -72,7 +72,7 @@ def test_long_table_sampled_with_summary_and_warning() -> None:
     out = render(make_result([_long()]), "full")
     body = out.body
     assert (
-        "- id: 20 | name: n20 | miles: 40\n<!-- intomd: 1,475 rows omitted; full data in tables/table-01.csv -->\n"
+        "- id: 20 | name: n20 | miles: 40\n<!-- ezmd: 1,475 rows omitted; full data in tables/table-01.csv -->\n"
         "- id: 1496 | name: n1496 | miles: 2992" in body
     )
     # the first column is the record label, so only `miles` is summarized
@@ -86,7 +86,7 @@ def test_compact_sampling_uses_prose_note() -> None:
     rows = [["k", "v"]] + [[f"k{i}", str(i)] for i in range(300)]
     body = render(make_result([table(rows)]), "compact").body
     assert "(275 rows omitted; full data in tables/table-01.csv)" in body
-    assert "<!-- intomd" not in body
+    assert "<!-- ezmd" not in body
 
 
 def test_merged_cells_html_in_full_flattened_elsewhere() -> None:
@@ -114,7 +114,7 @@ def test_header_inference_and_synthesis() -> None:
     inferred = render(make_result([table([["Name", "Qty"], ["a", "1"], ["b", "2"]], header_rows=0)]), "full").body
     assert "| Name | Qty |\n|---|---:|\n| a | 1 |" in inferred
     synth = render(make_result([table([["1", "2"], ["3", "4"]], header_rows=0)]), "full").body
-    assert "**Table 1**\n<!-- intomd: header synthesized -->\n\n| col_1 | col_2 |" in synth
+    assert "**Table 1**\n<!-- ezmd: header synthesized -->\n\n| col_1 | col_2 |" in synth
 
 
 def test_table_caption_from_figure_and_rag_atomic_rows() -> None:
@@ -128,7 +128,7 @@ def test_footnote_in_table_cell_defined_after_table() -> None:
         TableCell(spans=[span("h")], row=0, col=0, is_header=True),
         TableCell(spans=[span("v"), span("1", footnote="fn")], row=1, col=0),
     ]
-    from intomd.ir import Footnote
+    from ezmd.ir import Footnote
 
     res = make_result(
         [

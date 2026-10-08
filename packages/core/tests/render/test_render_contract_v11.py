@@ -5,10 +5,10 @@ from __future__ import annotations
 import pytest
 from render_builders import make_result, para, prov, span
 
-from intomd.ir import Comment, Document, Metadata, SourceType, Table, TableCell
-from intomd.render import render
-from intomd.render.injection import defang
-from intomd.render.source_types import FRONTMATTER_SOURCE_TYPES, frontmatter_source_type
+from ezmd.ir import Comment, Document, Metadata, SourceType, Table, TableCell
+from ezmd.render import render
+from ezmd.render.injection import defang
+from ezmd.render.source_types import FRONTMATTER_SOURCE_TYPES, frontmatter_source_type
 
 ZWSP = chr(0x200B)
 

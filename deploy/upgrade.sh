@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# intomd upgrade (docs/spec/part4.md 4.9.9).
+# ezmd upgrade (docs/spec/part4.md 4.9.9).
 #
 #   deploy/upgrade.sh <version> [--no-pull] [--build] [--no-backup] [--health-timeout S]
 #
 # 1. backup.sh (unless --no-backup)
-# 2. set INTOMD_VERSION=<version> in the env file and pull that tag (--no-pull: use local images;
+# 2. set EZMD_VERSION=<version> in the env file and pull that tag (--no-pull: use local images;
 #    --build: build this checkout and tag it <version>)
 # 3. database migrations with the new image (stackctl.py migrate)
 # 4. `up -d --remove-orphans --wait`, then /readyz through Caddy
-# 5. on any failure after step 2: put the previous INTOMD_VERSION back, restore the pre-upgrade
+# 5. on any failure after step 2: put the previous EZMD_VERSION back, restore the pre-upgrade
 #    backup when migrations ran (they are forward-only), start the old version, exit 1
 # 6. on success: prune dangling images
 # Pin exact versions (1.4.2); patch releases are safe for Watchtower, minor ones go through this script.
@@ -36,7 +36,7 @@ NEW="${NEW#v}"
 
 require_docker
 [ -f "$ENV_FILE" ] || die "no env file at $ENV_FILE (run bootstrap.sh first)"
-PREV="$(env_get INTOMD_VERSION)"
+PREV="$(env_get EZMD_VERSION)"
 PREV="${PREV:-latest}"
 log "upgrading $PREV -> $NEW"
 
@@ -50,7 +50,7 @@ MIGRATED=0
 rollback() {
   warn "upgrade to $NEW failed: $1"
   warn "rolling back to $PREV"
-  env_set INTOMD_VERSION "$PREV"
+  env_set EZMD_VERSION "$PREV"
   if [ "$MIGRATED" = 1 ] && [ -n "$BACKUP_FILE" ]; then
     bash "$DEPLOY_DIR/restore.sh" --no-smoke "$BACKUP_FILE" || die "rollback restore failed; restore $BACKUP_FILE by hand"
   else
@@ -60,7 +60,7 @@ rollback() {
   die "upgrade to $NEW rolled back; still running $PREV"
 }
 
-env_set INTOMD_VERSION "$NEW"
+env_set EZMD_VERSION "$NEW"
 if [ "$PULL" = 1 ]; then
   compose pull --quiet || rollback "could not pull tag $NEW"
 elif [ "$BUILD" = 1 ]; then

@@ -1,8 +1,8 @@
 """Thin synchronous client for the compose stack used by tests/integration (no SDK, plain httpx).
 
 Configuration comes from the environment that `tests/integration/stack.sh env` prints:
-INTOMD_BASE_URL, INTOMD_API_KEY or INTOMD_API_KEY_FILE, INTOMD_FIXTURE_ORIGIN, and
-INTOMD_INSECURE=1 to skip TLS verification (Caddy's internal CA on https://localhost).
+EZMD_BASE_URL, EZMD_API_KEY or EZMD_API_KEY_FILE, EZMD_FIXTURE_ORIGIN, and
+EZMD_INSECURE=1 to skip TLS verification (Caddy's internal CA on https://localhost).
 """
 
 from __future__ import annotations
@@ -17,14 +17,14 @@ from typing import Any
 import httpx
 
 TERMINAL = frozenset({"done", "failed", "expired", "needs_user_action"})
-DEFAULT_TIMEOUT_S = float(os.environ.get("INTOMD_IT_JOB_TIMEOUT_S", "180"))
+DEFAULT_TIMEOUT_S = float(os.environ.get("EZMD_IT_JOB_TIMEOUT_S", "180"))
 
 
 def _owner_key() -> str:
-    key = os.environ.get("INTOMD_API_KEY", "").strip()
+    key = os.environ.get("EZMD_API_KEY", "").strip()
     if key:
         return key
-    path = os.environ.get("INTOMD_API_KEY_FILE", "").strip()
+    path = os.environ.get("EZMD_API_KEY_FILE", "").strip()
     if path and Path(path).is_file():
         return Path(path).read_text(encoding="utf-8").strip()
     return ""
@@ -42,13 +42,13 @@ class Stack:
 
     @classmethod
     def from_env(cls) -> Stack:
-        base = os.environ["INTOMD_BASE_URL"].rstrip("/")
-        verify = os.environ.get("INTOMD_INSECURE", "") != "1"
+        base = os.environ["EZMD_BASE_URL"].rstrip("/")
+        verify = os.environ.get("EZMD_INSECURE", "") != "1"
         key = _owner_key()
         timeout = httpx.Timeout(60.0, connect=10.0)
         owner = httpx.Client(base_url=base, verify=verify, timeout=timeout, headers={"X-API-Key": key} if key else {})
         anon = httpx.Client(base_url=base, verify=verify, timeout=timeout)
-        origin = os.environ.get("INTOMD_FIXTURE_ORIGIN", "http://web.fixtures.example:8000").rstrip("/")
+        origin = os.environ.get("EZMD_FIXTURE_ORIGIN", "http://web.fixtures.example:8000").rstrip("/")
         return cls(base, owner, anon, origin, bool(key), verify, [owner, anon])
 
     def client(self, **headers: str) -> httpx.Client:

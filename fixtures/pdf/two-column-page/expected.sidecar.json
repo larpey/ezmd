@@ -209,9 +209,9 @@
     "content_hash": "sha256:bc475d3ded4c6a0e03710c7cae9fb51422d178534623e089f72b8ace52ac764c",
     "converter_id": "documents.pdfium_text",
     "metadata": {
-      "author": "intomd fixtures",
+      "author": "ezmd fixtures",
       "authors": [
-        "intomd fixtures"
+        "ezmd fixtures"
       ],
       "canonical_url": null,
       "description": null,
@@ -254,7 +254,7 @@
           "wanted": "docling"
         },
         "kind": "engine_fallback",
-        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
         "page": null,
         "severity": "warning"
       },
@@ -274,26 +274,26 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "author": "intomd fixtures",
+    "author": "ezmd fixtures",
     "content_hash": "sha256:71d917645af88a37c459cd2665552dafa14b992368b1a6f7aac6858a1cb24c54",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "pdf_heading_source": "font_size",
       "pdf_page_modes": "born_digital=1",
       "pdf_pages_converted": 1,
       "pdf_tagged": false
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "pages": 1,
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.pdf",
-    "source_hash": "sha256:6f6127015491ccd38ca875b67873de475316776ddce7990152580514cec5e8b2",
+    "source_hash": "sha256:4c59954b2cca66b906d9744a0b36a9260311abc905f339576343c8cb19608c16",
     "source_type": "pdf",
     "title": "Tidal Patterns in a Small Harbor",
     "tokens": {
@@ -334,14 +334,14 @@
       "transcript_segments": 0,
       "words": 103
     },
-    "duration_seconds": 0.014999999897554517,
+    "duration_seconds": 0.030999999959021807,
     "engine": "documents.pdfium_text",
     "engines_tried": [
       "documents.pdfium_text"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 1972
+    "input_bytes": 1970
   },
   "profile": "full",
   "provenance": [
@@ -412,14 +412,14 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 424,
+  "tokens_total": 430,
   "warnings": [
     {
       "block_id": null,
@@ -430,7 +430,7 @@
         "wanted": "docling"
       },
       "kind": "engine_fallback",
-      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
       "page": null,
       "severity": "warning"
     },

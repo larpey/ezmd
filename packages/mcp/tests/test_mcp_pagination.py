@@ -11,7 +11,7 @@ import tiktoken
 from conftest import call, make_server, text_of, unwrap
 from mcp import Client
 
-import intomd
+import ezmd
 
 
 def long_document(sections: int = 300) -> str:
@@ -37,7 +37,7 @@ def _tokens(text: str) -> int:
     try:
         enc = tiktoken.get_encoding("o200k_base")
     except Exception:  # offline without a cached encoding: the renderer's own counter
-        from intomd.render.tokens import count_o200k
+        from ezmd.render.tokens import count_o200k
 
         return count_o200k(text)
     return len(enc.encode(text, disallowed_special=()))
@@ -85,7 +85,7 @@ async def test_long_file_pages_fit_budget_and_rebuild_body(root: Path) -> None:
         assert body.count("```") % 2 == 0, "a page split inside a code block"
         last = body.rstrip().split("\n")[-1]
         assert not (last.startswith("|") and p["next_cursor"] and body.endswith("|---|")), "split in a table"
-    expected = intomd.convert(src, profile="agent").render("agent", max_tokens="none").body
+    expected = ezmd.convert(src, profile="agent").render("agent", max_tokens="none").body
     rebuilt = "\n\n".join(unwrap(p["content"]) for p in pages)
     assert rebuilt == unwrap(expected)
 
@@ -107,7 +107,7 @@ async def test_full_profile_walk_rebuilds_body(root: Path) -> None:
     assert len(pages) >= 3
     for p in pages:
         assert _tokens(p["_text"]) <= 2500 and "over_budget" not in p
-    expected = intomd.convert(src, profile="full").render("full", max_tokens="none").body
+    expected = ezmd.convert(src, profile="full").render("full", max_tokens="none").body
     assert "\n\n".join(unwrap(p["content"]) for p in pages) + "\n" == expected
     assert all("sections" not in p for p in pages[1:])
 

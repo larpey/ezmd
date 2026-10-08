@@ -1,4 +1,4 @@
-import type { IntomdWarning, Severity, WarningCodeInfo } from "@intomd/sdk";
+import type { EzmdWarning, Severity, WarningCodeInfo } from "@ezmd/sdk";
 
 import generated from "../generated/warning-codes.json";
 
@@ -15,7 +15,7 @@ export interface WarningRegistry {
 }
 
 /** Wording the web UI uses instead of the registry text (spec part4 4.1.2 step 8). */
-const UI_OVERRIDES: Readonly<Record<string, (w: IntomdWarning) => string>> = {
+const UI_OVERRIDES: Readonly<Record<string, (w: EzmdWarning) => string>> = {
   fetch_blocked_by_platform: () =>
     "This platform blocked our server. Upload the file directly, or install the browser extension to fetch from your own connection.",
   pages_without_text: (w) =>
@@ -33,7 +33,7 @@ const UI_OVERRIDES: Readonly<Record<string, (w: IntomdWarning) => string>> = {
 export const EXTENSION_DOCS_URL = "/docs/extension";
 const DEFAULT_ACTION = "Check the result against the original.";
 
-function numberDetail(w: IntomdWarning, ...keys: string[]): number | undefined {
+function numberDetail(w: EzmdWarning, ...keys: string[]): number | undefined {
   for (const k of keys) {
     const v = w.detail?.[k];
     if (typeof v === "number" && Number.isFinite(v)) return v;
@@ -68,22 +68,22 @@ export function registryFrom(list: readonly WarningCodeInfo[], base: WarningRegi
 }
 
 /** Raw kind as sent by the server (`kind`, or `code` on some surfaces). */
-export function warningKind(w: IntomdWarning): string {
+export function warningKind(w: EzmdWarning): string {
   return w.kind ?? w.code ?? "other";
 }
 
 /** Canonical code after alias normalization. */
-export function canonicalCode(w: IntomdWarning, reg: WarningRegistry = BUNDLED_REGISTRY): string {
+export function canonicalCode(w: EzmdWarning, reg: WarningRegistry = BUNDLED_REGISTRY): string {
   const k = warningKind(w);
   return reg.codes[k] ? k : (reg.aliases[k] ?? k);
 }
 
-export function warningSeverity(w: IntomdWarning, reg: WarningRegistry = BUNDLED_REGISTRY): Severity {
+export function warningSeverity(w: EzmdWarning, reg: WarningRegistry = BUNDLED_REGISTRY): Severity {
   return w.severity ?? reg.codes[canonicalCode(w, reg)]?.severity ?? "warning";
 }
 
 /** Suggested action: UI override, else the registry suggestion, else a generic fallback. Never empty. */
-export function suggestedAction(w: IntomdWarning, reg: WarningRegistry = BUNDLED_REGISTRY): string {
+export function suggestedAction(w: EzmdWarning, reg: WarningRegistry = BUNDLED_REGISTRY): string {
   const code = canonicalCode(w, reg);
   const override = UI_OVERRIDES[code];
   if (override) return override(w);
@@ -100,9 +100,9 @@ export function codesWithoutAction(codes: readonly string[], reg: WarningRegistr
 }
 
 /** Merges warnings from SSE events and the sidecar, dropping exact duplicates, preserving order. */
-export function mergeWarnings(...lists: ReadonlyArray<readonly IntomdWarning[] | undefined>): IntomdWarning[] {
+export function mergeWarnings(...lists: ReadonlyArray<readonly EzmdWarning[] | undefined>): EzmdWarning[] {
   const seen = new Set<string>();
-  const out: IntomdWarning[] = [];
+  const out: EzmdWarning[] = [];
   for (const list of lists) {
     for (const w of list ?? []) {
       const key = `${warningKind(w)}|${w.message}|${w.page ?? ""}|${w.block_id ?? ""}`;

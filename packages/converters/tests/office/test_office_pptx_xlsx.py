@@ -6,10 +6,10 @@ from collections.abc import Callable
 
 import pytest
 
-from intomd.ir import Comment, Document, Heading, Image, ListBlock, Paragraph, Slide, Table, WarningKind
-from intomd_converters.office.pptx import PptxConverter
-from intomd_converters.office.xlsx import XlsxConverter
-from intomd_converters.office.xlsx_cells import XCell, a1, col_letter, fmt_value, header_rows, regions
+from ezmd.ir import Comment, Document, Heading, Image, ListBlock, Paragraph, Slide, Table, WarningKind
+from ezmd_converters.office.pptx import PptxConverter
+from ezmd_converters.office.xlsx import XlsxConverter
+from ezmd_converters.office.xlsx_cells import XCell, a1, col_letter, fmt_value, header_rows, regions
 
 Run = Callable[..., Document]
 
@@ -188,7 +188,7 @@ def test_cell_helpers() -> None:
     ],
 )
 def test_number_formats(value: float, fmt: str, want: str | None) -> None:
-    from intomd_converters.office.numfmt import format_number
+    from ezmd_converters.office.numfmt import format_number
 
     assert format_number(value, fmt) == want
 

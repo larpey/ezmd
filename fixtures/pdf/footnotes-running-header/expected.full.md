@@ -3,19 +3,19 @@ title: "Harbor Lane Works Bulletin"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 pages: 3
 word_count: 161
 tokens: {o200k_base: 236, cl100k_base: 238, claude_approx: 255}
 content_hash: "sha256:380d2741754a0f62a2e70185f1482f8038b8282a196fc529df6edcb9d0ea6e3e"
-source_hash: "sha256:b1d2536bbaa82c91dc01584fbe37b69362c350b0fc067b9a057eaa2db1ae0fd7"
+source_hash: "sha256:1c0c86f940cbaab979819092882ae22b22ef433aa87083213f6bef2c4c5e9616"
 truncated: false
 warnings: [engine_fallback, removed_running_header_footer]
 injection_risk: none

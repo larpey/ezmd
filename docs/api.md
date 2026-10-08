@@ -15,7 +15,7 @@ npx -y @stoplight/spectral-cli@6.15.0 lint docs/api/openapi.json --ruleset apps/
 ```
 
 `apps/api/tests/test_api_openapi_lint.py` repeats the important checks in Python on every test run
-(and runs Spectral itself with `INTOMD_SPECTRAL=1`). Regenerate the file with
+(and runs Spectral itself with `EZMD_SPECTRAL=1`). Regenerate the file with
 `uv run python apps/api/scripts/export_openapi.py`; a test fails when it is stale.
 
 ## Endpoints
@@ -33,7 +33,7 @@ npx -y @stoplight/spectral-cli@6.15.0 lint docs/api/openapi.json --ruleset apps/
 | GET | `/v1/warnings` | The warning code registry: code, severity, family, description, suggestion, `truncates`, aliases |
 | GET | `/healthz` | Liveness |
 | GET | `/readyz` | Readiness: database, Redis, and a live worker |
-| POST | `/v1/fetch-node/{claim,heartbeat,upload,fail}` | Fetch-node protocol (mounted only when `INTOMD_FETCH_NODE_SECRET` is set; bearer secret and source CIDR checked; used from Phase 3) |
+| POST | `/v1/fetch-node/{claim,heartbeat,upload,fail}` | Fetch-node protocol (mounted only when `EZMD_FETCH_NODE_SECRET` is set; bearer secret and source CIDR checked; used from Phase 3) |
 
 ## Creating a job
 
@@ -47,10 +47,10 @@ Send either:
 `languages`, `extract_images`, `tracked_changes`, `comments`, `formulas`) and profile overrides as
 dotted keys (for example `"chunks.chunk_tokens": 600`). Limits are clamped to the caller's caps.
 
-These are the client-settable fields of the Python library's `intomd.library.Options`: the API's
+These are the client-settable fields of the Python library's `ezmd.library.Options`: the API's
 `ConvertOptionsIn` schema is generated from `Options` (same types and constraints, plus a 64-character
 cap on `asr_model` and at most 10 `languages`), and the worker converts through `Options`, so an
-options object that works with `intomd.convert(..., options=...)` works over REST and the other way
+options object that works with `ezmd.convert(..., options=...)` works over REST and the other way
 round. The remaining `Options` fields (`max_seconds`, `max_bytes`, `experimental`, `converter`,
 `allow_private_networks`, `extra`, `render`) are set by the server; sending them is `400
 invalid_request`. Omitted fields use the library defaults.
@@ -58,7 +58,7 @@ invalid_request`. Omitted fields use the library defaults.
 Query parameters on `POST /v1/convert`:
 
 - `wait` (seconds, max 60): block until the job finishes and return the rendered result directly;
-  the job metadata is in the `X-Intomd-Job` header.
+  the job metadata is in the `X-Ezmd-Job` header.
 - `format`: the result format when `wait` returns a result.
 
 Identical input, options, and profile from the same caller return the existing job with
@@ -72,7 +72,7 @@ rejected with `unsupported_media_type`.
 
 `queued`, `fetching`, `converting`, `rendering`, then one of `done`, `failed`, or `needs_user_action`
 (a URL that must be supplied by the user, for example from a residential-only host when no fetch
-node is online). Jobs expire after `INTOMD_RETENTION_HOURS`.
+node is online). Jobs expire after `EZMD_RETENTION_HOURS`.
 
 ## Results
 
@@ -88,7 +88,7 @@ node is online). Jobs expire after `INTOMD_RETENTION_HOURS`.
 
 `profile` defaults to the job's profile. Any other query parameter must be a dotted profile override
 (for example `chunks.chunk_tokens=600`). A result requested before the job is done returns
-`409 job_not_ready`. With `INTOMD_RETENTION_HOURS=0` the job is deleted after the first download.
+`409 job_not_ready`. With `EZMD_RETENTION_HOURS=0` the job is deleted after the first download.
 
 ## Server-sent events
 
@@ -105,11 +105,11 @@ node is online). Jobs expire after `INTOMD_RETENTION_HOURS`.
 | `needs_user_action` | What the job needs; the stream ends |
 
 A `: keepalive` comment is sent every 15 seconds and a stream closes after one hour. Connections per
-client are capped by `INTOMD_ANON_SSE_MAX`.
+client are capped by `EZMD_ANON_SSE_MAX`.
 
 ## Authentication and limits
 
-Anonymous use is allowed unless `INTOMD_REQUIRE_API_KEY=true`; API keys are sent as `X-API-Key`.
+Anonymous use is allowed unless `EZMD_REQUIRE_API_KEY=true`; API keys are sent as `X-API-Key`.
 When Turnstile is enabled, URL jobs need a `turnstile_token` in the JSON body; a successful check sets
 a short-lived challenge cookie. Responses carry `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and
 `X-RateLimit-Reset`; `429 rate_limited` and `503 queue_unavailable` include `Retry-After`. Defaults are
@@ -117,10 +117,10 @@ in [Self-hosting](selfhost.md#api-environment-variables).
 
 ## API keys
 
-Keys come from two places, and both store only `HMAC-SHA256(INTOMD_KEY_PEPPER, key)`:
+Keys come from two places, and both store only `HMAC-SHA256(EZMD_KEY_PEPPER, key)`:
 
-- the `api_keys` table, managed with `intomd-admin keys create|list|revoke`;
-- the bootstrap file at `INTOMD_KEYS_FILE` (`keys.json`, mode 600), read at startup and re-read within
+- the `api_keys` table, managed with `ezmd-admin keys create|list|revoke`;
+- the bootstrap file at `EZMD_KEYS_FILE` (`keys.json`, mode 600), read at startup and re-read within
   a few seconds of any change. A malformed file stops the API at startup; a file that becomes
   malformed later keeps the previously loaded keys and logs an error.
 
@@ -136,7 +136,7 @@ Keys come from two places, and both store only `HMAC-SHA256(INTOMD_KEY_PEPPER, k
     "limits": {"requests_per_window": 200, "window_s": 60, "requests_per_day": 10000, "concurrency": 3,
                "max_upload_mb": 200, "max_duration_s": 3600, "max_pages": 10000},
     "ips": ["203.0.113.0/24"],
-    "user_agents": ["intomd-obsidian/*"],
+    "user_agents": ["ezmd-obsidian/*"],
     "allowed_sources": ["*"],
     "disabled_sources": [],
     "residential_allowed": false,
@@ -148,7 +148,7 @@ Keys come from two places, and both store only `HMAC-SHA256(INTOMD_KEY_PEPPER, k
 
 Every field except `name` and one of `key_hash` / `key` is optional (defaults shown). A plaintext
 `key` (8 to 256 characters) is accepted for compatibility and hashed at load, but `key_hash` is
-preferred: `intomd-admin keys create --store file --name NAME` appends an entry with the hash and
+preferred: `ezmd-admin keys create --store file --name NAME` appends an entry with the hash and
 prints the key once. Unknown fields are rejected (typos fail loudly). `ips` (CIDRs) and `user_agents`
 (globs) restrict where a key may be used (`403 forbidden` otherwise); `allowed_sources` /
 `disabled_sources` are host globs checked for URL inputs. Expired keys are `401 unauthorized`.
@@ -156,46 +156,46 @@ prints the key once. Unknown fields are rejected (typos fail loudly). `ips` (CID
 
 ## Warning codes
 
-`GET /v1/warnings` returns every warning code (`intomd.warnings.codes`) with its default severity,
+`GET /v1/warnings` returns every warning code (`ezmd.warnings.codes`) with its default severity,
 family, description, suggested action, whether it means content was cut (`truncates`), and the retired
 spellings that normalize to it (`aliases`). `GET /v1/jobs/{id}` includes `warnings`: the canonical
 codes the conversion emitted, without duplicates, in first-seen order, next to `warnings_count`.
 
 ## Metrics
 
-`GET /metrics` serves Prometheus text format. It exists only when `INTOMD_METRICS_TOKEN` (16+
+`GET /metrics` serves Prometheus text format. It exists only when `EZMD_METRICS_TOKEN` (16+
 characters) is set, and every scrape must send `Authorization: Bearer <token>`; Caddy also returns 404
 for `/metrics` at the public edge. It is not in `openapi.json`. Series:
 
 | Series | Type | Labels |
 |---|---|---|
-| `intomd_jobs` | gauge | `state`, `queue` (job rows until purged) |
-| `intomd_queue_depth` | gauge | `queue` (queued jobs) |
-| `intomd_jobs_finished_total` | counter | `state` (done, failed, needs_user_action), `queue` |
-| `intomd_conversion_duration_seconds` | histogram | `converter` |
-| `intomd_warnings_total` | counter | `code` |
-| `intomd_rate_limited_total` | counter | `reason` (create, result, sse, concurrency, active_job_cap, fetch-claim) |
-| `intomd_fetch_node_online` | gauge | `node_id` (1 per node seen in the last 60 s) |
-| `intomd_fetch_nodes_online` | gauge | none (count; alert on `== 0`) |
-| `intomd_build_info` | gauge | `version` |
+| `ezmd_jobs` | gauge | `state`, `queue` (job rows until purged) |
+| `ezmd_queue_depth` | gauge | `queue` (queued jobs) |
+| `ezmd_jobs_finished_total` | counter | `state` (done, failed, needs_user_action), `queue` |
+| `ezmd_conversion_duration_seconds` | histogram | `converter` |
+| `ezmd_warnings_total` | counter | `code` |
+| `ezmd_rate_limited_total` | counter | `reason` (create, result, sse, concurrency, active_job_cap, fetch-claim) |
+| `ezmd_fetch_node_online` | gauge | `node_id` (1 per node seen in the last 60 s) |
+| `ezmd_fetch_nodes_online` | gauge | none (count; alert on `== 0`) |
+| `ezmd_build_info` | gauge | `version` |
 
 Counters live in Redis (memory in inline mode), so API and worker processes add to the same series.
 
 ## Admin CLI
 
-Administration is host-only: there are no admin HTTP endpoints. `intomd-admin` reads the same
-`INTOMD_*` environment as the API (`docker compose exec api intomd-admin ...`):
+Administration is host-only: there are no admin HTTP endpoints. `ezmd-admin` reads the same
+`EZMD_*` environment as the API (`docker compose exec api ezmd-admin ...`):
 
 | Command | Does |
 |---|---|
-| `intomd-admin keys create --name NAME [--store db\|file] [--env live] [limits...]` | Create a key and print it once |
-| `intomd-admin keys list [--json]` | Database and file keys with their limits (never hashes or keys) |
-| `intomd-admin keys revoke ID` | Revoke a database key (`key_...`) or remove a file key (`kf_...`) |
-| `intomd-admin jobs list [--state STATE\|active] [--limit N] [--json]` | Most recent jobs |
-| `intomd-admin jobs kill ID` | Fail an active job and cancel or stop its RQ job |
-| `intomd-admin reap [--now] [--temp-age-s N]` | One reaper pass: expired claims, stale jobs, expired jobs, orphaned temp dirs |
+| `ezmd-admin keys create --name NAME [--store db\|file] [--env live] [limits...]` | Create a key and print it once |
+| `ezmd-admin keys list [--json]` | Database and file keys with their limits (never hashes or keys) |
+| `ezmd-admin keys revoke ID` | Revoke a database key (`key_...`) or remove a file key (`kf_...`) |
+| `ezmd-admin jobs list [--state STATE\|active] [--limit N] [--json]` | Most recent jobs |
+| `ezmd-admin jobs kill ID` | Fail an active job and cancel or stop its RQ job |
+| `ezmd-admin reap [--now] [--temp-age-s N]` | One reaper pass: expired claims, stale jobs, expired jobs, orphaned temp dirs |
 
-The reaper (also run by the API scheduler every 30 s and by `python -m intomd_api.purge`) fails
+The reaper (also run by the API scheduler every 30 s and by `python -m ezmd_api.purge`) fails
 jobs nobody updated for longer than their queue's timeout plus 150 s with `timeout`, unless the job
 is still waiting in its queue. `--now` drops the 150 s grace.
 

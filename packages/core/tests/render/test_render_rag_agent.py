@@ -7,10 +7,10 @@ import re
 
 from render_builders import heading, make_result, para, prov, span, table
 
-from intomd.ir import CodeBlock, Paragraph, SourceType
-from intomd.render import render
-from intomd.render.injection import fence_id, scan
-from intomd.render.tokens import count_o200k
+from ezmd.ir import CodeBlock, Paragraph, SourceType
+from ezmd.render import render
+from ezmd.render.injection import fence_id, scan
+from ezmd.render.tokens import count_o200k
 
 SENTENCE = "The depot moved pallets across four docks while crews rotated on evening shifts. "
 

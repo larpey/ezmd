@@ -5,7 +5,7 @@
 #   vX.Y.Z      final: images, PyPI, npm, MCP registry, GitHub release.
 #
 # HUMAN GATES (docs/selfhost.md "Releases"): nothing is published to TestPyPI, PyPI, npm or the MCP
-# registry unless (1) the repository variable INTOMD_PUBLISH_ENABLED is "true" and (2) the
+# registry unless (1) the repository variable EZMD_PUBLISH_ENABLED is "true" and (2) the
 # `release` environment exists with required reviewers (checked by `publish-gate`; the job fails
 # otherwise). Every PyPI/npm/MCP job runs in `environment: release`, so a reviewer must approve each
 # final release; TestPyPI uses `environment: testpypi`. Publishing uses OIDC trusted publishing only:
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: [intomd, intomd-converters, intomd-mcp]
+        package: [ezmd, ezmd-converters, ezmd-mcp]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
@@ -73,7 +73,7 @@ jobs:
 
   publish-gate:
     # Decides whether this tag may publish at all. Skips publishing (with a notice) until the owner
-    # sets INTOMD_PUBLISH_ENABLED=true; fails if it is set but the `release` environment has no
+    # sets EZMD_PUBLISH_ENABLED=true; fails if it is set but the `release` environment has no
     # required reviewers, so an unprotected environment can never publish.
     needs: preflight
     runs-on: ubuntu-latest
@@ -86,10 +86,10 @@ jobs:
       - id: gate
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ENABLED: ${{ vars.INTOMD_PUBLISH_ENABLED }}
+          ENABLED: ${{ vars.EZMD_PUBLISH_ENABLED }}
         run: |
           if [ "$ENABLED" != "true" ]; then
-            echo "::notice::INTOMD_PUBLISH_ENABLED is not true; skipping TestPyPI/PyPI/npm/MCP publishing"
+            echo "::notice::EZMD_PUBLISH_ENABLED is not true; skipping TestPyPI/PyPI/npm/MCP publishing"
             echo "enabled=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -110,7 +110,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [intomd, intomd-converters, intomd-mcp]
+        package: [ezmd, ezmd-converters, ezmd-mcp]
     environment:
       name: testpypi
       url: https://test.pypi.org/project/${{ matrix.package }}/${{ needs.preflight.outputs.pep440 }}/
@@ -132,7 +132,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [intomd, intomd-converters, intomd-mcp]
+        package: [ezmd, ezmd-converters, ezmd-mcp]
     environment:
       name: release
       url: https://pypi.org/project/${{ matrix.package }}/${{ needs.preflight.outputs.pep440 }}/
@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: release
-      url: https://www.npmjs.com/package/@intomd/sdk
+      url: https://www.npmjs.com/package/@ezmd/sdk
     permissions:
       contents: read
       id-token: write
@@ -161,7 +161,7 @@ jobs:
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version: "22", registry-url: "https://registry.npmjs.org", cache: pnpm }
-      - run: pnpm install --frozen-lockfile && pnpm -F @intomd/sdk build
+      - run: pnpm install --frozen-lockfile && pnpm -F @ezmd/sdk build
       - name: publish (trusted publishing)
         working-directory: packages/sdk-ts
         run: npx --yes npm@11.21.0 publish --provenance --access public
@@ -213,7 +213,7 @@ jobs:
           if node -e "process.exit(require('./apps/extension/package.json').scripts?.build ? 0 : 1)"; then
             pnpm -F ./apps/extension build
             for b in chrome firefox; do
-              [ -d "apps/extension/dist/$b" ] && (cd apps/extension/dist && zip -qr "../../../dist/intomd-extension-$b-${GITHUB_REF_NAME}.zip" "$b")
+              [ -d "apps/extension/dist/$b" ] && (cd apps/extension/dist && zip -qr "../../../dist/ezmd-extension-$b-${GITHUB_REF_NAME}.zip" "$b")
             done
           fi
           ls -la dist

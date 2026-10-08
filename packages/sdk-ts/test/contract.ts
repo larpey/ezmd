@@ -1,5 +1,5 @@
 // Compile-time contract between the public types (src/types.ts) and the generated OpenAPI types
-// (src/openapi.d.ts). `pnpm -F @intomd/sdk typecheck` fails when a schema gains a field the SDK does not
+// (src/openapi.d.ts). `pnpm -F @ezmd/sdk typecheck` fails when a schema gains a field the SDK does not
 // expose, or the SDK exposes a field the API no longer serves (except the documented extras below).
 import type { components } from "../src/openapi.js";
 import type {

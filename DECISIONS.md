@@ -361,3 +361,13 @@ Decision: The golden corpus is 94 fixtures (85 outside email), all self-generate
 Alternatives: count fixtures without independent review (rejected: two Skeptic reviews rejected 4 of 23 and flagged 6 risky heuristics, all fixed in code).
 Consequences: the fixture count and converter matrix must be regenerated when fixtures change (drift tests enforce it). Deferred: render/tables._html does not fill missing cells (the xlsx converter works around it).
 Council: not convened.
+
+## D-0037: Rename intomd to ezmd before the first release
+Date: 2026-10-08
+Task: P1-T16
+Status: accepted (owner decision)
+Context: The owner found "intomd" generic (it names the category, not a product). Nothing had been published (the v0.1.0-rc1 run was cancelled before any upload), so a rename was still free.
+Decision: Rename everything to ezmd ("easy md"): PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp`; import packages `ezmd`, `ezmd_converters`, `ezmd_mcp`, `ezmd_api`, `ezmd_fetch_node`; CLI `ezmd`, `ezmd-mcp`, `ezmd-admin`, `ezmd-score`, `ezmd-golden`; env vars `EZMD_*`; npm `@ezmd/sdk`; images `ghcr.io/larpey/ezmd-*`; MCP name `io.github.larpey/ezmd`; repository `larpey/ezmd`. Checked on 2026-10-08: the PyPI names and the npm `@ezmd` scope were free; npm `ezmd` (unscoped) is a 2015 README previewer, which does not matter since the SDK is scoped; github.com/ezmd is an empty organization, so the repository lives under larpey; the only USPTO mark for EZMD (serial 87153758, health-information website) is dead/abandoned. Entries before this one keep the name intomd (append-only); fixture inputs that contained the old name were regenerated from their generators and every golden was regenerated, with a diff check showing only the name, version stamps, content hashes, and runtime fields changed.
+Alternatives: keep intomd (clear but generic); n2md ("into" pun, reads as "N-format to md", collides with a Notion converter of the same name); omd (collides with the Checkmk `omd` command and crowded search); markitall (too close to Microsoft's MarkItDown).
+Consequences: CI and image names change; old `INTOMD_*` variables are not read (no deployments exist yet). The npm `ezmd` org and the ezmd.dev domain should be registered by the owner to hold the name.
+Council: not convened (owner decision).

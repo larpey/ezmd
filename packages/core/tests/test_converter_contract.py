@@ -9,10 +9,10 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import Detected, InputRef
-from intomd.ir import Document
-from intomd.registry import FAMILIES, ConversionError, Converter, ConvertOptions, default_registry
+from ezmd.detect import detect
+from ezmd.inputs import Detected, InputRef
+from ezmd.ir import Document
+from ezmd.registry import FAMILIES, ConversionError, Converter, ConvertOptions, default_registry
 
 ROOT = Path(__file__).resolve().parents[3]
 ID_RE = re.compile(r"^[a-z]+\.[a-z0-9_]+$")
@@ -46,7 +46,7 @@ def test_id_and_family(conv: Converter) -> None:
 @pytest.mark.parametrize("conv", CONVERTERS, ids=_ids())
 def test_can_handle_nothing_is_zero_and_fast(conv: Converter) -> None:
     ref = InputRef.from_bytes(b"x", filename="x")
-    ref.detected = Detected(mime="application/x-intomd-nothing", extension=None, confidence=1.0)
+    ref.detected = Detected(mime="application/x-ezmd-nothing", extension=None, confidence=1.0)
     assert conv.can_handle(ref) == 0.0
     # Best of 5 so one scheduler hiccup on a shared CI runner cannot fail the 10 ms contract.
     timings = []

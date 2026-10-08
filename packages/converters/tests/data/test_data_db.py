@@ -10,14 +10,14 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import Detected, InputRef
-from intomd.ir import CodeBlock, Document, Heading, ListBlock, Table, WarningKind
-from intomd.pipeline import convert_ref
-from intomd.registry import ConvertOptions, Unavailable
-from intomd_converters import data as family
-from intomd_converters.data.connstr import ConnectionStringConverter, looks_like_connection_string, redacted
-from intomd_converters.data.sqlite_conv import SqliteConverter
+from ezmd.detect import detect
+from ezmd.inputs import Detected, InputRef
+from ezmd.ir import CodeBlock, Document, Heading, ListBlock, Table, WarningKind
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConvertOptions, Unavailable
+from ezmd_converters import data as family
+from ezmd_converters.data.connstr import ConnectionStringConverter, looks_like_connection_string, redacted
+from ezmd_converters.data.sqlite_conv import SqliteConverter
 
 Convert = Callable[..., Document]
 FIXTURES = Path(__file__).resolve().parents[4] / "fixtures"
@@ -93,7 +93,7 @@ def test_sqlite_encrypted_header(convert: Convert) -> None:
 
 
 def test_sqlite_corrupt_raises(convert: Convert) -> None:
-    from intomd.registry import ConversionError
+    from ezmd.registry import ConversionError
 
     bad = b"SQLite format 3" + bytes([0]) + bytes([0xFF]) * 4000
     with pytest.raises(ConversionError):
@@ -119,7 +119,7 @@ def test_parquet_unavailable_or_fixture_matches() -> None:
         conv = convs["data.parquet"]
         assert isinstance(conv, Unavailable) and conv.requires_extras == ("data",)
         return
-    from intomd.testing.fixtures import Fixture, load_meta, run_fixture
+    from ezmd.testing.fixtures import Fixture, load_meta, run_fixture
 
     case = FIXTURES / "data" / "parquet-basic"
     run = run_fixture(Fixture(path=case, meta=load_meta(case)), FIXTURES)
@@ -207,7 +207,7 @@ def test_detection_routes_fixtures(case: str, converter: str) -> None:
 
 
 def test_wide_and_long_tables_render_with_csv_attachment() -> None:
-    from intomd.render import render
+    from ezmd.render import render
 
     for case in ("csv-wide", "csv-long"):
         ref = InputRef.from_path(FIXTURES / "data" / case / "input.csv")
@@ -226,8 +226,8 @@ def test_wide_and_long_tables_render_with_csv_attachment() -> None:
 def test_csv_attachments_match_expected(case: str) -> None:
     """The CSV attachments the renderer writes (six-column and fifty-row rules) are byte-exact against
     `expected.table-NN.csv` in the fixture directory."""
-    from intomd.render import render
-    from intomd.testing.fixtures import PINNED_TIME
+    from ezmd.render import render
+    from ezmd.testing.fixtures import PINNED_TIME
 
     d = FIXTURES / "data" / case
     path = next(d.glob("input.*"))
@@ -240,3 +240,16 @@ def test_csv_attachments_match_expected(case: str) -> None:
     got = {"expected." + a.path.split("/", 1)[1]: a.data for a in out.attachments if a.path.startswith("tables/")}
     want = {f.name: f.read_bytes() for f in d.glob("expected.table-*.csv")}
     assert want and got == want
+
+
+def test_parquet_statistic_timestamps_render_the_same_for_naive_and_aware_utc() -> None:
+    """Older pyarrow yields zone-aware statistics as naive UTC, newer as aware datetimes: same text either way."""
+    import datetime as dt
+
+    from ezmd_converters.data.parquet_conv import _stat_text
+
+    naive = dt.datetime(2026, 1, 7, 5, 0)
+    assert _stat_text(naive) == "2026-01-07T05:00:00Z"
+    assert _stat_text(naive.replace(tzinfo=dt.UTC)) == "2026-01-07T05:00:00Z"
+    plus_two = dt.timezone(dt.timedelta(hours=2))
+    assert _stat_text(dt.datetime(2026, 1, 7, 7, 0, tzinfo=plus_two)) == "2026-01-07T05:00:00Z"

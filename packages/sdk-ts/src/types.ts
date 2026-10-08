@@ -20,7 +20,7 @@ export const TERMINAL_STATES: readonly JobState[] = ["done", "failed", "needs_us
 export type Severity = "info" | "warning" | "error";
 
 /** A conversion warning (part1 section 4 `Warning`). Rendered verbatim by every interface. */
-export interface IntomdWarning {
+export interface EzmdWarning {
   kind: string;
   /** Some surfaces call the kind `code`; both are accepted. */
   code?: string;
@@ -186,7 +186,7 @@ export interface Sidecar {
   schema?: string;
   profile?: string;
   metrics?: Record<string, unknown>;
-  warnings?: IntomdWarning[];
+  warnings?: EzmdWarning[];
   document?: Record<string, unknown>;
   [key: string]: unknown;
 }
@@ -194,7 +194,7 @@ export interface Sidecar {
 export type JobEvent =
   | { type: "progress"; progress: number; stage_message?: string }
   | { type: "state"; state: JobState }
-  | { type: "warning"; warning: IntomdWarning }
+  | { type: "warning"; warning: EzmdWarning }
   | { type: "done"; result_url?: string; tokens?: number; warnings_count?: number }
   | { type: "failed"; error: ErrorBody }
   | { type: "needs_user_action"; needs_action: NeedsAction };

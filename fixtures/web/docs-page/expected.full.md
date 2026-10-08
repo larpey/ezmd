@@ -3,8 +3,8 @@ title: "Configuration reference"
 source: "https://docs.example.test/quayside/reference/config.html"
 source_type: web
 converter: web.trafilatura
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block

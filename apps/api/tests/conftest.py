@@ -8,8 +8,8 @@ import httpx
 import pytest
 from fastapi import FastAPI
 
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, make_settings, use_in_process_isolation
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, make_settings, use_in_process_isolation
 
 
 @pytest.fixture(autouse=True)
@@ -21,7 +21,7 @@ def _fast_isolation(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPa
 @pytest.fixture(autouse=True)
 def _no_network(monkeypatch: pytest.MonkeyPatch) -> None:
     """Tests never touch the network; tests that exercise fetching patch netguard.fetch themselves."""
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     def offline(url: str, **kwargs: Any) -> Any:
         raise netguard.FetchFailed("network disabled in tests", url=url)

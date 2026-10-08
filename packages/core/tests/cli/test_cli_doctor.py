@@ -1,4 +1,4 @@
-"""`intomd doctor` (part4 4.2.2 item 5): MISSING rows exit 2 only when an installed extra needs them."""
+"""`ezmd doctor` (part4 4.2.2 item 5): MISSING rows exit 2 only when an installed extra needs them."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ import json
 import pytest
 from typer.testing import CliRunner
 
-import intomd.cli.doctor as doctor
-from intomd.cli import app
+import ezmd.cli.doctor as doctor
+from ezmd.cli import app
 
 runner = CliRunner()
 
@@ -44,11 +44,11 @@ def test_missing_ffmpeg_with_media_exits_2(monkeypatch: pytest.MonkeyPatch) -> N
 
 
 def test_rows_cover_the_spec_checks(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_REDIS_URL", "redis://127.0.0.1:1/0")
+    monkeypatch.setenv("EZMD_REDIS_URL", "redis://127.0.0.1:1/0")
     monkeypatch.setattr(doctor, "installed_extras", lambda: {"docs"})
     payload = json.loads(runner.invoke(app, ["doctor", "--json"]).stdout)
     names = {c["name"] for c in payload["checks"]}
-    expected = {"python", "intomd", "ffmpeg", "ffprobe", "pandoc", "libreoffice", "libmagic", "magika model"}
+    expected = {"python", "ezmd", "ffmpeg", "ffprobe", "pandoc", "libreoffice", "libmagic", "magika model"}
     assert expected | {"cache dir", "config dir", "redis", "docling", "extra: media"} <= names
     assert _row(payload, "redis")["status"] == "MISSING"  # configured but unreachable
     assert payload["exit_code"] == 2

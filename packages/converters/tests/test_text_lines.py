@@ -1,12 +1,12 @@
-"""Shared plain-text line joining (intomd_converters.text.lines) through text.plain and the renderer."""
+"""Shared plain-text line joining (ezmd_converters.text.lines) through text.plain and the renderer."""
 
 from __future__ import annotations
 
-from intomd.inputs import InputRef
-from intomd.ir import Paragraph, spans_text
-from intomd.pipeline import convert_ref
-from intomd.render import render
-from intomd_converters.text.lines import join_lines
+from ezmd.inputs import InputRef
+from ezmd.ir import Paragraph, spans_text
+from ezmd.pipeline import convert_ref
+from ezmd.render import render
+from ezmd_converters.text.lines import join_lines
 
 PROSE = (
     "The heron survey on the east marsh ran for three weeks in early spring\n"

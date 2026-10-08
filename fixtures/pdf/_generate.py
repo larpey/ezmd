@@ -121,7 +121,7 @@ def build(pages: Sequence[Page], title: str, *, tagged: bool = False) -> pikepdf
             pdf.pages[-1].obj.Annots = annots
     with pdf.open_metadata(set_pikepdf_as_editor=False, update_docinfo=False) as meta:
         meta["dc:title"] = title
-    pdf.docinfo = pdf.make_indirect(Dictionary(Title=String(title), Author=String("intomd fixtures")))
+    pdf.docinfo = pdf.make_indirect(Dictionary(Title=String(title), Author=String("ezmd fixtures")))
     if tagged:
         pdf.Root.MarkInfo = Dictionary(Marked=True)
         pdf.Root.Lang = String("en-US")

@@ -24,11 +24,11 @@ TAR_MTIME = 1767225600  # 2026-01-01T00:00:00Z
 
 
 def fake_hex(label: str, n: int = 40) -> str:
-    return hashlib.sha256(f"intomd-fixture-{label}".encode()).hexdigest()[:n]
+    return hashlib.sha256(f"ezmd-fixture-{label}".encode()).hexdigest()[:n]
 
 
 def fake_pem(label: str) -> str:
-    body = base64.b64encode((f"intomd fake key material for {label}; not a real key. " * 4).encode()).decode()
+    body = base64.b64encode((f"ezmd fake key material for {label}; not a real key. " * 4).encode()).decode()
     lines = [body[i : i + 64] for i in range(0, len(body), 64)]
     return NL.join(["-----BEGIN PRIVATE KEY-----", *lines, "-----END PRIVATE KEY-----"])
 
@@ -39,7 +39,7 @@ def lines(*rows: str) -> str:
 
 PY_MODULE = lines(
     "#!/usr/bin/env python3",
-    "# inventory.py: a tiny stock ledger used as an intomd fixture.",
+    "# inventory.py: a tiny stock ledger used as an ezmd fixture.",
     '"""Track stock levels per SKU and report items that need reordering."""',
     "",
     "from __future__ import annotations",
@@ -108,7 +108,7 @@ PY_MODULE = lines(
 )
 
 PLANTED = lines(
-    "# settings.py: application settings with planted fake secrets (intomd fixture).",
+    "# settings.py: application settings with planted fake secrets (ezmd fixture).",
     "import os",
     "",
     'DEBUG = os.environ.get("APP_DEBUG", "0") == "1"',
@@ -144,7 +144,7 @@ GO_FILE = lines(
 )
 
 TS_FILE = lines(
-    "// greeter.ts: a tiny TypeScript module (intomd fixture).",
+    "// greeter.ts: a tiny TypeScript module (ezmd fixture).",
     'import { format } from "./format";',
     "",
     "export interface Greeting {",
@@ -185,7 +185,7 @@ def repo_files() -> list[tuple[str, bytes]]:
     readme = lines(
         "# stockroom",
         "",
-        "A small inventory service used as an intomd repo-pack fixture.",
+        "A small inventory service used as an ezmd repo-pack fixture.",
         "",
         "Run `python -m stockroom` to print items that need reordering.",
     )
@@ -193,14 +193,14 @@ def repo_files() -> list[tuple[str, bytes]]:
         "[project]",
         'name = "stockroom"',
         'version = "0.1.0"',
-        'description = "Tiny inventory service (intomd fixture)."',
+        'description = "Tiny inventory service (ezmd fixture)."',
         'requires-python = ">=3.12"',
     )
     gitignore = lines("*.log", "!keep.log", "build/", "local_settings.py", "__pycache__/")
     nested_ignore = lines("scratch/", "*.tmp")
     lock = lines(*[f"package-{i:03d}==1.{i}.0 --hash=sha256:{fake_hex(f'lock{i}', 64)}" for i in range(80)])
     creds = lines(
-        "# Test credentials accidentally committed (fake values, intomd fixture).",
+        "# Test credentials accidentally committed (fake values, ezmd fixture).",
         f"aws_secret_access_key = {base64.b64encode(hashlib.sha256(b'aws-fixture').digest()).decode()[:40]}",
         f"auth_token: '{fake_hex('creds-token', 36)}'",
     )
@@ -251,7 +251,7 @@ def repo_files() -> list[tuple[str, bytes]]:
 
 SHELL_SCRIPT = lines(
     "#!/usr/bin/env bash",
-    "# backup.sh: rotate nightly database dumps (intomd fixture).",
+    "# backup.sh: rotate nightly database dumps (ezmd fixture).",
     "set -euo pipefail",
     "",
     'BACKUP_DIR="${BACKUP_DIR:-/var/backups/app}"',
@@ -277,7 +277,7 @@ SHELL_SCRIPT = lines(
 )
 
 RUST_FILE = lines(
-    "//! ledger.rs: a fixed-point ledger (intomd fixture).",
+    "//! ledger.rs: a fixed-point ledger (ezmd fixture).",
     "use std::collections::BTreeMap;",
     "use std::fmt;",
     "",
@@ -329,7 +329,7 @@ def scatter_files() -> list[tuple[str, bytes]]:
     """A repo whose secrets sit inside files that ARE packed (YAML, Markdown, JS, Dockerfile, INI), next to
     placeholders that must stay visible, plus credential files that are excluded outright."""
     root = "tidepool/"
-    readme = lines("# tidepool", "", "Sensor ingest service (intomd secret-scatter fixture).")
+    readme = lines("# tidepool", "", "Sensor ingest service (ezmd secret-scatter fixture).")
     ops = lines(
         "# Operations",
         "",

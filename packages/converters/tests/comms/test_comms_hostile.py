@@ -6,12 +6,12 @@ import time
 
 import pytest
 
-from intomd.inputs import InputRef
-from intomd.ir import WarningKind
-from intomd.registry import ConversionError, ConvertOptions
-from intomd_converters.comms.eml import EmlConverter
-from intomd_converters.comms.options import CommsOptions
-from intomd_converters.comms.parse_eml import parse_message_bytes
+from ezmd.inputs import InputRef
+from ezmd.ir import WarningKind
+from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.comms.eml import EmlConverter
+from ezmd_converters.comms.options import CommsOptions
+from ezmd_converters.comms.parse_eml import parse_message_bytes
 
 HEAD = b"From: a@x.org\r\nTo: b@x.org\r\nSubject: Hostile\r\nDate: Wed, 02 Oct 2024 12:00:00 +0000\r\n"
 
@@ -88,7 +88,7 @@ def test_deadline_is_enforced(mk) -> None:
 
 
 def test_oversized_input_is_refused(mk) -> None:
-    from intomd.context import Limits
+    from ezmd.context import Limits
 
     ref = InputRef.from_bytes(mk("Big", "x" * 5000 + "\n").as_bytes(), filename="m.eml")
     opts = ConvertOptions()
@@ -99,7 +99,7 @@ def test_oversized_input_is_refused(mk) -> None:
 
 def test_garbage_is_not_claimed() -> None:
     ref = InputRef.from_bytes(b"\x00\x01binary junk", filename="x.bin")
-    from intomd.detect import detect
+    from ezmd.detect import detect
 
     ref.detected = detect(ref)
     assert EmlConverter().can_handle(ref) == 0.0

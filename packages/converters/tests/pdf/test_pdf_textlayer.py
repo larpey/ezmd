@@ -8,14 +8,14 @@ import pytest
 from conftest import FIXTURES, TextOp, convert_path, new_pdf, save
 from pikepdf import Array, Dictionary, Name
 
-import intomd_converters.pdf as pdf_family
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Heading, ListBlock, PageBreak, Paragraph, Table, WarningKind, spans_text
-from intomd.registry import ConverterRegistry, ConvertOptions, Unavailable
-from intomd_converters.pdf import converter as converter_mod
-from intomd_converters.pdf.layout import Item, detect_tables, order_items, running_lines, size_levels
-from intomd_converters.pdf.textlayer import Line, PageText
+import ezmd_converters.pdf as pdf_family
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Heading, ListBlock, PageBreak, Paragraph, Table, WarningKind, spans_text
+from ezmd.registry import ConverterRegistry, ConvertOptions, Unavailable
+from ezmd_converters.pdf import converter as converter_mod
+from ezmd_converters.pdf.layout import Item, detect_tables, order_items, running_lines, size_levels
+from ezmd_converters.pdf.textlayer import Line, PageText
 
 
 def _headings(doc: object) -> list[tuple[int, str]]:
@@ -128,7 +128,7 @@ def test_born_digital_headings_lists_links_hyphenation() -> None:
         assert b.provenance.source_page is not None
         if not isinstance(b, PageBreak):
             assert b.provenance.bbox is not None
-    assert doc.metadata.title == "Harbor Lane Annual Report" and doc.metadata.author == "intomd fixtures"
+    assert doc.metadata.title == "Harbor Lane Annual Report" and doc.metadata.author == "ezmd fixtures"
 
 
 def test_keep_running_headers_option() -> None:

@@ -3,19 +3,19 @@ title: "Berth register"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 pages: 3
 word_count: 191
 tokens: {o200k_base: 553, cl100k_base: 554, claude_approx: 597}
 content_hash: "sha256:8abea3991c2bb09ef1b9ee41f2aa636997c429a0387b0b3bce5129224f1f437c"
-source_hash: "sha256:33afe85c50d98abe747ce5d12882127f7246032c6a91b3085d179e6fc897bbfd"
+source_hash: "sha256:7b843eb7a0d61933cc7d32c6ddd40648638eadedce7f5e006a5c7267cae37689"
 truncated: false
 warnings: [engine_fallback, removed_running_header_footer]
 injection_risk: none

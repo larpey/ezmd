@@ -3,22 +3,22 @@ title: "Kitchen Sink"
 source: "input.md"
 source_type: markdown
 converter: text.markdown_passthrough
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 word_count: 160
 tokens: {o200k_base: 426, cl100k_base: 425, claude_approx: 460}
 content_hash: "sha256:fd8be2c3ae23327454ad1d09e2fb30e74fff96d856fef1789a4545c1cea1bae4"
-source_hash: "sha256:186a2ac6addb6269e4049da85f4f3cd2787039c3ffeaae465297cf0eb2de2559"
+source_hash: "sha256:bd86dc43b6a19318b6460d42e06bc6333d6a26c3cfd3f6d349c7cefb948a15eb"
 truncated: false
 warnings: []
 injection_risk: none
-extra: {encoding: utf-8, front_matter: "title: Kitchen Sink\nauthor: intomd fixtures"}
+extra: {encoding: utf-8, front_matter: "title: Kitchen Sink\nauthor: ezmd fixtures"}
 ---
 > Sections: 1 Lists, 2 Code, 3 Quote, 4 Table, 5 Image, 6 Footnotes. 1 table, 1 figure.
 

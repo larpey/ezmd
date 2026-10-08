@@ -1,6 +1,6 @@
 # Plain text and Markdown
 
-Package `intomd_converters.text`, converters `text.plain` and `text.markdown_passthrough` (family `text`).
+Package `ezmd_converters.text`, converters `text.plain` and `text.markdown_passthrough` (family `text`).
 These are the reference implementation for the converter contract; see [Writing a converter
 plugin](../plugins.md).
 

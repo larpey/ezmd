@@ -219,15 +219,15 @@
     "content_hash": "sha256:d731adb953b4582468adedf4e81ad00f94378282fc0ceddae6a059152a215030",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "encoding": "utf-8",
       "next_page": "https://boats.example.test/build-a-dinghy?page=2",
       "readability_ratio": 1.0
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "en",
     "profile": "full",
     "provenance": "block",
@@ -279,7 +279,7 @@
       "transcript_segments": 0,
       "words": 72
     },
-    "duration_seconds": 0.0940000000409782,
+    "duration_seconds": 0.1559999999590218,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
@@ -319,14 +319,14 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 395,
+  "tokens_total": 398,
   "warnings": [
     {
       "block_id": null,

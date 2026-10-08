@@ -7,7 +7,7 @@ import { parseCodes } from "../../scripts/gen-warning-codes.mjs";
 import generated from "../generated/warning-codes.json";
 import { BUNDLED_REGISTRY, canonicalCode, clock, codesWithoutAction, registryFrom, suggestedAction, warningSeverity } from "./warnings";
 
-const CODES_PY = fileURLToPath(new URL("../../../../packages/core/src/intomd/warnings/codes.py", import.meta.url));
+const CODES_PY = fileURLToPath(new URL("../../../../packages/core/src/ezmd/warnings/codes.py", import.meta.url));
 const hasCore = existsSync(CODES_PY);
 
 function core(): { members: string[]; codes: Record<string, { aliases: string[] }> } {
@@ -16,7 +16,7 @@ function core(): { members: string[]; codes: Record<string, { aliases: string[] 
 
 describe("warning suggestion coverage (spec part4 4.1.3)", () => {
   it.skipIf(!hasCore)("src/generated/warning-codes.json is fresh", () => {
-    // If this fails: `pnpm -F @intomd/web gen:warnings`.
+    // If this fails: `pnpm -F @ezmd/web gen:warnings`.
     expect(generated).toEqual(Object.fromEntries(Object.entries(core().codes).sort(([a], [b]) => a.localeCompare(b))));
   });
 

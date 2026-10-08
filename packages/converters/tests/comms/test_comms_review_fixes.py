@@ -5,11 +5,11 @@ from __future__ import annotations
 
 from email import policy
 
-from intomd.detect import detect, looks_like_rfc822
-from intomd.inputs import InputRef
-from intomd.ir import Paragraph, Provenance, Quote, Table, WarningKind, spans_text
-from intomd_converters.comms.body_text import logical_lines, text_blocks
-from intomd_converters.comms.build import table_rows
+from ezmd.detect import detect, looks_like_rfc822
+from ezmd.inputs import InputRef
+from ezmd.ir import Paragraph, Provenance, Quote, Table, WarningKind, spans_text
+from ezmd_converters.comms.body_text import logical_lines, text_blocks
+from ezmd_converters.comms.build import table_rows
 
 
 def _texts(blocks) -> list[str]:

@@ -297,9 +297,9 @@
     "content_hash": "sha256:c1db24de482c387046935f28ff9fa4bfdf9221a405e9a17f0920c4b722e674af",
     "converter_id": "documents.pdfium_text",
     "metadata": {
-      "author": "intomd fixtures",
+      "author": "ezmd fixtures",
       "authors": [
-        "intomd fixtures"
+        "ezmd fixtures"
       ],
       "canonical_url": null,
       "description": null,
@@ -342,7 +342,7 @@
           "wanted": "docling"
         },
         "kind": "engine_fallback",
-        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
         "page": null,
         "severity": "warning"
       },
@@ -360,27 +360,27 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "author": "intomd fixtures",
+    "author": "ezmd fixtures",
     "content_hash": "sha256:9a86b7e36ade49008aa6a8ca7c8f540cc11f219c60e6337f992e9935bad9160d",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "pdf_heading_source": "structure_tree",
       "pdf_page_modes": "born_digital=1",
       "pdf_pages_converted": 1,
       "pdf_tagged": true
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "en-US",
     "pages": 1,
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.pdf",
-    "source_hash": "sha256:5d8051365a2c2cbb6cc8d4bea860573d8a0952e486a9ea700922382a2393a516",
+    "source_hash": "sha256:9808ab3fe48d3fc2e3b82366c2d57d7f5587e42f2dbb842dc78ea1fe427b6866",
     "source_type": "pdf",
     "title": "Port safety handbook",
     "tokens": {
@@ -428,7 +428,7 @@
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 2678
+    "input_bytes": 2676
   },
   "profile": "full",
   "provenance": [
@@ -529,7 +529,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0004",
@@ -563,7 +563,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 376,
+  "tokens_total": 381,
   "warnings": [
     {
       "block_id": null,
@@ -574,7 +574,7 @@
         "wanted": "docling"
       },
       "kind": "engine_fallback",
-      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
       "page": null,
       "severity": "warning"
     },

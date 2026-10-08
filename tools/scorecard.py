@@ -1,6 +1,6 @@
 """Golden-fixture scorecard: per-family and per-converter fixture count, mean/min score, threshold, pass/fail.
 
-Runs every fixture under `fixtures/` the same way the pytest plugin does (intomd.testing.fixtures.run_fixture)
+Runs every fixture under `fixtures/` the same way the pytest plugin does (ezmd.testing.fixtures.run_fixture)
 and writes `scorecard.md` and `scorecard.json` to `--out` (default `build/scorecard/`, git-ignored). The nightly
 workflow runs it, appends the Markdown to the job summary, and uploads both files as an artifact.
 
@@ -76,7 +76,7 @@ class Row:
 
 def run_all(root: Path, families: Sequence[str] = ()) -> list[FixtureResult]:
     """Convert and score every fixture under `root` (the fixtures directory)."""
-    from intomd.testing.fixtures import discover, run_fixture, threshold_for
+    from ezmd.testing.fixtures import discover, run_fixture, threshold_for
 
     results: list[FixtureResult] = []
     for fx in discover(root):
@@ -143,7 +143,7 @@ def render_markdown(results: Sequence[FixtureResult]) -> str:
         "# Golden fixture scorecard",
         "",
         f"{total} fixtures: {counts['pass']} passed, {counts['fail']} failed, {counts['skip']} skipped.",
-        "Scores are the harness's overall golden score (intomd.testing.score); the threshold is the lowest",
+        "Scores are the harness's overall golden score (ezmd.testing.score); the threshold is the lowest",
         "applicable threshold in the group (converter threshold, or a per-fixture lowered one).",
         "",
         "## By family",

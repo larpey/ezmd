@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import pytest
 
-from intomd.context import Limits
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Document, Heading, Image, Paragraph, WarningKind, spans_text
-from intomd.pipeline import convert_ref
-from intomd.registry import ConvertOptions, default_registry
-from intomd.render import render
-from intomd_converters.web import CHAINS, converters
-from intomd_converters.web.dom import parse_html
-from intomd_converters.web.engines import FullBodyConverter, RulesConverter, TrafilaturaConverter
-from intomd_converters.web.meta import extract as extract_meta
+from ezmd.context import Limits
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Document, Heading, Image, Paragraph, WarningKind, spans_text
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConvertOptions, default_registry
+from ezmd.render import render
+from ezmd_converters.web import CHAINS, converters
+from ezmd_converters.web.dom import parse_html
+from ezmd_converters.web.engines import FullBodyConverter, RulesConverter, TrafilaturaConverter
+from ezmd_converters.web.meta import extract as extract_meta
 
 LONG = " ".join(["The harbor master logs every arrival and departure in a bound book kept by the radio."] * 4)
 
@@ -212,7 +212,7 @@ def test_metadata_precedence_og_over_title() -> None:
 
 
 def test_fallback_reason_is_consistent() -> None:
-    from intomd_converters.web.pipeline import fallback_reason
+    from ezmd_converters.web.pipeline import fallback_reason
 
     assert fallback_reason(166, 164) is None  # kept the whole short page
     assert fallback_reason(0, 0) == "under 200 characters"
@@ -262,7 +262,7 @@ MATHJAX_PAGE = """<html lang="en"><head><title>Harmonics</title></head><body>
 def test_trafilatura_keeps_mathjax_and_footnotes_outside_article() -> None:
     """Display math with no paragraph around it and a footnote section that is a sibling of <article> are
     restored from the DOM; MathJax v2 inline TeX survives extraction and its preview is not duplicated."""
-    from intomd.ir import Equation, Footnote
+    from ezmd.ir import Equation, Footnote
 
     doc = _convert(MATHJAX_PAGE, "https://docs.example.test/theory/harmonics.html")
     eqs = [b.latex for b in doc.blocks if isinstance(b, Equation)]
@@ -283,7 +283,7 @@ LAYOUT_PAGE = f"""<html><head><title>Club results</title></head><body>
 
 
 def test_trafilatura_unwraps_layout_tables_keeps_data_table() -> None:
-    from intomd.ir import Table
+    from ezmd.ir import Table
 
     doc = _convert(LAYOUT_PAGE, "https://club.example.test/results.html")
     tables = [b for b in doc.blocks if isinstance(b, Table)]
@@ -295,7 +295,7 @@ def test_trafilatura_unwraps_layout_tables_keeps_data_table() -> None:
 def test_xml_layout_rule_keeps_one_row_and_sparse_data_tables() -> None:
     from lxml import etree
 
-    from intomd_converters.web.tei import _is_xml_layout_table
+    from ezmd_converters.web.tei import _is_xml_layout_table
 
     def table(rows: list[list[str]], graphic: bool = False) -> object:
         t = etree.Element("table")
@@ -326,7 +326,7 @@ LAYOUT_CHROME_PAGE = f"""<html><body><table width="760">
 
 
 def test_trafilatura_layout_page_source_order_without_chrome() -> None:
-    from intomd.ir import Table
+    from ezmd.ir import Table
 
     doc = _convert(LAYOUT_CHROME_PAGE, "https://club.example.test/results.html")
     kinds = [type(b).__name__ for b in doc.blocks]

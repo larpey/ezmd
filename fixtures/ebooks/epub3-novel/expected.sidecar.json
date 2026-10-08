@@ -1133,7 +1133,7 @@
         "Mara Quill"
       ],
       "canonical_url": null,
-      "description": "A short novel written for the intomd test corpus.",
+      "description": "A short novel written for the ezmd test corpus.",
       "duration_seconds": null,
       "encoding": null,
       "encoding_confidence": null,
@@ -1215,9 +1215,9 @@
     "content_hash": "sha256:50f0b0d2f1216d29adf2f6e2025831cb4ed1076765daee33cb7ed41fd92b4906",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.epub",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2024-03-15",
-    "description": "A short novel written for the intomd test corpus.",
+    "description": "A short novel written for the ezmd test corpus.",
     "extra": {
       "cover_image": "images/cover.png",
       "editors": "Ivo Pent",
@@ -1226,16 +1226,16 @@
       "identifier": "urn:uuid:5b2a7c1e-0000-4000-8000-000000000001",
       "publisher": "Fixture Press"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "en",
     "pages": 4,
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.epub",
-    "source_hash": "sha256:cb1b1d13fa828de773b53c675ff303c5190be928e62acba76dc5353103f2aac6",
+    "source_hash": "sha256:16dd67ab70df200f1cdba0e557652b38d4668fa3085a7c6612c8b90c3b035142",
     "source_type": "epub",
     "title": "The Lighthouse Keeper",
     "tokens": {
@@ -1282,7 +1282,7 @@
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 4400
+    "input_bytes": 4402
   },
   "profile": "full",
   "provenance": [
@@ -1436,7 +1436,7 @@
       "type": "footnote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0002",
@@ -1520,7 +1520,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 789,
+  "tokens_total": 794,
   "warnings": [
     {
       "block_id": null,

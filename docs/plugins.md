@@ -1,12 +1,12 @@
 # Writing a converter plugin
 
-Third-party converters are ordinary Python packages that register through the `intomd.converters`
-entry point group. intomd discovers them at startup; a plugin that fails to import is listed by
-`intomd capabilities` as `broken.<name>` with its error and never takes the registry down.
+Third-party converters are ordinary Python packages that register through the `ezmd.converters`
+entry point group. ezmd discovers them at startup; a plugin that fails to import is listed by
+`ezmd capabilities` as `broken.<name>` with its error and never takes the registry down.
 
 ## The Converter protocol
 
-A converter is any object with these attributes and two methods (`intomd.registry.Converter`):
+A converter is any object with these attributes and two methods (`ezmd.registry.Converter`):
 
 | Member | Meaning |
 |---|---|
@@ -25,7 +25,7 @@ Rules every converter follows:
   `user_message`. Never return an empty document silently: attach a warning such as
   `extraction_empty`.
 - Give every block a `Provenance` with at least `source`; add lines, pages, or a bbox when known.
-- Never shell out with `subprocess`; use `intomd.core.sandbox.run([...])`.
+- Never shell out with `subprocess`; use `ezmd.core.sandbox.run([...])`.
 - Do not use the network unless `options.allow_network` is true.
 - Check `options.deadline()` in long loops.
 
@@ -34,16 +34,16 @@ Rules every converter follows:
 A 40-line CSV converter, `acme_csv.py`:
 
 ```python
-"""acme_csv: a minimal CSV converter for intomd (example plugin)."""
+"""acme_csv: a minimal CSV converter for ezmd (example plugin)."""
 
 from __future__ import annotations
 
 import csv
 import io
 
-from intomd.inputs import InputRef
-from intomd.ir import Document, InlineSpan, Metadata, Provenance, SourceType, Table, TableCell, Warning, WarningKind
-from intomd.registry import ConversionError, ConvertOptions
+from ezmd.inputs import InputRef
+from ezmd.ir import Document, InlineSpan, Metadata, Provenance, SourceType, Table, TableCell, Warning, WarningKind
+from ezmd.registry import ConversionError, ConvertOptions
 
 
 class CsvTableConverter:
@@ -83,16 +83,16 @@ Register it in the plugin's `pyproject.toml`. The entry point may name a class o
 factory; the registry calls it once:
 
 ```toml
-[project.entry-points."intomd.converters"]
+[project.entry-points."ezmd.converters"]
 acme_csv = "acme_csv:CsvTableConverter"
 ```
 
 After `pip install` (or `uv pip install -e .`), check that it loaded and use it:
 
 ```sh
-intomd capabilities
-intomd convert trips.csv --profile compact
-intomd convert trips.csv --converter data.acme_csv     # force it
+ezmd capabilities
+ezmd convert trips.csv --profile compact
+ezmd convert trips.csv --converter data.acme_csv     # force it
 ```
 
 ### How the registry picks a converter
@@ -100,7 +100,7 @@ intomd convert trips.csv --converter data.acme_csv     # force it
 Every available converter's `can_handle` is called; those above 0 are tried in order of
 confidence, then priority, then id, until one succeeds or one raises
 `ConversionError(retryable_with_fallback=False)`. A mime type with a pinned chain in
-`intomd.chains` (the built-in families pin many types; see the [fallback chains](converters/README.md#fallback-chains)) only considers the converters in that
+`ezmd.chains` (the built-in families pin many types; see the [fallback chains](converters/README.md#fallback-chains)) only considers the converters in that
 chain, so a plugin for those types runs only when forced with `--converter`. Built-in converters are
 registered before plugins, and a plugin cannot reuse a built-in id.
 
@@ -129,8 +129,8 @@ source = ""                       # URL when not self-generated
 Fixtures must be public domain, CC0, CC-BY, or self-generated, with `[provenance]` filled in.
 
 ```sh
-uv run intomd-golden fixtures/data/trips --write     # generate expected outputs, then review them
-uv run intomd-score fixtures/data/trips              # score the converter against the golden
+uv run ezmd-golden fixtures/data/trips --write     # generate expected outputs, then review them
+uv run ezmd-score fixtures/data/trips              # score the converter against the golden
 uv run pytest fixtures -q -k acme_csv
 ```
 

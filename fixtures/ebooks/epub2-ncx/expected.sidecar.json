@@ -285,14 +285,14 @@
     "content_hash": "sha256:7640724c776c7d7772055f45845b64ee5b6366493797f589b35508341619bb50",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.epub",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "epub_version": "2.0",
       "identifier": "urn:isbn:9780000000002"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "en-GB",
     "profile": "full",
     "provenance": "block",
@@ -386,7 +386,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0001",
@@ -420,7 +420,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 369,
+  "tokens_total": 372,
   "warnings": [
     {
       "block_id": null,

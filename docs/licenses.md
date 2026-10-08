@@ -1,17 +1,17 @@
 # Licenses
 
-intomd is Apache-2.0. A default install pulls only permissively licensed code and model weights.
+ezmd is Apache-2.0. A default install pulls only permissively licensed code and model weights.
 Engines under other licenses are available only through named optional extras that you install on
 purpose, and they tell you their license the first time they load.
 
 ## Policy
 
-- The default dependency tree (the `intomd` core, `intomd-converters`, the API, and every extra
+- The default dependency tree (the `ezmd` core, `ezmd-converters`, the API, and every extra
   except `nonfree`) may only contain licenses from the allowlist below.
 - Denied licenses (GPL, AGPL, SSPL, non-commercial Creative Commons, OpenRAIL, Commons Clause,
   Elastic, BUSL, MinerU) never enter the default tree.
 - Packages under denied licenses may ship only in a named extra, and the converter that needs them
-  calls `intomd.core.licensing.notify_once("<extra>")` on first import. The notice is printed to
+  calls `ezmd.core.licensing.notify_once("<extra>")` on first import. The notice is printed to
   stderr once per machine (a stamp file in the cache directory records it).
 - Changing the allowlist is a policy decision logged in `DECISIONS.md`.
 - The check runs in CI: `uv run python tools/license_check.py` for the Python tree (from `uv.lock`,
@@ -42,7 +42,7 @@ allowlist (D-0011).
 
 ## Extras
 
-Optional extras of `intomd-converters` (from source: `uv sync --all-packages --extra <name>`):
+Optional extras of `ezmd-converters` (from source: `uv sync --all-packages --extra <name>`):
 
 | Extra | What it adds | License |
 |---|---|---|

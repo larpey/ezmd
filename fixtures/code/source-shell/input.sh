@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# backup.sh: rotate nightly database dumps (intomd fixture).
+# backup.sh: rotate nightly database dumps (ezmd fixture).
 set -euo pipefail
 
 BACKUP_DIR="${BACKUP_DIR:-/var/backups/app}"

@@ -12,15 +12,15 @@ from typing import Any
 import fakeredis
 import pytest
 
-from intomd_api import isolation, rendering, worker
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, in_process_isolation, upload, wait_for_state
+from ezmd_api import isolation, rendering, worker
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, in_process_isolation, upload, wait_for_state
 
 PUBLIC_SECRET = "s" * 32
 
 
 def _fake_fetch(calls: list[str], body: bytes = b"Fetched text.\n") -> Callable[..., Any]:
-    from intomd.core.netguard import FetchResult
+    from ezmd.core.netguard import FetchResult
 
     def fetch(url: str, **kwargs: Any) -> FetchResult:
         calls.append(url)
@@ -45,7 +45,7 @@ async def test_fetched_body_is_reenqueued_to_default(
 ) -> None:
     from rq import Queue
 
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     calls: list[str] = []
     monkeypatch.setattr(netguard, "fetch", _fake_fetch(calls))
@@ -88,7 +88,7 @@ def _fetch_required(url: str, *, residential: bool = True, depth: int = 0, times
 
 
 async def test_fetch_required_ignores_child_residential_flag(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     calls: list[str] = []
     monkeypatch.setattr(netguard, "fetch", _fake_fetch(calls, b"Second page body.\n"))
@@ -123,7 +123,7 @@ async def test_fetch_required_respects_disabled_policy(
 
 
 async def test_fetch_required_depth_limit(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     calls: list[str] = []
     monkeypatch.setattr(netguard, "fetch", _fake_fetch(calls))
@@ -184,7 +184,7 @@ async def test_result_too_large_fails_job(settings_factory: Callable[..., Settin
 
 
 async def test_keyed_callers_get_key_page_limit(settings_factory: Callable[..., Settings]) -> None:
-    from intomd_api.auth import create_api_key
+    from ezmd_api.auth import create_api_key
 
     async with api_client(settings_factory(anon_max_pages=10)) as (client, app):
         services = app.state.services
@@ -206,7 +206,7 @@ async def test_keyed_callers_get_key_page_limit(settings_factory: Callable[..., 
 
 
 async def test_keyed_upload_limit_is_the_keys(settings_factory: Callable[..., Settings]) -> None:
-    from intomd_api.auth import create_api_key
+    from ezmd_api.auth import create_api_key
 
     async with api_client(settings_factory(anon_max_upload_mb=1)) as (client, app):
         services = app.state.services
@@ -281,7 +281,7 @@ async def test_self_host_keeps_deterministic_agent_salt(monkeypatch: pytest.Monk
 
 
 async def test_stale_ir_cache_key_is_not_deduplicated(client_app: Any) -> None:
-    from intomd_api import ircache
+    from ezmd_api import ircache
 
     client, app = client_app
     services = app.state.services
@@ -299,7 +299,7 @@ async def test_stale_ir_cache_key_is_not_deduplicated(client_app: Any) -> None:
 
 
 def test_ir_cache_key_changes_with_versions(monkeypatch: pytest.MonkeyPatch) -> None:
-    from intomd_api import ircache
+    from ezmd_api import ircache
 
     base = ircache.ir_cache_key("1", "text.plain")
     assert ircache.ir_cache_key("1.1", "text.plain") != base
@@ -312,15 +312,15 @@ def test_ir_cache_key_changes_with_versions(monkeypatch: pytest.MonkeyPatch) -> 
 
 
 async def test_experimental_disabled_is_422(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    import intomd.pipeline
-    from intomd.registry import ConversionError
+    import ezmd.pipeline
+    from ezmd.registry import ConversionError
 
     def refuse(*args: Any, **kwargs: Any) -> Any:
         err = ConversionError("experimental only", user_message="Experimental converters are disabled.")
         err.code = "experimental_disabled"  # type: ignore[attr-defined]
         raise err
 
-    monkeypatch.setattr(intomd.pipeline, "convert_ref", refuse)
+    monkeypatch.setattr(ezmd.pipeline, "convert_ref", refuse)
     r = await upload(client, b"x\n", "a.txt")
     job_id = r.json()["job"]["id"]
     body = await wait_for_state(client, job_id)
@@ -332,22 +332,22 @@ async def test_experimental_disabled_is_422(monkeypatch: pytest.MonkeyPatch, cli
 
 
 async def test_unknown_conversion_codes_are_not_passed_through(monkeypatch: pytest.MonkeyPatch, client: Any) -> None:
-    import intomd.pipeline
-    from intomd.registry import ConversionError
+    import ezmd.pipeline
+    from ezmd.registry import ConversionError
 
     def refuse(*args: Any, **kwargs: Any) -> Any:
         err = ConversionError("nope")
         err.code = "rate_limited"  # type: ignore[attr-defined]
         raise err
 
-    monkeypatch.setattr(intomd.pipeline, "convert_ref", refuse)
+    monkeypatch.setattr(ezmd.pipeline, "convert_ref", refuse)
     r = await upload(client, b"x\n", "a.txt")
     body = await wait_for_state(client, r.json()["job"]["id"])
     assert body["error"]["code"] == "conversion_failed"
 
 
 def test_openapi_lists_new_error_codes() -> None:
-    from intomd_api.openapi import openapi_document
+    from ezmd_api.openapi import openapi_document
 
     description = json.loads(openapi_document())["info"]["description"]
     for code in ("experimental_disabled", "fetch_depth_exceeded", "result_too_large"):

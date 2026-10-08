@@ -50,11 +50,11 @@ jobs:
           load: true
           no-cache: true
           pull: true
-          tags: ghcr.io/larpey/intomd-${{ matrix.target }}:nightly
-          build-args: INTOMD_REQUIRE_WEB=1
+          tags: ghcr.io/larpey/ezmd-${{ matrix.target }}:nightly
+          build-args: EZMD_REQUIRE_WEB=1
       - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          image-ref: ghcr.io/larpey/intomd-${{ matrix.target }}:nightly
+          image-ref: ghcr.io/larpey/ezmd-${{ matrix.target }}:nightly
           format: table
           severity: HIGH,CRITICAL
           ignore-unfixed: true

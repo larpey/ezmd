@@ -7,11 +7,11 @@ import pikepdf
 import pytest
 from pikepdf import Array, Dictionary, Name, String
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Document
-from intomd.registry import ConvertOptions, ExtraValue
-from intomd_converters.pdf.converter import PdfiumTextConverter
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Document
+from ezmd.registry import ConvertOptions, ExtraValue
+from ezmd_converters.pdf.converter import PdfiumTextConverter
 
 FIXTURES = Path(__file__).resolve().parents[4] / "fixtures" / "pdf"
 

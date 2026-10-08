@@ -1054,14 +1054,14 @@
     "content_hash": "sha256:178db156c1b5efd6ff8e77c35817bdad1c4fc8288509727d9a5577b2288100ba",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.docx",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2026-01-01",
     "extra": {
       "revision": "3"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "modified_at": "2026-01-02",
     "profile": "full",
     "provenance": "block",
@@ -1247,7 +1247,7 @@
       "type": "footnote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -1294,7 +1294,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 441,
+  "tokens_total": 444,
   "warnings": [
     {
       "block_id": null,

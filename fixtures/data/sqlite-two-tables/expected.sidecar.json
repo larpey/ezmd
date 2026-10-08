@@ -17562,7 +17562,7 @@
     "content_hash": "sha256:ccfaee7c58f7086427a17d65e19013c22eab8d950098625ba780724900c30ae5",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.sqlite",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "exports": {
       "tables": [
         "tables/table-07.csv"
@@ -17573,9 +17573,9 @@
       "tables": 2,
       "views": 1
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -17758,7 +17758,7 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -18071,7 +18071,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 3899,
+  "tokens_total": 3902,
   "warnings": [
     {
       "block_id": null,

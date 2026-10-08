@@ -12,12 +12,12 @@ import zipfile
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Document, WarningKind
-from intomd.registry import ConvertOptions
-from intomd_converters.archives.converter import ArchiveConverter
-from intomd_converters.archives.guard import CHUNK, RATIO_FLOOR, ArchiveLimits, safe_member_path
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Document, WarningKind
+from ezmd.registry import ConvertOptions
+from ezmd_converters.archives.converter import ArchiveConverter
+from ezmd_converters.archives.guard import CHUNK, RATIO_FLOOR, ArchiveLimits, safe_member_path
 
 MB = 1024 * 1024
 STAMP = (2024, 1, 1, 0, 0, 0)
@@ -270,7 +270,7 @@ def test_single_gzip_of_zeros_trips_the_ratio_cap_while_streaming() -> None:
 
 
 def test_env_var_sets_the_total_cap(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_ARCHIVE_MAX_BYTES", "1000")
+    monkeypatch.setenv("EZMD_ARCHIVE_MAX_BYTES", "1000")
     doc = convert(zip_of([("a.txt", b"a" * 600), ("b.txt", b"b" * 600)]))
     assert WarningKind.ARCHIVE_BOMB_SUSPECTED in kinds(doc)
     assert ArchiveLimits.from_options(ConvertOptions()).max_total == 1000

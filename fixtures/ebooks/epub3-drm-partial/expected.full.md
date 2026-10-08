@@ -3,8 +3,8 @@ title: "Notes from the Salt Flats"
 source: "input.epub"
 source_type: epub
 converter: documents.epub
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block

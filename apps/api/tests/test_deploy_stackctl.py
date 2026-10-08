@@ -18,7 +18,7 @@ STACKCTL = Path(__file__).resolve().parents[3] / "deploy" / "stackctl.py"
 
 
 def _load() -> ModuleType:
-    spec = importlib.util.spec_from_file_location("intomd_stackctl_under_test", STACKCTL)
+    spec = importlib.util.spec_from_file_location("ezmd_stackctl_under_test", STACKCTL)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -37,12 +37,12 @@ def stack(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Path]:
     data, blobs = tmp_path / "state", tmp_path / "blobs"
     data.mkdir()
     blobs.mkdir()
-    for key in ("INTOMD_DATABASE_URL", "INTOMD_BLOB_BACKEND"):
+    for key in ("EZMD_DATABASE_URL", "EZMD_BLOB_BACKEND"):
         monkeypatch.delenv(key, raising=False)
-    monkeypatch.setenv("INTOMD_DATA_DIR", str(data))
-    monkeypatch.setenv("INTOMD_BLOB_FS_ROOT", str(blobs))
-    monkeypatch.setenv("INTOMD_KEYS_FILE", str(data / "keys.json"))
-    con = sqlite3.connect(data / "intomd.db")
+    monkeypatch.setenv("EZMD_DATA_DIR", str(data))
+    monkeypatch.setenv("EZMD_BLOB_FS_ROOT", str(blobs))
+    monkeypatch.setenv("EZMD_KEYS_FILE", str(data / "keys.json"))
+    con = sqlite3.connect(data / "ezmd.db")
     con.execute("CREATE TABLE jobs (id TEXT PRIMARY KEY, state TEXT)")
     con.execute("INSERT INTO jobs VALUES ('job_1', 'done')")
     con.commit()
@@ -86,20 +86,20 @@ def test_backup_wipe_restore_round_trip(stack: dict[str, Path], monkeypatch: pyt
     code, archive = _run(mod, monkeypatch, ["backup"])
     assert code == 0
     members = _members(archive)
-    assert set(members) == {"db/intomd.db", "keys/keys.json", "blobs/jobs/job_1/result.md", "manifest.json"}
+    assert set(members) == {"db/ezmd.db", "keys/keys.json", "blobs/jobs/job_1/result.md", "manifest.json"}
     manifest = json.loads(members["manifest.json"])
     assert manifest["format"] == 1 and manifest["includes_blobs"] is True
 
     assert _run(mod, monkeypatch, ["verify"], archive)[0] == 0
 
     # Wipe everything, add a stray blob that the restore must remove.
-    (stack["data"] / "intomd.db").unlink()
+    (stack["data"] / "ezmd.db").unlink()
     (stack["data"] / "keys.json").unlink()
     (stack["blobs"] / "jobs" / "job_1" / "result.md").unlink()
     (stack["blobs"] / "stray.bin").write_bytes(b"x")
 
     assert _run(mod, monkeypatch, ["restore"], archive)[0] == 0
-    con = sqlite3.connect(stack["data"] / "intomd.db")
+    con = sqlite3.connect(stack["data"] / "ezmd.db")
     assert con.execute("SELECT state FROM jobs WHERE id = 'job_1'").fetchone() == ("done",)
     con.close()
     assert (stack["data"] / "keys.json").read_text(encoding="utf-8") == '[{"key_hash": "x"}]'
@@ -143,7 +143,7 @@ def test_hostile_member_names_rejected(stack: dict[str, Path], monkeypatch: pyte
 def test_missing_manifest_and_symlinks_rejected(stack: dict[str, Path], monkeypatch: pytest.MonkeyPatch) -> None:
     mod = _load()
     with pytest.raises(SystemExit):
-        _run(mod, monkeypatch, ["verify"], _pack({"db/intomd.db": b"x"}))
+        _run(mod, monkeypatch, ["verify"], _pack({"db/ezmd.db": b"x"}))
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w") as tar:
         link = tarfile.TarInfo("blobs/link")
@@ -155,11 +155,11 @@ def test_missing_manifest_and_symlinks_rejected(stack: dict[str, Path], monkeypa
 
 
 def test_migrate_fresh_database_reaches_head(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("INTOMD_DATABASE_URL", raising=False)
-    monkeypatch.setenv("INTOMD_DATA_DIR", str(tmp_path / "fresh"))
+    monkeypatch.delenv("EZMD_DATABASE_URL", raising=False)
+    monkeypatch.setenv("EZMD_DATA_DIR", str(tmp_path / "fresh"))
     mod = _load()
     assert _run(mod, monkeypatch, ["migrate"])[0] == 0
-    con = sqlite3.connect(tmp_path / "fresh" / "intomd.db")
+    con = sqlite3.connect(tmp_path / "fresh" / "ezmd.db")
     assert con.execute("SELECT version_num FROM alembic_version").fetchone() is not None
     con.close()
 
@@ -168,17 +168,17 @@ def test_migrate_adopts_create_all_schema(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """A database made by an older create_all start is stamped at head when its schema matches, not skipped."""
-    from intomd_api.db import Database
+    from ezmd_api.db import Database
 
-    monkeypatch.delenv("INTOMD_DATABASE_URL", raising=False)
-    monkeypatch.setenv("INTOMD_DATA_DIR", str(tmp_path / "legacy"))
-    db = Database(f"sqlite:///{(tmp_path / 'legacy' / 'intomd.db').as_posix()}")
+    monkeypatch.delenv("EZMD_DATABASE_URL", raising=False)
+    monkeypatch.setenv("EZMD_DATA_DIR", str(tmp_path / "legacy"))
+    db = Database(f"sqlite:///{(tmp_path / 'legacy' / 'ezmd.db').as_posix()}")
     db.create_all()
     db.engine.dispose()
     mod = _load()
     assert _run(mod, monkeypatch, ["migrate"])[0] == 0
     assert "stamped" in capsys.readouterr().err
-    con = sqlite3.connect(tmp_path / "legacy" / "intomd.db")
+    con = sqlite3.connect(tmp_path / "legacy" / "ezmd.db")
     assert con.execute("SELECT version_num FROM alembic_version").fetchone() is not None
     con.close()
 

@@ -2,7 +2,7 @@
 
 The Python checks below always run and cover what the Spectral ruleset (apps/api/.spectral.yaml) enforces
 that matters most: unique operationIds, summaries, descriptions, known tags, documented 2xx responses with
-schemas, and error responses that use the 7.5 ErrorResponse schema. Set INTOMD_SPECTRAL=1 (needs Node and
+schemas, and error responses that use the 7.5 ErrorResponse schema. Set EZMD_SPECTRAL=1 (needs Node and
 network for npx) to also run Spectral itself.
 """
 
@@ -89,9 +89,9 @@ def test_request_body_schemas_resolve() -> None:
     assert schemas["ConvertOptionsIn"]["patternProperties"]
 
 
-@pytest.mark.skipif(os.environ.get("INTOMD_SPECTRAL") != "1", reason="set INTOMD_SPECTRAL=1 to run Spectral")
+@pytest.mark.skipif(os.environ.get("EZMD_SPECTRAL") != "1", reason="set EZMD_SPECTRAL=1 to run Spectral")
 def test_spectral_clean() -> None:
-    from intomd.core import sandbox
+    from ezmd.core import sandbox
 
     npx = shutil.which("npx")
     if npx is None:

@@ -1,8 +1,8 @@
-# intomd: autonomous build handoff
+# ezmd: autonomous build handoff
 
 **Read this page first, then read Parts 1 through 4 in order before writing any code.**
 
-This document is the complete specification for building intomd, an open-source, Apache-2.0, self-hostable "convert anything to Markdown for AI users" tool with a free public instance. It was produced from a research pass over the 2026 landscape (document parsers, web extractors, media fetching and transcription, OCR, LLM-oriented Markdown structure, use cases by profession, competitive products, hosting and legal posture). The research report and notes are not required to build; everything needed is in this file.
+This document is the complete specification for building ezmd, an open-source, Apache-2.0, self-hostable "convert anything to Markdown for AI users" tool with a free public instance. It was produced from a research pass over the 2026 landscape (document parsers, web extractors, media fetching and transcription, OCR, LLM-oriented Markdown structure, use cases by profession, competitive products, hosting and legal posture). The research report and notes are not required to build; everything needed is in this file.
 
 ## How to use this document
 
@@ -21,7 +21,7 @@ This document is the complete specification for building intomd, an open-source,
 
 ## Reconciliation notes (apply these where parts touch)
 
-- Part 1 ships `DEFAULT_CHAINS` with only text entries. Part 2 populates it per family. Part 1's renderer emits an `intomd-unrendered` fence for any block type it does not yet handle; Part 3 completes the renderer so that fence never appears in a passing fixture.
+- Part 1 ships `DEFAULT_CHAINS` with only text entries. Part 2 populates it per family. Part 1's renderer emits an `ezmd-unrendered` fence for any block type it does not yet handle; Part 3 completes the renderer so that fence never appears in a passing fixture.
 - Part 4 introduces `client: ios-shortcut` on `POST /v1/convert` (Shortcuts cannot solve Turnstile) and the input kinds `transcript_segments`, `captions_json3`, and `media_upload` for browser-side Whisper and extension uploads. Add these to the request schema and `InputRef` kinds defined in Part 1 and the classifier in Part 3.
 - Part 3 makes the `agent` profile's `untrusted_content_id` deterministic by default (hash of content hash plus source) with an opt-in random salt, so byte-identical output stays cacheable. Part 1's renderer skeleton must follow Part 3 here.
 - Part 2's warning code list (section 13.6) is the canonical list; Part 1's `WarningKind` enum and `docs/warnings.md` must mirror it, and Part 3's media and OCR warnings extend it.

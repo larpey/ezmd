@@ -5,10 +5,10 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Document
-from intomd.registry import ConvertOptions
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Document
+from ezmd.registry import ConvertOptions
 
 FIXTURES = Path(__file__).resolve().parents[4] / "fixtures" / "office"
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from email import policy
 
-from intomd.ir import Heading, Paragraph, WarningKind, spans_text
-from intomd_converters.comms.model import ParsedMessage
-from intomd_converters.comms.threads import build_threads, normalize_subject
+from ezmd.ir import Heading, Paragraph, WarningKind, spans_text
+from ezmd_converters.comms.model import ParsedMessage
+from ezmd_converters.comms.threads import build_threads, normalize_subject
 
 NL = "\n"
 

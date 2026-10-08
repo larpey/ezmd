@@ -1,20 +1,20 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.larpey/intomd",
-  "title": "intomd",
+  "name": "io.github.larpey/ezmd",
+  "title": "ezmd",
   "description": "Convert files, URLs and text to LLM-ready Markdown with paging, provenance and warnings.",
   "repository": {
-    "url": "https://github.com/larpey/intomd",
+    "url": "https://github.com/larpey/ezmd",
     "source": "github",
     "subfolder": "packages/mcp"
   },
-  "websiteUrl": "https://github.com/larpey/intomd",
+  "websiteUrl": "https://github.com/larpey/ezmd",
   "version": "0.1.0rc1",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
-      "identifier": "intomd-mcp",
+      "identifier": "ezmd-mcp",
       "version": "0.1.0rc1",
       "runtimeHint": "uvx",
       "transport": {
@@ -22,7 +22,7 @@
       },
       "environmentVariables": [
         {
-          "name": "INTOMD_PROFILE",
+          "name": "EZMD_PROFILE",
           "description": "Default output profile: full, compact, rag or agent",
           "default": "agent",
           "choices": [
@@ -33,17 +33,17 @@
           ]
         },
         {
-          "name": "INTOMD_MCP_ALLOWED_DIRS",
+          "name": "EZMD_MCP_ALLOWED_DIRS",
           "description": "Directories convert_file may read, separated by the OS path separator (default: working directory)"
         },
         {
-          "name": "INTOMD_REMOTE",
-          "description": "Base URL of an intomd instance; converts there instead of in-process",
+          "name": "EZMD_REMOTE",
+          "description": "Base URL of an ezmd instance; converts there instead of in-process",
           "format": "string"
         },
         {
-          "name": "INTOMD_API_KEY",
-          "description": "API key for INTOMD_REMOTE, sent as X-API-Key",
+          "name": "EZMD_API_KEY",
+          "description": "API key for EZMD_REMOTE, sent as X-API-Key",
           "isSecret": true
         }
       ]
@@ -55,7 +55,7 @@
       "url": "https://{host}/mcp",
       "variables": {
         "host": {
-          "description": "Host name of the intomd instance (public or self-hosted)",
+          "description": "Host name of the ezmd instance (public or self-hosted)",
           "isRequired": true
         }
       },
@@ -68,7 +68,7 @@
           "isSecret": true,
           "variables": {
             "api_key": {
-              "description": "intomd API key",
+              "description": "ezmd API key",
               "isRequired": true,
               "isSecret": true
             }

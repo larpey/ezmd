@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from email.message import EmailMessage
 
-from intomd.ir import Table, WarningKind
-from intomd.registry import ConvertOptions
-from intomd_converters.comms.attachments import Row, attachments_table
-from intomd_converters.comms.build import table_rows
+from ezmd.ir import Table, WarningKind
+from ezmd.registry import ConvertOptions
+from ezmd_converters.comms.attachments import Row, attachments_table
+from ezmd_converters.comms.build import table_rows
 
 
 def _statuses(doc) -> dict[str, str]:
@@ -114,7 +114,7 @@ def test_path_traversal_names_are_reduced_to_basename(convert, mk) -> None:
 
 
 def test_attachments_table_shape() -> None:
-    from intomd.ir import Provenance
+    from ezmd.ir import Provenance
 
     t = attachments_table([Row("a.txt", "text/plain", 2048, "converted")], Provenance(source="x"))
     assert t.n_rows == 2 and t.n_cols == 4 and table_rows(t) == [("a.txt", "text/plain")]

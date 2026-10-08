@@ -5,7 +5,7 @@ Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
 ## Approach note: DOCX (`documents.docx`)
 - Library: lxml 6.1.3 (BSD-3-Clause; verified `lxml-6.1.3.dist-info/licenses/LICENSE.txt`). The parser reads
   the OOXML parts directly: `word/document.xml`, styles, numbering, footnotes, endnotes, comments, and
-  commentsExtended. Entry point: `intomd_converters.office.docx:DocxConverter`.
+  commentsExtended. Entry point: `ezmd_converters.office.docx:DocxConverter`.
 - Why not python-docx or Pandoc: python-docx (MIT) does not expose `w:ins`, `w:del`, `w:moveFrom`,
   `w:moveTo`, `w:rPrChange`, comment replies, or resolved state, so the spec's own lxml path was needed
   anyway. Pandoc is GPL. It could only ever run as an optional external binary, and its default
@@ -33,7 +33,7 @@ Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
   XlsxWriter. The parsing it would have saved (shape trees, text bodies, tables, chart caches, notes
   parts) is plain XML. python-pptx is still used in `fixtures/office/_generate.py` through
   `uv run --with python-pptx==1.0.2`.
-- Entry point: `intomd_converters.office.pptx:PptxConverter`.
+- Entry point: `ezmd_converters.office.pptx:PptxConverter`.
 - Shape reading:
   - Group transforms are applied.
   - Placeholder positions are inherited from the layout and then the master.
@@ -51,7 +51,7 @@ Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
 
 ## Approach note: XLSX (`documents.xlsx`)
 - Library: openpyxl 3.1.5 (MIT; verified `openpyxl-3.1.5.dist-info/LICENCE.rst`) with et-xmlfile 2.0.0
-  (MIT). Entry point: `intomd_converters.office.xlsx:XlsxConverter`.
+  (MIT). Entry point: `ezmd_converters.office.xlsx:XlsxConverter`.
 - Load: two `load_workbook` passes, one with `data_only=True` for cached values and one with
   `data_only=False` for formulas. Both run on the sanitized package copy, with `keep_links=False`.
   defusedxml is present, so openpyxl's own parser is defused as well.
@@ -87,7 +87,7 @@ Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
 ## Approach note: RTF (`documents.rtf`) and LibreOffice (`documents.libreoffice`)
 - striprtf 0.0.33 (BSD-3-Clause; verified `licenses/LICENSE`) provides the plain-text fallback, plus the
   info-group title and author.
-- LibreOffice (MPL-2.0) is only ever an external binary run through `intomd.core.sandbox.run`:
+- LibreOffice (MPL-2.0) is only ever an external binary run through `ezmd.core.sandbox.run`:
   - a throwaway profile with `registrymodifications.xcu` disabling macros
   - `HOME` and `TMPDIR` set to the temp dir
   - `--convert-to docx|xlsx|pptx`, with the output going through the same sanitizer and native converters
@@ -95,7 +95,7 @@ Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
   with reason `libreoffice_missing`. The RTF chain then falls through to striprtf, which warns
   `libreoffice_missing`. At conversion time, a missing binary returns an empty document carrying that
   warning.
-- `INTOMD_DISABLE_LIBREOFFICE=1` hides `soffice` (from the spec's fixture env).
+- `EZMD_DISABLE_LIBREOFFICE=1` hides `soffice` (from the spec's fixture env).
 - Fixture: `office/rtf-simple`. Threshold 0.9. Scores 1.0.
 - Not done: `olefile` DOC text extraction and `xlrd` for `.xls`. Without LibreOffice these formats have no
   converter.
@@ -115,7 +115,7 @@ it to Docling. The preview-PDF fallback (`iwork_preview_fallback`) is deferred: 
 converter as a child conversion, and a fixture for it would fail until that family merges.
 
 ## Security (Part 1 8.2)
-`intomd_converters.office._package.OfficePackage` is the single gate for zip containers:
+`ezmd_converters.office._package.OfficePackage` is the single gate for zip containers:
 - the archive limits
 - OLE2 detection, for encrypted OOXML
 - removal of macro, ActiveX, OLE embedding, and ODF Basic/Scripts parts

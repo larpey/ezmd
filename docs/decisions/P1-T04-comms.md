@@ -4,7 +4,7 @@
 
 - Libraries: Python stdlib `email` (`policy.default`, `BytesParser`), `mailbox.mbox`, and `charset-normalizer`
   (MIT, already a default dependency) for undeclared or wrong charsets. HTML bodies use the web family's
-  `intomd_converters.web.pipeline.build_document` in `full_body` mode.
+  `ezmd_converters.web.pipeline.build_document` in `full_body` mode.
 - MSG default: olefile 0.47 (2023), BSD-2-Clause, LICENSE.txt verified at
   https://github.com/decalage2/olefile/blob/v0.47/LICENSE.txt (two redistribution clauses, no
   non-endorsement clause). Entry point `olefile.OleFileIO(bytes)`. Known issue: a bytes argument shorter than
@@ -42,7 +42,7 @@
 ## Decisions
 
 - Family id `comms` (registry FAMILIES; spec section 9 is "communication"). The package is
-  `intomd_converters.comms` so ICS, VCF, and chat exports can join it later.
+  `ezmd_converters.comms` so ICS, VCF, and chat exports can join it later.
 - MSG default is the spec's native olefile reader (part2 9b step 2; Part 2 is authoritative for converter detail
   per D-0002). `olefile` moved out of `[nonfree]` in `tools/license_allowlist.toml`; it was listed there only
   because extract-msg depends on it. An override entry is in `tools/license_overrides.toml`, because the metadata
@@ -55,7 +55,7 @@
 - Forwarded `message/rfc822` parts go through `ctx.convert_child`. Embedded Outlook messages are parsed
   in-process, because they are storages, not byte streams.
 - Plain-text line structure (golden reviews 1 and 2): one shared implementation,
-  `intomd_converters.text.lines.join_lines`, used by `text.plain` and the email bodies. Inside a blank-line
+  `ezmd_converters.text.lines.join_lines`, used by `text.plain` and the email bodies. Inside a blank-line
   run, a line continues the previous one when the previous line is full width (60+ characters) or the line
   starts lowercase (part2 section 2 step 22(7) plus failure mode 10). List items and indented code lines never
   join into or absorb another line. `format=flowed` input is already unwrapped (RFC 3676, DelSp,

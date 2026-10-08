@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-from intomd.warnings.codes import CODES, WarningKind, spec_for
+from ezmd.warnings.codes import CODES, WarningKind, spec_for
 
 ROOT = Path(__file__).resolve().parents[3]
 

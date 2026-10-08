@@ -2,7 +2,7 @@
 
 Every page is invented for these tests (no scraped content). Invisible characters are built with chr() so this
 source file stays free of them. The script writes `input.html` and `meta.toml` per fixture; goldens are produced
-separately with `uv run intomd-golden fixtures/web/<name> --write` and reviewed by hand.
+separately with `uv run ezmd-golden fixtures/web/<name> --write` and reviewed by hand.
 """
 
 from __future__ import annotations

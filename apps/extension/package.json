@@ -1,7 +1,7 @@
 {
-  "name": "@intomd/extension",
+  "name": "@ezmd/extension",
   "private": true,
   "version": "0.0.0",
-  "description": "Placeholder for the intomd browser extension (Phase 3, part4 4.6).",
+  "description": "Placeholder for the ezmd browser extension (Phase 3, part4 4.6).",
   "license": "Apache-2.0"
 }

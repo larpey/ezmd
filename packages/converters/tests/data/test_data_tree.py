@@ -7,13 +7,13 @@ from collections.abc import Callable
 
 import pytest
 
-from intomd.ir import CodeBlock, Document, Heading, ListBlock, Paragraph, Table, WarningKind
-from intomd.registry import ConversionError
-from intomd_converters.data._common import RawNumber, to_json
-from intomd_converters.data._tree import clip, pointer_child
-from intomd_converters.data.json_conv import JsonConverter
-from intomd_converters.data.toml_conv import TomlConverter
-from intomd_converters.data.yaml_conv import YamlConverter
+from ezmd.ir import CodeBlock, Document, Heading, ListBlock, Paragraph, Table, WarningKind
+from ezmd.registry import ConversionError
+from ezmd_converters.data._common import RawNumber, to_json
+from ezmd_converters.data._tree import clip, pointer_child
+from ezmd_converters.data.json_conv import JsonConverter
+from ezmd_converters.data.toml_conv import TomlConverter
+from ezmd_converters.data.yaml_conv import YamlConverter
 
 NL = chr(10)
 Convert = Callable[..., Document]

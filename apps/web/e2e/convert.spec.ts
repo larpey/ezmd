@@ -89,7 +89,7 @@ test("two files become two jobs and download together as a zip", async ({ page }
   const all = page.getByTestId("download-all-zip");
   await expect(all).toContainText("(2)");
   const zip = await download(page, all);
-  expect(zip.name).toBe("intomd-results.zip");
+  expect(zip.name).toBe("ezmd-results.zip");
   expect(zip.body.subarray(0, 2).toString("latin1")).toBe("PK");
 });
 
@@ -103,8 +103,8 @@ test("closing a job card removes it", async ({ page }) => {
 
 // Needs the stack's phase 2 (tests/integration/stack.sh private): the fixture server is on a private network.
 test("pastes a URL and converts the fetched page", async ({ page }) => {
-  const origin = process.env.INTOMD_FIXTURE_ORIGIN;
-  test.skip(!origin || process.env.INTOMD_PRIVATE_FETCH !== "1", "needs INTOMD_FIXTURE_ORIGIN and INTOMD_PRIVATE_FETCH=1");
+  const origin = process.env.EZMD_FIXTURE_ORIGIN;
+  test.skip(!origin || process.env.EZMD_PRIVATE_FETCH !== "1", "needs EZMD_FIXTURE_ORIGIN and EZMD_PRIVATE_FETCH=1");
   await openApp(page);
   const url = `${origin}/article-standard/input.html?run=${Date.now()}`;
   await page.getByTestId("input-text").fill(url);

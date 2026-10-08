@@ -9,8 +9,8 @@ from __future__ import annotations
 import pytest
 from ssrf_table import DNS, LITERAL, PORTS, PUBLIC_DNS
 
-from intomd.core import netguard
-from intomd.core.netguard import UrlBlocked
+from ezmd.core import netguard
+from ezmd.core.netguard import UrlBlocked
 
 
 def _resolver(table: dict[str, tuple[str, ...]]) -> netguard.Resolver:

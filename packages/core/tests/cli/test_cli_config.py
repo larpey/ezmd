@@ -9,20 +9,20 @@ from typing import Any
 import pytest
 from typer.testing import CliRunner
 
-import intomd.library
-from intomd.cli import app
-from intomd.cli.config import ConfigError, config_path, load_config
+import ezmd.library
+from ezmd.cli import app
+from ezmd.cli.config import ConfigError, config_path, load_config
 
 runner = CliRunner()
 
 
 def test_platform_paths() -> None:
     env = {"HOME": "/home/u", "APPDATA": "C:/Users/u/AppData/Roaming"}
-    assert config_path(env, "linux") == Path("/home/u/.config/intomd/config.toml")
-    assert config_path({**env, "XDG_CONFIG_HOME": "/xdg"}, "linux") == Path("/xdg/intomd/config.toml")
-    assert config_path(env, "darwin") == Path("/home/u/Library/Application Support/intomd/config.toml")
-    assert config_path(env, "win32") == Path("C:/Users/u/AppData/Roaming/intomd/config.toml")
-    assert config_path({**env, "INTOMD_CONFIG": "/etc/x.toml"}, "win32") == Path("/etc/x.toml")
+    assert config_path(env, "linux") == Path("/home/u/.config/ezmd/config.toml")
+    assert config_path({**env, "XDG_CONFIG_HOME": "/xdg"}, "linux") == Path("/xdg/ezmd/config.toml")
+    assert config_path(env, "darwin") == Path("/home/u/Library/Application Support/ezmd/config.toml")
+    assert config_path(env, "win32") == Path("C:/Users/u/AppData/Roaming/ezmd/config.toml")
+    assert config_path({**env, "EZMD_CONFIG": "/etc/x.toml"}, "win32") == Path("/etc/x.toml")
 
 
 def _write(tmp_path: Path, text: str) -> Path:
@@ -50,7 +50,7 @@ x = 1
 
 def test_file_values_and_env_overrides(tmp_path: Path) -> None:
     path = _write(tmp_path, FILE)
-    cfg = load_config({"INTOMD_CONFIG": str(path)})
+    cfg = load_config({"EZMD_CONFIG": str(path)})
     assert (cfg.profile, cfg.format, cfg.sidecar, cfg.remote_url, cfg.api_key) == (
         "rag",
         "txt",
@@ -60,12 +60,12 @@ def test_file_values_and_env_overrides(tmp_path: Path) -> None:
     )
     assert cfg.engines == {"pdf": "docling"} and cfg.max_file_mb == 2 and cfg.unknown_keys == ("future",)
     env = {
-        "INTOMD_CONFIG": str(path),
-        "INTOMD_PROFILE": "agent",
-        "INTOMD_FORMAT": "md",
-        "INTOMD_REMOTE": "",
-        "INTOMD_API_KEY": "from-env",
-        "INTOMD_SIDECAR": "yes",
+        "EZMD_CONFIG": str(path),
+        "EZMD_PROFILE": "agent",
+        "EZMD_FORMAT": "md",
+        "EZMD_REMOTE": "",
+        "EZMD_API_KEY": "from-env",
+        "EZMD_SIDECAR": "yes",
     }
     cfg = load_config(env)
     assert (cfg.profile, cfg.format, cfg.sidecar, cfg.remote_url, cfg.api_key) == ("agent", "md", True, "", "from-env")
@@ -77,24 +77,24 @@ def test_file_values_and_env_overrides(tmp_path: Path) -> None:
 )
 def test_invalid_config_raises(tmp_path: Path, text: str) -> None:
     with pytest.raises(ConfigError):
-        load_config({"INTOMD_CONFIG": str(_write(tmp_path, text))})
+        load_config({"EZMD_CONFIG": str(_write(tmp_path, text))})
 
 
 def test_missing_explicit_config_is_an_error(tmp_path: Path) -> None:
     with pytest.raises(ConfigError):
-        load_config({"INTOMD_CONFIG": str(tmp_path / "absent.toml")})
+        load_config({"EZMD_CONFIG": str(tmp_path / "absent.toml")})
     assert load_config({"HOME": str(tmp_path), "XDG_CONFIG_HOME": str(tmp_path)}, "linux").path is None
 
 
 def _spy(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
     seen: dict[str, Any] = {}
-    real = intomd.library.convert
+    real = ezmd.library.convert
 
     def spy(source: Any, **kw: Any) -> Any:
         seen.update(kw)
         return real(source, **kw)
 
-    monkeypatch.setattr(intomd.library, "convert", spy)
+    monkeypatch.setattr(ezmd.library, "convert", spy)
     return seen
 
 
@@ -102,7 +102,7 @@ def test_precedence_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     src = tmp_path / "a.txt"
     src.write_text("Hello\n=====\n\nbody\n", encoding="utf-8")
     cfg = _write(tmp_path, '[defaults]\nprofile = "rag"\nformat = "txt"\n[limits]\nmax_file_mb = 1\n')
-    monkeypatch.setenv("INTOMD_CONFIG", str(cfg))
+    monkeypatch.setenv("EZMD_CONFIG", str(cfg))
     seen = _spy(monkeypatch)
 
     res = runner.invoke(app, ["convert", str(src), "--json"])
@@ -111,7 +111,7 @@ def test_precedence_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     assert (payload["profile"], payload["format"]) == ("rag", "txt")
     assert seen["options"].max_bytes == 1024 * 1024
 
-    monkeypatch.setenv("INTOMD_PROFILE", "agent")
+    monkeypatch.setenv("EZMD_PROFILE", "agent")
     assert json.loads(runner.invoke(app, ["convert", str(src), "--json"]).stdout)["profile"] == "agent"
 
     flagged = runner.invoke(app, ["convert", str(src), "--json", "-p", "compact", "-f", "md", "--opt", "max_bytes=99"])
@@ -121,7 +121,7 @@ def test_precedence_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
 
 
 def test_bad_config_exits_2_with_json(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_CONFIG", str(_write(tmp_path, "[defaults\n")))
+    monkeypatch.setenv("EZMD_CONFIG", str(_write(tmp_path, "[defaults\n")))
     res = runner.invoke(app, ["convert", "x.txt", "--json"])
     assert res.exit_code == 2
     assert json.loads(res.stdout)["status"] == "failed"
@@ -130,7 +130,7 @@ def test_bad_config_exits_2_with_json(tmp_path: Path, monkeypatch: pytest.Monkey
 def test_config_api_key_sent_to_remote(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     import httpx
 
-    import intomd.cli.remote as remote
+    import ezmd.cli.remote as remote
 
     seen: list[httpx.Request] = []
 
@@ -140,7 +140,7 @@ def test_config_api_key_sent_to_remote(tmp_path: Path, monkeypatch: pytest.Monke
 
     monkeypatch.setattr(remote, "transport_factory", lambda: httpx.MockTransport(handler))
     monkeypatch.setenv(
-        "INTOMD_CONFIG", str(_write(tmp_path, '[remote]\nurl = "https://cfg.example"\napi_key = "cfg-key"\n'))
+        "EZMD_CONFIG", str(_write(tmp_path, '[remote]\nurl = "https://cfg.example"\napi_key = "cfg-key"\n'))
     )
     assert runner.invoke(app, ["capabilities", "--json"]).exit_code == 0
     assert seen[0].url.host == "cfg.example" and seen[0].headers["x-api-key"] == "cfg-key"

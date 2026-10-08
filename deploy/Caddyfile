@@ -1,13 +1,13 @@
-# intomd edge (Part 4 section 4.9.7, Part 1 section 8.4).
+# ezmd edge (Part 4 section 4.9.7, Part 1 section 8.4).
 #
-# Site address: INTOMD_SITE_ADDRESS is computed by docker-compose.yml from INTOMD_DOMAIN.
-#   INTOMD_DOMAIN=intomd.example.com -> automatic HTTPS (Let's Encrypt; email from INTOMD_ACME_EMAIL)
-#   INTOMD_DOMAIN=localhost          -> HTTPS with Caddy's internal CA
-#   INTOMD_DOMAIN unset/empty        -> plain HTTP on :8080 (no TLS)
+# Site address: EZMD_SITE_ADDRESS is computed by docker-compose.yml from EZMD_DOMAIN.
+#   EZMD_DOMAIN=ezmd.example.com -> automatic HTTPS (Let's Encrypt; email from EZMD_ACME_EMAIL)
+#   EZMD_DOMAIN=localhost          -> HTTPS with Caddy's internal CA
+#   EZMD_DOMAIN unset/empty        -> plain HTTP on :8080 (no TLS)
 {
-	# Expands to `email <INTOMD_ACME_EMAIL>` when that is set, and to nothing otherwise
-	# (docker-compose.yml builds INTOMD_CADDY_EMAIL_DIRECTIVE).
-	{$INTOMD_CADDY_EMAIL_DIRECTIVE}
+	# Expands to `email <EZMD_ACME_EMAIL>` when that is set, and to nothing otherwise
+	# (docker-compose.yml builds EZMD_CADDY_EMAIL_DIRECTIVE).
+	{$EZMD_CADDY_EMAIL_DIRECTIVE}
 	admin 127.0.0.1:2019
 	servers {
 		trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22
@@ -29,13 +29,13 @@
 	}
 }
 
-{$INTOMD_SITE_ADDRESS::8080} {
+{$EZMD_SITE_ADDRESS::8080} {
 	encode zstd gzip
 	import security_headers
 
 	# Layer 1 of the three upload caps (Part 1 section 8.2).
 	request_body {
-		max_size {$INTOMD_CADDY_MAX_BODY:512MB}
+		max_size {$EZMD_CADDY_MAX_BODY:512MB}
 	}
 
 	# Fetch-node protocol: only from the Tailscale CGNAT / ULA ranges, judged on the real TCP

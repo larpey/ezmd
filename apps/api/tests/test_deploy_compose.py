@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-from intomd_api.purge import Scheduler
+from ezmd_api.purge import Scheduler
 
 COMPOSE = Path(__file__).resolve().parents[3] / "deploy" / "docker-compose.yml"
 

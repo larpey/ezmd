@@ -3,23 +3,23 @@ title: "stockroom"
 source: "input.repo.zip"
 source_type: code
 converter: code.repo_pack
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 2077
-tokens: {o200k_base: 8507, cl100k_base: 8499, claude_approx: 9188}
-content_hash: "sha256:ccaa7563e5dc3c4be5fd0f4d56be15820d2bd5af5f50e4ddc45d4fb6fed7ebd6"
-source_hash: "sha256:1d0348c51a02da7d5104f42734724bf50e822557104da86ac491a500d4e6ff5e"
+tokens: {o200k_base: 8501, cl100k_base: 8489, claude_approx: 9181}
+content_hash: "sha256:6bc1c7bd7acbbac05995f0636ff960079cb91d687ec8c7d95c837513f2057f28"
+source_hash: "sha256:d5cb67b3cb91d8b18f097242d579ec82dfd0422b3fe457d302f497546239efe9"
 truncated: false
 warnings: [secret_file_excluded, secret_redacted, archive_entry_skipped]
-description: "Tiny inventory service (intomd fixture)."
+description: "Tiny inventory service (ezmd fixture)."
 injection_risk: none
 extra:
-  bytes: 25316
+  bytes: 25306
   excluded.binary: 1
   excluded.default_excluded: 3
   excluded.gitignored: 4
@@ -28,10 +28,10 @@ extra:
   files: 17
   languages: "python, javascript, typescript"
   license_file: LICENSE
-  packed_bytes: 19285
+  packed_bytes: 19275
   project: stockroom
   repo: stockroom
-  tokens: 7208
+  tokens: 7199
 ---
 > Sections: 1 Directory tree, 2 Files.
 
@@ -59,7 +59,7 @@ extra:
 
 # stockroom {#doc}
 
-17 files packed (25,316 source bytes, 7,208 tokens). Languages: python 68%, javascript 30%, typescript 2%. Not packed: 1 binary; 3 in default-excluded directories; 4 ignored by .gitignore/.intomdignore; 1 minified or source maps; 2 credential files.
+17 files packed (25,306 source bytes, 7,199 tokens). Languages: python 68%, javascript 30%, typescript 2%. Not packed: 1 binary; 3 in default-excluded directories; 4 ignored by .gitignore/.ezmdignore; 1 minified or source maps; 2 credential files.
 
 ## 1 Directory tree {#sec-1}
 
@@ -108,7 +108,7 @@ File: `README.md`
 ```markdown
 # stockroom
 
-A small inventory service used as an intomd repo-pack fixture.
+A small inventory service used as an ezmd repo-pack fixture.
 
 Run `python -m stockroom` to print items that need reordering.
 ```
@@ -149,7 +149,7 @@ File: `pyproject.toml`
 [project]
 name = "stockroom"
 version = "0.1.0"
-description = "Tiny inventory service (intomd fixture)."
+description = "Tiny inventory service (ezmd fixture)."
 requires-python = ">=3.12"
 ```
 
@@ -158,56 +158,56 @@ requires-python = ">=3.12"
 File: `uv.lock`
 
 ```text
-package-000==1.0.0 --hash=sha256:250a6728a4773d005822ae1bd6f1967b7107d692e8197e1502d9659017b278c4
-package-001==1.1.0 --hash=sha256:3634c0e5a62cc707990c82dc542ddd601ef8b3e922d0f954067b3c605ca33f73
-package-002==1.2.0 --hash=sha256:0f89a1134b81894b74e4f36c5446fe657a0dda8a5f70dfca3218aef79baad576
-package-003==1.3.0 --hash=sha256:a8f39ace60c2712c62f4ef4109aa1797a3ab490f8a8258c51ec5454489eb4a2e
-package-004==1.4.0 --hash=sha256:6c1aa1c6fc8b2d9b2dd5a17773ec8c7d9385c18021d06c626ee85572baa58725
-package-005==1.5.0 --hash=sha256:a6809728f2d3b196e8f742e1e3ddae6c623071229a0e9f5385cb455fe5799c14
-package-006==1.6.0 --hash=sha256:116fc250919cf1defc4c00acd652cae2c82638af5d55ac90736fbce0426e04c4
-package-007==1.7.0 --hash=sha256:334ca2826616d498e9e24bf6a061623560cfa0bbfdce68f1f5709d0a8b2d3dc0
-package-008==1.8.0 --hash=sha256:09bab8f8dc2c41f48d44eec90826d8eb1df65091b6693460a1a446758e4a000b
-package-009==1.9.0 --hash=sha256:3d2024cada10b07249e560a3ba263d06785833e6dd90ed3dc157cf7e7847d77b
-package-010==1.10.0 --hash=sha256:d076f85118186aa719e5fd6de92807e4b1e9b3997b64bf33ea016245e5f09649
-package-011==1.11.0 --hash=sha256:96d361920ed212d32c5e2a069dc0f257668937f1fe032af2ce2ca2ef836199d3
-package-012==1.12.0 --hash=sha256:dd50b461c567d5d93b0b68e87afb68639c7e8637e33197d9c783d8d556674d4a
-package-013==1.13.0 --hash=sha256:c2a322ff54db0ab9c676a196f8f1403c94315e6bfafc9581524f97a3a0e3fe83
-package-014==1.14.0 --hash=sha256:6cf389abd87e8c9b0c4e6aacc26ea7da346508560a9176480f9088b1b5827a76
-package-015==1.15.0 --hash=sha256:ca065b1e2d82afda5e2ddb07ded93a1e7b71aac764ab8eb1d53ba8fd343bc4a6
-package-016==1.16.0 --hash=sha256:6be685096bcd1103bcc5bc580918d3634b7945cf859301b673eb31d8bcf7631b
-package-017==1.17.0 --hash=sha256:15fd70346e1397dfb5aa402f5261bfe521b580ecaf6422be4c40dabd7188a6fc
-package-018==1.18.0 --hash=sha256:b6f038e622242643bd4f432a55ed5f32171d35194cda4c265288772e35b27248
-package-019==1.19.0 --hash=sha256:814420cf741df90f967f52a017fe5ff52fd47a9a39da65c1ea8ae7b0d081af55
-package-020==1.20.0 --hash=sha256:e5df16e469c09a8a22f429cacf535aa52885fd935a55ba2623ad5c4899f80ccb
-package-021==1.21.0 --hash=sha256:c149c2429585aa6a2406bfc8171803e1e53aa6d44033963f7e7ed64dfb65a23a
-package-022==1.22.0 --hash=sha256:3cb43ad1c8b2a9a998c0f96c9cd4d3fddfbbd2b03fd1cd35bc436e0bbb92611a
-package-023==1.23.0 --hash=sha256:7c089557d89057c8e0ac9b3629035585415e8d6d105e9f3bfdd7abc64f0c917e
-package-024==1.24.0 --hash=sha256:817c663b13646fe5dea07947c87849cf928fc24665d75b731a2b361cbe224743
-package-025==1.25.0 --hash=sha256:e2dd213a2b4a302c46b8c34d3a92a893e7f1ba1f83be7433bebae4a950f4aaac
-package-026==1.26.0 --hash=sha256:f53bc6d661a27da3de840c9a7caa174e76d87ea8f6e0ad39cb1709fe9b1a398b
-package-027==1.27.0 --hash=sha256:2328ed0068f9f7c5ddb56055aac802a002ba1a0b299aa6f06c21affa34ae0767
-package-028==1.28.0 --hash=sha256:46fc2e2a90ea212a9fb2fedbb354a3159d91b15cacb00ffee3f9c1856fb8038b
-package-029==1.29.0 --hash=sha256:8da9c6ec6268c31bb0c0424f414080efb0027c4347ecb7be2f9bb65da24b5cea
-package-030==1.30.0 --hash=sha256:f788c6874ef23b6742a656e18eedc8c29133a6d83dd8aeed958398a61079e695
-package-031==1.31.0 --hash=sha256:148601b1025d7e471c876101678b2090946b055dc1e6958393f5493b2d891c4f
-package-032==1.32.0 --hash=sha256:0b359e1f7f578129edc5db839000361f0b7a2beaa17e03d60c77769bde8b1296
-package-033==1.33.0 --hash=sha256:7db62ae06baa1d8ef099e1ff2d9621568de7e56100b1987800e47daa18c6458a
-package-034==1.34.0 --hash=sha256:2c9cae5d7f268e73794266f8e98f0d1d711f1799ae9bc184dcdec86e8ed129e2
-package-035==1.35.0 --hash=sha256:cca21c5c3ed1b74171d6209ea243b2877b8ef358160ec7ada893548453fdf60d
-package-036==1.36.0 --hash=sha256:270170dc62d17edac18ef7715cd68ccb7f0831635764d3f41e5cd7a995754c31
-package-037==1.37.0 --hash=sha256:d2bbcc5465c9e527255a58ebc96c69a187e01723226651ba21f5ea53335ddc43
-package-038==1.38.0 --hash=sha256:c9b7e12890c548734fbb2bb2c87f74ee6ced9176e6961a06f226199930f33999
-package-039==1.39.0 --hash=sha256:12f2ce9075f78827e5cf78568fc3edd35e60d22c5e616656f933107a67d11f98
-package-040==1.40.0 --hash=sha256:7b30987814e77084457c23ea97cb2f0e9d3bcfd3d32ecd9d11bff08b4fed47a4
-package-041==1.41.0 --hash=sha256:79c7de7356cd22f8759c28df8832bac402f33a0223d4efe1933babdc3e847418
-package-042==1.42.0 --hash=sha256:4dfa48f8615da30bc47c2f5e61a62c5ef697d382db04683b4e6b2ea5482e1a8d
-package-043==1.43.0 --hash=sha256:3408182845d3c7ad68e28cc09701b1f9263091ea4d7ed696682b3114e94cf7d9
-package-044==1.44.0 --hash=sha256:115fec9f920d09b5fcc945b950e80607f5b05433bf3ca478cd71d159e756cc58
-package-045==1.45.0 --hash=sha256:9ccaa935e88588ba6df1fe4a29ca5fe09d4395968487881a5723e0d0ebfed55e
-package-046==1.46.0 --hash=sha256:5fb4b2bdc237783e96d6aa827f864fe6cdfa8f4b15a4eaf139f723e3ce4e983b
-package-047==1.47.0 --hash=sha256:da25524c329a1bb3c88ef1e0000102ccbf592c64c53feab6554133cb66c875ba
-package-048==1.48.0 --hash=sha256:65c7b0bb3edf7515fde23bc6929d31737e75860e395659325685049297b5c3de
-package-049==1.49.0 --hash=sha256:40eb85ccb1b015f1bcab47dc0c1351916a912c1c73c6cf95652bc73511150148
+package-000==1.0.0 --hash=sha256:a76a5c8b7e5bd2f0fb24edec7e60f3538d0e8dbd9f3fd53dfb22e571fe5cfa9a
+package-001==1.1.0 --hash=sha256:af17dcff995e3eb0d7ab88fa06c86f574d385fafc3e1523911b49a7c9abe2132
+package-002==1.2.0 --hash=sha256:2f2c57de7be0ac79ae0e0c62434f4db86018a3dc40c2348804e5b34f991907f8
+package-003==1.3.0 --hash=sha256:88ce3b4398872482ac505ae51016af9bcf9233c1b266477ea55470f525543a22
+package-004==1.4.0 --hash=sha256:9ac02017315f29273c0900fb49d1b97a9c92c5eb2a4ddc67ce281c1d24df3756
+package-005==1.5.0 --hash=sha256:cecd219bb550231193d5ab5f88c05a224ef0e05999ca9641a72765537a4a5110
+package-006==1.6.0 --hash=sha256:4026d1b0c0494cef3d638f0163e508b1853d65a2a460cea770a2e7fc6d0e2a81
+package-007==1.7.0 --hash=sha256:c98dc8c2dc75e2a4a48326aed460926adb32a32acd8654bea5d270d2449dcdc0
+package-008==1.8.0 --hash=sha256:95de0cc0f72ae9fcfff8f31d64ed1ec1632d6586e1904c841ee55c22a768561b
+package-009==1.9.0 --hash=sha256:213e8ae63da0dcd800f7e086feb53aca4bb46e32b9468e009b126b4b39eadc7a
+package-010==1.10.0 --hash=sha256:c3f060bdebda9a3d53b1b1a5a19279188fe511f4f0eda7b68a785ef7523070d9
+package-011==1.11.0 --hash=sha256:e009a4641b6d02e6c22d336263a637c8fd840444cb8623d74a8a7c033c5828d6
+package-012==1.12.0 --hash=sha256:6a38c87a412155a5faec791b3ae3b598fd30da77651094625972e0e1e50af5df
+package-013==1.13.0 --hash=sha256:91f42d275eb779ca7c16fc2426d6a2b589d6de4a2873e398c2f7807c4e99e7ee
+package-014==1.14.0 --hash=sha256:ecfd1d5b14e2a0b1ecfc56a21f078e7a12d0e4d27b234de52fe8490467fcaeac
+package-015==1.15.0 --hash=sha256:a69b6fc5378b5ea158c7994c51cbe1d119a5fb4fc1c0680dcda3a20f74394ca3
+package-016==1.16.0 --hash=sha256:b7ec6af4e39cd515b50806f562030b2ce0ad079693d69b4c544bf92afa85d083
+package-017==1.17.0 --hash=sha256:3d81d6aa20ce52f36582877c2d1d22cabbc884ea98285dbd63be3eb846e41ff3
+package-018==1.18.0 --hash=sha256:3de5673df7fa4eaaee392bc8baa196574b4f7d305a391ecafc0f96855bd97fdb
+package-019==1.19.0 --hash=sha256:9aae1c398ed197bdf47b863721bcdcbcb3322df09da310ef1d9384bdce999932
+package-020==1.20.0 --hash=sha256:9188ee31575f1b9ab807cad2303c16d3f52673e0de82043daa30a6bc314b617a
+package-021==1.21.0 --hash=sha256:bfe56c4c756cf46b5a1ab1a04f6476c692d8353d5007451949510c73a431c371
+package-022==1.22.0 --hash=sha256:1c5d9d39b933534e0bd6ed184cb201e94842b14ed9e2cf29a381c2a2558d0de4
+package-023==1.23.0 --hash=sha256:c03c28a3cd64587f47331e55c4cf8244ea65cc7ae02a1b2c56ea72b536fcbc15
+package-024==1.24.0 --hash=sha256:29684c9a7c187bcbf9607a9636a942866ce7da603674cc6138c290994bfecb65
+package-025==1.25.0 --hash=sha256:a60f77600dcb387fa66fc195c06f2a5c895d154239b6fb3ff4c820f2fb3aeb12
+package-026==1.26.0 --hash=sha256:07d1d404a284730ccdddeea0195d62988310c486e54a461d758514bf1c408b24
+package-027==1.27.0 --hash=sha256:ea51d8d69eccdef3c6932eaac06bdc17806cad41b41063d02b68ce5f2e9aefe1
+package-028==1.28.0 --hash=sha256:b48f9281bf99eb5a28fef513106b59efa598be5587adb4592bc2118dd29960b4
+package-029==1.29.0 --hash=sha256:061bdeff7effca83b0f1ad36e239ac131f3bc70797209ac2605be922afc9eae0
+package-030==1.30.0 --hash=sha256:36199357412e83f2b5dcc66b79e0697c34b7c1581ce6d236f94b3d25ad929f86
+package-031==1.31.0 --hash=sha256:e4941f158221b8f640ad3b6127a17d5accbec1fb831d20aa5ab46c04f8f33df7
+package-032==1.32.0 --hash=sha256:f922473f589d9aa9a6347dfa43c202021fe712c62d2c068f8ceaccca5d5e48f2
+package-033==1.33.0 --hash=sha256:8d4afaefdd72232dea1ca54084ff9773e5d8fe866b3acce0e0b135b4166a6955
+package-034==1.34.0 --hash=sha256:849efe9ae25c7a0679a917c1a3c516150bf16b80f9b64a02c5068686f3510076
+package-035==1.35.0 --hash=sha256:74bd922ffdcc0811f27a7484e59d733ad7037b7bd332eee4b65605eaaf364ce0
+package-036==1.36.0 --hash=sha256:8f79157e8adeb41a650c6e223a27f000dd9b9af3a44904ed22097e62126e67cc
+package-037==1.37.0 --hash=sha256:4a532b70434d0dfd0e51a6cb1a45d7279549d4277edc96751fc335700e5a7af1
+package-038==1.38.0 --hash=sha256:0aef8b8b17fc2d0fce92c688450171109d3825a446242e678edbf6e835a268bd
+package-039==1.39.0 --hash=sha256:040178e7141870955b0bf681b925e87441dbd908fdcc4cbea3a5d1a8d8f3aa5e
+package-040==1.40.0 --hash=sha256:d6e658d6ddb379bdf0ff5ad6844ed303a86020c7c92c294524e4b8115496bac3
+package-041==1.41.0 --hash=sha256:62e06921e4b5d6cfcaf07b471e55458c88862589672fe66cf609e3fa8a125e21
+package-042==1.42.0 --hash=sha256:316684cba58a89a22e6a322479a6707c20fd4f5237621cc8a41083cb6d2c475a
+package-043==1.43.0 --hash=sha256:595e04c6e2e9516d18094000cef496cebbeec5536507f1907287eb03352aa09b
+package-044==1.44.0 --hash=sha256:752fc289c6bfad823a5aeb4e1a6d764ef366f1d4548dddf678174fa36f383f53
+package-045==1.45.0 --hash=sha256:ab42cc9046242565f74bb4533e53df67318b288a9b8a17a806e924878860e0af
+package-046==1.46.0 --hash=sha256:019e5d59b018d3425594ee4854f1fab59e503419ff3c62e0163ebc60f80c923c
+package-047==1.47.0 --hash=sha256:7cd1eb01f99e8827eff9a4498212bfd7612fb61f1875da38e5e99f9efbae1c13
+package-048==1.48.0 --hash=sha256:f6f30a8416177b22ebb24b1e061d37d4e3f638eb85137aa31a282f6edb26b200
+package-049==1.49.0 --hash=sha256:24f5ebc8ff29da060891601a1464d45a356fb4d0a0e77232773c450ea24dad53
 ... (lockfile truncated, 30 more lines)
 ```
 
@@ -225,7 +225,7 @@ File: `web/bundle.js`
 File: `web/greeter.ts`
 
 ```typescript
-// greeter.ts: a tiny TypeScript module (intomd fixture).
+// greeter.ts: a tiny TypeScript module (ezmd fixture).
 import { format } from "./format";
 
 export interface Greeting {
@@ -255,7 +255,7 @@ File: `src/stockroom/inventory.py`
 
 ```python
 #!/usr/bin/env python3
-# inventory.py: a tiny stock ledger used as an intomd fixture.
+# inventory.py: a tiny stock ledger used as an ezmd fixture.
 """Track stock levels per SKU and report items that need reordering."""
 
 from __future__ import annotations
@@ -744,7 +744,7 @@ def test_low_stock() -> None:
 File: `tests/fixtures/creds.txt`
 
 ```text
-# Test credentials accidentally committed (fake values, intomd fixture).
+# Test credentials accidentally committed (fake values, ezmd fixture).
 aws_secret_access_key = [REDACTED:aws_secret_access_key]
 auth_token: '[REDACTED:generic_secret]'
 ```

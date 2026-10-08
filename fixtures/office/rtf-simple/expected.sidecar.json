@@ -206,13 +206,13 @@
     "content_hash": "sha256:ea238a104b4d96d1863f622f943a98012af7e287a2bcbbe3a4127abac7be1d44",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.rtf",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "encoding": "cp1252"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -257,7 +257,7 @@
       "transcript_segments": 0,
       "words": 43
     },
-    "duration_seconds": 0.01500000013038516,
+    "duration_seconds": 0.0470000000204891,
     "engine": "documents.rtf",
     "engines_tried": [
       "documents.rtf"
@@ -293,14 +293,14 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 321,
+  "tokens_total": 324,
   "warnings": [
     {
       "block_id": null,

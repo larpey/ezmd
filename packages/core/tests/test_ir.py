@@ -4,7 +4,7 @@ import pytest
 from core_factories import SRC, P, S, every_block_document
 from pydantic import TypeAdapter, ValidationError
 
-from intomd.ir import (
+from ezmd.ir import (
     BBox,
     Block,
     ConversionResult,
@@ -23,7 +23,7 @@ from intomd.ir import (
     WarningKind,
     spans_text,
 )
-from intomd.warnings.codes import CODES
+from ezmd.warnings.codes import CODES
 
 BLOCK = TypeAdapter(Block)
 

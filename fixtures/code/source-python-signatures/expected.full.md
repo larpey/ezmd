@@ -3,21 +3,21 @@ title: "input.py (signatures only)"
 source: "input.py"
 source_type: code
 converter: code.source_file
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 138
-tokens: {o200k_base: 310, cl100k_base: 312, claude_approx: 335}
-content_hash: "sha256:71c9ef5a145022a86a1f57fe8a0ad1bbcb34d0ec56345ab77a1b652e508e2a2c"
-source_hash: "sha256:1152da8b3c3e5170b60e26fdaa7c8617e05ab2be323f443a546fc45ba0556374"
+tokens: {o200k_base: 309, cl100k_base: 311, claude_approx: 334}
+content_hash: "sha256:84fe0f4c8a4e888f051055c55aeb708875689e127e69752aa1614e081eab5993"
+source_hash: "sha256:fd7370ea1153d12b95a08b3f0a6b49f4ad2cc10b2252faca6af756b4fb171170"
 truncated: false
 warnings: []
 injection_risk: none
-extra: {bytes: 1856, encoding: utf-8, language: python, lines: 67, shebang: python3, tokens: 289}
+extra: {bytes: 1854, encoding: utf-8, language: python, lines: 67, shebang: python3, tokens: 288}
 ---
 # input.py (signatures only) {#doc}
 
@@ -25,7 +25,7 @@ File: `input.py`
 
 ```python
 #!/usr/bin/env python3
-# inventory.py: a tiny stock ledger used as an intomd fixture.
+# inventory.py: a tiny stock ledger used as an ezmd fixture.
 
 """Track stock levels per SKU and report items that need reordering."""
 

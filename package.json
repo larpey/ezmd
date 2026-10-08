@@ -1,5 +1,5 @@
 {
-  "name": "intomd-workspace",
+  "name": "ezmd-workspace",
   "private": true,
   "version": "0.1.0",
   "license": "Apache-2.0",
@@ -12,9 +12,9 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "build": "pnpm -r build",
-    "e2e": "pnpm -F @intomd/web e2e",
+    "e2e": "pnpm -F @ezmd/web e2e",
     "license-check": "pnpm licenses list --json --prod | node tools/license_check.mjs",
-    "sdk:generate": "pnpm -F @intomd/sdk generate"
+    "sdk:generate": "pnpm -F @ezmd/sdk generate"
   },
   "pnpm": {
     "overrides": {

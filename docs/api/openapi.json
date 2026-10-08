@@ -105,7 +105,7 @@
       },
       "ConvertOptionsIn": {
         "additionalProperties": false,
-        "description": "Conversion options a client may set (a subset of `intomd.library.Options`; omitted fields use the library default). Dotted keys such as `chunks.chunk_tokens` are profile overrides and are accepted alongside these fields in the same object.",
+        "description": "Conversion options a client may set (a subset of `ezmd.library.Options`; omitted fields use the library default). Dotted keys such as `chunks.chunk_tokens` are profile overrides and are accepted alongside these fields in the same object.",
         "patternProperties": {
           "^[a-z_]+([.][a-z_]+)+$": {
             "description": "Profile override, for example `chunks.chunk_tokens`: 512"
@@ -478,7 +478,7 @@
               "detail": {
                 "limit_bytes": 26214400
               },
-              "docs": "https://intomd.example.com/docs/errors#input_too_large",
+              "docs": "https://ezmd.example.com/docs/errors#input_too_large",
               "message": "Upload exceeds the 25 MB limit for anonymous requests.",
               "request_id": "req_3fQ9xL2mVb7Kp1Zt",
               "status": 413
@@ -1148,7 +1148,7 @@
         "type": "object"
       },
       "WarningsOut": {
-        "description": "The warning code registry (`intomd.warnings.codes`).",
+        "description": "The warning code registry (`ezmd.warnings.codes`).",
         "properties": {
           "warnings": {
             "items": {
@@ -1173,7 +1173,7 @@
         "type": "apiKey"
       },
       "FetchNodeBearer": {
-        "description": "INTOMD_FETCH_NODE_SECRET; requests must also come from INTOMD_FETCH_NODE_CIDR.",
+        "description": "EZMD_FETCH_NODE_SECRET; requests must also come from EZMD_FETCH_NODE_CIDR.",
         "scheme": "bearer",
         "type": "http"
       }
@@ -1181,15 +1181,15 @@
   },
   "info": {
     "contact": {
-      "name": "intomd",
-      "url": "https://intomd.example.com/"
+      "name": "ezmd",
+      "url": "https://ezmd.example.com/"
     },
-    "description": "Convert anything to LLM-ready Markdown.\n\nCreate a job with `POST /v1/convert` (multipart upload or JSON URL), follow it with `GET /v1/jobs/{job_id}/events` (SSE) or by polling `GET /v1/jobs/{job_id}`, then fetch `GET /v1/jobs/{job_id}/result`. The job id is the capability; jobs created with an API key also require that key. Every response carries `X-Request-Id`; every error uses the schema below.\n\n## Error codes\n\n| code | status | meaning |\n| --- | --- | --- |\n| `invalid_request` | 400 | Malformed body, unknown option, or invalid profile override. |\n| `turnstile_required` | 401 | A Turnstile token is required for URL jobs on this instance. |\n| `turnstile_failed` | 403 | The Turnstile token was rejected. |\n| `unauthorized` | 401 | Missing or unknown API key, or bad fetch-node secret. |\n| `forbidden` | 403 | The key or node may not do this (for example residential fetches). |\n| `not_found` | 404 | Unknown job, attachment, or route. |\n| `method_not_allowed` | 405 | Wrong HTTP method. |\n| `job_not_ready` | 409 | The job has not reached the state this call needs. |\n| `input_too_large` | 413 | Upload or fetched body over the caller's cap. |\n| `unsupported_media_type` | 415 | Executable or unsupported input. |\n| `url_blocked` | 422 | The URL (or a URL a converter asked for) failed the SSRF guard. |\n| `platform_disabled` | 422 | The site is disabled by this instance's platform policy. |\n| `experimental_disabled` | 422 | Only an experimental converter handles this input and experimental converters are off. |\n| `fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than intomd.inputs.MAX_FETCH_DEPTH allows. |\n| `result_too_large` | 422 | The converter's result exceeded INTOMD_MAX_RESULT_BYTES. |\n| `rate_limited` | 429 | Too many requests, jobs, or concurrent jobs; see Retry-After. |\n| `conversion_failed` | 500 | Every converter in the chain failed. |\n| `internal_error` | 500 | Unexpected server error (logged with the request id). |\n| `not_implemented` | 501 | The format exists in the contract but is not built yet (docx). |\n| `fetch_failed` | 502 | The URL could not be fetched. |\n| `queue_unavailable` | 503 | The queue is down or the instance is at its active-job cap. |\n| `timeout` | 504 | The conversion exceeded its time limit. |",
+    "description": "Convert anything to LLM-ready Markdown.\n\nCreate a job with `POST /v1/convert` (multipart upload or JSON URL), follow it with `GET /v1/jobs/{job_id}/events` (SSE) or by polling `GET /v1/jobs/{job_id}`, then fetch `GET /v1/jobs/{job_id}/result`. The job id is the capability; jobs created with an API key also require that key. Every response carries `X-Request-Id`; every error uses the schema below.\n\n## Error codes\n\n| code | status | meaning |\n| --- | --- | --- |\n| `invalid_request` | 400 | Malformed body, unknown option, or invalid profile override. |\n| `turnstile_required` | 401 | A Turnstile token is required for URL jobs on this instance. |\n| `turnstile_failed` | 403 | The Turnstile token was rejected. |\n| `unauthorized` | 401 | Missing or unknown API key, or bad fetch-node secret. |\n| `forbidden` | 403 | The key or node may not do this (for example residential fetches). |\n| `not_found` | 404 | Unknown job, attachment, or route. |\n| `method_not_allowed` | 405 | Wrong HTTP method. |\n| `job_not_ready` | 409 | The job has not reached the state this call needs. |\n| `input_too_large` | 413 | Upload or fetched body over the caller's cap. |\n| `unsupported_media_type` | 415 | Executable or unsupported input. |\n| `url_blocked` | 422 | The URL (or a URL a converter asked for) failed the SSRF guard. |\n| `platform_disabled` | 422 | The site is disabled by this instance's platform policy. |\n| `experimental_disabled` | 422 | Only an experimental converter handles this input and experimental converters are off. |\n| `fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than ezmd.inputs.MAX_FETCH_DEPTH allows. |\n| `result_too_large` | 422 | The converter's result exceeded EZMD_MAX_RESULT_BYTES. |\n| `rate_limited` | 429 | Too many requests, jobs, or concurrent jobs; see Retry-After. |\n| `conversion_failed` | 500 | Every converter in the chain failed. |\n| `internal_error` | 500 | Unexpected server error (logged with the request id). |\n| `not_implemented` | 501 | The format exists in the contract but is not built yet (docx). |\n| `fetch_failed` | 502 | The URL could not be fetched. |\n| `queue_unavailable` | 503 | The queue is down or the instance is at its active-job cap. |\n| `timeout` | 504 | The conversion exceeded its time limit. |",
     "license": {
       "identifier": "Apache-2.0",
       "name": "Apache-2.0"
     },
-    "title": "intomd API",
+    "title": "ezmd API",
     "version": "0.0.1"
   },
   "openapi": "3.1.0",
@@ -1433,9 +1433,9 @@
                 }
               }
             },
-            "description": "Deduplicated: an existing finished job with the same input and options. With `wait`, the rendered result itself when the job finished in time (job envelope in `X-Intomd-Job`).",
+            "description": "Deduplicated: an existing finished job with the same input and options. With `wait`, the rendered result itself when the job finished in time (job envelope in `X-Ezmd-Job`).",
             "headers": {
-              "X-Intomd-Job": {
+              "X-Ezmd-Job": {
                 "description": "Compact JobOut JSON (wait results only)",
                 "schema": {
                   "type": "string"
@@ -2352,7 +2352,7 @@
     },
     "/v1/jobs/{job_id}/result": {
       "get": {
-        "description": "The job's output in any profile and format, rendered from the cached IR (other profiles render on demand without re-converting). Extra query keys are profile overrides, flat (`max_tokens=2000`) or dotted (`chunks.chunk_tokens=512`). Markdown responses carry `X-Markdown-Tokens`, `X-Intomd-Truncated`, `X-Intomd-Warnings`, and `X-Intomd-Injection-Risk`. Returns 409 until the job is done.",
+        "description": "The job's output in any profile and format, rendered from the cached IR (other profiles render on demand without re-converting). Extra query keys are profile overrides, flat (`max_tokens=2000`) or dotted (`chunks.chunk_tokens=512`). Markdown responses carry `X-Markdown-Tokens`, `X-Ezmd-Truncated`, `X-Ezmd-Warnings`, and `X-Ezmd-Injection-Risk`. Returns 409 until the job is done.",
         "operationId": "getJobResult",
         "parameters": [
           {
@@ -2447,13 +2447,13 @@
             },
             "description": "The rendered result",
             "headers": {
-              "X-Intomd-Truncated": {
+              "X-Ezmd-Truncated": {
                 "description": "true when content was cut",
                 "schema": {
                   "type": "string"
                 }
               },
-              "X-Intomd-Warnings": {
+              "X-Ezmd-Warnings": {
                 "description": "Number of warnings",
                 "schema": {
                   "type": "integer"
@@ -2775,7 +2775,7 @@
   "servers": [
     {
       "description": "This instance",
-      "url": "https://intomd.example.com"
+      "url": "https://ezmd.example.com"
     }
   ],
   "tags": [
@@ -2792,7 +2792,7 @@
       "name": "meta"
     },
     {
-      "description": "Residential fetch-node protocol. Mounted only when INTOMD_FETCH_NODE_SECRET is set.",
+      "description": "Residential fetch-node protocol. Mounted only when EZMD_FETCH_NODE_SECRET is set.",
       "name": "fetch-node"
     }
   ]

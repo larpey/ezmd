@@ -7,7 +7,7 @@
 # package = "example"
 # reason = "not reachable: we never call example.unsafe_api"
 # expires = 2026-12-31
-# issue = "https://github.com/larpey/intomd/issues/1"
+# issue = "https://github.com/larpey/ezmd/issues/1"
 #
 # pnpm: mirror each entry in package.json `pnpm.auditConfig.ignoreGhsas` (pnpm reads only that).
 

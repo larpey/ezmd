@@ -16,7 +16,7 @@ FILES = [
     f"{p}/pyproject.toml"
     for p in ("packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node")
 ] + [
-    "packages/core/src/intomd/__init__.py",
+    "packages/core/src/ezmd/__init__.py",
     "packages/mcp/server.json",
     "packages/sdk-ts/package.json",
 ]
@@ -44,11 +44,11 @@ def test_rc_bump_satisfies_release_check(tree: Path) -> None:
     assert check.check_versions(tree, "0.9.0rc2", "0.9.0-rc2", True) == []
     core = tomllib.loads((tree / "packages/core/pyproject.toml").read_text(encoding="utf-8"))["project"]
     mcp = tomllib.loads((tree / "packages/mcp/pyproject.toml").read_text(encoding="utf-8"))["project"]
-    assert "intomd-converters==0.9.0rc2" in core["dependencies"]
-    assert "intomd==0.9.0rc2" in mcp["dependencies"]
+    assert "ezmd-converters==0.9.0rc2" in core["dependencies"]
+    assert "ezmd==0.9.0rc2" in mcp["dependencies"]
     server = json.loads((tree / "packages/mcp/server.json").read_text(encoding="utf-8"))
     assert server["version"] == "0.9.0rc2" and all(p["version"] == "0.9.0rc2" for p in server["packages"])
-    assert '__version__ = "0.9.0rc2"' in (tree / "packages/core/src/intomd/__init__.py").read_text(encoding="utf-8")
+    assert '__version__ = "0.9.0rc2"' in (tree / "packages/core/src/ezmd/__init__.py").read_text(encoding="utf-8")
 
 
 def test_final_bump_with_npm(tree: Path) -> None:
@@ -77,4 +77,4 @@ def test_repo_versions_are_consistent() -> None:
     assert len(versions) == 1
     (version,) = versions
     core = tomllib.loads((ROOT / "packages/core/pyproject.toml").read_text(encoding="utf-8"))["project"]
-    assert f"intomd-converters=={version}" in core["dependencies"]
+    assert f"ezmd-converters=={version}" in core["dependencies"]

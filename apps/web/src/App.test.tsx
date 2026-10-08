@@ -1,4 +1,4 @@
-import type { Capabilities, ConvertInput, CreatedJob, IntomdClient, Job, JobEvent, JsonResult, WaitOptions } from "@intomd/sdk";
+import type { Capabilities, ConvertInput, CreatedJob, EzmdClient, Job, JobEvent, JsonResult, WaitOptions } from "@ezmd/sdk";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -66,7 +66,7 @@ function memoryStore(): KeptResultStore & { data: Map<string, KeptResult> } {
 function setup() {
   const client = fakeClient();
   const store = memoryStore();
-  render(<App client={client as unknown as IntomdClient} store={store} />);
+  render(<App client={client as unknown as EzmdClient} store={store} />);
   return { client, store, user: userEvent.setup() };
 }
 
@@ -102,7 +102,7 @@ describe("App", () => {
     await waitFor(() => expect(screen.getAllByTestId("result")).toHaveLength(5));
     expect(client.convert).toHaveBeenCalledTimes(5);
     await user.click(screen.getByTestId("download-all-zip"));
-    await waitFor(() => expect(saveBlob).toHaveBeenCalledWith(expect.any(Blob), "intomd-results.zip"));
+    await waitFor(() => expect(saveBlob).toHaveBeenCalledWith(expect.any(Blob), "ezmd-results.zip"));
   });
 
   it("switches profile by re-requesting the result, never creating a new job", async () => {

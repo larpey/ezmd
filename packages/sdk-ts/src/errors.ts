@@ -1,4 +1,4 @@
-import type { ErrorBody, IntomdWarning } from "./types.js";
+import type { ErrorBody, EzmdWarning } from "./types.js";
 
 const CODE_BY_STATUS: Record<number, string> = {
   400: "invalid_request",
@@ -17,7 +17,7 @@ const CODE_BY_STATUS: Record<number, string> = {
 };
 
 /** Error thrown by every SDK call; mirrors the API error schema (part1 7.5). */
-export class IntomdError extends Error {
+export class EzmdError extends Error {
   readonly code: string;
   readonly status: number;
   readonly requestId: string | undefined;
@@ -25,11 +25,11 @@ export class IntomdError extends Error {
   readonly docs: string | undefined;
   /** Seconds, from `Retry-After` on 429/503. */
   readonly retryAfter: number | undefined;
-  readonly warnings: IntomdWarning[];
+  readonly warnings: EzmdWarning[];
 
-  constructor(body: ErrorBody, retryAfter?: number, warnings: IntomdWarning[] = []) {
+  constructor(body: ErrorBody, retryAfter?: number, warnings: EzmdWarning[] = []) {
     super(body.message);
-    this.name = "IntomdError";
+    this.name = "EzmdError";
     this.code = body.code;
     this.status = body.status;
     this.requestId = body.request_id;
@@ -54,8 +54,8 @@ function isErrorBody(value: unknown): value is ErrorBody {
   return typeof v.code === "string" && typeof v.message === "string";
 }
 
-/** Builds an IntomdError from a non-2xx response, tolerating non-JSON bodies. */
-export async function errorFromResponse(res: Response): Promise<IntomdError> {
+/** Builds an EzmdError from a non-2xx response, tolerating non-JSON bodies. */
+export async function errorFromResponse(res: Response): Promise<EzmdError> {
   const retryAfter = parseRetryAfter(res.headers.get("Retry-After"));
   const requestId = res.headers.get("X-Request-Id") ?? undefined;
   let parsed: unknown;
@@ -66,9 +66,9 @@ export async function errorFromResponse(res: Response): Promise<IntomdError> {
   }
   const inner = (parsed as { error?: unknown } | undefined)?.error;
   if (isErrorBody(inner)) {
-    return new IntomdError({ ...inner, status: inner.status ?? res.status, request_id: inner.request_id ?? requestId }, retryAfter);
+    return new EzmdError({ ...inner, status: inner.status ?? res.status, request_id: inner.request_id ?? requestId }, retryAfter);
   }
-  return new IntomdError(
+  return new EzmdError(
     {
       code: CODE_BY_STATUS[res.status] ?? "invalid_request",
       message: `Request failed with HTTP ${res.status}.`,
@@ -79,8 +79,8 @@ export async function errorFromResponse(res: Response): Promise<IntomdError> {
   );
 }
 
-export function errorFromBody(body: unknown, fallbackMessage: string): IntomdError {
+export function errorFromBody(body: unknown, fallbackMessage: string): EzmdError {
   const inner = (body as { error?: unknown } | undefined)?.error ?? body;
-  if (isErrorBody(inner)) return new IntomdError({ ...inner, status: inner.status ?? 500 });
-  return new IntomdError({ code: "conversion_failed", message: fallbackMessage, status: 500 });
+  if (isErrorBody(inner)) return new EzmdError({ ...inner, status: inner.status ?? 500 });
+  return new EzmdError({ code: "conversion_failed", message: fallbackMessage, status: 500 });
 }

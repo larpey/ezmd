@@ -3,9 +3,9 @@ from __future__ import annotations
 import pytest
 from conftest import Convert
 
-from intomd.ir import Document, Heading, Table, WarningKind
-from intomd.registry import ConversionError
-from intomd_converters.data.csv_conv import CsvConverter, sniff_dialect
+from ezmd.ir import Document, Heading, Table, WarningKind
+from ezmd.registry import ConversionError
+from ezmd_converters.data.csv_conv import CsvConverter, sniff_dialect
 
 NL = chr(10)
 TAB = chr(9)
@@ -115,7 +115,7 @@ def test_sniffer_fallback_on_single_column() -> None:
 
 
 def test_can_handle() -> None:
-    from intomd.inputs import Detected, InputRef
+    from ezmd.inputs import Detected, InputRef
 
     ref = InputRef.from_bytes(b"a,b", filename="x.csv")
     ref.detected = Detected(mime="text/csv", extension=".csv", confidence=1.0)

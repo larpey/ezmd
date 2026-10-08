@@ -5,8 +5,8 @@ Each ```sh or ```python block in the README is preceded by a marker comment:
     <!-- readme: run -->              every line (sh) or the whole block (python) is executed here
     <!-- readme: skip (reason) -->    reported as a skipped test with that reason (network, Docker, servers)
 
-Runnable shell lines must be `uv run intomd ...`; they are invoked in-process through the Typer app (the
-same entry point `uv run intomd` starts), offline, from a temporary working directory, with `fixtures/...`
+Runnable shell lines must be `uv run ezmd ...`; they are invoked in-process through the Typer app (the
+same entry point `uv run ezmd` starts), offline, from a temporary working directory, with `fixtures/...`
 arguments pointed at this checkout. Python blocks are executed with the same path rewrite.
 """
 
@@ -26,7 +26,7 @@ README = ROOT / "README.md"
 MARKER = re.compile(r"^<!-- readme: (run|skip \((?P<reason>[^)]+)\)) -->$")
 FENCE = re.compile(r"^```(\w*)\s*$")
 EXECUTABLE_LANGS = {"sh", "bash", "shell", "console", "python", "py"}
-CLI_PREFIX = ["uv", "run", "intomd"]
+CLI_PREFIX = ["uv", "run", "ezmd"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -91,7 +91,7 @@ def test_every_executable_block_is_marked() -> None:
 
 def test_marker_parsing_rejects_unmarked_blocks() -> None:
     with pytest.raises(AssertionError, match="no `<!-- readme"):
-        blocks("text\n```sh\nuv run intomd version\n```\n")
+        blocks("text\n```sh\nuv run ezmd version\n```\n")
 
 
 CASES = commands()
@@ -102,7 +102,7 @@ def test_readme_command_runs(block: Block, command: str, tmp_path: Path, monkeyp
     if block.skip_reason is not None:
         pytest.skip(block.skip_reason)
     monkeypatch.chdir(tmp_path)
-    monkeypatch.delenv("INTOMD_ENABLE_SOCIAL", raising=False)
+    monkeypatch.delenv("EZMD_ENABLE_SOCIAL", raising=False)
     if block.lang in ("python", "py"):
         source = command.replace('"fixtures/', f'"{ROOT.as_posix()}/fixtures/')
         out = io.StringIO()
@@ -111,10 +111,10 @@ def test_readme_command_runs(block: Block, command: str, tmp_path: Path, monkeyp
         assert out.getvalue().strip(), "the README python example printed nothing"
         return
     argv = shlex.split(command)
-    assert argv[:3] == CLI_PREFIX, f"runnable README commands must start with `uv run intomd`: {command}"
+    assert argv[:3] == CLI_PREFIX, f"runnable README commands must start with `uv run ezmd`: {command}"
     from typer.testing import CliRunner
 
-    from intomd.cli import app
+    from ezmd.cli import app
 
     result = CliRunner().invoke(app, [_absolute_fixture(a) for a in argv[3:]], catch_exceptions=False)
     assert result.exit_code == 0, f"`{command}` exited {result.exit_code}:\n{result.output[-2000:]}"

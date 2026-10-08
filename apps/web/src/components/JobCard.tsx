@@ -1,5 +1,5 @@
-import { IntomdError } from "@intomd/sdk";
-import type { IntomdClient, IntomdWarning, JobEvent, JobState, JsonResult, NeedsAction, Profile, ResultFormat } from "@intomd/sdk";
+import { EzmdError } from "@ezmd/sdk";
+import type { EzmdClient, EzmdWarning, JobEvent, JobState, JsonResult, NeedsAction, Profile, ResultFormat } from "@ezmd/sdk";
 import { useCallback, useEffect, useState } from "react";
 import { errorMessage } from "../lib/api";
 import { downloadName, saveBlob } from "../lib/input";
@@ -27,7 +27,7 @@ export interface ResultInfo {
 }
 
 interface JobCardProps {
-  client: IntomdClient;
+  client: EzmdClient;
   job: JobSummary;
   profiles: readonly Profile[];
   formats: readonly ResultFormat[];
@@ -72,7 +72,7 @@ function LocalJobCard({ job, onRemove }: Pick<JobCardProps, "job" | "onRemove">)
 
 function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onUploadInstead }: JobCardProps) {
   const [live, setLive] = useState<LiveState>({ state: "queued", progress: 0 });
-  const [liveWarnings, setLiveWarnings] = useState<IntomdWarning[]>([]);
+  const [liveWarnings, setLiveWarnings] = useState<EzmdWarning[]>([]);
   const [result, setResult] = useState<JsonResult | null>(null);
   const [profile, setProfile] = useState<Profile>(job.profile);
   const [error, setError] = useState<string | null>(null);
@@ -121,7 +121,7 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
       })
       .catch((err: unknown) => {
         if ((err as Error).name === "AbortError") return;
-        if (err instanceof IntomdError && err.code === "not_found") {
+        if (err instanceof EzmdError && err.code === "not_found") {
           setLive((s) => ({ ...s, state: "expired" }));
           setError("Expired on the server.");
         } else setError(errorMessage(err));

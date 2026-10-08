@@ -1,4 +1,4 @@
-"""Every `intomd[<extra>]` that the code tells a user to install must be an extra `intomd` declares."""
+"""Every `ezmd[<extra>]` that the code tells a user to install must be an extra `ezmd` declares."""
 
 from __future__ import annotations
 
@@ -7,12 +7,12 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-HINT = re.compile(r"intomd\[([a-z0-9_,-]+)\]")
+HINT = re.compile(r"ezmd\[([a-z0-9_,-]+)\]")
 
 # Extras the spec names (docs/spec/part4.md 4.3.3) that later phases add. A hint for one of these is allowed
 # until its phase lands; remove the entry when the extra is declared.
 PENDING = {
-    "server": "needs intomd-api published (Phase 1 release, owner gate)",
+    "server": "needs ezmd-api published (Phase 1 release, owner gate)",
     "iwork": "Docling iWork backend, not yet packaged as an extra",
     "ocr": "Phase 2",
     "media": "Phase 2",
@@ -39,7 +39,7 @@ def _hints() -> dict[str, set[str]]:
 def test_hinted_extras_are_declared() -> None:
     declared = _declared()
     missing = {extra: sorted(paths) for extra, paths in _hints().items() if extra not in declared | set(PENDING)}
-    assert not missing, f"code tells users to install extras intomd does not declare: {missing}"
+    assert not missing, f"code tells users to install extras ezmd does not declare: {missing}"
 
 
 def test_pending_extras_are_still_pending() -> None:
@@ -52,6 +52,6 @@ def test_forwarded_extras_exist_on_converters() -> None:
     conv_extras = set(conv["project"].get("optional-dependencies", {}))
     for reqs in core["project"]["optional-dependencies"].values():
         for req in reqs:
-            m = re.fullmatch(r"intomd-converters\[([a-z0-9_,-]+)\]", req)
+            m = re.fullmatch(r"ezmd-converters\[([a-z0-9_,-]+)\]", req)
             if m:
                 assert set(m.group(1).split(",")) <= conv_extras, req

@@ -985,10 +985,10 @@
     "content_hash": "sha256:2f5823c716c8f32d49612e319bb99dcc3f31cfa645a56395948c469502374528",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.xlsx",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -1037,7 +1037,7 @@
       "transcript_segments": 0,
       "words": 39
     },
-    "duration_seconds": 0.014999999897554517,
+    "duration_seconds": 0.030999999959021807,
     "engine": "documents.xlsx",
     "engines_tried": [
       "documents.xlsx"
@@ -1089,7 +1089,7 @@
       "type": "table"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0001",
@@ -1208,7 +1208,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 570,
+  "tokens_total": 573,
   "warnings": [
     {
       "block_id": null,

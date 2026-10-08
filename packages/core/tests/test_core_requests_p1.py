@@ -7,9 +7,9 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import extension_mime, mime_family, normalize_mime, same_family
-from intomd.inputs import Detected, InputRef
-from intomd.ir import (
+from ezmd.detect import extension_mime, mime_family, normalize_mime, same_family
+from ezmd.inputs import Detected, InputRef
+from ezmd.ir import (
     Document,
     InlineSpan,
     Link,
@@ -19,8 +19,8 @@ from intomd.ir import (
     SourceType,
     inline_link_count,
 )
-from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions, Unavailable
-from intomd.testing.fixtures import missing_requirements
+from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions, Unavailable
+from ezmd.testing.fixtures import missing_requirements
 
 DOC = "application/msword"
 DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -60,7 +60,7 @@ def test_unavailable_named_by_chain_lists_extra() -> None:
     err = info.value
     assert err.code == "conversion_failed"
     assert err.user_message.startswith("Docling is not installed")
-    assert "intomd[docs]" in err.user_message
+    assert "ezmd[docs]" in err.user_message
 
 
 def test_unsupported_without_unavailable_is_unchanged() -> None:
@@ -100,8 +100,8 @@ def test_rtf_aliases() -> None:
 
 
 def test_pipeline_no_misnamed_for_docm(tmp_path: Path) -> None:
-    from intomd.ir import ConversionResult, InputRefInfo
-    from intomd.pipeline import convert_ref
+    from ezmd.ir import ConversionResult, InputRefInfo
+    from ezmd.pipeline import convert_ref
 
     class Fake:
         id = "documents.fake"
@@ -132,8 +132,8 @@ def test_pipeline_no_misnamed_for_docm(tmp_path: Path) -> None:
 def test_fixture_requires() -> None:
     assert missing_requirements({}) is None
     assert missing_requirements({"requires_modules": ["json"]}) is None
-    reason = missing_requirements({"requires_modules": ["intomd_no_such_module_xyz"]})
-    assert reason is not None and "intomd_no_such_module_xyz" in reason
+    reason = missing_requirements({"requires_modules": ["ezmd_no_such_module_xyz"]})
+    assert reason is not None and "ezmd_no_such_module_xyz" in reason
     unknown = missing_requirements({"requires": ["nonsense"]})
     assert unknown is not None and "unknown extra" in unknown
     import importlib.util
@@ -145,7 +145,7 @@ def test_fixture_requires() -> None:
 def test_fixture_requires_skips_in_score_cli(tmp_path: Path) -> None:
     from typer.testing import CliRunner
 
-    from intomd.testing.cli import _score_app
+    from ezmd.testing.cli import _score_app
 
     root = tmp_path / "fixtures"
     fx = root / "fam" / "needs-module"
@@ -153,13 +153,13 @@ def test_fixture_requires_skips_in_score_cli(tmp_path: Path) -> None:
     (root / "thresholds.toml").write_text("default = 0.85\n", encoding="utf-8")
     (fx / "input.txt").write_text("hello\n", encoding="utf-8")
     (fx / "meta.toml").write_text(
-        'converter = "text.plain"\nrequires_modules = ["intomd_no_such_module_xyz"]\n'
+        'converter = "text.plain"\nrequires_modules = ["ezmd_no_such_module_xyz"]\n'
         '[provenance]\norigin = "self-generated"\nlicense = "CC0-1.0"\n',
         encoding="utf-8",
     )
     out = CliRunner().invoke(_score_app, [str(fx)])
     assert out.exit_code == 0
-    assert "SKIP" in out.output and "intomd_no_such_module_xyz" in out.output
+    assert "SKIP" in out.output and "ezmd_no_such_module_xyz" in out.output
 
 
 def test_sidecar_extra_reserved_keys_rejected_at_finalize() -> None:

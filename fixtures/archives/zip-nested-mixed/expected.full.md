@@ -3,8 +3,8 @@ title: "input.zip"
 source: "input.zip"
 source_type: archive
 converter: archives.archive
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block

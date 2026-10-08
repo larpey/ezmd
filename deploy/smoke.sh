@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# intomd compose smoke test (P0-T11).
+# ezmd compose smoke test (P0-T11).
 #
 #   deploy/smoke.sh                       build + start deploy/docker-compose.yml, test, leave it running
 #   deploy/smoke.sh --down                same, then `docker compose down -v`
@@ -11,8 +11,8 @@
 # Markdown result contains the expected heading, JSON result parses, and (local mode) the
 # worker-default container has no route to the internet and every app container runs as
 # uid 10001 with a read-only root filesystem and no capabilities. Exits non-zero on any failure.
-# The env file is INTOMD_ENV_FILE (default deploy/.env; created for the run when missing), extra
-# compose files come from INTOMD_COMPOSE_FILES (deploy/lib.sh). SMOKE_API_KEY, when set, is sent as
+# The env file is EZMD_ENV_FILE (default deploy/.env; created for the run when missing), extra
+# compose files come from EZMD_COMPOSE_FILES (deploy/lib.sh). SMOKE_API_KEY, when set, is sent as
 # X-API-Key. The last line on success is `SMOKE_JOB=<id>`.
 set -euo pipefail
 
@@ -81,9 +81,9 @@ if [ -z "$REMOTE" ]; then
   if [ ! -f "$ENV_FILE" ]; then
     (umask 077 && if [ -f "$HERE/env.example" ]; then cp "$HERE/env.example" "$ENV_FILE"; else : > "$ENV_FILE"; fi)
     # Local smoke: plain HTTP on :8080, no ACME, fresh Redis password.
-    env_set INTOMD_DOMAIN ""
-    env_set INTOMD_ACME_EMAIL ""
-    env_set INTOMD_REDIS_PASSWORD "$(rand_hex 24)"
+    env_set EZMD_DOMAIN ""
+    env_set EZMD_ACME_EMAIL ""
+    env_set EZMD_REDIS_PASSWORD "$(rand_hex 24)"
     echo "created $ENV_FILE for the smoke run"
   fi
   if [ "$UP" = 1 ]; then
@@ -112,13 +112,13 @@ ok "readyz $BASE"
 ui="$("${CURL[@]}" -o /dev/null -w '%{http_code} %{content_type}' "$BASE/")" || fail "GET / failed"
 case "$ui" in
   "200 text/html"*) ok "web UI at /" ;;
-  *) fail "GET / returned '$ui'; expected 200 text/html (is INTOMD_WEB_DIST pointing at the built UI?)" ;;
+  *) fail "GET / returned '$ui'; expected 200 text/html (is EZMD_WEB_DIST pointing at the built UI?)" ;;
 esac
 
 # 2. convert a small text file
 TMPD="$(mktemp -d)"
 trap 'rm -rf "$TMPD"; cleanup' EXIT
-HEADING="intomd smoke test"
+HEADING="ezmd smoke test"
 # A nonce paragraph keeps each run from being deduplicated onto an earlier job.
 printf '%s\n=================\n\nThis file checks the compose stack end to end.\n\nRun %s.\n' \
   "$HEADING" "$(date +%s)-$$" > "$TMPD/smoke.txt"

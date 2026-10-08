@@ -1,4 +1,4 @@
-# intomd roadmap
+# ezmd roadmap
 
 Ordered phases with gates. Generated from docs/spec/part4.md section 4.17 and docs/spec/part1.md section 9. Tasks may be added; gates may not be removed or reordered. Spec references use the section numbers in docs/spec/.
 
@@ -28,7 +28,7 @@ Gate G0: all P0 tasks done; CI green on all four OS targets; coverage at or abov
 
 ## 4.17.2 Phase 1: Permissive core, CLI, library, MCP, UI v1, compose
 
-Goal: `pip install intomd` converts documents, web, code, email, data, and notebooks with provenance; the four surfaces exist; a self-hoster can run it.
+Goal: `pip install ezmd` converts documents, web, code, email, data, and notebooks with provenance; the four surfaces exist; a self-hoster can run it.
 
 | ID | Task | deps | done when |
 |---|---|---|---|
@@ -52,7 +52,7 @@ Goal: `pip install intomd` converts documents, web, code, email, data, and noteb
 | P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | P1-T01 | runs on the fixture corpus and prints a table |
 | P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | P1-T01..T07 | provenance check passes; nightly scorecard produced |
 
-Gate G1: all P1 tasks done; `v0.1.0` released to PyPI, npm, GHCR; fixture pass rate 100% on `exact` fixtures and at or above 95% on threshold fixtures; integration and Playwright green; `uvx intomd-mcp` works in Claude Desktop (manual check recorded in STATUS.md); docs site live; STATUS.md updated.
+Gate G1: all P1 tasks done; `v0.1.0` released to PyPI, npm, GHCR; fixture pass rate 100% on `exact` fixtures and at or above 95% on threshold fixtures; integration and Playwright green; `uvx ezmd-mcp` works in Claude Desktop (manual check recorded in STATUS.md); docs site live; STATUS.md updated.
 
 ## 4.17.3 Phase 2: Media (ASR, OCR, diarization, in-browser Whisper)
 
@@ -60,7 +60,7 @@ Goal: audio, video files, images, and screen recordings convert locally with spe
 
 | ID | Task | deps | done when |
 |---|---|---|---|
-| P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `intomd models pull/list/rm/export`; license gate | G1 | 4.2.2 item 6 criteria; model license check in CI |
+| P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `ezmd models pull/list/rm/export`; license gate | G1 | 4.2.2 item 6 criteria; model license check in CI |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | P2-T01 | media fixtures meet WER thresholds; non-speech fixture produces no hallucinated text |
 | P2-T03 | Diarization: pyannote community-1 with midpoint alignment; `exclusive` mode; `DIARIZATION` setting | P2-T02 | speaker-count fixture within tolerance |
 | P2-T04 | Transcript template and SRT/VTT output; `segments` in sidecar; `.srt` download in UI | P2-T02 | SRT fixture exact-match |
@@ -69,12 +69,12 @@ Goal: audio, video files, images, and screen recordings convert locally with spe
 | P2-T07 | Hosted ASR backends (Groq, Deepgram) as keyed options with the offload threshold and `diarization_unavailable_offload` warning | P2-T02 | stubbed backend tests pass; capabilities reports `asr_offload` |
 | P2-T08 | `worker-media` image and compose media profile; GPU override; `model-init`; tmpfs sizing; seccomp profile verified with ffmpeg and torch | P2-T02, P2-T05 | compose media profile converts media smoke fixtures in the weekly integration run |
 | P2-T09 | In-browser Whisper in the web UI (4.1 step 13) with `transcript_segments` input to the API | P2-T04 | Playwright WebGPU test passes or is skipped with reason; 10-second fixture transcribes |
-| P2-T10 | `intomd watch` and the stub-note-on-failure behavior; systemd and launchd docs | P1-T09 | watch test with a temp dir passes |
+| P2-T10 | `ezmd watch` and the stub-note-on-failure behavior; systemd and launchd docs | P1-T09 | watch test with a temp dir passes |
 | P2-T11 | MCP `search_result` tool | P1-T11 | BM25 test over a long fixture passes |
-| P2-T12 | Capacity measurement: `intomd fixtures run --timings` on an 8-core runner; write `docs/ops/capacity.md` with measured seconds per page and realtime factors | P2-T08 | numbers in docs match the nightly timings within 25% |
+| P2-T12 | Capacity measurement: `ezmd fixtures run --timings` on an 8-core runner; write `docs/ops/capacity.md` with measured seconds per page and realtime factors | P2-T08 | numbers in docs match the nightly timings within 25% |
 | P2-T13 | Load test script and thresholds; run against the compose stack in integration | P1-T15, P2-T08 | k6 thresholds pass on the CI runner at reduced rates |
 
-Gate G2: all P2 tasks done; `v0.2.0` released; media fixtures at or above 90% pass; `intomd doctor` reports GPU correctly on a CUDA runner (or documented manual check); capacity doc written; STATUS.md updated.
+Gate G2: all P2 tasks done; `v0.2.0` released; media fixtures at or above 90% pass; `ezmd doctor` reports GPU correctly on a CUDA runner (or documented manual check); capacity doc written; STATUS.md updated.
 
 ## 4.17.4 Phase 3: Social, chat, URL fetch chains, fetch node, extension, share sheet
 
@@ -88,7 +88,7 @@ Goal: the inputs no competitor handles (chat exports, social threads) and the cl
 | P3-T04 | `[fetch]` extra: yt-dlp with Deno and bgutil PO-token provider, audio-only formats, avd-style mirror chain for short-form kept in a data file, cookies and proxy options; self-host only, disabled on public mode | P3-T03 | self-host fetch tests with stubbed yt-dlp pass; public mode refuses with `fetch_blocked_by_policy` |
 | P3-T05 | Crawl4AI extra for JS-rendered pages and bounded crawls (`max_pages`, same-origin), fit-markdown | P1-T02 | JS fixture page converts; crawl bounded test passes |
 | P3-T06 | Fetch-node protocol (Part 3) server side: claim, lease, upload, node registry, `allowed_sources`, metrics | P3-T04 | protocol tests pass; a simulated node completes a job |
-| P3-T07 | `apps/fetch-node` loop, `intomd fetch-node run/token/doctor/ping`, `fetch-node` image (amd64 and arm64), `docker-compose.pi.yml`, Pi build script and firstrun, Tailscale policy file | P3-T06 | arm64 image runs on a Pi 4 (manual, recorded) and completes a caption job against a staging instance |
+| P3-T07 | `apps/fetch-node` loop, `ezmd fetch-node run/token/doctor/ping`, `fetch-node` image (amd64 and arm64), `docker-compose.pi.yml`, Pi build script and firstrun, Tailscale policy file | P3-T06 | arm64 image runs on a Pi 4 (manual, recorded) and completes a caption job against a staging instance |
 | P3-T08 | Browser extension (4.6): plain URL path, YouTube captions and audio, generic video blob, MediaRecorder fallback, settings, Firefox build, privacy doc, store assets | P1-T12, P3-T06 | 4.6.4 criteria |
 | P3-T09 | PWA manifest with share target, service worker shell cache, `/share` handling, install hint (4.7.2) | P1-T13 | share-target Playwright test passes |
 | P3-T10 | iOS Shortcuts A and B, exported `.shortcut` files, docs with exact steps, `client: ios-shortcut` allowance in the API | P1-T10 | manual run on an iPhone recorded in STATUS.md; API allowance tests pass |
@@ -113,13 +113,13 @@ Goal: the free instance is live, protected, lawful, observable, and cheap.
 | P4-T07 | Runbook (4.10) complete with Hetzner, Cloudflare (rules as copyable expressions), Tailscale policy, Pi first boot, monitoring, cost, sponsor pack generator | P4-T04 | a second person can follow it on a fresh account (owner dry run recorded) |
 | P4-T08 | Staging instance on a small Hetzner box using the full public overlay; k6 load run at target rates; 72-hour soak with synthetic traffic | P4-T01..T05 | thresholds pass; no alert false positives during soak; memory stable |
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | P4-T08 | report in `docs/ops/redteam-<date>.md`; no open high findings |
-| P4-T10 | Production cutover: DNS, Cloudflare rules applied, Origin CA, Pi connected, uptime check, backups to off-box storage verified by a restore drill | P4-T07, P4-T09 | `https://intomd.<domain>/healthz` ok; restore drill recorded |
-| P4-B01 | Competitive benchmark harness `tools/bench/`: each competitor runs as an isolated, pinned container or venv (never a dependency of any intomd package): MarkItDown, Docling (standalone), Marker, MinerU, Unstructured, pymupdf4llm, pandoc, Trafilatura raw, Jina Reader and Firecrawl self-hosted for web; paid APIs (LlamaParse, Mistral OCR, Azure DI) only after owner approval of spend. Records version, hardware, wall time, peak RSS, and failures per document | G3 | `make bench` runs every free competitor on the smoke corpus and writes `bench/results/<date>/results.json` |
-| P4-B02 | Benchmark corpora and metrics: public sets where they exist (OmniDocBench and olmOCR-Bench for PDF, a public article-extraction benchmark for web, PubTabNet/FinTabNet samples for tables), the intomd fixture corpus, and self-generated ground-truth sets for formats without a public benchmark (DOCX tracked changes, PPTX notes, XLSX, email, EPUB, code, data). Metrics: text edit similarity, reading order, heading tree, table TEDS, formula match, and LLM-QA accuracy on the converted output; per-category scorecards with confidence intervals | P4-B01 | scorecard generated per category; corpora licenses recorded in CREDITS |
+| P4-T10 | Production cutover: DNS, Cloudflare rules applied, Origin CA, Pi connected, uptime check, backups to off-box storage verified by a restore drill | P4-T07, P4-T09 | `https://ezmd.<domain>/healthz` ok; restore drill recorded |
+| P4-B01 | Competitive benchmark harness `tools/bench/`: each competitor runs as an isolated, pinned container or venv (never a dependency of any ezmd package): MarkItDown, Docling (standalone), Marker, MinerU, Unstructured, pymupdf4llm, pandoc, Trafilatura raw, Jina Reader and Firecrawl self-hosted for web; paid APIs (LlamaParse, Mistral OCR, Azure DI) only after owner approval of spend. Records version, hardware, wall time, peak RSS, and failures per document | G3 | `make bench` runs every free competitor on the smoke corpus and writes `bench/results/<date>/results.json` |
+| P4-B02 | Benchmark corpora and metrics: public sets where they exist (OmniDocBench and olmOCR-Bench for PDF, a public article-extraction benchmark for web, PubTabNet/FinTabNet samples for tables), the ezmd fixture corpus, and self-generated ground-truth sets for formats without a public benchmark (DOCX tracked changes, PPTX notes, XLSX, email, EPUB, code, data). Metrics: text edit similarity, reading order, heading tree, table TEDS, formula match, and LLM-QA accuracy on the converted output; per-category scorecards with confidence intervals | P4-B01 | scorecard generated per category; corpora licenses recorded in CREDITS |
 | P4-B03 | Iterate to win: per category, loop measure, diagnose losses (council for any category we trail), fix converters, re-run; no benchmark-specific special-casing (a held-out split per corpus is scored only at the end). Each loop's scorecard is committed | P4-B02 | Benchmark gate below holds on the held-out split |
 | P4-B04 | Publish `docs/benchmarks.md`: method, versions, hardware, full tables including categories we lose and why, reproduction command; the Show HN story (P4-T11) uses these numbers | P4-B03 | doc builds; `make bench` reproduces the published numbers within the stated intervals |
 | P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run and competitive benchmark story (P4-B04), Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | P4-T10 | drafts in `docs/launch/` reviewed by the owner |
-| P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | P4-T04 | `intomd admin report --sponsor-pack` produces the document |
+| P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | P4-T04 | `ezmd admin report --sponsor-pack` produces the document |
 
 Launch checklist (every line must be checked and dated in STATUS.md before DNS cutover):
 
@@ -136,19 +136,19 @@ Launch checklist (every line must be checked and dated in STATUS.md before DNS c
 11. Alerts reach email and Discord (test alert fired).
 12. Uptime check active.
 13. Terms, Privacy, DMCA, Acceptable Use published; DMCA agent registered with the US Copyright Office; mailbox monitored.
-14. `INTOMD_SPONSOR_NAME` set or the "Support" link present; nothing gated.
+14. `EZMD_SPONSOR_NAME` set or the "Support" link present; nothing gated.
 15. Cloudflare: proxied records only, Full strict TLS, WAF rules, rate rule, cache rules, Rocket Loader off.
 16. Hetzner firewall: 80/443 from Cloudflare ranges only; 22 closed or Tailscale-only.
 17. Budget ceiling and downgrade plan written in DECISIONS.md.
 18. CHANGELOG has the release entry; `v1.0.0` tagged after one week of stable operation.
 
-Benchmark gate (owner directive, D-0032): in every category, intomd's default install scores at or above the best competitor on the primary metric (ties within the 95% interval count), on the held-out split. A category may only be exempted when the winner relies on a license intomd cannot ship by default and intomd's opt-in extra matches it; the exemption is recorded in DECISIONS.md with the numbers and shown in docs/benchmarks.md.
+Benchmark gate (owner directive, D-0032): in every category, ezmd's default install scores at or above the best competitor on the primary metric (ties within the 95% interval count), on the held-out split. A category may only be exempted when the winner relies on a license ezmd cannot ship by default and ezmd's opt-in extra matches it; the exemption is recorded in DECISIONS.md with the numbers and shown in docs/benchmarks.md.
 
 Gate G4: benchmark gate holds; launch checklist complete; 7 days of operation with no critical alert; `v1.0.0` released; STATUS.md updated.
 
 ## 4.17.6 Phase 5: Persona verticals and integrations
 
-Goal: the features that make specific professions choose intomd. Each is independent; order by observed demand from the weekly digest.
+Goal: the features that make specific professions choose ezmd. Each is independent; order by observed demand from the weekly digest.
 
 | ID | Task | deps | done when |
 |---|---|---|---|
@@ -158,9 +158,9 @@ Goal: the features that make specific professions choose intomd. Each is indepen
 | P5-T04 | Research extras: LaTeX math preservation via Marker as an optional `nonfree-rail` extra with license display, DOI and citekey frontmatter from Crossref lookups (opt-in network), Zotero-friendly export | G4 | math fixture passes with the extra; license gate shows the RAIL text |
 | P5-T05 | Obsidian plugin (4.8 item 1) and submission | G4 | plugin installs from a release; converts a URL into the vault |
 | P5-T06 | Raycast extension and Alfred workflow | G4 | published |
-| P5-T07 | GitHub Action `intomd-action` | G4 | marketplace listing live; used by this repo's docs build |
+| P5-T07 | GitHub Action `ezmd-action` | G4 | marketplace listing live; used by this repo's docs build |
 | P5-T08 | n8n and Zapier templates | G4 | templates in docs; one n8n template verified |
-| P5-T09 | Desktop binary: PyInstaller single-file build of `intomd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in DECISIONS.md; code signing deferred until funded | G4 | binaries attached to the release; smoke test on each OS |
+| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in DECISIONS.md; code signing deferred until funded | G4 | binaries attached to the release; smoke test on each OS |
 | P5-T10 | Channel and playlist batch for marketers via the extension (queue every video on a channel page) and the CLI with the fetch extra | P3-T08 | extension batch test passes |
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | P3-T08 | decision recorded |
 

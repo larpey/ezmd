@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -45,9 +48,9 @@
       {
         "attrs": {
           "lines": "67",
-          "tokens": "475"
+          "tokens": "474"
         },
-        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an intomd fixture.\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        return self.quantity <= threshold\n\n    def restock(self, amount: int) -> None:\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.quantity += amount\n\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        self._items: dict[str, Item] = {}\n\n    def add(self, item: Item) -> None:\n        self._items[item.sku] = item\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        return sorted((i for i in self._items.values() if i.needs_reorder()), key=lambda i: i.sku)\n\n    def to_json(self) -> str:\n        return json.dumps({sku: item.quantity for sku, item in self._items.items()}, indent=2)\n\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    sent = 0\n    for _attempt in range(retries):\n        sent = len(inventory.low_stock())\n    return sent\n\n\ndef main() -> None:\n    inv = Inventory()\n    inv.add(Item(\"A-1\", \"Widget\", 3))\n    inv.add(Item(\"B-2\", \"Gadget\", 40))\n    for item in inv.low_stock():\n        print(f\"reorder {item.sku}: {item.name}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an ezmd fixture.\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        return self.quantity <= threshold\n\n    def restock(self, amount: int) -> None:\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.quantity += amount\n\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        self._items: dict[str, Item] = {}\n\n    def add(self, item: Item) -> None:\n        self._items[item.sku] = item\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        return sorted((i for i in self._items.values() if i.needs_reorder()), key=lambda i: i.sku)\n\n    def to_json(self) -> str:\n        return json.dumps({sku: item.quantity for sku, item in self._items.items()}, indent=2)\n\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    sent = 0\n    for _attempt in range(retries):\n        sent = len(inventory.low_stock())\n    return sent\n\n\ndef main() -> None:\n    inv = Inventory()\n    inv.add(Item(\"A-1\", \"Widget\", 3))\n    inv.add(Item(\"B-2\", \"Gadget\", 40))\n    for item in inv.low_stock():\n        print(f\"reorder {item.sku}: {item.name}\")\n\n\nif __name__ == \"__main__\":\n    main()",
         "filename": "input.py",
         "id": "b0002",
         "language": "python",
@@ -72,7 +75,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:9e89c5d16c7fddb6a020b65915fe10c7e31708e25d76ecf09bd8dbc804432320",
+    "content_hash": "sha256:44864de66e84c61e0b53f0e3420f9075fea57e048f586b4a6e8eecc6ddc480f8",
     "converter_id": "code.source_file",
     "metadata": {
       "author": null,
@@ -83,11 +86,11 @@
       "encoding": "utf-8",
       "encoding_confidence": 1.0,
       "extra": {
-        "bytes": 1856,
+        "bytes": 1854,
         "language": "python",
         "lines": 67,
         "shebang": "python3",
-        "tokens": 475
+        "tokens": 474
       },
       "fetched": null,
       "keywords": [],
@@ -99,7 +102,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.py",
       "source_type": "code",
       "speakers": [],
@@ -112,32 +117,32 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:6fa6c7e47bea271967fee8ffc1e5cedc4aff99d5b22ac5fb22a313fc287d2521",
+    "content_hash": "sha256:0df7951682f25dd0d8d74ec8d40fb95d0a75fd065c5d452137ed54c9e99119e2",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 1856,
+      "bytes": 1854,
       "encoding": "utf-8",
       "language": "python",
       "lines": 67,
       "shebang": "python3",
-      "tokens": 475
+      "tokens": 474
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.py",
-    "source_hash": "sha256:1152da8b3c3e5170b60e26fdaa7c8617e05ab2be323f443a546fc45ba0556374",
+    "source_hash": "sha256:fd7370ea1153d12b95a08b3f0a6b49f4ad2cc10b2252faca6af756b4fb171170",
     "source_type": "code",
     "title": "input.py",
     "tokens": {
-      "cl100k_base": 493,
-      "claude_approx": 531,
-      "o200k_base": 492
+      "cl100k_base": 492,
+      "claude_approx": 530,
+      "o200k_base": 491
     },
     "truncated": false,
     "warnings": [],
@@ -169,14 +174,14 @@
       "transcript_segments": 0,
       "words": 225
     },
-    "duration_seconds": 0.09300000010989606,
+    "duration_seconds": 0.11000000010244548,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 1856
+    "input_bytes": 1854
   },
   "profile": "full",
   "provenance": [
@@ -197,13 +202,13 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 764,
+  "tokens_total": 771,
   "warnings": []
 }

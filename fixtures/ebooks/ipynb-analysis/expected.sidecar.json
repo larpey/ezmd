@@ -905,14 +905,14 @@
     "content_hash": "sha256:105cc16401bd1a1639482091cea47b6c978bf3bec7c9996db46b8c5200335793",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.ipynb",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "kernel_language": "python",
       "nbformat": 4
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -1099,7 +1099,7 @@
       "type": "raw"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0010",
@@ -1144,6 +1144,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 555,
+  "tokens_total": 558,
   "warnings": []
 }

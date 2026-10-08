@@ -1,5 +1,5 @@
 """Docling engine tests. The mapping tests need the `docs` extra and pre-downloaded models
-(`docling-tools models download layout tableformer -o DIR` and INTOMD_DOCLING_ARTIFACTS=DIR); they are skipped
+(`docling-tools models download layout tableformer -o DIR` and EZMD_DOCLING_ARTIFACTS=DIR); they are skipped
 otherwise. The fallback test needs neither: Docling is imported dynamically, so a failing engine can be faked."""
 
 from __future__ import annotations
@@ -12,18 +12,18 @@ from typing import Any
 import pytest
 from conftest import FIXTURES
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Heading, PageBreak, Paragraph, Table, WarningKind, spans_text
-from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions
-from intomd_converters.pdf import doclingengine
-from intomd_converters.pdf.converter import PdfiumTextConverter
-from intomd_converters.pdf.doclingengine import DoclingPdfConverter
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Heading, PageBreak, Paragraph, Table, WarningKind, spans_text
+from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions
+from ezmd_converters.pdf import doclingengine
+from ezmd_converters.pdf.converter import PdfiumTextConverter
+from ezmd_converters.pdf.doclingengine import DoclingPdfConverter
 
-_ARTIFACTS = os.environ.get("INTOMD_DOCLING_ARTIFACTS", "")
+_ARTIFACTS = os.environ.get("EZMD_DOCLING_ARTIFACTS", "")
 needs_docling = pytest.mark.skipif(
     importlib.util.find_spec("docling") is None or not _ARTIFACTS or not Path(_ARTIFACTS).is_dir(),
-    reason="needs the `docs` extra and Docling models in INTOMD_DOCLING_ARTIFACTS",
+    reason="needs the `docs` extra and Docling models in EZMD_DOCLING_ARTIFACTS",
 )
 
 
@@ -61,9 +61,9 @@ def test_docling_skips_when_other_engine_requested() -> None:
 
 
 def test_docling_env_engine_override(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("INTOMD_PDF_ENGINE", "pypdf")
+    monkeypatch.setenv("EZMD_PDF_ENGINE", "pypdf")
     assert DoclingPdfConverter().can_handle(_ref("simple-table")) == 0.0
-    monkeypatch.delenv("INTOMD_PDF_ENGINE")
+    monkeypatch.delenv("EZMD_PDF_ENGINE")
     assert DoclingPdfConverter().can_handle(_ref("simple-table")) == 1.0
 
 

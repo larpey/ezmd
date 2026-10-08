@@ -1,4 +1,4 @@
-import type { Capabilities, CreatedJob, IntomdClient, Profile, ResultFormat } from "@intomd/sdk";
+import type { Capabilities, CreatedJob, EzmdClient, Profile, ResultFormat } from "@ezmd/sdk";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { History } from "./components/History";
 import { InputPanel, type SubmitPayload } from "./components/InputPanel";
@@ -29,7 +29,7 @@ interface FinishedResult {
 }
 
 export interface AppProps {
-  client?: IntomdClient;
+  client?: EzmdClient;
   store?: KeptResultStore;
 }
 
@@ -167,7 +167,7 @@ export function App({ client = defaultClient, store = keptResults }: AppProps) {
 
   const downloadAll = async (): Promise<void> => {
     try {
-      saveBlob(await zipResults(zippable), "intomd-results.zip");
+      saveBlob(await zipResults(zippable), "ezmd-results.zip");
     } catch (err) {
       setNotice(`Could not build the zip: ${errorMessage(err)}`);
     }
@@ -179,7 +179,7 @@ export function App({ client = defaultClient, store = keptResults }: AppProps) {
     <WarningRegistryContext.Provider value={registry}>
       <div className="app">
         <header className="top">
-          <h1 className="brand">intomd</h1>
+          <h1 className="brand">ezmd</h1>
           <nav className="top-links" aria-label="Site">
             <a href="/docs/self-host" data-testid="link-self-host">
               Self-host

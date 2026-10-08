@@ -8,13 +8,13 @@ from datetime import UTC, datetime
 
 import pytest
 
-from intomd.inputs import Detected, InputRef
-from intomd.ir import Table, WarningKind
-from intomd.registry import ConversionError, ConvertOptions, Unavailable
-from intomd_converters.comms import converters, msg
-from intomd_converters.comms.build import table_rows
-from intomd_converters.comms.msg import OLE_MAGIC, SUBSTG
-from intomd_converters.comms.msg import ExtractMsgConverter as MsgConverter
+from ezmd.inputs import Detected, InputRef
+from ezmd.ir import Table, WarningKind
+from ezmd.registry import ConversionError, ConvertOptions, Unavailable
+from ezmd_converters.comms import converters, msg
+from ezmd_converters.comms.build import table_rows
+from ezmd_converters.comms.msg import OLE_MAGIC, SUBSTG
+from ezmd_converters.comms.msg import ExtractMsgConverter as MsgConverter
 
 
 def test_registered_as_unavailable_without_extract_msg(monkeypatch) -> None:
@@ -26,7 +26,7 @@ def test_registered_as_unavailable_without_extract_msg(monkeypatch) -> None:
 
 
 def test_unavailable_msg_reports_the_extra() -> None:
-    from intomd.registry import ConverterRegistry
+    from ezmd.registry import ConverterRegistry
 
     reg = ConverterRegistry()
     reg.register(
@@ -38,7 +38,7 @@ def test_unavailable_msg_reports_the_extra() -> None:
     ref.detected = Detected(mime="application/vnd.ms-outlook", extension=".msg", confidence=1.0)
     with pytest.raises(ConversionError) as e:
         reg.convert(ref, ConvertOptions())
-    assert "intomd[nonfree]" in e.value.user_message
+    assert "ezmd[nonfree]" in e.value.user_message
 
 
 class _Att:
@@ -70,7 +70,7 @@ class _Msg:
 
 @pytest.fixture
 def fake_extract_msg(monkeypatch, tmp_path):
-    monkeypatch.setenv("INTOMD_CACHE_DIR", str(tmp_path))
+    monkeypatch.setenv("EZMD_CACHE_DIR", str(tmp_path))
     mod = types.ModuleType("extract_msg")
     opened: list[_Msg] = []
 
@@ -87,8 +87,8 @@ def fake_extract_msg(monkeypatch, tmp_path):
     mod.openMsg = open_msg  # type: ignore[attr-defined]
     mod.__version__ = "0.56.1"  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "extract_msg", mod)
-    monkeypatch.delitem(sys.modules, "intomd_converters.comms.msg_engine", raising=False)
-    import intomd_converters.comms as package
+    monkeypatch.delitem(sys.modules, "ezmd_converters.comms.msg_engine", raising=False)
+    import ezmd_converters.comms as package
 
     monkeypatch.delattr(package, "msg_engine", raising=False)
     return opened

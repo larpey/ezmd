@@ -1219,7 +1219,7 @@
       ],
       "action": "SCMP_ACT_ERRNO",
       "errnoRet": 1,
-      "comment": "intomd worker: always deny ptrace, mount family, keyring, bpf, userfaultfd (Part 1 section 8.1)"
+      "comment": "ezmd worker: always deny ptrace, mount family, keyring, bpf, userfaultfd (Part 1 section 8.1)"
     }
   ]
 }

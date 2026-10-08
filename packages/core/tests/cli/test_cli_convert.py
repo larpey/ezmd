@@ -1,4 +1,4 @@
-"""`intomd convert` (docs/spec/part4.md 4.2.2 item 1 and 4.2.3)."""
+"""`ezmd convert` (docs/spec/part4.md 4.2.2 item 1 and 4.2.3)."""
 
 from __future__ import annotations
 
@@ -9,9 +9,9 @@ from typing import Any
 import pytest
 from typer.testing import CliRunner
 
-import intomd.library
-from intomd.cli import app
-from intomd.cli.convert import auto_profile
+import ezmd.library
+from ezmd.cli import app
+from ezmd.cli.convert import auto_profile
 
 runner = CliRunner()
 ELF = bytes([0x7F]) + b"ELF" + bytes([2, 1, 1, 0]) + bytes(8) + bytes([2, 0, 0x3E, 0]) + bytes(200)
@@ -34,7 +34,7 @@ def test_out_file_and_sidecar(tmp_path: Path) -> None:
     res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "--out", str(target)])
     assert res.exit_code == 0, res.output
     assert target.read_text(encoding="utf-8").startswith("---\n")
-    side = json.loads((tmp_path / "o" / "x.intomd.json").read_text(encoding="utf-8"))
+    side = json.loads((tmp_path / "o" / "x.ezmd.json").read_text(encoding="utf-8"))
     assert side["profile"] == "full"
     assert res.stdout == ""
 
@@ -45,7 +45,7 @@ def test_out_dir_uses_title_and_no_sidecar(tmp_path: Path) -> None:
     res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "--out", str(outdir), "--no-sidecar"])
     assert res.exit_code == 0, res.output
     assert (outdir / "Hello.md").is_file()
-    assert not list(outdir.glob("*.intomd.json"))
+    assert not list(outdir.glob("*.ezmd.json"))
 
 
 @pytest.mark.parametrize(("fmt", "check"), [("txt", "World."), ("json", '"markdown"')])
@@ -110,13 +110,13 @@ def test_too_large_exit_5(tmp_path: Path) -> None:
 
 def _capture(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
     seen: dict[str, Any] = {}
-    real = intomd.library.convert
+    real = ezmd.library.convert
 
     def spy(source: Any, **kw: Any) -> Any:
         seen.update(kw)
         return real(source, **kw)
 
-    monkeypatch.setattr(intomd.library, "convert", spy)
+    monkeypatch.setattr(ezmd.library, "convert", spy)
     return seen
 
 
@@ -144,7 +144,7 @@ def test_engine_unknown_exit_2(tmp_path: Path) -> None:
 
 
 def test_url_source_through_library_fetch(monkeypatch: pytest.MonkeyPatch) -> None:
-    import intomd.core.netguard as netguard
+    import ezmd.core.netguard as netguard
 
     class Fake:
         url = "https://example.com/page"
@@ -158,7 +158,7 @@ def test_url_source_through_library_fetch(monkeypatch: pytest.MonkeyPatch) -> No
 
 
 def test_blocked_fetch_exit_4(monkeypatch: pytest.MonkeyPatch) -> None:
-    import intomd.core.netguard as netguard
+    import ezmd.core.netguard as netguard
 
     def blocked(url: str, **kw: object) -> object:
         raise netguard.ResidentialOnly("residential only", url=url)
@@ -173,14 +173,14 @@ def test_interrupt_exit_130(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> 
     def boom(*a: object, **kw: object) -> object:
         raise KeyboardInterrupt
 
-    monkeypatch.setattr(intomd.library, "convert", boom)
+    monkeypatch.setattr(ezmd.library, "convert", boom)
     assert runner.invoke(app, ["convert", str(_txt(tmp_path))]).exit_code == 130
 
 
 def test_warnings_printed_to_stderr_after_output(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from intomd.ir import Warning, WarningKind
+    from ezmd.ir import Warning, WarningKind
 
-    real = intomd.library.convert
+    real = ezmd.library.convert
 
     def with_warning(source: Any, **kw: Any) -> Any:
         r = real(source, **kw)
@@ -188,7 +188,7 @@ def test_warnings_printed_to_stderr_after_output(tmp_path: Path, monkeypatch: py
         r._cache.clear()
         return r
 
-    monkeypatch.setattr(intomd.library, "convert", with_warning)
+    monkeypatch.setattr(ezmd.library, "convert", with_warning)
     res = runner.invoke(app, ["convert", str(_txt(tmp_path))])
     assert res.exit_code == 0
     assert "WARN [encoding_uncertain] guessed latin-1" in res.stderr

@@ -1,18 +1,18 @@
-# intomd-mcp
+# ezmd-mcp
 
-<!-- mcp-name: io.github.larpey/intomd -->
+<!-- mcp-name: io.github.larpey/ezmd -->
 
-An [MCP](https://modelcontextprotocol.io) server for [intomd](https://github.com/larpey/intomd): convert
+An [MCP](https://modelcontextprotocol.io) server for [ezmd](https://github.com/larpey/ezmd): convert
 files, URLs and pasted text to LLM-ready Markdown from Claude Desktop, Claude Code, Cursor, VS Code and any
 other MCP client. Results are paginated to your token budget, carry section ids and page markers for
 citations, and report every warning (skipped pages, truncated tables, suspected prompt injection) instead
 of dropping content silently.
 
 ```bash
-uvx intomd-mcp                      # stdio, converts in-process
-uvx intomd-mcp --allowed-dirs ~/docs
-uvx intomd-mcp --remote https://intomd.example   # forward to an instance; INTOMD_API_KEY is sent as X-API-Key
-uvx intomd-mcp --transport http --port 8765      # streamable HTTP on 127.0.0.1, bearer token required
+uvx ezmd-mcp                      # stdio, converts in-process
+uvx ezmd-mcp --allowed-dirs ~/docs
+uvx ezmd-mcp --remote https://ezmd.example   # forward to an instance; EZMD_API_KEY is sent as X-API-Key
+uvx ezmd-mcp --transport http --port 8765      # streamable HTTP on 127.0.0.1, bearer token required
 ```
 
 ## Tools
@@ -27,9 +27,9 @@ uvx intomd-mcp --transport http --port 8765      # streamable HTTP on 127.0.0.1,
 
 Every result has `job_id, title, source, tokens_total, pages_total, page, next_cursor, warnings,
 frontmatter, content` (page 1 adds `sections`). The default profile is `agent` (untrusted-content fence,
-section ids); `max_tokens` defaults to 8000 and is capped at 50000. Resources `intomd://jobs/{id}` and
-`intomd://jobs/{id}/sidecar` expose the full Markdown and sidecar JSON; the prompt
+section ids); `max_tokens` defaults to 8000 and is capped at 50000. Resources `ezmd://jobs/{id}` and
+`ezmd://jobs/{id}/sidecar` expose the full Markdown and sidecar JSON; the prompt
 `summarize_with_provenance` asks the model to cite section ids and pages.
 
-See [docs/mcp.md](https://github.com/larpey/intomd/blob/main/docs/mcp.md) for client configuration,
+See [docs/mcp.md](https://github.com/larpey/ezmd/blob/main/docs/mcp.md) for client configuration,
 security notes and every option. Apache-2.0.

@@ -1,4 +1,4 @@
-"""Remote mode against a fake intomd REST instance (an in-process Starlette app speaking the Part 3
+"""Remote mode against a fake ezmd REST instance (an in-process Starlette app speaking the Part 3
 contract): headers, job waiting, error mapping, and cursor paging over `GET /v1/jobs/{id}/result`."""
 
 from __future__ import annotations
@@ -17,12 +17,12 @@ from starlette.responses import JSONResponse, Response
 from starlette.routing import Route
 from test_mcp_pagination import long_document
 
-import intomd
-from intomd_mcp import USER_AGENT
-from intomd_mcp.config import Settings
-from intomd_mcp.paths import AllowedRoots
-from intomd_mcp.remote import RemoteBackend
-from intomd_mcp.server import build_server
+import ezmd
+from ezmd_mcp import USER_AGENT
+from ezmd_mcp.config import Settings
+from ezmd_mcp.paths import AllowedRoots
+from ezmd_mcp.remote import RemoteBackend
+from ezmd_mcp.server import build_server
 
 KEY = "imd_test_key"
 
@@ -66,7 +66,7 @@ class FakeApi:
         options = json.loads(str(form.get("options") or "{}"))
         assert isinstance(options, dict)
         job_id = secrets.token_hex(8)
-        result = intomd.convert(data, filename=upload.filename, profile=str(form["profile"]))  # type: ignore[union-attr]
+        result = ezmd.convert(data, filename=upload.filename, profile=str(form["profile"]))  # type: ignore[union-attr]
         self.jobs[job_id] = {"state": "done", "result": result, "profile": str(form["profile"])}
         return JSONResponse({"job": self._out(job_id)}, status_code=202)
 
@@ -107,9 +107,9 @@ class FakeApi:
 def remote_server(api: FakeApi, root: Path, *, key: str | None = KEY, wait: float = 5.0) -> Any:
     transport = httpx.ASGITransport(app=api.app)
     backend = RemoteBackend(
-        "https://intomd.test", api_key=key, wait_seconds=wait, poll_interval=0.01, transport=transport
+        "https://ezmd.test", api_key=key, wait_seconds=wait, poll_interval=0.01, transport=transport
     )
-    settings = Settings(remote="https://intomd.test", allowed_dirs=AllowedRoots.from_strings([str(root)]))
+    settings = Settings(remote="https://ezmd.test", allowed_dirs=AllowedRoots.from_strings([str(root)]))
     return build_server(settings, backend)
 
 
@@ -118,9 +118,9 @@ async def test_headers_and_capabilities(root: Path) -> None:
     async with Client(remote_server(api, root)) as client:
         res = await call(client, "list_capabilities")
     assert not res.is_error
-    assert res.structured_content["mode"] == "remote" and res.structured_content["remote"] == "https://intomd.test"
+    assert res.structured_content["mode"] == "remote" and res.structured_content["remote"] == "https://ezmd.test"
     assert api.seen and all(h["user-agent"] == USER_AGENT and h["x-api-key"] == KEY for h in api.seen)
-    assert USER_AGENT.startswith("intomd-mcp/")
+    assert USER_AGENT.startswith("ezmd-mcp/")
 
 
 async def test_remote_convert_file_and_pages(root: Path) -> None:
@@ -138,7 +138,7 @@ async def test_remote_convert_file_and_pages(root: Path) -> None:
             pages.append(res.structured_content)
     assert len(pages) >= 3
     assert pages[0]["profile"] == "agent" and len(pages[0]["sections"]) == 40
-    expected = intomd.convert(src, profile="agent").render("agent", max_tokens="none").body
+    expected = ezmd.convert(src, profile="agent").render("agent", max_tokens="none").body
     assert "\n\n".join(unwrap(p["content"]) for p in pages) == unwrap(expected)
     result_calls = [h for h in api.seen if h.get("x-api-key") == KEY]
     assert len(result_calls) == len(api.seen)
@@ -165,7 +165,7 @@ async def test_remote_errors(root: Path) -> None:
     async with Client(remote_server(api, root, key=None)) as client:
         res = await call(client, "convert_text", {"text": "hi"})
         assert res.is_error and res.structured_content["error"]["code"] == "unauthorized"
-        assert "INTOMD_API_KEY" in text_of(res)
+        assert "EZMD_API_KEY" in text_of(res)
 
 
 async def test_remote_running_job_returns_status(root: Path) -> None:

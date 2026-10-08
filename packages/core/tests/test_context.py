@@ -7,10 +7,10 @@ from dataclasses import dataclass, field
 import pytest
 from core_factories import P, S
 
-from intomd.context import ConvertContext, Limits
-from intomd.inputs import MAX_FETCH_DEPTH, Detected, FetchRequired, InputRef
-from intomd.ir import Document, Metadata, Paragraph, SourceType, Warning, WarningKind
-from intomd.registry import ConversionError, ConverterRegistry, ConvertOptions
+from ezmd.context import ConvertContext, Limits
+from ezmd.inputs import MAX_FETCH_DEPTH, Detected, FetchRequired, InputRef
+from ezmd.ir import Document, Metadata, Paragraph, SourceType, Warning, WarningKind
+from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions
 
 
 @dataclass

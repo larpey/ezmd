@@ -1135,15 +1135,15 @@
     "content_hash": "sha256:23a8f66815f5995f6de9cc8b4a01fc7291df8b00c0018b18a86f924713073ca4",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.toml",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "depth": 4,
       "encoding": "utf-8",
       "format": "TOML"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -1186,7 +1186,7 @@
       "transcript_segments": 0,
       "words": 99
     },
-    "duration_seconds": 0.0,
+    "duration_seconds": 0.01600000006146729,
     "engine": "data.toml",
     "engines_tried": [
       "data.toml"
@@ -1272,7 +1272,7 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0004",
@@ -1430,6 +1430,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 672,
+  "tokens_total": 675,
   "warnings": []
 }

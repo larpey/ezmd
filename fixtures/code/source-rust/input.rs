@@ -1,4 +1,4 @@
-//! ledger.rs: a fixed-point ledger (intomd fixture).
+//! ledger.rs: a fixed-point ledger (ezmd fixture).
 use std::collections::BTreeMap;
 use std::fmt;
 

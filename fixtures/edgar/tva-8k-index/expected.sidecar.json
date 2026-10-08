@@ -2117,7 +2117,7 @@
     "content_hash": "sha256:a9a2eee9e8297e464eb6d46e8363b2fea2dfffc184899fcfc538be1eec2e7a29",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "specialized.edgar",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2026-04-24",
     "extra": {
       "edgar.accession": "0001376986-26-000026",
@@ -2128,9 +2128,9 @@
       "edgar.period": "2026-04-24",
       "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -2303,7 +2303,7 @@
       "type": "table"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0002",
@@ -2439,6 +2439,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 1409,
+  "tokens_total": 1412,
   "warnings": []
 }

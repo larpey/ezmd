@@ -24,8 +24,8 @@ export function removeKey(key: string): void {
   }
 }
 
-export const HISTORY_KEY = "intomd.history.v1";
-export const THEME_KEY = "intomd.theme";
+export const HISTORY_KEY = "ezmd.history.v1";
+export const THEME_KEY = "ezmd.theme";
 export const HISTORY_LIMIT = 50;
 
 export interface HistoryEntry {

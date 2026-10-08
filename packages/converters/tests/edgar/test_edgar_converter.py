@@ -7,14 +7,14 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import FetchRequired, InputRef
-from intomd.ir import Document, Heading, Table, WarningKind, spans_text
-from intomd.pipeline import convert_ref
-from intomd.registry import ConversionError, ConvertOptions
-from intomd_converters.edgar import CHAINS, converters
-from intomd_converters.edgar.client import IDENTITY_ENV, EdgarClient, RateLimiter, Response, resolve_identity
-from intomd_converters.edgar.converter import EdgarConverter
+from ezmd.detect import detect
+from ezmd.inputs import FetchRequired, InputRef
+from ezmd.ir import Document, Heading, Table, WarningKind, spans_text
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.edgar import CHAINS, converters
+from ezmd_converters.edgar.client import IDENTITY_ENV, EdgarClient, RateLimiter, Response, resolve_identity
+from ezmd_converters.edgar.converter import EdgarConverter
 
 ROOT = Path(__file__).resolve().parents[4]
 FIX = ROOT / "fixtures" / "edgar"
@@ -310,7 +310,7 @@ def test_oversized_body_is_refused() -> None:
     detect(ref)
     conv = EdgarConverter()
     opts = ConvertOptions()
-    from intomd.context import Limits
+    from ezmd.context import Limits
 
     opts.ctx.limits = Limits(max_bytes=10)
     with pytest.raises(ConversionError, match="exceeds"):

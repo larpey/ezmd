@@ -4,11 +4,11 @@
 # workers as http://web.fixtures.example:8000/. The name is dotted and not on the netguard hostname
 # blocklist, so it passes URL validation at submit time and is refused only when the worker resolves
 # it to a private address. tests/security (network tier) relies on that refusal; with
-# INTOMD_ALLOW_PRIVATE_NETWORKS=true (tests/integration/stack.sh private) the URL tests fetch it.
+# EZMD_ALLOW_PRIVATE_NETWORKS=true (tests/integration/stack.sh private) the URL tests fetch it.
 # Paths are relative to deploy/ (the first compose file's directory).
 services:
   fixtures:
-    image: ghcr.io/larpey/intomd-api:${INTOMD_VERSION:-latest}
+    image: ghcr.io/larpey/ezmd-api:${EZMD_VERSION:-latest}
     build:
       context: ..
       dockerfile: deploy/Dockerfile

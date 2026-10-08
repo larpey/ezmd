@@ -4,12 +4,12 @@ Generated from the built-in converter registry by `tools/gen_converters_matrix.p
 `tests/test_converters_matrix.py` fails when this page is stale.
 
 This page lists what the code declares. Whether an engine is installed on a given machine is a
-runtime question: run `intomd capabilities` (or `GET /v1/capabilities`) to see each converter as
-loaded or unavailable with the reason, and `intomd doctor` for system programs such as LibreOffice.
+runtime question: run `ezmd capabilities` (or `GET /v1/capabilities`) to see each converter as
+loaded or unavailable with the reason, and `ezmd doctor` for system programs such as LibreOffice.
 
 - **Engine** is the second half of the converter id (`family.engine`).
 - **Install**: `default` needs nothing beyond the base install; `extra x` needs that optional extra
-  of `intomd-converters`; `planned` names an extra that does not exist yet.
+  of `ezmd-converters`; `planned` names an extra that does not exist yet.
 - **Status**: `Experimental` converters add an `experimental_converter` warning to every result and
   are skipped when experimental converters are disabled; `Planned` converters are registered only so
   capabilities can explain why the format is not handled; every other converter is `Beta` until the
@@ -47,22 +47,22 @@ loaded or unavailable with the reason, and `intomd doctor` for system programs s
 | `documents.xlsx` | documents | xlsx | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`, `application/vnd.ms-excel.sheet.macroenabled.12`, `application/vnd.openxmlformats-officedocument.spreadsheetml.template` | default | Beta | 3 | 0.95 | [office](office.md) |
 | `documents.docling_pdf` | documents | docling_pdf | `application/pdf` | extra `docs` | Beta | 0 | 0.95 | [pdf](pdf.md) |
 | `documents.pdfium_text` | documents | pdfium_text | `application/pdf` | default | Beta | 10 | 0.95 | [pdf](pdf.md) |
-| `web.social_hn` | web | social_hn | `application/json`, `text/plain`, `text/x-uri` | default | Experimental (behind `INTOMD_ENABLE_SOCIAL`) | 0 | 0.85 | [social](social.md) |
-| `web.social_reddit` | web | social_reddit | `application/json`, `text/plain`, `text/x-uri` | default | Experimental (behind `INTOMD_ENABLE_SOCIAL`) | 0 | 0.85 | [social](social.md) |
+| `web.social_hn` | web | social_hn | `application/json`, `text/plain`, `text/x-uri` | default | Experimental (behind `EZMD_ENABLE_SOCIAL`) | 0 | 0.85 | [social](social.md) |
+| `web.social_reddit` | web | social_reddit | `application/json`, `text/plain`, `text/x-uri` | default | Experimental (behind `EZMD_ENABLE_SOCIAL`) | 0 | 0.85 | [social](social.md) |
 | `text.markdown_passthrough` | text | markdown_passthrough | `text/markdown` | default | Beta | 2 | 0.95 | [text](text.md) |
 | `text.plain` | text | plain | `text/plain`, `text/*` | default | Beta | 4 | 0.95 | [text](text.md) |
 | `web.html_raw` | web | html_raw | `text/html`, `application/xhtml+xml` | default | Beta | 1 | 0.90 | [web](web.md) |
 | `web.rules` | web | rules | `text/html`, `application/xhtml+xml` | default | Beta | 2 | 0.95 | [web](web.md) |
 | `web.trafilatura` | web | trafilatura | `text/html`, `application/xhtml+xml` | default | Beta | 11 | 0.95 | [web](web.md) |
 
-Converters behind a flag are off by default; they are listed here as they behave with the flag set (`INTOMD_ENABLE_SOCIAL=1`).
+Converters behind a flag are off by default; they are listed here as they behave with the flag set (`EZMD_ENABLE_SOCIAL=1`).
 
 35 converters, 94 fixtures.
 
 ## Fallback chains
 
 When a converter fails with a retryable error, the next converter in the chain for that MIME type is
-tried (`intomd.chains`).
+tried (`ezmd.chains`).
 
 | MIME type | Chain |
 |---|---|

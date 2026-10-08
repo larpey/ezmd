@@ -12,9 +12,9 @@ from typing import Any
 
 import pytest
 
-from intomd_api.keys import KeysFileError, KeyStore, file_key_id, hash_api_key
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, make_settings, upload, use_in_process_isolation
+from ezmd_api.keys import KeysFileError, KeyStore, file_key_id, hash_api_key
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, make_settings, upload, use_in_process_isolation
 
 PEPPER = "p" * 40
 KEY = "ak_test_FileKeyForTheTestSuite01"
@@ -85,15 +85,15 @@ async def test_key_upload_cap_and_page_cap(settings_for: Callable[..., Settings]
 
 
 async def test_ip_and_user_agent_allowlists(settings_for: Callable[..., Settings]) -> None:
-    entry = _hashed(_base(), ips=["10.0.0.0/8"], user_agents=["intomd-obsidian/*"])
+    entry = _hashed(_base(), ips=["10.0.0.0/8"], user_agents=["ezmd-obsidian/*"])
     settings = settings_for([entry])
     async with api_client(settings, client_addr=("10.1.2.3", 4000)) as (client, _app):
-        good = {"X-API-Key": KEY, "User-Agent": "intomd-obsidian/1.2"}
+        good = {"X-API-Key": KEY, "User-Agent": "ezmd-obsidian/1.2"}
         assert (await upload(client, b"1\n", headers=good)).status_code == 202
         wrong_ua = {"X-API-Key": KEY, "User-Agent": "curl/8"}
         assert (await upload(client, b"2\n", headers=wrong_ua)).status_code == 403
     async with api_client(settings, client_addr=("192.0.2.9", 4000)) as (client, _app):
-        r = await upload(client, b"3\n", headers={"X-API-Key": KEY, "User-Agent": "intomd-obsidian/1.2"})
+        r = await upload(client, b"3\n", headers={"X-API-Key": KEY, "User-Agent": "ezmd-obsidian/1.2"})
         assert r.status_code == 403
         assert r.json()["error"]["code"] == "forbidden"
 
@@ -118,7 +118,7 @@ async def test_expired_file_key_is_rejected(settings_for: Callable[..., Settings
     ],
 )
 def test_malformed_keys_file_stops_startup_without_leaking_keys(tmp_path: Path, content: str) -> None:
-    from intomd_api.main import create_app
+    from ezmd_api.main import create_app
 
     path = tmp_path / "keys.json"
     path.write_text(content, encoding="utf-8")
@@ -128,7 +128,7 @@ def test_malformed_keys_file_stops_startup_without_leaking_keys(tmp_path: Path, 
 
 
 def test_reload_on_change_and_keep_previous_on_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    import intomd_api.keys as keys_mod
+    import ezmd_api.keys as keys_mod
 
     monkeypatch.setattr(keys_mod, "RELOAD_CHECK_SECONDS", 0.0)
     settings = Settings(key_pepper=PEPPER, keys_file=tmp_path / "keys.json")
@@ -155,7 +155,7 @@ async def test_unlimited_file_key_skips_rate_limits(settings_for: Callable[..., 
 async def test_key_source_allow_and_deny_lists(
     settings_for: Callable[..., Settings], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from intomd.core import netguard
+    from ezmd.core import netguard
 
     def offline(url: str, **kwargs: Any) -> Any:
         raise netguard.FetchFailed("network disabled in tests", url=url)

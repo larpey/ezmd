@@ -76,7 +76,7 @@
             "href": null,
             "math": null,
             "styles": [],
-            "text": "8 files packed (1,141 source bytes, 318 tokens). Languages: javascript 47%, python 29%, dockerfile 24%. Not packed: 2 ignored by .gitignore/.intomdignore; 2 credential files."
+            "text": "8 files packed (1,139 source bytes, 317 tokens). Languages: javascript 47%, python 29%, dockerfile 24%. Not packed: 2 ignored by .gitignore/.ezmdignore; 2 credential files."
           }
         ],
         "type": "paragraph"
@@ -183,10 +183,10 @@
       },
       {
         "attrs": {
-          "bytes": "67",
+          "bytes": "65",
           "language": "markdown",
-          "packed_bytes": "66",
-          "tokens": "16"
+          "packed_bytes": "64",
+          "tokens": "15"
         },
         "id": "b0006",
         "level": 3,
@@ -225,7 +225,7 @@
       },
       {
         "attrs": {},
-        "code": "# tidepool\n\nSensor ingest service (intomd secret-scatter fixture).",
+        "code": "# tidepool\n\nSensor ingest service (ezmd secret-scatter fixture).",
         "filename": "README.md",
         "id": "b0007",
         "language": "markdown",
@@ -726,7 +726,7 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:dcd60f0d59b4ed2397725fd0c281bfbdf098dae71fbce0ccdba3742dc12dee40",
+    "content_hash": "sha256:9fe4ea59cbc9558dd454ced16bdaf2d9755d992d8f429383e13fc1b2ad27d48f",
     "converter_id": "code.repo_pack",
     "metadata": {
       "author": null,
@@ -737,14 +737,14 @@
       "encoding": null,
       "encoding_confidence": null,
       "extra": {
-        "bytes": 1141,
+        "bytes": 1139,
         "excluded.gitignored": 2,
         "excluded.secret_file": 2,
         "files": 8,
         "languages": "javascript, python, dockerfile",
-        "packed_bytes": 1142,
+        "packed_bytes": 1140,
         "repo": "tidepool",
-        "tokens": 318
+        "tokens": 317
       },
       "fetched": null,
       "keywords": [],
@@ -797,34 +797,34 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:6ec9d5c22869e38a380aa368dc54d0cabe04bc381c33affe08bd3d02739dc28c",
+    "content_hash": "sha256:f0bc753c61002e6c5682be30d3eff999a1c9016dcd3dcd4065f737b756643bb9",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.repo_pack",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
-      "bytes": 1141,
+      "bytes": 1139,
       "excluded.gitignored": 2,
       "excluded.secret_file": 2,
       "files": 8,
       "languages": "javascript, python, dockerfile",
-      "packed_bytes": 1142,
+      "packed_bytes": 1140,
       "repo": "tidepool",
-      "tokens": 318
+      "tokens": 317
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.repo.zip",
-    "source_hash": "sha256:8075688268aea0a68c0c589350df666990f1bfb15818253cb68883185d06de81",
+    "source_hash": "sha256:51d0ae0af8283c353e4ea9ffcf8adc515e6db55f78b4e5d142181f6864349b3b",
     "source_type": "code",
     "title": "tidepool",
     "tokens": {
-      "cl100k_base": 949,
-      "claude_approx": 1014,
-      "o200k_base": 939
+      "cl100k_base": 947,
+      "claude_approx": 1012,
+      "o200k_base": 937
     },
     "truncated": false,
     "warnings": [
@@ -866,7 +866,7 @@
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 2760
+    "input_bytes": 2860
   },
   "profile": "full",
   "provenance": [
@@ -1029,15 +1029,15 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
       "id": "sec-1",
       "level": 2,
       "number": "1",
-      "offset_end": 1057,
-      "offset_start": 602,
+      "offset_end": 1055,
+      "offset_start": 600,
       "original_level": 2,
       "original_title": "Directory tree",
       "time_end": null,
@@ -1049,8 +1049,8 @@
       "id": "sec-2",
       "level": 2,
       "number": "2",
-      "offset_end": 1078,
-      "offset_start": 1057,
+      "offset_end": 1076,
+      "offset_start": 1055,
       "original_level": 2,
       "original_title": "Files",
       "time_end": null,
@@ -1062,8 +1062,8 @@
       "id": "sec-2-1",
       "level": 3,
       "number": "2.1",
-      "offset_end": 1211,
-      "offset_start": 1078,
+      "offset_end": 1207,
+      "offset_start": 1076,
       "original_level": 3,
       "original_title": "README.md",
       "time_end": null,
@@ -1075,8 +1075,8 @@
       "id": "sec-2-2",
       "level": 3,
       "number": "2.2",
-      "offset_end": 1314,
-      "offset_start": 1211,
+      "offset_end": 1310,
+      "offset_start": 1207,
       "original_level": 3,
       "original_title": ".gitignore",
       "time_end": null,
@@ -1088,8 +1088,8 @@
       "id": "sec-2-3",
       "level": 3,
       "number": "2.3",
-      "offset_end": 1514,
-      "offset_start": 1314,
+      "offset_end": 1510,
+      "offset_start": 1310,
       "original_level": 3,
       "original_title": "Dockerfile",
       "time_end": null,
@@ -1101,8 +1101,8 @@
       "id": "sec-2-4",
       "level": 3,
       "number": "2.4",
-      "offset_end": 1713,
-      "offset_start": 1514,
+      "offset_end": 1709,
+      "offset_start": 1510,
       "original_level": 3,
       "original_title": "config/alerts.ini",
       "time_end": null,
@@ -1114,8 +1114,8 @@
       "id": "sec-2-5",
       "level": 3,
       "number": "2.5",
-      "offset_end": 1938,
-      "offset_start": 1713,
+      "offset_end": 1934,
+      "offset_start": 1709,
       "original_level": 3,
       "original_title": "config/app.yaml",
       "time_end": null,
@@ -1127,8 +1127,8 @@
       "id": "sec-2-6",
       "level": 3,
       "number": "2.6",
-      "offset_end": 2275,
-      "offset_start": 1938,
+      "offset_end": 2271,
+      "offset_start": 1934,
       "original_level": 3,
       "original_title": "web/client.js",
       "time_end": null,
@@ -1140,8 +1140,8 @@
       "id": "sec-2-7",
       "level": 3,
       "number": "2.7",
-      "offset_end": 2533,
-      "offset_start": 2275,
+      "offset_end": 2529,
+      "offset_start": 2271,
       "original_level": 3,
       "original_title": "src/tidepool/__main__.py",
       "time_end": null,
@@ -1153,8 +1153,8 @@
       "id": "sec-2-8",
       "level": 3,
       "number": "2.8",
-      "offset_end": 2843,
-      "offset_start": 2533,
+      "offset_end": 2839,
+      "offset_start": 2529,
       "original_level": 3,
       "original_title": "docs/operations.md",
       "time_end": null,
@@ -1167,7 +1167,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 1243,
+  "tokens_total": 1253,
   "warnings": [
     {
       "block_id": null,

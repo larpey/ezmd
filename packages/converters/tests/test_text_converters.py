@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import CodeBlock, Footnote, Heading, Image, ListBlock, Paragraph, Quote, Raw, Table, WarningKind
-from intomd.registry import ConvertOptions
-from intomd_converters.text.markdown import MarkdownPassthroughConverter, parse_markdown
-from intomd_converters.text.plain import PlainTextConverter, decode_text
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import CodeBlock, Footnote, Heading, Image, ListBlock, Paragraph, Quote, Raw, Table, WarningKind
+from ezmd.registry import ConvertOptions
+from ezmd_converters.text.markdown import MarkdownPassthroughConverter, parse_markdown
+from ezmd_converters.text.plain import PlainTextConverter, decode_text
 
 
 def _conv_plain(data: bytes, name: str = "a.txt") -> tuple[list[object], list[WarningKind]]:

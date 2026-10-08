@@ -3,8 +3,8 @@ title: "The Lighthouse Keeper"
 source: "input.epub"
 source_type: epub
 converter: documents.epub
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
@@ -17,10 +17,10 @@ pages: 4
 word_count: 200
 tokens: {o200k_base: 429, cl100k_base: 432, claude_approx: 463}
 content_hash: "sha256:50f0b0d2f1216d29adf2f6e2025831cb4ed1076765daee33cb7ed41fd92b4906"
-source_hash: "sha256:cb1b1d13fa828de773b53c675ff303c5190be928e62acba76dc5353103f2aac6"
+source_hash: "sha256:16dd67ab70df200f1cdba0e557652b38d4668fa3085a7c6612c8b90c3b035142"
 truncated: false
 warnings: [removed_hidden_elements]
-description: "A short novel written for the intomd test corpus."
+description: "A short novel written for the ezmd test corpus."
 injection_risk: none
 extra:
   cover_image: "images/cover.png"

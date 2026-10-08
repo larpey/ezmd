@@ -8,8 +8,8 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import _MAGIKA_LABEL_MIMES, detect, extension_mime, is_textual, normalize_mime
-from intomd.inputs import InputRef
+from ezmd.detect import _MAGIKA_LABEL_MIMES, detect, extension_mime, is_textual, normalize_mime
+from ezmd.inputs import InputRef
 
 NOTEBOOK = {
     "cells": [

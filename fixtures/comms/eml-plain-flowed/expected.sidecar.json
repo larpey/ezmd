@@ -928,7 +928,7 @@
     "content_hash": "sha256:2b3dbeed4b810627c3d5df26b2070734aa0e8df2e32461c003cb051e8a69f6ab",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "comms.eml",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2024-10-01T08:00:00Z",
     "extra": {
       "attachments": 0,
@@ -938,9 +938,9 @@
       "in_reply_to": "<ask-0@example.org>",
       "message_id": "<plain-1@example.org>"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -1065,7 +1065,7 @@
       "type": "quote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
@@ -1094,6 +1094,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 547,
+  "tokens_total": 550,
   "warnings": []
 }

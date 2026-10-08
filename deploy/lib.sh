@@ -2,11 +2,11 @@
 # Shared helpers for bootstrap.sh, backup.sh, restore.sh, upgrade.sh and smoke.sh. Source it; do not run it.
 #
 # Environment (all optional):
-#   INTOMD_ENV_FILE        operator env file (default deploy/.env); passed to compose as --env-file and
+#   EZMD_ENV_FILE        operator env file (default deploy/.env); passed to compose as --env-file and
 #                          to every container through `env_file:`
-#   INTOMD_COMPOSE_FILES   extra compose files, space separated, relative to deploy/ (e.g. docker-compose.gpu.yml)
+#   EZMD_COMPOSE_FILES   extra compose files, space separated, relative to deploy/ (e.g. docker-compose.gpu.yml)
 #   COMPOSE_PROFILES       compose profiles (read by docker compose itself)
-#   COMPOSE_PROJECT_NAME   compose project name (default "intomd", from docker-compose.yml)
+#   COMPOSE_PROJECT_NAME   compose project name (default "ezmd", from docker-compose.yml)
 
 DEPLOY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Git Bash on Windows rewrites Unix-looking arguments for native programs (docker.exe); paths are
@@ -32,9 +32,9 @@ abs_path() {
   esac
 }
 
-ENV_FILE="$(abs_path "${INTOMD_ENV_FILE:-$DEPLOY_DIR/.env}")"
-INTOMD_ENV_FILE="$(native_path "$ENV_FILE")"
-export INTOMD_ENV_FILE
+ENV_FILE="$(abs_path "${EZMD_ENV_FILE:-$DEPLOY_DIR/.env}")"
+EZMD_ENV_FILE="$(native_path "$ENV_FILE")"
+export EZMD_ENV_FILE
 
 require_docker() {
   command -v docker >/dev/null 2>&1 || die "docker is not installed (https://docs.docker.com/engine/install/)"
@@ -46,10 +46,10 @@ require_docker() {
 compose() {
   local args=(-f "$(native_path "$DEPLOY_DIR/docker-compose.yml")")
   local f
-  for f in ${INTOMD_COMPOSE_FILES:-}; do
+  for f in ${EZMD_COMPOSE_FILES:-}; do
     args+=(-f "$(native_path "$DEPLOY_DIR/$f")")
   done
-  if [ -f "$ENV_FILE" ]; then args+=(--env-file "$INTOMD_ENV_FILE"); fi
+  if [ -f "$ENV_FILE" ]; then args+=(--env-file "$EZMD_ENV_FILE"); fi
   docker compose "${args[@]}" "$@"
 }
 
@@ -92,20 +92,20 @@ rand_hex() {
 # stack_url: the base URL of the local stack, as Caddy serves it.
 stack_url() {
   local domain
-  domain="$(cfg INTOMD_DOMAIN "")"
+  domain="$(cfg EZMD_DOMAIN "")"
   if [ -z "$domain" ]; then
-    printf 'http://localhost:%s\n' "$(cfg INTOMD_PLAIN_PORT 8080)"
+    printf 'http://localhost:%s\n' "$(cfg EZMD_PLAIN_PORT 8080)"
   else
-    printf 'https://%s:%s\n' "$domain" "$(cfg INTOMD_HTTPS_PORT 443)"
+    printf 'https://%s:%s\n' "$domain" "$(cfg EZMD_HTTPS_PORT 443)"
   fi
 }
 
 # stack_curl_args: curl flags that reach the local Caddy for a real domain without DNS.
 stack_curl_args() {
   local domain
-  domain="$(cfg INTOMD_DOMAIN "")"
+  domain="$(cfg EZMD_DOMAIN "")"
   if [ -n "$domain" ] && [ "$domain" != localhost ]; then
-    printf -- '--resolve %s:%s:127.0.0.1\n' "$domain" "$(cfg INTOMD_HTTPS_PORT 443)"
+    printf -- '--resolve %s:%s:127.0.0.1\n' "$domain" "$(cfg EZMD_HTTPS_PORT 443)"
   fi
 }
 

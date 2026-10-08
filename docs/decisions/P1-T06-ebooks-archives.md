@@ -34,7 +34,7 @@ Decisions in DECISIONS.md style, to be folded into the log at merge (D-0020).
 
 ## Approach note: Jupyter (`documents.ipynb`)
 
-- Library: stdlib `json`; Markdown cells via `intomd_converters.text.markdown.parse_markdown` (imported, not
+- Library: stdlib `json`; Markdown cells via `ezmd_converters.text.markdown.parse_markdown` (imported, not
   copied); HTML outputs via the local XHTML walker in HTML mode.
 - `nbformat` is not used: the spec allows it "for validation only", and it pulls jsonschema, fastjsonschema,
   jupyter_core, and traitlets. The converter checks the structure itself (nbformat >= 4 with a `cells` list)
@@ -56,7 +56,7 @@ Decisions in DECISIONS.md style, to be folded into the log at merge (D-0020).
 ## Approach note: archives (`archives.archive`)
 
 - Library: stdlib `zipfile`, `tarfile` (stream mode `r|`), `gzip`, `bz2`, `lzma`; `py7zr` 1.1.3 for 7z.
-- Limits per part1 8.2 (binding) in `archives/guard.py`: total 500 MB (`INTOMD_ARCHIVE_MAX_BYTES`, or
+- Limits per part1 8.2 (binding) in `archives/guard.py`: total 500 MB (`EZMD_ARCHIVE_MAX_BYTES`, or
   `specialized.archive_max_total`), 10,000 entries, depth 3, 100:1 per-entry ratio, one shared `Budget` for
   nested archives, and a 100 MB per-member in-memory cap (InputRef's default `max_bytes`). Part 2 section 12's
   CLI defaults (2 GB total, 500 MB per entry) are superseded by part1 8.2's binding 500 MB total.
@@ -78,8 +78,8 @@ Decisions in DECISIONS.md style, to be folded into the log at merge (D-0020).
   LGPL 2.1 text; its compression deps pyppmd, pybcj, inflate64, multivolumefile are LGPL-2.1-or-later too).
   Importing an unmodified, separately installed Python package is dynamic use, which the allowlist permits,
   so it does not belong in `nonfree`. Part 2 section 12 still keeps it out of the default install
-  ("`intomd[7z]` extra; default refuses 7z with `extra_required`"), so it is the optional `7z` extra of
-  intomd-converters; without it, 7z inputs get a stub with `extra_required` and capabilities lists
+  ("`ezmd[7z]` extra; default refuses 7z with `extra_required`"), so it is the optional `7z` extra of
+  ezmd-converters; without it, 7z inputs get a stub with `extra_required` and capabilities lists
   `archives.sevenzip` as unavailable. Extraction goes through a py7zr `WriterFactory` that charges the
   shared Budget, so no 7z member touches disk.
 - Fixtures: `archives/zip-mixed` (md, txt, directory, nested zip), `archives/tar-gz` (pax tar.gz with a
@@ -97,14 +97,14 @@ Decisions in DECISIONS.md style, to be folded into the log at merge (D-0020).
 
 ## Core change requests (not made; core is out of scope for this task)
 
-1. `intomd.detect._MAGIKA_LABEL_MIMES`: map Magika's `ipynb` label to `application/x-ipynb+json` (today
+1. `ezmd.detect._MAGIKA_LABEL_MIMES`: map Magika's `ipynb` label to `application/x-ipynb+json` (today
    notebooks are detected as `application/json` and carry `misnamed_file`; if a data-family chain pins
    `application/json`, notebooks would never reach `documents.ipynb`). Also add `.ipynb`-in-zip and
    `.tgz`/`.tar.gz`/`.7z`/`.tar` to `_EXTENSION_MIMES`.
 2. Renderers: render `Document.children` (archive members, attachments) under `## <path>` headings with their
    blocks shifted one level, per part2 section 12 step 28; today children appear only in the JSON/IR.
 3. `render/source_types.py`: `SourceType.ARCHIVE` maps to frontmatter `other`; consider an `archive` value.
-4. `intomd` (core) extras: mirror `intomd-converters[7z]` as `intomd[7z]` so `pip install 'intomd[7z]'` works
+4. `ezmd` (core) extras: mirror `ezmd-converters[7z]` as `ezmd[7z]` so `pip install 'ezmd[7z]'` works
    as the spec phrases it.
 5. Fixture harness: support a `requires = ["7z"]` meta key that skips (not fails) a fixture when an extra is
    missing, so a 7z golden fixture can be committed.

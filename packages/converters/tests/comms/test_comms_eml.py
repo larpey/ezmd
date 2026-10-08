@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from intomd.ir import Heading, Image, ListBlock, Paragraph, Quote, Table, WarningKind, spans_text
-from intomd.registry import ConvertOptions
-from intomd_converters.comms.body_text import text_blocks, unflow
-from intomd_converters.comms.build import table_rows
-from intomd_converters.comms.decode import decode_bytes
+from ezmd.ir import Heading, Image, ListBlock, Paragraph, Quote, Table, WarningKind, spans_text
+from ezmd.registry import ConvertOptions
+from ezmd_converters.comms.body_text import text_blocks, unflow
+from ezmd_converters.comms.build import table_rows
+from ezmd_converters.comms.decode import decode_bytes
 
 PLAIN = (
     "Hi Bob,\n\nThe count is done. We saw fourteen \nbirds on Tuesday.\n\n- tally\n- boat\n\n-- \nAnn Reed\nSurvey\n\n"
@@ -64,7 +64,7 @@ def test_format_flowed_unwraps_soft_breaks() -> None:
 
 
 def test_outlook_original_message_marks_rest_as_history() -> None:
-    from intomd.ir import Provenance
+    from ezmd.ir import Provenance
 
     blocks = text_blocks(
         "Yes.\n\n-----Original Message-----\nFrom: Bob\nSent: Monday\n\nOld text.\n", Provenance(source="x")

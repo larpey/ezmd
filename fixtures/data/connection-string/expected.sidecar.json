@@ -39,13 +39,13 @@
             "href": null,
             "math": null,
             "styles": [],
-            "text": "This input is a database URL connection string. intomd does not connect to live databases, so nothing was converted. Export the data to CSV, Parquet, or SQLite and convert that file instead."
+            "text": "This input is a database URL connection string. ezmd does not connect to live databases, so nothing was converted. Export the data to CSV, Parquet, or SQLite and convert that file instead."
           }
         ],
         "type": "paragraph"
       }
     ],
-    "content_hash": "sha256:afa33c3ddd4f4fc7ecc0254ed8f506a301d0859980e84164d879acad3bbc2bb8",
+    "content_hash": "sha256:d1740ea16723eaca5a440c44b2b29929974739cc839c28d21b163dc43a388d4f",
     "converter_id": "data.connection_string",
     "metadata": {
       "author": null,
@@ -93,13 +93,13 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:edc6292660cbb3b0b4b79ac0653f32205190172d60eeafaeebb7d5941e4a8f03",
+    "content_hash": "sha256:197d79977f49182178b7766692aa161f570fed9582c5743f120b36726500b989",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.connection_string",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -108,9 +108,9 @@
     "source_type": "data",
     "title": "Connection string refused",
     "tokens": {
-      "cl100k_base": 49,
-      "claude_approx": 53,
-      "o200k_base": 49
+      "cl100k_base": 48,
+      "claude_approx": 52,
+      "o200k_base": 48
     },
     "truncated": false,
     "warnings": [
@@ -162,14 +162,14 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 293,
+  "tokens_total": 287,
   "warnings": [
     {
       "block_id": null,

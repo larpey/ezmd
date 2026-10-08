@@ -1,7 +1,7 @@
 {
-  "name": "@intomd/sdk",
+  "name": "@ezmd/sdk",
   "version": "0.1.0",
-  "description": "Dependency-free TypeScript client for the intomd REST API.",
+  "description": "Dependency-free TypeScript client for the ezmd REST API.",
   "license": "Apache-2.0",
   "type": "module",
   "sideEffects": false,

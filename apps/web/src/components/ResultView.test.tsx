@@ -8,7 +8,7 @@ const MD = "---\ntitle: Kitchen Sink\ntokens: 42\n---\n\n# Kitchen Sink\n\nSome 
 function setup(over: Partial<ResultViewProps> = {}) {
   const props: ResultViewProps = {
     markdown: MD,
-    sidecar: { schema: "intomd.sidecar/1", warnings: [] },
+    sidecar: { schema: "ezmd.sidecar/1", warnings: [] },
     warnings: [{ kind: "truncated", message: "Cut at the cap." }],
     tokens: 42,
     tokenizer: "o200k_base",
@@ -71,7 +71,7 @@ describe("ResultView", () => {
   it("shows the sidecar JSON tab", async () => {
     setup();
     await userEvent.setup().click(screen.getByRole("tab", { name: "Sidecar JSON" }));
-    expect(screen.getByRole("tabpanel").textContent).toContain('"schema": "intomd.sidecar/1"');
+    expect(screen.getByRole("tabpanel").textContent).toContain('"schema": "ezmd.sidecar/1"');
   });
 
   it("copies raw markdown and triggers downloads and profile changes", async () => {

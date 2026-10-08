@@ -3139,15 +3139,15 @@
     "content_hash": "sha256:74a68f5c02760e7169782503dabe5c03a6988b5dbe58f0a6bfd285b5fc1a6a23",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.xml",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "elements": 29,
       "format": "XML",
       "root": "catalog"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -3190,7 +3190,7 @@
       "transcript_segments": 0,
       "words": 223
     },
-    "duration_seconds": 0.0,
+    "duration_seconds": 0.015999999828636646,
     "engine": "data.xml",
     "engines_tried": [
       "data.xml"
@@ -3312,7 +3312,7 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0004",
@@ -3582,6 +3582,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 1438,
+  "tokens_total": 1441,
   "warnings": []
 }

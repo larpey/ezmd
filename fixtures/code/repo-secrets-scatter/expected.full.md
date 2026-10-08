@@ -3,29 +3,29 @@ title: "tidepool"
 source: "input.repo.zip"
 source_type: code
 converter: code.repo_pack
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 231
-tokens: {o200k_base: 939, cl100k_base: 949, claude_approx: 1014}
-content_hash: "sha256:6ec9d5c22869e38a380aa368dc54d0cabe04bc381c33affe08bd3d02739dc28c"
-source_hash: "sha256:8075688268aea0a68c0c589350df666990f1bfb15818253cb68883185d06de81"
+tokens: {o200k_base: 937, cl100k_base: 947, claude_approx: 1012}
+content_hash: "sha256:f0bc753c61002e6c5682be30d3eff999a1c9016dcd3dcd4065f737b756643bb9"
+source_hash: "sha256:51d0ae0af8283c353e4ea9ffcf8adc515e6db55f78b4e5d142181f6864349b3b"
 truncated: false
 warnings: [secret_file_excluded, secret_redacted]
 injection_risk: none
 extra:
-  bytes: 1141
+  bytes: 1139
   excluded.gitignored: 2
   excluded.secret_file: 2
   files: 8
   languages: "javascript, python, dockerfile"
-  packed_bytes: 1142
+  packed_bytes: 1140
   repo: tidepool
-  tokens: 318
+  tokens: 317
 ---
 > Sections: 1 Directory tree, 2 Files.
 
@@ -44,7 +44,7 @@ extra:
 
 # tidepool {#doc}
 
-8 files packed (1,141 source bytes, 318 tokens). Languages: javascript 47%, python 29%, dockerfile 24%. Not packed: 2 ignored by .gitignore/.intomdignore; 2 credential files.
+8 files packed (1,139 source bytes, 317 tokens). Languages: javascript 47%, python 29%, dockerfile 24%. Not packed: 2 ignored by .gitignore/.ezmdignore; 2 credential files.
 
 ## 1 Directory tree {#sec-1}
 
@@ -77,7 +77,7 @@ File: `README.md`
 ```markdown
 # tidepool
 
-Sensor ingest service (intomd secret-scatter fixture).
+Sensor ingest service (ezmd secret-scatter fixture).
 ```
 
 ### 2.2 .gitignore {#sec-2-2}

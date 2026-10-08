@@ -2,7 +2,7 @@
 
 No new dependencies. No new warning codes. IR schema stays `"1.1"`; every IR change is additive.
 
-## IR (packages/core/src/intomd/ir.py)
+## IR (packages/core/src/ezmd/ir.py)
 
 1. `Document.sidecar_extra: dict[str, list[dict[str, str | int | float | bool | None]]]` (default `{}`).
    Written verbatim by the sidecar under each key. Keys in `RESERVED_SIDECAR_KEYS` (every built-in sidecar
@@ -22,7 +22,7 @@ No new dependencies. No new warning codes. IR schema stays `"1.1"`; every IR cha
 5. **Children.** `render/children.py` flattens `Document.children` into the parent block list before
    rendering, so numbering, anchors, footnotes, page markers, chunking, compact and txt all work unchanged.
    Child block ids are prefixed (`c1-`, `c1.2-`) so nothing collides; a synthetic section heading (attr
-   `intomd_child_section`) carries the child path and is exempt from source-number and punctuation
+   `ezmd_child_section`) carries the child path and is exempt from source-number and punctuation
    stripping. The child title H1 (and a matching `role="title"` paragraph) is consumed by the section
    heading, per the task brief; Part 2 step 28 says "blocks shifted down one level", which we read as the
    child's H2 sitting one level below the path heading. Child heading levels map to
@@ -76,7 +76,7 @@ No new dependencies. No new warning codes. IR schema stays `"1.1"`; every IR cha
 
 18. `meta.toml` `requires = ["docs"]` (probe map `docs -> docling`, `data -> pyarrow`, `7z -> py7zr`;
     unknown extras skip with a reason) and `requires_modules = ["pyarrow"]`. The pytest plugin skips and
-    `intomd-score` prints `SKIP <reason>` (not a failure). Layout stays `fixtures/<family>/<name>`.
+    `ezmd-score` prints `SKIP <reason>` (not a failure). Layout stays `fixtures/<family>/<name>`.
 
 ## Goldens
 

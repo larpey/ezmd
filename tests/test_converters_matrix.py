@@ -25,7 +25,7 @@ def gen() -> ModuleType:
 
 @pytest.fixture(autouse=True)
 def _no_family_flags(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("INTOMD_ENABLE_SOCIAL", raising=False)
+    monkeypatch.delenv("EZMD_ENABLE_SOCIAL", raising=False)
 
 
 def test_matrix_is_current(gen: ModuleType) -> None:
@@ -39,7 +39,7 @@ def test_mkdocs_nav_is_current(gen: ModuleType) -> None:
 
 
 def test_matrix_lists_every_builtin_converter(gen: ModuleType) -> None:
-    from intomd_converters import builtin_converters
+    from ezmd_converters import builtin_converters
 
     text = gen.render()
     ids = {c.id for c in builtin_converters()}

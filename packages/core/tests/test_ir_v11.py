@@ -7,7 +7,7 @@ import pytest
 from core_factories import SRC, P, S
 from pydantic import ValidationError
 
-from intomd.ir import (
+from ezmd.ir import (
     MAX_CHILD_DEPTH,
     MAX_NEST_DEPTH,
     Document,
@@ -20,7 +20,7 @@ from intomd.ir import (
     Warning,
     WarningKind,
 )
-from intomd.warnings.codes import ALIASES, CODES, normalize_code, spec_for
+from ezmd.warnings.codes import ALIASES, CODES, normalize_code, spec_for
 
 
 def _meta(**kw: object) -> Metadata:

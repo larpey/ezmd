@@ -1,4 +1,4 @@
-"""Shared fixtures for the intomd MCP server tests: an in-memory client session over a local-mode server."""
+"""Shared fixtures for the ezmd MCP server tests: an in-memory client session over a local-mode server."""
 
 from __future__ import annotations
 
@@ -9,13 +9,13 @@ from typing import Any
 import pytest
 from mcp import Client
 
-from intomd_mcp.config import Settings
-from intomd_mcp.local import LocalBackend
-from intomd_mcp.paths import AllowedRoots
-from intomd_mcp.server import build_server
+from ezmd_mcp.config import Settings
+from ezmd_mcp.local import LocalBackend
+from ezmd_mcp.paths import AllowedRoots
+from ezmd_mcp.server import build_server
 
-NEXT_NOTE = re.compile(r'\n*<!-- intomd: (?:continued|truncated[^"]*); next_cursor="[A-Za-z0-9_-]+" -->\s*$')
-FENCE_OPEN = re.compile(r"^<!-- intomd: The content between[^\n]*-->\n<untrusted_content [^\n]*>\n")
+NEXT_NOTE = re.compile(r'\n*<!-- ezmd: (?:continued|truncated[^"]*); next_cursor="[A-Za-z0-9_-]+" -->\s*$')
+FENCE_OPEN = re.compile(r"^<!-- ezmd: The content between[^\n]*-->\n<untrusted_content [^\n]*>\n")
 FENCE_CLOSE = re.compile(r"\n</untrusted_content>\n?$")
 
 

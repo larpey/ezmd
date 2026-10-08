@@ -301,7 +301,7 @@
   },
   "extra_required": {
     "severity": "error",
-    "suggestion": "Install the extra named in the message, e.g. pip install 'intomd[docs]'.",
+    "suggestion": "Install the extra named in the message, e.g. pip install 'ezmd[docs]'.",
     "aliases": []
   },
   "extraction_empty": {
@@ -442,7 +442,7 @@
   },
   "ixt_format_unknown": {
     "severity": "warning",
-    "suggestion": "Check the flagged facts by hand; upgrade intomd in case the format was added.",
+    "suggestion": "Check the flagged facts by hand; upgrade ezmd in case the format was added.",
     "aliases": []
   },
   "json_repaired": {
@@ -492,7 +492,7 @@
   },
   "license_restricted_engine_used": {
     "severity": "info",
-    "suggestion": "Check the engine license allows your use, or unset INTOMD_ALLOW_RESTRICTED_MODELS.",
+    "suggestion": "Check the engine license allows your use, or unset EZMD_ALLOW_RESTRICTED_MODELS.",
     "aliases": []
   },
   "llms_txt_may_be_stale": {
@@ -589,7 +589,7 @@
   },
   "ocr_unavailable": {
     "severity": "warning",
-    "suggestion": "Install the ocr extra, e.g. pip install 'intomd[ocr]', or use an instance with OCR enabled.",
+    "suggestion": "Install the ocr extra, e.g. pip install 'ezmd[ocr]', or use an instance with OCR enabled.",
     "aliases": []
   },
   "ole_object_skipped": {
@@ -641,7 +641,7 @@
   },
   "phi_refused": {
     "severity": "error",
-    "suggestion": "Self-host intomd to process health records under your own compliance controls.",
+    "suggestion": "Self-host ezmd to process health records under your own compliance controls.",
     "aliases": []
   },
   "pii_columns_removed": {

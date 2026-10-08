@@ -113,13 +113,13 @@
     "content_hash": "sha256:34ba20506ef79e9f611b8e26e26a0a68014338cfe1d2f20a8687f66999f937ef",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "encoding": "utf-8"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "en",
     "profile": "full",
     "provenance": "block",
@@ -166,7 +166,7 @@
       "transcript_segments": 0,
       "words": 25
     },
-    "duration_seconds": 0.1869999999180436,
+    "duration_seconds": 0.2660000000614673,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
@@ -184,14 +184,14 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 303,
+  "tokens_total": 306,
   "warnings": [
     {
       "block_id": null,

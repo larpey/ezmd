@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# inventory.py: a tiny stock ledger used as an intomd fixture.
+# inventory.py: a tiny stock ledger used as an ezmd fixture.
 """Track stock levels per SKU and report items that need reordering."""
 
 from __future__ import annotations

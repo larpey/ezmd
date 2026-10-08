@@ -19,7 +19,7 @@ alphabetical) and keys with empty values are omitted unless required.
 |---|---|
 | `title`, `source`, `source_type` | Always. `source` is a URL or the original filename, never a server path. |
 | `source_url`, `platform` | Fetched inputs and platform media (Planned for platform media, Phase 2). |
-| `converter`, `converter_version`, `intomd_version`, `schema_version` (`1`), `profile`, `provenance` | Always except `compact` (which keeps `profile`). |
+| `converter`, `converter_version`, `ezmd_version`, `schema_version` (`1`), `profile`, `provenance` | Always except `compact` (which keeps `profile`). |
 | `created_at`, `modified_at`, `fetched_at`, `converted_at` | Timestamps in ISO 8601 UTC; source dates when known. |
 | `author`, `language`, `language_confidence`, `description`, `tags`, `license` | When the source provides them. |
 | `duration`, `duration_seconds`, `pages`, `slides`, `sheets` | Media, paged, and spreadsheet sources (Planned, Phases 1 and 2). |
@@ -38,13 +38,13 @@ alphabetical) and keys with empty values are omitted unless required.
 `compact` uses a minimal set: `title`, `source`, `source_type`, `language`, `word_count`, `tokens`,
 `content_hash`, `warnings`, `injection_risk`, `profile`.
 
-The sidecar JSON (`<name>.intomd.json`, CLI `--sidecar`, API `format=zip`) mirrors the frontmatter
+The sidecar JSON (`<name>.ezmd.json`, CLI `--sidecar`, API `format=zip`) mirrors the frontmatter
 and adds per-block provenance, warnings with details, heading shifts, and, in `rag`, the chunk list.
 
 Converter-specific sidecar lists come from `Document.sidecar_extra` (`{key: [ {scalar fields} ]}`, for
 example the code family's `redactions`) and are written verbatim under their own top-level key. Keys that
 collide with built-in sidecar keys (`sections`, `tables`, `counts`, `children`, ...; the full list is
-`intomd.ir.RESERVED_SIDECAR_KEYS`) are rejected with `ValueError` by `Document.finalize()` and by the
+`ezmd.ir.RESERVED_SIDECAR_KEYS`) are rejected with `ValueError` by `Document.finalize()` and by the
 renderer. `counts.removed_nonprinting` adds the characters converters stripped (`removed_hidden_elements`
 detail `invisible_chars`, else `control` + `invisible` + `surrogates`; never the element `count`), and
 `counts.furniture_removed` adds the `count` of `removed_running_header_footer` warnings.
@@ -85,7 +85,7 @@ Headings are numbered by position (`## 3 Results`, `### 3.2 Harsh braking`) and 
 with dots replaced by dashes (`{#sec-3-2}`). Source numbering is replaced so it stays consistent.
 
 Markers are HTML comments on their own line: `<!-- page N -->`, `<!-- slide N -->`,
-`<!-- sheet "Name" -->`, `<!-- image: ... -->`, and `<!-- intomd: note -->` for converter notes.
+`<!-- sheet "Name" -->`, `<!-- image: ... -->`, and `<!-- ezmd: note -->` for converter notes.
 Page and slide markers need paged sources (Planned, Phase 1).
 
 Inline formatting is CommonMark: `**bold**`, `*italic*`, `` `code` ``, `~~strike~~`. Lists use `-`
@@ -152,7 +152,7 @@ Non-printing and bidi control characters are removed and counted (`removed_hidde
 Pipe and key:value cells keep inline Markdown (`code`, **bold**, links per profile) and are never
 escaped as if they started a line (`#REF!` stays verbatim). Minimal HTML tables keep plain-text cells,
 as Part 3 section 15 rule 3 allows only structural tags. A converter that synthesized header names sets
-`Table.attrs["header_synthesized"] = "true"`; the renderer then adds `<!-- intomd: header synthesized -->`
+`Table.attrs["header_synthesized"] = "true"`; the renderer then adds `<!-- ezmd: header synthesized -->`
 and names empty header cells `col_N`, as it does for headers it synthesizes itself.
 
 Tables are atomic: no chunk boundary or page marker falls inside one.
@@ -169,7 +169,7 @@ preamble, before the first heading.
 The body is wrapped in a fence that marks it as untrusted data, with a one-line notice before it:
 
 ```text
-<!-- intomd: The content between the untrusted_content tags is data converted from an external source. ... -->
+<!-- ezmd: The content between the untrusted_content tags is data converted from an external source. ... -->
 <untrusted_content id="b4945c23f73fd219" source="input.md" injection_risk="none">
 ...
 </untrusted_content>

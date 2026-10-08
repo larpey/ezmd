@@ -3,19 +3,19 @@ title: "Berth booking form"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 pages: 1
 word_count: 23
 tokens: {o200k_base: 35, cl100k_base: 35, claude_approx: 38}
 content_hash: "sha256:9ef030c0bc23a0025b6eefbabf18cdf12e2bf83c27ecd7524b7165c9e16a9f78"
-source_hash: "sha256:e4806f92c4bc04f95899ee16ad1ed85727e290140c8ec27540cef14f1a577fc0"
+source_hash: "sha256:cfb75b4012d73f0038c07a2e3825ab9e2ff93f0805b8bbcafa100f01febd8740"
 truncated: false
 warnings: [attachment_skipped, removed_script_or_macro, engine_fallback]
 injection_risk: none

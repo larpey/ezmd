@@ -1,12 +1,12 @@
-# intomd
+# ezmd
 
 Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
 tools. No silent loss. Apache-2.0.
 
-intomd turns an input into an intermediate representation (IR) and renders it as Markdown with YAML
+ezmd turns an input into an intermediate representation (IR) and renders it as Markdown with YAML
 frontmatter under one of four output profiles (`full`, `compact`, `rag`, `agent`), plus a JSON
 sidecar with block provenance and an explicit list of warnings. When something cannot be converted,
-intomd says so in the warnings instead of dropping it quietly.
+ezmd says so in the warnings instead of dropping it quietly.
 
 !!! note "Status: Phase 1, pre-release"
     Nothing is published yet (no PyPI or npm package, no container image, no public instance); install

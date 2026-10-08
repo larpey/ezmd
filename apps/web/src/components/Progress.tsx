@@ -1,4 +1,4 @@
-import type { JobState } from "@intomd/sdk";
+import type { JobState } from "@ezmd/sdk";
 
 const STATE_LABELS: Record<string, string> = {
   queued: "Waiting in queue",

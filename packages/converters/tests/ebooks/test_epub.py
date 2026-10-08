@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import InputRef
-from intomd.ir import Document, Footnote, Heading, Image, PageBreak, Paragraph, WarningKind, spans_text
-from intomd.registry import ConversionError, ConvertOptions
-from intomd_converters.ebooks.epub import EpubConverter
+from ezmd.detect import detect
+from ezmd.inputs import InputRef
+from ezmd.ir import Document, Footnote, Heading, Image, PageBreak, Paragraph, WarningKind, spans_text
+from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.ebooks.epub import EpubConverter
 
 ROOT = Path(__file__).resolve().parents[4]
 NOVEL = ROOT / "fixtures" / "ebooks" / "epub3-novel" / "input.epub"

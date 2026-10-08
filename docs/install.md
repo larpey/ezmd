@@ -1,7 +1,7 @@
 # Install
 
 !!! note "Pre-release"
-    intomd is not published yet: there is no PyPI package, npm package, or container image. Install from
+    ezmd is not published yet: there is no PyPI package, npm package, or container image. Install from
     source. The commands under [After the first release](#after-the-first-release) are what the
     published packages will use.
 
@@ -11,20 +11,20 @@ You need [uv](https://docs.astral.sh/uv/) and Python 3.12 or newer. On Linux and
 libmagic (`apt install libmagic1`, `brew install libmagic`); on Windows it comes from a wheel.
 
 ```sh
-git clone https://github.com/larpey/intomd && cd intomd
+git clone https://github.com/larpey/ezmd && cd ezmd
 uv sync --all-packages
-uv run intomd version
+uv run ezmd version
 ```
 
-`uv sync --all-packages` installs the core (`intomd`), the built-in converters (`intomd-converters`), the
-API (`intomd-api`), and the MCP server (`intomd-mcp`) into `.venv`, with the development tools. Run any
-command through `uv run`, for example `uv run intomd convert report.pdf`.
+`uv sync --all-packages` installs the core (`ezmd`), the built-in converters (`ezmd-converters`), the
+API (`ezmd-api`), and the MCP server (`ezmd-mcp`) into `.venv`, with the development tools. Run any
+command through `uv run`, for example `uv run ezmd convert report.pdf`.
 
 For the web UI and the TypeScript SDK, also install Node 22 and pnpm, then `pnpm install`.
 
 ## Extras
 
-Optional engines live in extras of `intomd-converters`. From source, add them with `--extra`:
+Optional engines live in extras of `ezmd-converters`. From source, add them with `--extra`:
 
 | Extra | Adds | Size | Command |
 |---|---|---|---|
@@ -47,8 +47,8 @@ which converters need which extra in the [converter matrix](converters/README.md
 ## Check the installation
 
 ```sh
-uv run intomd doctor          # Python, extras, system programs, cache
-uv run intomd capabilities    # every converter, loaded or unavailable with the reason
+uv run ezmd doctor          # Python, extras, system programs, cache
+uv run ezmd capabilities    # every converter, loaded or unavailable with the reason
 ```
 
 ## Docker
@@ -64,10 +64,10 @@ bash deploy/bootstrap.sh --plain-http --build
 These commands do not work yet:
 
 ```sh
-pip install intomd                       # library and CLI
-uvx intomd convert https://example.com   # run without installing
-uvx intomd-mcp                           # MCP server
-npm install @intomd/sdk                  # TypeScript client
+pip install ezmd                       # library and CLI
+uvx ezmd convert https://example.com   # run without installing
+uvx ezmd-mcp                           # MCP server
+npm install @ezmd/sdk                  # TypeScript client
 ```
 
-The published images will be `ghcr.io/larpey/intomd-api`, `-worker`, and `-fetch-node`.
+The published images will be `ghcr.io/larpey/ezmd-api`, `-worker`, and `-fetch-node`.

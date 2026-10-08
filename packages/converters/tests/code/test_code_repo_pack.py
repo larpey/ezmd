@@ -9,13 +9,13 @@ from pathlib import Path
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import Detected, FetchRequired, InputRef
-from intomd.ir import CodeBlock, Document, Heading, WarningKind
-from intomd.registry import ConversionError, ConvertOptions, ExtraValue
-from intomd_converters.code.archive import ArchiveLimits, read_archive, safe_path
-from intomd_converters.code.github import is_codeload_url, parse_repo_url
-from intomd_converters.code.repo_pack import RepoPackConverter
+from ezmd.detect import detect
+from ezmd.inputs import Detected, FetchRequired, InputRef
+from ezmd.ir import CodeBlock, Document, Heading, WarningKind
+from ezmd.registry import ConversionError, ConvertOptions, ExtraValue
+from ezmd_converters.code.archive import ArchiveLimits, read_archive, safe_path
+from ezmd_converters.code.github import is_codeload_url, parse_repo_url
+from ezmd_converters.code.repo_pack import RepoPackConverter
 
 GH_TOKEN = "gh" + "p_" + "Z9y8X7w6V5u4T3s2R1q0P9o8N7m6L5k4J3i2"
 AWS_ID = "AK" + "IA" + "ZZEXAMPLEFAKE001"

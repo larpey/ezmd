@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from intomd_api.settings import Settings
-from intomd_api.testing import api_client, upload, wait_for_state
+from ezmd_api.settings import Settings
+from ezmd_api.testing import api_client, upload, wait_for_state
 
 
 async def test_413_over_cap_streaming(settings_factory: Callable[..., Settings]) -> None:

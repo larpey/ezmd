@@ -3,16 +3,16 @@ title: "input.csv"
 source: "input.csv"
 source_type: data
 converter: data.csv
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 word_count: 233
-tokens: {o200k_base: 598, cl100k_base: 614, claude_approx: 646}
-content_hash: "sha256:f364a424383b64d515d6bb86a6716dab68b931ec7cf2ded4615208adca6c1ffc"
+tokens: {o200k_base: 597, cl100k_base: 613, claude_approx: 645}
+content_hash: "sha256:a062658d05604b5fae4212dd7864b70cc2706a40d584a3c65ee95dc189b935f4"
 source_hash: "sha256:25d3a1fc41337238c32af92de23eb6be180ccbefc463eb6c919991debfed8ce0"
 truncated: true
 warnings: [table_sampled]
@@ -45,7 +45,7 @@ Columns: row, city, item, qty
 - row: 18 | city: Accra | item: gaskets | qty: 166
 - row: 19 | city: Riga | item: springs | qty: 203
 - row: 20 | city: Lisbon | item: rivets | qty: 240
-<!-- intomd: 1,175 rows omitted; full data in tables/table-01.csv -->
+<!-- ezmd: 1,175 rows omitted; full data in tables/table-01.csv -->
 - row: 1196 | city: Tromso | item: rivets | qty: 252
 - row: 1197 | city: Cusco | item: brackets | qty: 289
 - row: 1198 | city: Accra | item: hinges | qty: 326

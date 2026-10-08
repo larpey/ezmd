@@ -3,8 +3,8 @@ title: "Tennessee Valley Authority 8-K 2026-04-24"
 source: "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html"
 source_type: web
 converter: specialized.edgar
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block

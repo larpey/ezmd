@@ -1,4 +1,4 @@
-import type { Capabilities } from "@intomd/sdk";
+import type { Capabilities } from "@ezmd/sdk";
 
 interface SupportedInputsProps {
   capabilities: Capabilities | null;

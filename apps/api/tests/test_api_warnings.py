@@ -8,9 +8,9 @@ from typing import Any
 import httpx
 import pytest
 
-from intomd.ir import Warning
-from intomd.warnings.codes import ALIASES, CODES, WarningKind
-from intomd_api.testing import upload, wait_for_state
+from ezmd.ir import Warning
+from ezmd.warnings.codes import ALIASES, CODES, WarningKind
+from ezmd_api.testing import upload, wait_for_state
 
 
 async def test_registry_lists_every_code_with_aliases(client: httpx.AsyncClient) -> None:
@@ -33,7 +33,7 @@ async def test_registry_lists_every_code_with_aliases(client: httpx.AsyncClient)
 @pytest.fixture
 def emit_warnings(monkeypatch: pytest.MonkeyPatch) -> None:
     """Append warnings (one duplicated, one via a retired alias) to every real conversion result."""
-    import intomd.pipeline as pipeline
+    import ezmd.pipeline as pipeline
 
     real = pipeline.convert_ref
 
@@ -64,8 +64,8 @@ async def test_job_out_lists_canonical_codes_once(client: httpx.AsyncClient) -> 
 
 
 def test_warning_codes_tolerates_bad_rows() -> None:
-    from intomd_api.db import JobRow
-    from intomd_api.schemas import warning_codes_of
+    from ezmd_api.db import JobRow
+    from ezmd_api.schemas import warning_codes_of
 
     assert warning_codes_of(JobRow(warning_codes="not json")) == []
     assert warning_codes_of(JobRow(warning_codes=json.dumps({"a": 1}))) == []

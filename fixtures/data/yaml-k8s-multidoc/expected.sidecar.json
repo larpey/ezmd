@@ -7171,16 +7171,16 @@
     "content_hash": "sha256:ae31a7081eb2249da8e676400a3eed06feb21d45c7fa0f29d022542d2b826718",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.yaml",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "anchors_expanded": true,
       "documents": 3,
       "encoding": "utf-8",
       "format": "YAML"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -7223,7 +7223,7 @@
       "transcript_segments": 0,
       "words": 407
     },
-    "duration_seconds": 0.0,
+    "duration_seconds": 0.014999999897554517,
     "engine": "data.yaml",
     "engines_tried": [
       "data.yaml"
@@ -7477,7 +7477,7 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -8059,6 +8059,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 2584,
+  "tokens_total": 2587,
   "warnings": []
 }

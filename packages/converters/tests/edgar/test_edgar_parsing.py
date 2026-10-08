@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from intomd.ir import Heading, InlineSpan, InlineStyle, Paragraph, Provenance, Table, TableCell, spans_text
-from intomd_converters.edgar.html import parse_filing
-from intomd_converters.edgar.items import section
-from intomd_converters.edgar.tables import tidy_table
-from intomd_converters.edgar.urls import company_target, dashed, parse_target
+from ezmd.ir import Heading, InlineSpan, InlineStyle, Paragraph, Provenance, Table, TableCell, spans_text
+from ezmd_converters.edgar.html import parse_filing
+from ezmd_converters.edgar.items import section
+from ezmd_converters.edgar.tables import tidy_table
+from ezmd_converters.edgar.urls import company_target, dashed, parse_target
 
 P = Provenance(source="t")
 A = "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018"

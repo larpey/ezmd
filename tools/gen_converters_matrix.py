@@ -4,7 +4,7 @@ Also rewrites the generated "Converters" block of mkdocs.yml so every family pag
 is in the site navigation. `tests/test_converters_matrix.py` fails when either file is stale.
 
 The output must not depend on the machine it runs on, so the matrix never shows whether an engine is
-installed here (that is `intomd capabilities`). It shows what the code declares:
+installed here (that is `ezmd capabilities`). It shows what the code declares:
 
 - Install: "default" when the converter needs no extra; "extra `x`" when it needs an extra that
   `packages/converters/pyproject.toml` defines; "planned" when it names an extra that does not exist yet.
@@ -75,20 +75,20 @@ def fixture_counts() -> dict[str, int]:
 
 
 def thresholds() -> tuple[float, dict[str, float]]:
-    from intomd.testing.fixtures import thresholds as load
+    from ezmd.testing.fixtures import thresholds as load
 
     return load(FIXTURES)
 
 
 def rows() -> list[Row]:
-    import intomd_converters
+    import ezmd_converters
 
     extras = defined_extras()
     counts = fixture_counts()
     default, per = thresholds()
     out: list[Row] = []
-    for package in intomd_converters.family_names():
-        mod = importlib.import_module(f"intomd_converters.{package}")
+    for package in ezmd_converters.family_names():
+        mod = importlib.import_module(f"ezmd_converters.{package}")
         convs, flag = _family_converters(mod)
         for c in convs:
             needed = tuple(getattr(c, "requires_extras", ()))
@@ -141,7 +141,7 @@ def _mimes_cell(mimes: tuple[str, ...]) -> str:
 
 
 def render() -> str:
-    from intomd_converters import builtin_chains
+    from ezmd_converters import builtin_chains
 
     rs = rows()
     lines = [
@@ -151,12 +151,12 @@ def render() -> str:
         "`tests/test_converters_matrix.py` fails when this page is stale.",
         "",
         "This page lists what the code declares. Whether an engine is installed on a given machine is a",
-        "runtime question: run `intomd capabilities` (or `GET /v1/capabilities`) to see each converter as",
-        "loaded or unavailable with the reason, and `intomd doctor` for system programs such as LibreOffice.",
+        "runtime question: run `ezmd capabilities` (or `GET /v1/capabilities`) to see each converter as",
+        "loaded or unavailable with the reason, and `ezmd doctor` for system programs such as LibreOffice.",
         "",
         "- **Engine** is the second half of the converter id (`family.engine`).",
         "- **Install**: `default` needs nothing beyond the base install; `extra x` needs that optional extra",
-        "  of `intomd-converters`; `planned` names an extra that does not exist yet.",
+        "  of `ezmd-converters`; `planned` names an extra that does not exist yet.",
         "- **Status**: `Experimental` converters add an `experimental_converter` warning to every result and",
         "  are skipped when experimental converters are disabled; `Planned` converters are registered only so",
         "  capabilities can explain why the format is not handled; every other converter is `Beta` until the",
@@ -187,7 +187,7 @@ def render() -> str:
         "## Fallback chains",
         "",
         "When a converter fails with a retryable error, the next converter in the chain for that MIME type is",
-        "tried (`intomd.chains`).",
+        "tried (`ezmd.chains`).",
         "",
         "| MIME type | Chain |",
         "|---|---|",

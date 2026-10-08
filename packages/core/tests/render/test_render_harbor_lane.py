@@ -1,6 +1,6 @@
 """The Part 3 section 17 worked example (Harbor Lane), rendered in all four profiles and compared with the
 expected outputs taken verbatim from docs/spec/part3.md. Placeholder lines (hashes, token counts, word counts,
-the intomd version, the fence id and chunk doc ids) are normalized on both sides, as the spec prescribes."""
+the ezmd version, the fence id and chunk doc ids) are normalized on both sides, as the spec prescribes."""
 
 from __future__ import annotations
 
@@ -10,16 +10,16 @@ from pathlib import Path
 import pytest
 from render_builders import CONVERTED_AT, harbor_lane
 
-from intomd.render import render
+from ezmd.render import render
 
 SPEC = Path(__file__).resolve().parents[4] / "docs" / "spec" / "part3.md"
-SIDECAR = "harbor-lane-depot-report.intomd.json"
+SIDECAR = "harbor-lane-depot-report.ezmd.json"
 
 _NORMALIZE = [
     (re.compile(r'^content_hash: "sha256:[0-9a-f]{64}"$', re.M), 'content_hash: "sha256:HASH"'),
     (re.compile(r"^tokens: \{[^}]*\}$", re.M), "tokens: TOKENS"),
     (re.compile(r"^word_count: \d+$", re.M), "word_count: N"),
-    (re.compile(r'^intomd_version: "[^"]+"$', re.M), 'intomd_version: "V"'),
+    (re.compile(r'^ezmd_version: "[^"]+"$', re.M), 'ezmd_version: "V"'),
     (re.compile(r'^untrusted_content_id: "[0-9a-f]{16}"$', re.M), 'untrusted_content_id: "FID"'),
     (re.compile(r'<untrusted_content id="[0-9a-f]{16}"'), '<untrusted_content id="FID"'),
     (re.compile(r'chunk id="[0-9a-f]{12}#'), 'chunk id="DOCID#'),

@@ -22,7 +22,7 @@
   - Docling's layout model labels section headers without hierarchy: levels are re-derived from the structure
     tree / outline / font sizes measured by the pdfium pass.
   - Docling downloads models from Hugging Face on first use: `HF_HUB_OFFLINE=1` unless `allow_network`;
-    `INTOMD_DOCLING_ARTIFACTS` points at pre-fetched models.
+    `EZMD_DOCLING_ARTIFACTS` points at pre-fetched models.
   - The full `docling` meta-package pins typer<0.27 and websockets<17 (CLI/service client extras), so the extra
     uses `docling-slim` with only PDF extras. docling-core itself still requires typer<0.27, which downgrades
     typer 0.27.3 -> 0.26.8 for the whole universal lock (see "Core change requests" in the task report).

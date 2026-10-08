@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -66,11 +69,14 @@
         "role": "body",
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
             "styles": [],
-            "text": "7 files packed (11,448 source bytes, 3,276 tokens). Languages: python 100%. Commit 93ef68d3a714."
+            "text": "7 files packed (11,442 source bytes, 3,273 tokens). Languages: python 100%. Commit 0e76f7757c5d."
           }
         ],
         "type": "paragraph"
@@ -100,6 +106,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -160,6 +169,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -171,10 +183,10 @@
       },
       {
         "attrs": {
-          "bytes": "140",
+          "bytes": "138",
           "language": "markdown",
-          "packed_bytes": "139",
-          "tokens": "34"
+          "packed_bytes": "137",
+          "tokens": "33"
         },
         "id": "b0006",
         "level": 3,
@@ -199,6 +211,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -210,7 +225,7 @@
       },
       {
         "attrs": {},
-        "code": "# stockroom\n\nA small inventory service used as an intomd repo-pack fixture.\n\nRun `python -m stockroom` to print items that need reordering.",
+        "code": "# stockroom\n\nA small inventory service used as an ezmd repo-pack fixture.\n\nRun `python -m stockroom` to print items that need reordering.",
         "filename": "README.md",
         "id": "b0007",
         "language": "markdown",
@@ -264,6 +279,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -329,6 +347,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -366,10 +387,10 @@
       },
       {
         "attrs": {
-          "bytes": "131",
+          "bytes": "129",
           "language": "toml",
-          "packed_bytes": "130",
-          "tokens": "40"
+          "packed_bytes": "128",
+          "tokens": "39"
         },
         "id": "b0012",
         "level": 3,
@@ -394,6 +415,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -405,7 +429,7 @@
       },
       {
         "attrs": {},
-        "code": "[project]\nname = \"stockroom\"\nversion = \"0.1.0\"\ndescription = \"Tiny inventory service (intomd fixture).\"\nrequires-python = \">=3.12\"",
+        "code": "[project]\nname = \"stockroom\"\nversion = \"0.1.0\"\ndescription = \"Tiny inventory service (ezmd fixture).\"\nrequires-python = \">=3.12\"",
         "filename": "pyproject.toml",
         "id": "b0013",
         "language": "toml",
@@ -459,6 +483,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -496,10 +523,10 @@
       },
       {
         "attrs": {
-          "bytes": "1856",
+          "bytes": "1854",
           "language": "python",
-          "packed_bytes": "1855",
-          "tokens": "475"
+          "packed_bytes": "1853",
+          "tokens": "474"
         },
         "id": "b0016",
         "level": 3,
@@ -524,6 +551,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -535,7 +565,7 @@
       },
       {
         "attrs": {},
-        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an intomd fixture.\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        return self.quantity <= threshold\n\n    def restock(self, amount: int) -> None:\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.quantity += amount\n\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        self._items: dict[str, Item] = {}\n\n    def add(self, item: Item) -> None:\n        self._items[item.sku] = item\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        return sorted((i for i in self._items.values() if i.needs_reorder()), key=lambda i: i.sku)\n\n    def to_json(self) -> str:\n        return json.dumps({sku: item.quantity for sku, item in self._items.items()}, indent=2)\n\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    sent = 0\n    for _attempt in range(retries):\n        sent = len(inventory.low_stock())\n    return sent\n\n\ndef main() -> None:\n    inv = Inventory()\n    inv.add(Item(\"A-1\", \"Widget\", 3))\n    inv.add(Item(\"B-2\", \"Gadget\", 40))\n    for item in inv.low_stock():\n        print(f\"reorder {item.sku}: {item.name}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an ezmd fixture.\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        return self.quantity <= threshold\n\n    def restock(self, amount: int) -> None:\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.quantity += amount\n\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        self._items: dict[str, Item] = {}\n\n    def add(self, item: Item) -> None:\n        self._items[item.sku] = item\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        return sorted((i for i in self._items.values() if i.needs_reorder()), key=lambda i: i.sku)\n\n    def to_json(self) -> str:\n        return json.dumps({sku: item.quantity for sku, item in self._items.items()}, indent=2)\n\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    sent = 0\n    for _attempt in range(retries):\n        sent = len(inventory.low_stock())\n    return sent\n\n\ndef main() -> None:\n    inv = Inventory()\n    inv.add(Item(\"A-1\", \"Widget\", 3))\n    inv.add(Item(\"B-2\", \"Gadget\", 40))\n    for item in inv.low_stock():\n        print(f\"reorder {item.sku}: {item.name}\")\n\n\nif __name__ == \"__main__\":\n    main()",
         "filename": "src/stockroom/inventory.py",
         "id": "b0017",
         "language": "python",
@@ -589,6 +619,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -625,27 +658,27 @@
         "type": "code"
       }
     ],
-    "content_hash": "sha256:f38aeb6e2123088eabe84903fc288e497ba367537a7f7d94e1891066b74f5911",
+    "content_hash": "sha256:d7228d45015cbe7da65cf331cf55002dbd1a5ea19a65ccb5db1e0ab650ab1571",
     "converter_id": "code.repo_pack",
     "metadata": {
       "author": null,
       "authors": [],
       "canonical_url": null,
-      "description": "Tiny inventory service (intomd fixture).",
+      "description": "Tiny inventory service (ezmd fixture).",
       "duration_seconds": null,
       "encoding": null,
       "encoding_confidence": null,
       "extra": {
-        "bytes": 11448,
-        "commit": "93ef68d3a7144adbcaa6bdb010256d0af9e81d49",
+        "bytes": 11442,
+        "commit": "0e76f7757c5d6830073b0d1c0d4c407d365cd410",
         "files": 7,
         "languages": "python",
         "license_file": "LICENSE",
-        "packed_bytes": 11440,
+        "packed_bytes": 11434,
         "project": "stockroom",
         "ref": "main",
         "repo": "acme/stockroom",
-        "tokens": 3276
+        "tokens": 3273
       },
       "fetched": null,
       "keywords": [],
@@ -657,7 +690,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "https://codeload.github.com/acme/stockroom/tar.gz/main",
       "source_type": "repo",
       "speakers": [],
@@ -670,37 +705,37 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "content_hash": "sha256:4c0e414ed5743355411645ac239d017d16e15a754803a63000666e71d8dd283d",
+    "content_hash": "sha256:880fc324dac02a239b3400468257117c17f5d03f7c97ff8e871c66a013c77fb5",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.repo_pack",
-    "converter_version": "0.0.1",
-    "description": "Tiny inventory service (intomd fixture).",
+    "converter_version": "0.1.0rc1",
+    "description": "Tiny inventory service (ezmd fixture).",
     "extra": {
-      "bytes": 11448,
-      "commit": "93ef68d3a7144adbcaa6bdb010256d0af9e81d49",
+      "bytes": 11442,
+      "commit": "0e76f7757c5d6830073b0d1c0d4c407d365cd410",
       "files": 7,
       "languages": "python",
       "license_file": "LICENSE",
-      "packed_bytes": 11440,
+      "packed_bytes": 11434,
       "project": "stockroom",
       "ref": "main",
       "repo": "acme/stockroom",
-      "tokens": 3276
+      "tokens": 3273
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "https://codeload.github.com/acme/stockroom/tar.gz/main",
-    "source_hash": "sha256:a0b48298e08e572fa1330597aa1e18d2ff9ce8e9d4177af477b6773c4b90b106",
+    "source_hash": "sha256:a41064f88fcc703ec81ad0800b0678561321e9146a4b68903f573493392fc886",
     "source_type": "code",
     "title": "acme/stockroom at main",
     "tokens": {
-      "cl100k_base": 3805,
-      "claude_approx": 4108,
-      "o200k_base": 3804
+      "cl100k_base": 3804,
+      "claude_approx": 4107,
+      "o200k_base": 3803
     },
     "truncated": false,
     "warnings": [],
@@ -732,14 +767,14 @@
       "transcript_segments": 0,
       "words": 1896
     },
-    "duration_seconds": 0.0940000000409782,
+    "duration_seconds": 0.10899999993853271,
     "engine": "code.repo_pack",
     "engines_tried": [
       "code.repo_pack"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 2057
+    "input_bytes": 2060
   },
   "profile": "full",
   "provenance": [
@@ -886,7 +921,7 @@
       "type": "code"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -919,7 +954,7 @@
       "id": "sec-2-1",
       "level": 3,
       "number": "2.1",
-      "offset_end": 1013,
+      "offset_end": 1011,
       "offset_start": 807,
       "original_level": 3,
       "original_title": "README.md",
@@ -932,8 +967,8 @@
       "id": "sec-2-2",
       "level": 3,
       "number": "2.2",
-      "offset_end": 1136,
-      "offset_start": 1013,
+      "offset_end": 1134,
+      "offset_start": 1011,
       "original_level": 3,
       "original_title": ".gitignore",
       "time_end": null,
@@ -945,8 +980,8 @@
       "id": "sec-2-3",
       "level": 3,
       "number": "2.3",
-      "offset_end": 1248,
-      "offset_start": 1136,
+      "offset_end": 1246,
+      "offset_start": 1134,
       "original_level": 3,
       "original_title": "LICENSE",
       "time_end": null,
@@ -958,8 +993,8 @@
       "id": "sec-2-4",
       "level": 3,
       "number": "2.4",
-      "offset_end": 1451,
-      "offset_start": 1248,
+      "offset_end": 1447,
+      "offset_start": 1246,
       "original_level": 3,
       "original_title": "pyproject.toml",
       "time_end": null,
@@ -971,8 +1006,8 @@
       "id": "sec-2-5",
       "level": 3,
       "number": "2.5",
-      "offset_end": 1576,
-      "offset_start": 1451,
+      "offset_end": 1572,
+      "offset_start": 1447,
       "original_level": 3,
       "original_title": "src/stockroom/__init__.py",
       "time_end": null,
@@ -984,8 +1019,8 @@
       "id": "sec-2-6",
       "level": 3,
       "number": "2.6",
-      "offset_end": 3530,
-      "offset_start": 1576,
+      "offset_end": 3524,
+      "offset_start": 1572,
       "original_level": 3,
       "original_title": "src/stockroom/inventory.py",
       "time_end": null,
@@ -997,8 +1032,8 @@
       "id": "sec-2-7",
       "level": 3,
       "number": "2.7",
-      "offset_end": 12806,
-      "offset_start": 3530,
+      "offset_end": 12800,
+      "offset_start": 3524,
       "original_level": 3,
       "original_title": "src/stockroom/scale.py",
       "time_end": null,
@@ -1011,6 +1046,6 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 4166,
+  "tokens_total": 4163,
   "warnings": []
 }

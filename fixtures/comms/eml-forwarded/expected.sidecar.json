@@ -770,7 +770,7 @@
     "content_hash": "sha256:70e7a7070d6b18cc7a58dc073e84f48d279fc2c53fbe0a0d0d13efb6ca5d4b9d",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "comms.eml",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "created_at": "2024-10-01T16:00:00Z",
     "extra": {
       "attachments": 1,
@@ -779,9 +779,9 @@
       "encoding": "utf-8",
       "message_id": "<fwd-1@example.org>"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -824,7 +824,7 @@
       "transcript_segments": 0,
       "words": 80
     },
-    "duration_seconds": 0.01500000013038516,
+    "duration_seconds": 0.015999999828636646,
     "engine": "comms.eml",
     "engines_tried": [
       "comms.eml"
@@ -919,7 +919,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0004",
@@ -1072,6 +1072,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 661,
+  "tokens_total": 664,
   "warnings": []
 }

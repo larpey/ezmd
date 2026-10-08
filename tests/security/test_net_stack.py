@@ -1,7 +1,7 @@
 """Network tier against the compose stack (docs/spec/part4.md 4.14.5 items 1 and 7).
 
 Runs in .github/workflows/integration.yml after `tests/integration/stack.sh up`, while the stack still
-has INTOMD_ALLOW_PRIVATE_NETWORKS=false. Uses the owner key (INTOMD_API_KEY or INTOMD_API_KEY_FILE)
+has EZMD_ALLOW_PRIVATE_NETWORKS=false. Uses the owner key (EZMD_API_KEY or EZMD_API_KEY_FILE)
 so the anonymous rate limits do not interfere.
 """
 
@@ -18,7 +18,7 @@ from ssrf_table import LITERAL
 
 pytestmark = pytest.mark.network
 
-FIXTURE_URL = os.environ.get("INTOMD_FIXTURE_ORIGIN", "http://web.fixtures.example:8000") + "/article-short/input.html"
+FIXTURE_URL = os.environ.get("EZMD_FIXTURE_ORIGIN", "http://web.fixtures.example:8000") + "/article-short/input.html"
 CSP = (
     "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; "
     "frame-src https://challenges.cloudflare.com; "
@@ -28,8 +28,8 @@ CSP = (
 
 
 def _key() -> str:
-    key = os.environ.get("INTOMD_API_KEY", "").strip()
-    path = os.environ.get("INTOMD_API_KEY_FILE", "").strip()
+    key = os.environ.get("EZMD_API_KEY", "").strip()
+    path = os.environ.get("EZMD_API_KEY_FILE", "").strip()
     if not key and path and Path(path).is_file():
         key = Path(path).read_text(encoding="utf-8").strip()
     return key
@@ -38,12 +38,12 @@ def _key() -> str:
 @pytest.fixture(scope="module")
 def client() -> Iterator[httpx.Client]:
     # Module-scoped, so it runs before conftest's per-test tier check: skip here too.
-    if os.environ.get("INTOMD_NETWORK_TESTS") != "1" or not os.environ.get("INTOMD_BASE_URL"):
-        pytest.skip("network tier: set INTOMD_NETWORK_TESTS=1 and INTOMD_BASE_URL (tests/integration/stack.sh)")
+    if os.environ.get("EZMD_NETWORK_TESTS") != "1" or not os.environ.get("EZMD_BASE_URL"):
+        pytest.skip("network tier: set EZMD_NETWORK_TESTS=1 and EZMD_BASE_URL (tests/integration/stack.sh)")
     key = _key()
     with httpx.Client(
-        base_url=os.environ["INTOMD_BASE_URL"].rstrip("/"),
-        verify=os.environ.get("INTOMD_INSECURE", "") != "1",
+        base_url=os.environ["EZMD_BASE_URL"].rstrip("/"),
+        verify=os.environ.get("EZMD_INSECURE", "") != "1",
         timeout=30.0,
         headers={"X-API-Key": key} if key else {},
     ) as c:

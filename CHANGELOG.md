@@ -13,9 +13,9 @@ First release candidate (Phase 1). Published to TestPyPI only.
   (Trafilatura with hidden-content stripping), source files and repositories with secret redaction,
   CSV/TSV/JSON/YAML/TOML/XML/SQLite (Parquet in the `data` extra), email (EML, MBOX, native Outlook MSG),
   and SEC EDGAR filings.
-- Interfaces: `intomd` CLI (`convert`, `batch`, `doctor`, `config`, `remote`, `shadow-run`), the Python library
-  (`intomd.convert`, `convert_async`, `convert_many`), the MCP server `intomd-mcp` (stdio and streamable HTTP),
-  the HTTP API with SSE progress, the web UI, and the `@intomd/sdk` TypeScript client.
+- Interfaces: `ezmd` CLI (`convert`, `batch`, `doctor`, `config`, `remote`, `shadow-run`), the Python library
+  (`ezmd.convert`, `convert_async`, `convert_many`), the MCP server `ezmd-mcp` (stdio and streamable HTTP),
+  the HTTP API with SSE progress, the web UI, and the `@ezmd/sdk` TypeScript client.
 - Self-hosting: Docker Compose stack with bootstrap, backup, restore and upgrade scripts; images scanned with
   Trivy, shipped with SPDX SBOMs and signed with cosign.
 - 94 golden fixtures with provenance checks, a nightly scorecard, integration tests on the compose stack, and a

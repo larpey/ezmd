@@ -30,11 +30,11 @@ def test_cli_doc_covers_every_command() -> None:
     text = gen.render()
     assert gen.commands(), "no CLI commands found"
     for name in gen.commands():
-        assert f"## intomd {name}" in text
+        assert f"## ezmd {name}" in text
 
 
 def test_selfhost_env_table_is_current() -> None:
-    pytest.importorskip("intomd_api")
+    pytest.importorskip("ezmd_api")
     gen = _load("gen_env_doc")
     committed = (ROOT / "docs" / "selfhost.md").read_text(encoding="utf-8")
     assert committed == gen.update(committed), (
@@ -43,9 +43,9 @@ def test_selfhost_env_table_is_current() -> None:
 
 
 def test_every_setting_is_documented() -> None:
-    pytest.importorskip("intomd_api")
+    pytest.importorskip("ezmd_api")
     gen = _load("gen_env_doc")
-    from intomd_api.settings import env_names
+    from ezmd_api.settings import env_names
 
     assert gen.missing_descriptions() == []
     assert set(gen.DESCRIPTIONS) <= set(gen.Settings.model_fields), "DESCRIPTIONS has entries for removed settings"
@@ -55,8 +55,8 @@ def test_every_setting_is_documented() -> None:
 
 
 def test_errors_md_lists_every_api_error_code() -> None:
-    pytest.importorskip("intomd_api")
-    from intomd_api.errors import ERROR_STATUS
+    pytest.importorskip("ezmd_api")
+    from ezmd_api.errors import ERROR_STATUS
 
     text = (ROOT / "docs" / "errors.md").read_text(encoding="utf-8")
     missing = [code for code, status in ERROR_STATUS.items() if f"`{code}` | {status} |" not in text]

@@ -7,24 +7,24 @@ services:
       file: docker-compose.yml
       service: worker-default
     profiles: ["media"]
-    image: ghcr.io/larpey/intomd-worker-media-cuda:${INTOMD_VERSION:-latest}
+    image: ghcr.io/larpey/ezmd-worker-media-cuda:${EZMD_VERSION:-latest}
     build: !reset null
-    command: ["python", "-m", "intomd_api.worker", "--queues", "media"]
+    command: ["python", "-m", "ezmd_api.worker", "--queues", "media"]
     tmpfs:
-      - /tmp:size=${INTOMD_MEDIA_TMPFS_SIZE:-6g},mode=1777
+      - /tmp:size=${EZMD_MEDIA_TMPFS_SIZE:-6g},mode=1777
     environment:
-      INTOMD_DEVICE: cuda
-      NVIDIA_VISIBLE_DEVICES: ${INTOMD_GPU_DEVICES:-all}
+      EZMD_DEVICE: cuda
+      NVIDIA_VISIBLE_DEVICES: ${EZMD_GPU_DEVICES:-all}
       NVIDIA_DRIVER_CAPABILITIES: compute,utility
     deploy:
       resources:
         limits:
-          cpus: "${INTOMD_WORKER_MEDIA_CPUS:-3.0}"
-          memory: ${INTOMD_WORKER_MEDIA_MEM:-12g}
+          cpus: "${EZMD_WORKER_MEDIA_CPUS:-3.0}"
+          memory: ${EZMD_WORKER_MEDIA_MEM:-12g}
           pids: 256
         reservations:
           memory: 2g
           devices:
             - driver: nvidia
-              count: ${INTOMD_GPU_COUNT:-1}
+              count: ${EZMD_GPU_COUNT:-1}
               capabilities: [gpu]

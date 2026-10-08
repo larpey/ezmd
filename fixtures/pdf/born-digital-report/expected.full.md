@@ -3,19 +3,19 @@ title: "Harbor Lane Annual Report"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.0.1"
-intomd_version: "0.0.1"
+converter_version: "0.1.0rc1"
+ezmd_version: "0.1.0rc1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-author: "intomd fixtures"
+author: "ezmd fixtures"
 pages: 4
 word_count: 360
 tokens: {o200k_base: 617, cl100k_base: 631, claude_approx: 666}
 content_hash: "sha256:1416b0adade01223fdd1ad6b583a689a07c0ec1231cb22b2ed762bfa4631aca1"
-source_hash: "sha256:4e843c4ebec8c9b371d72ea162fcca1cbae7bac0053d8e89734ca00c061a1023"
+source_hash: "sha256:886780651d0df06ff88ed76d943f8355b96752524be28f8caff66dcc66f75934"
 truncated: false
 warnings: [engine_fallback, removed_running_header_footer]
 injection_risk: none

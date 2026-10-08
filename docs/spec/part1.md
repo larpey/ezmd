@@ -1,4 +1,4 @@
-# intomd build specification
+# ezmd build specification
 
 ## Part 1: Mission, operating rules, foundation
 
@@ -12,7 +12,7 @@ Fixed decisions that all parts share are restated in section 1.3. Do not relitig
 
 ### 1.1 Mission
 
-intomd converts anything into LLM-ready Markdown: PDFs, Office documents, web pages, audio, video, social URLs, chat exports, code repositories, data files, email, notes-app exports, and specialized formats. It emits Markdown with YAML frontmatter under four output profiles (`full`, `compact`, `rag`, `agent`), an optional JSON sidecar with provenance, and an explicit warnings list so nothing is lost silently. It ships three ways: a free public instance with no accounts and no retention beyond 24 hours, a self-hostable Docker Compose stack that is identical in capability to the public instance, and an embeddable Python library plus CLI plus MCP server. Everything in the repo is Apache-2.0, and the default install pulls only permissively licensed code and model weights. The differentiators are not raw parsing quality (that is wrapped from Docling, Trafilatura, yt-dlp, faster-whisper and friends) but the things incumbents drop: heading hierarchy, tracked changes, comments, speaker labels, thread parents, page and bbox provenance on every block, spreadsheet formulas, a "what I could not read" report, token-aware profiles, and prompt-injection flagging.
+ezmd converts anything into LLM-ready Markdown: PDFs, Office documents, web pages, audio, video, social URLs, chat exports, code repositories, data files, email, notes-app exports, and specialized formats. It emits Markdown with YAML frontmatter under four output profiles (`full`, `compact`, `rag`, `agent`), an optional JSON sidecar with provenance, and an explicit warnings list so nothing is lost silently. It ships three ways: a free public instance with no accounts and no retention beyond 24 hours, a self-hostable Docker Compose stack that is identical in capability to the public instance, and an embeddable Python library plus CLI plus MCP server. Everything in the repo is Apache-2.0, and the default install pulls only permissively licensed code and model weights. The differentiators are not raw parsing quality (that is wrapped from Docling, Trafilatura, yt-dlp, faster-whisper and friends) but the things incumbents drop: heading hierarchy, tracked changes, comments, speaker labels, thread parents, page and bbox provenance on every block, spreadsheet formulas, a "what I could not read" report, token-aware profiles, and prompt-injection flagging.
 
 ### 1.2 Definition of done
 
@@ -31,13 +31,13 @@ The project is done when every item below is true. Do not report completion befo
 
 ### 1.3 Fixed decisions (shared by all four parts)
 
-- Working codename: **intomd**. Python package `intomd`, CLI `intomd`, Docker image `intomd`. The first task in ROADMAP.md is a name availability check (PyPI, npm, GitHub org, `.dev` and `.com` domain). If the name is taken on PyPI or npm, you pick another short name, record it in DECISIONS.md, and perform a global rename before any other task. Domain availability is informational only; do not purchase a domain (that is externally costly and requires the human).
-- License: Apache-2.0 for everything in the repo. Default-install dependencies and weights must be one of: MIT, Apache-2.0, BSD-2/3, ISC, PSF, MPL-2.0 (unmodified), CC-BY-4.0. Forbidden in defaults: AGPL, GPL (any version), LGPL for statically linked code, SSPL, BSL, OpenRAIL-M and variants, CC-BY-NC, Qwen Research License, MinerU license, and any "custom terms" license. Forbidden licenses may appear only as clearly named optional extras (`pip install intomd[chandra]`, `intomd[pymupdf]`) that print the license name and a one-line summary on first use. CI enforces this with an allowlist in `tools/license_allowlist.toml`.
-- Stack: Python 3.12 for core, converters, API, workers. TypeScript for the web UI (React + Vite, static build served by the API), the browser extension (MV3), and a thin JS SDK. FastAPI for HTTP. Redis + RQ for the job queue. SQLite by default for job metadata with a Postgres option via `INTOMD_DATABASE_URL`. Local filesystem for blobs by default with S3-compatible (MinIO) option via `INTOMD_BLOB_URL`. Magika + libmagic for content-type detection. uv for Python packaging, pnpm for JS. Docker Compose for self-host. Everything runs CPU-only by default; GPU is optional acceleration.
+- Working codename: **ezmd**. Python package `ezmd`, CLI `ezmd`, Docker image `ezmd`. The first task in ROADMAP.md is a name availability check (PyPI, npm, GitHub org, `.dev` and `.com` domain). If the name is taken on PyPI or npm, you pick another short name, record it in DECISIONS.md, and perform a global rename before any other task. Domain availability is informational only; do not purchase a domain (that is externally costly and requires the human).
+- License: Apache-2.0 for everything in the repo. Default-install dependencies and weights must be one of: MIT, Apache-2.0, BSD-2/3, ISC, PSF, MPL-2.0 (unmodified), CC-BY-4.0. Forbidden in defaults: AGPL, GPL (any version), LGPL for statically linked code, SSPL, BSL, OpenRAIL-M and variants, CC-BY-NC, Qwen Research License, MinerU license, and any "custom terms" license. Forbidden licenses may appear only as clearly named optional extras (`pip install ezmd[chandra]`, `ezmd[pymupdf]`) that print the license name and a one-line summary on first use. CI enforces this with an allowlist in `tools/license_allowlist.toml`.
+- Stack: Python 3.12 for core, converters, API, workers. TypeScript for the web UI (React + Vite, static build served by the API), the browser extension (MV3), and a thin JS SDK. FastAPI for HTTP. Redis + RQ for the job queue. SQLite by default for job metadata with a Postgres option via `EZMD_DATABASE_URL`. Local filesystem for blobs by default with S3-compatible (MinIO) option via `EZMD_BLOB_URL`. Magika + libmagic for content-type detection. uv for Python packaging, pnpm for JS. Docker Compose for self-host. Everything runs CPU-only by default; GPU is optional acceleration.
 - Monorepo layout:
 
 ```
-intomd/
+ezmd/
   packages/core/        # python lib: IR, converter registry, renderers, profiles
   packages/converters/  # one subpackage per converter family (documents, web, media, images, code, comms, data, notes, specialized)
   packages/mcp/         # MCP server
@@ -105,7 +105,7 @@ Context bundle for every council member: the relevant section of this spec, the 
 Prompt template. Replace the bracketed fields. Send the same bundle to all three; only the ROLE block differs.
 
 ```
-You are a reviewer on the intomd project, an open-source "convert anything to LLM-ready Markdown" tool.
+You are a reviewer on the ezmd project, an open-source "convert anything to LLM-ready Markdown" tool.
 You are reviewing one decision or one failing component. You do not write code. You write a position.
 
 ROLE: [Architect | Skeptic/Security | User-advocate]
@@ -144,7 +144,7 @@ Do not hedge. Do not restate the question.
 Red team subagent. Run before any public-facing phase ships (the API being reachable from the internet, the public instance, the extension, the MCP server over HTTP). The Red team gets the full repo, the threat model table (section 8), and this prompt:
 
 ```
-You are the red team for intomd. You have the full repository. Your job is to break it.
+You are the red team for ezmd. You have the full repository. Your job is to break it.
 Enumerate attacks against: file upload, URL fetch, the job queue, the fetch-node protocol, the result endpoints,
 the web UI, the MCP server, and the deploy configuration. For each attack: name it, give the exact payload or steps,
 state the expected impact, and rate it critical/high/medium/low. Try at least: zip bomb, PDF with JS and embedded files,
@@ -169,7 +169,7 @@ No task is `done` until all of these pass locally and in CI:
 5. Security audit: `uv run pip-audit` and `pnpm audit --audit-level=high` report no unresolved high or critical advisories (allowlist with expiry in `tools/audit_ignore.toml` if a fix is unavailable; each entry needs a DECISIONS.md reference).
 6. STATUS.md updated with the task's state, last commit, and metrics.
 
-Fixture scoring. Each fixture is a directory `fixtures/<family>/<name>/` containing `input.<ext>` (or `input.url` with a URL and a frozen `input.html` or `input.har` snapshot so tests never hit the network), `expected.full.md`, `expected.sidecar.json`, and `meta.toml` (converter id, threshold overrides, notes on what the fixture tests). The scorer in `packages/core/intomd/testing/score.py` computes:
+Fixture scoring. Each fixture is a directory `fixtures/<family>/<name>/` containing `input.<ext>` (or `input.url` with a URL and a frozen `input.html` or `input.har` snapshot so tests never hit the network), `expected.full.md`, `expected.sidecar.json`, and `meta.toml` (converter id, threshold overrides, notes on what the fixture tests). The scorer in `packages/core/ezmd/testing/score.py` computes:
 
 - `heading_score`: F1 over (level, normalized text) pairs of headings, plus a hierarchy consistency term (fraction of expected parent-child heading relationships preserved). Weight 0.25.
 - `table_score`: for each expected table, best-match actual table by caption and shape; cell accuracy is exact-match after whitespace and number normalization; merged-cell info compared when present. Mean over tables. Weight 0.25. If no tables expected and none produced, score 1.0; if tables produced where none expected, penalize 0.1 per extra table.
@@ -206,9 +206,9 @@ Time box: 1 day; if tables under 0.80 after council, ship experimental.
 
 ### 2.6 Dependency, license, security, commit, branch, and release rules
 
-Dependency rule. Add a dependency only if it saves more than 200 lines of non-trivial code or provides a model or parser you cannot reasonably write. Every new dependency gets one line in the task's DECISIONS.md entry: name, version pin, license, size, why. Pin exact versions in lockfiles (`uv.lock`, `pnpm-lock.yaml`). Model weights are downloaded at first use into `INTOMD_MODEL_DIR` (default `~/.cache/intomd/models`), never bundled in the Python package, and the Docker images for self-host have a `-models` variant that pre-bakes the default CPU weights.
+Dependency rule. Add a dependency only if it saves more than 200 lines of non-trivial code or provides a model or parser you cannot reasonably write. Every new dependency gets one line in the task's DECISIONS.md entry: name, version pin, license, size, why. Pin exact versions in lockfiles (`uv.lock`, `pnpm-lock.yaml`). Model weights are downloaded at first use into `EZMD_MODEL_DIR` (default `~/.cache/ezmd/models`), never bundled in the Python package, and the Docker images for self-host have a `-models` variant that pre-bakes the default CPU weights.
 
-License rule. Restated: Apache-2.0 for the repo. Allowlist for defaults: MIT, Apache-2.0, BSD-2, BSD-3, ISC, PSF, MPL-2.0 unmodified, CC-BY-4.0. Forbidden in defaults: AGPL, GPL, LGPL static, SSPL, BSL, OpenRAIL-M, CC-BY-NC, Qwen Research License, MinerU license, custom terms. Forbidden licenses are allowed only in named extras, declared in `pyproject.toml` under `[project.optional-dependencies]` with a name that is the engine name (`chandra`, `pymupdf`, `extract-msg`), and the extra's converter module must call `intomd.core.licensing.notify_once("<extra>")` on first import, which prints the license name and a URL to stderr once per machine (stamp file in the cache dir). `tools/license_check.py` walks `uv export --no-dev` for defaults and the per-extra resolution and fails if any package resolves to a license not on the allowlist for the default set. Packages with ambiguous metadata go in `tools/license_overrides.toml` with a link to the license file you verified.
+License rule. Restated: Apache-2.0 for the repo. Allowlist for defaults: MIT, Apache-2.0, BSD-2, BSD-3, ISC, PSF, MPL-2.0 unmodified, CC-BY-4.0. Forbidden in defaults: AGPL, GPL, LGPL static, SSPL, BSL, OpenRAIL-M, CC-BY-NC, Qwen Research License, MinerU license, custom terms. Forbidden licenses are allowed only in named extras, declared in `pyproject.toml` under `[project.optional-dependencies]` with a name that is the engine name (`chandra`, `pymupdf`, `extract-msg`), and the extra's converter module must call `ezmd.core.licensing.notify_once("<extra>")` on first import, which prints the license name and a URL to stderr once per machine (stamp file in the cache dir). `tools/license_check.py` walks `uv export --no-dev` for defaults and the per-extra resolution and fails if any package resolves to a license not on the allowlist for the default set. Packages with ambiguous metadata go in `tools/license_overrides.toml` with a link to the license file you verified.
 
 Security rule. Section 8 is binding. In short: every input is hostile; workers are sandboxed; type is detected by magic; URL fetches go through the SSRF guard; no user string ever reaches a shell; secrets only from env; logs are redacted.
 
@@ -227,7 +227,7 @@ Do not optimize before the fixture corpus passes. Do not build abstractions for 
 ### 2.8 STATUS.md format
 
 ```markdown
-# intomd status
+# ezmd status
 
 Last updated: 2026-10-12T18:40:00Z
 Current phase: 1
@@ -244,7 +244,7 @@ Overall: 14 / 87 tasks done
 ## Tasks
 | ID | Phase | Task | State | Blocked by | Last commit | Metrics | Notes |
 |---|---|---|---|---|---|---|---|
-| P0-T01 | 0 | Name availability check | done | | a1b2c3d | | intomd free on PyPI, npm; GH org taken, using intomd-dev |
+| P0-T01 | 0 | Name availability check | done | | a1b2c3d | | ezmd free on PyPI, npm; GH org taken, using ezmd-dev |
 | P1-T07 | 1 | PDF converter (Docling + pypdfium2 fallback) | in_progress | P1-T02 | | heading 0.91 table 0.78 text 0.96 overall 0.86 | council iter 1 on tables |
 ...
 
@@ -273,7 +273,7 @@ When the definition of done is met, replace the top of STATUS.md with a `## Fina
 Place this file at the repo root verbatim (update the commands if the tooling changes, and log that change).
 
 ```markdown
-# intomd
+# ezmd
 
 Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript UI/extension.
 
@@ -284,9 +284,9 @@ Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript
 - `DECISIONS.md`: append-only decision log. Every non-trivial choice goes here.
 
 ## Layout
-- `packages/core/intomd/`: IR (`ir.py`), registry (`registry.py`), renderers (`render/`), profiles (`profiles.py`), detection (`detect.py`), testing utilities (`testing/`).
-- `packages/converters/intomd_converters/<family>/`: one subpackage per family. Each converter is a class registered via the `intomd.converters` entry point group.
-- `apps/api/`: FastAPI app (`intomd_api/`), RQ workers (`intomd_api/worker.py`), job store, blob store.
+- `packages/core/ezmd/`: IR (`ir.py`), registry (`registry.py`), renderers (`render/`), profiles (`profiles.py`), detection (`detect.py`), testing utilities (`testing/`).
+- `packages/converters/ezmd_converters/<family>/`: one subpackage per family. Each converter is a class registered via the `ezmd.converters` entry point group.
+- `apps/api/`: FastAPI app (`ezmd_api/`), RQ workers (`ezmd_api/worker.py`), job store, blob store.
 - `apps/web/`: React + Vite. Built output is served by the API at `/`.
 - `apps/fetch-node/`: residential fetch worker for Raspberry Pi.
 - `apps/extension/`: MV3 browser extension.
@@ -299,25 +299,25 @@ Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript
 - Install: `uv sync --all-packages --all-extras --dev` and `pnpm install`
 - Unit tests: `uv run pytest packages apps -x -q`
 - Golden tests: `uv run pytest fixtures -q` (add `-k <converter>` to narrow)
-- Score one fixture: `uv run intomd-score fixtures/documents/arxiv-paper`
-- Regenerate a golden (then get Skeptic review before committing): `uv run intomd-golden fixtures/documents/arxiv-paper --write`
+- Score one fixture: `uv run ezmd-score fixtures/documents/arxiv-paper`
+- Regenerate a golden (then get Skeptic review before committing): `uv run ezmd-golden fixtures/documents/arxiv-paper --write`
 - Lint: `uv run ruff check . && uv run ruff format --check . && pnpm -r lint`
 - Types: `uv run mypy --strict packages/core && uv run mypy apps/api packages/converters packages/mcp && pnpm -r typecheck`
 - License check: `uv run python tools/license_check.py && pnpm licenses list --json | node tools/license_check.mjs`
 - Audit: `uv run pip-audit && pnpm audit --audit-level=high`
 - All gates: `make gates`
-- Run API locally: `uv run uvicorn intomd_api.main:app --reload --port 8000`
+- Run API locally: `uv run uvicorn ezmd_api.main:app --reload --port 8000`
 - Run worker locally: `uv run rq worker default media --url redis://localhost:6379`
 - Run web dev server: `pnpm --filter web dev`
 - Compose (CPU): `docker compose -f deploy/compose.yml up --build`
 - Smoke test: `deploy/smoke.sh` (local) or `deploy/smoke.sh --remote https://host`
-- CLI: `uv run intomd convert <path-or-url> --profile compact`
+- CLI: `uv run ezmd convert <path-or-url> --profile compact`
 
 ## Conventions
 - Conventional Commits with scope = path segment. Footer `Task: Pn-Tnn`.
 - Trunk-based. Branch `task/<phase>-<id>-<slug>`, squash merge after gates pass.
 - Types everywhere. `mypy --strict` on core is non-negotiable. Pydantic v2 models for IR and API schemas.
-- No shell string interpolation of user data. Use `subprocess.run([...])` with list args and the sandbox wrapper `intomd.core.sandbox.run`.
+- No shell string interpolation of user data. Use `subprocess.run([...])` with list args and the sandbox wrapper `ezmd.core.sandbox.run`.
 - Every converter returns a `Document` or raises `ConversionError`. Never return an empty Document silently; attach warnings.
 - Every block carries `Provenance`. If you do not know the page or bbox, leave them None, but set `source`.
 - Dependencies: allowlisted licenses only in defaults. See `tools/license_allowlist.toml`. Forbidden licenses go in named extras with `notify_once`.
@@ -335,7 +335,7 @@ The authoritative specification is `docs/spec/part1.md` to `docs/spec/part4.md`.
 
 ## 4. Core domain model (IR)
 
-The intermediate representation lives in `packages/core/intomd/ir.py`. Every converter produces a `Document`; every renderer consumes one. The IR is Pydantic v2 so it serializes to the JSON sidecar and validates on construction. It is deliberately flat: `Document.blocks` is an ordered list, and nesting is expressed through `parent_id` and, for lists, through `ListBlock.items` with nested `ListItem.children`. Keep it this way; a deep tree makes chunking and page-anchoring harder than it needs to be.
+The intermediate representation lives in `packages/core/ezmd/ir.py`. Every converter produces a `Document`; every renderer consumes one. The IR is Pydantic v2 so it serializes to the JSON sidecar and validates on construction. It is deliberately flat: `Document.blocks` is an ordered list, and nesting is expressed through `parent_id` and, for lists, through `ListBlock.items` with nested `ListItem.children`. Keep it this way; a deep tree makes chunking and page-anchoring harder than it needs to be.
 
 Design constraints you must preserve:
 
@@ -346,7 +346,7 @@ Design constraints you must preserve:
 - `Document.finalize()` assigns ids, computes element counts, and validates parent references. Converters call it before returning.
 
 ```python
-"""intomd.ir: the intermediate representation every converter produces and every renderer consumes.
+"""ezmd.ir: the intermediate representation every converter produces and every renderer consumes.
 
 Blocks are flat and ordered. Hierarchy is expressed via `parent_id` (sections, figures, slides)
 and via explicit nesting inside ListBlock. Every block carries Provenance.
@@ -1013,14 +1013,14 @@ Notes for implementers:
 
 ## 5. Converter interface and registry
 
-Lives in `packages/core/intomd/registry.py` and `packages/core/intomd/inputs.py`.
+Lives in `packages/core/ezmd/registry.py` and `packages/core/ezmd/inputs.py`.
 
 ### 5.1 InputRef
 
 An `InputRef` abstracts over the four input modes. Converters never open files or sockets themselves; they ask the `InputRef` for bytes, a path, or a URL, and the `InputRef` enforces caps.
 
 ```python
-"""intomd.inputs: input abstraction over local files, uploaded bytes, URLs, and residential fetches."""
+"""ezmd.inputs: input abstraction over local files, uploaded bytes, URLs, and residential fetches."""
 
 from __future__ import annotations
 
@@ -1031,7 +1031,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal, Protocol
 
-from intomd.ir import InputRefInfo
+from ezmd.ir import InputRefInfo
 
 
 class InputTooLarge(Exception):
@@ -1129,7 +1129,7 @@ class InputRef:
             return self.fetched_path
         if self.data is not None:
             if self._tmpdir is None:
-                self._tmpdir = tempfile.TemporaryDirectory(prefix="intomd-")
+                self._tmpdir = tempfile.TemporaryDirectory(prefix="ezmd-")
                 suffix = Path(self.display).suffix[:16]
                 p = Path(self._tmpdir.name) / f"input{suffix}"
                 p.write_bytes(self.data)
@@ -1182,12 +1182,12 @@ class Detector(Protocol):
     def detect(self, ref: InputRef) -> Detected: ...
 ```
 
-Detection (`packages/core/intomd/detect.py`): run Magika on the first 1 MiB plus the last 64 KiB, run libmagic on the same, map the extension. Resolution order: if Magika confidence is at least 0.9, use Magika; else if libmagic and extension agree, use that; else if libmagic returns something other than `application/octet-stream` or `text/plain`, use libmagic; else use the extension's mime; else `application/octet-stream`. Record all three in `Detected`. For URL inputs without a body, detection returns a synthetic `Detected(mime="text/x-uri", ...)` and the URL converters' `can_handle` inspect the host and path. The declared mime from an upload is never trusted on its own.
+Detection (`packages/core/ezmd/detect.py`): run Magika on the first 1 MiB plus the last 64 KiB, run libmagic on the same, map the extension. Resolution order: if Magika confidence is at least 0.9, use Magika; else if libmagic and extension agree, use that; else if libmagic returns something other than `application/octet-stream` or `text/plain`, use libmagic; else use the extension's mime; else `application/octet-stream`. Record all three in `Detected`. For URL inputs without a body, detection returns a synthetic `Detected(mime="text/x-uri", ...)` and the URL converters' `can_handle` inspect the host and path. The declared mime from an upload is never trusted on its own.
 
 ### 5.2 Converter protocol
 
 ```python
-"""intomd.registry: converter protocol, options, registry with priority resolution, fallback chains,
+"""ezmd.registry: converter protocol, options, registry with priority resolution, fallback chains,
 and entry-point plugin discovery."""
 
 from __future__ import annotations
@@ -1198,8 +1198,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
 
-from intomd.inputs import FetchRequired, InputRef
-from intomd.ir import ConversionResult, Document, Metrics, Warning, WarningKind
+from ezmd.inputs import FetchRequired, InputRef
+from ezmd.ir import ConversionResult, Document, Metrics, Warning, WarningKind
 
 log = logging.getLogger(__name__)
 
@@ -1294,7 +1294,7 @@ class ConverterRegistry:
     can pin an order for a mime type and override confidence sorting.
     """
 
-    ENTRY_POINT_GROUP = "intomd.converters"
+    ENTRY_POINT_GROUP = "ezmd.converters"
 
     def __init__(self) -> None:
         self._regs: dict[str, Registration] = {}
@@ -1448,11 +1448,11 @@ def default_registry() -> ConverterRegistry:
     global _default
     if _default is None:
         reg = ConverterRegistry()
-        from intomd.builtin import register_builtins  # local import avoids cycles
+        from ezmd.builtin import register_builtins  # local import avoids cycles
 
         register_builtins(reg)
         reg.load_entry_points()
-        from intomd.chains import DEFAULT_CHAINS
+        from ezmd.chains import DEFAULT_CHAINS
 
         for mime, ids in DEFAULT_CHAINS.items():
             reg.set_chain(mime, ids)
@@ -1462,7 +1462,7 @@ def default_registry() -> ConverterRegistry:
 
 ### 5.3 Fallback chains
 
-`packages/core/intomd/chains.py` holds `DEFAULT_CHAINS: dict[str, list[str]]`. Part 2 fills it per family. Phase 0 ships:
+`packages/core/ezmd/chains.py` holds `DEFAULT_CHAINS: dict[str, list[str]]`. Part 2 fills it per family. Phase 0 ships:
 
 ```python
 DEFAULT_CHAINS: dict[str, list[str]] = {
@@ -1483,16 +1483,16 @@ Wildcard keys (`audio/*`) are matched after exact keys. The registry's `candidat
 Third parties register converters in their `pyproject.toml`:
 
 ```toml
-[project.entry-points."intomd.converters"]
+[project.entry-points."ezmd.converters"]
 my_format = "my_pkg.converter:MyConverter"
 ```
 
-`intomd capabilities` (CLI) and `GET /v1/capabilities` list every registered converter with id, family, source distribution, experimental flag, required extras, and whether it loaded. A plugin cookiecutter lives in `docs/plugins.md` with a 40-line example converter and a fixture layout.
+`ezmd capabilities` (CLI) and `GET /v1/capabilities` list every registered converter with id, family, source distribution, experimental flag, required extras, and whether it loaded. A plugin cookiecutter lives in `docs/plugins.md` with a 40-line example converter and a fixture layout.
 
 ### 5.5 Converter authoring checklist (enforced by a test in `packages/core/tests/test_converter_contract.py` that runs against every registered converter)
 
 1. `id` matches `^[a-z]+\.[a-z0-9_]+$` and `family` is in the allowed set.
-2. `can_handle` returns 0.0 for an `InputRef` with mime `application/x-intomd-nothing` and completes in under 10 ms.
+2. `can_handle` returns 0.0 for an `InputRef` with mime `application/x-ezmd-nothing` and completes in under 10 ms.
 3. `convert` on an empty file raises `ConversionError` or returns a Document with at least one warning; it never returns an empty Document with no warnings.
 4. `convert` on a 1-byte file does not raise anything other than `ConversionError`.
 5. Every block in the returned Document has `provenance.source` set.
@@ -1504,10 +1504,10 @@ my_format = "my_pkg.converter:MyConverter"
 
 ## 6. Renderer and profiles interface
 
-Lives in `packages/core/intomd/render/` and `packages/core/intomd/profiles.py`. Part 3 defines the exact Markdown rules; Part 1 defines the interfaces and a skeleton that the plain-text converter in Phase 0 can round-trip through.
+Lives in `packages/core/ezmd/render/` and `packages/core/ezmd/profiles.py`. Part 3 defines the exact Markdown rules; Part 1 defines the interfaces and a skeleton that the plain-text converter in Phase 0 can round-trip through.
 
 ```python
-"""intomd.profiles: output profile configuration objects."""
+"""ezmd.profiles: output profile configuration objects."""
 
 from __future__ import annotations
 
@@ -1641,7 +1641,7 @@ def get_profile(name: str, **overrides: object) -> Profile:
 ```
 
 ```python
-"""intomd.render.base: renderer interface and skeleton. Part 3 specifies the Markdown rules that
+"""ezmd.render.base: renderer interface and skeleton. Part 3 specifies the Markdown rules that
 MarkdownRenderer implements; this module defines the contract and the pieces every renderer shares."""
 
 from __future__ import annotations
@@ -1649,8 +1649,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from intomd.ir import ConversionResult, Document, Warning
-from intomd.profiles import Profile
+from ezmd.ir import ConversionResult, Document, Warning
+from ezmd.profiles import Profile
 
 
 @dataclass(slots=True)
@@ -1772,7 +1772,7 @@ class MarkdownRenderer:
     def _render_block(self, block: object, profile: Profile) -> str | None:
         """Phase 0 covers the text-only block types. Part 3 replaces this dispatch with the full rule set.
         Unknown block types fall through to a fenced raw dump so nothing is silently lost."""
-        from intomd.ir import CodeBlock, Heading, ListBlock, PageBreak, Paragraph, Raw, spans_text
+        from ezmd.ir import CodeBlock, Heading, ListBlock, PageBreak, Paragraph, Raw, spans_text
 
         match block:
             case Heading():
@@ -1794,10 +1794,10 @@ class MarkdownRenderer:
                     return None
                 return f"```{block.format}\n{block.content}\n```"
             case _:
-                return f"```intomd-unrendered\n{type(block).__name__} {getattr(block, 'id', '')}\n```"
+                return f"```ezmd-unrendered\n{type(block).__name__} {getattr(block, 'id', '')}\n```"
 
     def _render_list(self, items: list[object], ordered: bool, start: int, depth: int) -> str:
-        from intomd.ir import ListItem, spans_text
+        from ezmd.ir import ListItem, spans_text
 
         out: list[str] = []
         n = start
@@ -1823,7 +1823,7 @@ class MarkdownRenderer:
             "words": result.metrics.counts.words,
             "tokens": body_tokens,
             "content_hash": result.document.content_hash,
-            "converter": f"intomd/{_version()} {result.converter_id}",
+            "converter": f"ezmd/{_version()} {result.converter_id}",
             "profile": profile.name,
             "truncated": result.truncated,
         }
@@ -1840,7 +1840,7 @@ class MarkdownRenderer:
     def _sidecar(self, result: ConversionResult, profile: Profile) -> dict[str, object]:
         """Phase 0: full IR dump plus metrics. Part 3 defines the compact sections/tables/figures index."""
         return {
-            "schema": "intomd.sidecar/1",
+            "schema": "ezmd.sidecar/1",
             "profile": profile.name,
             "metrics": result.metrics.model_dump(mode="json"),
             "warnings": [w.model_dump(mode="json") for w in result.all_warnings],
@@ -1878,7 +1878,7 @@ def _version() -> str:
     try:
         import importlib.metadata as md
 
-        return md.version("intomd")
+        return md.version("ezmd")
     except Exception:  # noqa: BLE001
         return "0.0.0"
 
@@ -1903,10 +1903,10 @@ Transitions:
 - `fetching -> converting` on fetch success; `fetching -> needs_user_action` when the fallback chain is exhausted (no fetch node online, captions unavailable, mirrors failed, yt-dlp blocked); `fetching -> failed` on a hard error (404, unsupported platform, SSRF block).
 - `converting -> rendering` when a `ConversionResult` exists. Rendering runs for the requested profile immediately and caches the `ConversionResult` (pickled IR JSON in the blob store) so other profiles render on demand at `GET /result`.
 - `rendering -> done`.
-- Any state `-> failed` on exception; `-> expired` by the purge job after `INTOMD_RETENTION_HOURS` (default 24).
+- Any state `-> failed` on exception; `-> expired` by the purge job after `EZMD_RETENTION_HOURS` (default 24).
 - `needs_user_action -> queued` when the user uploads the file or the extension posts the fetched media to `POST /v1/jobs/{id}/supply`.
 
-Job record (SQLite table `jobs`, SQLAlchemy model; Postgres via `INTOMD_DATABASE_URL`):
+Job record (SQLite table `jobs`, SQLAlchemy model; Postgres via `EZMD_DATABASE_URL`):
 
 | column | type | notes |
 |---|---|---|
@@ -1934,7 +1934,7 @@ Job record (SQLite table `jobs`, SQLAlchemy model; Postgres via `INTOMD_DATABASE
 | warnings_count | integer | |
 | truncated | boolean | |
 
-Idempotency: `POST /v1/convert` computes sha256 of the uploaded body (or normalizes the URL: lowercase scheme and host, strip fragment, strip known tracking params `utm_*`, `fbclid`, `gclid`, `si`) and looks for a non-expired job with the same `input_sha256` (or normalized URL), the same `options_json`, and state `done`. If found, it returns that job id with HTTP 200 and `"deduplicated": true` instead of creating a new one. Clients can pass `Idempotency-Key` to override with their own key. Dedup never crosses API keys and never applies to anonymous requests from different `client_ip_hash` values when `INTOMD_PUBLIC_MODE=true` (the public instance does not reveal that someone else converted the same file).
+Idempotency: `POST /v1/convert` computes sha256 of the uploaded body (or normalizes the URL: lowercase scheme and host, strip fragment, strip known tracking params `utm_*`, `fbclid`, `gclid`, `si`) and looks for a non-expired job with the same `input_sha256` (or normalized URL), the same `options_json`, and state `done`. If found, it returns that job id with HTTP 200 and `"deduplicated": true` instead of creating a new one. Clients can pass `Idempotency-Key` to override with their own key. Dedup never crosses API keys and never applies to anonymous requests from different `client_ip_hash` values when `EZMD_PUBLIC_MODE=true` (the public instance does not reveal that someone else converted the same file).
 
 ### 7.2 Queues
 
@@ -1942,12 +1942,12 @@ RQ queues on Redis:
 
 - `default`: documents, web, code, data, email, images, notes, specialized. Worker timeout 600 s. Concurrency per worker container: 2.
 - `media`: audio and video conversion (ASR, diarization). Worker timeout 3600 s. Concurrency 1 per container.
-- `fetch_residential`: jobs needing a residential IP. No RQ worker consumes this queue on the VPS. Fetch nodes claim from it via `POST /v1/fetch-node/claim` (the API pops from the queue on the node's behalf; the node never talks to Redis). Jobs waiting longer than `INTOMD_RESIDENTIAL_WAIT_SECONDS` (default 180) when no node has heartbeated in the last 60 s fall through to the next fallback immediately rather than waiting.
+- `fetch_residential`: jobs needing a residential IP. No RQ worker consumes this queue on the VPS. Fetch nodes claim from it via `POST /v1/fetch-node/claim` (the API pops from the queue on the node's behalf; the node never talks to Redis). Jobs waiting longer than `EZMD_RESIDENTIAL_WAIT_SECONDS` (default 180) when no node has heartbeated in the last 60 s fall through to the next fallback immediately rather than waiting.
 - `fetch`: ordinary URL fetches (web pages, direct file URLs, sanctioned APIs). Worker timeout 120 s. This is the only worker with outbound network beyond the allowlist; it runs the SSRF guard.
 
 Job payloads enqueued to RQ contain only the job id. Workers load everything else from the job store. Never pickle `InputRef` or `Document` into RQ.
 
-Progress: workers call `job_store.progress(job_id, pct, message)` at stage boundaries and, for long conversions, every 5 seconds or 5 pages. Progress writes also publish to Redis pub/sub channel `intomd:job:{id}` so SSE connections get them without polling the DB.
+Progress: workers call `job_store.progress(job_id, pct, message)` at stage boundaries and, for long conversions, every 5 seconds or 5 pages. Progress writes also publish to Redis pub/sub channel `ezmd:job:{id}` so SSE connections get them without polling the DB.
 
 ### 7.3 REST API
 
@@ -2027,7 +2027,7 @@ Response (202 Accepted; 200 when deduplicated):
 }
 ```
 
-Synchronous convenience: `POST /v1/convert?wait=30` blocks up to 30 seconds and returns the result body directly (with the job envelope in `X-Intomd-Job` header) if the job finishes in time; otherwise returns the 202 envelope. Capped at 60 s. The CLI uses this for small files.
+Synchronous convenience: `POST /v1/convert?wait=30` blocks up to 30 seconds and returns the result body directly (with the job envelope in `X-Ezmd-Job` header) if the job finishes in time; otherwise returns the 202 envelope. Capped at 60 s. The CLI uses this for small files.
 
 `GET /v1/jobs/{id}`:
 
@@ -2085,7 +2085,7 @@ data: {"result_url":"/v1/jobs/job_7Kx2mQp9Lw3nRt5vYb8cDe/result?profile=rag&form
 `GET /v1/jobs/{id}/result?profile=rag&format=md`:
 
 - `profile`: `full` | `compact` | `rag` | `agent` (default: the job's requested profile). Dotted overrides allowed: `chunks.chunk_tokens=512`.
-- `format`: `md` (default; `Content-Type: text/markdown; charset=utf-8`, headers `X-Markdown-Tokens`, `X-Intomd-Truncated`, `X-Intomd-Warnings`, `X-Intomd-Injection-Risk`), `json` (the JsonRenderer payload: markdown, frontmatter, sidecar, chunks), `txt` (plain text body, no frontmatter), `docx` (Phase 5 in Part 2; 501 until then), `zip` (markdown plus sidecar plus attachments).
+- `format`: `md` (default; `Content-Type: text/markdown; charset=utf-8`, headers `X-Markdown-Tokens`, `X-Ezmd-Truncated`, `X-Ezmd-Warnings`, `X-Ezmd-Injection-Risk`), `json` (the JsonRenderer payload: markdown, frontmatter, sidecar, chunks), `txt` (plain text body, no frontmatter), `docx` (Phase 5 in Part 2; 501 until then), `zip` (markdown plus sidecar plus attachments).
 - Results for non-requested profiles are rendered on demand from the cached IR and cached per (job, profile, overrides hash) in the blob store.
 - 409 if the job is not `done`; body includes the current state.
 
@@ -2134,11 +2134,11 @@ Response 200 with a job or 204 when the queue is empty:
 
 ### 7.4 Auth model
 
-- Public web UI: no accounts. File uploads need no token. URL inputs in `INTOMD_PUBLIC_MODE=true` require a Turnstile token (invisible widget; the UI fetches one on page load and refreshes on expiry). The API verifies the token server-side with Cloudflare, then issues a short-lived (120 s) signed JWT in a cookie so one widget solve covers one job creation. When `INTOMD_PUBLIC_MODE=false` (self-host default), Turnstile is off unless `INTOMD_TURNSTILE_SECRET` is set.
-- API keys: `X-API-Key: ak_<env>_<22 base62>`. Keys are created with the CLI `intomd keys create --name ci --limit 1000/day --max-upload 100MB --allow-residential`, stored hashed (sha256 with pepper from env) in the `api_keys` table with per-key limits (requests per minute and per day, max upload bytes, max audio seconds, allowed families, residential allowed). Keyed requests skip Turnstile. A key can be marked `unlimited` (sponsor or owner key).
-- Fetch nodes: `Authorization: Bearer <INTOMD_FETCH_NODE_SECRET>` plus the request must arrive from the Tailscale interface (`INTOMD_FETCH_NODE_CIDR`, default `100.64.0.0/10`). Both checks are required. Fetch-node endpoints are not mounted at all when `INTOMD_FETCH_NODE_SECRET` is unset.
+- Public web UI: no accounts. File uploads need no token. URL inputs in `EZMD_PUBLIC_MODE=true` require a Turnstile token (invisible widget; the UI fetches one on page load and refreshes on expiry). The API verifies the token server-side with Cloudflare, then issues a short-lived (120 s) signed JWT in a cookie so one widget solve covers one job creation. When `EZMD_PUBLIC_MODE=false` (self-host default), Turnstile is off unless `EZMD_TURNSTILE_SECRET` is set.
+- API keys: `X-API-Key: ak_<env>_<22 base62>`. Keys are created with the CLI `ezmd keys create --name ci --limit 1000/day --max-upload 100MB --allow-residential`, stored hashed (sha256 with pepper from env) in the `api_keys` table with per-key limits (requests per minute and per day, max upload bytes, max audio seconds, allowed families, residential allowed). Keyed requests skip Turnstile. A key can be marked `unlimited` (sponsor or owner key).
+- Fetch nodes: `Authorization: Bearer <EZMD_FETCH_NODE_SECRET>` plus the request must arrive from the Tailscale interface (`EZMD_FETCH_NODE_CIDR`, default `100.64.0.0/10`). Both checks are required. Fetch-node endpoints are not mounted at all when `EZMD_FETCH_NODE_SECRET` is unset.
 - Job access: the job id is an unguessable capability (128 bits). No enumeration endpoint exists. Keyed requests additionally require the key to match the key that created the job.
-- Admin: `intomd admin` CLI only, run on the host. No admin HTTP endpoints.
+- Admin: `ezmd admin` CLI only, run on the host. No admin HTTP endpoints.
 
 ### 7.5 Error schema
 
@@ -2171,18 +2171,18 @@ Every input is hostile. The public instance and self-host get identical defaults
 
 ### 8.1 Sandboxed conversion workers
 
-- Workers run in a separate container from the API. The container runs as a non-root user with a read-only root filesystem, a tmpfs at `/tmp` sized by `INTOMD_WORKER_TMP_MB` (default 2048), `cap_drop: [ALL]`, `no-new-privileges`, the Docker default seccomp profile plus a custom profile in `deploy/seccomp-worker.json` that additionally denies `ptrace`, `mount`, `keyctl`, `bpf`, `userfaultfd`.
+- Workers run in a separate container from the API. The container runs as a non-root user with a read-only root filesystem, a tmpfs at `/tmp` sized by `EZMD_WORKER_TMP_MB` (default 2048), `cap_drop: [ALL]`, `no-new-privileges`, the Docker default seccomp profile plus a custom profile in `deploy/seccomp-worker.json` that additionally denies `ptrace`, `mount`, `keyctl`, `bpf`, `userfaultfd`.
 - Network: the `default` and `media` workers are on an internal compose network with no default route except to Redis, the API (for blob access), and an explicit egress allowlist resolved at container start (model download hosts `huggingface.co`, `cdn-lfs.huggingface.co`, and hosted ASR endpoints when configured). Enforced by `deploy/egress-allowlist.sh` with iptables inside the worker container entrypoint, or by Docker network policy when available. The `fetch` worker is the only one with general egress, and it runs the SSRF guard.
-- Resource limits per job, enforced in the worker process with `resource.setrlimit` (RLIMIT_AS = `INTOMD_JOB_MEM_MB`, default 4096 for default queue and 8192 for media; RLIMIT_CPU = job timeout; RLIMIT_NPROC = 64; RLIMIT_FSIZE = 2 GB) and at the container level with compose `mem_limit`, `pids_limit: 256`, `cpus`. Each conversion runs in a child process (`multiprocessing` with `spawn`) so a crashing or hanging engine kills only that child; the parent enforces the wall-clock timeout with SIGKILL after `max_seconds + 30`.
-- External binaries (ffmpeg, pandoc, deno, yt-dlp, tesseract) are invoked via `intomd.core.sandbox.run(argv: list[str], *, timeout, cwd, env_allowlist)` which uses `subprocess.run` with a list argv, `shell=False`, a minimal environment, `stdin=DEVNULL`, output caps (stdout and stderr truncated at 10 MB), and `timeout`. Where `bwrap` (bubblewrap) is available in the worker image, `sandbox.run` wraps the command with `bwrap --ro-bind /usr /usr --tmpfs /tmp --unshare-all --die-with-parent` plus a bind for the job's working directory only. ffmpeg is always run with `-nostdin -protocol_whitelist file,pipe` to disable network protocols.
+- Resource limits per job, enforced in the worker process with `resource.setrlimit` (RLIMIT_AS = `EZMD_JOB_MEM_MB`, default 4096 for default queue and 8192 for media; RLIMIT_CPU = job timeout; RLIMIT_NPROC = 64; RLIMIT_FSIZE = 2 GB) and at the container level with compose `mem_limit`, `pids_limit: 256`, `cpus`. Each conversion runs in a child process (`multiprocessing` with `spawn`) so a crashing or hanging engine kills only that child; the parent enforces the wall-clock timeout with SIGKILL after `max_seconds + 30`.
+- External binaries (ffmpeg, pandoc, deno, yt-dlp, tesseract) are invoked via `ezmd.core.sandbox.run(argv: list[str], *, timeout, cwd, env_allowlist)` which uses `subprocess.run` with a list argv, `shell=False`, a minimal environment, `stdin=DEVNULL`, output caps (stdout and stderr truncated at 10 MB), and `timeout`. Where `bwrap` (bubblewrap) is available in the worker image, `sandbox.run` wraps the command with `bwrap --ro-bind /usr /usr --tmpfs /tmp --unshare-all --die-with-parent` plus a bind for the job's working directory only. ffmpeg is always run with `-nostdin -protocol_whitelist file,pipe` to disable network protocols.
 
 ### 8.2 Input validation
 
 - Type by magic, never by extension (section 5.1). If the detected type and the declared type disagree, the detected type wins and a `Warning(kind=OTHER, message="Declared type ... did not match detected type ...")` is attached. A file whose detected type is executable (`application/x-executable`, `application/x-dosexec`, `application/x-mach-binary`, `application/x-sharedlib`) is rejected with `unsupported_media_type`.
 - Multipart filenames: take the basename only, strip control characters and path separators, cap at 255 bytes, never use the user filename for a path on disk (use the job id).
 - Size caps are enforced at three layers: Caddy `request_body max_size`, FastAPI streaming upload that aborts at `max_upload_bytes + 1`, and `InputRef.max_bytes`. `Content-Length` is advisory; the stream is counted.
-- Archives (zip, tar, 7z, and container formats like DOCX, EPUB, ODF, IPYNB-in-zip): decompression limits enforced by the archive converter and by the Office converters before handing to engines. Limits: total uncompressed size `INTOMD_ARCHIVE_MAX_BYTES` (default 500 MB), max entries 10,000, max nesting depth 3, compression ratio cap 100:1 per entry (abort if exceeded), no symlinks or absolute paths or `..` components extracted, no entries extracted to disk at all when not needed (stream members). Nested archives count against the parent's budget.
-- PDF: before any engine sees the file, run `intomd.core.sanitize.pdf` using pikepdf (MPL-2.0): remove `/OpenAction`, `/AA`, `/JavaScript`, `/JS`, `/Launch`, `/EmbeddedFiles` (recorded as `ATTACHMENT_SKIPPED` warnings with names), `/RichMedia`, `/XFA` (recorded as `UNSUPPORTED_FEATURE`), and encrypted files with a non-empty user password are rejected with `encrypted_content`. Save the sanitized copy and convert that. Page count is read here and `max_pages` applied by truncation of the sanitized copy.
+- Archives (zip, tar, 7z, and container formats like DOCX, EPUB, ODF, IPYNB-in-zip): decompression limits enforced by the archive converter and by the Office converters before handing to engines. Limits: total uncompressed size `EZMD_ARCHIVE_MAX_BYTES` (default 500 MB), max entries 10,000, max nesting depth 3, compression ratio cap 100:1 per entry (abort if exceeded), no symlinks or absolute paths or `..` components extracted, no entries extracted to disk at all when not needed (stream members). Nested archives count against the parent's budget.
+- PDF: before any engine sees the file, run `ezmd.core.sanitize.pdf` using pikepdf (MPL-2.0): remove `/OpenAction`, `/AA`, `/JavaScript`, `/JS`, `/Launch`, `/EmbeddedFiles` (recorded as `ATTACHMENT_SKIPPED` warnings with names), `/RichMedia`, `/XFA` (recorded as `UNSUPPORTED_FEATURE`), and encrypted files with a non-empty user password are rejected with `encrypted_content`. Save the sanitized copy and convert that. Page count is read here and `max_pages` applied by truncation of the sanitized copy.
 - Office: DOCX/XLSX/PPTX are zip containers. Before parsing, inspect the manifest: remove `vbaProject.bin` and any `.bin` ActiveX parts and record `REMOVED_SCRIPT_OR_MACRO`; drop external relationships of type `oleObject`, `hyperlink` with `file:` scheme, and `attachedTemplate`; reject if the zip fails the archive limits. Legacy binary `.doc`/`.xls`/`.ppt` go through LibreOffice headless conversion to OOXML inside the sandbox first (LibreOffice is in the worker image with macros disabled via a locked-down `registrymodifications.xcu`).
 - SVG: parsed with `defusedxml`; `<script>`, `on*` attributes, external `<use>`, `<foreignObject>`, and external entity references are stripped before rasterization or text extraction.
 - HTML: parsed with a tolerant parser (lxml via Trafilatura or selectolax), never executed. JS rendering (Crawl4AI/Playwright) only in the fetch worker, with the browser's network restricted by the same SSRF guard through a proxy, no file access, and a 60 s budget.
@@ -2193,7 +2193,7 @@ Every input is hostile. The public instance and self-host get identical defaults
 
 ### 8.3 SSRF protection on URL fetch
 
-Implemented once in `intomd.core.netguard` and used by the fetch worker, the web converters, feed followers, and the extension's server-side relay.
+Implemented once in `ezmd.core.netguard` and used by the fetch worker, the web converters, feed followers, and the extension's server-side relay.
 
 1. Scheme allowlist: `http`, `https` only. Reject URLs with userinfo (`user:pass@`).
 2. Host validation: reject IP literals in private, loopback, link-local, multicast, reserved, CGNAT (100.64.0.0/10, which is also the Tailscale range), and IPv6 ULA/link-local ranges. Reject `localhost`, `*.localhost`, `*.internal`, `*.local`, `*.arpa`, and the metadata hostnames (`metadata.google.internal`).
@@ -2207,17 +2207,17 @@ Tests in `tests/security/test_netguard.py` cover: `http://169.254.169.254/`, `ht
 
 ### 8.4 Application hardening
 
-- No shell interpolation of user strings anywhere. `ruff` rule `S602`, `S603`, `S604`, `S605`, `S607` enabled via `flake8-bandit` in `ruff.toml`; `subprocess` is only imported in `intomd.core.sandbox`. A grep test asserts this.
-- Secrets only via env. `.env.example` documents every variable. The API refuses to start in public mode if `INTOMD_JWT_SECRET` or `INTOMD_KEY_PEPPER` is shorter than 32 bytes.
+- No shell interpolation of user strings anywhere. `ruff` rule `S602`, `S603`, `S604`, `S605`, `S607` enabled via `flake8-bandit` in `ruff.toml`; `subprocess` is only imported in `ezmd.core.sandbox`. A grep test asserts this.
+- Secrets only via env. `.env.example` documents every variable. The API refuses to start in public mode if `EZMD_JWT_SECRET` or `EZMD_KEY_PEPPER` is shorter than 32 bytes.
 - Security headers on every response (set in the API, duplicated in the Caddyfile): `Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`, `Strict-Transport-Security: max-age=31536000; includeSubDomains` (Caddy), `Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Resource-Policy: same-origin`.
 - Result downloads are served with `Content-Disposition: attachment` for `format=zip` and with `Content-Type: text/markdown; charset=utf-8` and `X-Content-Type-Options: nosniff` for `md`; extracted images are re-encoded through Pillow before storage so no original bytes are served back.
-- CORS: `INTOMD_CORS_ORIGINS` (default: same-origin only; the extension uses its own origin and must be listed; the public instance lists the extension ids).
-- Rate limiting as in 7.6. Additionally a global concurrency cap on active conversions (`INTOMD_MAX_ACTIVE_JOBS`, default 2x worker slots) returning `queue_unavailable` with `Retry-After` when exceeded.
+- CORS: `EZMD_CORS_ORIGINS` (default: same-origin only; the extension uses its own origin and must be listed; the public instance lists the extension ids).
+- Rate limiting as in 7.6. Additionally a global concurrency cap on active conversions (`EZMD_MAX_ACTIVE_JOBS`, default 2x worker slots) returning `queue_unavailable` with `Retry-After` when exceeded.
 - Dependency audit in CI: `pip-audit` and `pnpm audit` on every PR and nightly; Dependabot or Renovate config for weekly bumps; a nightly workflow rebuilds images and runs the golden suite.
 - Prompt-injection flagging: the injection scanner (defined in Part 3) runs over the plain text of every result, sets `injection_risk`, adds `INJECTION_PATTERN` warnings with the pattern name and a 60-char snippet, and the `agent` profile wraps the body in a session-salted `<untrusted_content id="<salt>">` fence. No profile ever removes flagged text. The fence salt is generated per render and is not derivable from the job id.
-- Log redaction: a logging filter in `intomd.core.logging` redacts `X-API-Key` values, `Authorization` headers, Turnstile tokens, claim tokens, URL userinfo, and any string matching the API key pattern. Logs never contain document content; converter debug logs that need content are gated behind `INTOMD_DEBUG_CONTENT=1`, which the public instance never sets. Client IPs are stored only as salted hashes.
-- Retention: a scheduled purge (RQ scheduler job every 10 minutes) deletes blobs and DB rows for jobs older than `INTOMD_RETENTION_HOURS` (24). `DELETE /v1/jobs/{id}` purges immediately. Blob store keys are `jobs/{job_id}/...` so a job purge is a prefix delete.
-- MCP server over HTTP requires a bearer token by default and binds to loopback unless `INTOMD_MCP_BIND` is set. Stdio mode has no auth (local process).
+- Log redaction: a logging filter in `ezmd.core.logging` redacts `X-API-Key` values, `Authorization` headers, Turnstile tokens, claim tokens, URL userinfo, and any string matching the API key pattern. Logs never contain document content; converter debug logs that need content are gated behind `EZMD_DEBUG_CONTENT=1`, which the public instance never sets. Client IPs are stored only as salted hashes.
+- Retention: a scheduled purge (RQ scheduler job every 10 minutes) deletes blobs and DB rows for jobs older than `EZMD_RETENTION_HOURS` (24). `DELETE /v1/jobs/{id}` purges immediately. Blob store keys are `jobs/{job_id}/...` so a job purge is a prefix delete.
+- MCP server over HTTP requires a bearer token by default and binds to loopback unless `EZMD_MCP_BIND` is set. Stdio mode has no auth (local process).
 - The extension sends only the fetched media or caption JSON plus the source URL to the API; it never sends cookies, page HTML beyond the article body it extracted, or any other tab data.
 
 ### 8.5 Threat model
@@ -2247,67 +2247,67 @@ Each task below lists acceptance criteria. Mark tasks `done` in STATUS.md only w
 
 ### P0-T01 Name availability check
 
-1. Check `intomd` on PyPI (`https://pypi.org/pypi/intomd/json` returns 404 means free), npm (`https://registry.npmjs.org/intomd`), GitHub org (`https://github.com/intomd` 404), and `intomd.dev` / `intomd.com` via RDAP (`https://rdap.org/domain/intomd.dev`).
+1. Check `ezmd` on PyPI (`https://pypi.org/pypi/ezmd/json` returns 404 means free), npm (`https://registry.npmjs.org/ezmd`), GitHub org (`https://github.com/ezmd` 404), and `ezmd.dev` / `ezmd.com` via RDAP (`https://rdap.org/domain/ezmd.dev`).
 2. Record results in DECISIONS.md as D-0001. If PyPI or npm is taken, choose a new name (short, pronounceable, free on both), record it, and rename everywhere before continuing. Domain availability is recorded only; do not purchase.
 3. Acceptance: D-0001 exists with the four results and the final name.
 
 ### P0-T02 Repository scaffold
 
-1. Create the monorepo layout from 1.3. Root files: `pyproject.toml` (uv workspace with members `packages/*`, `apps/api`, `apps/fetch-node`, `packages/mcp`), `uv.lock`, `package.json` (pnpm workspace: `apps/web`, `apps/extension`, `packages/sdk-ts`), `pnpm-workspace.yaml`, `Makefile` (`gates`, `test`, `lint`, `fmt`, `golden`, `up`, `smoke`), `ruff.toml` (line length 120, rules `E,F,W,I,N,UP,B,S,C4,SIM,RUF`, bandit S rules enabled), `mypy.ini` (strict for `packages/core`), `.editorconfig`, `.gitignore`, `.env.example`, `LICENSE` (Apache-2.0), `NOTICE`, `README.md` (one screen: what it is, quickstart with `uvx intomd convert`, compose one-liner, link to docs), `CLAUDE.md` (section 3), `DECISIONS.md`, `ROADMAP.md` (all phases and tasks from all four parts, with ids and blocked_by), `STATUS.md` (section 2.8 format, all tasks `pending`), `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` (disclosure address placeholder, supported versions), `CODE_OF_CONDUCT.md`.
+1. Create the monorepo layout from 1.3. Root files: `pyproject.toml` (uv workspace with members `packages/*`, `apps/api`, `apps/fetch-node`, `packages/mcp`), `uv.lock`, `package.json` (pnpm workspace: `apps/web`, `apps/extension`, `packages/sdk-ts`), `pnpm-workspace.yaml`, `Makefile` (`gates`, `test`, `lint`, `fmt`, `golden`, `up`, `smoke`), `ruff.toml` (line length 120, rules `E,F,W,I,N,UP,B,S,C4,SIM,RUF`, bandit S rules enabled), `mypy.ini` (strict for `packages/core`), `.editorconfig`, `.gitignore`, `.env.example`, `LICENSE` (Apache-2.0), `NOTICE`, `README.md` (one screen: what it is, quickstart with `uvx ezmd convert`, compose one-liner, link to docs), `CLAUDE.md` (section 3), `DECISIONS.md`, `ROADMAP.md` (all phases and tasks from all four parts, with ids and blocked_by), `STATUS.md` (section 2.8 format, all tasks `pending`), `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` (disclosure address placeholder, supported versions), `CODE_OF_CONDUCT.md`.
 2. Copy the four spec parts into `docs/spec/`.
-3. `packages/core/pyproject.toml`: package `intomd`, Python `>=3.12`, deps: `pydantic>=2`, `pyyaml`, `tiktoken`, `magika`, `python-magic`, `rapidfuzz`, `typer`, `rich`, `httpx`. Entry points: `intomd = intomd.cli:app`, `intomd-score = intomd.testing.cli:score`, `intomd-golden = intomd.testing.cli:golden`.
+3. `packages/core/pyproject.toml`: package `ezmd`, Python `>=3.12`, deps: `pydantic>=2`, `pyyaml`, `tiktoken`, `magika`, `python-magic`, `rapidfuzz`, `typer`, `rich`, `httpx`. Entry points: `ezmd = ezmd.cli:app`, `ezmd-score = ezmd.testing.cli:score`, `ezmd-golden = ezmd.testing.cli:golden`.
 4. Acceptance: `uv sync --all-packages --dev` succeeds; `pnpm install` succeeds; `make gates` runs (it may fail on empty packages at this point, but each gate command executes); git initialized with `main`, first commit `chore: scaffold monorepo`.
 
 ### P0-T03 Core IR
 
-1. Implement `packages/core/intomd/ir.py` exactly as in section 4 (you may fix type errors mypy finds, logging each change in DECISIONS.md if it changes semantics).
+1. Implement `packages/core/ezmd/ir.py` exactly as in section 4 (you may fix type errors mypy finds, logging each change in DECISIONS.md if it changes semantics).
 2. Tests in `packages/core/tests/test_ir.py`: round-trip every block type through `model_dump_json` and `model_validate_json`; `finalize()` assigns ids, rejects duplicate ids and dangling parents; `Table` validator rejects out-of-shape cells and sets `has_merged_cells`; `plain_text()` ordering; `counts()` correctness on a synthetic document with every block type; `sections()` grouping with and without a leading heading.
 3. Acceptance: tests pass; `mypy --strict packages/core` clean; coverage of `ir.py` at least 95%.
 
 ### P0-T04 Detection
 
-1. Implement `packages/core/intomd/detect.py` per 5.1 with Magika and libmagic. Magika model download at first use goes to `INTOMD_MODEL_DIR`; the Docker image pre-bakes it.
+1. Implement `packages/core/ezmd/detect.py` per 5.1 with Magika and libmagic. Magika model download at first use goes to `EZMD_MODEL_DIR`; the Docker image pre-bakes it.
 2. Tests: a table of 20 small synthetic files (txt, md, csv, json, html, pdf header, zip, png, mp3 header, docx minimal, empty, random bytes, a `.py` file renamed `.png`, a PNG renamed `.py`) asserting the resolved mime and that the rename cases resolve by content.
 3. Acceptance: tests pass; detection of a 10 MB file completes under 200 ms (test with a timer, skip in CI if the runner is slow but assert locally).
 
 ### P0-T05 Inputs, registry, chains, sandbox, netguard
 
 1. Implement `inputs.py`, `registry.py`, `chains.py` per section 5, including wildcard chain matching and `FetchRequired` propagation.
-2. Implement `intomd/core/sandbox.py` (`run()` per 8.1, with bwrap when present) and `intomd/core/netguard.py` per 8.3 (resolve-once pinned httpx transport, redirect re-validation, byte cap, platform policy loader).
-3. Implement `intomd/core/licensing.py` (`notify_once`) and `intomd/core/logging.py` (redaction filter).
+2. Implement `ezmd/core/sandbox.py` (`run()` per 8.1, with bwrap when present) and `ezmd/core/netguard.py` per 8.3 (resolve-once pinned httpx transport, redirect re-validation, byte cap, platform policy loader).
+3. Implement `ezmd/core/licensing.py` (`notify_once`) and `ezmd/core/logging.py` (redaction filter).
 4. Tests: registry resolution order with three fake converters of differing confidence and priority; chain override; fallback on `ConversionError`, on crash, and on empty document; `retryable_with_fallback=False` stops the chain; `FetchRequired` passes through; broken entry point is isolated (simulate with a fake `entry_points`); converter contract test harness (5.5) runs against all registered converters; `sandbox.run` rejects a string argv, enforces timeout (sleep 5 with timeout 1), caps output; netguard tests from 8.3; redaction filter tests.
 5. Acceptance: tests pass; mypy strict clean.
 
 ### P0-T06 Plain text and Markdown passthrough converters
 
-1. `packages/converters/intomd_converters/text/plain.py`: `text.plain` handles `text/plain` and any `text/*` not claimed at higher confidence. Decodes with charset detection (`charset-normalizer`, MIT), splits paragraphs on blank lines, detects simple heading conventions (a line underlined with `===` or `---`, or a line that is the only content and under 80 chars followed by a blank line is not a heading; only underline style is promoted), emits `Paragraph` blocks with line provenance, strips NUL and control characters with a warning count. Line numbers in provenance.
+1. `packages/converters/ezmd_converters/text/plain.py`: `text.plain` handles `text/plain` and any `text/*` not claimed at higher confidence. Decodes with charset detection (`charset-normalizer`, MIT), splits paragraphs on blank lines, detects simple heading conventions (a line underlined with `===` or `---`, or a line that is the only content and under 80 chars followed by a blank line is not a heading; only underline style is promoted), emits `Paragraph` blocks with line provenance, strips NUL and control characters with a warning count. Line numbers in provenance.
 2. `text.markdown_passthrough`: `text/markdown` parsed with `markdown-it-py` (MIT) into the IR (headings, paragraphs, lists, code, quotes, links, images as `Image` with `ref`, tables as `Table`). This proves the IR can represent Markdown losslessly enough that rendering a Markdown input in the `full` profile reproduces its structure.
-3. Register both in `intomd/builtin.py` and the chains.
+3. Register both in `ezmd/builtin.py` and the chains.
 4. Fixtures: `fixtures/text/plain-utf8`, `fixtures/text/plain-latin1-with-bom`, `fixtures/text/markdown-kitchen-sink` (headings, nested lists, table, code, quote, image, footnote-style refs). Goldens generated, Skeptic-reviewed, committed with `meta.toml`.
 5. Acceptance: fixtures pass at 0.95 (threshold override upward is allowed for trivial converters); contract test passes.
 
 ### P0-T07 Profiles, renderer skeleton, scoring
 
 1. Implement `profiles.py` and `render/base.py` per section 6 plus `render/__init__.py` exposing `render(result, profile_name, format, **overrides)`.
-2. Implement `testing/score.py` per 2.4 and the `intomd-score` and `intomd-golden` CLIs. `intomd-golden --write` writes `expected.full.md` and `expected.sidecar.json` and prints a reminder that Skeptic review is required.
+2. Implement `testing/score.py` per 2.4 and the `ezmd-score` and `ezmd-golden` CLIs. `ezmd-golden --write` writes `expected.full.md` and `expected.sidecar.json` and prints a reminder that Skeptic review is required.
 3. Implement the fixture pytest plugin `testing/pytest_fixtures.py` that discovers `fixtures/**/meta.toml`, parametrizes a test per fixture, converts, renders `full`, scores, and asserts the threshold from `fixtures/thresholds.toml` with `meta.toml` overrides, plus the hard-failure checks.
 4. Determinism test: render twice, compare everything after the frontmatter.
-5. Acceptance: `uv run pytest fixtures -q` passes for the three text fixtures; `intomd-score` prints the four sub-scores and overall; mypy strict clean.
+5. Acceptance: `uv run pytest fixtures -q` passes for the three text fixtures; `ezmd-score` prints the four sub-scores and overall; mypy strict clean.
 
 ### P0-T08 CLI
 
-1. `intomd convert <path-or-url> [--profile full] [--format md] [--out path] [--sidecar] [--converter id] [--opt key=value]...`: local conversion through the registry and renderer. URLs in Phase 0 go through netguard to a temp file and then the registry (only text types will succeed until Part 2).
-2. `intomd capabilities`, `intomd detect <path>`, `intomd version`.
-3. `intomd serve` is a thin wrapper that runs the API with uvicorn (useful for self-host without compose).
-4. Acceptance: `intomd convert fixtures/text/markdown-kitchen-sink/input.md --profile compact` prints Markdown with frontmatter; exit code 2 on unsupported type with the `user_message`; `--help` output is checked into `docs/cli.md` by a generator script.
+1. `ezmd convert <path-or-url> [--profile full] [--format md] [--out path] [--sidecar] [--converter id] [--opt key=value]...`: local conversion through the registry and renderer. URLs in Phase 0 go through netguard to a temp file and then the registry (only text types will succeed until Part 2).
+2. `ezmd capabilities`, `ezmd detect <path>`, `ezmd version`.
+3. `ezmd serve` is a thin wrapper that runs the API with uvicorn (useful for self-host without compose).
+4. Acceptance: `ezmd convert fixtures/text/markdown-kitchen-sink/input.md --profile compact` prints Markdown with frontmatter; exit code 2 on unsupported type with the `user_message`; `--help` output is checked into `docs/cli.md` by a generator script.
 
 ### P0-T09 API
 
-1. `apps/api/intomd_api/`: `main.py` (FastAPI app factory, middleware: request id, security headers, CORS, rate limit, redaction logging), `settings.py` (pydantic-settings, every `INTOMD_*` var), `db.py` (SQLAlchemy 2 with SQLite default and Postgres option, Alembic migrations), `blobs.py` (local FS default, S3 via `boto3` optional extra `[s3]`), `jobs.py` (job store, state transitions, progress with pub/sub), `queue.py` (RQ enqueue helpers, queue routing by mime family), `routes/convert.py`, `routes/jobs.py` (get, events SSE, result, attachments, supply, delete), `routes/fetch_node.py` (claim, heartbeat, upload, fail; mounted only when secret set), `routes/meta.py` (capabilities, healthz, readyz), `errors.py` (schema 7.5), `auth.py` (API keys, Turnstile verification, fetch-node auth), `worker.py` (RQ worker entry with sandbox child-process execution, progress callbacks, result caching of the IR), `purge.py` (retention job), `static.py` (serve `apps/web/dist` at `/` with SPA fallback, cache headers).
+1. `apps/api/ezmd_api/`: `main.py` (FastAPI app factory, middleware: request id, security headers, CORS, rate limit, redaction logging), `settings.py` (pydantic-settings, every `EZMD_*` var), `db.py` (SQLAlchemy 2 with SQLite default and Postgres option, Alembic migrations), `blobs.py` (local FS default, S3 via `boto3` optional extra `[s3]`), `jobs.py` (job store, state transitions, progress with pub/sub), `queue.py` (RQ enqueue helpers, queue routing by mime family), `routes/convert.py`, `routes/jobs.py` (get, events SSE, result, attachments, supply, delete), `routes/fetch_node.py` (claim, heartbeat, upload, fail; mounted only when secret set), `routes/meta.py` (capabilities, healthz, readyz), `errors.py` (schema 7.5), `auth.py` (API keys, Turnstile verification, fetch-node auth), `worker.py` (RQ worker entry with sandbox child-process execution, progress callbacks, result caching of the IR), `purge.py` (retention job), `static.py` (serve `apps/web/dist` at `/` with SPA fallback, cache headers).
 2. Rate limiting via Redis sliding window per 7.6. Turnstile verification is implemented but disabled unless configured.
 3. Tests with `httpx.AsyncClient` against the app with an in-memory SQLite and `fakeredis`: create job from multipart, poll, SSE receives `done`, result in all four profiles and `md`/`json`/`txt` formats, 409 before done, 413 over cap, 415 for executables, dedup returns the same job, error schema shape, security headers present, rate limit returns 429 with headers, fetch-node routes absent without secret and 401 with wrong secret, job purge deletes blobs.
 4. OpenAPI generated and committed to `docs/api/openapi.json` with a test that fails if the committed file is stale.
-5. Acceptance: tests pass; `uv run mypy apps/api` clean; `uvicorn intomd_api.main:app` serves `/healthz` and `/v1/capabilities`.
+5. Acceptance: tests pass; `uv run mypy apps/api` clean; `uvicorn ezmd_api.main:app` serves `/healthz` and `/v1/capabilities`.
 
 ### P0-T10 Web UI
 
@@ -2318,15 +2318,15 @@ Each task below lists acceptance criteria. Mark tasks `done` in STATUS.md only w
 
 ### P0-T11 Docker and Compose
 
-1. `deploy/Dockerfile.api` (python:3.12-slim pinned by digest, uv install, non-root, builds web UI in a node stage and copies `dist`), `deploy/Dockerfile.worker` (same base plus libmagic, ffmpeg, pandoc, bubblewrap; model pre-bake stage for Magika; non-root, read-only FS compatible), `deploy/compose.yml` (services: `caddy`, `api`, `worker-default`, `worker-media`, `worker-fetch`, `redis` with `requirepass` and no host port, `purge` as a one-shot scheduler sidecar or in-API scheduler; internal network for workers with no default egress except allowlist; volumes for SQLite and blobs; healthchecks; `mem_limit`, `pids_limit`, `cap_drop`, `read_only`, `security_opt`), `deploy/compose.gpu.yml` override (adds the NVIDIA runtime to `worker-media`, used from Part 2), `deploy/Caddyfile` (TLS automatic when `INTOMD_DOMAIN` set, otherwise plain HTTP on 8080; `request_body max_size`; security headers; `/v1/fetch-node/*` restricted to the Tailscale interface address), `deploy/seccomp-worker.json`, `deploy/egress-allowlist.sh`, `deploy/smoke.sh` (waits for `/readyz`, posts a text file, polls, asserts Markdown contains the expected heading, also tests `format=json`, exits non-zero on failure; `--remote` mode skips bring-up).
-2. `.env.example` lists every variable with defaults and comments. `INTOMD_PUBLIC_MODE=false` by default.
+1. `deploy/Dockerfile.api` (python:3.12-slim pinned by digest, uv install, non-root, builds web UI in a node stage and copies `dist`), `deploy/Dockerfile.worker` (same base plus libmagic, ffmpeg, pandoc, bubblewrap; model pre-bake stage for Magika; non-root, read-only FS compatible), `deploy/compose.yml` (services: `caddy`, `api`, `worker-default`, `worker-media`, `worker-fetch`, `redis` with `requirepass` and no host port, `purge` as a one-shot scheduler sidecar or in-API scheduler; internal network for workers with no default egress except allowlist; volumes for SQLite and blobs; healthchecks; `mem_limit`, `pids_limit`, `cap_drop`, `read_only`, `security_opt`), `deploy/compose.gpu.yml` override (adds the NVIDIA runtime to `worker-media`, used from Part 2), `deploy/Caddyfile` (TLS automatic when `EZMD_DOMAIN` set, otherwise plain HTTP on 8080; `request_body max_size`; security headers; `/v1/fetch-node/*` restricted to the Tailscale interface address), `deploy/seccomp-worker.json`, `deploy/egress-allowlist.sh`, `deploy/smoke.sh` (waits for `/readyz`, posts a text file, polls, asserts Markdown contains the expected heading, also tests `format=json`, exits non-zero on failure; `--remote` mode skips bring-up).
+2. `.env.example` lists every variable with defaults and comments. `EZMD_PUBLIC_MODE=false` by default.
 3. Acceptance: on a clean machine `docker compose -f deploy/compose.yml up --build -d && deploy/smoke.sh` passes; image sizes recorded in STATUS.md metrics (`api` under 400 MB, `worker` under 1.2 GB before any ML extras); `docker compose config` validates; the worker container has no route to the internet (test from inside with a curl to a public IP that must fail, included in smoke.sh).
 
 ### P0-T12 CI and release workflow
 
 1. `.github/workflows/ci.yml`: on push to `main` and on PRs: matrix for Python 3.12 on ubuntu-latest; steps: uv sync, pnpm install, ruff, mypy, license check, pip-audit, pnpm audit, unit tests, fixture tests, web build and tests, docker build of all images (no push), compose smoke on the runner. Cache uv and pnpm stores and the Magika model.
 2. `.github/workflows/nightly.yml`: rebuild images, run goldens, run `pip-audit`/`pnpm audit`, open an issue on failure.
-3. `.github/workflows/release.yml`: on tag `v*`: build and push multi-arch images to GHCR (`ghcr.io/<org>/intomd-api`, `intomd-worker`, `intomd-fetch-node` from Part 4), build the Python package with `uv build` and publish to TestPyPI for `v0.0.*` (PyPI for `v0.1.0+` is behind a manual environment approval, which is the human gate), attach the extension zip (from Part 4) and `CHANGELOG.md` section as release notes.
+3. `.github/workflows/release.yml`: on tag `v*`: build and push multi-arch images to GHCR (`ghcr.io/<org>/ezmd-api`, `ezmd-worker`, `ezmd-fetch-node` from Part 4), build the Python package with `uv build` and publish to TestPyPI for `v0.0.*` (PyPI for `v0.1.0+` is behind a manual environment approval, which is the human gate), attach the extension zip (from Part 4) and `CHANGELOG.md` section as release notes.
 4. `tools/license_check.py`, `tools/license_check.mjs`, `tools/license_allowlist.toml`, `tools/license_overrides.toml`, `tools/audit_ignore.toml`.
 5. Dependabot config for pip, npm, docker, and GitHub Actions, weekly.
 6. Acceptance: CI green on `main`; a test tag `v0.0.1-rc1` on a branch triggers the release workflow through the image build step successfully (publishing steps may be dry-run with `if: false` until the human gate is cleared, logged in STATUS.md under Blocked on human).

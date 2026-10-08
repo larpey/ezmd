@@ -33,6 +33,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -66,6 +69,9 @@
         "role": "body",
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -100,6 +106,9 @@
         },
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -133,6 +142,9 @@
         "role": "body",
         "spans": [
           {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
             "footnote_ref": null,
             "href": null,
             "math": null,
@@ -164,7 +176,9 @@
       "modified": null,
       "pages": null,
       "published": null,
+      "sheets": [],
       "site_name": null,
+      "slides": null,
       "source": "input.txt",
       "source_type": "text",
       "speakers": [],
@@ -180,13 +194,13 @@
     "content_hash": "sha256:aa3b1a6f31d41137160e9039b2f3a3243b1b49efec56a6bf7c91f62e860862db",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "text.plain",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "encoding": "cp1252"
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -229,7 +243,7 @@
       "transcript_segments": 0,
       "words": 38
     },
-    "duration_seconds": 0.0470000000204891,
+    "duration_seconds": 0.06300000008195639,
     "engine": "text.plain",
     "engines_tried": [
       "text.plain"
@@ -269,7 +283,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0003",
@@ -290,6 +304,6 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 328,
+  "tokens_total": 331,
   "warnings": []
 }

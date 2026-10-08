@@ -10,12 +10,12 @@ import httpx
 import pytest
 from typer.testing import CliRunner
 
-import intomd.cli.remote as remote
-from intomd import __version__
-from intomd.cli import app
+import ezmd.cli.remote as remote
+from ezmd import __version__
+from ezmd.cli import app
 
 runner = CliRunner()
-BASE = "https://intomd.example"
+BASE = "https://ezmd.example"
 PAYLOAD = {
     "markdown": '---\ntitle: "Remote"\n---\n\nremote body\n',
     "frontmatter": {"title": "Remote", "tokens": 12, "truncated": False, "warnings": ["encoding_uncertain"]},
@@ -48,9 +48,9 @@ def _file(tmp_path: Path) -> Path:
 def test_immediate_result(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     def handler(req: httpx.Request) -> httpx.Response:
         assert req.url.path == "/v1/convert" and req.url.params["wait"] == "30"
-        return httpx.Response(200, json=PAYLOAD, headers={"X-Intomd-Job": json.dumps(JOB)})
+        return httpx.Response(200, json=PAYLOAD, headers={"X-Ezmd-Job": json.dumps(JOB)})
 
-    monkeypatch.setenv("INTOMD_API_KEY", "k-secret")
+    monkeypatch.setenv("EZMD_API_KEY", "k-secret")
     seen = _install(monkeypatch, handler)
     res = runner.invoke(app, ["convert", str(_file(tmp_path)), "--remote", BASE, "--json"])
     assert res.exit_code == 0, res.output
@@ -58,7 +58,7 @@ def test_immediate_result(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> No
     assert "remote body" in payload["markdown"] and payload["tokens"] == 12
     assert payload["warnings"][0]["kind"] == "encoding_uncertain"
     req = seen[0]
-    assert req.headers["user-agent"] == f"intomd-cli/{__version__}"
+    assert req.headers["user-agent"] == f"ezmd-cli/{__version__}"
     assert req.headers["x-api-key"] == "k-secret"
     assert b'name="file"' in req.content and b'name="options"' in req.content
 
@@ -88,7 +88,7 @@ def test_url_source_posts_json(monkeypatch: pytest.MonkeyPatch) -> None:
     def handler(req: httpx.Request) -> httpx.Response:
         body = json.loads(req.content)
         assert body["url"] == "https://example.com/" and body["profile"] == "compact"
-        return httpx.Response(200, json=PAYLOAD, headers={"X-Intomd-Job": json.dumps(JOB)})
+        return httpx.Response(200, json=PAYLOAD, headers={"X-Ezmd-Job": json.dumps(JOB)})
 
     _install(monkeypatch, handler)
     res = runner.invoke(app, ["convert", "https://example.com/", "--remote", BASE, "-p", "compact"])
@@ -130,7 +130,7 @@ def test_remote_from_env_and_capabilities(monkeypatch: pytest.MonkeyPatch) -> No
         return httpx.Response(200, json=caps)
 
     _install(monkeypatch, handler)
-    monkeypatch.setenv("INTOMD_REMOTE", BASE)
+    monkeypatch.setenv("EZMD_REMOTE", BASE)
     res = runner.invoke(app, ["capabilities", "--json"])
     assert res.exit_code == 0, res.output
     assert json.loads(res.stdout)["version"] == "9.9"

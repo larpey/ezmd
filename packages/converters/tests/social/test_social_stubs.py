@@ -6,13 +6,13 @@ import json
 
 import pytest
 
-from intomd.detect import detect
-from intomd.inputs import FetchRequired, InputRef
-from intomd.ir import Comment, Heading, Link, WarningKind, spans_text
-from intomd.registry import ConversionError, ConvertOptions, Unavailable, default_registry
-from intomd_converters.social import FLAG_ENV, converters
-from intomd_converters.social.adapters import AdapterError, HackerNewsAdapter, RedditAdapter
-from intomd_converters.social.converter import SocialStubConverter
+from ezmd.detect import detect
+from ezmd.inputs import FetchRequired, InputRef
+from ezmd.ir import Comment, Heading, Link, WarningKind, spans_text
+from ezmd.registry import ConversionError, ConvertOptions, Unavailable, default_registry
+from ezmd_converters.social import FLAG_ENV, converters
+from ezmd_converters.social.adapters import AdapterError, HackerNewsAdapter, RedditAdapter
+from ezmd_converters.social.converter import SocialStubConverter
 
 REDDIT_URL = "https://www.reddit.com/r/AskHistorians/comments/abc123/why_lighthouses/"
 HN_URL = "https://news.ycombinator.com/item?id=4242"

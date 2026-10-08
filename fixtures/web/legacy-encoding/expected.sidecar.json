@@ -159,14 +159,14 @@
     "content_hash": "sha256:278a0e473bce12bc3746f03ea6f78090f48466d660766245ec1eee447fd0bf98",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "encoding": "windows-1251",
       "readability_ratio": 1.0
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "ru",
     "profile": "full",
     "provenance": "block",
@@ -210,7 +210,7 @@
       "transcript_segments": 0,
       "words": 24
     },
-    "duration_seconds": 0.1869999999180436,
+    "duration_seconds": 0.2660000000614673,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
@@ -243,13 +243,13 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [],
   "segments": [],
   "slides": [],
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 320,
+  "tokens_total": 323,
   "warnings": []
 }

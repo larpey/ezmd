@@ -263,7 +263,7 @@ def msg_outlook() -> bytes:
     two attachments, and one embedded message (docs/spec/part2.md 9f fixture 4)."""
     from _cfb import MsgAttachment, MsgSpec, compress_rtf, write_msg
 
-    from intomd_converters.comms.rtf import PREBUF
+    from ezmd_converters.comms.rtf import PREBUF
 
     transport = CRLF.join(
         [

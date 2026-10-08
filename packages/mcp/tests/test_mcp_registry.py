@@ -33,13 +33,13 @@ def test_server_json_matches_package() -> None:
     packages = server["packages"]
     assert isinstance(packages, list) and len(packages) == 1
     pkg = packages[0]
-    assert pkg["registryType"] == "pypi" and pkg["identifier"] == project["name"] == "intomd-mcp"
+    assert pkg["registryType"] == "pypi" and pkg["identifier"] == project["name"] == "ezmd-mcp"
     assert pkg["version"] == server["version"] == project["version"]
     assert pkg["transport"] == {"type": "stdio"}
     remotes = server["remotes"]
     assert isinstance(remotes, list) and remotes[0]["type"] == "streamable-http"
     assert any(h["isRequired"] and h["isSecret"] for h in remotes[0]["headers"])  # token required
-    assert project["scripts"]["intomd-mcp"] == "intomd_mcp.cli:main"
+    assert project["scripts"]["ezmd-mcp"] == "ezmd_mcp.cli:main"
 
 
 def test_readme_carries_the_registry_marker() -> None:

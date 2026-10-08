@@ -15,10 +15,10 @@ ignore = [
 [lint.per-file-ignores]
 "**/tests/**" = ["S", "N802", "RUF012"]
 "tests/**" = ["S"]
-"packages/core/src/intomd/warnings/codes.py" = ["S105", "E501"]
+"packages/core/src/ezmd/warnings/codes.py" = ["S105", "E501"]
 
 [lint.isort]
-known-first-party = ["intomd", "intomd_converters", "intomd_api", "intomd_mcp", "intomd_fetch_node"]
+known-first-party = ["ezmd", "ezmd_converters", "ezmd_api", "ezmd_mcp", "ezmd_fetch_node"]
 
 [lint.flake8-bandit]
 check-typed-exception = true

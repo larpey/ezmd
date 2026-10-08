@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from intomd.ir import (
+from ezmd.ir import (
     BBox,
     Block,
     ConversionResult,

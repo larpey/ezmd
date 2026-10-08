@@ -136,7 +136,7 @@
           "line_end": null,
           "line_start": null,
           "page_label": null,
-          "path": "body > main > article > intomd-math",
+          "path": "body > main > article > ezmd-math",
           "source": "https://docs.example.test/quayside/theory/harmonics.html",
           "source_id": null,
           "source_label": null,
@@ -1075,15 +1075,15 @@
     "content_hash": "sha256:f2dd7a56df7be508a8b7da6cb503c2f07d9492133a1d6a03b14bc7d2c8352d50",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "description": "How Quayside predicts tides from harmonic constituents.",
     "extra": {
       "encoding": "utf-8",
       "readability_ratio": 0.98
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "language": "en",
     "profile": "full",
     "provenance": "block",
@@ -1127,7 +1127,7 @@
       "transcript_segments": 0,
       "words": 125
     },
-    "duration_seconds": 0.1410000000614673,
+    "duration_seconds": 0.15600000019185245,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
@@ -1155,7 +1155,7 @@
     {
       "block_id": "b0003",
       "engine": "web.trafilatura",
-      "path": "body > main > article > intomd-math",
+      "path": "body > main > article > ezmd-math",
       "source": "https://docs.example.test/quayside/theory/harmonics.html",
       "type": "equation"
     },
@@ -1272,7 +1272,7 @@
       "type": "footnote"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0005",
@@ -1356,6 +1356,6 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 707,
+  "tokens_total": 710,
   "warnings": []
 }

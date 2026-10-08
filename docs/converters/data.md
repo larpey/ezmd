@@ -15,10 +15,10 @@ tables.
 | `data.toml` | TOML (`application/toml`) | stdlib `tomllib` | default |
 | `data.xml` | generic XML (`application/xml`) | defusedxml ElementTree | default |
 | `data.sqlite` | SQLite 3 databases (Magika `sqlite`, `application/vnd.sqlite3`) | stdlib `sqlite3`, read-only | default |
-| `data.parquet` | Apache Parquet (`application/vnd.apache.parquet`) | pyarrow | `pip install 'intomd[data]'` |
+| `data.parquet` | Apache Parquet (`application/vnd.apache.parquet`) | pyarrow | `pip install 'ezmd[data]'` |
 | `data.connection_string` | `postgres://`, `mysql://`, `mongodb+srv://`, `jdbc:`, `Server=...;Database=...` | none | default; always refuses |
 
-Without pyarrow, `data.parquet` is listed by `intomd capabilities` as unavailable with the extra to install.
+Without pyarrow, `data.parquet` is listed by `ezmd capabilities` as unavailable with the extra to install.
 
 ## What each converter produces
 

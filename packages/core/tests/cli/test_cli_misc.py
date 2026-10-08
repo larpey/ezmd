@@ -10,9 +10,9 @@ import typer.core
 import typer.main
 from typer.testing import CliRunner
 
-import intomd.cli.info as info
-from intomd import __version__
-from intomd.cli import app
+import ezmd.cli.info as info
+from ezmd import __version__
+from ezmd.cli import app
 
 runner = CliRunner()
 COMMANDS = list(getattr(typer.main.get_command(app), "commands", {}))
@@ -30,7 +30,7 @@ def test_help_fits_in_40_lines(command: str | None, rich: bool, monkeypatch: pyt
     res = runner.invoke(app, args, env={"COLUMNS": "100", "NO_COLOR": "1"}, terminal_width=100)
     assert res.exit_code == 0
     lines = res.output.rstrip("\n").splitlines()
-    assert len(lines) <= 40, f"intomd {command} --help is {len(lines)} lines"
+    assert len(lines) <= 40, f"ezmd {command} --help is {len(lines)} lines"
 
 
 @pytest.mark.parametrize("shell", ["bash", "zsh", "fish"])
@@ -38,9 +38,9 @@ def test_completion_scripts_generate_and_install(
     shell: str, monkeypatch: pytest.MonkeyPatch, isolated_cli_env: Path
 ) -> None:
     monkeypatch.setenv("_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION", "1")
-    shown = runner.invoke(app, ["--show-completion", shell], prog_name="intomd")
-    assert shown.exit_code == 0 and "_INTOMD_COMPLETE" in shown.output
-    installed = runner.invoke(app, ["--install-completion", shell], prog_name="intomd")
+    shown = runner.invoke(app, ["--show-completion", shell], prog_name="ezmd")
+    assert shown.exit_code == 0 and "_EZMD_COMPLETE" in shown.output
+    installed = runner.invoke(app, ["--install-completion", shell], prog_name="ezmd")
     assert installed.exit_code == 0, installed.output
     assert f"{shell} completion installed" in installed.output
     assert any(isolated_cli_env.rglob("*")), "nothing was written under the isolated home"
@@ -49,7 +49,7 @@ def test_completion_scripts_generate_and_install(
 def test_version_json_and_text() -> None:
     data = json.loads(runner.invoke(app, ["version", "--json"]).stdout)
     assert data["version"] == __version__ and set(data) == {"version", "commit", "build_date"}
-    assert runner.invoke(app, ["version"]).stdout.startswith(f"intomd {__version__}")
+    assert runner.invoke(app, ["version"]).stdout.startswith(f"ezmd {__version__}")
 
 
 def test_version_reads_build_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

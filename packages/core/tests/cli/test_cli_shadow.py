@@ -1,4 +1,4 @@
-"""`intomd shadow-run`: engine discovery, comparison against the reference engine, output, exit codes."""
+"""`ezmd shadow-run`: engine discovery, comparison against the reference engine, output, exit codes."""
 
 from __future__ import annotations
 
@@ -9,11 +9,11 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from intomd.cli import app
-from intomd.cli.shadow import EngineRun, FileReport, discover, select_engines, shadow_file, summarize
-from intomd.inputs import InputRef
-from intomd.ir import Document
-from intomd.registry import ConversionError, ConvertOptions, default_registry, reset_default_registry
+from ezmd.cli import app
+from ezmd.cli.shadow import EngineRun, FileReport, discover, select_engines, shadow_file, summarize
+from ezmd.inputs import InputRef
+from ezmd.ir import Document
+from ezmd.registry import ConversionError, ConvertOptions, default_registry, reset_default_registry
 
 runner = CliRunner()
 ROOT = Path(__file__).resolve().parents[4]

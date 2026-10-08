@@ -22,7 +22,7 @@ LibreOffice. Legacy binary formats only go through LibreOffice. When `soffice` c
 
 Every package is checked before any parser sees it:
 
-- Zip limits: at most 10,000 entries, a total uncompressed size under `INTOMD_ARCHIVE_MAX_BYTES` (500 MB
+- Zip limits: at most 10,000 entries, a total uncompressed size under `EZMD_ARCHIVE_MAX_BYTES` (500 MB
   by default), no entry over a 100:1 compression ratio, and no encrypted members. Nothing is extracted to
   disk.
 - Active content is removed and reported as `removed_script_or_macro`. That covers `vbaProject.bin`,

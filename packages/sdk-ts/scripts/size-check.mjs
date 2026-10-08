@@ -1,4 +1,4 @@
-// Size gate for @intomd/sdk (spec part4 4.5.3): the main ESM bundle must stay under 8 KB gzipped.
+// Size gate for @ezmd/sdk (spec part4 4.5.3): the main ESM bundle must stay under 8 KB gzipped.
 import { readFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { fileURLToPath } from "node:url";

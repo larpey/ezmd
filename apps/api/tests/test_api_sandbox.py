@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from intomd_api.isolation import ChildRequest, run_isolated
+from ezmd_api.isolation import ChildRequest, run_isolated
 
 BINARY = bytes([0, 1, 2, 255]) * 64
 
@@ -31,7 +31,7 @@ def _req(tmp_path: Path, data: bytes, name: str = "a.md") -> ChildRequest:
 
 @pytest.mark.real_sandbox
 def test_spawn_child_converts(tmp_path: Path) -> None:
-    from intomd.ir import ConversionResult
+    from ezmd.ir import ConversionResult
 
     outcome = run_isolated(_req(tmp_path, b"# Hello" + bytes([10, 10]) + b"from a child process"))
     assert outcome.status == "ok", outcome

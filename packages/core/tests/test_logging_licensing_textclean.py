@@ -4,9 +4,9 @@ import io
 import logging
 from pathlib import Path
 
-from intomd.core.licensing import notify_once
-from intomd.core.logging import RedactionFilter, install, redact
-from intomd.core.textclean import CleanStats, clean_text
+from ezmd.core.licensing import notify_once
+from ezmd.core.logging import RedactionFilter, install, redact
+from ezmd.core.textclean import CleanStats, clean_text
 
 KEY = "ak_live_" + "A1b2C3d4E5f6G7h8I9j0Kl"
 
@@ -26,7 +26,7 @@ def test_filter_on_handler_redacts_args_and_extra() -> None:
     install(h)
     install(h)
     assert sum(isinstance(f, RedactionFilter) for f in h.filters) == 1
-    lg = logging.getLogger("intomd.test.redact")
+    lg = logging.getLogger("ezmd.test.redact")
     lg.addHandler(h)
     lg.setLevel(logging.INFO)
     lg.propagate = False

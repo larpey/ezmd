@@ -1,4 +1,4 @@
-// greeter.ts: a tiny TypeScript module (intomd fixture).
+// greeter.ts: a tiny TypeScript module (ezmd fixture).
 import { format } from "./format";
 
 export interface Greeting {

@@ -8,9 +8,9 @@ import pytest
 from conftest import FIXTURES, convert_path, new_pdf, save
 from pikepdf import Array, Dictionary, Name, String
 
-from intomd.ir import PageBreak, Paragraph, Table, WarningKind, spans_text
-from intomd.registry import ConversionError
-from intomd_converters.pdf.sanitize import EncryptedNoPassword, sanitize
+from ezmd.ir import PageBreak, Paragraph, Table, WarningKind, spans_text
+from ezmd.registry import ConversionError
+from ezmd_converters.pdf.sanitize import EncryptedNoPassword, sanitize
 
 
 def _kinds(doc: object) -> list[str]:

@@ -433,9 +433,9 @@
     "content_hash": "sha256:5c96fcd780d0ca714d70f2d26f7c744a21196e4ecf70427af451efe7e8d1228c",
     "converter_id": "documents.pdfium_text",
     "metadata": {
-      "author": "intomd fixtures",
+      "author": "ezmd fixtures",
       "authors": [
-        "intomd fixtures"
+        "ezmd fixtures"
       ],
       "canonical_url": null,
       "description": null,
@@ -479,7 +479,7 @@
           "wanted": "docling"
         },
         "kind": "engine_fallback",
-        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
         "page": null,
         "severity": "warning"
       },
@@ -510,11 +510,11 @@
   "figures": [],
   "footnotes": [],
   "frontmatter": {
-    "author": "intomd fixtures",
+    "author": "ezmd fixtures",
     "content_hash": "sha256:768fa03b859ee8e1ca8f1b077eb2c6edfa756ee1ef43add839c51d2f68279ac3",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
-    "converter_version": "0.0.1",
+    "converter_version": "0.1.0rc1",
     "extra": {
       "pdf_heading_source": "font_size",
       "pdf_page_modes": "hybrid=2,scanned=1",
@@ -522,15 +522,15 @@
       "pdf_pages_without_text": "2",
       "pdf_tagged": false
     },
+    "ezmd_version": "0.1.0rc1",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "intomd_version": "0.0.1",
     "pages": 3,
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
     "source": "input.pdf",
-    "source_hash": "sha256:253184c8b323694a607a9eb4c58eb9049da4dbe8f86739378ad108540089a611",
+    "source_hash": "sha256:12bc22896843a90eb8a33bef2da328bf7b0ba6b7588c3c0db7c9afc08472d7cb",
     "source_type": "pdf",
     "title": "Pilotage incident review",
     "tokens": {
@@ -572,14 +572,14 @@
       "transcript_segments": 0,
       "words": 76
     },
-    "duration_seconds": 0.01500000013038516,
+    "duration_seconds": 0.01600000006146729,
     "engine": "documents.pdfium_text",
     "engines_tried": [
       "documents.pdfium_text"
     ],
     "estimated_tokens": 0,
     "fetch_seconds": null,
-    "input_bytes": 2892
+    "input_bytes": 2890
   },
   "profile": "full",
   "provenance": [
@@ -721,7 +721,7 @@
       "type": "paragraph"
     }
   ],
-  "schema": "intomd.sidecar/1",
+  "schema": "ezmd.sidecar/1",
   "sections": [
     {
       "block_id": "b0004",
@@ -755,7 +755,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 431,
+  "tokens_total": 439,
   "warnings": [
     {
       "block_id": null,
@@ -766,7 +766,7 @@
         "wanted": "docling"
       },
       "kind": "engine_fallback",
-      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "message": "Docling is not installed (pip install 'ezmd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
       "page": null,
       "severity": "warning"
     },

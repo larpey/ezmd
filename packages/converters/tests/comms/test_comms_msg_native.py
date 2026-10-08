@@ -9,21 +9,21 @@ from types import ModuleType
 
 import pytest
 
-from intomd.inputs import InputRef
-from intomd.ir import Table, WarningKind
-from intomd.pipeline import convert_ref
-from intomd.registry import ConversionError, ConvertOptions
-from intomd_converters.comms.build import table_rows
-from intomd_converters.comms.msg import MsgConverter
-from intomd_converters.comms.msg_native import MsgReadError, read_msg
-from intomd_converters.comms.options import CommsOptions
-from intomd_converters.comms.rtf import PREBUF, decompress, html_from_rtf, text_from_rtf
+from ezmd.inputs import InputRef
+from ezmd.ir import Table, WarningKind
+from ezmd.pipeline import convert_ref
+from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.comms.build import table_rows
+from ezmd_converters.comms.msg import MsgConverter
+from ezmd_converters.comms.msg_native import MsgReadError, read_msg
+from ezmd_converters.comms.options import CommsOptions
+from ezmd_converters.comms.rtf import PREBUF, decompress, html_from_rtf, text_from_rtf
 
 ROOT = Path(__file__).resolve().parents[4]
 
 
 def _load_cfb() -> ModuleType:
-    spec = importlib.util.spec_from_file_location("intomd_fixture_cfb", ROOT / "fixtures" / "comms" / "_cfb.py")
+    spec = importlib.util.spec_from_file_location("ezmd_fixture_cfb", ROOT / "fixtures" / "comms" / "_cfb.py")
     assert spec is not None and spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
@@ -153,7 +153,7 @@ def test_not_a_msg_is_refused() -> None:
     corrupt = bytearray(cfb.write_msg(_spec()))
     corrupt[48:52] = b"\xff\xff\xff\x7f"  # first directory sector out of range
     ref = InputRef.from_bytes(bytes(corrupt), filename="bad.msg")
-    from intomd.detect import detect
+    from ezmd.detect import detect
 
     detect(ref)
     with pytest.raises(ConversionError):

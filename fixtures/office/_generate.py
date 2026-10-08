@@ -7,7 +7,7 @@ Run from the repository root:
 DOCX packages are written as raw OOXML with zipfile so tracked changes, comments with replies, footnotes, text
 boxes, hidden text, and an injected macro part can be expressed exactly (python-docx cannot write revisions).
 PPTX uses python-pptx (MIT), XLSX uses openpyxl (MIT), ODT/ODS use odfpy (Apache-2.0), RTF is written by hand.
-Only `input.*` files are written; goldens come from `uv run intomd-golden <dir> --write` plus review.
+Only `input.*` files are written; goldens come from `uv run ezmd-golden <dir> --write` plus review.
 """
 
 from __future__ import annotations

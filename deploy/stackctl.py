@@ -7,7 +7,7 @@ volumes, environment and Python packages the API sees. It never runs on the host
     stackctl verify               read such a tar from stdin, check every checksum, change nothing
     stackctl restore              read such a tar from stdin, verify it fully, then replace the data
     stackctl migrate              Alembic upgrade; adopts a matching create_all database, refuses drift
-    stackctl has-keys             exit 0 when INTOMD_KEYS_FILE exists, 1 when it does not
+    stackctl has-keys             exit 0 when EZMD_KEYS_FILE exists, 1 when it does not
 
 Progress and errors go to stderr; stdout carries only tar data. Archive members are validated before
 anything is written to the live paths (regular files and directories only, no absolute paths, no `..`).
@@ -31,10 +31,10 @@ from typing import IO, Any
 
 FORMAT = 1
 MANIFEST = "manifest.json"
-DB_MEMBER = "db/intomd.db"
+DB_MEMBER = "db/ezmd.db"
 KEYS_MEMBER = "keys/keys.json"
 BLOB_PREFIX = "blobs/"
-STAGING = ".intomd-restore-staging"
+STAGING = ".ezmd-restore-staging"
 CHUNK = 1 << 20
 
 
@@ -51,7 +51,7 @@ class Paths:
     """Live data locations, resolved the way the API resolves them."""
 
     def __init__(self) -> None:
-        from intomd_api.settings import Settings
+        from ezmd_api.settings import Settings
 
         settings = Settings()
         url = settings.resolved_database_url
@@ -86,7 +86,7 @@ def _app_version() -> str:
     from importlib.metadata import PackageNotFoundError, version
 
     try:
-        return version("intomd-api")
+        return version("ezmd-api")
     except PackageNotFoundError:
         return "unknown"
 
@@ -144,8 +144,8 @@ def cmd_backup(args: list[str]) -> int:
     include_blobs = "--no-blobs" not in args
     paths = Paths()
     files: dict[str, dict[str, Any]] = {}
-    with tempfile.TemporaryDirectory(prefix="intomd-backup-") as tmp:
-        snapshot = Path(tmp) / "intomd.db"
+    with tempfile.TemporaryDirectory(prefix="ezmd-backup-") as tmp:
+        snapshot = Path(tmp) / "ezmd.db"
         revision = None
         with tarfile.open(fileobj=sys.stdout.buffer, mode="w|", format=tarfile.PAX_FORMAT) as tar:
             if paths.db.is_file():
@@ -294,7 +294,7 @@ def cmd_restore(_args: list[str]) -> int:
         say(f"database restored to {paths.db}")
     if KEYS_MEMBER in seen:
         if paths.keys is None:
-            say("warning: backup has a keys file but INTOMD_KEYS_FILE is not set; left it out")
+            say("warning: backup has a keys file but EZMD_KEYS_FILE is not set; left it out")
         else:
             paths.keys.parent.mkdir(parents=True, exist_ok=True)
             os.replace(db_stage / KEYS_MEMBER, paths.keys)
@@ -316,7 +316,7 @@ def cmd_restore(_args: list[str]) -> int:
 
 
 def cmd_migrate(_args: list[str]) -> int:
-    from intomd_api.migrate import SchemaDrift, ensure_schema
+    from ezmd_api.migrate import SchemaDrift, ensure_schema
 
     paths = Paths()
     paths.db.parent.mkdir(parents=True, exist_ok=True)

@@ -1,14 +1,14 @@
-import type { IntomdWarning } from "@intomd/sdk";
+import type { EzmdWarning } from "@ezmd/sdk";
 import { useWarningRegistry } from "../lib/warning-context";
 import { EXTENSION_DOCS_URL, canonicalCode, suggestedAction, warningKind, warningSeverity, type WarningRegistry } from "../lib/warnings";
 
 interface WarningsPanelProps {
-  warnings: readonly IntomdWarning[];
+  warnings: readonly EzmdWarning[];
   /** Render expanded without the summary toggle (used inside the Warnings tab). */
   expanded?: boolean;
 }
 
-function WarningItem({ w, reg }: { w: IntomdWarning; reg: WarningRegistry }) {
+function WarningItem({ w, reg }: { w: EzmdWarning; reg: WarningRegistry }) {
   const severity = warningSeverity(w, reg);
   const code = canonicalCode(w, reg);
   return (
@@ -33,7 +33,7 @@ function WarningItem({ w, reg }: { w: IntomdWarning; reg: WarningRegistry }) {
   );
 }
 
-function WarningList({ warnings, reg }: { warnings: readonly IntomdWarning[]; reg: WarningRegistry }) {
+function WarningList({ warnings, reg }: { warnings: readonly EzmdWarning[]; reg: WarningRegistry }) {
   return (
     <ul className="warnings-list">
       {warnings.map((w, i) => (
