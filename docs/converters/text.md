@@ -21,7 +21,15 @@ Fallback chains: `text/plain` uses `text.plain`; `text/markdown` tries `text.mar
 
 ## Known limitations
 
-- Plain text has no reliable structure, so only setext-style headings (a line underlined with `===` or
-  `---`) become headings; everything else is paragraphs.
+- Plain text has no reliable structure. Headings are recognised only when a line is underlined with `===`
+  or `---`, or when a short ALL-CAPS line (3+ words or a trailing colon, no sentence punctuation) stands
+  alone between blank lines. Blocks indented 4+ spaces are code unless they read as a quoted passage or a
+  sub-list. Runs of 3+ lines whose columns line up on 2+ space gaps become a table.
+- Numbered outlines (`1.`, `2.1`) keep one item per line (hard line breaks) but do not become nested lists.
+  Whitespace tables with a ragged or missing column, or with fewer than 3 lines, stay as lines of text.
+- Markdown: Obsidian wikilinks (`[[Page]]`) and embeds (`![[file]]`) stay literal text. Callouts
+  (`> [!warning] Title`) render as a labelled quote with the title on its own line. Table column
+  alignment is not carried over: left-aligned (`:--`) is the default anyway, and numeric columns are
+  right-aligned by inference.
 - Encoding detection on very short legacy-encoded files can guess wrong. If the output looks garbled,
   re-save the file as UTF-8 and convert it again.

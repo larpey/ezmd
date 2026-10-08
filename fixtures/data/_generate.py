@@ -333,6 +333,164 @@ def connection_string() -> None:
     _write("connection-string", "input.txt", "postgres://user:hunter2@db.example.invalid:5432/sales" + NL)
 
 
+def json_api_response() -> None:
+    # A paginated API envelope: `data` holds records with a nested address, `meta` the cursor.
+    records = []
+    for i in range(12):
+        records.append(
+            {
+                "id": 5000 + i,
+                "name": f"Customer {chr(65 + i)}",
+                "email": f"customer{i}@example.invalid",
+                "address": {
+                    "street": f"{10 + i} Harbour Road",
+                    "city": CITIES[i % len(CITIES)],
+                    "geo": {"lat": round(38.7 + i * 0.25, 2), "lng": round(-9.1 + i * 0.5, 2)},
+                },
+                "orders": i % 4,
+                "vip": i % 5 == 0,
+            }
+        )
+    body = {
+        "data": records,
+        "meta": {"page": 2, "per_page": 12, "total": 61, "next": "https://api.example.invalid/v1/customers?page=3"},
+        "links": {"self": "https://api.example.invalid/v1/customers?page=2"},
+    }
+    _write("json-api-response", "input.json", json.dumps(body, indent=2, ensure_ascii=False) + NL)
+
+
+def json_deep_precise() -> None:
+    # Hand-built text so numeric literals survive verbatim: 20-digit ints, 1.10, 0.1e-7, -0.0.
+    # The `chain` nests 16 objects deep; the fixture lowers data.max_depth to 12 to exercise depth_truncated.
+    chain = '"leaf"'
+    for i in range(16):
+        chain = "{" + f'"n{i}": ' + chain + "}"
+    keys = ["caf" + chr(0xE9), chr(0x6771) + chr(0x4EAC), "na" + chr(0xEF) + "ve", chr(0x1F680) + "launch"]
+    rows = []
+    for i in range(60):
+        rows.append(
+            "    {"
+            + f'"seq": {98765432109876543210 + i}, '
+            + f'"label": "{keys[i % 4]} {i}", '
+            + f'"price": {i % 7}.10, '
+            + '"tiny": 0.1e-7, '
+            + '"neg_zero": -0.0'
+            + "}"
+        )
+    text = (
+        "{"
+        + NL
+        + '  "title": "Precision and depth",'
+        + NL
+        + f'  "unicode_keys": {{"{keys[0]}": 1, "{keys[1]}": 2, "{keys[2]}": 3, "{keys[3]}": 4}},'
+        + NL
+        + '  "big": 123456789012345678901234567890,'
+        + NL
+        + '  "ratio": 1.10,'
+        + NL
+        + '  "chain": '
+        + chain
+        + ","
+        + NL
+        + '  "rows": ['
+        + NL
+        + ("," + NL).join(rows)
+        + NL
+        + "  ]"
+        + NL
+        + "}"
+        + NL
+    )
+    _write("json-deep-precise", "input.json", text)
+
+
+def yaml_k8s_multidoc() -> None:
+    text = NL.join(
+        [
+            "# Three Kubernetes manifests in one stream.",
+            "apiVersion: v1",
+            "kind: ConfigMap",
+            "metadata:",
+            "  name: web-config",
+            "  labels: &labels",
+            "    app: web",
+            "    tier: frontend",
+            "data:",
+            "  LOG_LEVEL: info",
+            '  CACHE_TTL: "300"',
+            "---",
+            "# The deployment reuses the label set through an anchor.",
+            "apiVersion: apps/v1",
+            "kind: Deployment",
+            "metadata:",
+            "  name: web",
+            "  labels:",
+            "    app: web",
+            "    tier: frontend",
+            "spec:",
+            "  replicas: 3",
+            "  selector:",
+            "    matchLabels: &match",
+            "      app: web",
+            "  template:",
+            "    metadata:",
+            "      labels: *match",
+            "    spec:",
+            "      containers:",
+            "        - name: web",
+            "          image: registry.example.invalid/web:1.10",
+            "          ports:",
+            "            - containerPort: 8080",
+            "          resources:",
+            "            limits: {cpu: 500m, memory: 256Mi}",
+            "---",
+            "apiVersion: v1",
+            "kind: Service",
+            "metadata:",
+            "  name: web",
+            "spec:",
+            "  selector:",
+            "    app: web",
+            "  ports:",
+            "    - port: 80",
+            "      targetPort: 8080",
+            "",
+        ]
+    )
+    _write("yaml-k8s-multidoc", "input.yaml", text)
+
+
+def xml_generic_records() -> None:
+    people = [
+        ("p1", "Ada Lovelace", "1815-12-10", "London", "mathematics"),
+        ("p2", "Mary Somerville", "1780-12-26", "Jedburgh", "astronomy"),
+        ("p3", "Sofia Kovalevskaya", "1850-01-15", "Moscow", "analysis"),
+        ("p4", "Emmy Noether", "1882-03-23", "Erlangen", "algebra"),
+        ("p5", "Hypatia", "", "Alexandria", "geometry"),
+        ("p6", "Caroline Herschel", "1750-03-16", "Hanover", "astronomy"),
+        ("p7", "Grace Chisholm Young", "1868-03-15", "Haslemere", "analysis"),
+        ("p8", "Florence Nightingale", "1820-05-12", "Florence", "statistics"),
+    ]
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<people source="self-generated" count="8">']
+    for ident, name, born, city, field in people:
+        born_xml = f"<born>{born}</born>" if born else "<born/>"
+        lines += [
+            f'  <person id="{ident}">',
+            f"    <name>{name}</name>",
+            f"    {born_xml}",
+            f"    <city>{city}</city>",
+            f"    <field>{field}</field>",
+            *(
+                ["    <note>Founded modern nursing statistics &amp; the polar area chart.</note>"]
+                if ident == "p8"
+                else []
+            ),
+            "  </person>",
+        ]
+    lines += ["</people>", ""]
+    _write("xml-generic-records", "input.xml", NL.join(lines))
+
+
 def main() -> None:
     csv_bom_semicolon()
     csv_wide()
@@ -348,6 +506,10 @@ def main() -> None:
     sqlite_two_tables()
     parquet_basic()
     connection_string()
+    json_api_response()
+    json_deep_precise()
+    yaml_k8s_multidoc()
+    xml_generic_records()
 
 
 if __name__ == "__main__":

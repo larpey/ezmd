@@ -74,13 +74,32 @@ def pointer_index(parent: str, index: int) -> str:
     return ("" if parent == "/" else parent) + f"/{index}"
 
 
+class Truncated(str):
+    """The placeholder (ELLIPSIS) that replaces a container cut at the depth cap. It renders exactly like the
+    plain ellipsis string, but remembers the cut value's JSON type so the schema reports `object (truncated)`
+    rather than `string`."""
+
+    __slots__ = ("kind",)
+    kind: str
+
+    def __new__(cls, kind: str) -> Truncated:
+        obj = super().__new__(cls, ELLIPSIS)
+        obj.kind = kind
+        return obj
+
+
 @dataclass(slots=True)
 class ClipResult:
     value: Any
     depth: int
+    """True maximum nesting depth of the input (cut subtrees are measured, not copied; see `depth_exact`)."""
     nodes: int
     depth_cut: int
     node_cut: bool
+    shown_depth: int = 0
+    """Nesting depth of the clipped copy (at most max_depth)."""
+    depth_exact: bool = True
+    """False when measuring the cut subtrees ran out of the node budget, so `depth` is a lower bound."""
 
 
 def _leaf(value: object) -> object:
@@ -101,6 +120,7 @@ def clip(value: object, *, max_depth: int, max_nodes: int) -> ClipResult:
     stack: list[tuple[object, Any, Any, int]] = [(value, holder, 0, 1)]
     nodes = depth = depth_cut = 0
     node_cut = False
+    cut: list[tuple[object, int]] = []
     while stack:
         src, parent, key, level = stack.pop()
         nodes += 1
@@ -110,8 +130,9 @@ def clip(value: object, *, max_depth: int, max_nodes: int) -> ClipResult:
             continue
         if isinstance(src, dict):
             if level > max_depth:
-                parent[key] = ELLIPSIS
+                parent[key] = Truncated("object")
                 depth_cut += 1
+                cut.append((src, level))
                 continue
             depth = max(depth, level)
             dst_map: dict[str, Any] = {str(k): None for k in src}
@@ -119,8 +140,9 @@ def clip(value: object, *, max_depth: int, max_nodes: int) -> ClipResult:
             stack.extend((v, dst_map, str(k), level + 1) for k, v in reversed(list(src.items())))
         elif isinstance(src, list | tuple):
             if level > max_depth:
-                parent[key] = ELLIPSIS
+                parent[key] = Truncated("array")
                 depth_cut += 1
+                cut.append((src, level))
                 continue
             depth = max(depth, level)
             dst_list: list[Any] = [None] * len(src)
@@ -128,7 +150,53 @@ def clip(value: object, *, max_depth: int, max_nodes: int) -> ClipResult:
             stack.extend((v, dst_list, i, level + 1) for i, v in reversed(list(enumerate(src))))
         else:
             parent[key] = _leaf(src)
-    return ClipResult(holder[0], depth, nodes, depth_cut, node_cut)
+    true_depth, exact = _measure(cut, depth, max_nodes)
+    return ClipResult(holder[0], true_depth, nodes, depth_cut, node_cut, shown_depth=depth, depth_exact=exact)
+
+
+def _measure(cut: list[tuple[object, int]], depth: int, budget: int) -> tuple[int, bool]:
+    """Depth of the subtrees cut at the cap, walked iteratively without copying, within `budget` nodes. A
+    container reached twice (a cycle or a shared YAML alias) is not walked again and makes the result a lower
+    bound, as does running out of budget."""
+    stack = list(cut)
+    seen = 0
+    visited: set[int] = set()
+    exact = True
+    while stack:
+        seen += 1
+        if seen > budget:
+            return depth, False
+        node, level = stack.pop()
+        if id(node) in visited:
+            exact = False
+            continue
+        visited.add(id(node))
+        if isinstance(node, dict):
+            depth = max(depth, level)
+            stack.extend((v, level + 1) for v in node.values() if isinstance(v, dict | list | tuple))
+        elif isinstance(node, list | tuple):
+            depth = max(depth, level)
+            stack.extend((v, level + 1) for v in node if isinstance(v, dict | list | tuple))
+    return depth, exact
+
+
+def depth_extra(res: ClipResult, opts: DataOptions) -> dict[str, str | int | float | None]:
+    """Metadata extras for nesting depth: the true depth, plus the cap when values were cut at it."""
+    extra: dict[str, str | int | float | None] = {"depth": res.depth}
+    if res.depth_cut:
+        extra["depth_cap"] = opts.max_depth
+        if not res.depth_exact:
+            extra["depth_exact"] = False
+    return extra
+
+
+def depth_text(res: ClipResult, opts: DataOptions, offset: int = 0) -> str:
+    """'nesting depth N' for the summary line, noting the cap when values were cut."""
+    bound = "" if res.depth_exact else "at least "
+    text = f"nesting depth {bound}{res.depth - offset}"
+    if res.depth_cut:
+        text += f" (shown to {opts.max_depth - offset} levels)"
+    return text
 
 
 def clip_warnings(res: ClipResult, opts: DataOptions) -> list[Warning]:
@@ -376,6 +444,8 @@ def json_type(value: object) -> str:
         return "object"
     if isinstance(value, list):
         return "array"
+    if isinstance(value, Truncated):
+        return f"{value.kind} (truncated)"
     return "string"
 
 

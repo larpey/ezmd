@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "2005-era page laid out with nested presentation tables (header bar with logo and tagline, nav column, spacer gif, font tags, br-separated paragraphs, copyright footer) holding one real data table with a caption. Trafilatura emits the footer first and the closing paragraph before the data table; the converter anchors every piece back into the DOM and restores source order, drops the chrome cells outside the content cell (logo, tagline, nav links, footer), and keeps only the data table as a table. Remaining limitation: the visual heading (font size=4 bold) stays a bold paragraph."
+expected_errors = []
+
+[input]
+url = "https://rowing.example.test/results.html"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

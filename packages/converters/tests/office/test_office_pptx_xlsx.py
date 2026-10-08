@@ -213,3 +213,21 @@ def test_xlsx_header_hints(run: Run) -> None:
     doc = run(XlsxConverter(), _workbook(build), "h.xlsx")
     tables = [b for b in doc.blocks if isinstance(b, Table)]
     assert [t.header_rows for t in tables] == [1, 1, 0]
+
+
+def test_xlsx_merged_region_keeps_empty_cells(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
+    doc = run(XlsxConverter(), fixture_bytes("xlsx-merged-formulas"), "w.xlsx")
+    shifts = next(b for b in doc.blocks if isinstance(b, Table))
+    cells = {(c.row, c.col): c for c in shifts.cells}
+    assert (cells[(0, 0)].col_span, cells[(2, 0)].row_span, cells[(4, 0)].row_span) == (4, 2, 2)
+    # B7 is empty; inside a merged (HTML-rendered) table it must stay as a placeholder so 33 stays in column C.
+    assert cells[(6, 1)].spans == [] and cells[(6, 2)].spans[0].text == "33"
+    assert (3, 0) not in cells  # covered by the A3:A4 merge
+
+
+def test_xlsx_sparse_region_without_merges_omits_empty_cells(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
+    doc = run(XlsxConverter(), fixture_bytes("xlsx-uncalculated"), "w.xlsx")
+    budget = next(b for b in doc.blocks if isinstance(b, Table))
+    cells = {(c.row, c.col): c for c in budget.cells}
+    assert (4, 2) not in cells and cells[(4, 3)].formula == "=SUM(D2:D4)"
+    assert any(w.kind == WarningKind.FORMULA_UNCALCULATED for w in doc.warnings)

@@ -1,0 +1,1361 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > h1",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Tide harmonics"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > p:nth-of-type(1)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Quayside models the water level as a sum of cosine constituents."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "1"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " The height at time "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": "t",
+            "styles": [],
+            "text": "t"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " is"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "label": null,
+        "latex": "h(t) = H_0 + \\sum_{i=1}^{n} A_i \\cos(\\omega_i t + \\phi_i)",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > intomd-math",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "text": null,
+        "type": "equation"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > p:nth-of-type(2)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "where each amplitude "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": "A_i",
+            "styles": [],
+            "text": "A_i"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " comes from the station file."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-2",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "2"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > h2:nth-of-type(1)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Constituents"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Principal constituents"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 2,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 2,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Period"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "hours"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "days"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "M2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12.42"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0.52"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "S2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12.00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0.50"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "K1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "23.93"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.00"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": true,
+        "header_rows": 2,
+        "id": "b0006",
+        "n_cols": 3,
+        "n_rows": 5,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > table",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > h2:nth-of-type(2)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Mean level"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > p:nth-of-type(3)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Over a full cycle the cosine terms cancel:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "label": null,
+        "latex": "\\frac{1}{T}\\int_0^T h(t)\\,dt = H_0",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > mjx-container",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "text": null,
+        "type": "equation"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > h2:nth-of-type(3)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Computing a prediction"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "from quayside import harmonics\n\nlevels = harmonics.predict(station=\"harbor-01\", hours=48)\nprint(max(levels))",
+        "filename": null,
+        "id": "b0011",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > pre",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > p:nth-of-type(4)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "From the shell:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "code": "quayside predict --station harbor-01 --hours 48",
+        "filename": null,
+        "id": "b0013",
+        "language": "bash",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > div:nth-of-type(1) > pre",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0014",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > div:nth-of-type(2) > p:nth-of-type(1)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Note"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > div:nth-of-type(2) > p:nth-of-type(2)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Predictions ignore weather surge."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > details > summary",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Why cosines?"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0017",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > article > details > p",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Each constituent is a periodic astronomical forcing, so a cosine with a fixed angular speed fits it exactly."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "fn-1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > section > ol > li:nth-of-type(1)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This is the classical harmonic method."
+          }
+        ],
+        "type": "footnote"
+      },
+      {
+        "attrs": {},
+        "id": "fn-2",
+        "marker": "2",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > section > ol > li:nth-of-type(2)",
+          "source": "https://docs.example.test/quayside/theory/harmonics.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Station files list up to 37 constituents."
+          }
+        ],
+        "type": "footnote"
+      }
+    ],
+    "content_hash": "sha256:617b3fd76ff884d6bb8a6e58b2445c64021051ff39fbf7d19e9661a9e9f136d5",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": "How Quayside predicts tides from harmonic constituents.",
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "readability_ratio": 0.98
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "docs.example.test",
+      "slides": null,
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Tide harmonics"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [
+    {
+      "block_id": "fn-1",
+      "number": 1,
+      "source_marker": "1"
+    },
+    {
+      "block_id": "fn-2",
+      "number": 2,
+      "source_marker": "2"
+    }
+  ],
+  "frontmatter": {
+    "content_hash": "sha256:f2dd7a56df7be508a8b7da6cb503c2f07d9492133a1d6a03b14bc7d2c8352d50",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "description": "How Quayside predicts tides from harmonic constituents.",
+    "extra": {
+      "encoding": "utf-8",
+      "readability_ratio": 0.98
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://docs.example.test/quayside/theory/harmonics.html",
+    "source_hash": "sha256:fa1793d815520c77678ba39b55fa52f87bfb93e23c752f57f09d41618d69bef7",
+    "source_type": "web",
+    "title": "Tide harmonics",
+    "tokens": {
+      "cl100k_base": 417,
+      "claude_approx": 450,
+      "o200k_base": 417
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 137
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 2,
+      "comments": 0,
+      "equations": 2,
+      "figures": 0,
+      "footnotes": 2,
+      "headings": 5,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 7,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 13,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 125
+    },
+    "duration_seconds": 0.1410000000614673,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2880
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > h1",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > p:nth-of-type(1)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > intomd-math",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "equation"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > p:nth-of-type(2)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > h2:nth-of-type(1)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > table",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "table"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > h2:nth-of-type(2)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > p:nth-of-type(3)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > mjx-container",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "equation"
+    },
+    {
+      "block_id": "b0010",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > h2:nth-of-type(3)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0011",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > pre",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "code"
+    },
+    {
+      "block_id": "b0012",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > p:nth-of-type(4)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0013",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > div:nth-of-type(1) > pre",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "code"
+    },
+    {
+      "block_id": "b0014",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > div:nth-of-type(2) > p:nth-of-type(1)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0015",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > div:nth-of-type(2) > p:nth-of-type(2)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0016",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > details > summary",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0017",
+      "engine": "web.trafilatura",
+      "path": "body > main > article > details > p",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "fn-1",
+      "engine": "web.trafilatura",
+      "path": "body > main > section > ol > li:nth-of-type(1)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "footnote"
+    },
+    {
+      "block_id": "fn-2",
+      "engine": "web.trafilatura",
+      "path": "body > main > section > ol > li:nth-of-type(2)",
+      "source": "https://docs.example.test/quayside/theory/harmonics.html",
+      "type": "footnote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0005",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 701,
+      "offset_start": 341,
+      "original_level": 2,
+      "original_title": "Constituents",
+      "time_end": null,
+      "time_start": null,
+      "title": "Constituents"
+    },
+    {
+      "block_id": "b0007",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 813,
+      "offset_start": 701,
+      "original_level": 2,
+      "original_title": "Mean level",
+      "time_end": null,
+      "time_start": null,
+      "title": "Mean level"
+    },
+    {
+      "block_id": "b0010",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 1094,
+      "offset_start": 813,
+      "original_level": 2,
+      "original_title": "Computing a prediction",
+      "time_end": null,
+      "time_start": null,
+      "title": "Computing a prediction"
+    },
+    {
+      "block_id": "b0016",
+      "id": "sec-3-1",
+      "level": 3,
+      "number": "3.1",
+      "offset_end": 1236,
+      "offset_start": 1094,
+      "original_level": 3,
+      "original_title": "Why cosines?",
+      "time_end": null,
+      "time_start": null,
+      "title": "Why cosines?"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0006",
+      "column_types": [
+        "text",
+        "number",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Name",
+        "Period / hours",
+        "Period / days"
+      ],
+      "number": 1,
+      "offset_end": 699,
+      "offset_start": 369,
+      "page": null,
+      "representation": "html",
+      "rows": 3,
+      "tokens": 139
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 707,
+  "warnings": []
+}

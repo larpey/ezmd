@@ -1,0 +1,10 @@
+converter = "data.json"
+max_seconds = 20
+hand_edited = false
+notes = "Paginated API envelope (part2 10f item 1): data array of 12 records with a nested address and geo (dot-path flattened records table, rendered as a list because it has 9 columns), meta page/next cursor and links as key/value tables."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

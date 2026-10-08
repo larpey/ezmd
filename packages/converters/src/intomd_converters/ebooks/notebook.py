@@ -191,10 +191,44 @@ class _Builder:
             )
         if self.outputs != "off":
             outputs = cell.get("outputs")
-            for j, output in enumerate(outputs if isinstance(outputs, list) else []):
-                if isinstance(output, dict):
-                    out.extend(self._output(i, j, cell, output))
+            out.extend(self._outputs(i, cell, outputs if isinstance(outputs, list) else []))
         return out
+
+    def _outputs(self, i: int, cell: dict[str, Any], outputs: list[Any]) -> list[Block]:
+        """Outputs of one code cell. Consecutive chunks of the same stream are concatenated raw, the way
+        Jupyter front ends display them (`print(..., end="")` and progress output continue mid-line), and
+        then cleaned, capped and stripped once, keeping the first chunk's provenance."""
+        out: list[Block] = []
+        run: tuple[int, str, list[str]] | None = None  # (first output index, stream name, raw chunks)
+
+        def flush() -> None:
+            if run is not None:
+                out.extend(self._stream_block(i, run[0], cell, run[1], "".join(run[2])))
+
+        for j, output in enumerate(outputs):
+            if not isinstance(output, dict):
+                continue
+            name = output.get("name")
+            if output.get("output_type") == "stream" and isinstance(name, str) and "text" in output:
+                if run is not None and run[1] == name:
+                    run[2].append(_text(output.get("text")))
+                else:
+                    flush()
+                    run = (j, name, [_text(output.get("text"))])
+                continue
+            flush()
+            run = None
+            out.extend(self._output(i, j, cell, output))
+        flush()
+        return out
+
+    def _stream_block(self, i: int, j: int, cell: dict[str, Any], name: str, raw: str) -> list[Block]:
+        text = self._cap(raw).rstrip(chr(10))
+        if not text.strip():
+            return []
+        attrs = {"role": "output", "stream": name}
+        prov = self._prov(f"cells[{i}].outputs[{j}]", cell)
+        return [CodeBlock(code=text, language="output", attrs=attrs, provenance=prov)]
 
     def _markdown(self, src: str, path: str, cell: dict[str, Any], prefix: str) -> list[Block]:
         blocks, _extras = parse_markdown(src, self.source)

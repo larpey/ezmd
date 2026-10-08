@@ -185,9 +185,24 @@ def capture_math_scripts(root: HtmlElement) -> None:
             continue
         marker = etree.Element("intomd-math")
         marker.set("data-latex", (sc.text or "").strip())
+        # The TeX is also the marker's text so extractors that drop unknown tags (Trafilatura) keep it and
+        # the extracted block still matches its DOM element by text (tei.DomIndex).
+        marker.text = marker.get("data-latex")
         marker.set("data-display", "block" if "mode=display" in typ else "inline")
         marker.tail = sc.tail
+        _drop_math_preview(sc)
         sc.getparent().replace(sc, marker)
+
+
+def _drop_math_preview(script: HtmlElement) -> None:
+    """MathJax v2 puts a `span.MathJax_Preview` (plain-text fallback) right before each math script; with the TeX
+    kept, the preview would print the formula twice."""
+    prev = script.getprevious()
+    if prev is None or not is_element(prev) or "MathJax_Preview" not in (prev.get("class") or "").split():
+        return
+    if (prev.tail or "").strip():
+        return
+    _remove(prev)
 
 
 def pre_clean(root: HtmlElement) -> HygieneReport:

@@ -1,0 +1,212 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 45,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.rs",
+          "source": "input.rs",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.rs"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "lines": "45",
+          "tokens": "333"
+        },
+        "code": "//! ledger.rs: a fixed-point ledger (intomd fixture).\nuse std::collections::BTreeMap;\nuse std::fmt;\n\n/// Amounts are stored in cents to avoid floating-point drift.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]\npub struct Cents(pub i64);\n\nimpl fmt::Display for Cents {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        write!(f, \"{}.{:02}\", self.0 / 100, (self.0 % 100).abs())\n    }\n}\n\npub trait Account {\n    fn balance(&self) -> Cents;\n}\n\n#[derive(Default)]\npub struct Ledger<'a> {\n    entries: BTreeMap<&'a str, Vec<Cents>>,\n}\n\nimpl<'a> Ledger<'a> {\n    pub fn post(&mut self, account: &'a str, amount: Cents) {\n        self.entries.entry(account).or_default().push(amount);\n    }\n\n    pub fn total(&self, account: &str) -> Option<Cents> {\n        self.entries.get(account).map(|v| Cents(v.iter().map(|c| c.0).sum()))\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn totals_in_cents() {\n        let mut l = Ledger::default();\n        l.post(\"cash\", Cents(1050));\n        l.post(\"cash\", Cents(-25));\n        assert_eq!(l.total(\"cash\").unwrap().to_string(), \"10.25\");\n    }\n}",
+        "filename": "input.rs",
+        "id": "b0002",
+        "language": "rust",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 45,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.rs",
+          "source": "input.rs",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:ee5b68372a08caec0980ed76431361fcb8bcd01f3779ab7c1c43b0b4886ff1e8",
+    "converter_id": "code.source_file",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "bytes": 1136,
+        "language": "rust",
+        "lines": 45,
+        "tokens": 333
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/x-rust",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.rs",
+      "source_type": "code",
+      "speakers": [],
+      "title": "input.rs"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:1aae81014c3dae0f2bdeb40872a5b1b6f8aec83ac293e711629303784ff34bfa",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.source_file",
+    "converter_version": "0.0.1",
+    "extra": {
+      "bytes": 1136,
+      "encoding": "utf-8",
+      "language": "rust",
+      "lines": 45,
+      "tokens": 333
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.rs",
+    "source_hash": "sha256:94b87e222e47f635c0f0546b20c21598dc831e21d9afd7eb08cf0f2031507d5e",
+    "source_type": "code",
+    "title": "input.rs",
+    "tokens": {
+      "cl100k_base": 351,
+      "claude_approx": 379,
+      "o200k_base": 351
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 104
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 126
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.source_file",
+    "engines_tried": [
+      "code.source_file"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1136
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 45,
+      "line_start": 1,
+      "path": "input.rs",
+      "source": "input.rs",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 45,
+      "line_start": 1,
+      "path": "input.rs",
+      "source": "input.rs",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 617,
+  "warnings": []
+}

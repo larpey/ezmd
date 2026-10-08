@@ -1,0 +1,10 @@
+converter = "archives.archive"
+max_seconds = 30
+hand_edited = false
+notes = "About 2 KB on disk: one member inflates to 2 MiB of zeros (about 1000:1), over the 100:1 per-entry ratio cap past the 1 MiB floor. The archive is refused before any read: archive_bomb_suspected, both entries listed as not extracted, zero bytes extracted."
+expected_errors = ["archive_bomb_suspected"]
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/archives/_generate.py"

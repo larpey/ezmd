@@ -1,0 +1,916 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 1,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "sheet_state": "visible"
+        },
+        "id": "b0001",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "Budget!A1",
+          "source": "input.xlsx",
+          "source_id": null,
+          "source_label": "Budget",
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Budget"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "region": "A1:D5",
+          "sheet": "Budget"
+        },
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Month"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Litres"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Price"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Cost"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "January"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": "12000",
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12000"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": "1.42",
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.42"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": "=B2*C2",
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "=B2*C2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "February"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": "11000",
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "11000"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": "1.45",
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.45"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": "=B3*C3",
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "=B3*C3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "March"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": "12500",
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12500"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": "1.39",
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.39"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": "=B4*C4",
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "=B4*C4"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Total"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": "=SUM(B2:B4)",
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "=SUM(B2:B4)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": "=SUM(D2:D4)",
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "=SUM(D2:D4)"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "int",
+          "float",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 4,
+        "n_rows": 5,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "Budget!A1:D5",
+          "source": "input.xlsx",
+          "source_id": null,
+          "source_label": "Budget",
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {
+          "sheet_state": "visible"
+        },
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "Check!A1",
+          "source": "input.xlsx",
+          "source_id": null,
+          "source_label": "Check",
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Check"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "region": "A1:B1",
+          "sheet": "Check"
+        },
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Average price"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": "=AVERAGE(Budget!C2:C4)",
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "=AVERAGE(Budget!C2:C4)"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 0,
+        "id": "b0004",
+        "n_cols": 2,
+        "n_rows": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "Check!A1:B1",
+          "source": "input.xlsx",
+          "source_id": null,
+          "source_label": "Check",
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:fa8ea7710bf2aef5075ba0879c9b7c6f6fcbc02689c0061f58aa107b5124162c",
+    "converter_id": "documents.xlsx",
+    "metadata": {
+      "author": "Transit Desk",
+      "authors": [
+        "Transit Desk"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [
+        "Budget",
+        "Check"
+      ],
+      "site_name": null,
+      "slides": null,
+      "source": "input.xlsx",
+      "source_type": "xlsx",
+      "speakers": [],
+      "title": "Fuel Budget"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 6,
+        "detail": {},
+        "kind": "formula_uncalculated",
+        "message": "6 formula cells have no cached value; the formula text is shown.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Transit Desk",
+    "content_hash": "sha256:19cd8cc9b011f434244e183e6946b85d7169b835bfef688ce697042384d4d9af",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.xlsx",
+    "converter_version": "0.0.1",
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "sheets": [
+      "Budget",
+      "Check"
+    ],
+    "source": "input.xlsx",
+    "source_hash": "sha256:9889cbb504266939eaea65f92691cc7dc1facfa4f7d08ea087eb10a2eac7b43a",
+    "source_type": "xlsx",
+    "title": "Fuel Budget",
+    "tokens": {
+      "cl100k_base": 183,
+      "claude_approx": 198,
+      "o200k_base": 183
+    },
+    "truncated": false,
+    "warnings": [
+      "formula_uncalculated",
+      "formulas_present"
+    ],
+    "word_count": 37
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 2,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 21,
+      "tables": 2,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 24
+    },
+    "duration_seconds": 0.01500000013038516,
+    "engine": "documents.xlsx",
+    "engines_tried": [
+      "documents.xlsx"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 5541
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "Budget!A1",
+      "source": "input.xlsx",
+      "source_label": "Budget",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "Budget!A1:D5",
+      "source": "input.xlsx",
+      "source_label": "Budget",
+      "source_page": 1,
+      "type": "table"
+    },
+    {
+      "block_id": "b0003",
+      "path": "Check!A1",
+      "source": "input.xlsx",
+      "source_label": "Check",
+      "source_page": 2,
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "path": "Check!A1:B1",
+      "source": "input.xlsx",
+      "source_label": "Check",
+      "source_page": 2,
+      "type": "table"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0001",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 284,
+      "offset_start": 22,
+      "original_level": 2,
+      "original_title": "Budget",
+      "time_end": null,
+      "time_start": null,
+      "title": "Budget"
+    },
+    {
+      "block_id": "b0003",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 448,
+      "offset_start": 284,
+      "original_level": 2,
+      "original_title": "Check",
+      "time_end": null,
+      "time_start": null,
+      "title": "Check"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "int",
+        "float",
+        "text"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [
+        {
+          "col": 3,
+          "formula": "=B2*C2",
+          "row": 1
+        },
+        {
+          "col": 3,
+          "formula": "=B3*C3",
+          "row": 2
+        },
+        {
+          "col": 3,
+          "formula": "=B4*C4",
+          "row": 3
+        },
+        {
+          "col": 1,
+          "formula": "=SUM(B2:B4)",
+          "row": 4
+        },
+        {
+          "col": 3,
+          "formula": "=SUM(D2:D4)",
+          "row": 4
+        }
+      ],
+      "header": [
+        "Month",
+        "Litres",
+        "Price",
+        "Cost"
+      ],
+      "number": 1,
+      "offset_end": 282,
+      "offset_start": 68,
+      "page": 1,
+      "representation": "pipe",
+      "rows": 4,
+      "tokens": 101
+    },
+    {
+      "block_id": "b0004",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [
+        {
+          "col": 1,
+          "formula": "=AVERAGE(Budget!C2:C4)",
+          "row": 0
+        }
+      ],
+      "header": [
+        "col_1",
+        "col_2"
+      ],
+      "number": 2,
+      "offset_end": 447,
+      "offset_start": 328,
+      "page": 2,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 43
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 440,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 6,
+      "detail": {},
+      "kind": "formula_uncalculated",
+      "message": "6 formula cells have no cached value; the formula text is shown.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {},
+      "kind": "formulas_present",
+      "message": "The source contains spreadsheet formulas; cached values are shown.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

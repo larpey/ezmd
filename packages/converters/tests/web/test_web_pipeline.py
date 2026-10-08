@@ -242,3 +242,101 @@ def test_trafilatura_path_restores_lazy_images() -> None:
     refs = [b.ref for b in doc.blocks if isinstance(b, Image)]
     assert refs == ["https://l.test/x/a.jpg"]
     assert "lazy_content_possible" in _kinds(doc)
+
+
+MATHJAX_PAGE = """<html lang="en"><head><title>Harmonics</title></head><body>
+<nav><a href="/">Home</a> <a href="/theory">Theory</a></nav><main><article><h1>Harmonics</h1>
+<p>LONG The water level is a sum of cosines.<sup id="r1"><a href="#fn1" role="doc-noteref">1</a></sup> At time
+<span class="MathJax_Preview">t</span><script type="math/tex">t</script> it is</p>
+<script type="math/tex; mode=display">h(t) = H_0 + @sum_i A_i</script>
+<p>LONG Over a full cycle the cosine terms cancel and only the mean level is left.</p>
+<mjx-container class="MathJax" display="true"><mjx-math aria-hidden="true">H</mjx-math><mjx-assistive-mml>
+<math display="block"><semantics><mi>H</mi><annotation encoding="application/x-tex">@bar h = H_0</annotation>
+</semantics></math></mjx-assistive-mml></mjx-container>
+<p>LONG The constituents come from the station file kept next to the tide gauge.</p>
+</article><section class="footnotes" role="doc-endnotes"><ol><li id="fn1"><p>The harmonic method.
+<a href="#r1" role="doc-backlink">back</a></p></li></ol></section></main>
+<footer><p>Site footer.</p></footer></body></html>""".replace("@", chr(92)).replace("LONG", LONG)
+
+
+def test_trafilatura_keeps_mathjax_and_footnotes_outside_article() -> None:
+    """Display math with no paragraph around it and a footnote section that is a sibling of <article> are
+    restored from the DOM; MathJax v2 inline TeX survives extraction and its preview is not duplicated."""
+    from intomd.ir import Equation, Footnote
+
+    doc = _convert(MATHJAX_PAGE, "https://docs.example.test/theory/harmonics.html")
+    eqs = [b.latex for b in doc.blocks if isinstance(b, Equation)]
+    assert eqs == ["h(t) = H_0 + " + chr(92) + "sum_i A_i", chr(92) + "bar h = H_0"]
+    fns = [b for b in doc.blocks if isinstance(b, Footnote)]
+    assert len(fns) == 1 and spans_text(fns[0].spans) == "The harmonic method."
+    first = next(b for b in doc.blocks if isinstance(b, Paragraph))
+    assert [s.math for s in first.spans if s.math] == ["t"] and "time t t" not in spans_text(first.spans)
+    assert any(s.footnote_ref == fns[0].id for s in first.spans)
+
+
+LAYOUT_PAGE = f"""<html><head><title>Club results</title></head><body>
+<table width="760"><tr><td width="150"><table><tr><td><a href="/">Home</a></td></tr></table></td>
+<td><table cellpadding="10"><tr><td><font size="4"><b>Spring Regatta</b></font><br><br>
+<font size="2">{LONG}<br><br>{LONG}</font><br><br>
+<table border="1"><tr><th>Place</th><th>Crew</th></tr><tr><td>1</td><td>Saltmarsh</td></tr>
+<tr><td>2</td><td>Estuary</td></tr></table></td></tr></table></td></tr></table></body></html>"""
+
+
+def test_trafilatura_unwraps_layout_tables_keeps_data_table() -> None:
+    from intomd.ir import Table
+
+    doc = _convert(LAYOUT_PAGE, "https://club.example.test/results.html")
+    tables = [b for b in doc.blocks if isinstance(b, Table)]
+    assert len(tables) == 1 and tables[0].header_rows == 1 and tables[0].n_cols == 2
+    paras = [spans_text(b.spans) for b in doc.blocks if isinstance(b, Paragraph)]
+    assert any(p.startswith("The harbor master logs") for p in paras)
+
+
+def test_xml_layout_rule_keeps_one_row_and_sparse_data_tables() -> None:
+    from lxml import etree
+
+    from intomd_converters.web.tei import _is_xml_layout_table
+
+    def table(rows: list[list[str]], graphic: bool = False) -> object:
+        t = etree.Element("table")
+        for row in rows:
+            r = etree.SubElement(t, "row")
+            for text in row:
+                etree.SubElement(r, "cell").text = text or None
+        if graphic:
+            etree.SubElement(t.find("row/cell"), "graphic", src="/logo.gif")
+        return t
+
+    assert not _is_xml_layout_table(table([["Total", "12", "3:02.4"]]))
+    assert not _is_xml_layout_table(table([["Mon", "", ""], ["", "Tue", ""], ["", "", "Wed"]]))
+    assert _is_xml_layout_table(table([["", "Est. 1898"]], graphic=True))
+    assert _is_xml_layout_table(table([["Home"], ["News"]]))
+    assert _is_xml_layout_table(table([["(c) 2005 Club", ""]]))
+
+
+LAYOUT_CHROME_PAGE = f"""<html><body><table width="760">
+<tr><td colspan="2"><table><tr><td><img src="/logo.gif" alt="Club"></td><td>Est. 1898 | <a href="/c">Contact</a></td>
+</tr></table></td></tr>
+<tr><td width="150"><table><tr><td><a href="/">Home</a></td></tr><tr><td><a href="/n">News</a></td></tr></table></td>
+<td><table><tr><td><b>Results</b><br><br><font>{LONG}</font><br><br>
+<table border="1"><tr><th>Place</th><th>Crew</th></tr><tr><td>1</td><td>Saltmarsh</td></tr></table>
+<br><font>Thanks to the launch drivers and the umpires.</font></td></tr></table></td></tr>
+<tr><td colspan="2"><font size="1">&copy; 2005 Club. <a href="/map">Sitemap</a></font></td></tr>
+</table></body></html>"""
+
+
+def test_trafilatura_layout_page_source_order_without_chrome() -> None:
+    from intomd.ir import Table
+
+    doc = _convert(LAYOUT_CHROME_PAGE, "https://club.example.test/results.html")
+    kinds = [type(b).__name__ for b in doc.blocks]
+    text = doc.plain_text()
+    for chrome in ("2005 Club", "Sitemap", "Est. 1898", "Home", "News"):
+        assert chrome not in text, chrome
+    assert not any(isinstance(b, Image) for b in doc.blocks)
+    table_at = kinds.index("Table")
+    thanks_at = next(
+        i for i, b in enumerate(doc.blocks) if isinstance(b, Paragraph) and "launch" in spans_text(b.spans)
+    )
+    assert table_at < thanks_at
+    assert isinstance(doc.blocks[table_at], Table)

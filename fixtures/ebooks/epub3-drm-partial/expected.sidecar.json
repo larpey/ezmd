@@ -1,0 +1,639 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch1.xhtml#s1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Evaporation"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch1.xhtml#s1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "A shallow pan loses about four millimetres of water a day in July."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-ch1_xhtml-n1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[^1]"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " The salt that remains is raked into rows."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch1.xhtml#s1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The evaporation rate is "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": "E = k (e_s - e_a)",
+            "styles": [],
+            "text": "E = k (e_s - e_a)"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " where "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "k"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " depends on wind."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "fn-ch1_xhtml-n1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch1.xhtml#n1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Measured at the north pans in 2023."
+          }
+        ],
+        "type": "footnote"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch3.xhtml#s3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Glossary"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch3.xhtml#s3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Brine"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch3.xhtml#s3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Water saturated with salt."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch3.xhtml#s3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Fleur de sel"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/ch3.xhtml#s3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The thin crust skimmed from the surface."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:71d34b57d5746d09f4e9fe2facb933974356c959bde8be0cf6965dcd8102468b",
+    "converter_id": "documents.epub",
+    "metadata": {
+      "author": "Oren Halde",
+      "authors": [
+        "Oren Halde"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "epub_version": "3.0",
+        "identifier": "urn:uuid:5b2a7c1e-0000-4000-8000-000000000003",
+        "publisher": null
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "application/epub+zip",
+      "modified": null,
+      "pages": null,
+      "published": "2024-06-01T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.epub",
+      "source_type": "epub",
+      "speakers": [],
+      "title": "Notes from the Salt Flats"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "encrypted_resources": 1,
+          "files": "OEBPS/text/ch2.xhtml"
+        },
+        "kind": "drm_protected",
+        "message": "1 chapter(s) are DRM-encrypted and were skipped: OEBPS/text/ch2.xhtml.",
+        "page": null,
+        "severity": "error"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [
+    {
+      "block_id": "fn-ch1_xhtml-n1",
+      "number": 1,
+      "source_marker": "1"
+    }
+  ],
+  "frontmatter": {
+    "author": "Oren Halde",
+    "content_hash": "sha256:8c0e83d417fc7b2b95d0adb5ac4146c09f89e39275cad79009be8a57485f4dca",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.epub",
+    "converter_version": "0.0.1",
+    "created_at": "2024-06-01",
+    "extra": {
+      "epub_version": "3.0",
+      "identifier": "urn:uuid:5b2a7c1e-0000-4000-8000-000000000003"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.epub",
+    "source_hash": "sha256:14a116d19b4c1a0c42fbd98989c9110aa7055f027c3fc35e8aa0ae36de581d3f",
+    "source_type": "epub",
+    "title": "Notes from the Salt Flats",
+    "tokens": {
+      "cl100k_base": 124,
+      "claude_approx": 133,
+      "o200k_base": 123
+    },
+    "truncated": false,
+    "warnings": [
+      "drm_protected"
+    ],
+    "word_count": 69
+  },
+  "heading_shift": 1,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 1,
+      "headings": 2,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 6,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 60
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.epub",
+    "engines_tried": [
+      "documents.epub"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 3209
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "OEBPS/text/ch1.xhtml#s1",
+      "source": "input.epub",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "OEBPS/text/ch1.xhtml#s1",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "OEBPS/text/ch1.xhtml#s1",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "fn-ch1_xhtml-n1",
+      "path": "OEBPS/text/ch1.xhtml#n1",
+      "source": "input.epub",
+      "type": "footnote"
+    },
+    {
+      "block_id": "b0005",
+      "path": "OEBPS/text/ch3.xhtml#s3",
+      "source": "input.epub",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0006",
+      "path": "OEBPS/text/ch3.xhtml#s3",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0007",
+      "path": "OEBPS/text/ch3.xhtml#s3",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0008",
+      "path": "OEBPS/text/ch3.xhtml#s3",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "path": "OEBPS/text/ch3.xhtml#s3",
+      "source": "input.epub",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0001",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 292,
+      "offset_start": 36,
+      "original_level": 1,
+      "original_title": "Evaporation",
+      "time_end": null,
+      "time_start": null,
+      "title": "Evaporation"
+    },
+    {
+      "block_id": "b0005",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 414,
+      "offset_start": 292,
+      "original_level": 1,
+      "original_title": "Glossary",
+      "time_end": null,
+      "time_start": null,
+      "title": "Glossary"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 440,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "encrypted_resources": 1,
+        "files": "OEBPS/text/ch2.xhtml"
+      },
+      "kind": "drm_protected",
+      "message": "1 chapter(s) are DRM-encrypted and were skipped: OEBPS/text/ch2.xhtml.",
+      "page": null,
+      "severity": "error"
+    }
+  ]
+}

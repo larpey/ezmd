@@ -34,6 +34,7 @@ from intomd_converters.data._tree import (
     TreeBuilder,
     clip,
     clip_warnings,
+    depth_text,
     describe,
     emit_schema_and_data,
     pointer_index,
@@ -165,10 +166,10 @@ class YamlConverter:
         doc.metadata.extra.update({"format": "YAML", "documents": len(docs), "anchors_expanded": anchors})
         builder = TreeBuilder(source=ref.display, opts=opts, ctx=options.ctx, stats=stats)
         if len(docs) == 1:
-            summary(doc, f"YAML {describe(clipped.value)}; nesting depth {clipped.depth}.")
+            summary(doc, f"YAML {describe(clipped.value)}; {depth_text(clipped, opts)}.")
             emit_schema_and_data(builder, clipped.value)
         else:
-            summary(doc, f"YAML stream of {len(docs)} documents; nesting depth {clipped.depth - 1}.")
+            summary(doc, f"YAML stream of {len(docs)} documents; {depth_text(clipped, opts, offset=1)}.")
             builder.heading(2, "Schema", "/")
             table, left = schema_table(clipped.value, ref.display, opts, stats)
             builder.blocks.append(table)

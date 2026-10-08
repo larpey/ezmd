@@ -1,0 +1,10 @@
+converter = "data.yaml"
+max_seconds = 20
+hand_edited = false
+notes = "Part2 10f item 4: three Kubernetes manifests in one stream with comments, an anchor reused through an alias (anchors_expanded), flow mappings, and a version-like string 1.10 kept as text; source block preserves the comments."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

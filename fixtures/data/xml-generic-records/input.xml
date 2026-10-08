@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<people source="self-generated" count="8">
+  <person id="p1">
+    <name>Ada Lovelace</name>
+    <born>1815-12-10</born>
+    <city>London</city>
+    <field>mathematics</field>
+  </person>
+  <person id="p2">
+    <name>Mary Somerville</name>
+    <born>1780-12-26</born>
+    <city>Jedburgh</city>
+    <field>astronomy</field>
+  </person>
+  <person id="p3">
+    <name>Sofia Kovalevskaya</name>
+    <born>1850-01-15</born>
+    <city>Moscow</city>
+    <field>analysis</field>
+  </person>
+  <person id="p4">
+    <name>Emmy Noether</name>
+    <born>1882-03-23</born>
+    <city>Erlangen</city>
+    <field>algebra</field>
+  </person>
+  <person id="p5">
+    <name>Hypatia</name>
+    <born/>
+    <city>Alexandria</city>
+    <field>geometry</field>
+  </person>
+  <person id="p6">
+    <name>Caroline Herschel</name>
+    <born>1750-03-16</born>
+    <city>Hanover</city>
+    <field>astronomy</field>
+  </person>
+  <person id="p7">
+    <name>Grace Chisholm Young</name>
+    <born>1868-03-15</born>
+    <city>Haslemere</city>
+    <field>analysis</field>
+  </person>
+  <person id="p8">
+    <name>Florence Nightingale</name>
+    <born>1820-05-12</born>
+    <city>Florence</city>
+    <field>statistics</field>
+    <note>Founded modern nursing statistics &amp; the polar area chart.</note>
+  </person>
+</people>

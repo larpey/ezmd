@@ -249,6 +249,156 @@ def repo_files() -> list[tuple[str, bytes]]:
     ]  # fmt: skip
 
 
+SHELL_SCRIPT = lines(
+    "#!/usr/bin/env bash",
+    "# backup.sh: rotate nightly database dumps (intomd fixture).",
+    "set -euo pipefail",
+    "",
+    'BACKUP_DIR="${BACKUP_DIR:-/var/backups/app}"',
+    "KEEP_DAYS=14",
+    "",
+    "log() {",
+    '  printf "%s %s" "$(date -u +%FT%TZ)" "$*" >&2',
+    "}",
+    "",
+    "rotate() {",
+    '  find "$BACKUP_DIR" -name "*.sql.gz" -mtime +"$KEEP_DAYS" -print -delete',
+    "}",
+    "",
+    "cat <<'EOF' > /tmp/backup-banner.txt",
+    "Nightly backup: do not interrupt.",
+    "EOF",
+    "",
+    'case "${1:-run}" in',
+    "  run) log starting; rotate ;;",
+    "  dry-run) log dry run only ;;",
+    '  *) echo "usage: $0 [run|dry-run]"; exit 2 ;;',
+    "esac",
+)
+
+RUST_FILE = lines(
+    "//! ledger.rs: a fixed-point ledger (intomd fixture).",
+    "use std::collections::BTreeMap;",
+    "use std::fmt;",
+    "",
+    "/// Amounts are stored in cents to avoid floating-point drift.",
+    "#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]",
+    "pub struct Cents(pub i64);",
+    "",
+    "impl fmt::Display for Cents {",
+    "    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {",
+    '        write!(f, "{}.{:02}", self.0 / 100, (self.0 % 100).abs())',
+    "    }",
+    "}",
+    "",
+    "pub trait Account {",
+    "    fn balance(&self) -> Cents;",
+    "}",
+    "",
+    "#[derive(Default)]",
+    "pub struct Ledger<'a> {",
+    "    entries: BTreeMap<&'a str, Vec<Cents>>,",
+    "}",
+    "",
+    "impl<'a> Ledger<'a> {",
+    "    pub fn post(&mut self, account: &'a str, amount: Cents) {",
+    "        self.entries.entry(account).or_default().push(amount);",
+    "    }",
+    "",
+    "    pub fn total(&self, account: &str) -> Option<Cents> {",
+    "        self.entries.get(account).map(|v| Cents(v.iter().map(|c| c.0).sum()))",
+    "    }",
+    "}",
+    "",
+    "#[cfg(test)]",
+    "mod tests {",
+    "    use super::*;",
+    "",
+    "    #[test]",
+    "    fn totals_in_cents() {",
+    "        let mut l = Ledger::default();",
+    '        l.post("cash", Cents(1050));',
+    '        l.post("cash", Cents(-25));',
+    '        assert_eq!(l.total("cash").unwrap().to_string(), "10.25");',
+    "    }",
+    "}",
+)
+
+
+def scatter_files() -> list[tuple[str, bytes]]:
+    """A repo whose secrets sit inside files that ARE packed (YAML, Markdown, JS, Dockerfile, INI), next to
+    placeholders that must stay visible, plus credential files that are excluded outright."""
+    root = "tidepool/"
+    readme = lines("# tidepool", "", "Sensor ingest service (intomd secret-scatter fixture).")
+    ops = lines(
+        "# Operations",
+        "",
+        "Connect to the staging replica:",
+        "",
+        "```",
+        f"psql postgres://ingest:{fake_hex('ops-db', 18)}@db.staging.example.invalid/tide",
+        "```",
+        "",
+        "Local default (placeholder, keep visible): `postgres://ingest:changeme@localhost/tide`.",
+    )
+    app_yaml = lines(
+        "service: tidepool",
+        "database:",
+        "  host: db.example.invalid",
+        f"  password: {fake_hex('yaml-db', 20)}",
+        "  pool_size: 8",
+        "upstream:",
+        '  api_key: "${UPSTREAM_API_KEY}"',
+    )
+    client_js = lines(
+        "// client.js: upstream HTTP client.",
+        "export async function fetchReadings(base) {",
+        "  const res = await fetch(base + '/readings', {",
+        f"    headers: {{ Authorization: 'Bearer {fake_hex('bearer', 32)}' }},",
+        "  });",
+        "  return res.json();",
+        "}",
+        "export const MAX_RETRIES = 3;",
+    )
+    dockerfile = lines(
+        "FROM python:3.12-slim",
+        "WORKDIR /app",
+        f"ENV INGEST_TOKEN={fake_hex('docker-token', 28)}",
+        "ENV LOG_LEVEL=info",
+        'CMD ["python", "-m", "tidepool"]',
+    )
+    ini = lines(
+        "[alerts]",
+        "smtp_host = mail.example.invalid",
+        "smtp_password = <your password here>",
+        f"webhook_secret = {fake_hex('ini-webhook', 24)}",
+    )
+    main_py = lines(
+        '"""tidepool entry point."""',
+        "import os",
+        "",
+        'TOKEN = os.environ["INGEST_TOKEN"]  # read at runtime, nothing to redact',
+        "",
+        "",
+        "def main() -> None:",
+        '    print("ingest ready")',
+    )
+    return [
+        (root + "README.md", readme.encode()),
+        (root + ".gitignore", lines("*.pyc", "secrets/", "!secrets/README.md").encode()),
+        (root + "Dockerfile", dockerfile.encode()),
+        (root + "config/app.yaml", app_yaml.encode()),
+        (root + "config/alerts.ini", ini.encode()),
+        (root + "docs/operations.md", ops.encode()),
+        (root + "web/client.js", client_js.encode()),
+        (root + "src/tidepool/__main__.py", main_py.encode()),
+        (root + "secrets/README.md", lines("Keep real secrets out of git; this folder is ignored.").encode()),
+        (root + "secrets/prod.txt", lines(f"token={fake_hex('ignored-prod', 30)}").encode()),
+        (root + ".npmrc", lines(f"//registry.example.invalid/:_authToken={fake_hex('npmrc', 36)}").encode()),
+        (root + "deploy/id_ed25519", fake_pem("deploy-ssh").encode()),
+    ]  # fmt: skip
+
+
 def write_zip(path: Path, files: list[tuple[str, bytes]], *, hostile: bool) -> None:
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for name, data in files:
@@ -287,6 +437,10 @@ def main() -> None:
     write_text(HERE / "source-planted-secret" / "input.py", PLANTED)
     write_text(HERE / "source-go" / "input.go", GO_FILE)
     write_text(HERE / "source-typescript" / "input.ts", TS_FILE)
+    write_text(HERE / "source-shell" / "input.sh", SHELL_SCRIPT)
+    write_text(HERE / "source-rust" / "input.rs", RUST_FILE)
+    (HERE / "repo-secrets-scatter").mkdir(parents=True, exist_ok=True)
+    write_zip(HERE / "repo-secrets-scatter" / "input.repo.zip", scatter_files(), hostile=False)
     files = repo_files()
     for name in ("repo-small", "repo-budget"):
         (HERE / name).mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,42 @@
+Harbour Maintenance Manual
+==========================
+
+This manual describes the routine upkeep of the small-boat harbour. It was
+written to be read on paper, so its paragraphs are hard-wrapped at about
+eighty columns and its sections are marked the way a typewriter would.
+
+Daily Checks
+------------
+
+Walk the pontoons every morning before the first boat leaves.
+
+1. Check the mooring lines for chafe.
+2. Test the shore power posts.
+   2.1 Reset any tripped breaker once.
+   2.2 Report a second trip to the harbour master.
+3. Clear litter from the slipway.
+
+SAFETY EQUIPMENT CHECKS
+
+Every pontoon carries a life ring, a throw line and a ladder. Replace a
+missing item the same day and note it in the log.
+
+Item         Location        Checked
+Life ring    Pontoon A head  daily
+Throw line   Pontoon B head  daily
+Ladder       Each finger     weekly
+
+WINTER LAY-UP:
+
+Before the first frost, drain the fresh water lines with the following
+commands on the pump house controller:
+
+    valve close main
+    pump drain --all
+    valve open bleed
+
+Leave the bleed valve open until spring.
+
+END NOTE
+
+Two capital words alone are not a heading.

@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "A 40-row table split over three pages with the header row repeated on each page; the continuation pieces are merged into one 41-row table (repeated headers dropped, attrs pdf_table_pages=1,2,3), so page 2 gets no page marker of its own."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

@@ -1,0 +1,10 @@
+converter = "code.source_file"
+max_seconds = 30
+hand_edited = false
+notes = "Bash script with a shebang, a quoted heredoc, ${VAR:-default} expansions and a case statement: packed verbatim in a bash fence; metadata records the shebang interpreter."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

@@ -179,3 +179,39 @@ def test_deep_nesting_does_not_crash() -> None:
     body = "<div>" * 240 + "<p>deep text</p>" + "</div>" * 240 + "<ul>" + "<li>x<ul>" * 60 + "</ul></li>" * 60 + "</ul>"
     blocks, _ = _blocks(body)
     assert any(isinstance(b, Paragraph) and "deep text" in spans_text(b.spans) for b in blocks)
+
+
+def test_single_row_table_is_layout() -> None:
+    """5e item 11: a one-row table without header cells is page layout (logo next to a tagline)."""
+    blocks, _ = _blocks('<table><tr><td><img src="/logo.gif" alt="Logo"></td><td>Est. 1898</td></tr></table>')
+    assert not any(isinstance(b, Table) for b in blocks)
+    assert any(isinstance(b, Image) for b in blocks)
+    assert [spans_text(b.spans) for b in blocks if isinstance(b, Paragraph)] == ["Est. 1898"]
+
+
+def test_mathjax_v2_preview_is_dropped() -> None:
+    blocks, _ = _blocks(
+        '<p>Time <span class="MathJax_Preview">t</span><script type="math/tex">t</script> is</p>'
+        '<span class="MathJax_Preview">E=mc2</span><script type="math/tex; mode=display">E=mc^2</script>'
+    )
+    p = blocks[0]
+    assert isinstance(p, Paragraph) and spans_text(p.spans) == "Time t is"
+    assert [s.math for s in p.spans if s.math] == ["t"]
+    eqs = [b for b in blocks if isinstance(b, Equation)]
+    assert [e.latex for e in eqs] == ["E=mc^2"]
+    assert not any(isinstance(b, Paragraph) and "mc2" in spans_text(b.spans) for b in blocks)
+
+
+def test_one_row_data_table_is_kept() -> None:
+    """A one-row table of plain values (no header cells, no images or block content) is data, not layout."""
+    blocks, _ = _blocks("<table><tr><td>Total</td><td>12</td><td>3:02.4</td></tr></table>")
+    tables = [b for b in blocks if isinstance(b, Table)]
+    assert len(tables) == 1 and tables[0].n_rows == 1 and tables[0].n_cols == 3
+
+
+def test_sparse_data_table_is_kept() -> None:
+    blocks, _ = _blocks(
+        "<table><tr><td>Mon</td><td></td><td></td></tr><tr><td></td><td>Tue</td><td></td></tr>"
+        "<tr><td></td><td></td><td>Wed</td></tr></table>"
+    )
+    assert any(isinstance(b, Table) for b in blocks)

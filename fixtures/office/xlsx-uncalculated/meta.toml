@@ -1,0 +1,10 @@
+converter = "documents.xlsx"
+max_seconds = 30
+hand_edited = false
+notes = "openpyxl workbook saved as-is: every formula cell (row products, SUM totals, a cross-sheet AVERAGE) has no cached value, so the converter must show the formula and warn rather than invent results."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

@@ -236,7 +236,7 @@ def _span(el: HtmlElement, attr: str) -> int:
 
 
 def is_layout_table(table: HtmlElement) -> bool:
-    """Tables used for page layout: role=presentation, or no header cells and either one column or block
+    """Tables used for page layout: role=presentation, or no header cells and one row, one column, or block
     content (paragraphs, lists, nested tables) in every non-empty cell (5e item 11)."""
     if (table.get("role") or "").lower() in ("presentation", "none"):
         return True
@@ -250,6 +250,11 @@ def is_layout_table(table: HtmlElement) -> bool:
         return True
     filled = [c for tr, _ in rows for c in _cells(tr) if collapse(c.text_content() or "")]
     blocky = ("p", "div", "table", "ul", "ol", "h1", "h2", "h3", "h4", "pre", "blockquote")
+    if len(rows) == 1:
+        # One row is layout only with a layout signal: at most one filled cell, or block content or images in a
+        # cell (a header bar: logo plus tagline). A one-row data table (a summary line of figures) stays a table.
+        signal = (*blocky, "img")
+        return len(filled) <= 1 or any(d.tag in signal for c in _cells(rows[0][0]) for d in c.iterdescendants())
     return bool(filled) and all(any(d.tag in blocky for d in c.iterdescendants()) for c in filled)
 
 

@@ -16,6 +16,7 @@ import datetime as dt
 import io
 import zipfile
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 FIXED = (2026, 1, 1, 0, 0, 0)
@@ -866,15 +867,397 @@ def rtf_simple() -> None:
     path.write_bytes(("\r\n".join(lines) + "\r\n").encode("ascii"))
 
 
-def main() -> None:
-    docx_review()
-    docx_structure()
-    docx_macro()
-    pptx_lecture()
-    xlsx_multi_sheet()
-    odt_basic()
-    rtf_simple()
+# ---------------------------------------------------------------------------------------------------------
+# docx-tables-merged: two-row header with gridSpan, a three-row vMerge, a nested table, a headerless table
+# ---------------------------------------------------------------------------------------------------------
+
+
+def _tbl(grid: list[int], rows: list[str], look: str = "04A0") -> str:
+    cols = "".join(f'<w:gridCol w:w="{w}"/>' for w in grid)
+    return (
+        f'<w:tbl><w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblLook w:val="{look}"/></w:tblPr>'
+        f"<w:tblGrid>{cols}</w:tblGrid>{''.join(rows)}</w:tbl>"
+    )
+
+
+def _tr(cells: str, header: bool = False) -> str:
+    return f"<w:tr>{'<w:trPr><w:tblHeader/></w:trPr>' if header else ''}{cells}</w:tr>"
+
+
+def docx_tables_merged() -> None:
+    restart, cont = '<w:vMerge w:val="restart"/>', "<w:vMerge/>"
+    timetable = _tbl(
+        [2400, 1600, 1600, 1600, 1600],
+        [
+            _tr(
+                cell("Route", restart, bold=True)
+                + cell("Weekday", '<w:gridSpan w:val="2"/>', bold=True)
+                + cell("Weekend", '<w:gridSpan w:val="2"/>', bold=True),
+                header=True,
+            ),
+            _tr(
+                cell("", cont)
+                + cell("First", bold=True)
+                + cell("Last", bold=True)
+                + cell("First", bold=True)
+                + cell("Last", bold=True),
+                header=True,
+            ),
+            _tr(cell("Harbour loop", restart) + cell("06:10") + cell("23:40") + cell("07:30") + cell("22:00")),
+            _tr(cell("", cont) + cell("06:40") + cell("23:55") + cell("08:00") + cell("22:30")),
+            _tr(cell("", cont) + cell("07:10") + cell("") + cell("08:30") + cell("23:00")),
+            _tr(
+                cell("Airport express") + cell("05:00") + cell("00:30") + cell("No service", '<w:gridSpan w:val="2"/>')
+            ),
+        ],
+    )
+    inner = _tbl(
+        [1500, 1500],
+        [
+            _tr(cell("Zone", bold=True) + cell("Fare", bold=True), header=True),
+            _tr(cell("A") + cell("2.10")),
+            _tr(cell("B") + cell("3.40")),
+        ],
+    )
+    nested_cell = (
+        "<w:tc><w:tcPr/>" + para(run("Priced by zone:")) + inner + para(run("Valid for 90 minutes.")) + "</w:tc>"
+    )
+    fares = _tbl(
+        [3000, 4000],
+        [
+            _tr(cell("Ticket", bold=True) + cell("Details", bold=True), header=True),
+            _tr(cell("Single") + nested_cell),
+            _tr(cell("Day pass") + cell("Unlimited travel until 04:00.")),
+        ],
+    )
+    contacts = _tbl(
+        [3000, 3000],
+        [_tr(cell("Lost property") + cell("Depot office, gate 2")), _tr(cell("Complaints") + cell("Customer desk"))],
+        look="0000",
+    )
+    body = "".join(
+        [
+            para(run("Harbour Bus Timetable"), "Title"),
+            para(run("Service times"), "Heading1"),
+            para(run("Times are the first and last departures from the depot.")),
+            timetable,
+            para(run("Table 1: First and last buses"), "Caption"),
+            para(run("Fares"), "Heading1"),
+            fares,
+            para(run("Contacts"), "Heading1"),
+            contacts,
+            para(run("The contact table has no header row.")),
+        ]
+    )
+    files: dict[str, bytes | str] = {
+        "[Content_Types].xml": content_types(
+            {
+                "word/styles.xml": WT + "styles+xml",
+                "docProps/core.xml": "application/vnd.openxmlformats-package.core-properties+xml",
+            }
+        ),
+        "_rels/.rels": ROOT_RELS,
+        "word/document.xml": body_doc(body),
+        "word/_rels/document.xml.rels": rels([("rId1", "styles", "styles.xml", False)]),
+        "word/styles.xml": STYLES,
+        "docProps/core.xml": core_props("Harbour Bus Timetable", "Transit Desk"),
+    }
+    write_zip(HERE / "docx-tables-merged" / "input.docx", files)
+
+
+# ---------------------------------------------------------------------------------------------------------
+# docx-lists-restart: Subtitle, a numbered list restarted with lvlOverride/startOverride, a list starting at 5,
+# a bullet list with a hyperlink item, and an inline picture with alt text
+# ---------------------------------------------------------------------------------------------------------
+
+
+def _png(w: int, h: int) -> bytes:
+    import struct
+    import zlib
+
+    raw = b"".join(bytes([0]) + bytes((x * 16) % 256 for x in range(w)) for _ in range(h))
+
+    def chunk(tag: bytes, data: bytes) -> bytes:
+        return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
+
+    ihdr = struct.pack(">IIBBBBB", w, h, 8, 0, 0, 0, 0)
+    sig = bytes([137, 80, 78, 71, 13, 10, 26, 10])
+    return sig + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(raw, 9)) + chunk(b"IEND", b"")
+
+
+PIC_NS = "http://schemas.openxmlformats.org/drawingml/2006/picture"
+
+
+def _picture(rid: str, name: str, alt: str) -> str:
+    return (
+        '<w:r><w:drawing><wp:inline><wp:extent cx="914400" cy="457200"/>'
+        f'<wp:docPr id="1" name="{name}" descr="{esc(alt)}"/>'
+        f'<a:graphic><a:graphicData uri="{PIC_NS}"><pic:pic xmlns:pic="{PIC_NS}">'
+        f'<pic:nvPicPr><pic:cNvPr id="1" name="{name}" descr="{esc(alt)}"/><pic:cNvPicPr/></pic:nvPicPr>'
+        f'<pic:blipFill><a:blip r:embed="{rid}"/></pic:blipFill><pic:spPr/></pic:pic></a:graphicData></a:graphic>'
+        "</wp:inline></w:drawing></w:r>"
+    )
+
+
+def _numbering_restart() -> str:
+    def lvl(i: int, fmt: str, start: int = 1) -> str:
+        text = "o" if fmt == "bullet" else "%" + str(i + 1) + "."
+        return (
+            f'<w:lvl w:ilvl="{i}"><w:start w:val="{start}"/><w:numFmt w:val="{fmt}"/>'
+            f'<w:lvlText w:val="{text}"/></w:lvl>'
+        )
+
+    abstract = (
+        f'<w:abstractNum w:abstractNumId="1">{lvl(0, "decimal")}{lvl(1, "lowerLetter")}</w:abstractNum>'
+        f'<w:abstractNum w:abstractNumId="2">{lvl(0, "decimal", 5)}</w:abstractNum>'
+        f'<w:abstractNum w:abstractNumId="3">{lvl(0, "bullet")}{lvl(1, "bullet")}</w:abstractNum>'
+    )
+    nums = (
+        '<w:num w:numId="1"><w:abstractNumId w:val="1"/></w:num>'
+        '<w:num w:numId="2"><w:abstractNumId w:val="1"/>'
+        '<w:lvlOverride w:ilvl="0"><w:startOverride w:val="1"/></w:lvlOverride></w:num>'
+        '<w:num w:numId="3"><w:abstractNumId w:val="2"/></w:num>'
+        '<w:num w:numId="4"><w:abstractNumId w:val="3"/></w:num>'
+    )
+    return XML + f"<w:numbering {NS}>{abstract}{nums}</w:numbering>"
+
+
+def docx_lists_restart() -> None:
+    link_item = para(
+        run("Timetables online at ")
+        + '<w:hyperlink r:id="rId10">'
+        + run("the transit site", '<w:rStyle w:val="Hyperlink"/>')
+        + "</w:hyperlink>",
+        "ListParagraph",
+        '<w:numPr><w:ilvl w:val="0"/><w:numId w:val="4"/></w:numPr>',
+    )
+    body = "".join(
+        [
+            para(run("Depot Procedures"), "Title"),
+            para(run("Opening and closing the bus depot"), "Subtitle"),
+            para(run("Opening"), "Heading1"),
+            list_para("Unlock the gate", 1, 0),
+            list_para("Switch on the yard lights", 1, 0),
+            list_para("Check the north bank", 1, 1),
+            list_para("Check the south bank", 1, 1),
+            list_para("Start the fuel pump", 1, 0),
+            para(run("Closing"), "Heading1"),
+            para(run("The closing list restarts its numbering at one.")),
+            list_para("Stop the fuel pump", 2, 0),
+            list_para("Count the buses", 2, 0),
+            list_para("Lock the gate", 2, 0),
+            para(run("Emergencies"), "Heading2"),
+            para(run("These steps continue the safety manual, which ends at step four.")),
+            list_para("Call the duty manager", 3, 0),
+            list_para("Clear the yard", 3, 0),
+            para(run("Useful links"), "Heading2"),
+            list_para("Depot phone: extension 214", 4, 0),
+            link_item,
+            list_para("Night line", 4, 1),
+            para(run("Site plan"), "Heading3"),
+            para(_picture("rId20", "plan.png", "Site plan of the depot showing the gate, fuel pump, and yard")),
+            para(run("Figure 1: Depot site plan"), "Caption"),
+            para(run("Revision notes"), "Heading4"),
+            para(run("Revised after the spring audit.")),
+        ]
+    )
+    files: dict[str, bytes | str] = {
+        "[Content_Types].xml": content_types(
+            {
+                "word/styles.xml": WT + "styles+xml",
+                "word/numbering.xml": WT + "numbering+xml",
+                "docProps/core.xml": "application/vnd.openxmlformats-package.core-properties+xml",
+            }
+        ),
+        "_rels/.rels": ROOT_RELS,
+        "word/document.xml": body_doc(body),
+        "word/_rels/document.xml.rels": rels(
+            [
+                ("rId1", "styles", "styles.xml", False),
+                ("rId2", "numbering", "numbering.xml", False),
+                ("rId10", "hyperlink", "https://example.org/transit/timetables", True),
+                ("rId20", "image", "media/plan.png", False),
+            ]
+        ),
+        "word/styles.xml": STYLES,
+        "word/numbering.xml": _numbering_restart(),
+        "word/media/plan.png": _png(32, 16),
+        "docProps/core.xml": core_props("Depot Procedures", "Transit Desk"),
+    }
+    write_zip(HERE / "docx-lists-restart" / "input.docx", files)
+
+
+# ---------------------------------------------------------------------------------------------------------
+# pptx-no-placeholders: a deck built from free text boxes on blank layouts, with speaker notes and a group
+# ---------------------------------------------------------------------------------------------------------
+
+
+def pptx_no_placeholders() -> None:
+    from pptx import Presentation
+    from pptx.util import Inches, Pt
+
+    prs = Presentation()
+    prs.core_properties.title = "Night Bus Review"
+    prs.core_properties.author = "Transit Desk"
+    prs.core_properties.created = dt.datetime(2026, 1, 1)
+    prs.core_properties.modified = dt.datetime(2026, 1, 2)
+    prs.core_properties.last_modified_by = "Transit Desk"
+    prs.core_properties.revision = 1
+    blank = prs.slide_layouts[6]
+
+    def box(shapes: Any, top: float, text: str, size: int, height: float = 1.0, left: float = 0.5) -> Any:
+        shape = shapes.add_textbox(Inches(left), Inches(top), Inches(9), Inches(height))
+        shape.text_frame.text = text
+        shape.text_frame.paragraphs[0].runs[0].font.size = Pt(size)
+        return shape
+
+    s1 = prs.slides.add_slide(blank)
+    box(s1.shapes, 2.0, "Night Bus Review", 44)
+    box(s1.shapes, 3.4, "Findings from the winter trial", 24)
+
+    s2 = prs.slides.add_slide(blank)
+    box(s2.shapes, 0.3, "What we tried", 36)
+    body = box(s2.shapes, 1.6, "Three new night routes", 20, 3.0)
+    for text, level in (("N1 harbour to airport", 1), ("N2 university loop", 1), ("Hourly frequency", 0)):
+        p = body.text_frame.add_paragraph()
+        p.text = text
+        p.level = level
+    s2.notes_slide.notes_text_frame.text = "Mention that N2 was added two weeks late."
+
+    s3 = prs.slides.add_slide(blank)
+    box(s3.shapes, 0.3, "Ridership", 36)
+    group = s3.shapes.add_group_shape()
+    for i, (label, value) in enumerate((("N1", "1,240 riders"), ("N2", "860 riders"))):
+        box(group.shapes, 2.0, f"{label}: {value}", 20, left=0.5 + 4.5 * i)
+    box(s3.shapes, 4.5, "Both routes beat the 500-rider target.", 18)
+    s3.notes_slide.notes_text_frame.text = "Numbers are weekly averages over twelve weeks."
+
+    out = io.BytesIO()
+    prs.save(out)
+    (HERE / "pptx-no-placeholders").mkdir(parents=True, exist_ok=True)
+    _normalize_zip(out.getvalue(), HERE / "pptx-no-placeholders" / "input.pptx")
+
+
+# ---------------------------------------------------------------------------------------------------------
+# xlsx-uncalculated: openpyxl output as-is, so every formula cell has no cached value
+# ---------------------------------------------------------------------------------------------------------
+
+
+def _workbook(title: str) -> Any:
+    from openpyxl import Workbook
+
+    wb = Workbook()
+    wb.properties.title = title
+    wb.properties.creator = "Transit Desk"
+    wb.properties.created = dt.datetime(2026, 1, 1)
+    wb.properties.modified = dt.datetime(2026, 1, 2)
+    return wb
+
+
+def xlsx_uncalculated() -> None:
+    wb = _workbook("Fuel Budget")
+    ws = wb.active
+    ws.title = "Budget"
+    ws.append(["Month", "Litres", "Price", "Cost"])
+    months = (("January", 12000, 1.42), ("February", 11000, 1.45), ("March", 12500, 1.39))
+    for i, (month, litres, price) in enumerate(months, 2):
+        ws.append([month, litres, price, f"=B{i}*C{i}"])
+    ws["A5"] = "Total"
+    ws["B5"] = "=SUM(B2:B4)"
+    ws["D5"] = "=SUM(D2:D4)"
+    ws2 = wb.create_sheet("Check")
+    ws2["A1"] = "Average price"
+    ws2["B1"] = "=AVERAGE(Budget!C2:C4)"
+    out = io.BytesIO()
+    wb.save(out)
+    (HERE / "xlsx-uncalculated").mkdir(parents=True, exist_ok=True)
+    _normalize_zip(out.getvalue(), HERE / "xlsx-uncalculated" / "input.xlsx")
+
+
+# ---------------------------------------------------------------------------------------------------------
+# xlsx-merged-formulas: horizontal and vertical merges, two data regions on one sheet, cross-sheet formulas
+# with cached values
+# ---------------------------------------------------------------------------------------------------------
+
+
+def xlsx_merged_formulas() -> None:
+    wb = _workbook("Depot Shifts")
+    ws = wb.active
+    ws.title = "Shifts"
+    ws["A1"] = "Depot shift plan"
+    ws.merge_cells("A1:D1")
+    ws.append(["Depot", "Shift", "Drivers", "Buses"])
+    ws.append(["North", "Early", 12, 10])
+    ws.append([None, "Late", 9, 8])
+    ws.merge_cells("A3:A4")
+    ws.append(["South", "Early", 7, 6])
+    ws.append([None, "Late", 5, 5])
+    ws.merge_cells("A5:A6")
+    ws["A7"] = "Total"
+    ws["C7"] = "=SUM(C3:C6)"
+    ws["D7"] = "=SUM(D3:D6)"
+    ws["A10"] = "Spare buses"
+    ws["B10"] = "Count"
+    ws["A11"] = "North"
+    ws["B11"] = 2
+    ws["A12"] = "South"
+    ws["B12"] = 1
+    ws2 = wb.create_sheet("Ratios")
+    ws2.append(["Measure", "Value"])
+    ws2.append(["Drivers per bus", "=Shifts!C7/Shifts!D7"])
+    out = io.BytesIO()
+    wb.save(out)
+    cached = {
+        ("xl/worksheets/sheet1.xml", "C7"): "33",
+        ("xl/worksheets/sheet1.xml", "D7"): "29",
+        ("xl/worksheets/sheet2.xml", "B2"): "1.1379310344827587",
+    }
+    src = zipfile.ZipFile(io.BytesIO(out.getvalue()))
+    files: dict[str, bytes | str] = {}
+    for info in src.infolist():
+        body = src.read(info)
+        for (part, ref), value in cached.items():
+            if info.filename == part:
+                text = body.decode("utf-8")
+                start = text.find(f'<c r="{ref}"')
+                end = text.find("</c>", start)
+                cell = text[start:end]
+                # openpyxl writes an empty <v></v> after the formula; fill it (a cell has at most one <v>).
+                for empty in ("<v></v>", "<v/>"):
+                    if empty in cell:
+                        cell = cell.replace(empty, f"<v>{value}</v>", 1)
+                        break
+                else:
+                    cell = cell.replace("</f>", f"</f><v>{value}</v>", 1)
+                text = text[:start] + cell + text[end:]
+                body = text.encode("utf-8")
+        files[info.filename] = _stable_member(info.filename, body)
+    write_zip(HERE / "xlsx-merged-formulas" / "input.xlsx", files)
+
+
+GENERATORS = {
+    "docx-review": docx_review,
+    "docx-structure": docx_structure,
+    "docx-macro": docx_macro,
+    "pptx-lecture": pptx_lecture,
+    "xlsx-multi-sheet": xlsx_multi_sheet,
+    "odt-basic": odt_basic,
+    "rtf-simple": rtf_simple,
+    "docx-tables-merged": docx_tables_merged,
+    "docx-lists-restart": docx_lists_restart,
+    "pptx-no-placeholders": pptx_no_placeholders,
+    "xlsx-uncalculated": xlsx_uncalculated,
+    "xlsx-merged-formulas": xlsx_merged_formulas,
+}
+
+
+def main(names: list[str]) -> None:
+    """Regenerate every fixture, or only the named ones."""
+    for name in names or GENERATORS:
+        GENERATORS[name]()
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(sys.argv[1:])

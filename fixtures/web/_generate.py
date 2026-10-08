@@ -302,6 +302,109 @@ LEGACY_1251 = (
 """
 )
 
+BS = chr(92)  # LaTeX backslash, kept out of the source text (Windows tooling mangles escapes)
+
+MATHJAX = """<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Tide harmonics - Quayside Docs</title>
+<meta name="description" content="How Quayside predicts tides from harmonic constituents.">
+<script src="https://cdn.example.test/mathjax/tex-chtml.js" id="MathJax-script" async></script></head>
+<body>
+<nav class="docs-nav" role="navigation"><a href="/docs/">Docs home</a> <a href="/docs/theory">Theory</a></nav>
+<main role="main">
+<article class="docs-body">
+<h1>Tide harmonics</h1>
+<p>Quayside models the water level as a sum of cosine constituents.<sup id="fnref1"><a href="#fn1"
+role="doc-noteref">1</a></sup> The height at time
+<span class="MathJax_Preview">t</span><script type="math/tex">t</script> is</p>
+<script type="math/tex; mode=display">h(t) = H_0 + @sum_{i=1}^{n} A_i @cos(@omega_i t + @phi_i)</script>
+<p>where each amplitude <span class="MathJax_Preview">A_i</span><script type="math/tex">A_i</script> comes from
+the station file.<sup id="fnref2"><a href="#fn2" role="doc-noteref">2</a></sup></p>
+<h2>Constituents</h2>
+<table>
+<caption>Principal constituents</caption>
+<thead>
+<tr><th rowspan="2">Name</th><th colspan="2">Period</th></tr>
+<tr><th>hours</th><th>days</th></tr>
+</thead>
+<tbody>
+<tr><td>M2</td><td>12.42</td><td>0.52</td></tr>
+<tr><td>S2</td><td>12.00</td><td>0.50</td></tr>
+<tr><td>K1</td><td>23.93</td><td>1.00</td></tr>
+</tbody>
+</table>
+<h2>Mean level</h2>
+<p>Over a full cycle the cosine terms cancel:</p>
+<mjx-container class="MathJax" jax="CHTML" display="true"><mjx-math aria-hidden="true"><mjx-mi>H</mjx-mi></mjx-math>
+<mjx-assistive-mml display="block"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics>
+<mrow><mi>H</mi></mrow><annotation encoding="application/x-tex">@frac{1}{T}@int_0^T h(t)@,dt = H_0</annotation>
+</semantics></math></mjx-assistive-mml></mjx-container>
+<h2>Computing a prediction</h2>
+<pre><code class="language-python">from quayside import harmonics
+
+levels = harmonics.predict(station="harbor-01", hours=48)
+print(max(levels))
+</code></pre>
+<p>From the shell:</p>
+<div class="highlight-bash"><pre>quayside predict --station harbor-01 --hours 48
+</pre></div>
+<div class="admonition note"><p class="admonition-title">Note</p>
+<p>Predictions ignore weather surge.</p></div>
+<details><summary>Why cosines?</summary><p>Each constituent is a periodic astronomical forcing, so a cosine with a
+fixed angular speed fits it exactly.</p></details>
+</article>
+<section class="footnotes" role="doc-endnotes"><hr><ol>
+<li id="fn1" role="doc-endnote"><p>This is the classical harmonic method. <a href="#fnref1"
+role="doc-backlink">&#8617;</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Station files list up to 37 constituents. <a href="#fnref2"
+role="doc-backlink">&#8617;</a></p></li>
+</ol></section>
+</main>
+<footer class="docs-footer"><p>Quayside documentation, CC0.</p></footer>
+</body></html>
+""".replace("@", BS)
+
+LAYOUT_TABLES = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Saltmarsh Rowing Club - Regatta Results 2005</title></head>
+<body bgcolor="#ffffff" topmargin="0" leftmargin="0">
+<table width="760" border="0" cellpadding="0" cellspacing="0" align="center">
+<tr><td colspan="2" bgcolor="#003366"><table width="100%" border="0" cellpadding="4"><tr>
+<td><img src="/img/logo.gif" width="120" height="40" alt="Saltmarsh RC"></td>
+<td align="right"><font color="#ffffff" size="1">Est. 1898 | <a href="/contact.html">Contact</a></font></td>
+</tr></table></td></tr>
+<tr>
+<td width="150" valign="top" bgcolor="#e0e8f0"><table width="100%" border="0" cellpadding="3">
+<tr><td><a href="/index.html">Home</a></td></tr>
+<tr><td><a href="/news.html">News</a></td></tr>
+<tr><td><a href="/results.html">Results</a></td></tr>
+<tr><td><a href="/join.html">Join the club</a></td></tr>
+</table><img src="/img/spacer.gif" width="150" height="1" alt=""></td>
+<td width="610" valign="top"><table width="100%" border="0" cellpadding="10"><tr><td>
+<font face="Verdana" size="4"><b>Spring Regatta Results</b></font><br><br>
+<font face="Verdana" size="2">The spring regatta ran on a falling tide with a light westerly. Twelve crews raced
+the 1,000 metre course in three heats.<br><br>
+The junior eight won its first final in a decade, finishing two lengths clear of the visitors.</font>
+<br><br>
+<table border="1" cellpadding="4" cellspacing="0">
+<caption>Final, men's eights</caption>
+<tr><th>Place</th><th>Crew</th><th>Time</th></tr>
+<tr><td>1</td><td>Saltmarsh Junior</td><td>3:02.4</td></tr>
+<tr><td>2</td><td>Estuary RC</td><td>3:08.9</td></tr>
+<tr><td>3</td><td>Harbor Scullers</td><td>3:11.0</td></tr>
+</table>
+<br>
+<font face="Verdana" size="2">Thanks to the launch drivers and the umpires.
+The autumn head race is on 15 October.</font>
+</td></tr></table></td>
+</tr>
+<tr><td colspan="2" align="center"><font size="1">&copy; 2005 Saltmarsh Rowing Club. Best viewed at 800x600.
+<a href="/sitemap.html">Sitemap</a></font></td></tr>
+</table>
+</body></html>
+"""
+
+
 FIXTURES: dict[str, dict[str, object]] = {
     "article-standard": {
         "html": ARTICLE,
@@ -384,6 +487,25 @@ FIXTURES: dict[str, dict[str, object]] = {
         "converter": "web.trafilatura",
         "url": "https://port.example.test/rules",
         "notes": "Windows-1251 page declared by <meta http-equiv>; must decode to Cyrillic.",
+    },
+    "docs-page-mathjax": {
+        "html": MATHJAX,
+        "converter": "web.trafilatura",
+        "url": "https://docs.example.test/quayside/theory/harmonics.html",
+        "notes": "MathJax docs page: v2 inline and display math/tex scripts with previews, a v3 mjx-container with a "
+        "TeX annotation, two footnotes with backlinks, a table with rowspan and colspan headers, python and bash "
+        "code, an admonition and a details block.",
+    },
+    "layout-tables": {
+        "html": LAYOUT_TABLES,
+        "converter": "web.trafilatura",
+        "url": "https://rowing.example.test/results.html",
+        "notes": "2005-era page laid out with nested presentation tables (header, nav column, spacer gif, font tags, "
+        "br-separated paragraphs) holding one real data table with a caption; only the data table survives as a "
+        "table (layout tables unwrapped on the DOM and XML paths). "
+        "Known limitation: Trafilatura keeps the layout cells (footer line, header tagline, nav links) as "
+        "content and emits the footer first and the closing paragraph before the data table; the golden "
+        "records that order.",
     },
 }
 

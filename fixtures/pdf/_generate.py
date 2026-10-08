@@ -42,6 +42,19 @@ class Page:
         if mcid is not None:
             self.ops.append(([], "EMC"))
 
+    def text_sup(self, x: float, y: float, s: str, sup: str, size: float = 10.0) -> None:
+        """One text object: `s`, then `sup` raised (Ts) in a smaller size, the way word processors emit
+        footnote reference markers."""
+        self.ops.append(([], "BT"))
+        self.ops.append(([Name("/F1"), size], "Tf"))
+        self.ops.append(([x, y], "Td"))
+        self.ops.append(([String(s.encode("cp1252"))], "Tj"))
+        self.ops.append(([Name("/F1"), size * 0.6], "Tf"))
+        self.ops.append(([size * 0.35], "Ts"))
+        self.ops.append(([String(sup.encode("cp1252"))], "Tj"))
+        self.ops.append(([0], "Ts"))
+        self.ops.append(([], "ET"))
+
     def para(
         self, x: float, y: float, body: str, width_chars: int = 95, size: float = 10.0, leading: float = 13.0
     ) -> float:
@@ -343,15 +356,138 @@ def tagged_structure_tree() -> None:
     save(pdf, "tagged-structure-tree")
 
 
-def main() -> None:
-    born_digital_report()
-    simple_table()
-    two_column_page()
-    image_only_page()
-    encrypted_user_password()
-    javascript_attachment()
-    tagged_structure_tree()
+FOOTNOTE_BODY = (
+    "Dredging in the outer channel removed about forty thousand cubic meters of silt over the winter. The work "
+    "was paused twice for storms and finished three days ahead of the revised schedule."
+)
+
+
+def footnotes_running_header() -> None:
+    """Three pages with a running header, a running footer with page numbers, and numbered footnotes whose
+    markers are drawn as small raised digits and whose bodies sit in small type at the page bottom."""
+    total = 3
+    pages = [Page() for _ in range(total)]
+    sections = (
+        (
+            "1. Channel dredging",
+            "The channel was dredged to a depth of twelve meters",
+            "Depth is measured at mean low water.",
+        ),
+        (
+            "2. Breakwater repairs",
+            "Armour units on the north breakwater were reset",
+            "Each armour unit weighs eight tonnes.",
+        ),
+        (
+            "3. Navigation aids",
+            "Two buoys were replaced with solar-powered units",
+            "The old buoys were sold for scrap.",
+        ),
+    )
+    for i, (pg, (heading, lead, note)) in enumerate(zip(pages, sections, strict=True), start=1):
+        pg.text(72, 760, "Harbor Lane Works Bulletin", 8)
+        pg.text(470, 760, "Winter 2025 edition", 8)
+        pg.text(280, 30, f"Page {i} of {total}", 8)
+        y = 700.0
+        if i == 1:
+            pg.text(72, y, "Harbor Lane Works Bulletin", 22, bold=True)
+            y -= 40
+        pg.text(72, y, heading, 16, bold=True)
+        y -= 24
+        pg.text_sup(72, y, lead + ".", str(i))
+        y -= 21
+        y = pg.para(72, y, FOOTNOTE_BODY)
+        pg.text(72, 66, f"{i} {note}", 8)
+    save(build(pages, "Harbor Lane Works Bulletin"), "footnotes-running-header")
+
+
+def table_across_pages() -> None:
+    """A 40-row table split over three pages with the header row repeated at the top of each page."""
+    rows = [
+        (
+            f"B-{n:02d}",
+            ("East", "West", "North", "South")[n % 4],
+            str(100 + (n * 37) % 250),
+            ("open", "closed")[n % 5 == 0],
+        )
+        for n in range(1, 41)
+    ]
+    # Padded rows (24 pt pitch) so pages 1 and 2 fill to the bottom margin, as a real page-split table does.
+    per_page = (18, 20, 2)
+    pitch = 24
+    header = ("Berth", "Quay", "Length (m)", "Status")
+    cols = (72, 180, 290, 400)
+    pages: list[Page] = []
+    start = 0
+    for p, count in enumerate(per_page):
+        pg = Page()
+        y = 700.0
+        if p == 0:
+            pg.text(72, y, "Berth register", 16, bold=True)
+            y -= 26
+            y = pg.para(72, y, "The register lists every berth with its quay, its length, and its current status.")
+        for x, cell in zip(cols, header, strict=True):
+            pg.text(x, y, cell, 10, bold=True)
+        y -= pitch
+        for row in rows[start : start + count]:
+            for x, cell in zip(cols, row, strict=True):
+                pg.text(x, y, cell, 10)
+            y -= pitch
+        start += count
+        if p == len(per_page) - 1:
+            y -= 12
+            pg.para(72, y, "Closed berths reopen after their scheduled inspection.")
+        pg.text(280, 30, f"Page {p + 1}", 8)
+        pages.append(pg)
+    save(build(pages, "Berth register"), "table-across-pages")
+
+
+def hybrid_scanned_pages() -> None:
+    """Pages 1 and 3 are born-digital; page 2 is a scanned image with no text layer."""
+    p1, p2, p3 = Page(), Page(), Page()
+    p1.text(72, 700, "Pilotage incident review", 18, bold=True)
+    y = p1.para(72, 670, "This review covers the grounding of a pilot launch near buoy seven in November.")
+    p1.text(72, y, "1. Sequence of events", 14, bold=True)
+    p1.para(72, y - 22, "The launch left the pilot station at dusk and grounded on a shoal outside the marked channel.")
+    p3.text(72, 700, "2. Findings", 14, bold=True)
+    y = p3.para(72, 678, "The signed witness statement on the previous page is a scan and has no text layer.")
+    p3.para(72, y, "The review recommends a second lookout on every launch after sunset.")
+    pdf = build([p1, p2, p3], "Pilotage incident review")
+    img = _image_stream(pdf, 200, 260)
+    page2 = pdf.pages[1]
+    page2.obj.Resources.XObject = Dictionary(Im1=img)
+    page2.obj.Contents = pdf.make_indirect(
+        pikepdf.Stream(
+            pdf,
+            pikepdf.unparse_content_stream(
+                [([], "q"), ([540, 0, 0, 700, 36, 46], "cm"), ([Name("/Im1")], "Do"), ([], "Q")]
+            ),
+        )
+    )
+    save(pdf, "hybrid-scanned-pages")
+
+
+GENERATORS = {
+    "born-digital-report": born_digital_report,
+    "simple-table": simple_table,
+    "two-column-page": two_column_page,
+    "image-only-page": image_only_page,
+    "encrypted-user-password": encrypted_user_password,
+    "javascript-attachment": javascript_attachment,
+    "tagged-structure-tree": tagged_structure_tree,
+    "footnotes-running-header": footnotes_running_header,
+    "table-across-pages": table_across_pages,
+    "hybrid-scanned-pages": hybrid_scanned_pages,
+}
+
+
+def main(names: Sequence[str] = ()) -> None:
+    """Regenerate every fixture, or only the named ones (the encrypted fixture's bytes change on every run)."""
+    for name in names or GENERATORS:
+        GENERATORS[name]()
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(sys.argv[1:])

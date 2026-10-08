@@ -1,0 +1,1118 @@
+{
+  "children": [
+    {
+      "block_count": 1,
+      "converter": "text.plain",
+      "depth": 1,
+      "path": "README.txt",
+      "section_block_id": "c1-section",
+      "source_type": "text",
+      "title": null
+    },
+    {
+      "block_count": 3,
+      "converter": "archives.archive",
+      "depth": 1,
+      "path": "bundle/season.tar.gz",
+      "section_block_id": "c2-section",
+      "source_type": "archive",
+      "title": "season.tar.gz"
+    },
+    {
+      "block_count": 3,
+      "converter": "documents.docx",
+      "depth": 2,
+      "path": "season/report.docx",
+      "section_block_id": "c2.1-section",
+      "source_type": "docx",
+      "title": "Season Report"
+    },
+    {
+      "block_count": 2,
+      "converter": "data.csv",
+      "depth": 2,
+      "path": "season/sites.csv",
+      "section_block_id": "c2.2-section",
+      "source_type": "data",
+      "title": "sites.csv"
+    }
+  ],
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Archive input.zip: 3 entries (3 files, 0 directories, 0 links, 0 other entries, 0 rejected); 2 converted."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "README.txt"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [
+                  {
+                    "checked": null,
+                    "children": [
+                      {
+                        "checked": null,
+                        "children": [],
+                        "children_ordered": false,
+                        "children_start": 1,
+                        "provenance": null,
+                        "spans": [
+                          {
+                            "change": null,
+                            "change_author": null,
+                            "change_id": null,
+                            "footnote_ref": null,
+                            "href": null,
+                            "math": null,
+                            "styles": [],
+                            "text": "report.docx"
+                          }
+                        ]
+                      },
+                      {
+                        "checked": null,
+                        "children": [],
+                        "children_ordered": false,
+                        "children_start": 1,
+                        "provenance": null,
+                        "spans": [
+                          {
+                            "change": null,
+                            "change_author": null,
+                            "change_id": null,
+                            "footnote_ref": null,
+                            "href": null,
+                            "math": null,
+                            "styles": [],
+                            "text": "sites.csv"
+                          }
+                        ]
+                      }
+                    ],
+                    "children_ordered": false,
+                    "children_start": 1,
+                    "provenance": null,
+                    "spans": [
+                      {
+                        "change": null,
+                        "change_author": null,
+                        "change_id": null,
+                        "footnote_ref": null,
+                        "href": null,
+                        "math": null,
+                        "styles": [],
+                        "text": "season/"
+                      }
+                    ]
+                  }
+                ],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "season.tar.gz"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "bundle/"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "ringing-permits.txt"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "private/"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Path"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Modified"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Converted"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "README.txt"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "64"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-05-01 12:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "text/plain"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (text.plain)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "bundle/season.tar.gz"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1528"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-05-01 12:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "archive"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (archive)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "private/ringing-permits.txt"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "40"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-05-01 12:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "text/plain"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "encrypted"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "int",
+          "date",
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0003",
+        "n_cols": 5,
+        "n_rows": 4,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:3923bacc4a0f4db20c7118b8b39c9623efea00a2ef71ae537f3731432ba04101",
+    "converter_id": "archives.archive",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "archive_bytes_extracted": 3258,
+        "archive_compressed_bytes": 1996,
+        "archive_converted": 2,
+        "archive_directories": 0,
+        "archive_entries": 3,
+        "archive_files": 3,
+        "archive_format": "zip",
+        "archive_links": 0,
+        "archive_other": 0,
+        "archive_rejected": 0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/zip",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.zip",
+      "source_type": "archive",
+      "speakers": [],
+      "title": "input.zip"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "examples": "private/ringing-permits.txt"
+        },
+        "kind": "archive_encrypted",
+        "message": "1 encrypted entry was listed but not extracted: private/ringing-permits.txt.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:71356b81ff89214522f2aaf7eda0f963c9ce06c1db05e7fbc346d6b3ab019d8e",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "archives.archive",
+    "converter_version": "0.0.1",
+    "extra": {
+      "archive_bytes_extracted": 3258,
+      "archive_compressed_bytes": 1996,
+      "archive_converted": 2,
+      "archive_directories": 0,
+      "archive_entries": 3,
+      "archive_files": 3,
+      "archive_format": "zip",
+      "archive_links": 0,
+      "archive_other": 0,
+      "archive_rejected": 0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.zip",
+    "source_hash": "sha256:49be156ab8f2082cea8a052a55d14dd38189114de27586bc67fabba9b469c7a0",
+    "source_type": "archive",
+    "title": "input.zip",
+    "tokens": {
+      "cl100k_base": 505,
+      "claude_approx": 545,
+      "o200k_base": 505
+    },
+    "truncated": false,
+    "warnings": [
+      "archive_encrypted"
+    ],
+    "word_count": 165
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 2,
+      "images": 0,
+      "links": 0,
+      "list_items": 11,
+      "lists": 2,
+      "page_breaks": 0,
+      "paragraphs": 5,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 44,
+      "tables": 3,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 134
+    },
+    "duration_seconds": 0.01600000006146729,
+    "engine": "archives.archive",
+    "engines_tried": [
+      "archives.archive"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1996
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.zip",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0002",
+      "source": "input.zip",
+      "type": "list"
+    },
+    {
+      "block_id": "b0003",
+      "source": "input.zip",
+      "type": "table"
+    },
+    {
+      "block_id": "c1-section",
+      "path": "README.txt",
+      "source": "input.zip!README.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "c1-b0001",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "README.txt",
+      "source": "input.zip!README.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-section",
+      "path": "bundle/season.tar.gz",
+      "source": "input.zip!bundle/season.tar.gz",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0001",
+      "path": "bundle/season.tar.gz",
+      "source": "input.zip!bundle/season.tar.gz",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0002",
+      "path": "bundle/season.tar.gz",
+      "source": "input.zip!bundle/season.tar.gz",
+      "type": "list"
+    },
+    {
+      "block_id": "c2-b0003",
+      "path": "bundle/season.tar.gz",
+      "source": "input.zip!bundle/season.tar.gz",
+      "type": "table"
+    },
+    {
+      "block_id": "c2.1-section",
+      "path": "season/report.docx",
+      "source": "input.zip!bundle/season.tar.gz!season/report.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2.1-b0002",
+      "path": "season/report.docx!body[1]",
+      "source": "input.zip!bundle/season.tar.gz!season/report.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2.1-b0003",
+      "path": "season/report.docx!body[2]",
+      "source": "input.zip!bundle/season.tar.gz!season/report.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2.2-section",
+      "path": "season/sites.csv",
+      "source": "input.zip!bundle/season.tar.gz!season/sites.csv",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2.2-b0002",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "season/sites.csv!A1:C3",
+      "source": "input.zip!bundle/season.tar.gz!season/sites.csv",
+      "type": "table"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "c1-section",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 738,
+      "offset_start": 647,
+      "original_level": 1,
+      "original_title": "README.txt",
+      "time_end": null,
+      "time_start": null,
+      "title": "README.txt"
+    },
+    {
+      "block_id": "c2-section",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1291,
+      "offset_start": 738,
+      "original_level": 1,
+      "original_title": "bundle/season.tar.gz",
+      "time_end": null,
+      "time_start": null,
+      "title": "bundle/season.tar.gz"
+    },
+    {
+      "block_id": "c2.1-section",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 1444,
+      "offset_start": 1291,
+      "original_level": 2,
+      "original_title": "season/report.docx: Season Report",
+      "time_end": null,
+      "time_start": null,
+      "title": "season/report.docx: Season Report"
+    },
+    {
+      "block_id": "c2.2-section",
+      "id": "sec-2-2",
+      "level": 3,
+      "number": "2.2",
+      "offset_end": 1587,
+      "offset_start": 1444,
+      "original_level": 2,
+      "original_title": "season/sites.csv",
+      "time_end": null,
+      "time_start": null,
+      "title": "season/sites.csv"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0003",
+      "column_types": [
+        "text",
+        "int",
+        "date",
+        "text",
+        "text"
+      ],
+      "columns": 5,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Path",
+        "Size",
+        "Modified",
+        "Type",
+        "Converted"
+      ],
+      "number": 1,
+      "offset_end": 645,
+      "offset_start": 276,
+      "page": null,
+      "representation": "pipe",
+      "rows": 3,
+      "tokens": 127
+    },
+    {
+      "block_id": "c2-b0003",
+      "column_types": [
+        "text",
+        "int",
+        "date",
+        "text",
+        "text"
+      ],
+      "columns": 5,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Path",
+        "Size",
+        "Modified",
+        "Type",
+        "Converted"
+      ],
+      "number": 2,
+      "offset_end": 1289,
+      "offset_start": 930,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 112
+    },
+    {
+      "block_id": "c2.2-b0002",
+      "column_types": [
+        "text",
+        "int",
+        "int"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "site",
+        "herons",
+        "egrets"
+      ],
+      "number": 3,
+      "offset_end": 1586,
+      "offset_start": 1481,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 45
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 825,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "examples": "private/ringing-permits.txt"
+      },
+      "kind": "archive_encrypted",
+      "message": "1 encrypted entry was listed but not extracted: private/ringing-permits.txt.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

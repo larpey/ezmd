@@ -1,0 +1,47 @@
+# Three Kubernetes manifests in one stream.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+  labels: &labels
+    app: web
+    tier: frontend
+data:
+  LOG_LEVEL: info
+  CACHE_TTL: "300"
+---
+# The deployment reuses the label set through an anchor.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels: &match
+      app: web
+  template:
+    metadata:
+      labels: *match
+    spec:
+      containers:
+        - name: web
+          image: registry.example.invalid/web:1.10
+          ports:
+            - containerPort: 8080
+          resources:
+            limits: {cpu: 500m, memory: 256Mi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 80
+      targetPort: 8080

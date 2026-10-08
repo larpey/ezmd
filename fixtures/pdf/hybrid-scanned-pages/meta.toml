@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "Pages 1 and 3 are born-digital, page 2 is an image with no text layer; expects pages_without_text for page 2 only, ocr_unavailable, and the OCR stub paragraph."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

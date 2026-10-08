@@ -11,6 +11,7 @@ from __future__ import annotations
 import logging
 import re
 from copy import deepcopy
+from dataclasses import dataclass
 from typing import Any
 
 from lxml import etree  # type: ignore[import-untyped]
@@ -19,8 +20,9 @@ from intomd.ir import CodeBlock, Heading, Image, InlineSpan, InlineStyle, ListBl
 from intomd.ir import TableCell as Cell
 from intomd_converters.web.build import LAZY_ATTRS, LAZY_SRCSET, Builder
 from intomd_converters.web.dom import HtmlElement, is_element, match_key, tag_of
-from intomd_converters.web.html_blocks import convert_block, is_footnote_section
-from intomd_converters.web.inline import is_math, normalize_spans, tex_of
+from intomd_converters.web.html_blocks import convert_block, is_footnote_section, is_layout_table
+from intomd_converters.web.inline import footnote_target, is_math, normalize_spans, tex_of
+from intomd_converters.web.layout import Anchors, content_cell, is_chrome, layout_pieces
 
 log = logging.getLogger(__name__)
 _WS = re.compile(r"\s+")
@@ -191,19 +193,19 @@ def tei_to_blocks(main: Any, body: HtmlElement, b: Builder) -> None:
 
     Trafilatura drops images whose `src` is a lazy-load placeholder. Unused images inside the matched article
     region (the common ancestor of the matched elements, outside nav/aside/header/footer) are put back in
-    document order."""
+    document order. Unmatched layout tables are split into their pieces (layout.py); every block is anchored in
+    the DOM and emitted in source order, and layout chrome outside the content cell is dropped."""
     index = DomIndex(body)
+    anchors = Anchors(body, index.order)
     imgs = _image_urls(body, b)
     after = 0
-    plan: list[tuple[HtmlElement | None, Any, int]] = []
-    for n, node in enumerate(main):
-        if not isinstance(node.tag, str):
-            continue
+    plan: list[_Step] = []
+    for node, n, from_layout in _expand(main, index):
         tag = node.tag
+        key = "" if tag == "graphic" else _xml_key(node)
         if tag == "graphic":
             dom = imgs.get(node.get("src") or "")
         else:
-            key = _xml_key(node)
             if not key:
                 continue
             dom = index.find(tag, key, after)
@@ -211,8 +213,10 @@ def tei_to_blocks(main: Any, body: HtmlElement, b: Builder) -> None:
                 dom = index.find(tag, key, 0)
             if dom is None and index.seen(tag, key):
                 continue
-        if dom is None:
-            plan.append((None, node, n))
+        if dom is None or from_layout:
+            anchor = dom if dom is not None else anchors.locate(key, after)
+            pos = index.order.get(anchor, -1) if anchor is not None else -1
+            plan.append(_Step(None, node, n, pos, anchor, from_layout, len(key)))
             continue
         if dom in index.used:
             continue
@@ -222,18 +226,70 @@ def tei_to_blocks(main: Any, body: HtmlElement, b: Builder) -> None:
         index.mark(target)
         after = max(after, index.order.get(target, after))
         if tag_of(target) not in ("dd", "dt", "figcaption", "summary"):
-            plan.append((target, node, n))
-    extra = _dropped_images([t for t, _, _ in plan if t is not None], index)
-    for target, node, n in plan:
-        if target is None:
-            _xml_block(node, b, n)
-            continue
-        pos = index.order.get(target, 0)
-        while extra and index.order.get(extra[0], 0) < pos:
+            layout = tag_of(target) == "table" and is_layout_table(target)
+            plan.append(_Step(target, node, n, index.order.get(target, -1), target, layout, len(key)))
+    plan = _source_order(_drop_chrome(plan))
+    targets = [s.target for s in plan if s.target is not None]
+    extra = _dropped_images(targets, index)
+    for step in plan:
+        while extra and index.order.get(extra[0], 0) < step.pos:
             _restore_image(extra.pop(0), index, b)
-        convert_block(target, b)
+        if step.target is None:
+            _xml_block(step.node, b, step.n)
+        else:
+            convert_block(step.target, b)
     for img in extra:
         _restore_image(img, index, b)
+    for sec in _referenced_footnotes(body, targets, index):
+        index.mark(sec)
+        convert_block(sec, b)
+
+
+@dataclass(slots=True)
+class _Step:
+    target: HtmlElement | None
+    """DOM element converted for this block, or None to convert the XML node."""
+    node: Any
+    n: int
+    pos: int
+    """Source position (DomIndex order) of the anchor; -1 when the block could not be anchored."""
+    anchor: HtmlElement | None
+    from_layout: bool
+    chars: int
+
+
+def _expand(main: Any, index: DomIndex) -> list[tuple[Any, int, bool]]:
+    """Top-level XML blocks; unmatched layout tables are replaced by their pieces (flagged True)."""
+    out: list[tuple[Any, int, bool]] = []
+    for n, node in enumerate(main):
+        if not isinstance(node.tag, str):
+            continue
+        if node.tag == "table" and _is_xml_layout_table(node):
+            key = _xml_key(node)
+            if key and index.find("table", key, 0) is None:
+                out.extend((piece, n, True) for piece in layout_pieces(node, _is_xml_layout_table))
+                continue
+        out.append((node, n, False))
+    return out
+
+
+def _drop_chrome(plan: list[_Step]) -> list[_Step]:
+    if not any(s.from_layout for s in plan):
+        return plan
+    main = content_cell([(s.anchor, s.chars) for s in plan if s.anchor is not None])
+    return [s for s in plan if not (s.from_layout and is_chrome(s.anchor, main))]
+
+
+def _source_order(plan: list[_Step]) -> list[_Step]:
+    """Stable sort by source position; an unanchored block keeps the position of the block before it."""
+    last = -1
+    keyed = []
+    for i, step in enumerate(plan):
+        if step.pos < 0:
+            step.pos = last
+        last = step.pos
+        keyed.append((step.pos, i, step))
+    return [s for _, _, s in sorted(keyed, key=lambda t: (t[0], t[1]))]
 
 
 def _ancestors(el: HtmlElement) -> list[HtmlElement]:
@@ -256,17 +312,51 @@ def _dropped_images(targets: list[HtmlElement], index: DomIndex) -> list[HtmlEle
         return []
     region = common[0]
     out = []
-    for img in region.iter("img", "amp-img"):
+    for img in region.iter("img", "amp-img", *_DISPLAY_MATH_TAGS):
         if img in index.used:
             continue
-        if any(tag_of(a) in ("nav", "aside", "header", "footer") for a in _ancestors(img)):
+        if tag_of(img) not in ("img", "amp-img") and not _display_math(img):
+            continue
+        if any(tag_of(a) in ("nav", "aside", "header", "footer") or is_math(a) for a in _ancestors(img)[1:]):
             continue
         out.append(img)
     return sorted(out, key=lambda e: index.order.get(e, 0))
 
 
+_DISPLAY_MATH_TAGS = ("intomd-math", "mjx-container", "math")
+
+
+def _display_math(el: HtmlElement) -> bool:
+    """Block-level math Trafilatura drops because it has no paragraph around it: MathJax v2 display scripts
+    (captured as `<intomd-math data-display="block">`), MathJax v3 `<mjx-container display="true">`, and
+    `<math display="block">`."""
+    tag = tag_of(el)
+    if tag == "intomd-math":
+        return bool(el.get("data-display") == "block")
+    return str(el.get("display") or "").lower() in (("true",) if tag == "mjx-container" else ("block",))
+
+
+def _referenced_footnotes(body: HtmlElement, targets: list[HtmlElement], index: DomIndex) -> list[HtmlElement]:
+    """Footnote sections outside the extracted article (often a sibling of `<article>`) whose notes are
+    referenced from converted blocks; without them the references would dangle."""
+    refs = {footnote_target(a) for t in targets for a in t.iter("a")} - {None}
+    if not refs:
+        return []
+    out = []
+    for sec in body.iter():
+        if not is_element(sec) or sec in index.used or not is_footnote_section(sec):
+            continue
+        if any(li.get("id") in refs for li in sec.iter("li")):
+            out.append(sec)
+    return out
+
+
 def _restore_image(img: HtmlElement, index: DomIndex, b: Builder) -> None:
     if img in index.used:
+        return
+    if tag_of(img) not in ("img", "amp-img"):
+        index.mark(img)
+        convert_block(img, b)
         return
     fig = _container(img)
     target = fig if fig is not None and fig not in index.used and tag_of(fig) == "figure" else img
@@ -344,7 +434,7 @@ def _xml_block(node: Any, b: Builder, n: int) -> None:
         if spans:
             b.blocks.append(Quote(spans=spans, provenance=prov))
     elif tag == "table":
-        _xml_table(node, b, prov)
+        _xml_table(node, b, prov, n)
     elif tag == "graphic":
         src = node.get("src") or ""
         if src:
@@ -355,7 +445,43 @@ def _xml_block(node: Any, b: Builder, n: int) -> None:
             b.blocks.append(Image(ref=b.url(src), alt=alt, provenance=prov))
 
 
-def _xml_table(node: Any, b: Builder, prov: Any) -> None:
+def _is_xml_layout_table(node: Any) -> bool:
+    """The XML side of 5e item 11 for tables Trafilatura keeps but that match no DOM table. With no header cells,
+    a table is layout when it has one column; or when its filled cells carry layout signals (block content,
+    images, nested tables) and it is a single row, or has at most one filled cell per row; or when every filled
+    cell holds block content. A one-row or sparse table of plain values stays a data table."""
+    rows = node.findall("row")
+    cells = [c for row in rows for c in row.findall("cell")]
+    if not cells or any(c.get("role") == "head" for c in cells):
+        return False
+
+    def filled(c: Any) -> bool:
+        return bool("".join(c.itertext()).strip()) or c.find(".//graphic") is not None
+
+    def signal(c: Any) -> bool:
+        return any(ch.tag in ("p", "list", "table", "head", "graphic") for ch in c.iterdescendants())
+
+    if max(len(row.findall("cell")) for row in rows) <= 1:
+        return True
+    full = [c for c in cells if filled(c)]
+    if not full:
+        return True
+    sparse = all(sum(1 for c in row.findall("cell") if filled(c)) <= 1 for row in rows)
+    if len(rows) == 1 or sparse:
+        return len(full) <= 1 or any(signal(c) for c in full)
+    return all(any(ch.tag in ("p", "list", "table", "head") for ch in c) for c in full)
+
+
+def _unwrap_xml_table(node: Any, b: Builder, n: int) -> None:
+    """Emit a layout table's cells in reading order: inline runs become paragraphs, block children convert."""
+    for piece in layout_pieces(node, _is_xml_layout_table):
+        _xml_block(piece, b, n)
+
+
+def _xml_table(node: Any, b: Builder, prov: Any, n: int = 0) -> None:
+    if _is_xml_layout_table(node):
+        _unwrap_xml_table(node, b, n)
+        return
     cells: list[Cell] = []
     rows = node.findall("row")
     n_cols = 0

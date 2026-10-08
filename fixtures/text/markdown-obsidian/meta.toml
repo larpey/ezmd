@@ -1,0 +1,10 @@
+converter = "text.markdown_passthrough"
+max_seconds = 10
+hand_edited = false
+notes = "Obsidian-flavoured Markdown: YAML front matter (title, tags, aliases), wikilinks with alias and heading anchor, an ![[embed]], warning and folded callouts, nested task list, GFM table with alignment, footnote, fenced code, raw HTML details block, #tags. Known limitations kept honest: wikilinks and embeds stay literal text (not Link kind=wikilink), callouts render as labelled quotes (attrs.callout, title on its own line), and `:--` alignment is not carried (left is the default)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/text/_generate.py"

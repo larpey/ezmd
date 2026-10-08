@@ -213,3 +213,11 @@ def test_omml_subset() -> None:
     )
     assert conv(f"<m:bar><m:e>{r('z')}</m:e></m:bar>")[0] == r"\overline{z}"
     assert conv(f"<m:groupChr><m:e>{r('q')}</m:e></m:groupChr>") == ("q", True)
+
+
+def test_list_start_values(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
+    doc = run(DocxConverter(), fixture_bytes("docx-lists-restart"), "d.docx")
+    lists = [b for b in doc.blocks if isinstance(b, ListBlock)]
+    assert [(lb.ordered, lb.start) for lb in lists] == [(True, 1), (True, 1), (True, 5), (False, 1)]
+    assert [i.spans[0].text for i in lists[2].items] == ["Call the duty manager", "Clear the yard"]
+    assert lists[0].items[1].children_ordered and len(lists[0].items[1].children) == 2

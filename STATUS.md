@@ -2,14 +2,14 @@
 
 Last updated: 2026-10-08 by agent
 Current phase: 1
-Current task: P1 wave 2 (email, EDGAR/social, SDK/UI, deploy, CI/release, shadow-run, docs, fixture corpus)
-Overall: 28 / 85 tasks done
+Current task: P1 close: fixes for P1-T15 findings, then gate G1
+Overall: 32 / 85 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
 | 0 | Foundation | done | 13/13 | v0.0.1 |
-| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 15/19 | |
+| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 19/19 | gate G1 pending |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
 | 4 | Public instance launch | pending | 0/12 | |
@@ -43,7 +43,7 @@ Overall: 28 / 85 tasks done
 | P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | done | 4bb08b6 | PDF (pdfium text + Docling extra), Office (DOCX/PPTX/XLSX/ODF/RTF/LibreOffice), EPUB; D-0027, D-0030, D-0031 |
 | P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | done | 74f33f6 | Trafilatura + rules + raw; hidden-content stripping; 12 fixtures; D-0028 |
 | P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | done | 14016c0 | source files, repo packing, secret redaction; 8 fixtures; D-0025 |
-| P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | pending | |  |
+| P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | done | 663f62e | EML, MBOX, native MSG on olefile; extract-msg nonfree; D-0035 |
 | P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | done | f891980 | CSV/JSON/YAML/TOML/XML/SQLite/Parquet; 14 fixtures exact; D-0029 |
 | P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | done | d8bab1e | notebooks, archives with bomb limits (markdown/plain from P0); D-0031 |
 | P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | done | fbaaf4c | EDGAR on the endpoints directly (edgartools pulls GPL Unidecode); social stubs behind a flag; D-0033 |
@@ -54,11 +54,11 @@ Overall: 28 / 85 tasks done
 | P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | done | 3d53738 | OpenAPI-generated types with drift checks, events iterator, 3.4 KB gzipped |
 | P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | done | 34e4298 | server warning registry, zip-all, kept results, history, test ids; 90 KB gzipped |
 | P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | done | b034142 | bootstrap/backup/restore/upgrade tested on Docker, rollback verified; D-0034 |
-| P1-T15 | Integration workflow (compose in CI), security tests fast and network tiers, Playwright suite | pending | |  |
+| P1-T15 | Integration workflow (compose in CI), security tests fast and network tiers, Playwright suite | done | 8694593 | integration workflow on compose, security tiers, Playwright with axe; D-0036 |
 | P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | done | b034142 | digest push, Trivy, SBOM, cosign; OIDC publish gated on owner setup; D-0034 |
-| P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | pending | |  |
+| P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | done | 1e38bb6 | README, CONTRIBUTING, SECURITY, CoC, strict MkDocs, generated matrix; D-0036 |
 | P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | done | 33460bc | every available engine per file, scored against the registry's choice |
-| P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | pending | |  |
+| P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | done | pending | 94 fixtures, provenance check, nightly scorecard; D-0036 |
 | P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `intomd models pull/list/rm/export`; license gate | pending | |  |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | pending | |  |
 | P2-T03 | Diarization: pyannote community-1 with midpoint alignment; `exclusive` mode; `DIARIZATION` setting | pending | |  |
@@ -114,7 +114,7 @@ Overall: 28 / 85 tasks done
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | pending | |  |
 
 ## Fixture scorecard (latest)
-59 fixtures across 8 families (text, pdf, office, ebooks, archives, web, code, data); all pass; 3 skip without optional extras (data, 7z) — 2026-10-08
+94 fixtures across 11 families (text, pdf, office, ebooks, archives, web, code, data, edgar, comms); all pass; 2 skip without optional extras (py7zr, pyarrow); provenance check 0 problems; per-converter table from `uv run python tools/scorecard.py` (nightly artifact) — 2026-10-08
 
 ## Phase 0 summary
 Foundation complete and tagged v0.0.1 (2026-10-08). The project was renamed anymd -> intomd (npm name taken; D-0001).
@@ -148,5 +148,8 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 - Web UI: no upload path for files over 8 MB yet; capabilities lack instance name, sponsor, docx export flag, and queue position.
 
 ## Deferred core change requests
+- `render/tables._html` does not fill missing cells, so columns shift (xlsx works around it; from P1-T19).
+- `--engine pdf=docling` does not resolve (docs use `--converter documents.docling_pdf`); compact frontmatter shows `warnings: []` while the CLI prints info warnings: check against spec (from P1-T17).
+- `server` extra needs intomd-api published; `iwork` extra not packaged (tests/test_extras_hints.py PENDING).
 - Split converter metadata from the registry so the api image can drop about 100 MB of converter dependencies (from P1-T14).
 - `Provenance.timestamp` (comms keeps it in `Heading.attrs`), compact profile dropping `reply_history`/`reply_header`/`signature` roles, a `signature` paragraph role (from P1-T04).

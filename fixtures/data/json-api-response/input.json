@@ -1,0 +1,193 @@
+{
+  "data": [
+    {
+      "id": 5000,
+      "name": "Customer A",
+      "email": "customer0@example.invalid",
+      "address": {
+        "street": "10 Harbour Road",
+        "city": "Lisbon",
+        "geo": {
+          "lat": 38.7,
+          "lng": -9.1
+        }
+      },
+      "orders": 0,
+      "vip": true
+    },
+    {
+      "id": 5001,
+      "name": "Customer B",
+      "email": "customer1@example.invalid",
+      "address": {
+        "street": "11 Harbour Road",
+        "city": "Oslo",
+        "geo": {
+          "lat": 38.95,
+          "lng": -8.6
+        }
+      },
+      "orders": 1,
+      "vip": false
+    },
+    {
+      "id": 5002,
+      "name": "Customer C",
+      "email": "customer2@example.invalid",
+      "address": {
+        "street": "12 Harbour Road",
+        "city": "Quito",
+        "geo": {
+          "lat": 39.2,
+          "lng": -8.1
+        }
+      },
+      "orders": 2,
+      "vip": false
+    },
+    {
+      "id": 5003,
+      "name": "Customer D",
+      "email": "customer3@example.invalid",
+      "address": {
+        "street": "13 Harbour Road",
+        "city": "Nairobi",
+        "geo": {
+          "lat": 39.45,
+          "lng": -7.6
+        }
+      },
+      "orders": 3,
+      "vip": false
+    },
+    {
+      "id": 5004,
+      "name": "Customer E",
+      "email": "customer4@example.invalid",
+      "address": {
+        "street": "14 Harbour Road",
+        "city": "Hanoi",
+        "geo": {
+          "lat": 39.7,
+          "lng": -7.1
+        }
+      },
+      "orders": 0,
+      "vip": false
+    },
+    {
+      "id": 5005,
+      "name": "Customer F",
+      "email": "customer5@example.invalid",
+      "address": {
+        "street": "15 Harbour Road",
+        "city": "Perth",
+        "geo": {
+          "lat": 39.95,
+          "lng": -6.6
+        }
+      },
+      "orders": 1,
+      "vip": true
+    },
+    {
+      "id": 5006,
+      "name": "Customer G",
+      "email": "customer6@example.invalid",
+      "address": {
+        "street": "16 Harbour Road",
+        "city": "Tromso",
+        "geo": {
+          "lat": 40.2,
+          "lng": -6.1
+        }
+      },
+      "orders": 2,
+      "vip": false
+    },
+    {
+      "id": 5007,
+      "name": "Customer H",
+      "email": "customer7@example.invalid",
+      "address": {
+        "street": "17 Harbour Road",
+        "city": "Cusco",
+        "geo": {
+          "lat": 40.45,
+          "lng": -5.6
+        }
+      },
+      "orders": 3,
+      "vip": false
+    },
+    {
+      "id": 5008,
+      "name": "Customer I",
+      "email": "customer8@example.invalid",
+      "address": {
+        "street": "18 Harbour Road",
+        "city": "Accra",
+        "geo": {
+          "lat": 40.7,
+          "lng": -5.1
+        }
+      },
+      "orders": 0,
+      "vip": false
+    },
+    {
+      "id": 5009,
+      "name": "Customer J",
+      "email": "customer9@example.invalid",
+      "address": {
+        "street": "19 Harbour Road",
+        "city": "Riga",
+        "geo": {
+          "lat": 40.95,
+          "lng": -4.6
+        }
+      },
+      "orders": 1,
+      "vip": false
+    },
+    {
+      "id": 5010,
+      "name": "Customer K",
+      "email": "customer10@example.invalid",
+      "address": {
+        "street": "20 Harbour Road",
+        "city": "Lisbon",
+        "geo": {
+          "lat": 41.2,
+          "lng": -4.1
+        }
+      },
+      "orders": 2,
+      "vip": true
+    },
+    {
+      "id": 5011,
+      "name": "Customer L",
+      "email": "customer11@example.invalid",
+      "address": {
+        "street": "21 Harbour Road",
+        "city": "Oslo",
+        "geo": {
+          "lat": 41.45,
+          "lng": -3.6
+        }
+      },
+      "orders": 3,
+      "vip": false
+    }
+  ],
+  "meta": {
+    "page": 2,
+    "per_page": 12,
+    "total": 61,
+    "next": "https://api.example.invalid/v1/customers?page=3"
+  },
+  "links": {
+    "self": "https://api.example.invalid/v1/customers?page=2"
+  }
+}

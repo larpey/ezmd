@@ -1,0 +1,10 @@
+converter = "documents.xlsx"
+max_seconds = 30
+hand_edited = false
+notes = "A sheet with a merged title row (A1:D1), two vertical merges (A3:A4, A5:A6), SUM totals with cached values, and a second data region below a blank gap; a second sheet with a cross-sheet ratio formula (cached). The empty B7 cell stays as a placeholder so the HTML-rendered merged table keeps its columns aligned."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

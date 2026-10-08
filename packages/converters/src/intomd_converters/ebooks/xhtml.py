@@ -457,6 +457,13 @@ class Walker:
         if tag == "img":
             self._image(el)
             return
+        if tag == "math":
+            # Inline MathML: prefer the author's alttext (often TeX) over the flattened token text.
+            math = el.get("alttext") or " ".join("".join(el.itertext()).split())
+            math = clean_text(math, self.ctx.stats).strip()
+            if math:
+                buf.append(InlineSpan(text=math, math=math))
+            return
         st = [*styles, STYLE_TAGS[tag]] if tag in STYLE_TAGS else styles
         link = href
         if tag == "a":
@@ -491,7 +498,8 @@ def _push(buf: list[InlineSpan], text: str, styles: list[InlineStyle], href: str
     if not text:
         return
     st = sorted(set(styles), key=list(InlineStyle).index)
-    if buf and buf[-1].styles == st and buf[-1].href == href and buf[-1].footnote_ref is None:
+    last = buf[-1] if buf else None
+    if last and last.styles == st and last.href == href and last.footnote_ref is None and last.math is None:
         prev = buf[-1].text
         if prev.endswith((" ", "\n")) and text.startswith(" "):
             text = text.lstrip(" ")

@@ -99,3 +99,12 @@ comments) belongs with the fetcher and the Phase 3 renderer.
 - `hr` is dropped rather than emitted as a `Raw("---")` block.
 - readability-lxml is not used as a separate fallback; the rule extractor fills that slot.
 - `amp-img` is handled; other AMP components are not.
+- Layout-table pages (5e item 11) on the Trafilatura path: Trafilatura's flattened tables are split into
+  pieces, anchored back into the DOM by text, and emitted in source order; pieces in layout cells outside the
+  content cell (the cell holding most of the anchored text) are dropped as chrome when the cell has under 200
+  characters or is mostly links. A longer non-content cell (a sidebar with real prose) is kept, and a piece
+  whose text cannot be found in the DOM keeps the position of the block before it. Visual-only headings
+  (`<font size=4><b>`) stay bold paragraphs, not headings.
+- A one-row table without header cells is data unless it has a layout signal (one filled cell, an image,
+  block content); a sparse table (at most one value per row) is data unless it carries such signals. One
+  column without header cells is always treated as layout.

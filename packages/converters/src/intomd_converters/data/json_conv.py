@@ -18,7 +18,15 @@ from intomd.ir import Document, Warning, WarningKind
 from intomd.registry import ConversionError, ConvertOptions
 from intomd_converters.data._base import DATA_LIMITS, finish, mime_of, new_document, read_capped, suffix_of, summary
 from intomd_converters.data._common import DataOptions, RawNumber, decode_bytes, encoding_warning
-from intomd_converters.data._tree import TreeBuilder, clip, clip_warnings, describe, emit_schema_and_data
+from intomd_converters.data._tree import (
+    TreeBuilder,
+    clip,
+    clip_warnings,
+    depth_extra,
+    depth_text,
+    describe,
+    emit_schema_and_data,
+)
 
 JSON_MIMES = ("application/json", "application/jsonl", "application/x-ndjson")
 JSONL_SUFFIXES = (".jsonl", ".ndjson")
@@ -124,8 +132,8 @@ class JsonConverter:
         clipped = clip(value, max_depth=opts.max_depth, max_nodes=opts.max_nodes)
         warnings.extend(clip_warnings(clipped, opts))
         doc = new_document(ref, encoding=decoded.encoding, confidence=decoded.confidence)
-        doc.metadata.extra.update({"format": kind, "depth": clipped.depth})
-        summary(doc, f"{kind} {describe(clipped.value)}; nesting depth {clipped.depth}.")
+        doc.metadata.extra.update({"format": kind, **depth_extra(clipped, opts)})
+        summary(doc, f"{kind} {describe(clipped.value)}; {depth_text(clipped, opts)}.")
         builder = TreeBuilder(source=ref.display, opts=opts, ctx=options.ctx)
         emit_schema_and_data(builder, clipped.value)
         doc.blocks.extend(builder.blocks)

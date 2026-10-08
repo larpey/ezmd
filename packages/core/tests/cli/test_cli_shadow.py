@@ -19,6 +19,8 @@ runner = CliRunner()
 ROOT = Path(__file__).resolve().parents[4]
 TEXT_FIXTURES = ROOT / "fixtures" / "text"
 KITCHEN_SINK = TEXT_FIXTURES / "markdown-kitchen-sink" / "input.md"
+# The text fixture corpus grows (P1-T19); derive the expected discovery from it instead of hard-coding counts.
+TEXT_INPUTS = sorted(TEXT_FIXTURES.glob("*/input.*"))
 
 
 def _json(args: list[str]) -> dict[str, object]:
@@ -35,7 +37,8 @@ def test_table_on_fixture_subset() -> None:
     out = res.stdout
     assert "text.markdown_passthrough *" in out
     assert "text.plain" in out
-    assert "summary: 4 files, 1 with 2+ engines" in out
+    multi = sum(1 for p in TEXT_INPUTS if p.suffix == ".md")  # Markdown has two engines, plain text one
+    assert f"summary: {len(TEXT_INPUTS)} files, {multi} with 2+ engines" in out
     for col in ("engine", "time s", "blocks", "headings", "tables", "warnings", "text", "structure"):
         assert col in out
 
@@ -70,7 +73,8 @@ def test_engines_filter_and_profile() -> None:
 
 def test_glob_and_fixture_aware_directory_discovery(tmp_path: Path) -> None:
     found = discover([str(TEXT_FIXTURES)])
-    assert [p.name for p in found] == ["input.md", "input.txt", "input.txt", "input.txt"]
+    assert [p.name for p in found] == [p.name for p in TEXT_INPUTS]
+    assert len(found) >= 4
     (tmp_path / "a.txt").write_text("hello", encoding="utf-8")
     (tmp_path / "sub").mkdir()
     (tmp_path / "sub" / "b.md").write_text("# b", encoding="utf-8")

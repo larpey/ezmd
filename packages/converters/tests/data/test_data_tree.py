@@ -162,7 +162,40 @@ def test_clip_handles_cycles_with_node_budget() -> None:
     a: list[object] = []
     a.append(a)
     res = clip(a, max_depth=64, max_nodes=1000)
-    assert res.depth_cut == 1 and res.depth == 64
+    assert res.depth_cut == 1 and res.shown_depth == 64
+    # The cut subtree is the list itself: measuring stops at the revisit and reports a lower bound.
+    assert res.depth == 65 and res.depth_exact is False
+
+
+def test_clip_measures_true_depth_below_the_cap() -> None:
+    value: dict[str, object] = {"leaf": 1}
+    for i in range(16):
+        value = {f"n{i}": value, "x": [i]}
+    res = clip(value, max_depth=12, max_nodes=10_000)
+    assert res.shown_depth == 12 and res.depth == 17 and res.depth_exact
+    assert res.depth_cut > 0
+
+
+def test_clip_measure_respects_node_budget() -> None:
+    deep: list[object] = []
+    cur = deep
+    for _ in range(200):
+        nxt: list[object] = []
+        cur.append(nxt)
+        cur = nxt
+    res = clip(deep, max_depth=5, max_nodes=50)
+    assert res.shown_depth == 5 and res.depth_exact is False and 5 < res.depth < 200
+
+
+def test_schema_reports_truncated_container_type(convert: Convert) -> None:
+    value = "1"
+    for i in range(6):
+        value = '{"k' + str(i) + '": ' + value + "}"
+    doc = convert(JsonConverter(), value.encode(), "d.json", max_depth=3)
+    text = doc.plain_text()
+    assert "object (truncated)" in text
+    assert doc.metadata.extra["depth"] == 6 and doc.metadata.extra["depth_cap"] == 3
+    assert "nesting depth 6 (shown to 3 levels)" in text
 
 
 # ---------------------------------------------------------------- YAML

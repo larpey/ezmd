@@ -1,0 +1,10 @@
+converter = "code.repo_pack"
+max_seconds = 30
+hand_edited = false
+notes = "Repo zip whose fake secrets sit inside packed files: Dockerfile ENV token, YAML password, INI webhook secret, a Bearer header in JS, a password in a postgres URL in Markdown (all redacted with secret_redacted); placeholders (changeme, ${UPSTREAM_API_KEY}, <your password here>) stay visible; .npmrc and an id_ed25519 key are excluded (secret_file_excluded); secrets/ is ignored and the !secrets/README.md negation cannot re-include it (git semantics)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

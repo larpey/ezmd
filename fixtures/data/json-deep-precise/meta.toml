@@ -1,0 +1,13 @@
+converter = "data.json"
+max_seconds = 20
+hand_edited = false
+notes = "Part2 10f item 2: 20- and 30-digit integers, 1.10, 0.1e-7 and -0.0 kept verbatim, unicode keys (accented, CJK, emoji), a 16-level chain cut at data.max_depth 12 with depth_truncated, and a 60-row array sampled head 10 + tail 5 with rows_sampled (options lowered to keep the fixture small)."
+expected_errors = []
+
+[input]
+options = { "extra.data.max_depth" = 12, "extra.data.max_rows" = 40, "extra.data.head_rows" = 10, "extra.data.tail_rows" = 5 }
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

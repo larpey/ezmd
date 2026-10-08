@@ -1,0 +1,798 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "md1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Rainfall Summary"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 3,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "md1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Monthly totals for station "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "R-7"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "label": null,
+        "latex": "\\bar{x} = \\frac{1}{n} \\sum_i x_i",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 5,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "md1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "text": null,
+        "type": "equation"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Month"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Rain (mm)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "May"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "41"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "June"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0004",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 10,
+          "line_start": 7,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "md1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {
+          "execution_count": "1"
+        },
+        "code": "rain <- c(41, 12)\ncat('loaded', length(rain), 'months\\n')\nwarning('June is provisional')",
+        "filename": null,
+        "id": "b0005",
+        "language": "r",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[1]",
+          "source": "input.ipynb",
+          "source_id": "c1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "role": "output",
+          "stream": "stdout"
+        },
+        "code": "loaded 2 months",
+        "filename": null,
+        "id": "b0006",
+        "language": "output",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[1].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "c1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "role": "output",
+          "stream": "stderr"
+        },
+        "code": "Warning message:\nJune is provisional",
+        "filename": null,
+        "id": "b0007",
+        "language": "output",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[1].outputs[1]",
+          "source": "input.ipynb",
+          "source_id": "c1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "execution_count": "2"
+        },
+        "code": "IRdisplay::display_markdown('**Mean:** 26.5 mm')",
+        "filename": null,
+        "id": "b0008",
+        "language": "r",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[2]",
+          "source": "input.ipynb",
+          "source_id": "c2",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[2].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "c2",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Mean:"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " 26.5 mm"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "execution_count": "3"
+        },
+        "code": "barplot(rain)",
+        "filename": null,
+        "id": "b0010",
+        "language": "r",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[3]",
+          "source": "input.ipynb",
+          "source_id": "c3",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "alt": "plot without title",
+        "attrs": {
+          "role": "output"
+        },
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0011",
+        "mime": "image/svg+xml",
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[3].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "c3",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "images/c3o0.svg",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "code": "# not run yet\nsummary(rain)",
+        "filename": null,
+        "id": "b0012",
+        "language": "r",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[4]",
+          "source": "input.ipynb",
+          "source_id": "c4",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:2ee0b8195f7171e769e3d6a4cf8100cd12b0720baa29b4153d2c6db4cf4cead7",
+    "converter_id": "documents.ipynb",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "kernel_language": "r",
+        "nbformat": 4
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/x-ipynb+json",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.ipynb",
+      "source_type": "notebook",
+      "speakers": [],
+      "title": "Rainfall Summary"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [
+    {
+      "alt": "plot without title",
+      "bbox": null,
+      "block_id": "b0011",
+      "caption": null,
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 532,
+      "offset_start": 462,
+      "page": null,
+      "ref": "images/c3o0.svg"
+    }
+  ],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:c5bff97ea8ece4712804196129e1b95c9866ed94b01d9769d8ee35913afdb89c",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.ipynb",
+    "converter_version": "0.0.1",
+    "extra": {
+      "kernel_language": "r",
+      "nbformat": 4
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.ipynb",
+    "source_hash": "sha256:0e1cffa4a463a92ced9aad6e90e21655969aa19c21489bc20b95a0d3a38f368b",
+    "source_type": "notebook",
+    "title": "Rainfall Summary",
+    "tokens": {
+      "cl100k_base": 201,
+      "claude_approx": 217,
+      "o200k_base": 201
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 58
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 6,
+      "comments": 0,
+      "equations": 1,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 1,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 6,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 52
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.ipynb",
+    "engines_tried": [
+      "documents.ipynb"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2202
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "md1",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 3,
+      "line_start": 3,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "md1",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "line_end": 5,
+      "line_start": 5,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "md1",
+      "type": "equation"
+    },
+    {
+      "block_id": "b0004",
+      "line_end": 10,
+      "line_start": 7,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "md1",
+      "type": "table"
+    },
+    {
+      "block_id": "b0005",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "cells[1]",
+      "source": "input.ipynb",
+      "source_id": "c1",
+      "type": "code"
+    },
+    {
+      "block_id": "b0006",
+      "path": "cells[1].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "c1",
+      "type": "code"
+    },
+    {
+      "block_id": "b0007",
+      "path": "cells[1].outputs[1]",
+      "source": "input.ipynb",
+      "source_id": "c1",
+      "type": "code"
+    },
+    {
+      "block_id": "b0008",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[2]",
+      "source": "input.ipynb",
+      "source_id": "c2",
+      "type": "code"
+    },
+    {
+      "block_id": "b0009",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[2].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "c2",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0010",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[3]",
+      "source": "input.ipynb",
+      "source_id": "c3",
+      "type": "code"
+    },
+    {
+      "block_id": "b0011",
+      "path": "cells[3].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "c3",
+      "type": "image"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "cells[4]",
+      "source": "input.ipynb",
+      "source_id": "c4",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0004",
+      "column_types": [
+        "text",
+        "number"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Month",
+        "Rain (mm)"
+      ],
+      "number": 1,
+      "offset_end": 176,
+      "offset_start": 104,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 31
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 456,
+  "warnings": []
+}

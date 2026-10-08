@@ -1,0 +1,10 @@
+converter = "archives.archive"
+max_seconds = 30
+hand_edited = false
+notes = "Zip holding a tar.gz that holds a hand-built .docx and a .csv (three archive levels with the docx package; children routed to documents.docx and data.csv), plus a member flagged encrypted (general-purpose bit 0) that is listed as encrypted and never read (archive_encrypted)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/archives/_generate.py"

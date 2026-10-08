@@ -1,0 +1,10 @@
+converter = "documents.ipynb"
+max_seconds = 30
+hand_edited = false
+notes = "R-kernel notebook: display math and a GFM table in Markdown, a string-valued code source, stdout plus two stderr chunks (consecutive chunks of one stream coalesce), a text/markdown display output, an SVG output in a hide-cell tagged cell (kept: honor_tags is off by default), and an unexecuted cell without outputs."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/ebooks/_generate.py"

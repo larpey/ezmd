@@ -1,0 +1,10 @@
+converter = "documents.docx"
+max_seconds = 30
+hand_edited = false
+notes = "Raw-OOXML DOCX: a timetable with a two-row header (gridSpan group headers over a vMerge row-header), a three-row vMerge in the body, an empty cell, a gridSpan in the last row; a table whose cell holds a nested table; a headerless table (tblLook 0000, no tblHeader). The nested table is emitted as its own table right after the parent table (the parent cell keeps its paragraphs); the headerless table gets a synthesized col_N header."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

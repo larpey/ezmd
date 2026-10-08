@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "Three pages with a running header, a page-number footer, and one footnote per page (raised Ts marker in the same text object, small-type body at the page bottom). Headers and footers must be removed. Known limitation: the text-layer engine does not detect footnotes, so markers stay inline (meters.1) and bodies are plain paragraphs at the page end; Docling (docs extra) is the footnote-aware engine."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

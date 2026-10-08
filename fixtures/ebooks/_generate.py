@@ -16,6 +16,7 @@ HERE = Path(__file__).resolve().parent
 STAMP = (2024, 1, 1, 0, 0, 0)
 NL = chr(10)
 ESC = chr(27)
+BS = chr(92)
 
 
 def png(width: int = 2, height: int = 2, rgb: tuple[int, int, int] = (200, 30, 30)) -> bytes:
@@ -375,7 +376,205 @@ def ipynb_analysis() -> None:
     out.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + NL, encoding="utf-8", newline=NL)
 
 
+def epub3_drm_partial() -> None:
+    """EPUB3 whose second chapter is listed in encryption.xml with a real (non-font) cipher, plus an
+    obfuscated font that must NOT count as DRM, ARIA-role footnotes (role=doc-noteref / doc-footnote instead of
+    epub:type), MathML, and a <dl> in the readable chapters."""
+    opf = """<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="uid">urn:uuid:5b2a7c1e-0000-4000-8000-000000000003</dc:identifier>
+    <dc:title>Notes from the Salt Flats</dc:title>
+    <dc:creator>Oren Halde</dc:creator>
+    <dc:language>en</dc:language>
+    <dc:date>2024-06-01</dc:date>
+    <meta property="dcterms:modified">2024-06-01T00:00:00Z</meta>
+  </metadata>
+  <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item id="font" href="fonts/body.otf" media-type="font/otf"/>
+    <item id="ch1" href="text/ch1.xhtml" media-type="application/xhtml+xml" properties="mathml"/>
+    <item id="ch2" href="text/ch2.xhtml" media-type="application/xhtml+xml"/>
+    <item id="ch3" href="text/ch3.xhtml" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine>
+    <itemref idref="ch1"/>
+    <itemref idref="ch2"/>
+    <itemref idref="ch3"/>
+  </spine>
+</package>
+"""
+    nav = xhtml(
+        "Contents",
+        """<nav epub:type="toc" id="toc"><h1>Contents</h1>
+<ol>
+  <li><a href="text/ch1.xhtml">Evaporation</a></li>
+  <li><a href="text/ch2.xhtml">The Locked Chapter</a></li>
+  <li><a href="text/ch3.xhtml">Glossary</a></li>
+</ol></nav>""",
+    )
+    ch1 = xhtml(
+        "Evaporation",
+        """<section id="s1">
+<h1>Evaporation</h1>
+<p>A shallow pan loses about four millimetres of water a day in July.<a role="doc-noteref" href="#n1" id="r1">1</a>
+The salt that remains is raked into rows.</p>
+<p>The evaporation rate is
+<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="E = k (e_s - e_a)"><mi>E</mi><mo>=</mo><mi>k</mi><mo>(</mo>
+<msub><mi>e</mi><mi>s</mi></msub><mo>-</mo>
+<msub><mi>e</mi><mi>a</mi></msub><mo>)</mo></math>
+where <em>k</em> depends on wind.</p>
+<aside role="doc-footnote" id="n1">
+<p><a href="#r1" role="doc-backlink">1.</a> Measured at the north pans in 2023.</p></aside>
+</section>""",
+    )
+    ch3 = xhtml(
+        "Glossary",
+        """<section id="s3">
+<h1>Glossary</h1>
+<dl>
+  <dt>Brine</dt><dd>Water saturated with salt.</dd>
+  <dt>Fleur de sel</dt><dd>The thin crust skimmed from the surface.</dd>
+</dl>
+</section>""",
+    )
+    # Ciphertext stand-in: the converter must skip it, never decode it as XHTML.
+    locked = bytes((i * 37 + 11) % 256 for i in range(256))
+    encryption = """<?xml version="1.0" encoding="utf-8"?>
+<encryption xmlns="urn:oasis:names:tc:opendocument:xmlns:container"
+  xmlns:enc="http://www.w3.org/2001/04/xmlenc#">
+  <enc:EncryptedData>
+    <enc:EncryptionMethod Algorithm="http://www.idpf.org/2008/embedding"/>
+    <enc:CipherData><enc:CipherReference URI="OEBPS/fonts/body.otf"/></enc:CipherData>
+  </enc:EncryptedData>
+  <enc:EncryptedData>
+    <enc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
+    <enc:CipherData><enc:CipherReference URI="OEBPS/text/ch2.xhtml"/></enc:CipherData>
+  </enc:EncryptedData>
+</encryption>
+"""
+    write_zip(
+        HERE / "epub3-drm-partial" / "input.epub",
+        [
+            ("mimetype", b"application/epub+zip"),
+            ("META-INF/container.xml", CONTAINER),
+            ("META-INF/encryption.xml", encryption.encode()),
+            ("OEBPS/content.opf", opf.encode()),
+            ("OEBPS/nav.xhtml", nav),
+            ("OEBPS/fonts/body.otf", bytes(64)),
+            ("OEBPS/text/ch1.xhtml", ch1),
+            ("OEBPS/text/ch2.xhtml", locked),
+            ("OEBPS/text/ch3.xhtml", ch3),
+        ],
+    )
+
+
+def ipynb_outputs() -> None:
+    """Output-type coverage beyond ipynb-analysis: an R kernel, stdout and stderr streams split over several
+    output entries, a text/markdown display, an SVG image, display math, a cell whose `source` is a plain
+    string, and a `remove-input`/`hide-cell` tagged cell (kept by default; honor_tags is off)."""
+    svg = '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="#0a0"/></svg>'
+    nb = {
+        "nbformat": 4,
+        "nbformat_minor": 5,
+        "metadata": {
+            "kernelspec": {"name": "ir", "display_name": "R", "language": "R"},
+            "language_info": {"name": "R", "version": "4.3.1"},
+        },
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "md1",
+                "metadata": {},
+                "source": lines(
+                    "# Rainfall Summary"
+                    + NL
+                    + NL
+                    + "Monthly totals for station **R-7**."
+                    + NL
+                    + NL
+                    + "$$"
+                    + BS
+                    + "bar{x} = "
+                    + BS
+                    + "frac{1}{n} "
+                    + BS
+                    + "sum_i x_i$$"
+                    + NL
+                    + NL
+                    + "| Month | Rain (mm) |"
+                    + NL
+                    + "|---|---:|"
+                    + NL
+                    + "| May | 41 |"
+                    + NL
+                    + "| June | 12 |"
+                ),
+            },
+            {
+                "cell_type": "code",
+                "id": "c1",
+                "execution_count": 1,
+                "metadata": {},
+                "source": "rain <- c(41, 12)"
+                + NL
+                + "cat('loaded', length(rain), 'months"
+                + BS
+                + "n')"
+                + NL
+                + "warning('June is provisional')",
+                "outputs": [
+                    {"output_type": "stream", "name": "stdout", "text": ["loaded 2 months" + NL]},
+                    {"output_type": "stream", "name": "stderr", "text": ["Warning message:" + NL]},
+                    {"output_type": "stream", "name": "stderr", "text": ["June is provisional" + NL]},
+                ],
+            },
+            {
+                "cell_type": "code",
+                "id": "c2",
+                "execution_count": 2,
+                "metadata": {},
+                "source": ["IRdisplay::display_markdown('**Mean:** 26.5 mm')"],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "metadata": {},
+                        "data": {"text/markdown": ["**Mean:** 26.5 mm"], "text/plain": ["Mean: 26.5 mm"]},
+                    }
+                ],
+            },
+            {
+                "cell_type": "code",
+                "id": "c3",
+                "execution_count": 3,
+                "metadata": {"tags": ["hide-cell"]},
+                "source": ["barplot(rain)"],
+                "outputs": [
+                    {
+                        "output_type": "display_data",
+                        "metadata": {},
+                        "data": {"image/svg+xml": [svg], "text/plain": ["plot without title"]},
+                    }
+                ],
+            },
+            {
+                "cell_type": "code",
+                "id": "c4",
+                "execution_count": None,
+                "metadata": {},
+                "source": ["# not run yet" + NL, "summary(rain)"],
+                "outputs": [],
+            },
+        ],
+    }
+    out = HERE / "ipynb-outputs" / "input.ipynb"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(nb, indent=1, ensure_ascii=False) + NL, encoding="utf-8", newline=NL)
+
+
 if __name__ == "__main__":
     epub3_novel()
     epub2_ncx()
     ipynb_analysis()
+    epub3_drm_partial()
+    ipynb_outputs()

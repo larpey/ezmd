@@ -8,6 +8,7 @@ tables, footnotes, and raw HTML blocks.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from markdown_it import MarkdownIt
@@ -68,8 +69,11 @@ class _Ctx:
         return Provenance(source=self.source)
 
 
-def _inline_spans(tok: Token | None, ctx: _Ctx, *, collect_images: bool = True) -> list[InlineSpan]:
-    """Flatten an `inline` token's children into styled spans."""
+def _inline_spans(
+    tok: Token | None, ctx: _Ctx, *, collect_images: bool = True, first_softbreak: str = " "
+) -> list[InlineSpan]:
+    """Flatten an `inline` token's children into styled spans. `first_softbreak` replaces the first soft line
+    break (callout titles keep their own line)."""
     if tok is None or not tok.children:
         return [InlineSpan(text=tok.content if tok else "")] if tok and tok.content else []
     spans: list[InlineSpan] = []
@@ -80,7 +84,13 @@ def _inline_spans(tok: Token | None, ctx: _Ctx, *, collect_images: bool = True) 
         if t == "text":
             _push(spans, c.content, styles, href[-1] if href else None)
         elif t in ("softbreak", "hardbreak"):
-            _push(spans, "\n" if t == "hardbreak" else " ", styles, href[-1] if href else None)
+            brk = "\n" if t == "hardbreak" else first_softbreak
+            if t == "softbreak":
+                first_softbreak = " "
+            if brk == "\n\n":
+                spans.append(InlineSpan(text=brk))  # a standalone span: the quote renderer splits paragraphs there
+            else:
+                _push(spans, brk, styles, href[-1] if href else None)
         elif t == "code_inline":
             _push(spans, c.content, [*styles, InlineStyle.CODE], href[-1] if href else None)
         elif t in ("strong_open", "em_open", "s_open"):
@@ -121,7 +131,8 @@ def _push(spans: list[InlineSpan], text: str, styles: list[InlineStyle], href: s
     if not text:
         return
     st = sorted(set(styles), key=list(InlineStyle).index)
-    if spans and spans[-1].styles == st and spans[-1].href == href and spans[-1].footnote_ref is None:
+    last = spans[-1] if spans else None
+    if last and last.styles == st and last.href == href and last.footnote_ref is None and last.text.strip():
         spans[-1] = InlineSpan(text=spans[-1].text + text, styles=st, href=href)
         return
     spans.append(InlineSpan(text=text, styles=st, href=href))
@@ -233,13 +244,33 @@ def _parse_table(tokens: list[Token], i: int, ctx: _Ctx) -> tuple[Table, int]:
     )
 
 
+_CALLOUT = re.compile(r"^\[![A-Za-z][\w-]*\][+-]?")
+"""An Obsidian/GitHub callout marker (`> [!warning] Title`): its title line stays a paragraph of its own."""
+
+
+def _callout(spans: list[InlineSpan]) -> tuple[list[InlineSpan], dict[str, str]]:
+    """Move a leading callout marker (`[!warning]`, `[!note]-`) into attrs["callout"] (rendered as a label)."""
+    m = _CALLOUT.match(spans[0].text) if spans else None
+    if m is None:
+        return spans, {}
+    kind = m.group(0).split("]")[0][2:]
+    attrs = {"callout": kind}
+    if m.group(0).endswith(("+", "-")):
+        attrs["callout_fold"] = "open" if m.group(0).endswith("+") else "closed"
+    rest = spans[0].text[m.end() :].lstrip()
+    head = [spans[0].model_copy(update={"text": rest})] if rest else []
+    return head + spans[1:], attrs
+
+
 def _blockquote_spans(tokens: list[Token], ctx: _Ctx) -> list[InlineSpan]:
     spans: list[InlineSpan] = []
     for t in tokens:
         if t.type == "inline":
+            callout = not spans and _CALLOUT.match(t.content) is not None
             if spans:
                 spans.append(InlineSpan(text="\n\n"))
-            spans.extend(_inline_spans(t, ctx, collect_images=False))
+            title_break = "\n\n" if callout else " "
+            spans.extend(_inline_spans(t, ctx, collect_images=False, first_softbreak=title_break))
         elif t.type in ("fence", "code_block"):
             if spans:
                 spans.append(InlineSpan(text="\n\n"))
@@ -297,7 +328,8 @@ def parse_markdown(text: str, source: str) -> tuple[list[Block], dict[str, str]]
             while inner and inner[0].type == "blockquote_open" and _find_close(inner, 0) == len(inner) - 1:
                 depth += 1
                 inner = inner[1:-1]
-            blocks.append(Quote(spans=_blockquote_spans(inner, ctx), depth=depth, provenance=ctx.prov(tok)))
+            qspans, qattrs = _callout(_blockquote_spans(inner, ctx))
+            blocks.append(Quote(spans=qspans, depth=depth, provenance=ctx.prov(tok), attrs=qattrs))
             i = end + 1
         elif t == "table_open":
             table, i = _parse_table(tokens, i, ctx)

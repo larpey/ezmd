@@ -1,0 +1,10 @@
+converter = "documents.docx"
+max_seconds = 30
+hand_edited = false
+notes = "Raw-OOXML DOCX: Title and Subtitle, H1 to H4 by style, a decimal list with a lowerLetter sublevel, a second num restarting the same abstractNum via startOverride, a list starting at 5, a bullet list with a hyperlink item and a nested bullet, and an inline picture with alt text plus caption. Numbering continuation across interrupted lists of the same numId is not tracked; explicit w:start and startOverride values are honored."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

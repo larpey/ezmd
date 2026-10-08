@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pikepdf
 import pytest
-from conftest import FIXTURES, convert_path, new_pdf, save
+from conftest import FIXTURES, TextOp, convert_path, new_pdf, save
 from pikepdf import Array, Dictionary, Name
 
 import intomd_converters.pdf as pdf_family
@@ -269,3 +269,62 @@ def test_family_registers_unavailable_docling(monkeypatch: pytest.MonkeyPatch) -
     result = reg.convert(ref, ConvertOptions())
     assert result.converter_id == "documents.pdfium_text"
     assert WarningKind.ENGINE_FALLBACK in [w.kind for w in result.all_warnings]
+
+
+def test_table_continued_across_pages_is_merged() -> None:
+    doc = convert_path(FIXTURES / "table-across-pages" / "input.pdf")
+    tables = [b for b in doc.blocks if isinstance(b, Table)]
+    assert len(tables) == 1
+    table = tables[0]
+    assert (table.n_rows, table.n_cols, table.header_rows) == (41, 4, 1)
+    assert table.attrs["pdf_table_pages"] == "1,2,3"
+    assert table.attrs["pdf_table_row_pages"].startswith("1:0-")
+    grid = [[spans_text(c.spans) for c in table.cells if c.row == r] for r in range(table.n_rows)]
+    assert grid[0] == ["Berth", "Quay", "Length (m)", "Status"]
+    assert [row[0] for row in grid[1:]] == [f"B-{n:02d}" for n in range(1, 41)]
+    assert sum(c.is_header for c in table.cells) == 4
+
+
+def test_tables_with_different_headers_on_consecutive_pages_stay_separate(make_pdf: Callable[..., Path]) -> None:
+    def page(header: tuple[str, str], rows: int) -> list[TextOp]:
+        ops: list[TextOp] = [(72, 700, header[0], 10, True), (300, 700, header[1], 10, True)]
+        for r in range(rows):
+            ops += [(72, 684 - 16 * r, f"item {r}", 10, False), (300, 684 - 16 * r, str(r), 10, False)]
+        return ops
+
+    doc = convert_path(make_pdf([page(("Name", "Qty"), 3), page(("Part", "Cost"), 3)]))
+    tables = [b for b in doc.blocks if isinstance(b, Table)]
+    assert [t.n_rows for t in tables] == [4, 4]
+    assert all("pdf_table_pages" not in t.attrs for t in tables)
+
+
+def _two_col_table(top: float, rows: int, header: tuple[str, str] = ("Name", "Qty")) -> list[TextOp]:
+    ops: list[TextOp] = [(72, top, header[0], 10, True), (300, top, header[1], 10, True)]
+    for r in range(rows):
+        ops += [(72, top - 16 * (r + 1), f"item {r}", 10, False), (300, top - 16 * (r + 1), str(r), 10, False)]
+    return ops
+
+
+def test_same_header_tables_not_at_page_edges_stay_separate(make_pdf: Callable[..., Path]) -> None:
+    # Page 1's table ends mid-page (well above the bottom), so page 2's same-schema table is a new table.
+    doc = convert_path(make_pdf([_two_col_table(700, 3), _two_col_table(700, 3)]))
+    tables = [b for b in doc.blocks if isinstance(b, Table)]
+    assert [t.n_rows for t in tables] == [4, 4]
+    assert all("pdf_table_pages" not in t.attrs for t in tables)
+
+
+def test_table_reaching_page_bottom_merges_with_row_pages(make_pdf: Callable[..., Path]) -> None:
+    doc = convert_path(make_pdf([_two_col_table(200, 8), _two_col_table(700, 3)]))
+    tables = [b for b in doc.blocks if isinstance(b, Table)]
+    assert [t.n_rows for t in tables] == [12]
+    assert tables[0].attrs["pdf_table_pages"] == "1,2"
+    assert tables[0].attrs["pdf_table_row_pages"] == "1:0-8,2:9-11"
+
+
+def test_hybrid_scanned_page_warns_for_that_page_only() -> None:
+    doc = convert_path(FIXTURES / "hybrid-scanned-pages" / "input.pdf")
+    w = {str(x.kind): x for x in doc.warnings}
+    assert w["pages_without_text"].detail == {"pages": "2"}
+    stub = [b for b in doc.blocks if isinstance(b, Paragraph) and b.attrs.get("pdf_stub")]
+    assert [b.provenance.source_page for b in stub] == [2]
+    assert any(isinstance(b, Heading) and b.provenance.source_page == 3 for b in doc.blocks)

@@ -25,7 +25,7 @@ from intomd_converters.data._base import (
     summary,
 )
 from intomd_converters.data._common import DataOptions, RawNumber, decode_bytes, encoding_warning
-from intomd_converters.data._tree import TreeBuilder, clip, clip_warnings, describe
+from intomd_converters.data._tree import TreeBuilder, clip, clip_warnings, depth_extra, depth_text, describe
 
 TOML_MIMES = ("application/toml",)
 
@@ -65,8 +65,8 @@ class TomlConverter:
         clipped = clip(value, max_depth=opts.max_depth, max_nodes=opts.max_nodes)
         warnings.extend(clip_warnings(clipped, opts))
         doc = new_document(ref, encoding=decoded.encoding, confidence=decoded.confidence)
-        doc.metadata.extra.update({"format": "TOML", "depth": clipped.depth})
-        summary(doc, f"TOML {describe(clipped.value)}; nesting depth {clipped.depth}.")
+        doc.metadata.extra.update({"format": "TOML", **depth_extra(clipped, opts)})
+        summary(doc, f"TOML {describe(clipped.value)}; {depth_text(clipped, opts)}.")
         builder = TreeBuilder(source=ref.display, opts=opts, ctx=options.ctx, stats=stats)
         builder.emit(clipped.value, "/", 2)
         doc.blocks.extend(builder.blocks)

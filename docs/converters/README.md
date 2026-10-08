@@ -19,45 +19,45 @@ loaded or unavailable with the reason, and `intomd doctor` for system programs s
 
 | Converter | Family | Engine | MIME types | Install | Status | Fixtures | Threshold | Page |
 |---|---|---|---|---|---|---|---|---|
-| `archives.archive` | archives | archive | `application/zip`, `application/x-zip-compressed`, `application/x-tar` and 6 more | default | Beta | 4 | 0.99 | [archives](archives.md) |
+| `archives.archive` | archives | archive | `application/zip`, `application/x-zip-compressed`, `application/x-tar` and 6 more | default | Beta | 6 | 0.99 | [archives](archives.md) |
 | `archives.sevenzip` | archives | sevenzip | `application/x-7z-compressed` | extra `7z` | Beta | 0 | 0.85 | [archives](archives.md) |
-| `code.repo_pack` | code | repo_pack | `application/gzip`, `application/x-compressed-tar`, `application/x-gzip` and 3 more | default | Beta | 3 | 0.99 | [code](code.md) |
-| `code.source_file` | code | source_file | `text/x-python`, `application/typescript`, `text/x-typescript` and 40 more | default | Beta | 5 | 0.99 | [code](code.md) |
+| `code.repo_pack` | code | repo_pack | `application/gzip`, `application/x-compressed-tar`, `application/x-gzip` and 3 more | default | Beta | 4 | 0.99 | [code](code.md) |
+| `code.source_file` | code | source_file | `text/x-python`, `application/typescript`, `text/x-typescript` and 40 more | default | Beta | 7 | 0.99 | [code](code.md) |
 | `comms.eml` | comms | eml | `message/rfc822`, `message/global` | default | Beta | 7 | 0.97 | [comms](comms.md) |
 | `comms.mbox` | comms | mbox | `application/mbox`, `application/x-mbox` | default | Beta | 1 | 0.97 | [comms](comms.md) |
 | `comms.msg` | comms | msg | `application/vnd.ms-outlook`, `application/x-msg` | default | Beta | 1 | 0.97 | [comms](comms.md) |
 | `comms.msg_extract` | comms | msg_extract | (by URL) | extra `nonfree` | Beta | 0 | 0.85 | [comms](comms.md) |
 | `data.connection_string` | data | connection_string | `text/x-uri`, `text/plain` | default | Beta | 1 | 1.00 | [data](data.md) |
 | `data.csv` | data | csv | `text/csv`, `text/tab-separated-values` | default | Beta | 4 | 1.00 | [data](data.md) |
-| `data.json` | data | json | `application/json`, `application/jsonl`, `application/x-ndjson` | default | Beta | 3 | 1.00 | [data](data.md) |
+| `data.json` | data | json | `application/json`, `application/jsonl`, `application/x-ndjson` | default | Beta | 5 | 1.00 | [data](data.md) |
 | `data.parquet` | data | parquet | `application/vnd.apache.parquet`, `application/x-parquet` | extra `data` | Beta | 1 | 1.00 | [data](data.md) |
 | `data.sqlite` | data | sqlite | `application/vnd.sqlite3`, `application/x-sqlite3` | default | Beta | 1 | 1.00 | [data](data.md) |
 | `data.toml` | data | toml | `application/toml` | default | Beta | 1 | 1.00 | [data](data.md) |
-| `data.xml` | data | xml | `application/xml` | default | Beta | 2 | 1.00 | [data](data.md) |
-| `data.yaml` | data | yaml | `application/yaml` | default | Beta | 1 | 1.00 | [data](data.md) |
-| `documents.epub` | documents | epub | `application/epub+zip` | default | Beta | 2 | 0.95 | [ebooks](ebooks.md) |
-| `documents.ipynb` | documents | ipynb | `application/x-ipynb+json`, `application/x-ipynb` | default | Beta | 1 | 0.95 | [ebooks](ebooks.md) |
+| `data.xml` | data | xml | `application/xml` | default | Beta | 3 | 1.00 | [data](data.md) |
+| `data.yaml` | data | yaml | `application/yaml` | default | Beta | 2 | 1.00 | [data](data.md) |
+| `documents.epub` | documents | epub | `application/epub+zip` | default | Beta | 3 | 0.95 | [ebooks](ebooks.md) |
+| `documents.ipynb` | documents | ipynb | `application/x-ipynb+json`, `application/x-ipynb` | default | Beta | 2 | 0.95 | [ebooks](ebooks.md) |
 | `specialized.edgar` | specialized | edgar | `text/html`, `application/xhtml+xml`, `application/json` and 3 more | default | Beta | 3 | 0.95 | [edgar](edgar.md) |
-| `documents.docx` | documents | docx | `application/vnd.openxmlformats-officedocument.wordprocessingml.document`, `application/vnd.ms-word.document.macroenabled.12`, `application/vnd.openxmlformats-officedocument.wordprocessingml.template` and 1 more | default | Beta | 3 | 0.95 | [office](office.md) |
+| `documents.docx` | documents | docx | `application/vnd.openxmlformats-officedocument.wordprocessingml.document`, `application/vnd.ms-word.document.macroenabled.12`, `application/vnd.openxmlformats-officedocument.wordprocessingml.template` and 1 more | default | Beta | 5 | 0.95 | [office](office.md) |
 | `documents.iwork` | documents | iwork | `application/vnd.apple.pages`, `application/vnd.apple.numbers`, `application/vnd.apple.keynote` | planned | Planned | 0 | 0.85 | [office](office.md) |
 | `documents.libreoffice` | documents | libreoffice | `application/msword`, `application/vnd.ms-excel`, `application/vnd.ms-powerpoint` and 10 more | default | Beta | 0 | 0.85 | [office](office.md) |
 | `documents.odf` | documents | odf | `application/vnd.oasis.opendocument.text`, `application/vnd.oasis.opendocument.text-template`, `application/vnd.oasis.opendocument.spreadsheet` and 3 more | default | Beta | 1 | 0.90 | [office](office.md) |
-| `documents.pptx` | documents | pptx | `application/vnd.openxmlformats-officedocument.presentationml.presentation`, `application/vnd.ms-powerpoint.presentation.macroenabled.12`, `application/vnd.openxmlformats-officedocument.presentationml.template` and 1 more | default | Beta | 1 | 0.95 | [office](office.md) |
+| `documents.pptx` | documents | pptx | `application/vnd.openxmlformats-officedocument.presentationml.presentation`, `application/vnd.ms-powerpoint.presentation.macroenabled.12`, `application/vnd.openxmlformats-officedocument.presentationml.template` and 1 more | default | Beta | 2 | 0.95 | [office](office.md) |
 | `documents.rtf` | documents | rtf | `application/rtf`, `text/rtf` | default | Beta | 1 | 0.90 | [office](office.md) |
-| `documents.xlsx` | documents | xlsx | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`, `application/vnd.ms-excel.sheet.macroenabled.12`, `application/vnd.openxmlformats-officedocument.spreadsheetml.template` | default | Beta | 1 | 0.95 | [office](office.md) |
+| `documents.xlsx` | documents | xlsx | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`, `application/vnd.ms-excel.sheet.macroenabled.12`, `application/vnd.openxmlformats-officedocument.spreadsheetml.template` | default | Beta | 3 | 0.95 | [office](office.md) |
 | `documents.docling_pdf` | documents | docling_pdf | `application/pdf` | extra `docs` | Beta | 0 | 0.95 | [pdf](pdf.md) |
-| `documents.pdfium_text` | documents | pdfium_text | `application/pdf` | default | Beta | 7 | 0.95 | [pdf](pdf.md) |
+| `documents.pdfium_text` | documents | pdfium_text | `application/pdf` | default | Beta | 10 | 0.95 | [pdf](pdf.md) |
 | `web.social_hn` | web | social_hn | `application/json`, `text/plain`, `text/x-uri` | default | Experimental (behind `INTOMD_ENABLE_SOCIAL`) | 0 | 0.85 | [social](social.md) |
 | `web.social_reddit` | web | social_reddit | `application/json`, `text/plain`, `text/x-uri` | default | Experimental (behind `INTOMD_ENABLE_SOCIAL`) | 0 | 0.85 | [social](social.md) |
-| `text.markdown_passthrough` | text | markdown_passthrough | `text/markdown` | default | Beta | 1 | 0.95 | [text](text.md) |
-| `text.plain` | text | plain | `text/plain`, `text/*` | default | Beta | 3 | 0.95 | [text](text.md) |
+| `text.markdown_passthrough` | text | markdown_passthrough | `text/markdown` | default | Beta | 2 | 0.95 | [text](text.md) |
+| `text.plain` | text | plain | `text/plain`, `text/*` | default | Beta | 4 | 0.95 | [text](text.md) |
 | `web.html_raw` | web | html_raw | `text/html`, `application/xhtml+xml` | default | Beta | 1 | 0.90 | [web](web.md) |
 | `web.rules` | web | rules | `text/html`, `application/xhtml+xml` | default | Beta | 2 | 0.95 | [web](web.md) |
-| `web.trafilatura` | web | trafilatura | `text/html`, `application/xhtml+xml` | default | Beta | 9 | 0.95 | [web](web.md) |
+| `web.trafilatura` | web | trafilatura | `text/html`, `application/xhtml+xml` | default | Beta | 11 | 0.95 | [web](web.md) |
 
 Converters behind a flag are off by default; they are listed here as they behave with the flag set (`INTOMD_ENABLE_SOCIAL=1`).
 
-35 converters, 71 fixtures.
+35 converters, 94 fixtures.
 
 ## Fallback chains
 

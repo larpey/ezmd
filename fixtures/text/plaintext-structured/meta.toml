@@ -1,0 +1,10 @@
+converter = "text.plain"
+max_seconds = 10
+hand_edited = false
+notes = "Typewriter-style manual: setext headings, ALL-CAPS headings of 3+ words or with a trailing colon (level 2), a 2-word caps line that stays a paragraph, an indented command block (code, no language), hard-wrapped paragraphs. The numbered outline (1., 2.1) keeps one item per line as hard line breaks (not nested lists); the whitespace-aligned equipment list becomes a 3-column table (spec 4c step 22 rules 4 and 6)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/text/_generate.py"

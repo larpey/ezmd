@@ -1,0 +1,214 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 24,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.sh",
+          "source": "input.sh",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.sh"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "lines": "24",
+          "tokens": "169"
+        },
+        "code": "#!/usr/bin/env bash\n# backup.sh: rotate nightly database dumps (intomd fixture).\nset -euo pipefail\n\nBACKUP_DIR=\"${BACKUP_DIR:-/var/backups/app}\"\nKEEP_DAYS=14\n\nlog() {\n  printf \"%s %s\" \"$(date -u +%FT%TZ)\" \"$*\" >&2\n}\n\nrotate() {\n  find \"$BACKUP_DIR\" -name \"*.sql.gz\" -mtime +\"$KEEP_DAYS\" -print -delete\n}\n\ncat <<'EOF' > /tmp/backup-banner.txt\nNightly backup: do not interrupt.\nEOF\n\ncase \"${1:-run}\" in\n  run) log starting; rotate ;;\n  dry-run) log dry run only ;;\n  *) echo \"usage: $0 [run|dry-run]\"; exit 2 ;;\nesac",
+        "filename": "input.sh",
+        "id": "b0002",
+        "language": "bash",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 24,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.sh",
+          "source": "input.sh",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:f112e3c1dbbbbbdf1ad8c90d4ed4335668018815c4085cf1d88bbf93db0bb096",
+    "converter_id": "code.source_file",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "bytes": 515,
+        "language": "bash",
+        "lines": 24,
+        "shebang": "bash",
+        "tokens": 169
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/x-shellscript",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.sh",
+      "source_type": "code",
+      "speakers": [],
+      "title": "input.sh"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:4154153bca58d4d93cca38c1fde5cb8acabfe63b65fd263b7769c7095bd4aad9",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.source_file",
+    "converter_version": "0.0.1",
+    "extra": {
+      "bytes": 515,
+      "encoding": "utf-8",
+      "language": "bash",
+      "lines": 24,
+      "shebang": "bash",
+      "tokens": 169
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.sh",
+    "source_hash": "sha256:8bec98acc54768a22d0807e29d8344b54a6900ab3b2560978f290c0d0f069379",
+    "source_type": "code",
+    "title": "input.sh",
+    "tokens": {
+      "cl100k_base": 188,
+      "claude_approx": 206,
+      "o200k_base": 191
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 64
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 71
+    },
+    "duration_seconds": 0.125,
+    "engine": "code.source_file",
+    "engines_tried": [
+      "code.source_file"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 515
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 24,
+      "line_start": 1,
+      "path": "input.sh",
+      "source": "input.sh",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 24,
+      "line_start": 1,
+      "path": "input.sh",
+      "source": "input.sh",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 459,
+  "warnings": []
+}

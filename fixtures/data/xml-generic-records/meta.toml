@@ -1,0 +1,10 @@
+converter = "data.xml"
+max_seconds = 20
+hand_edited = false
+notes = "Part2 10f item 6: eight repeated <person> elements become one records table (XML_MIN_RECORDS = 6), an empty <born/> stays an empty cell, an optional <note> on one record leaves the others blank, &amp; decoded once."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

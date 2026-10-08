@@ -68,6 +68,7 @@ class _ListAcc:
     ordered: bool
     path: str
     source_id: str | None
+    start: int = 1
     items: list[ListItem] = field(default_factory=list)
     last: list[ListItem] = field(default_factory=list)
     pending: list[Block] = field(default_factory=list)
@@ -366,6 +367,7 @@ class DocxWalker:
             ordered=self.numbering.ordered(num_id, 0),
             path=path,
             source_id=para_id,
+            start=self.numbering.start(num_id, 0),
         )
         self._list = acc
         return acc
@@ -396,6 +398,7 @@ class DocxWalker:
                 ListBlock(
                     id=acc.id,
                     ordered=acc.ordered,
+                    start=acc.start if acc.ordered else 1,
                     items=acc.items,
                     provenance=Provenance(source=self.source, path=acc.path, source_id=acc.source_id),
                 )

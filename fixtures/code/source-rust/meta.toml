@@ -1,0 +1,10 @@
+converter = "code.source_file"
+max_seconds = 30
+hand_edited = false
+notes = "Rust module with doc comments, derives, a trait, lifetimes and a cfg(test) module: packed verbatim in a rust fence (no secrets, no warnings)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

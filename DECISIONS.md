@@ -352,3 +352,12 @@ Decision: `comms.eml` (stdlib email, policy.default; multipart/alternative prefe
 Alternatives: extract-msg as the only MSG engine (GPL, out of the default install); convert HTML bodies with `convert_child` (bodies would count toward attachment depth and lose quotes and signatures to Trafilatura).
 Consequences: 9 fixtures at 1.000 (threshold 0.97). TNEF is warned, not decoded. Deferred core requests: Provenance.timestamp, compact profile dropping reply and signature roles, a signature role, List-Id `<` escaping.
 Council: not convened; two independent Skeptic rounds (3 rejects, then 2 shared-code regressions and a truncation defect), all fixed in code.
+
+## D-0036: Fixture corpus at 94 with provenance check and nightly scorecard (P1-T19); integration suite (P1-T15); docs (P1-T17)
+Date: 2026-10-08
+Task: P1-T15, P1-T17, P1-T19
+Status: accepted
+Decision: The golden corpus is 94 fixtures (85 outside email), all self-generated CC0 except two public-domain EDGAR recordings credited in CREDITS.md. `tools/check_fixture_provenance.py` runs in pytest and nightly; `tools/scorecard.py` writes the per-family and per-converter scorecard as a nightly artifact. Converter fixes exposed by the new fixtures went in with tests (cross-page PDF tables merge only bottom-to-top fragments with per-row page provenance, docx list starts, xlsx merged regions, web source order and layout-table unwrapping with a layout signal, notebook stream concatenation, ALL-CAPS headings and whitespace tables in plain text, MathML, gitignore negation). P1-T15 adds the integration workflow on the bootstrapped compose stack, fast and network security tiers, and a Playwright suite (with axe) that fails on any off-origin request; bugs it found are pinned by strict xfail markers until fixed. P1-T17 adds README, CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, and a strict MkDocs site with a generated converters matrix and a test that runs every runnable README command.
+Alternatives: count fixtures without independent review (rejected: two Skeptic reviews rejected 4 of 23 and flagged 6 risky heuristics, all fixed in code).
+Consequences: the fixture count and converter matrix must be regenerated when fixtures change (drift tests enforce it). Deferred: render/tables._html does not fill missing cells (the xlsx converter works around it).
+Council: not convened.

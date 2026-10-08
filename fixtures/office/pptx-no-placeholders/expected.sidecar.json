@@ -1,0 +1,836 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "index": 1,
+        "layout": "Blank",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide1",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Night Bus Review",
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Night Bus Review",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": "b0001",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 3108960.0,
+            "y1": 4023360.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide1/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Findings from the winter trial"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "index": 2,
+        "layout": "Blank",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "What we tried",
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "What we tried",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 1463040.0,
+            "y1": 4206240.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Three new night routes"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 1463040.0,
+            "y1": 4206240.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "N1 harbour to airport"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 1463040.0,
+            "y1": 4206240.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "N2 university loop"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 1463040.0,
+            "y1": 4206240.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Hourly frequency"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "slide_part": "notes"
+        },
+        "id": "b0008",
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/notes",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Mention that N2 was added two weeks late."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "index": 3,
+        "layout": "Blank",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Ridership",
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Ridership",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "parent_id": "b0009",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 1828800.0,
+            "y1": 2743200.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3/shape4",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "N1: 1,240 riders"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "parent_id": "b0009",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 4572000.0,
+            "x1": 12801600.0,
+            "y0": 1828800.0,
+            "y1": 2743200.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3/shape5",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "N2: 860 riders"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "parent_id": "b0009",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 4114800.0,
+            "y1": 5029200.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3/shape6",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Both routes beat the 500-rider target."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "slide_part": "notes"
+        },
+        "id": "b0013",
+        "parent_id": "b0009",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3/notes",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Numbers are weekly averages over twelve weeks."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:1c56a2f6f3e287dfa169c4d8bedf252f69e0152cde6df224aa3df6bfc3143964",
+    "converter_id": "documents.pptx",
+    "metadata": {
+      "author": "Transit Desk",
+      "authors": [
+        "Transit Desk"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "modified": "2026-01-01T00:00:00Z",
+      "pages": null,
+      "published": "2026-01-01T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": 3,
+      "source": "input.pptx",
+      "source_type": "pptx",
+      "speakers": [],
+      "title": "Night Bus Review"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Transit Desk",
+    "content_hash": "sha256:ce28ae9e40f791e46cd95b96f67e201ba189ff3a090c8034bd605daa3ca6f89e",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pptx",
+    "converter_version": "0.0.1",
+    "created_at": "2026-01-01",
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "modified_at": "2026-01-01",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "slides": 3,
+    "source": "input.pptx",
+    "source_hash": "sha256:33e312d3e8e97ba390dd3aa4796058d3bddcffae945157932ba6d99b61c9d356",
+    "source_type": "pptx",
+    "title": "Night Bus Review",
+    "tokens": {
+      "cl100k_base": 142,
+      "claude_approx": 151,
+      "o200k_base": 140
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 67
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 0,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 10,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 3,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 45
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.pptx",
+    "engines_tried": [
+      "documents.pptx"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 36095
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "slide1",
+      "source": "input.pptx",
+      "source_label": "Night Bus Review",
+      "source_page": 1,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 3108960.0,
+        "y1": 4023360.0
+      },
+      "block_id": "b0002",
+      "path": "slide1/shape3",
+      "source": "input.pptx",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "slide2",
+      "source": "input.pptx",
+      "source_label": "What we tried",
+      "source_page": 2,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 1463040.0,
+        "y1": 4206240.0
+      },
+      "block_id": "b0004",
+      "path": "slide2/shape3",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 1463040.0,
+        "y1": 4206240.0
+      },
+      "block_id": "b0005",
+      "path": "slide2/shape3",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 1463040.0,
+        "y1": 4206240.0
+      },
+      "block_id": "b0006",
+      "path": "slide2/shape3",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 1463040.0,
+        "y1": 4206240.0
+      },
+      "block_id": "b0007",
+      "path": "slide2/shape3",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0008",
+      "path": "slide2/notes",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "path": "slide3",
+      "source": "input.pptx",
+      "source_label": "Ridership",
+      "source_page": 3,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 1828800.0,
+        "y1": 2743200.0
+      },
+      "block_id": "b0010",
+      "path": "slide3/shape4",
+      "source": "input.pptx",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 4572000.0,
+        "x1": 12801600.0,
+        "y0": 1828800.0,
+        "y1": 2743200.0
+      },
+      "block_id": "b0011",
+      "path": "slide3/shape5",
+      "source": "input.pptx",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 4114800.0,
+        "y1": 5029200.0
+      },
+      "block_id": "b0012",
+      "path": "slide3/shape6",
+      "source": "input.pptx",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0013",
+      "path": "slide3/notes",
+      "source": "input.pptx",
+      "source_page": 3,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0001",
+      "id": "slide-1",
+      "level": 2,
+      "number": null,
+      "offset_end": 117,
+      "offset_start": 27,
+      "original_level": 2,
+      "original_title": "Slide 1: Night Bus Review",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 1: Night Bus Review"
+    },
+    {
+      "block_id": "b0003",
+      "id": "slide-2",
+      "level": 2,
+      "number": null,
+      "offset_end": 311,
+      "offset_start": 117,
+      "original_level": 2,
+      "original_title": "Slide 2: What we tried",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 2: What we tried"
+    },
+    {
+      "block_id": "b0009",
+      "id": "slide-3",
+      "level": 2,
+      "number": null,
+      "offset_end": 494,
+      "offset_start": 311,
+      "original_level": 2,
+      "original_title": "Slide 3: Ridership",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 3: Ridership"
+    }
+  ],
+  "segments": [],
+  "slides": [
+    {
+      "block_id": "b0001",
+      "index": 1,
+      "title": "Night Bus Review"
+    },
+    {
+      "block_id": "b0003",
+      "index": 2,
+      "title": "What we tried"
+    },
+    {
+      "block_id": "b0009",
+      "index": 3,
+      "title": "Ridership"
+    }
+  ],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 413,
+  "warnings": []
+}

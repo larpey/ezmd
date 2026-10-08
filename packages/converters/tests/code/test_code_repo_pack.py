@@ -271,6 +271,22 @@ def test_subpath_restricts_pack() -> None:
     assert set(_files(doc)) == {"src/a.py"} and doc.metadata.extra["subpath"] == "src"
 
 
+def test_negation_cannot_reinclude_under_ignored_directory() -> None:
+    """git: a file under an excluded directory cannot be re-included by a later `!` rule; a negation of a file
+    whose parent directory is not excluded still works."""
+    files = {
+        ".gitignore": b"secrets/\n!secrets/README.md\n*.tmp\n!keep.tmp\n",
+        "secrets/README.md": b"note\n",
+        "secrets/prod.txt": b"token\n",
+        "keep.tmp": b"k\n",
+        "drop.tmp": b"d\n",
+        "src/a.py": b"x = 1\n",
+    }
+    doc = _pack(_zip(files))
+    assert set(_files(doc)) == {".gitignore", "keep.tmp", "src/a.py"}
+    assert doc.metadata.extra["excluded.gitignored"] == 3
+
+
 def test_token_budget_all_actions_keep_tree_complete() -> None:
     long_src = "\n".join(f"def f{i}(x: int) -> int:\n    y = x + {i}\n    return y\n" for i in range(150))
     files = {

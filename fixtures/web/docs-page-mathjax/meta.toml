@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "MathJax docs page: v2 inline and display math/tex scripts with previews, a v3 mjx-container with a TeX annotation, two footnotes with backlinks, a table with rowspan and colspan headers, python and bash code, an admonition and a details block."
+expected_errors = []
+
+[input]
+url = "https://docs.example.test/quayside/theory/harmonics.html"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

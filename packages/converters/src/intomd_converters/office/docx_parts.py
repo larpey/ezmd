@@ -223,9 +223,10 @@ def on_off_attr(v: str | None) -> bool:
 
 @dataclass(slots=True)
 class Numbering:
-    """numId -> {ilvl: numFmt}."""
+    """numId -> {ilvl: numFmt}, and numId -> {ilvl: start number} (w:start, overridden by startOverride)."""
 
     fmts: dict[str, dict[int, str]] = field(default_factory=dict)
+    starts: dict[str, dict[int, int]] = field(default_factory=dict)
 
     @classmethod
     def load(cls, pkg: OfficePackage, part: str | None) -> Numbering:
@@ -234,25 +235,37 @@ class Numbering:
         if root is None:
             return nb
         abstract: dict[str, dict[int, str]] = {}
+        abstract_starts: dict[str, dict[int, int]] = {}
         for an in root.iter(q(W, "abstractNum")):
             aid = an.get(q(W, "abstractNumId")) or ""
             abstract[aid] = _levels(an)
+            abstract_starts[aid] = _starts(an)
         for num in root.iter(q(W, "num")):
             nid = num.get(q(W, "numId")) or ""
             aid = w_val(num.find(q(W, "abstractNumId"))) or ""
             levels = dict(abstract.get(aid, {}))
+            starts = dict(abstract_starts.get(aid, {}))
             for ov in num.iter(q(W, "lvlOverride")):
                 lvl_el = ov.find(q(W, "lvl"))
                 ilvl = ov.get(q(W, "ilvl")) or ""
                 fmt = w_val(lvl_el.find(q(W, "numFmt"))) if lvl_el is not None else None
                 if fmt and ilvl.isdigit():
                     levels[int(ilvl)] = fmt
+                start = _int_val(ov.find(q(W, "startOverride")))
+                if start is None and lvl_el is not None:
+                    start = _int_val(lvl_el.find(q(W, "start")))
+                if start is not None and ilvl.isdigit():
+                    starts[int(ilvl)] = start
             nb.fmts[nid] = levels
+            nb.starts[nid] = starts
         return nb
 
     def ordered(self, num_id: str, ilvl: int) -> bool:
         fmt = self.fmts.get(num_id, {}).get(ilvl, "bullet")
         return fmt not in ("bullet", "none", "")
+
+    def start(self, num_id: str, ilvl: int) -> int:
+        return self.starts.get(num_id, {}).get(ilvl, 1)
 
     def known(self, num_id: str | None) -> bool:
         return bool(num_id) and num_id != "0" and num_id in self.fmts
@@ -265,6 +278,24 @@ def _levels(an: etree._Element) -> dict[int, str]:
         fmt = w_val(lvl.find(q(W, "numFmt"))) or "bullet"
         if ilvl.isdigit():
             out[int(ilvl)] = fmt
+    return out
+
+
+def _int_val(el: etree._Element | None) -> int | None:
+    v = w_val(el)
+    try:
+        return int(v) if v is not None else None
+    except ValueError:
+        return None
+
+
+def _starts(an: etree._Element) -> dict[int, int]:
+    out: dict[int, int] = {}
+    for lvl in an.iter(q(W, "lvl")):
+        ilvl = lvl.get(q(W, "ilvl")) or ""
+        start = _int_val(lvl.find(q(W, "start")))
+        if ilvl.isdigit() and start is not None:
+            out[int(ilvl)] = start
     return out
 
 

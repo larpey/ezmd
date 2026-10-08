@@ -162,6 +162,9 @@ def test_drm_encrypted_chapters_yield_drm_protected() -> None:
     )
     doc = convert(epub(["<p>secret</p>"], extra={"META-INF/encryption.xml": enc, "META-INF/rights.xml": "<r/>"}))
     assert WarningKind.DRM_PROTECTED in kinds(doc)
+    drm = next(w for w in doc.warnings if w.kind == WarningKind.DRM_PROTECTED)
+    assert drm.detail["files"] == "OEBPS/c0.xhtml"
+    assert "OEBPS/c0.xhtml" in drm.message
     assert "secret" not in doc.plain_text()
     assert doc.blocks, "a stub explains the result"
 
@@ -249,3 +252,15 @@ def test_can_handle() -> None:
     ref = InputRef.from_bytes(epub(["<p>x</p>"]), filename="noext")
     detect(ref)
     assert EpubConverter().can_handle(ref) >= 0.95
+
+
+def test_inline_mathml_becomes_inline_math_from_alttext() -> None:
+    m = (
+        '<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="x^2 + 1">'
+        "<msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn></math>"
+    )
+    doc = convert(epub([f"<p>The value {m} grows.</p><p>No alttext: <math><mi>y</mi><mo>=</mo><mn>3</mn></math></p>"]))
+    paras = [b for b in doc.blocks if isinstance(b, Paragraph)]
+    maths = [s.math for p in paras for s in p.spans if s.math is not None]
+    assert maths == ["x^2 + 1", "y=3"]  # no alttext: flattened token text
+    assert "grows" in doc.plain_text()

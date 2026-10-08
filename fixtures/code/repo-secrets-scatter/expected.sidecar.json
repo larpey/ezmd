@@ -1,0 +1,1198 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "tidepool"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "8 files packed (1,141 source bytes, 318 tokens). Languages: javascript 47%, python 29%, dockerfile 24%. Not packed: 2 ignored by .gitignore/.intomdignore; 2 credential files."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Directory tree"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "tidepool/\n├── config/\n│   ├── alerts.ini\n│   └── app.yaml\n├── deploy/\n│   └── id_ed25519 (excluded: secret file)\n├── docs/\n│   └── operations.md\n├── src/\n│   └── tidepool/\n│       └── __main__.py\n├── web/\n│   └── client.js\n├── .gitignore\n├── .npmrc (excluded: secret file)\n├── Dockerfile\n└── README.md",
+        "filename": null,
+        "id": "b0004",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Files"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "bytes": "67",
+          "language": "markdown",
+          "packed_bytes": "66",
+          "tokens": "16"
+        },
+        "id": "b0006",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": "README.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "README.md"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "# tidepool\n\nSensor ingest service (intomd secret-scatter fixture).",
+        "filename": "README.md",
+        "id": "b0007",
+        "language": "markdown",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": "README.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "34",
+          "language": "gitignore",
+          "packed_bytes": "33",
+          "tokens": "13"
+        },
+        "id": "b0008",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": ".gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ".gitignore"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "*.pyc\nsecrets/\n!secrets/README.md",
+        "filename": ".gitignore",
+        "id": "b0009",
+        "language": "gitignore",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": ".gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "133",
+          "language": "dockerfile",
+          "packed_bytes": "129",
+          "tokens": "45"
+        },
+        "id": "b0010",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "Dockerfile",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Dockerfile"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "FROM python:3.12-slim\nWORKDIR /app\nENV INGEST_TOKEN=[REDACTED:generic_secret]\nENV LOG_LEVEL=info\nCMD [\"python\", \"-m\", \"tidepool\"]",
+        "filename": "Dockerfile",
+        "id": "b0011",
+        "language": "dockerfile",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "Dockerfile",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "121",
+          "language": "ini",
+          "packed_bytes": "121",
+          "tokens": "31"
+        },
+        "id": "b0012",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 4,
+          "line_start": 1,
+          "page_label": null,
+          "path": "config/alerts.ini",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "config/alerts.ini"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "[alerts]\nsmtp_host = mail.example.invalid\nsmtp_password = <your password here>\nwebhook_secret = [REDACTED:generic_secret]",
+        "filename": "config/alerts.ini",
+        "id": "b0013",
+        "language": "ini",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 4,
+          "line_start": 1,
+          "page_label": null,
+          "path": "config/alerts.ini",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "146",
+          "language": "yaml",
+          "packed_bytes": "150",
+          "tokens": "46"
+        },
+        "id": "b0014",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 7,
+          "line_start": 1,
+          "page_label": null,
+          "path": "config/app.yaml",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "config/app.yaml"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "service: tidepool\ndatabase:\n  host: db.example.invalid\n  password: [REDACTED:generic_secret]\n  pool_size: 8\nupstream:\n  api_key: \"${UPSTREAM_API_KEY}\"",
+        "filename": "config/app.yaml",
+        "id": "b0015",
+        "language": "yaml",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 7,
+          "line_start": 1,
+          "page_label": null,
+          "path": "config/app.yaml",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "262",
+          "language": "javascript",
+          "packed_bytes": "260",
+          "tokens": "65"
+        },
+        "id": "b0016",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 8,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/client.js",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "web/client.js"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "// client.js: upstream HTTP client.\nexport async function fetchReadings(base) {\n  const res = await fetch(base + '/readings', {\n    headers: { Authorization: 'Bearer [REDACTED:authorization_header]' },\n  });\n  return res.json();\n}\nexport const MAX_RETRIES = 3;",
+        "filename": "web/client.js",
+        "id": "b0017",
+        "language": "javascript",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 8,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/client.js",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "160",
+          "language": "python",
+          "packed_bytes": "159",
+          "tokens": "43"
+        },
+        "id": "b0018",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 8,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/tidepool/__main__.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/tidepool/__main__.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "\"\"\"tidepool entry point.\"\"\"\nimport os\n\nTOKEN = os.environ[\"INGEST_TOKEN\"]  # read at runtime, nothing to redact\n\n\ndef main() -> None:\n    print(\"ingest ready\")",
+        "filename": "src/tidepool/__main__.py",
+        "id": "b0019",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 8,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/tidepool/__main__.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "218",
+          "language": "markdown",
+          "packed_bytes": "224",
+          "tokens": "59"
+        },
+        "id": "b0020",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 9,
+          "line_start": 1,
+          "page_label": null,
+          "path": "docs/operations.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "docs/operations.md"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "# Operations\n\nConnect to the staging replica:\n\n```\npsql postgres://ingest:[REDACTED:basic_auth_url]@db.staging.example.invalid/tide\n```\n\nLocal default (placeholder, keep visible): `postgres://ingest:changeme@localhost/tide`.",
+        "filename": "docs/operations.md",
+        "id": "b0021",
+        "language": "markdown",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 9,
+          "line_start": 1,
+          "page_label": null,
+          "path": "docs/operations.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:dcd60f0d59b4ed2397725fd0c281bfbdf098dae71fbce0ccdba3742dc12dee40",
+    "converter_id": "code.repo_pack",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "bytes": 1141,
+        "excluded.gitignored": 2,
+        "excluded.secret_file": 2,
+        "files": 8,
+        "languages": "javascript, python, dockerfile",
+        "packed_bytes": 1142,
+        "repo": "tidepool",
+        "tokens": 318
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/zip",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.repo.zip",
+      "source_type": "repo",
+      "speakers": [],
+      "title": "tidepool"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 2,
+        "detail": {
+          "files": ".npmrc, deploy/id_ed25519"
+        },
+        "kind": "secret_file_excluded",
+        "message": "Excluded 2 credential file(s): .npmrc, deploy/id_ed25519.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 5,
+        "detail": {
+          "locations": "Dockerfile:3, config/alerts.ini:4, config/app.yaml:4, docs/operations.md:6, web/client.js:4",
+          "rule.authorization_header": 1,
+          "rule.basic_auth_url": 1,
+          "rule.generic_secret": 3
+        },
+        "kind": "secret_redacted",
+        "message": "Redacted 5 value(s) that look like secrets: authorization_header (1), basic_auth_url (1), generic_secret (3).",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:6ec9d5c22869e38a380aa368dc54d0cabe04bc381c33affe08bd3d02739dc28c",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.repo_pack",
+    "converter_version": "0.0.1",
+    "extra": {
+      "bytes": 1141,
+      "excluded.gitignored": 2,
+      "excluded.secret_file": 2,
+      "files": 8,
+      "languages": "javascript, python, dockerfile",
+      "packed_bytes": 1142,
+      "repo": "tidepool",
+      "tokens": 318
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.repo.zip",
+    "source_hash": "sha256:8075688268aea0a68c0c589350df666990f1bfb15818253cb68883185d06de81",
+    "source_type": "code",
+    "title": "tidepool",
+    "tokens": {
+      "cl100k_base": 949,
+      "claude_approx": 1014,
+      "o200k_base": 939
+    },
+    "truncated": false,
+    "warnings": [
+      "secret_file_excluded",
+      "secret_redacted"
+    ],
+    "word_count": 231
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 9,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 11,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 200
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.repo_pack",
+    "engines_tried": [
+      "code.repo_pack"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2760
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0005",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0006",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "README.md",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "README.md",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0008",
+      "line_end": 3,
+      "line_start": 1,
+      "path": ".gitignore",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0009",
+      "line_end": 3,
+      "line_start": 1,
+      "path": ".gitignore",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0010",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "Dockerfile",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0011",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "Dockerfile",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 4,
+      "line_start": 1,
+      "path": "config/alerts.ini",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0013",
+      "line_end": 4,
+      "line_start": 1,
+      "path": "config/alerts.ini",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0014",
+      "line_end": 7,
+      "line_start": 1,
+      "path": "config/app.yaml",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0015",
+      "line_end": 7,
+      "line_start": 1,
+      "path": "config/app.yaml",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0016",
+      "line_end": 8,
+      "line_start": 1,
+      "path": "web/client.js",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0017",
+      "line_end": 8,
+      "line_start": 1,
+      "path": "web/client.js",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0018",
+      "line_end": 8,
+      "line_start": 1,
+      "path": "src/tidepool/__main__.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0019",
+      "line_end": 8,
+      "line_start": 1,
+      "path": "src/tidepool/__main__.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0020",
+      "line_end": 9,
+      "line_start": 1,
+      "path": "docs/operations.md",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0021",
+      "line_end": 9,
+      "line_start": 1,
+      "path": "docs/operations.md",
+      "source": "input.repo.zip",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 1057,
+      "offset_start": 602,
+      "original_level": 2,
+      "original_title": "Directory tree",
+      "time_end": null,
+      "time_start": null,
+      "title": "Directory tree"
+    },
+    {
+      "block_id": "b0005",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1078,
+      "offset_start": 1057,
+      "original_level": 2,
+      "original_title": "Files",
+      "time_end": null,
+      "time_start": null,
+      "title": "Files"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 1211,
+      "offset_start": 1078,
+      "original_level": 3,
+      "original_title": "README.md",
+      "time_end": null,
+      "time_start": null,
+      "title": "README.md"
+    },
+    {
+      "block_id": "b0008",
+      "id": "sec-2-2",
+      "level": 3,
+      "number": "2.2",
+      "offset_end": 1314,
+      "offset_start": 1211,
+      "original_level": 3,
+      "original_title": ".gitignore",
+      "time_end": null,
+      "time_start": null,
+      "title": ".gitignore"
+    },
+    {
+      "block_id": "b0010",
+      "id": "sec-2-3",
+      "level": 3,
+      "number": "2.3",
+      "offset_end": 1514,
+      "offset_start": 1314,
+      "original_level": 3,
+      "original_title": "Dockerfile",
+      "time_end": null,
+      "time_start": null,
+      "title": "Dockerfile"
+    },
+    {
+      "block_id": "b0012",
+      "id": "sec-2-4",
+      "level": 3,
+      "number": "2.4",
+      "offset_end": 1713,
+      "offset_start": 1514,
+      "original_level": 3,
+      "original_title": "config/alerts.ini",
+      "time_end": null,
+      "time_start": null,
+      "title": "config/alerts.ini"
+    },
+    {
+      "block_id": "b0014",
+      "id": "sec-2-5",
+      "level": 3,
+      "number": "2.5",
+      "offset_end": 1938,
+      "offset_start": 1713,
+      "original_level": 3,
+      "original_title": "config/app.yaml",
+      "time_end": null,
+      "time_start": null,
+      "title": "config/app.yaml"
+    },
+    {
+      "block_id": "b0016",
+      "id": "sec-2-6",
+      "level": 3,
+      "number": "2.6",
+      "offset_end": 2275,
+      "offset_start": 1938,
+      "original_level": 3,
+      "original_title": "web/client.js",
+      "time_end": null,
+      "time_start": null,
+      "title": "web/client.js"
+    },
+    {
+      "block_id": "b0018",
+      "id": "sec-2-7",
+      "level": 3,
+      "number": "2.7",
+      "offset_end": 2533,
+      "offset_start": 2275,
+      "original_level": 3,
+      "original_title": "src/tidepool/__main__.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/tidepool/\\_\\_main\\_\\_.py"
+    },
+    {
+      "block_id": "b0020",
+      "id": "sec-2-8",
+      "level": 3,
+      "number": "2.8",
+      "offset_end": 2843,
+      "offset_start": 2533,
+      "original_level": 3,
+      "original_title": "docs/operations.md",
+      "time_end": null,
+      "time_start": null,
+      "title": "docs/operations.md"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 1243,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "files": ".npmrc, deploy/id_ed25519"
+      },
+      "kind": "secret_file_excluded",
+      "message": "Excluded 2 credential file(s): .npmrc, deploy/id_ed25519.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 5,
+      "detail": {
+        "locations": "Dockerfile:3, config/alerts.ini:4, config/app.yaml:4, docs/operations.md:6, web/client.js:4",
+        "rule.authorization_header": 1,
+        "rule.basic_auth_url": 1,
+        "rule.generic_secret": 3
+      },
+      "kind": "secret_redacted",
+      "message": "Redacted 5 value(s) that look like secrets: authorization_header (1), basic_auth_url (1), generic_secret (3).",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

@@ -329,7 +329,9 @@ def sheet_table(
                         text = formula
                 if isinstance(xc.value, int | float) and not isinstance(xc.value, bool):
                     raw = repr(xc.value)
-            if not text and (rs, cs) == (1, 1) and formula is None:
+            if not text and (rs, cs) == (1, 1) and formula is None and not spans:
+                # Sparse cells are fine without merges; with merges the table renders as HTML, where a
+                # missing cell would shift every later cell in its row one column left.
                 continue
             cells.append(
                 TableCell(

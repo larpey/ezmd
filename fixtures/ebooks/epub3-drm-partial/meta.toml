@@ -1,0 +1,10 @@
+converter = "documents.epub"
+max_seconds = 30
+hand_edited = false
+notes = "EPUB3 with one chapter listed in encryption.xml under AES-CBC (skipped, drm_protected) and an IDPF-obfuscated font (not DRM). Readable chapters use ARIA role footnotes (doc-noteref/doc-footnote/doc-backlink), inline MathML with alttext (rendered as inline math), and a definition list. The skipped chapter leaves no body stub; only the warning records it."
+expected_errors = ["drm_protected"]
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/ebooks/_generate.py"

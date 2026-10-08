@@ -117,3 +117,100 @@ def test_encoding_recorded_in_typed_metadata() -> None:
     detect(ref)
     meta = PlainTextConverter().convert(ref, ConvertOptions()).metadata
     assert (meta.encoding, meta.encoding_confidence) == ("utf-8", 1.0)
+
+
+def _lines(*lines: str) -> bytes:
+    return (chr(10).join(lines) + chr(10)).encode()
+
+
+def test_plain_all_caps_heading_rule() -> None:
+    data = _lines("intro", "", "SAFETY EQUIPMENT CHECKS", "", "body", "", "NOTES:", "", "x", "", "TWO WORDS", "", "y")
+    blocks, _ = _conv_plain(data)
+    heads = [b.spans[0].text for b in blocks if isinstance(b, Heading)]
+    assert heads == ["SAFETY EQUIPMENT CHECKS", "NOTES:"]
+    assert all(b.level == 2 for b in blocks if isinstance(b, Heading))
+    # An ALL-CAPS line inside a paragraph (no blank line around it) stays text.
+    blocks, _ = _conv_plain(_lines("first line", "THIS IS SHOUTED TEXT", "last line"))
+    assert [type(b) for b in blocks] == [Paragraph]
+
+
+def test_plain_indented_block_is_code() -> None:
+    tab = chr(9)
+    blocks, _ = _conv_plain(_lines("Run:", "", "    make all", "", "    make test", tab + "deploy", "", "Done."))
+    assert [type(b) for b in blocks] == [Paragraph, CodeBlock, Paragraph]
+    code = blocks[1]
+    assert isinstance(code, CodeBlock) and code.language is None
+    assert code.code == chr(10).join(["make all", "", "make test", "deploy"])
+    assert (code.provenance.line_start, code.provenance.line_end) == (3, 6)
+    # A continuation line indented inside a paragraph is not code.
+    blocks, _ = _conv_plain(_lines("a wrapped", "    continuation"))
+    assert [type(b) for b in blocks] == [Paragraph]
+
+
+def test_plain_caps_heading_rejects_shouted_sentences_and_long_lines() -> None:
+    long_caps = "THIS LINE IS FAR TOO LONG TO BE A HEADING BECAUSE IT RUNS ON AND ON"
+    data = _lines(
+        "a", "", "DO NOT LEAVE BOATS UNATTENDED.", "", "b", "", "WHY IS THE GATE OPEN?", "", long_caps, "", "c"
+    )
+    blocks, _ = _conv_plain(data)
+    assert not [b for b in blocks if isinstance(b, Heading)]
+
+
+def test_plain_indented_quote_and_sub_list_are_not_code() -> None:
+    quote = (
+        "    The harbour was calm that morning, and every boat came home",
+        "    before the tide turned, just as the old log said it would.",
+    )
+    blocks, _ = _conv_plain(_lines("He wrote:", "", *quote, "", "Then:", "", "    - first item", "    - second item"))
+    assert not [b for b in blocks if isinstance(b, CodeBlock)]
+    texts = [b.spans[0].text for b in blocks if isinstance(b, Paragraph)]
+    assert texts[1].startswith("The harbour was calm") and "    " not in texts[1]
+    assert "- first item" in texts[3] and "- second item" in texts[3]
+    # Shell commands without sentence punctuation stay code.
+    blocks, _ = _conv_plain(_lines("Run:", "", "    valve close main", "    pump drain --all", "    valve open bleed"))
+    assert [type(b) for b in blocks] == [Paragraph, CodeBlock]
+
+
+def test_plain_whitespace_table_and_outline_lines() -> None:
+    data = _lines(
+        "1. Check the lines.",
+        "2. Test the posts.",
+        "   2.1 Reset a breaker.",
+        "3. Clear the slipway.",
+        "",
+        "Item         Location        Checked",
+        "Life ring    Pontoon A head  daily",
+        "Ladder       Each finger     weekly",
+        "",
+        "Two  spaced  words",
+        "do not  make a table",
+    )
+    blocks, _ = _conv_plain(data)
+    assert [type(b) for b in blocks] == [Paragraph, Table, Paragraph]
+    outline = blocks[0]
+    assert isinstance(outline, Paragraph)
+    assert outline.spans[0].text.split(chr(10)) == [
+        "1. Check the lines.",
+        "2. Test the posts.",
+        "2.1 Reset a breaker.",
+        "3. Clear the slipway.",
+    ]
+    table = blocks[1]
+    assert isinstance(table, Table) and (table.n_rows, table.n_cols, table.header_rows) == (3, 3, 1)
+    grid = [[c.spans[0].text for c in table.cells if c.row == r] for r in range(3)]
+    assert grid[1] == ["Life ring", "Pontoon A head", "daily"]
+    assert (table.provenance.line_start, table.provenance.line_end) == (6, 8)
+
+
+def test_markdown_callout_title_keeps_its_own_paragraph() -> None:
+    nl = chr(10)
+    text = nl.join(["> [!warning] Calibration due", "> The gauge drifts.", "", "> plain quote", "> continues"])
+    blocks, _ = parse_markdown(text + nl, "x.md")
+    callout, plain = (b for b in blocks if isinstance(b, Quote))
+    assert callout.attrs == {"callout": "warning"}
+    assert [s.text for s in callout.spans] == ["Calibration due", nl + nl, "The gauge drifts."]
+    assert plain.attrs == {} and [s.text for s in plain.spans] == ["plain quote continues"]
+    folded, *_ = (
+        b for b in parse_markdown("> [!note]- Folded" + nl + "> body" + nl, "x.md")[0] if isinstance(b, Quote)
+    )
+    assert folded.attrs == {"callout": "note", "callout_fold": "closed"}

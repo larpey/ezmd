@@ -145,19 +145,28 @@ def _ignore_specs(members: list[Member]) -> dict[str, pathspec.GitIgnoreSpec]:
     return {d: pathspec.GitIgnoreSpec.from_lines(lines) for d, lines in by_dir.items()}
 
 
-def _ignored(path: str, specs: dict[str, pathspec.GitIgnoreSpec]) -> bool:
-    parts = path.split("/")
+def _decision(parts: list[str], specs: dict[str, pathspec.GitIgnoreSpec], *, is_dir: bool) -> bool:
+    """The last matching rule across the ignore files from the root down to the entry's own directory."""
     decision = False
     for i in range(len(parts)):
-        d = "/".join(parts[:i])
-        spec = specs.get(d)
+        spec = specs.get("/".join(parts[:i]))
         if spec is None:
             continue
-        rel = "/".join(parts[i:])
+        rel = "/".join(parts[i:]) + ("/" if is_dir else "")
         res = spec.check_file(rel)
         if res.include is not None:
             decision = res.include
     return decision
+
+
+def _ignored(path: str, specs: dict[str, pathspec.GitIgnoreSpec]) -> bool:
+    """Git semantics: a file under an ignored directory stays ignored even when a later `!negation` names it
+    ("it is not possible to re-include a file if a parent directory of that file is excluded")."""
+    parts = path.split("/")
+    for k in range(1, len(parts)):
+        if _decision(parts[:k], specs, is_dir=True):
+            return True
+    return _decision(parts, specs, is_dir=False)
 
 
 def _excluded_dir(path: str) -> str | None:

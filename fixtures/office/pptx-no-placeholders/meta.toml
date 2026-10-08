@@ -1,0 +1,10 @@
+converter = "documents.pptx"
+max_seconds = 30
+hand_edited = false
+notes = "python-pptx deck on the blank layout only: every title and body is a free text box (no placeholders), bullet levels inside a text box, a group shape holding two text boxes, speaker notes on slides 2 and 3. Known limitation: paragraph levels inside a free text box (which PowerPoint draws without bullets) become plain paragraphs, not a nested list."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

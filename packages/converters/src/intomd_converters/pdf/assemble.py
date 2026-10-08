@@ -164,6 +164,7 @@ class Assembler:
         self._runs: list[tuple[str, str | None]] = []
         self._list: _ListState | None = None
         self._geom = PageGeom(1, 612.0, 792.0)
+        self._table_tail: tuple[int, Table] | None = None
 
     # -- page level ---------------------------------------------------------
     def page(self, geom: PageGeom, ordered: list[Item], marker: bool) -> None:
@@ -176,7 +177,7 @@ class Assembler:
         for it in ordered:
             if it.table is not None:
                 self.flush()
-                self.blocks.append(self._table(it.table))
+                self._append_table(self._table(it.table))
             elif it.line is not None:
                 self._line(it.line)
         self.flush()
@@ -283,6 +284,42 @@ class Assembler:
         lines = [lst.first, lst.last]
         self.blocks.append(ListBlock(ordered=lst.ordered, start=lst.start, items=root, provenance=self._lprov(lines)))
 
+    def _append_table(self, table: Table) -> None:
+        """Append a table, or continue the previous page's table (docs/spec/part2.md 1f.9). A continuation needs
+        all of: the previous content block is that table (only page markers between), it is on the previous page
+        and ends in the bottom part of it, this table starts in the top part of its page, both have one header
+        row, the column counts match, and the header cells are identical. The repeated header is dropped;
+        `attrs.pdf_table_pages` lists the pages and `attrs.pdf_table_row_pages` maps row ranges to pages."""
+        k = len(self.blocks) - 1
+        while k >= 0 and isinstance(self.blocks[k], PageBreak):
+            k -= 1
+        prev = self.blocks[k] if k >= 0 else None
+        # The last fragment of a merged table decides whether the next page continues it (its page and bbox).
+        tail = self._table_tail[1] if self._table_tail is not None and self._table_tail[0] == k else prev
+        if isinstance(prev, Table) and isinstance(tail, Table) and _continues_table(prev, tail, table):
+            rows = [c.model_copy(update={"row": c.row - 1 + prev.n_rows}) for c in table.cells if c.row >= 1]
+            pages = str(prev.attrs.get("pdf_table_pages", prev.provenance.source_page))
+            first_page = prev.provenance.source_page
+            row_pages = str(prev.attrs.get("pdf_table_row_pages", f"{first_page}:0-{prev.n_rows - 1}"))
+            n_rows = prev.n_rows + table.n_rows - 1
+            span = f"{table.provenance.source_page}:{prev.n_rows}-{n_rows - 1}"
+            merged = prev.model_copy(
+                update={
+                    "cells": [*prev.cells, *rows],
+                    "n_rows": n_rows,
+                    "attrs": {
+                        **prev.attrs,
+                        "pdf_table_pages": f"{pages},{table.provenance.source_page}",
+                        "pdf_table_row_pages": f"{row_pages},{span}",
+                    },
+                }
+            )
+            self.blocks[k] = merged
+            self._table_tail = (k, table)
+            return
+        self.blocks.append(table)
+        self._table_tail = (len(self.blocks) - 1, table)
+
     def _table(self, t: TableGrid) -> Table:
         n_cols = max(len(r) for r in t.rows)
         cells = [
@@ -298,6 +335,33 @@ class Assembler:
             provenance=_prov(self.source, self._geom, t.x0, t.y0, t.x1, t.y1, self.engine),
             attrs={"pdf_table": "heuristic"},
         )
+
+
+CONTINUATION_EDGE = 0.3
+"""A table continues across a page break only when the first part ends in the bottom CONTINUATION_EDGE of
+its page and the next part starts in the top CONTINUATION_EDGE of the following page."""
+
+
+def _continues_table(prev: Table, tail: Table, table: Table) -> bool:
+    """`prev` is the (possibly already merged) table, `tail` its last page fragment, `table` the candidate."""
+    prev_page, page = tail.provenance.source_page or 0, table.provenance.source_page or 0
+    a, b = tail.provenance.bbox, table.provenance.bbox
+    if page != prev_page + 1 or a is None or b is None or not a.page_height or not b.page_height:
+        return False
+    at_bottom = a.y1 >= (1 - CONTINUATION_EDGE) * a.page_height
+    at_top = b.y0 <= CONTINUATION_EDGE * b.page_height
+    return (
+        at_bottom
+        and at_top
+        and prev.header_rows == 1
+        and table.header_rows == 1
+        and prev.n_cols == table.n_cols
+        and _header_texts(prev) == _header_texts(table)
+    )
+
+
+def _header_texts(t: Table) -> list[str]:
+    return [" ".join(s.text for s in c.spans) for c in sorted(t.cells, key=lambda c: c.col) if c.row == 0]
 
 
 def _strip_marker(runs: list[tuple[str, str | None]], n: int) -> list[tuple[str, str | None]]:

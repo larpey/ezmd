@@ -171,3 +171,36 @@ def test_images_written_when_image_dir_set(tmp_path: Path) -> None:
     data = nb([code("plot()", [{"output_type": "display_data", "data": {"image/png": png}}])])
     convert(data, ConvertOptions(image_dir=str(tmp_path)))
     assert (tmp_path / "images" / "c0o0.png").read_bytes() == b"fakepng"
+
+
+def test_consecutive_stream_chunks_coalesce_per_stream() -> None:
+    def stream(name: str, text: str) -> dict[str, Any]:
+        return {"output_type": "stream", "name": name, "text": [text]}
+
+    outs = [stream("stdout", "a"), stream("stdout", "b"), stream("stderr", "w1"), stream("stderr", "w2")]
+    doc = convert(nb([code("print(1)", outs)]))
+    got = [(b.attrs.get("stream"), b.code) for b in doc.blocks if isinstance(b, CodeBlock) and b.language == "output"]
+    assert got == [("stdout", "ab"), ("stderr", "w1w2")]
+
+
+def test_stream_chunks_concatenate_raw_mid_line_and_cap_once() -> None:
+    nl = chr(10)
+
+    def stream(text: str, name: str = "stdout") -> dict[str, Any]:
+        return {"output_type": "stream", "name": name, "text": text}
+
+    outs = [stream("Loading"), stream("..."), stream("done" + nl), stream("step 2" + nl + nl), stream("end" + nl)]
+    doc = convert(nb([code("run()", outs)]))
+    blocks = [b for b in doc.blocks if isinstance(b, CodeBlock) and b.language == "output"]
+    assert [b.code for b in blocks] == ["Loading...done" + nl + "step 2" + nl + nl + "end"]
+    assert blocks[0].provenance.path == "cells[0].outputs[0]"
+    # A display output between chunks ends the run; same stream after it starts a new block.
+    split = [stream("a"), {"output_type": "display_data", "data": {"text/plain": "x"}}, stream("b")]
+    doc = convert(nb([code("run()", split)]))
+    assert [b.code for b in doc.blocks if isinstance(b, CodeBlock) and b.attrs.get("stream")] == ["a", "b"]
+    # The cap applies to the concatenated text once, so many small chunks are cut exactly once.
+    many = [stream("x" * 10) for _ in range(30)]
+    doc = convert(nb([code("run()", many)]), ConvertOptions(extra={"text.notebook_max_output_chars": 100}))
+    assert doc.warnings[0].count == 1
+    out = [b for b in doc.blocks if isinstance(b, CodeBlock) and b.attrs.get("stream")]
+    assert len(out) == 1 and out[0].code.startswith("x" * 100) and out[0].code.count("[output truncated]") == 1

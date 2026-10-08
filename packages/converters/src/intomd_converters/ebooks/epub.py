@@ -191,8 +191,9 @@ class _Builder:
             doc.warnings.append(
                 Warning(
                     kind=W.DRM_PROTECTED,
-                    message=f"{len(locked)} chapter(s) are DRM-encrypted and were skipped.",
+                    message=_drm_message(locked),
                     count=len(locked),
+                    detail={"files": ", ".join(locked[:_MAX_LISTED_FILES]), "encrypted_resources": len(encrypted)},
                 )
             )
         parsed = self._parse_chapters([(i, lin) for i, lin in chapters if i.path not in encrypted])
@@ -388,3 +389,14 @@ def _flag(options: ConvertOptions, key: str, default: bool) -> bool:
     if isinstance(value, str):
         return value.strip().lower() not in ("0", "false", "no", "off")
     return bool(value)
+
+
+_MAX_LISTED_FILES = 20
+
+
+def _drm_message(locked: list[str]) -> str:
+    """Name the skipped chapter files (the first few) so the reader knows which parts are missing."""
+    if not locked:
+        return "The EPUB carries DRM rights metadata and encrypted resources; no chapter was skipped."
+    shown = ", ".join(locked[:5]) + (f" and {len(locked) - 5} more" if len(locked) > 5 else "")
+    return f"{len(locked)} chapter(s) are DRM-encrypted and were skipped: {shown}."
