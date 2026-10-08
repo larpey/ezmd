@@ -73,6 +73,28 @@ def test_blocked_urls(url: str) -> None:
         netguard.resolve_checked(v, resolver=fake_resolver({}))
 
 
+@pytest.mark.parametrize(
+    "port", [6379, 5432, 3306, 27017, 11211, 9200, 2375, 2376, 5672, 15672, 6443, 10250, 8500, 2379, 2380, 25]
+)
+@pytest.mark.parametrize("host", [PUBLIC, "public.example.com", f"[::ffff:{PUBLIC}]"])
+def test_internal_service_ports_refused_on_public_hosts(host: str, port: int) -> None:
+    with pytest.raises(UrlBlocked, match=f"port {port}"):
+        validate_url(f"http://{host}:{port}/")
+
+
+@pytest.mark.parametrize(
+    "url", ["http://public.example.com:8080/", "https://public.example.com:8443/x", "http://public.example.com:3000/"]
+)
+def test_web_ports_still_allowed(url: str) -> None:
+    v = validate_url(url)
+    assert netguard.resolve_checked(v, resolver=fake_resolver({"public.example.com": [PUBLIC]})) == PUBLIC
+
+
+def test_blocked_port_lifted_only_by_allow_private() -> None:
+    assert validate_url("http://redis.example.com:6379/", allow_private=True).port == 6379
+    assert 80 not in netguard.BLOCKED_PORTS and 443 not in netguard.BLOCKED_PORTS
+
+
 def test_public_url_ok() -> None:
     v = validate_url("https://Example.COM./path?q=1")
     assert v.host == "example.com" and v.port == 443

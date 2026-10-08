@@ -47,7 +47,6 @@ def test_names_resolving_to_blocked_addresses_refused(host: str) -> None:
 
 
 @pytest.mark.parametrize("url", PORTS)
-@pytest.mark.xfail(strict=True, reason="netguard does not refuse internal service ports yet (P1-T15 core request)")
 def test_internal_ports_on_public_hosts_refused(url: str) -> None:
     _refused(url, PUBLIC_DNS)
 

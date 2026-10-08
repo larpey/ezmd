@@ -4,8 +4,8 @@ LITERAL: refused by `netguard.validate_url` alone (IP literals in every notation
 credentials), so the API answers 422 `url_blocked` at submit time.
 DNS: names that resolve to blocked addresses; the fast tier resolves them with a fake resolver, the
 network tier uses the compose fixture alias (`web.fixtures.example`, a private Docker address).
-PORTS: internal service ports on a public host. The guard does not filter ports yet (reported as a core
-change request in docs/decisions/P1-T15.md), so these are strict xfails until it does.
+PORTS: internal service ports on a public host, refused by the guard's port denylist
+(`netguard.BLOCKED_PORTS`) before DNS.
 """
 
 from __future__ import annotations

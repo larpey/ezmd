@@ -8,7 +8,11 @@ adapters that need a client). Guarantees:
    (100.64.0.0/10, also the Tailscale range), IPv4-mapped/6to4/Teredo-embedded private, and IPv6
    ULA/link-local ranges are rejected. Legacy IPv4 spellings (`0x7f000001`, `2130706433`, `127.1`)
    are normalized first. Hostnames `localhost`, `*.localhost`, `*.internal`, `*.local`, `*.arpa`,
-   and cloud metadata names are rejected.
+   and cloud metadata names are rejected. Ports of internal services (Redis, databases, Docker,
+   Kubernetes, etcd, Consul, message brokers, mail, SMB, ...) are rejected on every host, so a public
+   name cannot be used to reach them either (docs/spec/part4.md 4.14.5 item 1: "ports 6379 and 5432 on
+   public hosts"). Section 8.3 names no port list; this is a denylist (docs/decisions/P1-T15.md,
+   D-P1-T15-5), so web servers on arbitrary ports keep working.
 3. DNS is resolved once (3 s timeout); if any A/AAAA answer is blocked the fetch is refused. The
    connection is then pinned to the resolved address while SNI and Host keep the original name, so
    the HTTP client never re-resolves (no DNS rebinding).
@@ -66,6 +70,59 @@ _BLOCKED_HOSTNAMES = frozenset(
     {"localhost", "metadata.google.internal", "metadata", "instance-data", "metadata.azure.com"}
 )
 _BLOCKED_SUFFIXES = (".localhost", ".internal", ".local", ".arpa", ".home.arpa", ".lan", ".intranet")
+
+# Non-HTTP internal services an SSRF could talk to (protocol smuggling over a plain HTTP request).
+# HTTP-ish alternates (8000, 8080, 8443, 3000, ...) stay allowed. `allow_private` lifts this too.
+BLOCKED_PORTS: frozenset[int] = frozenset(
+    {
+        19,  # chargen
+        21,  # ftp
+        22,  # ssh
+        23,  # telnet
+        25,  # smtp
+        110,  # pop3
+        111,  # rpcbind
+        135,  # msrpc
+        139,  # netbios
+        143,  # imap
+        445,  # smb
+        465,  # smtps
+        587,  # submission
+        993,  # imaps
+        995,  # pop3s
+        1433,  # mssql
+        1521,  # oracle
+        2049,  # nfs
+        2181,  # zookeeper
+        2375,  # docker
+        2376,  # docker tls
+        2379,  # etcd client
+        2380,  # etcd peer
+        3306,  # mysql
+        3389,  # rdp
+        4369,  # erlang epmd
+        5432,  # postgres
+        5672,  # amqp
+        5984,  # couchdb
+        6379,  # redis
+        6380,  # redis tls
+        6443,  # kubernetes api
+        8300,  # consul server rpc
+        8500,  # consul http
+        8501,  # consul https
+        9042,  # cassandra
+        9092,  # kafka
+        9200,  # elasticsearch http
+        9300,  # elasticsearch transport
+        10250,  # kubelet
+        10255,  # kubelet read-only
+        11211,  # memcached
+        15672,  # rabbitmq management
+        27017,  # mongodb
+        27018,  # mongodb shard
+        27019,  # mongodb config
+    }
+)
 
 _EXTRA_BLOCKED_NETS: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...] = (
     ipaddress.ip_network("0.0.0.0/8"),
@@ -241,6 +298,8 @@ def validate_url(url: str, *, allow_private: bool = False) -> ValidatedUrl:
     elif not allow_private and is_blocked_hostname(host_idna):
         raise UrlBlocked(f"host {host_idna!r} is not allowed", url=url)
     eff_port = port if port is not None else (443 if scheme == "https" else 80)
+    if not allow_private and eff_port in BLOCKED_PORTS:
+        raise UrlBlocked(f"port {eff_port} belongs to an internal service and is not allowed", url=url)
     return ValidatedUrl(url=url, scheme=scheme, host=host_idna.lower(), port=eff_port, ip_literal=ip)
 
 
