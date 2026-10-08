@@ -100,7 +100,7 @@ intomd convert trips.csv --converter data.acme_csv     # force it
 Every available converter's `can_handle` is called; those above 0 are tried in order of
 confidence, then priority, then id, until one succeeds or one raises
 `ConversionError(retryable_with_fallback=False)`. A mime type with a pinned chain in
-`intomd.chains` (Phase 0 pins `text/plain` and `text/markdown`) only considers the converters in that
+`intomd.chains` (the built-in families pin many types; see the [fallback chains](converters/README.md#fallback-chains)) only considers the converters in that
 chain, so a plugin for those types runs only when forced with `--converter`. Built-in converters are
 registered before plugins, and a plugin cannot reuse a built-in id.
 

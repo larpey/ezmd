@@ -1,6 +1,6 @@
 # Output format
 
-This page summarizes the output format as implemented in Phase 0. The normative definition is
+This page summarizes the output format as implemented today. The normative definition is
 [Part 3, section D](spec/part3.md#d-output-format) of the specification; where this page and the
 spec differ, the spec is the target and `DECISIONS.md` (D-0014, D-0015) records the deliberate
 deviations.

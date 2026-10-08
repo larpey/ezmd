@@ -55,6 +55,9 @@ jobs:
           --cov-report=xml --cov-fail-under=${{ matrix.os == 'ubuntu-latest' && 80 || 0 }}
       - name: fixture (golden) tests
         run: uv run pytest fixtures -q
+      - name: docs build (mkdocs --strict)
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
+        run: uv run mkdocs build --strict --site-dir "$RUNNER_TEMP/site"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always() && matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         with: { name: coverage, path: coverage.xml, if-no-files-found: ignore }

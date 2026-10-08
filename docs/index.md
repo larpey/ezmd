@@ -1,6 +1,6 @@
 # intomd
 
-Convert anything (documents, web pages, video, audio, chat exports, code) to clean Markdown for AI
+Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
 tools. No silent loss. Apache-2.0.
 
 intomd turns an input into an intermediate representation (IR) and renders it as Markdown with YAML
@@ -8,32 +8,28 @@ frontmatter under one of four output profiles (`full`, `compact`, `rag`, `agent`
 sidecar with block provenance and an explicit list of warnings. When something cannot be converted,
 intomd says so in the warnings instead of dropping it quietly.
 
-!!! note "Status: Phase 0 (foundation)"
-    Today intomd converts plain text and Markdown through the CLI, the REST API, and the web UI.
-    Document, web, media, OCR, and the other converter families arrive from Phase 1 onward. Pages
-    in these docs mark anything not yet available as "Planned (Phase N)".
+!!! note "Status: Phase 1, pre-release"
+    Nothing is published yet (no PyPI or npm package, no container image, no public instance); install
+    from source. Audio, video, OCR, email, and chat exports arrive in later phases; see the
+    [roadmap](roadmap.md) and [status](status.md).
 
 ## What works today
 
 | Area | Status |
 |---|---|
-| CLI: `convert`, `capabilities`, `detect`, `version`, `serve` | Available |
-| Converters: `text.plain`, `text.markdown_passthrough` | Stable |
-| Output profiles `full`, `compact`, `rag`, `agent`; formats `md`, `json`, `txt`, `zip` | Available |
-| REST API with jobs, SSE progress, rate limits, error schema | Available |
-| Web UI served by the API | Available |
-| Docker Compose self-host stack with sandboxed workers | Available |
-| SSRF-guarded URL fetching | Available (only text and Markdown URLs convert) |
-| PDF, Office, HTML, media, OCR, archives, email, and other families | Planned (Phase 1 onward) |
-| MCP server, Python library docs, TypeScript SDK docs | Planned (Phase 1) |
-| Browser extension, fetch node, public instance | Planned (Phases 3 and 4) |
+| Converters: PDF, DOCX, PPTX, XLSX, ODF, RTF, legacy Office (LibreOffice), EPUB, notebooks, HTML, CSV, JSON, YAML, TOML, XML, SQLite, Parquet, source code and repositories, archives, SEC EDGAR, plain text, Markdown | Available; see the [converter matrix](converters/README.md) |
+| CLI: `convert`, `batch`, `shadow-run`, `doctor`, `capabilities`, `detect`, `version`, `serve` | Available |
+| Python library: `convert`, `convert_async`, `convert_many`, `Result` | Available |
+| MCP server (stdio and streamable HTTP, local and remote modes) | Available |
+| REST API with jobs, SSE progress, API keys, rate limits; web UI served by the API | Available |
+| Docker Compose self-host stack with sandboxed workers, bootstrap, backup, and restore scripts | Available |
+| Media (ASR, OCR), email, chat exports, browser extension, fetch node, public instance | Planned (Phases 2 to 4) |
 
 ## Where to go next
 
-- [Quickstart](quickstart.md): the CLI, the compose stack, and the API in a few commands.
-- [Self-hosting](selfhost.md): compose services and every environment variable.
-- [REST API](api.md) and [Errors](errors.md).
+- [Install](install.md) and [First conversion](quickstart.md).
 - [Output format](output-format.md): frontmatter, profiles, tables, footnotes, chunks.
-- [Security](security.md): the sandbox, input validation, SSRF guard, and threat model.
-- [Writing a converter plugin](plugins.md).
-- [Licenses](licenses.md): the dependency license policy.
+- [CLI](cli.md), [Python library](library.md), [MCP server](mcp.md), [REST API](api.md).
+- [Self-hosting](selfhost.md) and the [security model](security.md).
+- [Converter matrix](converters/README.md) and [Writing a converter plugin](plugins.md).
+- [Contributing](contributing.md) and [Licenses](licenses.md).

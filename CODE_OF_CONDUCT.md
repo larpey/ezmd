@@ -37,7 +37,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at conduct@intomd.dev (placeholder). All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at conduct@intomd.dev (a placeholder until the project domain is set up; until then, contact the maintainers through a private GitHub security advisory on the repository and mark it as a conduct report). All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
@@ -74,6 +74,12 @@ Community leaders will follow these Community Impact Guidelines in determining t
 This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 2.1, available at [https://www.contributor-covenant.org/version/2/1/code_of_conduct.html][v2.1].
 
 Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcement ladder][Mozilla CoC].
+
+The Contributor Covenant 2.1 text is licensed under the [Creative Commons Attribution 4.0 International
+license][CC BY 4.0] (the license in the Contributor Covenant repository when version 2.1 was published).
+intomd's adaptation changes only the enforcement contact.
+
+[CC BY 4.0]: https://creativecommons.org/licenses/by/4.0/
 
 For answers to common questions about this code of conduct, see the FAQ at [https://www.contributor-covenant.org/faq][FAQ]. Translations are available at [https://www.contributor-covenant.org/translations][translations].
 

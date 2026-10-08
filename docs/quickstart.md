@@ -1,68 +1,87 @@
-# Quickstart
+# First conversion
 
-Phase 0 converts plain text and Markdown. Other formats are rejected as unsupported until their
-families land (Phase 1 onward). intomd is not yet published to PyPI, so run it from a source checkout.
+These examples run from a source checkout (see [Install](install.md)) and use files from `fixtures/`, so
+you can paste them as they are.
 
 ## CLI
 
 ```sh
-git clone https://github.com/larpey/intomd && cd intomd
-uv sync --all-packages --dev
-uv run intomd convert notes.txt --profile compact
+uv run intomd convert fixtures/office/docx-review/input.docx --profile compact
 ```
-
-Output for a small `notes.txt`:
 
 ```markdown
 ---
-title: "Field notes"
-source: "notes.txt"
-source_type: text
-word_count: 7
-tokens: {o200k_base: 10, cl100k_base: 10, claude_approx: 11}
-content_hash: "sha256:f2b2..."
+title: "Quarterly Review Memo"
+source: "input.docx"
+source_type: docx
+word_count: 85
+tokens: {o200k_base: 126, cl100k_base: 127, claude_approx: 136}
+content_hash: "sha256:2e76c6e4..."
 warnings: []
 injection_risk: none
 profile: compact
 ---
-# Field notes
+# Quarterly Review Memo
 
-The depot opened at six.
+*Draft for the budget committee*
+
+## Summary
+
+The committee approved the annual budget after a short debate.
+...
+```
+
+Warnings go to stderr, one per line, so stdout stays clean Markdown:
+
+```text
+WARN [tracked_changes_present] The source contains tracked changes; they were resolved.
+WARN [comments_present] The source contains review comments; they were omitted.
 ```
 
 Useful variations:
 
 ```sh
-uv run intomd convert report.md -p rag -o out/            # writes out/report.md
-uv run intomd convert report.md -o report.md --sidecar     # also writes report.intomd.json
-uv run intomd convert report.md --json                     # machine-readable result on stdout
-cat notes.txt | uv run intomd convert -                    # stdin
-uv run intomd convert https://example.org/readme.txt       # URL, fetched through the SSRF guard
-uv run intomd capabilities                                 # registered converters
+uv run intomd convert report.pdf -p rag -o out/             # writes out/<title>.md
+uv run intomd convert report.pdf -o report.md --sidecar      # also writes report.intomd.json
+uv run intomd convert report.pdf --json                      # one JSON object on stdout
+uv run intomd convert report.pdf --converter documents.docling_pdf   # force a converter (docs extra)
+cat notes.txt | uv run intomd convert -                      # stdin
+uv run intomd convert https://example.com                    # URL, fetched through the SSRF guard
+uv run intomd batch ./reports --recursive --out ./md         # many files; unchanged ones are skipped
+uv run intomd shadow-run report.pdf                          # compare every engine that handles a file
 ```
 
-Warnings go to stderr as `WARN [code] message` (silence them with `-q`). See the
-[CLI reference](cli.md) for every option and the exit codes.
+Exit codes and every option are in the [CLI reference](cli.md). The output profiles are
+explained in [Output format](output-format.md).
 
-Planned: `uvx intomd` and `pip install intomd` once the package is published, and `intomd batch`
-(Phase 1).
+## Python
 
-## Docker Compose
+```python
+import intomd
 
-```sh
-docker compose -f deploy/docker-compose.yml up -d --build
+result = intomd.convert("fixtures/office/docx-review/input.docx", profile="compact")
+print(result.markdown)
+for w in result.warnings:
+    print(w.severity, w.kind, w.message)
 ```
 
-Then open http://localhost:8080 for the web UI. The same port serves the API. For TLS, secrets, and
-every setting see [Self-hosting](selfhost.md).
+More in [Python library](library.md).
 
 ## REST API
 
-Upload a file. The response is `202` with the job and its links:
+Start the API in-process (inline queue, no Redis or Docker needed):
 
 ```sh
-curl -s -F file=@notes.txt -F profile=compact http://localhost:8080/v1/convert
+uv run intomd serve --port 8080
 ```
+
+Upload a file and wait up to 30 seconds for the result:
+
+```sh
+curl -s -F file=@fixtures/text/plain-utf8/input.txt -F profile=compact "http://127.0.0.1:8080/v1/convert?wait=30&format=md"
+```
+
+Without `wait`, the response is `202` with the job and its links:
 
 ```json
 {
@@ -76,31 +95,47 @@ curl -s -F file=@notes.txt -F profile=compact http://localhost:8080/v1/convert
 }
 ```
 
-Poll the job, then fetch the result in any profile and format:
+Poll the job, stream progress, then fetch the result in any profile and format:
 
 ```sh
-curl -s http://localhost:8080/v1/jobs/job_4fQ...
-curl -s "http://localhost:8080/v1/jobs/job_4fQ.../result?profile=compact&format=md"
-```
-
-Or wait for the result in one request (up to 60 seconds):
-
-```sh
-curl -s -F file=@notes.txt "http://localhost:8080/v1/convert?wait=30&format=md"
+curl -s http://127.0.0.1:8080/v1/jobs/job_4fQ...
+curl -N http://127.0.0.1:8080/v1/jobs/job_4fQ.../events
+curl -s "http://127.0.0.1:8080/v1/jobs/job_4fQ.../result?profile=rag&format=md"
 ```
 
 Convert a URL with a JSON body:
 
 ```sh
 curl -s -H 'Content-Type: application/json' \
-  -d '{"url": "https://example.org/readme.txt", "profile": "full"}' \
-  http://localhost:8080/v1/convert
+  -d '{"url": "https://example.com", "profile": "full"}' \
+  http://127.0.0.1:8080/v1/convert
 ```
 
-Stream progress with server-sent events:
+See [REST API](api.md) for jobs, events, and options, and [Errors](errors.md) for error codes.
+
+## Web UI
+
+`intomd serve` and the Compose stack serve the web UI at `/` once it is built:
 
 ```sh
-curl -N http://localhost:8080/v1/jobs/job_4fQ.../events
+pnpm install && pnpm --filter @intomd/web build
+uv run intomd serve --port 8080
 ```
 
-See [REST API](api.md) for jobs, events, options, and [Errors](errors.md) for error codes.
+Then open http://127.0.0.1:8080: paste a link, drop a file, or paste text.
+
+## MCP
+
+```sh
+claude mcp add intomd -- uv --directory /path/to/intomd run intomd-mcp
+```
+
+Other clients: [MCP server](mcp.md).
+
+## Docker Compose
+
+```sh
+bash deploy/bootstrap.sh --plain-http --build
+```
+
+Then open http://localhost:8080. TLS, API keys, backups, and every setting: [Self-hosting](selfhost.md).

@@ -28,6 +28,10 @@ theme:
 
 plugins:
   - search
+  - swagger-ui-tag
+
+not_in_nav: |
+  /decisions/*.md
 
 markdown_extensions:
   - admonition
@@ -36,6 +40,9 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
 
 validation:
   omitted_files: warn
@@ -46,22 +53,44 @@ validation:
 nav:
   - Home: index.md
   - Getting started:
-      - Quickstart: quickstart.md
+      - Install: install.md
+      - First conversion: quickstart.md
       - Output format: output-format.md
   - Self-host:
       - Self-hosting and configuration: selfhost.md
-      - Security: security.md
+      - Security model: security.md
+  - Interfaces:
+      - CLI reference: cli.md
+      - Python library: library.md
+      - MCP server: mcp.md
   - API:
       - REST API, jobs, and SSE: api.md
-      - MCP server: mcp.md
+      - OpenAPI reference: api-reference.md
       - Errors: errors.md
+      - Warning codes: warnings.md
+  # BEGIN generated converters nav (tools/gen_converters_matrix.py)
   - Converters:
       - Converter matrix: converters/README.md
+      - "Archives": converters/archives.md
+      - "Code converters": converters/code.md
+      - "Data converters": converters/data.md
+      - "Ebooks and notebooks": converters/ebooks.md
+      - "Office documents": converters/office.md
+      - "PDF converters": converters/pdf.md
+      - "Plain text and Markdown": converters/text.md
+      - "SEC EDGAR": converters/edgar.md
+      - "Social and forums (Phase 1 stub)": converters/social.md
+      - "Web pages (web family)": converters/web.md
+  # END generated converters nav
+  - Contributing:
+      - Contributing guide: contributing.md
       - Writing a converter plugin: plugins.md
-  - Reference:
-      - CLI: cli.md
-      - Warning codes: warnings.md
-  - Legal:
+      - Code of conduct: code-of-conduct.md
+  - Project:
+      - Security policy: security-policy.md
+      - Changelog: changelog.md
+      - Status: status.md
+      - Roadmap: roadmap.md
       - Licenses: licenses.md
   - Specification:
       - Overview: spec/README.md

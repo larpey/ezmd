@@ -42,15 +42,22 @@ allowlist (D-0011).
 
 ## Extras
 
-No optional extras ship in Phase 0. The known non-permissive extras, each of which prints a
-one-time notice, are:
+Optional extras of `intomd-converters` (from source: `uv sync --all-packages --extra <name>`):
+
+| Extra | What it adds | License |
+|---|---|---|
+| `docs` | Docling (`docling-slim`) for PDF layout, with CPU torch and OpenCV | MIT (Docling), BSD-3-Clause (torch), Apache-2.0 (OpenCV); about 1.2 GB |
+| `data` | pyarrow, for Parquet | Apache-2.0 |
+| `7z` | py7zr, for 7z archives | LGPL-2.1-or-later (dynamically imported, never bundled in images) |
+
+The known non-permissive extras, each of which prints a one-time notice when used, are planned:
 
 | Extra | License | Status |
 |---|---|---|
-| `pymupdf` | AGPL-3.0 | Planned (Phase 1) |
-| `extract-msg` | GPL-3.0 | Planned (Phase 1) |
-| `chandra` | OpenRAIL-M (model weights) | Planned (Phase 1) |
-| `nonfree` | AGPL-3.0 / GPL-3.0 (bundles the copyleft engines) | Planned (Phase 1) |
+| `pymupdf` | AGPL-3.0 | Planned |
+| `extract-msg` | GPL-3.0 | Planned (Outlook `.msg`, P1-T04) |
+| `chandra` | OpenRAIL-M (model weights) | Planned |
+| `nonfree` | AGPL-3.0 / GPL-3.0 (bundles the copyleft engines) | Planned |
 
 Network use of AGPL software can oblige you to publish your source. Read each license before
 installing a non-permissive extra on a server.

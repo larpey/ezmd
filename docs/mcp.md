@@ -9,6 +9,16 @@ its own.
 uvx intomd-mcp                       # stdio, local mode
 ```
 
+!!! note "Before the first release"
+    `intomd-mcp` is not on PyPI yet, so `uvx intomd-mcp` does not work. From a source checkout (see
+    [Install](install.md)), replace `uvx intomd-mcp` in every example below with
+    `uv --directory /path/to/intomd run intomd-mcp`; in JSON configs that is
+    `"command": "uv", "args": ["--directory", "/path/to/intomd", "run", "intomd-mcp", ...]`. For example:
+
+    ```bash
+    claude mcp add intomd -- uv --directory /path/to/intomd run intomd-mcp
+    ```
+
 ## Client configuration
 
 ### Claude Desktop

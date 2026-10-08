@@ -3,7 +3,8 @@
 The API is asynchronous: creating a conversion returns a job, and the result is fetched (in any
 profile and format) once the job is done. The machine-readable contract is
 [openapi.json](api/openapi.json), also served live at `/openapi.json`. The Swagger and ReDoc UIs are
-disabled because the API's Content-Security-Policy blocks their CDN assets.
+disabled on the API because its Content-Security-Policy blocks their CDN assets; this site renders the
+same file in the [OpenAPI reference](api-reference.md) with a bundled viewer.
 
 Every operation in `openapi.json` has an `operationId`, a summary, a description, its tag, its
 security, and the error responses it can return (all using the error schema below). The document
