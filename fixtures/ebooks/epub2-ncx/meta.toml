@@ -1,0 +1,10 @@
+converter = "documents.epub"
+max_seconds = 30
+hand_edited = false
+notes = "EPUB 2 with an NCX-only TOC and no mimetype entry (epub_mimetype_missing). Four spine items, two without TOC entries (merged into the previous chapter with no synthetic heading); one chapter repeats its TOC title as h1."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/ebooks/_generate.py"

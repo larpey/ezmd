@@ -1,0 +1,11 @@
+converter = "archives.archive"
+max_seconds = 30
+hand_edited = false
+requires = ["7z"]
+notes = "7z archive (py7zr, optional 7z extra) with a Markdown and a text member; skipped when the extra is not installed."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/archives/_generate.py"

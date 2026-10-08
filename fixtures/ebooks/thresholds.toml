@@ -1,0 +1,4 @@
+# docs/spec/part2.md 4g: EPUB text_similarity 0.98, ipynb 0.98; the harness has one overall score per fixture.
+[converters]
+"documents.epub" = 0.95
+"documents.ipynb" = 0.95

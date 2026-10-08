@@ -1,0 +1,10 @@
+converter = "archives.archive"
+max_seconds = 30
+hand_edited = false
+notes = "Zip with a .md, a .txt, a directory, a nested .md, and a nested zip (opened in-process against the same budget). Children are attached as Document.children."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/archives/_generate.py"

@@ -1,0 +1,435 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "origin": "toc"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/part1.html",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Where Moss Grows"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/part1.html",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Moss grows where the light is soft and the stone stays damp."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/part1b.html",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "North faces of walls are the most reliable places to look—but not the only ones."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/part2.html",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Collecting Samples"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/part2.html",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Use a flat knife and a paper envelope, never plastic."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/part2b.html",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Label each envelope with the date, the place, and the surface."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:4ea82ad2b7675a5276384d18045d5e06799ec8c71450b483786b27bb3884b7ff",
+    "converter_id": "documents.epub",
+    "metadata": {
+      "author": "Tove Linden",
+      "authors": [
+        "Tove Linden"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "epub_version": "2.0",
+        "identifier": "urn:isbn:9780000000002",
+        "publisher": null
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en-GB",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "application/epub+zip",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.epub",
+      "source_type": "epub",
+      "speakers": [],
+      "title": "Field Notes on Moss"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {},
+        "kind": "epub_mimetype_missing",
+        "message": "The EPUB lacks a valid leading mimetype entry.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Tove Linden",
+    "content_hash": "sha256:7640724c776c7d7772055f45845b64ee5b6366493797f589b35508341619bb50",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.epub",
+    "converter_version": "0.0.1",
+    "extra": {
+      "epub_version": "2.0",
+      "identifier": "urn:isbn:9780000000002"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en-GB",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.epub",
+    "source_hash": "sha256:148ed76a90749ea7daf93e014caa6fb048d7bd5e9c6c385c29ce113fe573eacc",
+    "source_type": "epub",
+    "title": "Field Notes on Moss",
+    "tokens": {
+      "cl100k_base": 91,
+      "claude_approx": 98,
+      "o200k_base": 91
+    },
+    "truncated": false,
+    "warnings": [
+      "epub_mimetype_missing"
+    ],
+    "word_count": 62
+  },
+  "heading_shift": 1,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 2,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 4,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 53
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.epub",
+    "engines_tried": [
+      "documents.epub"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2509
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "OEBPS/part1.html",
+      "source": "input.epub",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "OEBPS/part1.html",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "OEBPS/part1b.html",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "path": "OEBPS/part2.html",
+      "source": "input.epub",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "path": "OEBPS/part2.html",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "path": "OEBPS/part2b.html",
+      "source": "input.epub",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0001",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 208,
+      "offset_start": 30,
+      "original_level": 1,
+      "original_title": "Where Moss Grows",
+      "time_end": null,
+      "time_start": null,
+      "title": "Where Moss Grows"
+    },
+    {
+      "block_id": "b0004",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 360,
+      "offset_start": 208,
+      "original_level": 1,
+      "original_title": "Collecting Samples",
+      "time_end": null,
+      "time_start": null,
+      "title": "Collecting Samples"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 369,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {},
+      "kind": "epub_mimetype_missing",
+      "message": "The EPUB lacks a valid leading mimetype entry.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

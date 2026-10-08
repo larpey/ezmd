@@ -1,0 +1,10 @@
+converter = "archives.archive"
+max_seconds = 30
+hand_edited = false
+notes = "Zip-slip: ../ traversal, absolute path, and normalized traversal entries are rejected (archive_path_rejected); the safe entry is converted."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/archives/_generate.py"

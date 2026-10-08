@@ -1,0 +1,1149 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "intro",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Wading Bird Survey"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 3,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "intro",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Counts from the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "east marsh"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", week 12."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-c0-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[^1]"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " The rate is "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": "r = n / d",
+            "styles": [],
+            "text": "$r = n / d$"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 5,
+              "line_start": 5,
+              "page_label": null,
+              "path": null,
+              "source": "input.ipynb",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "herons"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": 7,
+              "line_start": 6,
+              "page_label": null,
+              "path": null,
+              "source": "input.ipynb",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "egrets"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 7,
+          "line_start": 5,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "intro",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "alt": "Marsh sketch",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0004",
+        "mime": "image/png",
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 8,
+          "line_start": 8,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "intro",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "images/cell0-sketch.png",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "fn-c0-1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[0]",
+          "source": "input.ipynb",
+          "source_id": "intro",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Counted at low tide."
+          }
+        ],
+        "type": "footnote"
+      },
+      {
+        "attrs": {
+          "execution_count": "1"
+        },
+        "code": "import pandas as pd\ndf=pd.read_csv( 'counts.csv' )\n\n\nprint(len(df),'rows')   # count",
+        "filename": null,
+        "id": "b0006",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[1]",
+          "source": "input.ipynb",
+          "source_id": "load",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "role": "output",
+          "stream": "stdout"
+        },
+        "code": "2 rows",
+        "filename": null,
+        "id": "b0007",
+        "language": "output",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[1].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "load",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "execution_count": "2"
+        },
+        "code": "df",
+        "filename": null,
+        "id": "b0008",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[2]",
+          "source": "input.ipynb",
+          "source_id": "table",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "species"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "count"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "heron"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "egret"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "7"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0009",
+        "n_cols": 3,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[2].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "table",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[3]",
+          "source": "input.ipynb",
+          "source_id": "plot-md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Plot"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 3,
+          "page_label": null,
+          "path": "cells[3]",
+          "source": "input.ipynb",
+          "source_id": "plot-md",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Counts by species, as a bar chart."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "execution_count": "3"
+        },
+        "code": "df.plot.bar(x = 'species',y='count')",
+        "filename": null,
+        "id": "b0012",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[4]",
+          "source": "input.ipynb",
+          "source_id": "plot",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "alt": null,
+        "attrs": {
+          "role": "output"
+        },
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0013",
+        "mime": "image/png",
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[4].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "plot",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "images/c4o0.png",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {
+          "execution_count": "4"
+        },
+        "code": "total, days = 19, 0\nrate = total / days",
+        "filename": null,
+        "id": "b0014",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "cells[5]",
+          "source": "input.ipynb",
+          "source_id": "rate",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "role": "error"
+        },
+        "code": "---------------------------------------------------------------------------\nZeroDivisionError                         Traceback (most recent call last)\nCell In[3], line 1\n----> 1 rate = total / days\nZeroDivisionError: division by zero",
+        "filename": null,
+        "id": "b0015",
+        "language": "output",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[5].outputs[0]",
+          "source": "input.ipynb",
+          "source_id": "rate",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "content": ".. note:: raw rst",
+        "format": "rst",
+        "id": "b0016",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cells[6]",
+          "source": "input.ipynb",
+          "source_id": "raw",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "raw"
+      }
+    ],
+    "content_hash": "sha256:182193428ad6c9fb2209f8402a988504baa6038f91fd2c50a968307afafe9cb8",
+    "converter_id": "documents.ipynb",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "kernel_language": "python",
+        "nbformat": 4
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/x-ipynb+json",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.ipynb",
+      "source_type": "notebook",
+      "speakers": [],
+      "title": "Wading Bird Survey"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [
+    {
+      "alt": "Marsh sketch",
+      "bbox": null,
+      "block_id": "b0004",
+      "caption": null,
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 199,
+      "offset_start": 119,
+      "page": null,
+      "ref": "images/cell0-sketch.png"
+    },
+    {
+      "alt": null,
+      "bbox": null,
+      "block_id": "b0013",
+      "caption": null,
+      "generated_caption": null,
+      "number": 2,
+      "ocr_text": null,
+      "offset_end": 631,
+      "offset_start": 571,
+      "page": null,
+      "ref": "images/c4o0.png"
+    }
+  ],
+  "footnotes": [
+    {
+      "block_id": "fn-c0-1",
+      "number": 1,
+      "source_marker": "1"
+    }
+  ],
+  "frontmatter": {
+    "content_hash": "sha256:105cc16401bd1a1639482091cea47b6c978bf3bec7c9996db46b8c5200335793",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.ipynb",
+    "converter_version": "0.0.1",
+    "extra": {
+      "kernel_language": "python",
+      "nbformat": 4
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.ipynb",
+    "source_hash": "sha256:a0ab6f25447fc5e99ea81eaaac4d697c8add5bef0d2d5b7cb3c79657cdc42e8e",
+    "source_type": "notebook",
+    "title": "Wading Bird Survey",
+    "tokens": {
+      "cl100k_base": 296,
+      "claude_approx": 323,
+      "o200k_base": 299
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 97
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 6,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 1,
+      "headings": 2,
+      "images": 2,
+      "links": 0,
+      "list_items": 2,
+      "lists": 1,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 1,
+      "slides": 0,
+      "table_cells": 9,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 94
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.ipynb",
+    "engines_tried": [
+      "documents.ipynb"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 3352
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "intro",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 3,
+      "line_start": 3,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "intro",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "line_end": 7,
+      "line_start": 5,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "intro",
+      "type": "list"
+    },
+    {
+      "block_id": "b0004",
+      "line_end": 8,
+      "line_start": 8,
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "intro",
+      "type": "image"
+    },
+    {
+      "block_id": "fn-c0-1",
+      "path": "cells[0]",
+      "source": "input.ipynb",
+      "source_id": "intro",
+      "type": "footnote"
+    },
+    {
+      "block_id": "b0006",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "cells[1]",
+      "source": "input.ipynb",
+      "source_id": "load",
+      "type": "code"
+    },
+    {
+      "block_id": "b0007",
+      "path": "cells[1].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "load",
+      "type": "code"
+    },
+    {
+      "block_id": "b0008",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[2]",
+      "source": "input.ipynb",
+      "source_id": "table",
+      "type": "code"
+    },
+    {
+      "block_id": "b0009",
+      "path": "cells[2].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "table",
+      "type": "table"
+    },
+    {
+      "block_id": "b0010",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[3]",
+      "source": "input.ipynb",
+      "source_id": "plot-md",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0011",
+      "line_end": 3,
+      "line_start": 3,
+      "path": "cells[3]",
+      "source": "input.ipynb",
+      "source_id": "plot-md",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "cells[4]",
+      "source": "input.ipynb",
+      "source_id": "plot",
+      "type": "code"
+    },
+    {
+      "block_id": "b0013",
+      "path": "cells[4].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "plot",
+      "type": "image"
+    },
+    {
+      "block_id": "b0014",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "cells[5]",
+      "source": "input.ipynb",
+      "source_id": "rate",
+      "type": "code"
+    },
+    {
+      "block_id": "b0015",
+      "path": "cells[5].outputs[0]",
+      "source": "input.ipynb",
+      "source_id": "rate",
+      "type": "code"
+    },
+    {
+      "block_id": "b0016",
+      "path": "cells[6]",
+      "source": "input.ipynb",
+      "source_id": "raw",
+      "type": "raw"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0010",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 967,
+      "offset_start": 463,
+      "original_level": 2,
+      "original_title": "Plot",
+      "time_end": null,
+      "time_start": null,
+      "title": "Plot"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0009",
+      "column_types": [
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "species",
+        "count"
+      ],
+      "number": 1,
+      "offset_end": 433,
+      "offset_start": 341,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 42
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 555,
+  "warnings": []
+}

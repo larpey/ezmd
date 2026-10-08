@@ -22,6 +22,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# 7z archives (docs/spec/part2.md section 12): py7zr is LGPL-2.1-or-later, used unmodified as a separate
+# package (dynamic use), kept out of the default install as the spec requires.
+7z = ["py7zr>=1.1,<2"]
 # Docling layout engine for PDF (docs/spec/part4.md 4.3.3); pulls torch, ~1.2 GB. docling-slim with only the
 # PDF pipeline extras: the full `docling` meta-package also pins typer<0.27 and websockets<17 (its CLI and
 # service client), which would downgrade the default install's CLI dependencies in the universal lock.

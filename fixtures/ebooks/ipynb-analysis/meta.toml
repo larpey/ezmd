@@ -1,0 +1,10 @@
+converter = "documents.ipynb"
+max_seconds = 30
+hand_edited = false
+notes = "Notebook: markdown with footnote and attachment image, code with stream output, DataFrame HTML table result, PNG display_data, ANSI error traceback, raw cell; kernel python3."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/ebooks/_generate.py"

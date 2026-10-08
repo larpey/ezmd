@@ -1,0 +1,10 @@
+converter = "archives.archive"
+max_seconds = 30
+hand_edited = false
+notes = "Streamed tar.gz (pax) with a symlink entry that must be skipped (archive_entry_skipped)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/archives/_generate.py"

@@ -1,0 +1,764 @@
+{
+  "children": [
+    {
+      "block_count": 3,
+      "converter": "text.markdown_passthrough",
+      "depth": 1,
+      "path": "kit/README.md",
+      "section_block_id": "c1-section",
+      "source_type": "markup",
+      "title": "Survey Kit"
+    },
+    {
+      "block_count": 2,
+      "converter": "text.plain",
+      "depth": 1,
+      "path": "kit/notes.txt",
+      "section_block_id": "c2-section",
+      "source_type": "text",
+      "title": null
+    }
+  ],
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.7z",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Archive input.7z: 2 entries (2 files, 0 directories, 0 links, 0 other entries, 0 rejected); 2 converted."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "items": [
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "README.md"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "notes.txt"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "kit/"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.7z",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Path"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Modified"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Converted"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "kit/README.md"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "112"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-05-01 12:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "text/markdown"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (text.markdown_passthrough)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "kit/notes.txt"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "65"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-05-01 12:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "text/plain"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (text.plain)"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "int",
+          "date",
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0003",
+        "n_cols": 5,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.7z",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:44403907a0f48a8ec360c6046771ffd0a633198bb6fdbf61132391435f7a8135",
+    "converter_id": "archives.archive",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "archive_bytes_extracted": 177,
+        "archive_compressed_bytes": 338,
+        "archive_converted": 2,
+        "archive_directories": 0,
+        "archive_entries": 2,
+        "archive_files": 2,
+        "archive_format": "7z",
+        "archive_links": 0,
+        "archive_other": 0,
+        "archive_rejected": 0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/x-7z-compressed",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.7z",
+      "source_type": "archive",
+      "speakers": [],
+      "title": "input.7z"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:f4945dc4b4141efc19ba1814ff34a90c57ce4c70aa897ab5da5a0f15a2a7a139",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "archives.archive",
+    "converter_version": "0.0.1",
+    "extra": {
+      "archive_bytes_extracted": 177,
+      "archive_compressed_bytes": 338,
+      "archive_converted": 2,
+      "archive_directories": 0,
+      "archive_entries": 2,
+      "archive_files": 2,
+      "archive_format": "7z",
+      "archive_links": 0,
+      "archive_other": 0,
+      "archive_rejected": 0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.7z",
+    "source_hash": "sha256:5e6f5ddf6bad76e8af26d7601215f2d98014563f7009b7712a2d0ba0ee0b433f",
+    "source_type": "archive",
+    "title": "input.7z",
+    "tokens": {
+      "cl100k_base": 233,
+      "claude_approx": 254,
+      "o200k_base": 235
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 81
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 5,
+      "lists": 2,
+      "page_breaks": 0,
+      "paragraphs": 4,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 15,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 65
+    },
+    "duration_seconds": 0.031999999890103936,
+    "engine": "archives.archive",
+    "engines_tried": [
+      "archives.archive"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 338
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.7z",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0002",
+      "source": "input.7z",
+      "type": "list"
+    },
+    {
+      "block_id": "b0003",
+      "source": "input.7z",
+      "type": "table"
+    },
+    {
+      "block_id": "c1-section",
+      "path": "kit/README.md",
+      "source": "input.7z!kit/README.md",
+      "type": "heading"
+    },
+    {
+      "block_id": "c1-b0002",
+      "line_end": 3,
+      "line_start": 3,
+      "path": "kit/README.md",
+      "source": "input.7z!kit/README.md",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c1-b0003",
+      "line_end": 6,
+      "line_start": 5,
+      "path": "kit/README.md",
+      "source": "input.7z!kit/README.md",
+      "type": "list"
+    },
+    {
+      "block_id": "c2-section",
+      "path": "kit/notes.txt",
+      "source": "input.7z!kit/notes.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0001",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "kit/notes.txt",
+      "source": "input.7z!kit/notes.txt",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0002",
+      "line_end": 3,
+      "line_start": 3,
+      "path": "kit/notes.txt",
+      "source": "input.7z!kit/notes.txt",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "c1-section",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 614,
+      "offset_start": 474,
+      "original_level": 1,
+      "original_title": "kit/README.md: Survey Kit",
+      "time_end": null,
+      "time_start": null,
+      "title": "kit/README.md: Survey Kit"
+    },
+    {
+      "block_id": "c2-section",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 708,
+      "offset_start": 614,
+      "original_level": 1,
+      "original_title": "kit/notes.txt",
+      "time_end": null,
+      "time_start": null,
+      "title": "kit/notes.txt"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0003",
+      "column_types": [
+        "text",
+        "int",
+        "date",
+        "text",
+        "text"
+      ],
+      "columns": 5,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Path",
+        "Size",
+        "Modified",
+        "Type",
+        "Converted"
+      ],
+      "number": 1,
+      "offset_end": 472,
+      "offset_start": 165,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 106
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 562,
+  "warnings": []
+}

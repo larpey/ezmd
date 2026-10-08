@@ -1,0 +1,1541 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "page_number": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#page1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#c1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Chapter One: The Lamp"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#c1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Every evening at dusk, "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "Elin"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " climbed the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "one hundred and twelve"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " steps of the tower to light the lamp."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-chapter1_xhtml-fn1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[^1]"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " The wick had to be trimmed first."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "alt": "Hand-drawn map of the harbor",
+        "attrs": {},
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The harbor as Elin drew it."
+          }
+        ],
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0004",
+        "mime": "image/png",
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/images/harbor-map.png",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "images/harbor-map.png",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#c1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "She kept a logbook of every ship that passed."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "page_number": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#page2",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#c1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "By midnight the beam swept the water every "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "code"
+            ],
+            "text": "12"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " seconds."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "fn-chapter1_xhtml-fn1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter1.xhtml#fn1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The original tower had only ninety steps; the rest were added in 1871."
+          }
+        ],
+        "type": "footnote"
+      },
+      {
+        "attrs": {
+          "origin": "toc"
+        },
+        "id": "b0009",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Chapter Two: The Harbor"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml#c2",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The harbor woke before the keeper slept. Three things arrived each morning:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "the fishing fleet,"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "its letters"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "its parcels"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": true,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "the mail boat, and"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "the gulls."
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml#c2",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "page_number": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml#page3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml#tides",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Tide Tables"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "High water, first week of March"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Day"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Morning"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Evening"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Monday"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "05:12"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "17:40"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Tuesday"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 2,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "no reading (fog)"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": true,
+        "header_rows": 1,
+        "id": "b0014",
+        "n_cols": 3,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml#c2",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attribution": null,
+        "attrs": {},
+        "depth": 1,
+        "id": "b0015",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter2.xhtml#c2",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "A keeper who forgets the tide forgets the sea."
+          }
+        ],
+        "type": "quote"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter3.xhtml#c3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Chapter Three: The Storm"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0017",
+        "page_number": 4,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter3.xhtml#page4",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0018",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter3.xhtml#c3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The storm came from the west on the ninth night."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-notes_xhtml-en1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[^2]"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0019",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter3.xhtml#c3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Elin wrote the signal code on the wall:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "code": "LONG SHORT LONG\nSHORT SHORT",
+        "filename": null,
+        "id": "b0020",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter3.xhtml#c3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0021",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/chapter3.xhtml#c3",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "When morning came, the lamp was still burning."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "fn-notes_xhtml-en1",
+        "marker": "2",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "OEBPS/text/notes.xhtml#en1",
+          "source": "input.epub",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Storms from the west were recorded in the logbook with a red cross."
+          }
+        ],
+        "type": "footnote"
+      }
+    ],
+    "content_hash": "sha256:ccddc3f2a62c649d6547375033919080f883650233f6787a131491a97f14e085",
+    "converter_id": "documents.epub",
+    "metadata": {
+      "author": "Mara Quill",
+      "authors": [
+        "Mara Quill"
+      ],
+      "canonical_url": null,
+      "description": "A short novel written for the intomd test corpus.",
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "cover_image": "images/cover.png",
+        "editors": "Ivo Pent",
+        "epub_version": "3.0",
+        "has_print_pages": true,
+        "identifier": "urn:uuid:5b2a7c1e-0000-4000-8000-000000000001",
+        "publisher": "Fixture Press"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "application/epub+zip",
+      "modified": null,
+      "pages": 4,
+      "published": "2024-03-15T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.epub",
+      "source_type": "epub",
+      "speakers": [],
+      "title": "The Lighthouse Keeper"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "control": 0,
+          "hidden_elements": 1,
+          "invisible": 0,
+          "invisible_chars": 0,
+          "surrogates": 0
+        },
+        "kind": "removed_hidden_elements",
+        "message": "Removed 1 hidden elements or invisible characters.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [
+    {
+      "alt": "Hand-drawn map of the harbor",
+      "bbox": null,
+      "block_id": "b0004",
+      "caption": "The harbor as Elin drew it.",
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 369,
+      "offset_start": 232,
+      "page": 1,
+      "ref": "images/harbor-map.png"
+    }
+  ],
+  "footnotes": [
+    {
+      "block_id": "fn-chapter1_xhtml-fn1",
+      "number": 1,
+      "source_marker": "1"
+    },
+    {
+      "block_id": "fn-notes_xhtml-en1",
+      "number": 2,
+      "source_marker": "2"
+    }
+  ],
+  "frontmatter": {
+    "author": "Mara Quill",
+    "content_hash": "sha256:50f0b0d2f1216d29adf2f6e2025831cb4ed1076765daee33cb7ed41fd92b4906",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.epub",
+    "converter_version": "0.0.1",
+    "created_at": "2024-03-15",
+    "description": "A short novel written for the intomd test corpus.",
+    "extra": {
+      "cover_image": "images/cover.png",
+      "editors": "Ivo Pent",
+      "epub_version": "3.0",
+      "has_print_pages": true,
+      "identifier": "urn:uuid:5b2a7c1e-0000-4000-8000-000000000001",
+      "publisher": "Fixture Press"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "pages": 4,
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.epub",
+    "source_hash": "sha256:cb1b1d13fa828de773b53c675ff303c5190be928e62acba76dc5353103f2aac6",
+    "source_type": "epub",
+    "title": "The Lighthouse Keeper",
+    "tokens": {
+      "cl100k_base": 432,
+      "claude_approx": 463,
+      "o200k_base": 429
+    },
+    "truncated": false,
+    "warnings": [
+      "removed_hidden_elements"
+    ],
+    "word_count": 200
+  },
+  "heading_shift": 1,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 2,
+      "headings": 4,
+      "images": 1,
+      "links": 0,
+      "list_items": 5,
+      "lists": 1,
+      "page_breaks": 4,
+      "paragraphs": 7,
+      "quotes": 1,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 8,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 165
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.epub",
+    "engines_tried": [
+      "documents.epub"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 4400
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "OEBPS/text/chapter1.xhtml#page1",
+      "source": "input.epub",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "block_id": "b0002",
+      "path": "OEBPS/text/chapter1.xhtml#c1",
+      "source": "input.epub",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "block_id": "b0003",
+      "path": "OEBPS/text/chapter1.xhtml#c1",
+      "source": "input.epub",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "path": "OEBPS/images/harbor-map.png",
+      "source": "input.epub",
+      "source_page": 1,
+      "type": "image"
+    },
+    {
+      "block_id": "b0005",
+      "path": "OEBPS/text/chapter1.xhtml#c1",
+      "source": "input.epub",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "path": "OEBPS/text/chapter1.xhtml#page2",
+      "source": "input.epub",
+      "source_page": 2,
+      "type": "page_break"
+    },
+    {
+      "block_id": "b0007",
+      "path": "OEBPS/text/chapter1.xhtml#c1",
+      "source": "input.epub",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "fn-chapter1_xhtml-fn1",
+      "path": "OEBPS/text/chapter1.xhtml#fn1",
+      "source": "input.epub",
+      "source_page": 2,
+      "type": "footnote"
+    },
+    {
+      "block_id": "b0009",
+      "path": "OEBPS/text/chapter2.xhtml",
+      "source": "input.epub",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0010",
+      "path": "OEBPS/text/chapter2.xhtml#c2",
+      "source": "input.epub",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0011",
+      "path": "OEBPS/text/chapter2.xhtml#c2",
+      "source": "input.epub",
+      "type": "list"
+    },
+    {
+      "block_id": "b0012",
+      "path": "OEBPS/text/chapter2.xhtml#page3",
+      "source": "input.epub",
+      "source_page": 3,
+      "type": "page_break"
+    },
+    {
+      "block_id": "b0013",
+      "path": "OEBPS/text/chapter2.xhtml#tides",
+      "source": "input.epub",
+      "source_page": 3,
+      "type": "heading"
+    },
+    {
+      "block_id": "b0014",
+      "path": "OEBPS/text/chapter2.xhtml#c2",
+      "source": "input.epub",
+      "source_page": 3,
+      "type": "table"
+    },
+    {
+      "block_id": "b0015",
+      "path": "OEBPS/text/chapter2.xhtml#c2",
+      "source": "input.epub",
+      "source_page": 3,
+      "type": "quote"
+    },
+    {
+      "block_id": "b0016",
+      "path": "OEBPS/text/chapter3.xhtml#c3",
+      "source": "input.epub",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0017",
+      "path": "OEBPS/text/chapter3.xhtml#page4",
+      "source": "input.epub",
+      "source_page": 4,
+      "type": "page_break"
+    },
+    {
+      "block_id": "b0018",
+      "path": "OEBPS/text/chapter3.xhtml#c3",
+      "source": "input.epub",
+      "source_page": 4,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0019",
+      "path": "OEBPS/text/chapter3.xhtml#c3",
+      "source": "input.epub",
+      "source_page": 4,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0020",
+      "path": "OEBPS/text/chapter3.xhtml#c3",
+      "source": "input.epub",
+      "source_page": 4,
+      "type": "code"
+    },
+    {
+      "block_id": "b0021",
+      "path": "OEBPS/text/chapter3.xhtml#c3",
+      "source": "input.epub",
+      "source_page": 4,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "fn-notes_xhtml-en1",
+      "path": "OEBPS/text/notes.xhtml#en1",
+      "source": "input.epub",
+      "type": "footnote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0002",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 571,
+      "offset_start": 49,
+      "original_level": 1,
+      "original_title": "Chapter One: The Lamp",
+      "time_end": null,
+      "time_start": null,
+      "title": "Chapter One: The Lamp"
+    },
+    {
+      "block_id": "b0009",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 798,
+      "offset_start": 571,
+      "original_level": 1,
+      "original_title": "Chapter Two: The Harbor",
+      "time_end": null,
+      "time_start": null,
+      "title": "Chapter Two: The Harbor"
+    },
+    {
+      "block_id": "b0013",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 1148,
+      "offset_start": 798,
+      "original_level": 2,
+      "original_title": "Tide Tables",
+      "time_end": null,
+      "time_start": null,
+      "title": "Tide Tables"
+    },
+    {
+      "block_id": "b0016",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 1463,
+      "offset_start": 1148,
+      "original_level": 1,
+      "original_title": "Chapter Three: The Storm",
+      "time_end": null,
+      "time_start": null,
+      "title": "Chapter Three: The Storm"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0014",
+      "column_types": [
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Day",
+        "Morning",
+        "Evening"
+      ],
+      "number": 1,
+      "offset_end": 1096,
+      "offset_start": 830,
+      "page": 3,
+      "representation": "html",
+      "rows": 2,
+      "tokens": 99
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 789,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "control": 0,
+        "hidden_elements": 1,
+        "invisible": 0,
+        "invisible_chars": 0,
+        "surrogates": 0
+      },
+      "kind": "removed_hidden_elements",
+      "message": "Removed 1 hidden elements or invisible characters.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}
