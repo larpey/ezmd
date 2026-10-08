@@ -301,3 +301,20 @@ def test_sec_without_identity_or_with_explicit_header(monkeypatch: pytest.Monkey
     fetch("https://www.sec.gov/", resolver=resolver, headers={"User-Agent": "caller ua@example.com"})
     assert seen[0]["user-agent"] == netguard.USER_AGENT
     assert seen[1]["user-agent"] == "caller ua@example.com"
+
+
+@pytest.mark.parametrize(
+    ("literal", "blocked"),
+    [
+        (f"::ffff:{PUBLIC}", False),
+        ("::ffff:127.0.0.1", True),
+        ("::ffff:10.0.0.1", True),
+        ("::ffff:169.254.169.254", True),
+        ("::ffff:100.64.0.1", True),
+    ],
+)
+def test_ipv4_mapped_addresses_are_judged_by_the_ipv4_address(literal: str, blocked: bool) -> None:
+    """Same answer on every CPython patch level (3.12.3 calls every mapped address private)."""
+    import ipaddress
+
+    assert is_blocked_ip(ipaddress.IPv6Address(literal)) is blocked

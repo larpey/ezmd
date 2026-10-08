@@ -221,6 +221,10 @@ def _embedded_v4(ip: ipaddress.IPv6Address) -> ipaddress.IPv4Address | None:
 
 def is_blocked_ip(ip: IPAddress) -> bool:
     if isinstance(ip, ipaddress.IPv6Address):
+        if ip.ipv4_mapped is not None:
+            # ::ffff:a.b.c.d reaches a.b.c.d, so it is judged by the IPv4 address alone. CPython before 3.12.4
+            # (and 3.11.9) also calls every mapped address private, which would make this depend on the patch level.
+            return is_blocked_ip(ip.ipv4_mapped)
         v4 = _embedded_v4(ip)
         if v4 is not None and is_blocked_ip(v4):
             return True
