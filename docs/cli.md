@@ -24,6 +24,7 @@ Commands:
   detect        Show the detected content type of a file (always JSON).
   version       Print the version, commit, and build date.
   serve         Run the HTTP API and web UI in-process (inline queue without Redis).
+  shadow-run    Convert inputs with every engine that handles them and compare the outputs.
 ```
 
 ## intomd convert
@@ -140,6 +141,24 @@ Options:
   --port INTEGER           Port.  [default: 8080]
   --i-know-this-is-public  Allow binding non-loopback.
   -h, --help               Show this message and exit.
+```
+
+## intomd shadow-run
+
+```text
+Usage: intomd shadow-run [OPTIONS] INPUTS...
+
+  Convert inputs with every engine that handles them and compare the outputs.
+
+Arguments:
+  INPUTS...  Files, directories, or globs (quote globs).  [required]
+
+Options:
+  -e, --engines TEXT  Only these converters (comma-separated ids).
+  -p, --profile TEXT  full | compact | rag | agent  [default: full]
+  --timeout FLOAT     Per-engine time limit in seconds.  [default: 600.0]
+  --json              One JSON object on stdout.
+  -h, --help          Show this message and exit.
 ```
 
 ## Exit codes

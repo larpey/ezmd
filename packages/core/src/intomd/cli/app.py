@@ -10,6 +10,7 @@ from intomd.cli.batch import batch
 from intomd.cli.convert import convert
 from intomd.cli.doctor import doctor
 from intomd.cli.info import capabilities, detect, serve, version
+from intomd.cli.shadow import shadow_run
 
 __all__ = ["app"]
 
@@ -43,3 +44,4 @@ app.command()(capabilities)
 app.command()(detect)
 app.command()(version)
 app.command()(serve)
+app.command(name="shadow-run")(shadow_run)
