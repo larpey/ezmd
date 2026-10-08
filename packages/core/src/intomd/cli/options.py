@@ -58,3 +58,56 @@ def split_options(opts: dict[str, ExtraValue]) -> tuple[ConvertOptions, dict[str
             profile[k] = v
     options = ConvertOptions(**kwargs, extra=extra)  # type: ignore[arg-type]
     return options, profile
+
+
+def library_options(opts: dict[str, ExtraValue]) -> dict[str, object]:
+    """Split parsed `--opt` pairs for `intomd.Options`: its own field names become fields, `extra.<k>` goes
+    to `extra`, and every other key is a profile override in `render` (validated when rendering)."""
+    from intomd.library import Options
+
+    fields = set(Options.model_fields) - {"extra", "render"}
+    out: dict[str, object] = {}
+    extra: dict[str, ExtraValue] = {}
+    render: dict[str, object] = {}
+    for k, v in opts.items():
+        if k.startswith("extra."):
+            extra[k[6:]] = v
+        elif k in fields:
+            out[k] = [s for s in str(v).split(",") if s] if k == "languages" else v
+        else:
+            render[k] = v
+    if extra:
+        out["extra"] = extra
+    if render:
+        out["render"] = render
+    return out
+
+
+def resolve_engine(spec: str, converters: list[dict[str, object]]) -> str:
+    """Map `--engine family=name` to one converter id, or raise ValueError when it is not unambiguous.
+
+    Tried in order, stopping at the first tier with matches: the exact id `name`; the id `family.name`;
+    ids whose dotted segments contain `name` and whose family (or a segment) is `family`; ids whose last
+    segment is `name`.
+    """
+    family, sep, name = (s.strip() for s in spec.partition("="))
+    if not sep or not family or not name:
+        raise ValueError(f"--engine expects family=name, got {spec!r}")
+    ids = sorted({str(c.get("id")) for c in converters if c.get("id")})
+    fam_of = {str(c.get("id")): str(c.get("family", "")) for c in converters}
+
+    def seg(i: str) -> list[str]:
+        return i.split(".")
+
+    tiers = [
+        [i for i in ids if i == name],
+        [i for i in ids if i == f"{family}.{name}"],
+        [i for i in ids if name in seg(i) and (fam_of.get(i) == family or family in seg(i))],
+        [i for i in ids if seg(i)[-1] == name],
+    ]
+    for tier in tiers:
+        if len(tier) == 1:
+            return tier[0]
+        if len(tier) > 1:
+            raise ValueError(f"--engine {spec} is ambiguous: {', '.join(tier)}; use --converter <id>")
+    raise ValueError(f"--engine {spec}: no converter matches; see `intomd capabilities`")

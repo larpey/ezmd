@@ -236,3 +236,10 @@ Context: The code family found that a Rust/Kotlin/C# file that Magika labels `te
 Decision: In `ConverterRegistry._ranked`, when a chain applies, any available converter outside the chain whose `can_handle` confidence is strictly greater than every chain member's goes first; the chain stays as the fallback. Detection maps .ts/.tsx/.mts/.cts to application/typescript and .js/.mjs/.cjs to application/javascript. `detect.is_textual()` treats text/*, JSON/XML/YAML/TOML, +json/+xml, and source-code mimes as one family for the declared-vs-detected and misnamed-file checks. Root ruff config excludes `fixtures/**/expected.*` (ruff was reformatting code fences in goldens). Tracked zero-byte junk files from shell redirects were removed and `tests/test_repo_hygiene.py` now fails on any empty tracked file.
 Alternatives: add `code.source_file` to the text family's chain (couples two families); per-extension chains (chains are per mime).
 Consequences: chains still fully decide order among their own members.
+
+## D-0022: Full CLI (P1-T09)
+Date: 2026-10-08
+Task: P1-T09
+Status: accepted
+Decision: The CLI is a thin client over `intomd.library` (convert/batch/doctor/capabilities/version/detect/serve, config file with env and flag precedence, remote mode over REST, `--json` on failure). Interactive default profile is `compact` only when Markdown goes to a terminal; file and machine output default to `full` (part4 4.0 rule 3). Batch idempotency compares the input sha256 with the previous manifest line and the sidecar's `source_hash` (the spec's `content_hash` hashes the output, so it cannot be checked before converting). Exit code 3 = partial success (D-0017). Details and alternatives: `docs/decisions/P1-T09.md`.
+Deferred: an `Options.engines` per-family preference so the config `[engines]` table applies per input (today `--engine` maps to a single forced converter).
