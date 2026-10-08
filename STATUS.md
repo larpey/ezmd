@@ -3,13 +3,13 @@
 Last updated: 2026-10-08 by agent
 Current phase: 1
 Current task: P1 wave 2 (email, EDGAR/social, SDK/UI, deploy, CI/release, shadow-run, docs, fixture corpus)
-Overall: 26 / 85 tasks done
+Overall: 28 / 85 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
 | 0 | Foundation | done | 13/13 | v0.0.1 |
-| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 13/19 | |
+| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 15/19 | |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
 | 4 | Public instance launch | pending | 0/12 | |
@@ -53,9 +53,9 @@ Overall: 26 / 85 tasks done
 | P1-T11 | MCP server (4.4): five tools, pagination, stdio and HTTP, auth, `server.json`, client docs | done | 22d97e0 | MCP server, local+remote, paging, HTTP auth; D-0024 |
 | P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | done | 3d53738 | OpenAPI-generated types with drift checks, events iterator, 3.4 KB gzipped |
 | P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | done | 34e4298 | server warning registry, zip-all, kept results, history, test ids; 90 KB gzipped |
-| P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | pending | |  |
+| P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | done | b034142 | bootstrap/backup/restore/upgrade tested on Docker, rollback verified; D-0034 |
 | P1-T15 | Integration workflow (compose in CI), security tests fast and network tiers, Playwright suite | pending | |  |
-| P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | pending | |  |
+| P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | done | b034142 | digest push, Trivy, SBOM, cosign; OIDC publish gated on owner setup; D-0034 |
 | P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | pending | |  |
 | P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | done | 33460bc | every available engine per file, scored against the registry's choice |
 | P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | pending | |  |
@@ -131,7 +131,7 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 
 ## Blocked on human
 - (resolved 2026-10-08) GitHub token lacked the `workflow` scope; owner approved device login from phone.
-- First publish of `intomd` to PyPI and `@intomd/sdk` to npm (irreversible name claim). Release workflow publish steps stay `if: false` until approved.
+- First publish of `intomd` to PyPI and `@intomd/sdk` to npm (irreversible name claim). Publishing is off until the owner: creates GitHub environments `release` (required reviewers, tags `v*`) and `testpypi`; adds PyPI and TestPyPI trusted publishers for intomd, intomd-converters, intomd-mcp (workflow release.yml); creates the npm `@intomd` scope with trusted publishing; sets repo variable `INTOMD_PUBLISH_ENABLED=true` (D-0034).
 - Public instance (Hetzner VPS, domain, Cloudflare) and the Raspberry Pi fetch node are Phase 3/4; the owner has a Pi available (2026-10-08).
 
 ## Experimental converters
@@ -148,4 +148,5 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 - Web UI: no upload path for files over 8 MB yet; capabilities lack instance name, sponsor, docx export flag, and queue position.
 
 ## Deferred core change requests
+- Split converter metadata from the registry so the api image can drop about 100 MB of converter dependencies (from P1-T14).
 - `Provenance.timestamp` (comms keeps it in `Heading.attrs`), compact profile dropping `reply_history`/`reply_header`/`signature` roles, a `signature` paragraph role (from P1-T04).

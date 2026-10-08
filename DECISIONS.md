@@ -334,3 +334,12 @@ Decision: `specialized.edgar` is built directly on the documented EDGAR endpoint
 Alternatives: edgartools (GPL transitive dependency, unguarded network); edgartools in the nonfree extra (loses EDGAR from the default install).
 Consequences: 3 fixtures at 1.000 (threshold 0.95); the TVA filing is treated as a US Government work (17 USC 105, defensible, not settled; D-P1-T07-4). XBRL statement tables wait for the XBRL converter. CLI `--form`/`--year` need library support for bare tickers and are deferred; use a browse-edgar URL.
 Council: not convened; independent Skeptic review rejected two goldens (Wingdings check box inside ix tags, dropped filer address block); both fixed in the converter.
+
+## D-0034: Self-host scripts and signed release pipeline (P1-T14, P1-T16) merged; api image budget 600 MB
+Date: 2026-10-08
+Task: P1-T14, P1-T16
+Status: accepted
+Decision: `deploy/bootstrap.sh`, `backup.sh`, `restore.sh`, `upgrade.sh` (shared `lib.sh`, data work through `deploy/stackctl.py` in a one-off api container), tested end to end on Docker Desktop including a failed upgrade that rolls back to the pre-upgrade backup. `images.yml` pushes by digest, scans with Trivy (fixable HIGH/CRITICAL fail), attaches a syft SPDX SBOM, signs and attests with cosign keyless, then tags. `release.yml` validates tag and versions; `v*-rcN` goes to TestPyPI only; final tags publish to PyPI, npm, and the MCP registry under `environment: release` with OIDC only, and nothing publishes until the owner sets `INTOMD_PUBLISH_ENABLED=true` and configures reviewers (the run fails if the environment has none). The api image budget rises from 480 MB (D-0012) to 600 MB: the API loads the converter registry for `/v1/capabilities` and IR-cache keys, so it cannot drop converter dependencies today (556 MB after stripping numpy tests; worker 888 MB). Details: docs/decisions/P1-T14-T16.md (D-a to D-j).
+Alternatives: drop converters from the api image (capabilities and dedup keys would be wrong); split converter metadata from the registry now (larger core change; tracked as a deferred request, about 100 MB saving).
+Consequences: owner setup is required before any publish (GitHub environments with reviewers, PyPI/TestPyPI trusted publishers for intomd, intomd-converters, intomd-mcp, npm `@intomd` scope, the publish variable). Backups cover SQLite and the filesystem blob store only.
+Council: not convened.
