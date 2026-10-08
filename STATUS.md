@@ -3,13 +3,13 @@
 Last updated: 2026-10-08 by agent
 Current phase: 1
 Current task: P1 wave 2 (email, EDGAR/social, SDK/UI, deploy, CI/release, shadow-run, docs, fixture corpus)
-Overall: 22 / 81 tasks done
+Overall: 25 / 85 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
 | 0 | Foundation | done | 13/13 | v0.0.1 |
-| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 9/19 | |
+| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 12/19 | |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
 | 4 | Public instance launch | pending | 0/12 | |
@@ -51,13 +51,13 @@ Overall: 22 / 81 tasks done
 | P1-T09 | CLI (4.2): `convert`, `batch`, `serve`, `doctor`, `capabilities`, `version`; config.toml; exit codes; completions | done | 47a72b2 | convert/batch/doctor/config/remote/completions; D-0022 |
 | P1-T10 | API (Part 3): routes, SSE, SQLite, RQ and inline queue, blobs FS, reaper, keys.json, rate limiting, admin, metrics, OpenAPI annotations | done | 47473ec | keys.json, intomd-admin, /metrics, /v1/warnings, OpenAPI (Spectral clean); D-0023 |
 | P1-T11 | MCP server (4.4): five tools, pagination, stdio and HTTP, auth, `server.json`, client docs | done | 22d97e0 | MCP server, local+remote, paging, HTTP auth; D-0024 |
-| P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | pending | |  |
-| P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | pending | |  |
+| P1-T12 | TS SDK (4.5): generated types, client, Node helper, size gate | done | 3d53738 | OpenAPI-generated types with drift checks, events iterator, 3.4 KB gzipped |
+| P1-T13 | Web UI v1 (4.1 steps 1 to 12): input box, progress, result, profiles, downloads, warnings, history, dark mode, accessibility | done | 34e4298 | server warning registry, zip-all, kept results, history, test ids; 90 KB gzipped |
 | P1-T14 | Docker: multi-stage Dockerfile targets `api`, `worker`; compose core profile; Caddyfile; `.env.example`; bootstrap, backup, restore, upgrade scripts | pending | |  |
 | P1-T15 | Integration workflow (compose in CI), security tests fast and network tiers, Playwright suite | pending | |  |
 | P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | pending | |  |
 | P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | pending | |  |
-| P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | pending | |  |
+| P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | done | 33460bc | every available engine per file, scored against the registry's choice |
 | P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | pending | |  |
 | P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `intomd models pull/list/rm/export`; license gate | pending | |  |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | pending | |  |
@@ -95,6 +95,10 @@ Overall: 22 / 81 tasks done
 | P4-T08 | Staging instance on a small Hetzner box using the full public overlay; k6 load run at target rates; 72-hour soak with synthetic traffic | pending | |  |
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | pending | |  |
 | P4-T10 | Production cutover: DNS, Cloudflare rules applied, Origin CA, Pi connected, uptime check, backups to off-box storage verified by a restore drill | pending | |  |
+| P4-B01 | Competitive benchmark harness (isolated competitor containers, pinned versions) | pending | |  |
+| P4-B02 | Benchmark corpora and metrics, per-category scorecards | pending | |  |
+| P4-B03 | Iterate to win on the held-out split (benchmark gate, D-0032) | pending | |  |
+| P4-B04 | Publish docs/benchmarks.md with full results | pending | |  |
 | P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run benchmark story, Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | pending | |  |
 | P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | pending | |  |
 | P5-T01 | Finance mode: bank statement and invoice tables with per-row page references, totals reconciliation (rows sum to ending minus beginning balance), sign and date normalization, CSV and JSON sidecars, confidence flags; `--mode finance` | pending | |  |
