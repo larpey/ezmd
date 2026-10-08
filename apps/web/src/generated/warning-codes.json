@@ -1,0 +1,778 @@
+{
+  "account_number_masked": {
+    "severity": "info",
+    "suggestion": "No action needed; refer to the source document for full numbers."
+  },
+  "ambiguous_wikilink": {
+    "severity": "info",
+    "suggestion": "Use full paths in wikilinks to disambiguate."
+  },
+  "amount_corrected_by_reconciliation": {
+    "severity": "warning",
+    "suggestion": "Verify the corrected amount against the source document."
+  },
+  "api_error_payload": {
+    "severity": "warning",
+    "suggestion": "Check the API URL, authentication and query parameters."
+  },
+  "api_fallback_html": {
+    "severity": "warning",
+    "suggestion": "Configure the platform API credentials for complete, stable extraction."
+  },
+  "archive_bomb_suspected": {
+    "severity": "error",
+    "suggestion": "Extract the files you need locally and upload them individually."
+  },
+  "archive_encrypted": {
+    "severity": "warning",
+    "suggestion": "Provide the archive password, or upload an unencrypted archive."
+  },
+  "archive_entry_skipped": {
+    "severity": "warning",
+    "suggestion": "Repack the archive with plain relative paths and upload it again."
+  },
+  "archive_path_rejected": {
+    "severity": "warning",
+    "suggestion": "Repack the archive with relative paths and no symlinks."
+  },
+  "archive_truncated": {
+    "severity": "warning",
+    "suggestion": "Upload fewer files per archive, or raise the archive limits when self-hosting."
+  },
+  "asr_confidence_low": {
+    "severity": "warning",
+    "suggestion": "Upload a cleaner recording, or retry with a larger ASR model."
+  },
+  "asr_hallucination_filtered": {
+    "severity": "info",
+    "suggestion": "Check the flagged timestamps against the audio if you need every word."
+  },
+  "attachment_failed": {
+    "severity": "warning",
+    "suggestion": "Extract the attachment and convert it on its own to see the specific error."
+  },
+  "attachment_skipped": {
+    "severity": "info",
+    "suggestion": "Extract the attachment and convert it separately if you need its content."
+  },
+  "attachment_unconverted": {
+    "severity": "warning",
+    "suggestion": "Extract the named attachment and convert it separately."
+  },
+  "best_effort_extraction": {
+    "severity": "warning",
+    "suggestion": "Verify key fields against the source, or use an official export."
+  },
+  "bibtex_duplicate_keys": {
+    "severity": "warning",
+    "suggestion": "Rename the duplicate keys in the .bib file."
+  },
+  "boilerplate_removed_corpus": {
+    "severity": "info",
+    "suggestion": "Turn off corpus boilerplate removal in site options if you need that text."
+  },
+  "browser_asr_small_model": {
+    "severity": "warning",
+    "suggestion": "Choose a larger browser model, or convert on the server for better accuracy."
+  },
+  "calibre_missing": {
+    "severity": "error",
+    "suggestion": "Install Calibre so ebook-convert is on PATH, or convert the book to EPUB first."
+  },
+  "captions_only": {
+    "severity": "info",
+    "suggestion": "Request ASR in options if the captions are poor or missing words."
+  },
+  "cell_errors": {
+    "severity": "warning",
+    "suggestion": "Fix the errors in the source workbook; error cells are kept as-is."
+  },
+  "chapters_generated": {
+    "severity": "info",
+    "suggestion": "Check chapter boundaries and titles; add chapters at the source to use them instead."
+  },
+  "chat_screenshot_decorations_removed": {
+    "severity": "info",
+    "suggestion": "No action needed; crop the screenshot yourself if something was wrongly removed."
+  },
+  "clippings_deduped": {
+    "severity": "info",
+    "suggestion": "Check merged highlights if you edited a highlight and expected both versions."
+  },
+  "columns_swapped_by_reconciliation": {
+    "severity": "warning",
+    "suggestion": "Verify the column assignment against the source document."
+  },
+  "columns_truncated": {
+    "severity": "info",
+    "suggestion": "Select the columns you need in options, or use the CSV export."
+  },
+  "combined_too_large": {
+    "severity": "warning",
+    "suggestion": "Use per-page output or the rag profile instead of one combined file."
+  },
+  "comments_collapsed": {
+    "severity": "info",
+    "suggestion": "Raise the comment depth option to include collapsed branches."
+  },
+  "comments_present": {
+    "severity": "info",
+    "suggestion": "Set track_changes=all to render comments inline at their anchors."
+  },
+  "comments_truncated": {
+    "severity": "warning",
+    "suggestion": "Raise the comment limit in options, or configure the platform API key."
+  },
+  "connection_string_refused": {
+    "severity": "error",
+    "suggestion": "Export the data to a file such as CSV or SQLite and upload that."
+  },
+  "content_type_mismatch": {
+    "severity": "warning",
+    "suggestion": "Check the URL serves the intended file, or pass --format to force a converter."
+  },
+  "converter_failed": {
+    "severity": "error",
+    "suggestion": "Check the sidecar for the error detail, try another engine, or report the file."
+  },
+  "copy_restricted_ignored": {
+    "severity": "info",
+    "suggestion": "Make sure you have the right to extract text from this document."
+  },
+  "date_order_assumed": {
+    "severity": "warning",
+    "suggestion": "Pass the date order (DMY or MDY) in options to match the export's locale."
+  },
+  "dates_from_filesystem": {
+    "severity": "info",
+    "suggestion": "Add created and updated dates to the notes' frontmatter."
+  },
+  "deloop": {
+    "severity": "info",
+    "suggestion": "Check the marked segments against the audio; a larger model loops less."
+  },
+  "depth_truncated": {
+    "severity": "info",
+    "suggestion": "Raise the depth limit in data options."
+  },
+  "diarization_skipped_cpu_budget": {
+    "severity": "warning",
+    "suggestion": "Force diarization in options, or run on a GPU or a hosted backend that includes it."
+  },
+  "diarization_skipped_short": {
+    "severity": "info",
+    "suggestion": "No action needed; force diarization in options if the clip has several speakers."
+  },
+  "diarization_unavailable_offload": {
+    "severity": "warning",
+    "suggestion": "Use a local or diarizing backend (e.g. Deepgram), or upload a shorter clip that stays local."
+  },
+  "discord_package_no_authors": {
+    "severity": "info",
+    "suggestion": "Use a channel export tool that includes author names for full attribution."
+  },
+  "drm_protected": {
+    "severity": "error",
+    "suggestion": "Use a DRM-free copy of the book."
+  },
+  "duplicate_row_at_page_break": {
+    "severity": "info",
+    "suggestion": "Check the page break in the source if row counts look off."
+  },
+  "duration_cap_exceeded": {
+    "severity": "warning",
+    "suggestion": "Split the audio into shorter parts, or self-host to remove the cap."
+  },
+  "duration_limit_reached": {
+    "severity": "warning",
+    "suggestion": "Trim the file into shorter parts, or self-host with a higher duration limit."
+  },
+  "empty_body_js_required": {
+    "severity": "error",
+    "suggestion": "Enable the browser rendering engine, or convert the page with the browser extension."
+  },
+  "encoding_guessed": {
+    "severity": "warning",
+    "suggestion": "Re-save the file as UTF-8 or declare its charset, then reconvert."
+  },
+  "encoding_uncertain": {
+    "severity": "warning",
+    "suggestion": "Re-save the file as UTF-8 or pass the source encoding in options."
+  },
+  "encrypted_content": {
+    "severity": "info",
+    "suggestion": "Decrypt the content in its source app and export it again."
+  },
+  "encrypted_no_password": {
+    "severity": "error",
+    "suggestion": "Provide the password in the PDF options or upload an unencrypted copy."
+  },
+  "engine_downgraded": {
+    "severity": "warning",
+    "suggestion": "Install the missing extra, e.g. pip install 'intomd[docs]', for full-fidelity output."
+  },
+  "engine_failed": {
+    "severity": "error",
+    "suggestion": "Retry with another engine via --engine family=name, or report the file with a fixture."
+  },
+  "engine_fallback": {
+    "severity": "warning",
+    "suggestion": "Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name."
+  },
+  "env_values_redacted": {
+    "severity": "info",
+    "suggestion": "No action needed; share values through a secret manager, not converted output."
+  },
+  "epub_mimetype_missing": {
+    "severity": "info",
+    "suggestion": "Re-export the EPUB with a compliant tool if other readers reject it."
+  },
+  "equation_as_text": {
+    "severity": "info",
+    "suggestion": "Use an engine with formula recognition if you need LaTeX output."
+  },
+  "equation_partial": {
+    "severity": "warning",
+    "suggestion": "Compare equations with the source; DOCX with native equations converts best."
+  },
+  "equation_unrecognized": {
+    "severity": "warning",
+    "suggestion": "Use an engine with formula recognition, e.g. --engine pdf=docling, or a GPU OCR tier."
+  },
+  "experimental_converter": {
+    "severity": "info",
+    "suggestion": "Review the output closely and report problems so the converter can graduate."
+  },
+  "extra_required": {
+    "severity": "error",
+    "suggestion": "Install the extra named in the message, e.g. pip install 'intomd[docs]'."
+  },
+  "extraction_empty": {
+    "severity": "error",
+    "suggestion": "If the source is scanned or image-only, enable OCR; otherwise confirm the file is not empty."
+  },
+  "fallback_engine_used": {
+    "severity": "warning",
+    "suggestion": "Install the extra for the preferred engine (see `intomd converters list`) and reconvert."
+  },
+  "fetch_blocked": {
+    "severity": "error",
+    "suggestion": "Download the content in your browser and upload it, or use the browser extension."
+  },
+  "fetch_blocked_by_platform": {
+    "severity": "error",
+    "suggestion": "Upload the file directly, or install the browser extension to fetch from your own connection."
+  },
+  "fetch_blocked_by_policy": {
+    "severity": "error",
+    "suggestion": "Use the browser extension or share sheet, or upload the file directly."
+  },
+  "fetch_degraded": {
+    "severity": "warning",
+    "suggestion": "Retry later, or upload the file directly for complete content."
+  },
+  "fetch_failed": {
+    "severity": "error",
+    "suggestion": "Check the URL and that the site is up, then retry."
+  },
+  "fetch_refused_private_network": {
+    "severity": "error",
+    "suggestion": "Use a public URL, or upload the file; self-host to convert intranet URLs."
+  },
+  "fetch_refused_scheme": {
+    "severity": "error",
+    "suggestion": "Use an http or https URL, or upload the file directly."
+  },
+  "fetched_partial": {
+    "severity": "warning",
+    "suggestion": "Retry, or download the content in your browser and upload it."
+  },
+  "fillers_removed": {
+    "severity": "info",
+    "suggestion": "Enable verbatim mode to keep filler words."
+  },
+  "first_sheet_only": {
+    "severity": "warning",
+    "suggestion": "Download the spreadsheet as XLSX and upload it to convert every sheet."
+  },
+  "formula_uncalculated": {
+    "severity": "warning",
+    "suggestion": "Open and save the workbook in Excel or LibreOffice to compute values, then reconvert."
+  },
+  "formulas_present": {
+    "severity": "info",
+    "suggestion": "Set formulas=false in options if you only want computed values."
+  },
+  "fulltext_unavailable": {
+    "severity": "warning",
+    "suggestion": "Upload the full-text PDF, or use an open-access link."
+  },
+  "heading_depth_clamped": {
+    "severity": "info",
+    "suggestion": "Use per-page output to keep each page's original heading depth."
+  },
+  "heading_inferred_from_formatting": {
+    "severity": "info",
+    "suggestion": "Apply Heading styles in the source document for reliable structure."
+  },
+  "heading_source_structure_tree": {
+    "severity": "info",
+    "suggestion": "No action needed; edit the PDF's tags in the authoring tool to change headings."
+  },
+  "hidden_sheets": {
+    "severity": "info",
+    "suggestion": "Delete or unhide sheets in the source if the hidden ones should not be shared."
+  },
+  "hidden_sheets_included": {
+    "severity": "info",
+    "suggestion": "Turn off hidden sheet inclusion in the spreadsheet options to omit them."
+  },
+  "hidden_slides_included": {
+    "severity": "info",
+    "suggestion": "Turn off hidden slide inclusion in the presentation options to omit them."
+  },
+  "http_error": {
+    "severity": "error",
+    "suggestion": "Check the URL opens in a browser, then retry; the message has the status code."
+  },
+  "image_skipped": {
+    "severity": "info",
+    "suggestion": "Enable image OCR or description in options if the image carries information."
+  },
+  "image_too_large": {
+    "severity": "warning",
+    "suggestion": "Downscale the image below 50 megapixels and reconvert."
+  },
+  "images_without_alt": {
+    "severity": "info",
+    "suggestion": "Enable image description or OCR if the images carry information."
+  },
+  "injection_flagged": {
+    "severity": "warning",
+    "suggestion": "Review the flagged spans in the sidecar before passing the output to an AI."
+  },
+  "injection_pattern": {
+    "severity": "warning",
+    "suggestion": "Treat the content as untrusted and use the agent profile's fenced output."
+  },
+  "injection_suspected": {
+    "severity": "warning",
+    "suggestion": "Treat the flagged text as untrusted and review sidecar injection_findings before using it."
+  },
+  "invoice_validation_failed": {
+    "severity": "warning",
+    "suggestion": "Check line items, tax and totals against the source invoice."
+  },
+  "iwork_preview_fallback": {
+    "severity": "warning",
+    "suggestion": "Export from Pages, Numbers or Keynote to DOCX, XLSX or PPTX and convert that."
+  },
+  "ixt_format_unknown": {
+    "severity": "warning",
+    "suggestion": "Check the flagged facts by hand; upgrade intomd in case the format was added."
+  },
+  "json_repaired": {
+    "severity": "warning",
+    "suggestion": "Fix the source JSON; repaired values may differ from what was intended."
+  },
+  "kindle_clip_limit": {
+    "severity": "warning",
+    "suggestion": "Copy the full passage from the book itself; the export cannot recover it."
+  },
+  "language_uncertain": {
+    "severity": "warning",
+    "suggestion": "Pass --lang with the correct language code and reconvert."
+  },
+  "latex_main_ambiguous": {
+    "severity": "warning",
+    "suggestion": "Name the main .tex file explicitly in the LaTeX options."
+  },
+  "latex_unknown_macro": {
+    "severity": "info",
+    "suggestion": "Include the .sty or macro definitions in the upload so they can be expanded."
+  },
+  "layout_ocr_unavailable_cpu": {
+    "severity": "warning",
+    "suggestion": "Run on a host with a GPU, or install a CPU-capable layout model, for complex layouts."
+  },
+  "lazy_content_possible": {
+    "severity": "info",
+    "suggestion": "Enable browser rendering, or convert with the extension after scrolling to the end."
+  },
+  "legacy_text_only": {
+    "severity": "warning",
+    "suggestion": "Save the file as DOCX, XLSX or PPTX and reconvert."
+  },
+  "libreoffice_missing": {
+    "severity": "warning",
+    "suggestion": "Install LibreOffice so soffice is on PATH, then reconvert."
+  },
+  "license_restricted_engine_used": {
+    "severity": "info",
+    "suggestion": "Check the engine license allows your use, or unset INTOMD_ALLOW_RESTRICTED_MODELS."
+  },
+  "llms_txt_may_be_stale": {
+    "severity": "info",
+    "suggestion": "Crawl via the sitemap instead of llms.txt to get current pages."
+  },
+  "llms_txt_used": {
+    "severity": "info",
+    "suggestion": "Pass a sitemap URL or explicit URL list to crawl a different set of pages."
+  },
+  "log_lines_collapsed": {
+    "severity": "info",
+    "suggestion": "Turn off log collapsing in options if you need every line."
+  },
+  "log_truncated": {
+    "severity": "warning",
+    "suggestion": "Filter the log by time range or level before converting."
+  },
+  "markup_partial": {
+    "severity": "warning",
+    "suggestion": "Check the raw spans, or convert from the original source format if available."
+  },
+  "mdx_components_stripped": {
+    "severity": "info",
+    "suggestion": "Convert the rendered HTML page instead if components carry essential content."
+  },
+  "media_unavailable": {
+    "severity": "error",
+    "suggestion": "Upload the media file directly, or use the browser extension or share sheet."
+  },
+  "merged_cells_flattened": {
+    "severity": "info",
+    "suggestion": "Use the full profile with merged_cells=html to keep spans as an HTML table."
+  },
+  "misnamed_file": {
+    "severity": "warning",
+    "suggestion": "Rename the file with the extension of its real format."
+  },
+  "missing_resource": {
+    "severity": "warning",
+    "suggestion": "Include the attachments folder in the upload."
+  },
+  "msg_partial": {
+    "severity": "warning",
+    "suggestion": "Install the nonfree extra for full MSG support, or save the message as EML."
+  },
+  "multilingual_content": {
+    "severity": "info",
+    "suggestion": "Pass --lang to pin the primary language if downstream tools need a single one."
+  },
+  "multipage_article": {
+    "severity": "info",
+    "suggestion": "Check the page joins, or pass the site's single-page or print URL."
+  },
+  "music_summary_only": {
+    "severity": "info",
+    "suggestion": "Force transcription in the media options if the file contains speech."
+  },
+  "no_speech_detected": {
+    "severity": "warning",
+    "suggestion": "Check the file has an audio track with speech; set the language if it is quiet speech."
+  },
+  "notebook_invalid": {
+    "severity": "warning",
+    "suggestion": "Open and re-save the notebook in Jupyter to repair it."
+  },
+  "ocr_confidence_low": {
+    "severity": "warning",
+    "suggestion": "Upload a higher-resolution scan (300 DPI or more) or try a layout OCR engine."
+  },
+  "ocr_unavailable": {
+    "severity": "warning",
+    "suggestion": "Install the ocr extra, e.g. pip install 'intomd[ocr]', or use an instance with OCR enabled."
+  },
+  "ole_object_skipped": {
+    "severity": "warning",
+    "suggestion": "Extract the embedded object from the source and convert it separately."
+  },
+  "orphan_thread_replies": {
+    "severity": "warning",
+    "suggestion": "Include the full export or channel history so parents can be matched."
+  },
+  "other": {
+    "severity": "warning",
+    "suggestion": "Read the message and sidecar details; report it so a specific code can be added."
+  },
+  "output_truncated": {
+    "severity": "info",
+    "suggestion": "Raise the notebook output limit in options if you need full outputs."
+  },
+  "page_cap_reached": {
+    "severity": "warning",
+    "suggestion": "Convert the document in page ranges, or raise the page cap on a self-hosted instance."
+  },
+  "page_limit_reached": {
+    "severity": "warning",
+    "suggestion": "Convert the remaining pages as a separate range, or raise the page limit when self-hosting."
+  },
+  "page_timeout": {
+    "severity": "warning",
+    "suggestion": "Convert the listed pages separately, or self-host on faster hardware or a GPU."
+  },
+  "pages_estimated": {
+    "severity": "info",
+    "suggestion": "Cite by section heading rather than page number."
+  },
+  "pages_without_text": {
+    "severity": "warning",
+    "suggestion": "Enable OCR or upload a text-layer PDF."
+  },
+  "paywall_detected": {
+    "severity": "warning",
+    "suggestion": "Save the page from a logged-in browser and upload it, or use the browser extension."
+  },
+  "phi_possible": {
+    "severity": "warning",
+    "suggestion": "Review and redact before sharing, and self-host for regulated data."
+  },
+  "phi_refused": {
+    "severity": "error",
+    "suggestion": "Self-host intomd to process health records under your own compliance controls."
+  },
+  "pii_columns_removed": {
+    "severity": "info",
+    "suggestion": "Turn off PII column removal in data options if you are permitted to keep those columns."
+  },
+  "possible_prompt_injection": {
+    "severity": "warning",
+    "suggestion": "Treat the flagged text as untrusted; review sidecar injection_findings first."
+  },
+  "possible_serial_dates": {
+    "severity": "info",
+    "suggestion": "Apply a date format to those cells in the source workbook."
+  },
+  "private_link": {
+    "severity": "error",
+    "suggestion": "Share the file as 'Anyone with the link can view', or export it and upload the file."
+  },
+  "private_post": {
+    "severity": "error",
+    "suggestion": "Save the post from a logged-in browser and upload it, or use the browser extension."
+  },
+  "profanity_masked": {
+    "severity": "info",
+    "suggestion": "Turn off profanity masking in the transcript options to keep the original words."
+  },
+  "quoted_history_removed": {
+    "severity": "info",
+    "suggestion": "Turn off quoted-history stripping in email options to keep it."
+  },
+  "ragged_rows": {
+    "severity": "warning",
+    "suggestion": "Check the source for missing delimiters or stray cells."
+  },
+  "rate_limited": {
+    "severity": "error",
+    "suggestion": "Wait a few minutes and retry, or configure your own API credentials."
+  },
+  "readability_fallback_full_body": {
+    "severity": "info",
+    "suggestion": "Expect navigation text; use the extension's selection mode to convert only the article."
+  },
+  "reading_order_uncertain": {
+    "severity": "warning",
+    "suggestion": "Try a layout-aware engine such as --engine pdf=docling, and check column order."
+  },
+  "receipt_totals_mismatch": {
+    "severity": "warning",
+    "suggestion": "Check the flagged values against the receipt; rescan if digits are blurred."
+  },
+  "reconciliation_failed": {
+    "severity": "error",
+    "suggestion": "Review the flagged page against the source; try a layout OCR engine for scans."
+  },
+  "removed_hidden_elements": {
+    "severity": "info",
+    "suggestion": "Inspect the original source if the hidden content matters to you."
+  },
+  "removed_invisible_chars": {
+    "severity": "info",
+    "suggestion": "Inspect the original file if invisible characters carry meaning."
+  },
+  "removed_running_header_footer": {
+    "severity": "info",
+    "suggestion": "Use the full profile with page provenance if you need page boundaries."
+  },
+  "removed_script_or_macro": {
+    "severity": "info",
+    "suggestion": "Open the source in its native app if you need to review the macro code."
+  },
+  "robots_disallowed": {
+    "severity": "error",
+    "suggestion": "Save the page in your browser and upload it, or use the browser extension."
+  },
+  "row_cap_reached": {
+    "severity": "warning",
+    "suggestion": "Use the CSV export for every row, or raise the row cap in options."
+  },
+  "rows_sampled": {
+    "severity": "info",
+    "suggestion": "Use the CSV export for every row."
+  },
+  "secret_file_excluded": {
+    "severity": "info",
+    "suggestion": "No action needed; rename the file if it was wrongly detected as a secret."
+  },
+  "secret_redacted": {
+    "severity": "info",
+    "suggestion": "No action needed; rotate the secret if the source was shared anywhere."
+  },
+  "sitemap_truncated": {
+    "severity": "warning",
+    "suggestion": "Raise the site page limit, or narrow the crawl with an include pattern."
+  },
+  "size_cap": {
+    "severity": "warning",
+    "suggestion": "Split the input into smaller files, or self-host with a higher size cap."
+  },
+  "smartart_flattened": {
+    "severity": "info",
+    "suggestion": "Check the source if the diagram's layout carries meaning."
+  },
+  "smime_not_decrypted": {
+    "severity": "warning",
+    "suggestion": "Decrypt the message in your mail client and export the decrypted copy."
+  },
+  "spec_invalid": {
+    "severity": "warning",
+    "suggestion": "Validate the spec with an OpenAPI linter, fix the errors, and reconvert."
+  },
+  "sqlite_encrypted": {
+    "severity": "error",
+    "suggestion": "Decrypt the database (e.g. with SQLCipher) and upload the plain copy."
+  },
+  "structure_tree_unusable": {
+    "severity": "info",
+    "suggestion": "Re-export the PDF with accessibility tagging for more reliable headings."
+  },
+  "suggestions_not_exported": {
+    "severity": "info",
+    "suggestion": "Download the doc as DOCX to keep suggestions as tracked changes, then convert that."
+  },
+  "table_inferred": {
+    "severity": "info",
+    "suggestion": "Check the inferred table against the source text."
+  },
+  "table_merged_cells_flattened": {
+    "severity": "info",
+    "suggestion": "Use the full profile with merged_cells=html to keep spans as an HTML table."
+  },
+  "table_rejoined": {
+    "severity": "info",
+    "suggestion": "Check the rejoined table at the page break against the source."
+  },
+  "table_sampled": {
+    "severity": "info",
+    "suggestion": "Use the table's CSV export for every row."
+  },
+  "table_structure_uncertain": {
+    "severity": "warning",
+    "suggestion": "Check the table against the source, or try a layout-aware engine."
+  },
+  "teams_html_best_effort": {
+    "severity": "warning",
+    "suggestion": "Use a Teams JSON export (Purview or Graph) for reliable structure."
+  },
+  "textbox_content_relocated": {
+    "severity": "info",
+    "suggestion": "Check relocated text box content against the source layout."
+  },
+  "thread_partial_federation": {
+    "severity": "info",
+    "suggestion": "Open the thread on its home server to convert remote replies."
+  },
+  "thread_reconstructed_from_text": {
+    "severity": "info",
+    "suggestion": "Export with full headers (EML or MBOX) for reliable threading."
+  },
+  "timeout_hard": {
+    "severity": "error",
+    "suggestion": "Split the input into smaller parts, or self-host with a longer timeout."
+  },
+  "timeout_partial": {
+    "severity": "warning",
+    "suggestion": "Retry with a smaller input or fewer pages, or raise the job timeout when self-hosting."
+  },
+  "timestamps_approximate": {
+    "severity": "info",
+    "suggestion": "Use server-side ASR with word timestamps if you need precise timing."
+  },
+  "timezone_assumed": {
+    "severity": "info",
+    "suggestion": "Pass the source timezone in options if the timestamps are local time."
+  },
+  "tnef_unparsed": {
+    "severity": "warning",
+    "suggestion": "Ask the sender to resend in plain or HTML format, or decode it with a TNEF tool."
+  },
+  "token_budget_applied": {
+    "severity": "warning",
+    "suggestion": "Raise max_tokens or narrow the include globs to the files you need."
+  },
+  "tos_risk_source": {
+    "severity": "warning",
+    "suggestion": "Make sure your use complies with the platform's terms; prefer an official export."
+  },
+  "tracked_changes_present": {
+    "severity": "info",
+    "suggestion": "Set track_changes=all to keep insertions and deletions as CriticMarkup."
+  },
+  "truncated": {
+    "severity": "warning",
+    "suggestion": "Download the full result, or self-host with a higher output cap."
+  },
+  "truncated_max_tokens": {
+    "severity": "warning",
+    "suggestion": "Raise max_tokens, or page through the result with the cursor."
+  },
+  "unreadable_region": {
+    "severity": "warning",
+    "suggestion": "Upload a sharper, higher-resolution scan of the marked region."
+  },
+  "unreadable_regions": {
+    "severity": "warning",
+    "suggestion": "Upload a sharper scan (300 DPI or more), or try a layout OCR engine."
+  },
+  "unresolved_users": {
+    "severity": "warning",
+    "suggestion": "Include the export's users file (e.g. users.json) in the upload."
+  },
+  "unresolved_wikilinks": {
+    "severity": "info",
+    "suggestion": "Upload the whole vault folder so links can resolve."
+  },
+  "unsupported_feature": {
+    "severity": "warning",
+    "suggestion": "Export the source to a simpler format (PDF, DOCX, HTML) that keeps the feature, then reconvert."
+  },
+  "url_blocked_by_policy": {
+    "severity": "error",
+    "suggestion": "Upload the content as a file, or contact the instance operator if this is a mistake."
+  },
+  "verbatim_mode": {
+    "severity": "info",
+    "suggestion": "Turn off verbatim mode for a cleaner, more readable transcript."
+  },
+  "versions_skipped": {
+    "severity": "info",
+    "suggestion": "Pass the versioned URL prefix to convert a specific version."
+  },
+  "word_index_dropped": {
+    "severity": "info",
+    "suggestion": "Convert the index pages separately if you need them."
+  },
+  "xbrl_statement_mismatch": {
+    "severity": "warning",
+    "suggestion": "Compare the flagged values with the filing's official XBRL viewer."
+  },
+  "xfa_partial": {
+    "severity": "warning",
+    "suggestion": "Print the form to PDF from Adobe Reader to flatten it, then convert that copy."
+  },
+  "yaml_unsafe_tags": {
+    "severity": "warning",
+    "suggestion": "Remove language-specific tags such as !!python/object from the YAML."
+  }
+}
