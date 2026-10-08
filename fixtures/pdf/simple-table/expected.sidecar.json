@@ -1,0 +1,890 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "page_number": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.69,
+            "x1": 280.72,
+            "y0": 80.35,
+            "y1": 95.34
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Quarterly cargo throughput"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 397.96,
+            "y0": 110.84,
+            "y1": 120.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The table lists cargo handled per quarter, in thousand tonnes, by terminal."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "pdf_table": "heuristic"
+        },
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Terminal"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Q1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Q2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Q3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "East quay"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "120"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "135"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "98"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "West quay"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "88"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "91"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "77"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Container yard"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "301"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "322"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "290"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Bulk berth"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "45"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "52"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "49"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0004",
+        "n_cols": 4,
+        "n_rows": 5,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.12,
+            "x1": 416.2,
+            "y0": 131.52,
+            "y1": 202.91
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 314.03,
+            "y0": 223.64,
+            "y1": 232.89
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Totals are reported separately in the annual statement."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:c7f8d5b90dfe18541f6f66ed07173a19c0309c927c033f2f924502b4422045c1",
+    "converter_id": "documents.pdfium_text",
+    "metadata": {
+      "author": "intomd fixtures",
+      "authors": [
+        "intomd fixtures"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "pdf_heading_source": "font_size",
+        "pdf_page_modes": "born_digital=1",
+        "pdf_pages_converted": 1,
+        "pdf_tagged": false
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/pdf",
+      "modified": null,
+      "pages": 1,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.pdf",
+      "source_type": "pdf",
+      "speakers": [],
+      "title": "Quarterly cargo throughput"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "engine": "pdfium",
+          "extra": "docs",
+          "wanted": "docling"
+        },
+        "kind": "engine_fallback",
+        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "intomd fixtures",
+    "content_hash": "sha256:f61408e10bbf6ef5c0538357ae68f98c6eaf3e4ae5783f5b172a95deb0091390",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pdfium_text",
+    "converter_version": "0.0.1",
+    "extra": {
+      "pdf_heading_source": "font_size",
+      "pdf_page_modes": "born_digital=1",
+      "pdf_pages_converted": 1,
+      "pdf_tagged": false
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "pages": 1,
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.pdf",
+    "source_hash": "sha256:eb6b156bb86d5a21304da38471a702fd7acb7d73eac915ad5f5bb2a1f9509bd7",
+    "source_type": "pdf",
+    "title": "Quarterly cargo throughput",
+    "tokens": {
+      "cl100k_base": 121,
+      "claude_approx": 127,
+      "o200k_base": 118
+    },
+    "truncated": false,
+    "warnings": [
+      "engine_fallback"
+    ],
+    "word_count": 50
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 1,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 20,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 47
+    },
+    "duration_seconds": 0.01500000013038516,
+    "engine": "documents.pdfium_text",
+    "engines_tried": [
+      "documents.pdfium_text"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1786
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.69,
+        "x1": 280.72,
+        "y0": 80.35,
+        "y1": 95.34
+      },
+      "block_id": "b0002",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 397.96,
+        "y0": 110.84,
+        "y1": 120.09
+      },
+      "block_id": "b0003",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.12,
+        "x1": 416.2,
+        "y0": 131.52,
+        "y1": 202.91
+      },
+      "block_id": "b0004",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "table"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 314.03,
+        "y0": 223.64,
+        "y1": 232.89
+      },
+      "block_id": "b0005",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0004",
+      "column_types": [
+        "text",
+        "number",
+        "number",
+        "number"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Terminal",
+        "Q1",
+        "Q2",
+        "Q3"
+      ],
+      "number": 1,
+      "offset_end": 319,
+      "offset_start": 131,
+      "page": 1,
+      "representation": "pipe",
+      "rows": 4,
+      "tokens": 81
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 413,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "engine": "pdfium",
+        "extra": "docs",
+        "wanted": "docling"
+      },
+      "kind": "engine_fallback",
+      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

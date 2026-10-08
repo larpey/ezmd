@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "Tagged PDF whose structure tree marks H1/H2 while H2 is drawn larger than H1; expects tree levels and heading_source_structure_tree."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

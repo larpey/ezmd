@@ -1,0 +1,418 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "page_number": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.17,
+            "x1": 219.41,
+            "y0": 80.35,
+            "y1": 95.34
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Berth booking form"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.48,
+            "x1": 426.9,
+            "y0": 110.71,
+            "y1": 120.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Open the attached spreadsheet to see the booking calendar for the next quarter."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.5,
+            "x1": 226.75,
+            "y0": 131.52,
+            "y1": 140.89
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Click here to validate your booking."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:7530db744bc9f4cad6cf2a60fc969499ce5e5cba530e2049c3befbcb726da8cf",
+    "converter_id": "documents.pdfium_text",
+    "metadata": {
+      "author": "intomd fixtures",
+      "authors": [
+        "intomd fixtures"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "pdf_heading_source": "font_size",
+        "pdf_page_modes": "hybrid=1",
+        "pdf_pages_converted": 1,
+        "pdf_tagged": false
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/pdf",
+      "modified": null,
+      "pages": 1,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.pdf",
+      "source_type": "pdf",
+      "speakers": [],
+      "title": "Berth booking form"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "name": "bookings.csv"
+        },
+        "kind": "attachment_skipped",
+        "message": "Embedded file 'bookings.csv' was removed during sanitization and not converted.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 4,
+        "detail": {
+          "AA": 1,
+          "JavaScript": 2,
+          "OpenAction": 1
+        },
+        "kind": "removed_script_or_macro",
+        "message": "Removed 4 scripts, actions, or media objects from the PDF.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "engine": "pdfium",
+          "extra": "docs",
+          "wanted": "docling"
+        },
+        "kind": "engine_fallback",
+        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "intomd fixtures",
+    "content_hash": "sha256:9ef030c0bc23a0025b6eefbabf18cdf12e2bf83c27ecd7524b7165c9e16a9f78",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pdfium_text",
+    "converter_version": "0.0.1",
+    "extra": {
+      "pdf_heading_source": "font_size",
+      "pdf_page_modes": "hybrid=1",
+      "pdf_pages_converted": 1,
+      "pdf_tagged": false
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "pages": 1,
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.pdf",
+    "source_hash": "sha256:e4806f92c4bc04f95899ee16ad1ed85727e290140c8ec27540cef14f1a577fc0",
+    "source_type": "pdf",
+    "title": "Berth booking form",
+    "tokens": {
+      "cl100k_base": 35,
+      "claude_approx": 38,
+      "o200k_base": 35
+    },
+    "truncated": false,
+    "warnings": [
+      "attachment_skipped",
+      "removed_script_or_macro",
+      "engine_fallback"
+    ],
+    "word_count": 23
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 1,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 22
+    },
+    "duration_seconds": 0.031999999890103936,
+    "engine": "documents.pdfium_text",
+    "engines_tried": [
+      "documents.pdfium_text"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2524
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.17,
+        "x1": 219.41,
+        "y0": 80.35,
+        "y1": 95.34
+      },
+      "block_id": "b0002",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.48,
+        "x1": 426.9,
+        "y0": 110.71,
+        "y1": 120.09
+      },
+      "block_id": "b0003",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.5,
+        "x1": 226.75,
+        "y0": 131.52,
+        "y1": 140.89
+      },
+      "block_id": "b0004",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 334,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "name": "bookings.csv"
+      },
+      "kind": "attachment_skipped",
+      "message": "Embedded file 'bookings.csv' was removed during sanitization and not converted.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 4,
+      "detail": {
+        "AA": 1,
+        "JavaScript": 2,
+        "OpenAction": 1
+      },
+      "kind": "removed_script_or_macro",
+      "message": "Removed 4 scripts, actions, or media objects from the PDF.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "engine": "pdfium",
+        "extra": "docs",
+        "wanted": "docling"
+      },
+      "kind": "engine_fallback",
+      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

@@ -1,0 +1,1786 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 12,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "page_number": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.75,
+            "x1": 385.08,
+            "y0": 74.82,
+            "y1": 96.7
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Harbor Lane Annual Report"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.26,
+            "x1": 160.93,
+            "y0": 120.35,
+            "y1": 132.18
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "1. Overview"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 505.16,
+            "y0": 148.84,
+            "y1": 196.98
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The harbor authority reviewed every berth on the east quay during the spring survey. Inspectors measured the fender wear, logged the bollard loads, and compared the readings with the previous season. Most berths were within tolerance, and the two that were not were scheduled for repair before the summer peak."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 476.29,
+            "y0": 208.52,
+            "y1": 230.89
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This report collects the information the board asked for in January. It covers berth condition, cargo volumes, staffing, and the capital plan for the next two years."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.03,
+            "x1": 132.22,
+            "y0": 240.14,
+            "y1": 252.15
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "1.1 Scope"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 295.67,
+            "y0": 262.32,
+            "y1": 271.69
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The survey covered the following areas of the port:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "East quay berths one to six"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "The container yard and its lighting"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Rail sidings and the gate complex"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 84.53,
+            "x1": 239.72,
+            "y0": 283.24,
+            "y1": 320.49
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.79,
+            "x1": 381.85,
+            "y0": 333.24,
+            "y1": 342.49
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Each area was inspected twice, once at low tide and once at high tide."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "page_number": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.4,
+            "x1": 206.93,
+            "y0": 80.5,
+            "y1": 92.18
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "2. Berth condition"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.66,
+            "x1": 461.36,
+            "y0": 108.72,
+            "y1": 131.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Fender wear was the most common finding. The inspection team recorded information about each fender on a tablet and uploaded it to the asset register the same day."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 505.16,
+            "y0": 142.84,
+            "y1": 190.98
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The harbor authority reviewed every berth on the east quay during the spring survey. Inspectors measured the fender wear, logged the bollard loads, and compared the readings with the previous season. Most berths were within tolerance, and the two that were not were scheduled for repair before the summer peak."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0014",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.32,
+            "x1": 208.45,
+            "y0": 200.45,
+            "y1": 212.35
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "2.1 Repairs scheduled"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Replace fenders on berth three"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Re-anchor bollard 14"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Resurface the berth five apron"
+              }
+            ]
+          }
+        ],
+        "ordered": true,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 84.42,
+            "x1": 232.56,
+            "y0": 222.52,
+            "y1": 259.78
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.79,
+            "x1": 439.1,
+            "y0": 272.52,
+            "y1": 281.78
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Repairs are funded from the maintenance reserve and do not need board approval."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0017",
+        "page_number": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0018",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.61,
+            "x1": 204.61,
+            "y0": 80.35,
+            "y1": 95.34
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "3. Cargo volumes"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0019",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.03,
+            "x1": 461.23,
+            "y0": 108.72,
+            "y1": 129.11
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Volumes rose in every quarter except the third, when the rail sidings were closed for two weeks."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0020",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.82,
+            "x1": 275.67,
+            "y0": 142.64,
+            "y1": 151.78
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://example.org/harbor-lane/volumes",
+            "math": null,
+            "styles": [],
+            "text": "Further detail is published on the port website."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0021",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.49,
+            "x1": 141.24,
+            "y0": 166.34,
+            "y1": 178.52
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "3.1 Staffing"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0022",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.45,
+            "x1": 495.68,
+            "y0": 188.52,
+            "y1": 210.78
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Staffing stayed flat at 212 full-time employees. Seasonal hiring added 31 people for the summer peak."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0023",
+        "page_number": 4,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0024",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.3,
+            "x1": 179.39,
+            "y0": 80.35,
+            "y1": 95.14
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "4. Capital plan"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0025",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 412.99,
+            "y0": 108.72,
+            "y1": 118.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The capital plan funds a new gate complex in 2026 and quay lighting in 2027."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0026",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 450.2,
+            "y0": 129.64,
+            "y1": 138.89
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The board will review the plan again in the autumn once the tender results are known."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:53a2382d646462240975894dd519405a0419a73e2e288d0c87dc33d5f8ce7e8a",
+    "converter_id": "documents.pdfium_text",
+    "metadata": {
+      "author": "intomd fixtures",
+      "authors": [
+        "intomd fixtures"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "pdf_heading_source": "font_size",
+        "pdf_page_modes": "born_digital=3,hybrid=1",
+        "pdf_pages_converted": 4,
+        "pdf_running_headers": 12,
+        "pdf_tagged": false
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/pdf",
+      "modified": null,
+      "pages": 4,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.pdf",
+      "source_type": "pdf",
+      "speakers": [],
+      "title": "Harbor Lane Annual Report"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "engine": "pdfium",
+          "extra": "docs",
+          "wanted": "docling"
+        },
+        "kind": "engine_fallback",
+        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "page": null,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": 12,
+        "detail": {
+          "examples": "Confidential | Harbor Lane Annual Report 2025 | Page 1 of 4 | Page 2 of 4 | Page 3 of 4"
+        },
+        "kind": "removed_running_header_footer",
+        "message": "Removed 12 running header/footer lines repeated across pages.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "intomd fixtures",
+    "content_hash": "sha256:1416b0adade01223fdd1ad6b583a689a07c0ec1231cb22b2ed762bfa4631aca1",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pdfium_text",
+    "converter_version": "0.0.1",
+    "extra": {
+      "pdf_heading_source": "font_size",
+      "pdf_page_modes": "born_digital=3,hybrid=1",
+      "pdf_pages_converted": 4,
+      "pdf_running_headers": 12,
+      "pdf_tagged": false
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "pages": 4,
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.pdf",
+    "source_hash": "sha256:4e843c4ebec8c9b371d72ea162fcca1cbae7bac0053d8e89734ca00c061a1023",
+    "source_type": "pdf",
+    "title": "Harbor Lane Annual Report",
+    "tokens": {
+      "cl100k_base": 631,
+      "claude_approx": 666,
+      "o200k_base": 617
+    },
+    "truncated": false,
+    "warnings": [
+      "engine_fallback",
+      "removed_running_header_footer"
+    ],
+    "word_count": 360
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://example.org/harbor-lane/volumes",
+      "original_href": "https://example.org/harbor-lane/volumes",
+      "text": "Further detail is published on the port website."
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 8,
+      "images": 0,
+      "links": 1,
+      "list_items": 6,
+      "lists": 2,
+      "page_breaks": 4,
+      "paragraphs": 12,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 316
+    },
+    "duration_seconds": 0.03100000019185245,
+    "engine": "documents.pdfium_text",
+    "engines_tried": [
+      "documents.pdfium_text"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 4193
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.75,
+        "x1": 385.08,
+        "y0": 74.82,
+        "y1": 96.7
+      },
+      "block_id": "b0002",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.26,
+        "x1": 160.93,
+        "y0": 120.35,
+        "y1": 132.18
+      },
+      "block_id": "b0003",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 505.16,
+        "y0": 148.84,
+        "y1": 196.98
+      },
+      "block_id": "b0004",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 476.29,
+        "y0": 208.52,
+        "y1": 230.89
+      },
+      "block_id": "b0005",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.03,
+        "x1": 132.22,
+        "y0": 240.14,
+        "y1": 252.15
+      },
+      "block_id": "b0006",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 295.67,
+        "y0": 262.32,
+        "y1": 271.69
+      },
+      "block_id": "b0007",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 84.53,
+        "x1": 239.72,
+        "y0": 283.24,
+        "y1": 320.49
+      },
+      "block_id": "b0008",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "list"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.79,
+        "x1": 381.85,
+        "y0": 333.24,
+        "y1": 342.49
+      },
+      "block_id": "b0009",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0010",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.4,
+        "x1": 206.93,
+        "y0": 80.5,
+        "y1": 92.18
+      },
+      "block_id": "b0011",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.66,
+        "x1": 461.36,
+        "y0": 108.72,
+        "y1": 131.09
+      },
+      "block_id": "b0012",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 505.16,
+        "y0": 142.84,
+        "y1": 190.98
+      },
+      "block_id": "b0013",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.32,
+        "x1": 208.45,
+        "y0": 200.45,
+        "y1": 212.35
+      },
+      "block_id": "b0014",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 84.42,
+        "x1": 232.56,
+        "y0": 222.52,
+        "y1": 259.78
+      },
+      "block_id": "b0015",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "list"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.79,
+        "x1": 439.1,
+        "y0": 272.52,
+        "y1": 281.78
+      },
+      "block_id": "b0016",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0017",
+      "source": "input.pdf",
+      "source_page": 3,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.61,
+        "x1": 204.61,
+        "y0": 80.35,
+        "y1": 95.34
+      },
+      "block_id": "b0018",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 3,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.03,
+        "x1": 461.23,
+        "y0": 108.72,
+        "y1": 129.11
+      },
+      "block_id": "b0019",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.82,
+        "x1": 275.67,
+        "y0": 142.64,
+        "y1": 151.78
+      },
+      "block_id": "b0020",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.49,
+        "x1": 141.24,
+        "y0": 166.34,
+        "y1": 178.52
+      },
+      "block_id": "b0021",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 3,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.45,
+        "x1": 495.68,
+        "y0": 188.52,
+        "y1": 210.78
+      },
+      "block_id": "b0022",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0023",
+      "source": "input.pdf",
+      "source_page": 4,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.3,
+        "x1": 179.39,
+        "y0": 80.35,
+        "y1": 95.14
+      },
+      "block_id": "b0024",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 4,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 412.99,
+        "y0": 108.72,
+        "y1": 118.09
+      },
+      "block_id": "b0025",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 4,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 450.2,
+        "y0": 129.64,
+        "y1": 138.89
+      },
+      "block_id": "b0026",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 4,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 863,
+      "offset_start": 360,
+      "original_level": 2,
+      "original_title": "1. Overview",
+      "time_end": null,
+      "time_start": null,
+      "title": "Overview"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-1-1",
+      "level": 3,
+      "number": "1.1",
+      "offset_end": 1136,
+      "offset_start": 863,
+      "original_level": 3,
+      "original_title": "1.1 Scope",
+      "time_end": null,
+      "time_start": null,
+      "title": "Scope"
+    },
+    {
+      "block_id": "b0011",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1644,
+      "offset_start": 1136,
+      "original_level": 2,
+      "original_title": "2. Berth condition",
+      "time_end": null,
+      "time_start": null,
+      "title": "Berth condition"
+    },
+    {
+      "block_id": "b0014",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 1873,
+      "offset_start": 1644,
+      "original_level": 3,
+      "original_title": "2.1 Repairs scheduled",
+      "time_end": null,
+      "time_start": null,
+      "title": "Repairs scheduled"
+    },
+    {
+      "block_id": "b0018",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 2093,
+      "offset_start": 1873,
+      "original_level": 2,
+      "original_title": "3. Cargo volumes",
+      "time_end": null,
+      "time_start": null,
+      "title": "Cargo volumes"
+    },
+    {
+      "block_id": "b0021",
+      "id": "sec-3-1",
+      "level": 3,
+      "number": "3.1",
+      "offset_end": 2242,
+      "offset_start": 2093,
+      "original_level": 3,
+      "original_title": "3.1 Staffing",
+      "time_end": null,
+      "time_start": null,
+      "title": "Staffing"
+    },
+    {
+      "block_id": "b0024",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 2434,
+      "offset_start": 2242,
+      "original_level": 2,
+      "original_title": "4. Capital plan",
+      "time_end": null,
+      "time_start": null,
+      "title": "Capital plan"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 927,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "engine": "pdfium",
+        "extra": "docs",
+        "wanted": "docling"
+      },
+      "kind": "engine_fallback",
+      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 12,
+      "detail": {
+        "examples": "Confidential | Harbor Lane Annual Report 2025 | Page 1 of 4 | Page 2 of 4 | Page 3 of 4"
+      },
+      "kind": "removed_running_header_footer",
+      "message": "Removed 12 running header/footer lines repeated across pages.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

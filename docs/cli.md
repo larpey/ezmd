@@ -29,23 +29,23 @@ Commands:
 ## intomd convert
 
 ```text
-Usage: intomd convert [OPTIONS] {source}
+Usage: intomd convert [OPTIONS] SOURCE
 
   Convert one input to Markdown (stdout, or a file with --out).
 
 Arguments:
-  source  File path, http(s) URL, or '-' for stdin.  [required]
+  SOURCE  File path, http(s) URL, or '-' for stdin.  [required]
 
 Options:
-  -p, --profile <str>       full | compact | rag | agent [default: auto]
-  -o, --out <path>          Output file, or directory for <title>.md.
-  -f, --format <str>        md | txt | json [default: md]
+  -p, --profile TEXT        full | compact | rag | agent [default: auto]
+  -o, --out PATH            Output file, or directory for <title>.md.
+  -f, --format TEXT         md | txt | json [default: md]
   --sidecar / --no-sidecar  Write <name>.intomd.json beside --out.
-  --engine <str>            Engine as family=name, e.g. pdf=docling.
-  --converter <str>         Force a converter id.
-  --lang <str>              Language hint(s), e.g. en or en,de.
-  --remote <str>            Convert on this intomd instance.
-  --opt <str>               key=value converter or profile option.
+  --engine TEXT             Engine as family=name, e.g. pdf=docling.
+  --converter TEXT          Force a converter id.
+  --lang TEXT               Language hint(s), e.g. en or en,de.
+  --remote TEXT             Convert on this intomd instance.
+  --opt TEXT                key=value converter or profile option.
   --json                    One JSON object on stdout.
   -q, --quiet               No progress or warnings on stderr.
   -h, --help                Show this message and exit.
@@ -54,26 +54,26 @@ Options:
 ## intomd batch
 
 ```text
-Usage: intomd batch [OPTIONS] {inputs}
+Usage: intomd batch [OPTIONS] INPUTS
 
   Convert many files; unchanged inputs are skipped on re-runs.
 
 Arguments:
-  inputs  Directory or glob (quote globs).  [required]
+  INPUTS  Directory or glob (quote globs).  [required]
 
 Options:
-  -o, --out <path>           Output directory (mirrors the input tree).
-  -r, --recursive            Descend into subdirectories.
-  -w, --workers <int range>  Worker processes.  [x>=1]
-  -p, --profile <str>        full | compact | rag | agent
-  -f, --format <str>         md | txt | json
-  --continue-on-error        Keep going after a failure.
-  --manifest <path>          [default: <out>/manifest.jsonl]
-  --sidecar / --no-sidecar   Write sidecars.
-  --opt <str>                key=value converter or profile option.
-  --json                     Summary JSON on stdout.
-  -q, --quiet                No progress or table on stderr.
-  -h, --help                 Show this message and exit.
+  -o, --out PATH               Output directory (mirrors the input tree).
+  -r, --recursive              Descend into subdirectories.
+  -w, --workers INTEGER RANGE  Worker processes.  [x>=1]
+  -p, --profile TEXT           full | compact | rag | agent
+  -f, --format TEXT            md | txt | json
+  --continue-on-error          Keep going after a failure.
+  --manifest PATH              [default: <out>/manifest.jsonl]
+  --sidecar / --no-sidecar     Write sidecars.
+  --opt TEXT                   key=value converter or profile option.
+  --json                       Summary JSON on stdout.
+  -q, --quiet                  No progress or table on stderr.
+  -h, --help                   Show this message and exit.
 ```
 
 ## intomd doctor
@@ -97,20 +97,20 @@ Usage: intomd capabilities [OPTIONS]
   List converters (loaded or unavailable, with the reason).
 
 Options:
-  --remote <str>  Ask this intomd instance instead.
-  --json          As JSON.
-  -h, --help      Show this message and exit.
+  --remote TEXT  Ask this intomd instance instead.
+  --json         As JSON.
+  -h, --help     Show this message and exit.
 ```
 
 ## intomd detect
 
 ```text
-Usage: intomd detect [OPTIONS] {path}
+Usage: intomd detect [OPTIONS] PATH
 
   Show the detected content type of a file (always JSON).
 
 Arguments:
-  path  File to inspect.  [required]
+  PATH  File to inspect.  [required]
 
 Options:
   -h, --help  Show this message and exit.
@@ -136,8 +136,8 @@ Usage: intomd serve [OPTIONS]
   Run the HTTP API and web UI in-process (inline queue without Redis).
 
 Options:
-  --host <str>             Bind address.  [default: 127.0.0.1]
-  --port <int>             Port.  [default: 8080]
+  --host TEXT              Bind address.  [default: 127.0.0.1]
+  --port INTEGER           Port.  [default: 8080]
   --i-know-this-is-public  Allow binding non-loopback.
   -h, --help               Show this message and exit.
 ```

@@ -1,0 +1,447 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "page_number": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.09,
+            "x1": 253.47,
+            "y0": 80.54,
+            "y1": 95.34
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Inspection photographs"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 452.47,
+            "y0": 110.72,
+            "y1": 120.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The next page is a scanned photograph of the berth three fenders. It has no text layer."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "page_number": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {
+          "pdf_stub": "ocr_unavailable"
+        },
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 0.0,
+            "x1": 612.0,
+            "y0": 0.0,
+            "y1": 792.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Page 2 has no text layer; OCR not installed"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:569a9667913c6b395efce2b918f766fef72f008d17b1a0f560e170bfb1170dbd",
+    "converter_id": "documents.pdfium_text",
+    "metadata": {
+      "author": "intomd fixtures",
+      "authors": [
+        "intomd fixtures"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "pdf_heading_source": "font_size",
+        "pdf_page_modes": "hybrid=1,scanned=1",
+        "pdf_pages_converted": 2,
+        "pdf_pages_without_text": "2",
+        "pdf_tagged": false
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/pdf",
+      "modified": null,
+      "pages": 2,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.pdf",
+      "source_type": "pdf",
+      "speakers": [],
+      "title": "Inspection photographs"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "engine": "pdfium",
+          "extra": "docs",
+          "wanted": "docling"
+        },
+        "kind": "engine_fallback",
+        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "page": null,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "pages": "2"
+        },
+        "kind": "pages_without_text",
+        "message": "1 page(s) have no text layer (OCR is not installed): 2.",
+        "page": 2,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "pages": "2"
+        },
+        "kind": "ocr_unavailable",
+        "message": "OCR is not installed, so 1 page(s) without text were not read: 2.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "intomd fixtures",
+    "content_hash": "sha256:9ec1e121a4a55c0e83968db2bbab0b23db5faefdd23f6c7c1075daac44512d02",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pdfium_text",
+    "converter_version": "0.0.1",
+    "extra": {
+      "pdf_heading_source": "font_size",
+      "pdf_page_modes": "hybrid=1,scanned=1",
+      "pdf_pages_converted": 2,
+      "pdf_pages_without_text": "2",
+      "pdf_tagged": false
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "pages": 2,
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.pdf",
+    "source_hash": "sha256:a183d32b7cff380baeebc849c5a195cf42aad2166ab5e37aba7222fa23faebd6",
+    "source_type": "pdf",
+    "title": "Inspection photographs",
+    "tokens": {
+      "cl100k_base": 49,
+      "claude_approx": 53,
+      "o200k_base": 49
+    },
+    "truncated": false,
+    "warnings": [
+      "engine_fallback",
+      "pages_without_text",
+      "ocr_unavailable"
+    ],
+    "word_count": 29
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 2,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 28
+    },
+    "duration_seconds": 0.015999999828636646,
+    "engine": "documents.pdfium_text",
+    "engines_tried": [
+      "documents.pdfium_text"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2348
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.09,
+        "x1": 253.47,
+        "y0": 80.54,
+        "y1": 95.34
+      },
+      "block_id": "b0002",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 452.47,
+        "y0": 110.72,
+        "y1": 120.09
+      },
+      "block_id": "b0003",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 0.0,
+        "x1": 612.0,
+        "y0": 0.0,
+        "y1": 792.0
+      },
+      "block_id": "b0005",
+      "source": "input.pdf",
+      "source_page": 2,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 360,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "engine": "pdfium",
+        "extra": "docs",
+        "wanted": "docling"
+      },
+      "kind": "engine_fallback",
+      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "pages": "2"
+      },
+      "kind": "pages_without_text",
+      "message": "1 page(s) have no text layer (OCR is not installed): 2.",
+      "page": 2,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "pages": "2"
+      },
+      "kind": "ocr_unavailable",
+      "message": "OCR is not installed, so 1 page(s) without text were not read: 2.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

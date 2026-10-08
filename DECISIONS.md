@@ -285,3 +285,9 @@ Decision (additive IR, schema stays "1.1"):
 - Frontmatter `source_type` enum amended with `archive` (as with `text` and `markdown`, D-0017).
 - Token-budget pagination counts page 1's head blocks; Contents is dropped first when they alone exceed the budget.
 Details: `docs/decisions/P1-core-renderer.md`.
+
+## D-0027: PDF family (P1-T01 PDF part) merged
+Date: 2026-10-08
+Task: P1-T01
+Status: accepted
+Decision: Default engine `documents.pdfium_text` (pypdfium2, BSD-3/Apache-2.0: character boxes, font sizes, marked content) with headings from the structure tree, then the outline, then font size; running header/footer removal; two-column reading order; simple tables; links; forms. `documents.docling_pdf` in the `docs` extra (docling-slim, MIT) and Unavailable otherwise; it never downloads models without allow_network. pikepdf (MPL-2.0) sanitizes first (JS/actions/launch/embedded files/XFA stripped and reported; encrypted-with-user-password refused as `encrypted_no_password`, the more specific Part 2 code, instead of Part 1's `encrypted_content`; page cap truncation). Image-only pages report `pages_without_text` and `ocr_unavailable` until the Phase 2 OCR pipeline exists. The `docs` extra caps typer below 0.27 across the universal lock; accepted (docs/cli.md regenerated). pypdfium2's license metadata is free text, recorded as an override. 7 fixtures Skeptic-accepted. Details: `docs/decisions/P1-T01-pdf.md`.

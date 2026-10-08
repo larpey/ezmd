@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "OpenAction JavaScript, page /AA Launch, a JavaScript link action, a JavaScript name tree, and an embedded CSV; all stripped by sanitization with warnings."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

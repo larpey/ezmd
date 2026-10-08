@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "4 pages: H1-H3 by font size, bullet and numbered lists, running header/footer with page numbers, a hyphenated line break, a URI link annotation."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

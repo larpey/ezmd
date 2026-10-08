@@ -1,0 +1,591 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "page_number": 1,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "page_break"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.02,
+            "x1": 215.0,
+            "y0": 81.81,
+            "y1": 94.93
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Port safety handbook"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.23,
+            "x1": 337.93,
+            "y0": 108.84,
+            "y1": 118.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This handbook applies to every person working on the quay."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.46,
+            "x1": 364.06,
+            "y0": 131.68,
+            "y1": 149.92
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Personal protective equipment"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.8,
+            "x1": 329.55,
+            "y0": 164.84,
+            "y1": 174.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Hard hats and high-visibility vests are required at all times."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 73.48,
+            "x1": 175.14,
+            "y0": 187.68,
+            "y1": 206.18
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Night work"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": {
+            "page_height": 792.0,
+            "page_width": 612.0,
+            "x0": 72.76,
+            "x1": 327.91,
+            "y0": 220.72,
+            "y1": 230.09
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "pdfium",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": null,
+          "source": "input.pdf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Night shifts need a second person within sight at all times."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:c1db24de482c387046935f28ff9fa4bfdf9221a405e9a17f0920c4b722e674af",
+    "converter_id": "documents.pdfium_text",
+    "metadata": {
+      "author": "intomd fixtures",
+      "authors": [
+        "intomd fixtures"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "pdf_heading_source": "structure_tree",
+        "pdf_page_modes": "born_digital=1",
+        "pdf_pages_converted": 1,
+        "pdf_tagged": true
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en-US",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "application/pdf",
+      "modified": null,
+      "pages": 1,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.pdf",
+      "source_type": "pdf",
+      "speakers": [],
+      "title": "Port safety handbook"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "engine": "pdfium",
+          "extra": "docs",
+          "wanted": "docling"
+        },
+        "kind": "engine_fallback",
+        "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+        "page": null,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": 3,
+        "detail": {},
+        "kind": "heading_source_structure_tree",
+        "message": "Heading levels come from the PDF structure tree; it disagreed with the visual font sizes on 3 of 3 headings.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "intomd fixtures",
+    "content_hash": "sha256:9a86b7e36ade49008aa6a8ca7c8f540cc11f219c60e6337f992e9935bad9160d",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pdfium_text",
+    "converter_version": "0.0.1",
+    "extra": {
+      "pdf_heading_source": "structure_tree",
+      "pdf_page_modes": "born_digital=1",
+      "pdf_pages_converted": 1,
+      "pdf_tagged": true
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en-US",
+    "pages": 1,
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.pdf",
+    "source_hash": "sha256:5d8051365a2c2cbb6cc8d4bea860573d8a0952e486a9ea700922382a2393a516",
+    "source_type": "pdf",
+    "title": "Port safety handbook",
+    "tokens": {
+      "cl100k_base": 73,
+      "claude_approx": 79,
+      "o200k_base": 73
+    },
+    "truncated": false,
+    "warnings": [
+      "engine_fallback",
+      "heading_source_structure_tree"
+    ],
+    "word_count": 44
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 3,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 1,
+      "paragraphs": 3,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 39
+    },
+    "duration_seconds": 0.01600000006146729,
+    "engine": "documents.pdfium_text",
+    "engines_tried": [
+      "documents.pdfium_text"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2678
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.02,
+        "x1": 215.0,
+        "y0": 81.81,
+        "y1": 94.93
+      },
+      "block_id": "b0002",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 337.93,
+        "y0": 108.84,
+        "y1": 118.09
+      },
+      "block_id": "b0003",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.46,
+        "x1": 364.06,
+        "y0": 131.68,
+        "y1": 149.92
+      },
+      "block_id": "b0004",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.8,
+        "x1": 329.55,
+        "y0": 164.84,
+        "y1": 174.09
+      },
+      "block_id": "b0005",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 73.48,
+        "x1": 175.14,
+        "y0": 187.68,
+        "y1": 206.18
+      },
+      "block_id": "b0006",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "heading"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.76,
+        "x1": 327.91,
+        "y0": 220.72,
+        "y1": 230.09
+      },
+      "block_id": "b0007",
+      "engine": "pdfium",
+      "source": "input.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0004",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 217,
+      "offset_start": 108,
+      "original_level": 2,
+      "original_title": "Personal protective equipment",
+      "time_end": null,
+      "time_start": null,
+      "title": "Personal protective equipment"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 304,
+      "offset_start": 217,
+      "original_level": 2,
+      "original_title": "Night work",
+      "time_end": null,
+      "time_start": null,
+      "title": "Night work"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 376,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "engine": "pdfium",
+        "extra": "docs",
+        "wanted": "docling"
+      },
+      "kind": "engine_fallback",
+      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 3,
+      "detail": {},
+      "kind": "heading_source_structure_tree",
+      "message": "Heading levels come from the PDF structure tree; it disagreed with the visual font sizes on 3 of 3 headings.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

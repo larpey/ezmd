@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "AES-256 (R6) with user password 'fixture'; no password supplied, so the stub and encrypted_no_password error are expected."
+expected_errors = ["encrypted_no_password"]
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

@@ -14,3 +14,9 @@ license = "BSD-3-Clause"
 version = "0.4.6"
 url = "https://github.com/tartley/colorama/blob/0.4.6/LICENSE.txt"
 note = "Metadata only has the ambiguous 'BSD License' classifier; LICENSE.txt is the 3-clause text (non-endorsement clause present). Windows-only dependency of click/rich."
+
+[packages.pypdfium2]
+license = "BSD-3-Clause OR Apache-2.0"
+version = "5.14.0"
+url = "https://github.com/pypdfium2-team/pypdfium2/tree/5.14.0/LICENSES"
+note = "Metadata License field is free text ('BSD-3-Clause, Apache-2.0, dependency licenses'). The wheel ships LICENSES/BSD-3-Clause.txt and LICENSES/Apache-2.0.txt (dual license for pypdfium2 code) plus BUILD_LICENSES for the bundled PDFium (BSD-3-Clause) and its permissive third-party libraries (freetype FTL, libjpeg-turbo IJG/BSD, lcms MIT, openjpeg BSD-2, libpng, zlib, ICU, abseil Apache-2.0)."

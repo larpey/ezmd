@@ -1,0 +1,10 @@
+converter = "documents.pdfium_text"
+max_seconds = 30
+hand_edited = false
+notes = "Full-width title, two prose columns interleaved line by line in the content stream, full-width closing line; expects column order restored and reading_order_uncertain."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/pdf/_generate.py"

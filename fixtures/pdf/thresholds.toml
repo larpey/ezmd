@@ -1,0 +1,6 @@
+# PDF family thresholds (docs/spec/part2.md 1g). The harness scores one overall number against the golden;
+# the spec's per-dimension born-digital minimums (text 0.97, headings 0.90, tables 0.92) are checked by the
+# golden review and by tests/unit assertions, so the overall threshold is set at 0.95 to catch regressions.
+[converters]
+"documents.pdfium_text" = 0.95
+"documents.docling_pdf" = 0.95
