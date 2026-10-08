@@ -172,6 +172,9 @@ jobs:
           docker compose -f deploy/docker-compose.yml config -q
           docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml --profile media config -q
       - name: compose up + smoke
+        env:
+          # GitHub-hosted runners have 2 CPUs; compose defaults assume a larger box.
+          INTOMD_WORKER_DEFAULT_CPUS: "1.5"
         run: bash deploy/smoke.sh --down
       - name: compose logs
         if: failure()

@@ -8,7 +8,7 @@ COMPOSE := docker compose -f deploy/docker-compose.yml
 TMPDIR ?= /tmp
 HAS_PNPM := $(shell test -f pnpm-lock.yaml && command -v pnpm >/dev/null 2>&1 && echo yes)
 
-.PHONY: help gates lint fmt typecheck test golden licenses audit up down smoke images
+.PHONY: help gates lint fmt typecheck test golden licenses audit up down smoke images linux-gates
 
 help:  ## list targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -69,3 +69,6 @@ down:  ## stop the compose stack (keeps volumes)
 
 smoke:  ## bring the stack up and run the end-to-end smoke test
 	bash deploy/smoke.sh
+
+linux-gates:  ## run the Python gates in a throwaway Linux container (for Windows/macOS hosts)
+	bash tools/linux_gates.sh

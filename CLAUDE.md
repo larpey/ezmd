@@ -33,7 +33,7 @@ The spec was written under the codename "anymd"; the project is named intomd (DE
 - Types: `uv run mypy --strict packages/core/src && uv run mypy apps/api/src packages/converters/src packages/mcp/src && pnpm -r typecheck`
 - License check: `uv run python tools/license_check.py && pnpm licenses list --json --prod | node tools/license_check.mjs`
 - Audit: `uv run pip-audit && pnpm audit --audit-level=high`
-- All gates: `make gates`
+- All gates: `make gates` (on Windows/macOS, `make linux-gates` or `bash tools/linux_gates.sh` runs the Python gates in a Linux container)
 - Run API locally: `uv run uvicorn intomd_api.main:app --reload --port 8000`
 - Run worker locally: `uv run rq worker default --url redis://localhost:6379`
 - Run web dev server: `pnpm --filter @intomd/web dev`
