@@ -3,13 +3,13 @@
 Last updated: 2026-10-08 by agent
 Current phase: 1
 Current task: P1 wave 2 (email, EDGAR/social, SDK/UI, deploy, CI/release, shadow-run, docs, fixture corpus)
-Overall: 25 / 85 tasks done
+Overall: 26 / 85 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
 | 0 | Foundation | done | 13/13 | v0.0.1 |
-| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 12/19 | |
+| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 13/19 | |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
 | 4 | Public instance launch | pending | 0/12 | |
@@ -46,7 +46,7 @@ Overall: 25 / 85 tasks done
 | P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | pending | |  |
 | P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | done | f891980 | CSV/JSON/YAML/TOML/XML/SQLite/Parquet; 14 fixtures exact; D-0029 |
 | P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | done | d8bab1e | notebooks, archives with bomb limits (markdown/plain from P0); D-0031 |
-| P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | pending | |  |
+| P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | done | fbaaf4c | EDGAR on the endpoints directly (edgartools pulls GPL Unidecode); social stubs behind a flag; D-0033 |
 | P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | done | f437312 | intomd.convert/convert_async/convert_many/Result/Options; light import |
 | P1-T09 | CLI (4.2): `convert`, `batch`, `serve`, `doctor`, `capabilities`, `version`; config.toml; exit codes; completions | done | 47a72b2 | convert/batch/doctor/config/remote/completions; D-0022 |
 | P1-T10 | API (Part 3): routes, SSE, SQLite, RQ and inline queue, blobs FS, reaper, keys.json, rate limiting, admin, metrics, OpenAPI annotations | done | 47473ec | keys.json, intomd-admin, /metrics, /v1/warnings, OpenAPI (Spectral clean); D-0023 |
@@ -143,4 +143,9 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 |---|---|---|---|
 
 ## Known limitations (running list)
-- (none yet)
+- EDGAR: no XBRL statement tables yet; accession-only lookups assume the filer prefix is the CIK; CLI `--form`/`--year` deferred (library treats a bare ticker as a path).
+- shadow-run: `--timeout` relies on converters checking their deadline.
+- Web UI: no upload path for files over 8 MB yet; capabilities lack instance name, sponsor, docx export flag, and queue position.
+
+## Deferred core change requests
+- `Provenance.timestamp` (comms keeps it in `Heading.attrs`), compact profile dropping `reply_history`/`reply_header`/`signature` roles, a `signature` paragraph role (from P1-T04).
