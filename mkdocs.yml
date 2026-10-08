@@ -53,6 +53,7 @@ nav:
       - Security: security.md
   - API:
       - REST API, jobs, and SSE: api.md
+      - MCP server: mcp.md
       - Errors: errors.md
   - Converters:
       - Converter matrix: converters/README.md

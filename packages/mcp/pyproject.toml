@@ -1,10 +1,21 @@
 [project]
 name = "intomd-mcp"
 version = "0.0.1"
-description = "MCP server for intomd (Phase 1)."
+description = "MCP server for intomd: convert files, URLs and text to LLM-ready Markdown from any MCP client."
+readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-dependencies = ["intomd"]
+authors = [{ name = "intomd contributors" }]
+dependencies = [
+    "intomd",
+    "mcp>=2.2,<3",
+    "httpx>=0.28",
+    "starlette>=0.48",
+    "uvicorn>=0.31",
+]
+
+[project.scripts]
+intomd-mcp = "intomd_mcp.cli:main"
 
 [build-system]
 requires = ["hatchling>=1.26"]

@@ -14,9 +14,9 @@ node_modules/
 apps/web/dist/
 site/
 .env
-data/
-*.sqlite
-*.db
+/data/
+/*.sqlite
+/*.db
 .DS_Store
 playwright-report/
 test-results/

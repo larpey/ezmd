@@ -249,3 +249,12 @@ Date: 2026-10-08
 Task: P1-T10
 Status: accepted
 Decision: REST options are derived from `intomd.library.Options` (client-settable subset plus hostile-input caps; server-controlled fields listed with reasons; a drift test fails on any unclassified field). API keys also load from `INTOMD_KEYS_FILE` (keys.json; HMAC-SHA256 with the pepper; per-key limits, IP/UA restrictions, expiry; hot reload keeps the last good file). Host-only `intomd-admin` CLI (keys, jobs, reap); no admin HTTP endpoints (part1 7.4). `/metrics` exists only when `INTOMD_METRICS_TOKEN` (16+ chars) is set and requires it as a bearer token; counters live in Redis so API and workers share them. `GET /v1/warnings` and `JobOut.warnings` added (deferred by D-0017). OpenAPI: operationId/summary/description/tag/security/error responses on every route; Spectral 6.15.0 clean; a Python lint test runs on every test run. Name `INTOMD_KEYS_FILE` (Part 4 says INTOMD_API_KEYS_FILE) kept for continuity. Details: `docs/decisions/P1-T10.md`.
+
+## D-0024: MCP server (P1-T11); MIT-0 and MIT-CMU allowed; anchored ignore rules
+Date: 2026-10-08
+Task: P1-T11
+Status: accepted
+Decision: `intomd-mcp` on the official MCP Python SDK 2.x (MIT): five Phase 1 tools, job resources, a provenance prompt; local mode over `intomd.library`, remote mode over REST; default profile `agent`, max_tokens 8000 (cap 50000); pagination wraps the renderer's opaque cursor and reconstructs the body byte for byte; HTTP transport requires a bearer token and binds loopback; file tools accept absolute paths under allowed roots only (default: the working directory; the spec's "cwd plus home" is narrowed deliberately). Details: `docs/decisions/P1-T11.md`.
+License policy: add MIT-0 (cffi, via mcp -> pyjwt[crypto] -> cryptography; strictly more permissive than MIT) and MIT-CMU (Pillow, via pikepdf; HPND-family, already allowed as HPND) to the default allowlist.
+`.gitignore`: `data/`, `*.sqlite`, `*.db` are anchored to the repo root; unanchored they silently excluded `packages/mcp/tests/data/` and the data family's fixtures. The repo hygiene test skips when `git ls-files` cannot run (worktree mounted in a container).
+Pending: mount `intomd_mcp.http.build_http_app` at `/mcp` in the API behind key auth (P1-T14/P4).

@@ -1,0 +1,47 @@
+"""Registry listing (docs/spec/part4.md 4.4.5): server.json validates against the official schema (vendored
+from modelcontextprotocol/registry, 2025-12-11) and agrees with the package metadata and README marker.
+CI additionally runs `mcp-publisher validate` in the release workflow."""
+
+from __future__ import annotations
+
+import json
+import tomllib
+from pathlib import Path
+
+import jsonschema
+
+PKG = Path(__file__).resolve().parents[1]
+
+
+def _server() -> dict[str, object]:
+    return json.loads((PKG / "server.json").read_text(encoding="utf-8"))
+
+
+def test_server_json_validates_against_registry_schema() -> None:
+    schema = json.loads((PKG / "tests" / "data" / "server.schema.json").read_text(encoding="utf-8"))
+    server = _server()
+    assert server["$schema"] == schema["$id"]
+    jsonschema.Draft7Validator.check_schema(schema)
+    errors = sorted(jsonschema.Draft7Validator(schema).iter_errors(server), key=lambda e: list(e.path))
+    assert not errors, [f"{list(e.path)}: {e.message}" for e in errors]
+
+
+def test_server_json_matches_package() -> None:
+    project = tomllib.loads((PKG / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    server = _server()
+    assert len(str(server["description"])) < 100
+    packages = server["packages"]
+    assert isinstance(packages, list) and len(packages) == 1
+    pkg = packages[0]
+    assert pkg["registryType"] == "pypi" and pkg["identifier"] == project["name"] == "intomd-mcp"
+    assert pkg["version"] == server["version"] == project["version"]
+    assert pkg["transport"] == {"type": "stdio"}
+    remotes = server["remotes"]
+    assert isinstance(remotes, list) and remotes[0]["type"] == "streamable-http"
+    assert any(h["isRequired"] and h["isSecret"] for h in remotes[0]["headers"])  # token required
+    assert project["scripts"]["intomd-mcp"] == "intomd_mcp.cli:main"
+
+
+def test_readme_carries_the_registry_marker() -> None:
+    readme = (PKG / "README.md").read_text(encoding="utf-8")
+    assert f"mcp-name: {_server()['name']}" in readme

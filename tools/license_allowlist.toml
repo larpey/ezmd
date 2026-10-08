@@ -4,7 +4,7 @@
 # SPDX ids accepted in the default dependency tree (core and all extras except nonfree)
 [allow]
 licenses = [
-  "Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC", "PSF-2.0", "Python-2.0", "CNRI-Python",
+  "Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC", "PSF-2.0", "Python-2.0", "CNRI-Python", "MIT-0", "MIT-CMU",
   "MPL-2.0", "Unlicense", "0BSD", "CC0-1.0", "Zlib", "BSL-1.0", "HPND", "LGPL-2.1-only",
   "LGPL-2.1-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later",   # dynamic linking only; see notes
 ]
