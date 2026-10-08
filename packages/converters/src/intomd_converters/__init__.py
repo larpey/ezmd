@@ -47,7 +47,8 @@ def builtin_chains() -> dict[str, list[str]]:
     for name in family_names():
         try:
             mod = importlib.import_module(f"{__name__}.{name}")
-        except Exception:
+        except Exception as e:  # already reported as an Unavailable entry by builtin_converters
+            log.debug("skipping chains of family %s: %s", name, e)
             continue
         for mime, ids in getattr(mod, "CHAINS", {}).items():
             if mime in chains:
