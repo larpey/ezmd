@@ -58,7 +58,7 @@ Overall: 32 / 85 tasks done
 | P1-T16 | Images workflow with Trivy, SBOM, cosign; release workflow (PyPI trusted publishing, npm, GHCR, GitHub release, MCP registry) | done | b034142 | digest push, Trivy, SBOM, cosign; OIDC publish gated on owner setup; D-0034 |
 | P1-T17 | Docs skeleton: README, CONTRIBUTING with council and fixture process, SECURITY, CODE_OF_CONDUCT, MkDocs site with install, self-host, API, converters matrix (generated), output spec, MCP, CLI, library pages | done | 1e38bb6 | README, CONTRIBUTING, SECURITY, CoC, strict MkDocs, generated matrix; D-0036 |
 | P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | done | 33460bc | every available engine per file, scored against the registry's choice |
-| P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | done | pending | 94 fixtures, provenance check, nightly scorecard; D-0036 |
+| P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | done | a0041e9 | 94 fixtures, provenance check, nightly scorecard; D-0036 |
 | P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `intomd models pull/list/rm/export`; license gate | pending | |  |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | pending | |  |
 | P2-T03 | Diarization: pyannote community-1 with midpoint alignment; `exclusive` mode; `DIARIZATION` setting | pending | |  |
