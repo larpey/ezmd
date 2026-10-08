@@ -1,0 +1,24 @@
+line-length = 120
+target-version = "py312"
+extend-exclude = ["docs/spec", "fixtures/**/input.*", "**/node_modules", "apps/web", "packages/sdk-ts", "apps/extension"]
+
+[lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "S", "C4", "SIM", "RUF"]
+ignore = [
+    "S101",   # assert is used for invariants and in tests
+    "S110",   # best-effort cleanup paths deliberately swallow errors; each has a comment or is trivially safe
+    "N818",   # exception names come from the spec (FetchRequired, InputTooLarge, ...)
+    "SIM105", # explicit try/except reads clearer than contextlib.suppress in hot paths
+    "RUF001", "RUF002", "RUF003",  # ambiguous unicode is intentional in text-cleaning code and tests
+]
+
+[lint.per-file-ignores]
+"**/tests/**" = ["S", "N802", "RUF012"]
+"tests/**" = ["S"]
+"packages/core/src/intomd/warnings/codes.py" = ["S105", "E501"]
+
+[lint.isort]
+known-first-party = ["intomd", "intomd_converters", "intomd_api", "intomd_mcp", "intomd_fetch_node"]
+
+[lint.flake8-bandit]
+check-typed-exception = true

@@ -1,0 +1,7 @@
+* text=auto eol=lf
+fixtures/** -text
+*.png binary
+*.jpg binary
+*.pdf binary
+*.mp3 binary
+*.zip binary

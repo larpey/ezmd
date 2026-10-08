@@ -1,0 +1,49 @@
+[project]
+name = "intomd-workspace"
+version = "0.0.0"
+description = "intomd monorepo workspace root (not published)"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node"]
+
+[tool.uv.sources]
+intomd = { workspace = true }
+intomd-converters = { workspace = true }
+intomd-api = { workspace = true }
+intomd-mcp = { workspace = true }
+intomd-fetch-node = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "intomd",
+    "intomd-converters",
+    "intomd-api",
+    "intomd-mcp",
+    "intomd-fetch-node",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "pytest-asyncio>=0.25",
+    "hypothesis>=6.120",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "types-pyyaml",
+    "pip-audit>=2.7",
+    "pip-licenses>=5.0",
+    "mkdocs-material>=9.5",
+    "fakeredis>=2.26",
+]
+
+[tool.pytest.ini_options]
+addopts = "-p intomd.testing.pytest_fixtures"
+testpaths = ["packages", "apps", "tests", "fixtures"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "network: test needs real network access (skipped unless INTOMD_NETWORK_TESTS=1)",
+    "slow: slow test",
+]

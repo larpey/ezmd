@@ -1,0 +1,20 @@
+[project]
+name = "intomd-converters"
+version = "0.0.1"
+description = "Built-in converter families for intomd."
+requires-python = ">=3.12"
+license = "Apache-2.0"
+# Imports `intomd` at runtime; the dependency is declared by `intomd` itself to avoid a
+# metadata cycle (see DECISIONS.md D-0003).
+dependencies = [
+    "charset-normalizer>=3.4",
+    "markdown-it-py>=3.0",
+    "mdit-py-plugins>=0.4",
+]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/intomd_converters"]
