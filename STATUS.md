@@ -2,7 +2,7 @@
 
 Last updated: 2026-10-08 by agent
 Current phase: 1
-Current task: P1 close: fixes for P1-T15 findings, then gate G1
+Current task: gate G1 owner steps (publish, Claude Desktop check, docs hosting); Phase 2 not started
 Overall: 32 / 85 tasks done
 
 ## Phases
@@ -19,7 +19,7 @@ Overall: 32 / 85 tasks done
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
 | G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
-| G1 | open | | |
+| G1 | blocked on owner | 2026-10-08 | Done: 19/19 P1 tasks; 94 fixtures pass (2 skip without py7zr/pyarrow); CI 37847449194 and integration (compose + Playwright) green on dafa282. Owner steps left: v0.1.0 publish to PyPI/npm/GHCR (setup in Blocked on human), `uvx intomd-mcp` manual check in Claude Desktop, docs site hosting (GitHub Pages on a private repo needs a paid plan or a public repo). |
 | G2 | open | | |
 | G3 | open | | |
 | G4 | open | | |
