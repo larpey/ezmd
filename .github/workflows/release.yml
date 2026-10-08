@@ -1,7 +1,15 @@
-# Release (docs/spec/part4.md 4.15.4; part1.md P0-T12). Triggered by a version tag.
-# Human gate: the PyPI / TestPyPI / npm publish jobs are disabled (`if: false`) until the owner
-# configures trusted publishing and the `release` environment approval (STATUS.md "Blocked on
-# human"). Image build + GHCR push runs on every tag, including pre-release tags like v0.0.1-rc1.
+# Release (docs/spec/part4.md 4.15.4; P1-T16). Triggered by a version tag pushed by the owner.
+#
+#   vX.Y.Z-rcN  release candidate: images (GHCR, no :latest), TestPyPI, GitHub pre-release.
+#               Never PyPI, npm or the MCP registry.
+#   vX.Y.Z      final: images, PyPI, npm, MCP registry, GitHub release.
+#
+# HUMAN GATES (docs/selfhost.md "Releases"): nothing is published to TestPyPI, PyPI, npm or the MCP
+# registry unless (1) the repository variable INTOMD_PUBLISH_ENABLED is "true" and (2) the
+# `release` environment exists with required reviewers (checked by `publish-gate`; the job fails
+# otherwise). Every PyPI/npm/MCP job runs in `environment: release`, so a reviewer must approve each
+# final release; TestPyPI uses `environment: testpypi`. Publishing uses OIDC trusted publishing only:
+# no API tokens are stored in the repository.
 name: release
 on:
   push:
@@ -13,68 +21,37 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      pep440: ${{ steps.v.outputs.pep440 }}
+      prerelease: ${{ steps.v.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: v
+        name: tag matches package versions
+        run: python3 tools/release_version.py "$GITHUB_REF_NAME" | tee -a "$GITHUB_OUTPUT"
+
   verify:
+    needs: preflight
     uses: ./.github/workflows/ci.yml
     permissions:
       contents: read
 
   images:
-    needs: verify
-    runs-on: ubuntu-latest
+    needs: [preflight, verify]
+    uses: ./.github/workflows/images.yml
     permissions:
       contents: read
       packages: write
       id-token: write
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [api, worker, fetch-node]
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
-      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
-      - id: meta
-        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
-        with:
-          images: ghcr.io/larpey/intomd-${{ matrix.target }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}},enable=${{ !contains(github.ref_name, '-') }}
-            type=raw,value=latest,enable=${{ !contains(github.ref_name, '-') }}
-            type=sha
-          labels: |
-            org.opencontainers.image.licenses=Apache-2.0
-            io.modelcontextprotocol.server.name=io.github.larpey/intomd
-      - id: build
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          file: deploy/Dockerfile
-          target: ${{ matrix.target }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            INTOMD_REQUIRE_WEB=1
-            INTOMD_VERSION=${{ github.ref_name }}
-            VCS_REF=${{ github.sha }}
-          cache-from: type=gha,scope=release-${{ matrix.target }}
-          cache-to: type=gha,mode=max,scope=release-${{ matrix.target }}
-          provenance: true
-          sbom: true
-      - name: sign (keyless cosign)
-        env:
-          DIGEST: ${{ steps.build.outputs.digest }}
-        run: |
-          curl -sSfL https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-amd64 -o "$RUNNER_TEMP/cosign"
-          chmod +x "$RUNNER_TEMP/cosign"
-          "$RUNNER_TEMP/cosign" sign --yes "ghcr.io/larpey/intomd-${{ matrix.target }}@${DIGEST}"
+    with:
+      version: ${{ needs.preflight.outputs.version }}
+      prerelease: ${{ needs.preflight.outputs.prerelease == 'true' }}
 
   python-dist:
-    needs: verify
+    needs: [preflight, verify]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -83,15 +60,54 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
       - run: uv build --package ${{ matrix.package }} --out-dir dist/
+      - name: built version matches the tag
+        env:
+          PEP440: ${{ needs.preflight.outputs.pep440 }}
+        run: |
+          ls dist/
+          for f in dist/*; do
+            case "$f" in *"-${PEP440}"[.-]*) ;; *) echo "::error::$f does not carry version $PEP440"; exit 1 ;; esac
+          done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with: { name: "dist-${{ matrix.package }}", path: dist/ }
 
-  testpypi:
-    # v0.0.* goes to TestPyPI. HUMAN GATE: enable once trusted publishing is configured.
-    if: false && startsWith(github.ref_name, 'v0.0.')
-    needs: python-dist
+  publish-gate:
+    # Decides whether this tag may publish at all. Skips publishing (with a notice) until the owner
+    # sets INTOMD_PUBLISH_ENABLED=true; fails if it is set but the `release` environment has no
+    # required reviewers, so an unprotected environment can never publish.
+    needs: preflight
     runs-on: ubuntu-latest
-    environment: testpypi
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      enabled: ${{ steps.gate.outputs.enabled }}
+    steps:
+      - id: gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENABLED: ${{ vars.INTOMD_PUBLISH_ENABLED }}
+        run: |
+          if [ "$ENABLED" != "true" ]; then
+            echo "::notice::INTOMD_PUBLISH_ENABLED is not true; skipping TestPyPI/PyPI/npm/MCP publishing"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          rules="$(gh api "repos/$GITHUB_REPOSITORY/environments/release" --jq '[.protection_rules[]?.type] | join(",")')" || {
+            echo "::error::the release environment does not exist; create it with required reviewers"; exit 1; }
+          case ",$rules," in
+            *,required_reviewers,*) echo "enabled=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::the release environment has no required reviewers (rules: $rules)"; exit 1 ;;
+          esac
+
+  testpypi:
+    # Release candidates only. HUMAN GATE: publish-gate + the testpypi environment.
+    if: needs.preflight.outputs.prerelease == 'true' && needs.publish-gate.outputs.enabled == 'true'
+    needs: [preflight, publish-gate, python-dist, images]
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/intomd/${{ needs.preflight.outputs.pep440 }}/
     permissions:
       id-token: write
     steps:
@@ -101,11 +117,13 @@ jobs:
         with: { repository-url: "https://test.pypi.org/legacy/", packages-dir: dist/ }
 
   pypi:
-    # v0.1.0+ goes to PyPI behind the `release` environment approval. HUMAN GATE.
-    if: false && !startsWith(github.ref_name, 'v0.0.')
-    needs: python-dist
+    # Final releases only. HUMAN GATE: publish-gate + required reviewers on `release`.
+    if: needs.preflight.outputs.prerelease == 'false' && needs.publish-gate.outputs.enabled == 'true'
+    needs: [preflight, publish-gate, python-dist, images]
     runs-on: ubuntu-latest
-    environment: release
+    environment:
+      name: release
+      url: https://pypi.org/project/intomd/${{ needs.preflight.outputs.pep440 }}/
     permissions:
       id-token: write
     steps:
@@ -115,11 +133,14 @@ jobs:
         with: { packages-dir: dist/ }
 
   npm:
-    # HUMAN GATE: enable once the npm package and trusted publishing exist.
-    if: false
-    needs: verify
+    # Final releases only (npm has no test registry). HUMAN GATE as for pypi. npm trusted publishing
+    # (OIDC, npm >= 11.5) with provenance; no NPM_TOKEN.
+    if: needs.preflight.outputs.prerelease == 'false' && needs.publish-gate.outputs.enabled == 'true'
+    needs: [preflight, publish-gate, verify]
     runs-on: ubuntu-latest
-    environment: release
+    environment:
+      name: release
+      url: https://www.npmjs.com/package/@intomd/sdk
     permissions:
       contents: read
       id-token: write
@@ -129,10 +150,44 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version: "22", registry-url: "https://registry.npmjs.org", cache: pnpm }
       - run: pnpm install --frozen-lockfile && pnpm -F @intomd/sdk build
-      - run: pnpm -F @intomd/sdk publish --provenance --access public --no-git-checks
+      - name: publish (trusted publishing)
+        working-directory: packages/sdk-ts
+        run: npx --yes npm@11.21.0 publish --provenance --access public
+
+  mcp-registry:
+    # Final releases only, after PyPI has the package the server.json points at. HUMAN GATE as above.
+    if: needs.preflight.outputs.prerelease == 'false' && needs.publish-gate.outputs.enabled == 'true'
+    needs: [preflight, publish-gate, pypi]
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: https://registry.modelcontextprotocol.io/
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      MCP_PUBLISHER_VERSION: v1.8.1
+      MCP_PUBLISHER_SHA256: a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: install mcp-publisher (pinned, checksum verified)
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/mcp.tgz" \
+            "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          echo "${MCP_PUBLISHER_SHA256}  $RUNNER_TEMP/mcp.tgz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/mcp.tgz" -C "$RUNNER_TEMP" mcp-publisher
+      - name: stamp server.json with the release version
+        env:
+          PEP440: ${{ needs.preflight.outputs.pep440 }}
+        run: |
+          jq --arg v "$PEP440" '.version = $v | .packages |= map(.version = $v)' packages/mcp/server.json > "$RUNNER_TEMP/server.json"
+          mv "$RUNNER_TEMP/server.json" packages/mcp/server.json
+      - run: |
+          "$RUNNER_TEMP/mcp-publisher" login github-oidc
+          "$RUNNER_TEMP/mcp-publisher" publish packages/mcp/server.json
 
   extension:
-    needs: verify
+    needs: [preflight, verify]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -154,7 +209,8 @@ jobs:
         with: { name: extension, path: "dist/*.zip", if-no-files-found: ignore }
 
   github-release:
-    needs: [images, python-dist, extension]
+    # Images, dists, SBOMs and the extension; independent of the gated registry publishes.
+    needs: [preflight, images, python-dist, extension]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -163,8 +219,12 @@ jobs:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with: { pattern: "dist-*", path: dist/, merge-multiple: true }
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with: { pattern: "sbom-*", path: dist/, merge-multiple: true }
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         continue-on-error: true   # no extension zip until Phase 3
         with: { name: extension, path: dist/ }
+      - name: checksums
+        run: (cd dist && sha256sum -- * > SHA256SUMS)
       - name: changelog section
         run: |
           ver="${GITHUB_REF_NAME#v}"
@@ -177,5 +237,5 @@ jobs:
         with:
           body_path: ${{ runner.temp }}/notes.md
           files: dist/*
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ needs.preflight.outputs.prerelease == 'true' }}
           generate_release_notes: true

@@ -8,11 +8,22 @@ environment variables, never the sandbox.
 ## Docker Compose (core stack)
 
 ```sh
-cp deploy/env.example deploy/.env          # set INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
-echo "INTOMD_REDIS_PASSWORD=$(openssl rand -hex 24)" >> deploy/.env
-docker compose -f deploy/docker-compose.yml up -d --build --wait
-bash deploy/smoke.sh --no-build             # end-to-end check
+git clone https://github.com/larpey/intomd && cd intomd
+deploy/bootstrap.sh --domain intomd.example.com --email you@example.com --version 0.1.0
 ```
+
+`bootstrap.sh` is safe to run again; it only fills in what is missing:
+
+1. creates `deploy/.env` from `deploy/env.example` (mode 600) and sets the domain, public URL, ACME email and image tag you pass;
+2. generates `INTOMD_KEY_PEPPER`, `INTOMD_JWT_SECRET`, `INTOMD_IP_HASH_SALT`, `INTOMD_REDIS_PASSWORD` and `INTOMD_METRICS_TOKEN` once (a re-run never rotates them: a new pepper invalidates every API key);
+3. pulls the images (`--build` builds this checkout instead);
+4. applies database migrations, so the database is under Alembic from the first start;
+5. creates `keys.json` in the state volume (`INTOMD_KEYS_FILE=/var/lib/intomd/keys.json`) with an unlimited `owner` key via `intomd-admin`, and writes that key to `deploy/intomd-owner.key` (mode 600; move it to a password manager);
+6. starts the stack, waits for every healthcheck, and runs `deploy/smoke.sh`.
+
+Options: `--domain localhost` (HTTPS with Caddy's internal CA), `--plain-http` (no TLS, port 8080), `--no-smoke`, `--key-out PATH`. `INTOMD_ENV_FILE=/path/to/env` selects another env file (every script honors it, and compose passes it to every container). Host hardening (firewall, fail2ban, sshd, unattended upgrades) is not done by the script yet; follow your distribution's guidance or the public-instance runbook (Phase 4).
+
+By hand: `cp deploy/env.example deploy/.env`, fill in the secrets, `docker compose -f deploy/docker-compose.yml up -d --build --wait`, then `bash deploy/smoke.sh --no-build`.
 
 - `INTOMD_DOMAIN` empty: plain HTTP on port 8080 (host port `INTOMD_PLAIN_PORT`). Open http://localhost:8080.
 - `INTOMD_DOMAIN=localhost`: HTTPS with Caddy's internal CA.
@@ -31,9 +42,67 @@ Every app container runs as uid 10001 with a read-only root filesystem, a `/tmp`
 capabilities dropped, `no-new-privileges`, and CPU, memory, and pid limits. Workers also load
 `deploy/seccomp-worker.json`. See [Security](security.md) and `deploy/README.md` for details.
 
-Planned: the media worker and model init container (Phase 2), Postgres and MinIO profiles, the
-`bootstrap.sh` installer, and the public and Raspberry Pi overlays (Phases 3 and 4).
+Planned: the media worker and model init container (Phase 2), Postgres and MinIO profiles, and the
+public and Raspberry Pi overlays (Phases 3 and 4).
+
+The worker image includes the `data` extra (pyarrow, for Parquet). Build arguments add more:
+`INTOMD_WORKER_EXTRAS="data docs"` adds Docling (several GB: the lock resolves CUDA torch wheels on
+Linux), and `INTOMD_WORKER_APT_PACKAGES="libreoffice-core-nogui libreoffice-writer-nogui
+libreoffice-calc-nogui libreoffice-impress-nogui"` adds LibreOffice for legacy `.doc`/`.xls`/`.ppt`.
+`nonfree` and `7z` are refused in the image.
 `deploy/docker-compose.gpu.yml` adds a `worker-media` service for the Phase 2 image.
+
+## Backups
+
+```sh
+deploy/backup.sh                 # online; the stack keeps running
+deploy/backup.sh --no-blobs      # database, keys and certificates only
+```
+
+Each run writes `intomd-<UTC timestamp>.tar.gz` (mode 600) to `INTOMD_BACKUP_DIR` (default `deploy/backups/`, mode 700) and keeps the newest `INTOMD_BACKUP_KEEP` (default 14). It holds a consistent SQLite snapshot (SQLite's online backup API, then `PRAGMA integrity_check`), `keys.json`, the blob store, Caddy's certificates and the env file, with SHA-256 checksums for every file. The env file holds every secret: keep backups private and copy them off the host (for example with `rclone copy`). Schedule it daily, e.g. `17 3 * * * /opt/intomd/deploy/backup.sh >/dev/null`.
+
+Only SQLite and the filesystem blob store are covered; with Postgres or S3 use those services' own backups.
+
+## Restore
+
+```sh
+deploy/restore.sh --verify-only deploy/backups/intomd-20261008T031700Z.tar.gz
+deploy/restore.sh deploy/backups/intomd-20261008T031700Z.tar.gz
+deploy/restore.sh --with-env backup.tar.gz     # new host: also restore the env file
+```
+
+The script checks the archive's checksums, and every file against the backup's manifest, before it changes anything. Then it stops every service except Redis, replaces the database, `keys.json`, blobs and Caddy data, starts the stack and runs the smoke test. Without `--with-env` the current env file stays; the script warns when its key pepper differs from the backup's (API keys would stop validating). It works on an empty volume set (after `docker compose down -v`, or on a fresh host).
+
+## Upgrades
+
+```sh
+deploy/upgrade.sh 0.2.0
+```
+
+Backup first, then `INTOMD_VERSION=0.2.0` in the env file, `docker compose pull`, migrations with the new image, `up --wait`, and `/readyz` through Caddy. If any step fails it puts the previous version back; when migrations already ran it first restores the pre-upgrade backup (migrations are forward-only), then starts the old version and exits 1. Patch releases are safe to auto-update (Watchtower); minor releases may add env vars or models and should go through `upgrade.sh`; major releases may change the API and are announced one minor release ahead.
+
+Databases created by the API's `create_all` at startup (no `alembic_version` table, i.e. installs made without `bootstrap.sh`) are not migrated: `upgrade.sh` warns and skips.
+
+## Releases and image verification
+
+The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-release and publishes to TestPyPI only; `vX.Y.Z` also publishes to PyPI, npm (`@intomd/sdk`) and the MCP registry. Images are pushed by digest, scanned with Trivy (HIGH/CRITICAL findings with a fix fail the release), given an SPDX SBOM (syft; also attached to the GitHub release) and signed with cosign keyless before any tag points at them:
+
+```sh
+cosign verify ghcr.io/larpey/intomd-api:0.1.0 \
+  --certificate-identity-regexp '^https://github.com/larpey/intomd/.github/workflows/images.yml@refs/tags/v' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+cosign verify-attestation --type spdxjson ghcr.io/larpey/intomd-api:0.1.0 \
+  --certificate-identity-regexp '^https://github.com/larpey/intomd/.github/workflows/images.yml@refs/tags/v' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+One-time owner setup before the first publish (until then the publish jobs skip with a notice):
+
+1. GitHub, Settings, Environments: create `release` with required reviewers (the owner) and deployment tags limited to `v*`; create `testpypi` (reviewers optional). `publish-gate` refuses to publish when `release` has no required reviewers.
+2. PyPI and TestPyPI: add a trusted publisher (a pending publisher for new names) for each of `intomd`, `intomd-converters` and `intomd-mcp`: owner `larpey`, repository `intomd`, workflow `release.yml`, environment `release` (PyPI) or `testpypi` (TestPyPI).
+3. npm: create the `@intomd` scope and configure trusted publishing for `@intomd/sdk`: repository `larpey/intomd`, workflow `release.yml`, environment `release`. npm requires the package to exist before trusted publishing can be set, so the very first publish may need a one-off manual `npm publish` by the owner.
+4. MCP registry: nothing to configure; `mcp-publisher login github-oidc` proves ownership of `io.github.larpey/*`.
+5. Settings, Variables: set `INTOMD_PUBLISH_ENABLED` to `true`.
 
 ## Running without Docker
 
@@ -67,6 +136,9 @@ These are read by `deploy/docker-compose.yml` and Caddy, not by the API:
 | `INTOMD_TMPFS_SIZE` | `2g` | Size of each container's `/tmp`. |
 | `INTOMD_API_WORKERS` | `2` | Uvicorn worker processes. |
 | `INTOMD_REDIS_MAXMEM` | `256mb` | Redis memory cap. |
+| `INTOMD_BACKUP_DIR` | `deploy/backups` | Where `backup.sh` writes tarballs. |
+| `INTOMD_BACKUP_KEEP` | `14` | How many backups `backup.sh` keeps. |
+| `INTOMD_ENV_FILE` | `deploy/.env` | Shell variable only: the env file the scripts and containers use. |
 
 ## API environment variables
 

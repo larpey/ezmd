@@ -84,6 +84,7 @@ for ip in $IPS; do
   iptables -w -A OUTPUT -d "$ip" -p tcp -m multiport --dports 80,443 -j ACCEPT
 done
 # DNS to the configured resolvers only (Docker's embedded 127.0.0.11 is already covered by lo).
+# shellcheck disable=SC2013  # one IPv4 address per word is exactly what is wanted
 for ns in $(awk '$1 == "nameserver" && $2 ~ /^[0-9.]+$/ { print $2 }' /etc/resolv.conf); do
   iptables -w -A OUTPUT -d "$ns" -p udp --dport 53 -j ACCEPT
   iptables -w -A OUTPUT -d "$ns" -p tcp --dport 53 -j ACCEPT
@@ -92,6 +93,7 @@ ip6tables -w -F OUTPUT 2>/dev/null || true
 ip6tables -w -P OUTPUT DROP 2>/dev/null || true
 ip6tables -w -A OUTPUT -o lo -j ACCEPT 2>/dev/null || true
 
+# shellcheck disable=SC2086  # SUBNETS is a word list
 log "allowlist installed for: $ALLOW (subnets: $(printf "%s " $SUBNETS))"
 exec setpriv --reuid="$RUN_UID" --regid="$RUN_GID" --clear-groups \
   --inh-caps=-all --bounding-set=-all --no-new-privs -- "$@"

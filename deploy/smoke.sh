@@ -4,18 +4,25 @@
 #   deploy/smoke.sh                       build + start deploy/docker-compose.yml, test, leave it running
 #   deploy/smoke.sh --down                same, then `docker compose down -v`
 #   deploy/smoke.sh --no-build            start without rebuilding images
+#   deploy/smoke.sh --no-up               test the running stack (no compose up)
 #   deploy/smoke.sh --remote https://host test an existing instance (no bring-up, no container checks)
 #
 # Checks: /readyz, upload of a small text file to /v1/convert, job polling until `done`,
 # Markdown result contains the expected heading, JSON result parses, and (local mode) the
 # worker-default container has no route to the internet and every app container runs as
 # uid 10001 with a read-only root filesystem and no capabilities. Exits non-zero on any failure.
+# The env file is INTOMD_ENV_FILE (default deploy/.env; created for the run when missing), extra
+# compose files come from INTOMD_COMPOSE_FILES (deploy/lib.sh). SMOKE_API_KEY, when set, is sent as
+# X-API-Key. The last line on success is `SMOKE_JOB=<id>`.
 set -euo pipefail
 
-HERE="$(cd "$(dirname "$0")" && pwd)"
-COMPOSE=(docker compose -f "$HERE/docker-compose.yml")
+# shellcheck source=deploy/lib.sh
+. "$(dirname "$0")/lib.sh"
+HERE="$DEPLOY_DIR"
+COMPOSE=(compose)
 REMOTE=""
 BUILD="--build"
+UP=1
 DOWN=0
 TIMEOUT_S="${SMOKE_TIMEOUT_S:-180}"
 
@@ -23,8 +30,9 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --remote) REMOTE="${2:?--remote needs a URL}"; shift 2 ;;
     --no-build) BUILD=""; shift ;;
+    --no-up) UP=0; BUILD=""; shift ;;
     --down) DOWN=1; shift ;;
-    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,17p' "$0"; exit 0 ;;
     *) echo "unknown argument: $1" >&2; exit 64 ;;
   esac
 done
@@ -70,21 +78,27 @@ cleanup() {
 trap cleanup EXIT
 
 if [ -z "$REMOTE" ]; then
-  if [ ! -f "$HERE/.env" ]; then
-    if [ -f "$HERE/env.example" ]; then cp "$HERE/env.example" "$HERE/.env"; else : > "$HERE/.env"; fi
+  if [ ! -f "$ENV_FILE" ]; then
+    (umask 077 && if [ -f "$HERE/env.example" ]; then cp "$HERE/env.example" "$ENV_FILE"; else : > "$ENV_FILE"; fi)
     # Local smoke: plain HTTP on :8080, no ACME, fresh Redis password.
-    sed -i.bak -e 's/^INTOMD_DOMAIN=.*/INTOMD_DOMAIN=/' -e 's/^INTOMD_ACME_EMAIL=.*/INTOMD_ACME_EMAIL=/' "$HERE/.env" && rm -f "$HERE/.env.bak"
-    echo "INTOMD_REDIS_PASSWORD=$("$PY" -c 'import secrets; print(secrets.token_hex(24))')" >> "$HERE/.env"
-    echo "created $HERE/.env for the smoke run"
+    env_set INTOMD_DOMAIN ""
+    env_set INTOMD_ACME_EMAIL ""
+    env_set INTOMD_REDIS_PASSWORD "$(rand_hex 24)"
+    echo "created $ENV_FILE for the smoke run"
   fi
-  # shellcheck disable=SC2086
-  "${COMPOSE[@]}" up -d $BUILD --wait --wait-timeout "$TIMEOUT_S" || {
-    "${COMPOSE[@]}" ps; "${COMPOSE[@]}" logs --no-color --tail 80; fail "compose up did not become healthy"; }
-  BASE="http://localhost:${INTOMD_PLAIN_PORT:-8080}"
+  if [ "$UP" = 1 ]; then
+    # shellcheck disable=SC2086
+    "${COMPOSE[@]}" up -d $BUILD --wait --wait-timeout "$TIMEOUT_S" || {
+      "${COMPOSE[@]}" ps; "${COMPOSE[@]}" logs --no-color --tail 80; fail "compose up did not become healthy"; }
+  fi
+  BASE="$(stack_url)"
+  read -r -a RESOLVE <<<"$(stack_curl_args)"
 else
   BASE="${REMOTE%/}"
+  RESOLVE=()
 fi
-CURL=(curl -sS --max-time 30 -k)
+CURL=(curl -sS --max-time 30 -k ${RESOLVE[@]+"${RESOLVE[@]}"})
+if [ -n "${SMOKE_API_KEY:-}" ]; then CURL+=(-H "X-API-Key: $SMOKE_API_KEY"); fi
 
 # 1. readiness
 deadline=$(( $(date +%s) + TIMEOUT_S ))
@@ -155,3 +169,4 @@ if [ -z "$REMOTE" ]; then
 fi
 
 echo "SMOKE PASS ($BASE)"
+echo "SMOKE_JOB=$JOB"

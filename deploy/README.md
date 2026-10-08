@@ -1,6 +1,6 @@
 # deploy/
 
-Self-host and CI deployment files for intomd (Phase 0: P0-T11, P0-T12).
+Self-host and CI deployment files for intomd (P0-T11, P0-T12, P1-T14). Operator guide: docs/selfhost.md.
 
 | File | Purpose |
 |---|---|
@@ -12,15 +12,21 @@ Self-host and CI deployment files for intomd (Phase 0: P0-T11, P0-T12).
 | `egress-allowlist.sh` | Worker entrypoint wrapper. No-op by default; optional iptables allowlist (see below). |
 | `smoke.sh` | End-to-end check: bring-up, convert a text file, poll, fetch `md` and `json`, verify worker isolation and container hardening. `--remote URL` tests an existing instance. |
 | `env.example` | Every `INTOMD_*` variable (owned by the API; `tests/test_env_example.py` guards drift). |
+| `bootstrap.sh` | Idempotent first run: env file (mode 600) with generated secrets, pull or `--build`, migrations, `keys.json` with an owner key, `up --wait`, smoke. |
+| `backup.sh` | Online SQLite snapshot + `keys.json` + blobs + Caddy data + env file into a timestamped, checksummed `.tar.gz`; keeps the newest `INTOMD_BACKUP_KEEP`. |
+| `restore.sh` | Verify checksums, stop, restore data and Caddy volume (`--with-env` for the env file), start, smoke. |
+| `upgrade.sh` | Backup, set `INTOMD_VERSION`, pull, migrate, `up --wait`; rolls back (and restores the backup if migrations ran) on failure. |
+| `lib.sh` | Shared shell helpers (`compose`, env file editing, `stackctl`). |
+| `stackctl.py` | Runs inside a one-off `api` container: backup/verify/restore/migrate/has-keys. |
 
 ## Quick start
 
 ```bash
-cp deploy/env.example deploy/.env      # set INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
-echo "INTOMD_REDIS_PASSWORD=$(openssl rand -hex 24)" >> deploy/.env
-docker compose -f deploy/docker-compose.yml up -d --build --wait
-bash deploy/smoke.sh --no-build
+deploy/bootstrap.sh --domain intomd.example.com --email you@example.com --version 0.1.0
+# or, locally: deploy/bootstrap.sh --plain-http --build
 ```
+
+By hand: `cp deploy/env.example deploy/.env`, fill in the secrets, `docker compose -f deploy/docker-compose.yml up -d --build --wait`, `bash deploy/smoke.sh --no-build`.
 
 - `INTOMD_DOMAIN` empty: plain HTTP on `:8080` (host port `INTOMD_PLAIN_PORT`).
 - `INTOMD_DOMAIN=localhost`: HTTPS with Caddy's internal CA.
@@ -60,12 +66,12 @@ The `purge` sidecar runs `python -m intomd_api.purge --loop` (retention purge ev
 
 ## Image sizes (local build, uncompressed)
 
-Recorded by CI in the job summary (`images` job) and enforced against budgets: api 400 MB, worker 1200 MB, fetch-node 400 MB. See STATUS.md for the latest numbers.
+Recorded by CI in the job summary (`images` job) and enforced against budgets: api 600 MB, worker 1200 MB, fetch-node 400 MB (docs/decisions/P1-T14-T16.md). See STATUS.md for the latest numbers.
 
 ## TODO (later phases)
 
 - `docker-compose.public.yml` (Phase 4): public-instance env, `egress-proxy` (squid, `squid.conf` from Part 4 4.12.1), metrics. Compose overlays cannot remove networks, so in public mode the bootstrap script must write a `compose.override.yml` that sets `networks: [internal, egressproxy]` for the workers.
 - `docker-compose.pi.yml` (Phase 3): the Raspberry Pi fetch node (`network_mode: host`, Tailscale, watchtower) once `intomd fetch-node run` exists.
 - `worker-media` target and service (Phase 2): ffmpeg, `[media]` extra, model volume, `model-init`.
-- `bootstrap.sh`, `backup.sh`, `restore.sh`, `upgrade.sh` (Phase 1/4, Part 4 4.9.8-4.9.9).
+- Host provisioning in `bootstrap.sh` (Docker install, ufw, fail2ban, sshd, systemd units; Part 4 4.9.8) with the public-instance runbook (Phase 4).
 - Postgres and MinIO profiles (Part 4 4.9.2) once the API supports them.

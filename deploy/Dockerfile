@@ -93,9 +93,30 @@ RUN --mount=type=cache,id=intomd-uv,target=/root/.cache/uv \
 RUN apt-get update \
  && apt-get install -y --no-install-recommends binutils \
  && rm -rf /var/lib/apt/lists/* \
- && find /app/.venv -type f -name '*.so*' -not -path '*.libs/*' -exec strip --strip-unneeded {} +
+ && find /app/.venv -type f -name '*.so*' -not -path '*.libs/*' -exec strip --strip-unneeded {} + \
+ && find /app/.venv/lib/python3.12/site-packages/numpy -depth -type d -name tests -exec rm -rf {} +
+# numpy's own test suite (about 20 MB) is never imported at runtime (P1-T14 image budget, D-0012).
 # Pre-bake: magika ships its model in the wheel; prove it loads offline so first use never downloads.
 RUN /app/.venv/bin/python -c "import magika; magika.Magika()"
+
+# Worker venv: the shared venv plus converter extras (docs/spec/part4.md 4.9.1). Default `data`
+# (pyarrow, Apache-2.0) so Parquet converts in the stock image. `docs` (Docling + torch) is opt-in:
+# the universal lock resolves the CUDA torch wheels on Linux (several GB), see docs/selfhost.md.
+# Never put `nonfree` or `7z` here: the published image must stay on the default license allowlist.
+FROM py-build AS py-build-worker
+ARG INTOMD_WORKER_EXTRAS="data"
+RUN --mount=type=cache,id=intomd-uv,target=/root/.cache/uv \
+    set -eu; \
+    extras=""; \
+    for e in ${INTOMD_WORKER_EXTRAS}; do \
+      case "$e" in nonfree|7z) echo "extra '$e' is not allowed in the worker image" >&2; exit 1 ;; esac; \
+      extras="$extras --extra $e"; \
+    done; \
+    if [ -n "$extras" ]; then \
+      uv sync --frozen --no-dev --no-editable ${UV_SYNC_ARGS} $extras; \
+      rm -rf /app/.venv/lib/python3.12/site-packages/pyarrow/tests; \
+      find /app/.venv -type f -name '*.so' -not -path '*.libs/*' -exec strip --strip-unneeded {} +; \
+    fi
 
 FROM py-build AS py-build-fetch
 RUN --mount=type=cache,id=intomd-uv,target=/root/.cache/uv \
@@ -143,14 +164,17 @@ CMD ["uvicorn", "intomd_api.main:app", "--host", "0.0.0.0", "--port", "8000", "-
 # with the worker-media target (Phase 2). bubblewrap is deliberately NOT installed: inside this
 # container (no caps, seccomp denies mount) it cannot create namespaces, and
 # intomd.core.sandbox would pick it up from PATH and fail every external command.
+# INTOMD_WORKER_APT_PACKAGES adds Debian packages, e.g. "libreoffice-core-nogui libreoffice-writer-nogui
+# libreoffice-calc-nogui libreoffice-impress-nogui" for legacy .doc/.ppt/.xls (about +500 MB).
 # ---------------------------------------------------------------------------------------------
 FROM runtime-common AS worker
+ARG INTOMD_WORKER_APT_PACKAGES=""
 LABEL org.opencontainers.image.title="intomd-worker" \
       org.opencontainers.image.description="intomd sandboxed conversion worker"
 RUN apt-get update \
- && apt-get install -y --no-install-recommends pandoc-data pandoc iptables tini \
+ && apt-get install -y --no-install-recommends pandoc-data pandoc iptables tini ${INTOMD_WORKER_APT_PACKAGES} \
  && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/*
-COPY --from=py-build --chown=0:0 /app/.venv /app/.venv
+COPY --from=py-build-worker --chown=0:0 /app/.venv /app/.venv
 COPY --chown=0:0 --chmod=0755 deploy/egress-allowlist.sh /usr/local/bin/egress-allowlist.sh
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \

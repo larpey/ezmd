@@ -120,7 +120,9 @@ jobs:
       matrix:
         # Uncompressed size budgets in MB (part1.md P0-T11 acceptance).
         include:
-          - { target: api, budget_mb: 480 }  # D-0012: magika pulls onnxruntime + numpy (~136 MB)
+          # api: D-0012 (magika: onnxruntime + numpy) and docs/decisions/P1-T14-T16.md (the API loads the
+          # same converter registry as the workers, so it carries the default converter install).
+          - { target: api, budget_mb: 600 }
           - { target: worker, budget_mb: 1200 }
           - { target: fetch-node, budget_mb: 400 }
     steps:
@@ -164,21 +166,38 @@ jobs:
   smoke:
     needs: [python]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
+    env:
+      # GitHub-hosted runners have 2 CPUs; compose defaults assume a larger box.
+      INTOMD_WORKER_DEFAULT_CPUS: "1.5"
+      INTOMD_ENV_FILE: /tmp/intomd-ci/intomd.env
+      INTOMD_BACKUP_DIR: /tmp/intomd-ci/backups
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: shellcheck deploy scripts
+        run: shellcheck -x -P deploy deploy/*.sh
       - name: compose config (every overlay combination)
         run: |
           docker compose -f deploy/docker-compose.yml config -q
           docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml --profile media config -q
-      - name: compose up + smoke
-        env:
-          # GitHub-hosted runners have 2 CPUs; compose defaults assume a larger box.
-          INTOMD_WORKER_DEFAULT_CPUS: "1.5"
-        run: bash deploy/smoke.sh --down
+      - name: bootstrap (build, migrate, owner key, up, smoke)
+        run: bash deploy/bootstrap.sh --plain-http --build
+      - name: backup, wipe volumes, restore; the earlier job and the owner key survive
+        run: |
+          key="$(cat /tmp/intomd-ci/intomd-owner.key)"
+          job="$(SMOKE_API_KEY="$key" bash deploy/smoke.sh --no-up | sed -n 's/^SMOKE_JOB=//p')"
+          backup="$(bash deploy/backup.sh | tail -n 1)"
+          . deploy/lib.sh && compose down -v
+          bash deploy/restore.sh "$backup"
+          curl -fsS -H "X-API-Key: $key" "http://localhost:8080/v1/jobs/$job" | grep -q '"state":"done"'
+          curl -fsS -H "X-API-Key: $key" "http://localhost:8080/v1/jobs/$job/result?format=md" | grep -q "intomd smoke test"
+          [ "$(curl -s -o /dev/null -w '%{http_code}' -H 'X-API-Key: ak_live_not_a_key' "http://localhost:8080/v1/jobs/$job")" = 401 ]
       - name: compose logs
         if: failure()
-        run: docker compose -f deploy/docker-compose.yml logs --no-color > "$RUNNER_TEMP/compose.log" 2>&1; docker compose -f deploy/docker-compose.yml ps
+        run: . deploy/lib.sh && { compose logs --no-color > "$RUNNER_TEMP/compose.log" 2>&1; compose ps; }
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: failure()
         with: { name: compose-logs, path: "${{ runner.temp }}/compose.log", if-no-files-found: ignore }
+      - name: tear down
+        if: always()
+        run: . deploy/lib.sh && compose down -v --remove-orphans || true

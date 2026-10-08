@@ -1,7 +1,11 @@
-# intomd self-host (Phase 0 core profile).
+# intomd self-host (core profile, docs/spec/part4.md 4.9.2).
+#   deploy/bootstrap.sh --domain intomd.example.com --email you@example.com   # first run (idempotent)
+# or by hand:
 #   cp deploy/env.example deploy/.env   # edit INTOMD_DOMAIN, INTOMD_PUBLIC_URL, secrets
 #   docker compose -f deploy/docker-compose.yml up -d --build
 #   deploy/smoke.sh
+# The operator env file defaults to deploy/.env; INTOMD_ENV_FILE=/path/to/file (exported, plus
+# `--env-file` for interpolation) selects another one. deploy/lib.sh does both.
 #
 # Network model (Part 1 section 8.1):
 #   internal  internal: true, no route to the internet. api, worker-default, purge, redis.
@@ -19,16 +23,22 @@ x-hardening: &hardening
     driver: json-file
     options: { max-size: "20m", max-file: "5" }
 
+# Set here (environment beats env_file) so an empty INTOMD_BLOB_FS_ROOT= line in the env file cannot
+# move blobs out of the blobs volume into the state volume.
+x-app-env: &app-env
+  INTOMD_REDIS_URL: redis://:${INTOMD_REDIS_PASSWORD:-}@redis:6379/0
+  INTOMD_TMP: /tmp
+  INTOMD_DATA_DIR: /var/lib/intomd
+  INTOMD_BLOB_FS_ROOT: /var/lib/intomd-blobs
+
 x-app: &app
   <<: *hardening
   restart: unless-stopped
   user: "10001:10001"
   env_file:
-    - path: .env
+    - path: ${INTOMD_ENV_FILE:-.env}
       required: false
-  environment:
-    INTOMD_REDIS_URL: redis://:${INTOMD_REDIS_PASSWORD:-}@redis:6379/0
-    INTOMD_TMP: /tmp
+  environment: *app-env
   tmpfs:
     - /tmp:size=${INTOMD_TMPFS_SIZE:-2g},mode=1777
   networks: [internal]
@@ -97,8 +107,7 @@ services:
               "--workers", "${INTOMD_API_WORKERS:-2}", "--proxy-headers", "--forwarded-allow-ips", "*", "--no-access-log"]
     expose: ["8000"]
     environment:
-      INTOMD_REDIS_URL: redis://:${INTOMD_REDIS_PASSWORD:-}@redis:6379/0
-      INTOMD_TMP: /tmp
+      <<: *app-env
       # Retention runs in the `purge` sidecar, not inside every uvicorn worker process.
       INTOMD_SCHEDULER_ENABLED: "false"
     volumes:
