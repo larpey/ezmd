@@ -157,7 +157,7 @@ def create_app(settings: Settings | None = None, *, redis_client: Any = None) ->
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        services.db.create_all()
+        services.db.ensure_schema()
         scheduler = Scheduler(services) if settings.scheduler_enabled else None
         if scheduler is not None:
             scheduler.start()

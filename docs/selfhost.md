@@ -81,7 +81,7 @@ deploy/upgrade.sh 0.2.0
 
 Backup first, then `INTOMD_VERSION=0.2.0` in the env file, `docker compose pull`, migrations with the new image, `up --wait`, and `/readyz` through Caddy. If any step fails it puts the previous version back; when migrations already ran it first restores the pre-upgrade backup (migrations are forward-only), then starts the old version and exits 1. Patch releases are safe to auto-update (Watchtower); minor releases may add env vars or models and should go through `upgrade.sh`; major releases may change the API and are announced one minor release ahead.
 
-Databases created by the API's `create_all` at startup (no `alembic_version` table, i.e. installs made without `bootstrap.sh`) are not migrated: `upgrade.sh` warns and skips.
+Every process brings the database to the Alembic head at startup. A database created by an older release's `create_all` start (no `alembic_version` table) is adopted when its tables match this release's models, and refused with a clear error otherwise; restore a backup made by `backup.sh` in that case.
 
 ## Releases and image verification
 

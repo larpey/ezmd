@@ -216,7 +216,7 @@ def main(argv: list[str] | None = None) -> None:
     settings = Settings()
     configure_logging(settings)
     services = build_services(settings)
-    services.db.create_all()
+    services.db.ensure_schema()
     if not args.loop:
         reap_residential(services)
         reap_stale(services)

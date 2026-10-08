@@ -67,7 +67,7 @@ def _services() -> Services:
         # Admin commands read keys.json themselves, so they still work when it is malformed.
         settings = settings.model_copy(update={"keys_file": None})
     services = build_services(settings)
-    services.db.create_all()
+    services.db.ensure_schema()
     return services
 
 

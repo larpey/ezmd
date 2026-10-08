@@ -230,7 +230,7 @@ def _services() -> Services:
         settings = Settings()
         configure_logging(settings)
         _rq_services = build_services(settings)
-        _rq_services.db.create_all()
+        _rq_services.db.ensure_schema()
     return _rq_services
 
 

@@ -6,7 +6,7 @@ volumes, environment and Python packages the API sees. It never runs on the host
     stackctl backup [--no-blobs]  tar of a consistent SQLite snapshot, keys.json and blobs, to stdout
     stackctl verify               read such a tar from stdin, check every checksum, change nothing
     stackctl restore              read such a tar from stdin, verify it fully, then replace the data
-    stackctl migrate              Alembic upgrade (fresh or Alembic-managed databases only)
+    stackctl migrate              Alembic upgrade; adopts a matching create_all database, refuses drift
     stackctl has-keys             exit 0 when INTOMD_KEYS_FILE exists, 1 when it does not
 
 Progress and errors go to stderr; stdout carries only tar data. Archive members are validated before
@@ -316,25 +316,16 @@ def cmd_restore(_args: list[str]) -> int:
 
 
 def cmd_migrate(_args: list[str]) -> int:
-    from sqlalchemy import create_engine, inspect
-
-    from intomd_api.migrate import upgrade
+    from intomd_api.migrate import SchemaDrift, ensure_schema
 
     paths = Paths()
     paths.db.parent.mkdir(parents=True, exist_ok=True)
-    engine = create_engine(paths.url)
     try:
-        tables = set(inspect(engine).get_table_names())
-    finally:
-        engine.dispose()
-    if tables and "alembic_version" not in tables:
-        say(
-            "warning: schema was created by the API at startup (create_all), not by Alembic; "
-            "skipping migrations. New columns in this release are not applied to existing tables."
-        )
-        return 0
-    upgrade(paths.url)
-    say(f"database at Alembic head ({_alembic_revision(paths.db)})")
+        action = ensure_schema(paths.url)
+    except SchemaDrift as exc:
+        say(f"error: {exc}")
+        return 1
+    say(f"database {action}; at Alembic head ({_alembic_revision(paths.db)})")
     return 0
 
 

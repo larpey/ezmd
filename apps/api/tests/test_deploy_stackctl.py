@@ -164,9 +164,31 @@ def test_migrate_fresh_database_reaches_head(tmp_path: Path, monkeypatch: pytest
     con.close()
 
 
-def test_migrate_skips_create_all_schema(stack: dict[str, Path], monkeypatch: pytest.MonkeyPatch) -> None:
+def test_migrate_adopts_create_all_schema(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A database made by an older create_all start is stamped at head when its schema matches, not skipped."""
+    from intomd_api.db import Database
+
+    monkeypatch.delenv("INTOMD_DATABASE_URL", raising=False)
+    monkeypatch.setenv("INTOMD_DATA_DIR", str(tmp_path / "legacy"))
+    db = Database(f"sqlite:///{(tmp_path / 'legacy' / 'intomd.db').as_posix()}")
+    db.create_all()
+    db.engine.dispose()
     mod = _load()
-    assert _run(mod, monkeypatch, ["migrate"])[0] == 0  # warns, does not try to re-create tables
+    assert _run(mod, monkeypatch, ["migrate"])[0] == 0
+    assert "stamped" in capsys.readouterr().err
+    con = sqlite3.connect(tmp_path / "legacy" / "intomd.db")
+    assert con.execute("SELECT version_num FROM alembic_version").fetchone() is not None
+    con.close()
+
+
+def test_migrate_refuses_drifted_schema(
+    stack: dict[str, Path], monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    mod = _load()
+    assert _run(mod, monkeypatch, ["migrate"])[0] == 1
+    assert "does not match" in capsys.readouterr().err
 
 
 def test_has_keys_and_usage(stack: dict[str, Path], monkeypatch: pytest.MonkeyPatch) -> None:

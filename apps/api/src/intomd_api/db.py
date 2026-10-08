@@ -116,6 +116,13 @@ class Database:
             Path(self.url.removeprefix("sqlite:///")).parent.mkdir(parents=True, exist_ok=True)
         Base.metadata.create_all(self.engine)
 
+    def ensure_schema(self) -> None:
+        """Startup schema step for every process: Alembic for file databases, `create_all` in memory."""
+        from intomd_api.migrate import ensure_schema
+
+        if ensure_schema(self.url) == "skipped":
+            self.create_all()
+
     @contextmanager
     def session(self) -> Iterator[Session]:
         with self._sessions() as s, s.begin():
