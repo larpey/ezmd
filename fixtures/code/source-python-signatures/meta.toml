@@ -1,0 +1,13 @@
+converter = "code.source_file"
+max_seconds = 30
+hand_edited = false
+notes = "The same module in signatures-only mode (ast): imports, constants, signatures, docstrings, bodies as ..."
+expected_errors = []
+
+[input]
+options = { "extra.signatures_only" = true }
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

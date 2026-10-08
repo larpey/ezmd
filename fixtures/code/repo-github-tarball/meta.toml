@@ -1,0 +1,13 @@
+converter = "code.repo_pack"
+max_seconds = 30
+hand_edited = false
+notes = "A GitHub codeload tarball (owner-repo-sha/ root, pax comment with the commit sha) as fetched by the pipeline after code.repo_pack raised FetchRequired for https://github.com/acme/stockroom/tree/main."
+expected_errors = []
+
+[input]
+url = "https://codeload.github.com/acme/stockroom/tar.gz/main"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

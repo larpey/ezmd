@@ -1003,6 +1003,7 @@ dependencies = [
     { name = "charset-normalizer" },
     { name = "markdown-it-py" },
     { name = "mdit-py-plugins" },
+    { name = "pathspec" },
 ]
 
 [package.metadata]
@@ -1010,6 +1011,7 @@ requires-dist = [
     { name = "charset-normalizer", specifier = ">=3.4" },
     { name = "markdown-it-py", specifier = ">=3.0" },
     { name = "mdit-py-plugins", specifier = ">=0.4" },
+    { name = "pathspec", specifier = ">=0.12.1" },
 ]
 
 [[package]]

@@ -1,0 +1,4 @@
+# Code is packed verbatim (docs/spec/part2.md 8g: text_similarity 0.999 on included code).
+[converters]
+"code.source_file" = 0.99
+"code.repo_pack" = 0.99

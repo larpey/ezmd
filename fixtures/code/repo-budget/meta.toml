@@ -1,0 +1,13 @@
+converter = "code.repo_pack"
+max_seconds = 30
+hand_edited = false
+notes = "The repo-small tree with token_budget=1100, forcing all five budget actions; the tree stays complete."
+expected_errors = []
+
+[input]
+options = { "extra.token_budget" = 1100 }
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

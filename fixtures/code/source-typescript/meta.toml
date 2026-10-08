@@ -1,0 +1,10 @@
+converter = "code.source_file"
+max_seconds = 30
+hand_edited = false
+notes = "A TypeScript file detected by Magika as application/typescript."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

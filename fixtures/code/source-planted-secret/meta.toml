@@ -1,0 +1,10 @@
+converter = "code.source_file"
+max_seconds = 30
+hand_edited = false
+notes = "Planted fake secrets (generic assignments, a PEM private key block, a password in a URL) must be redacted as [REDACTED:<rule>]; the placeholder password stays visible."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"

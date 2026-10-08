@@ -1,0 +1,2040 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "stockroom"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "17 files packed (25,316 source bytes, 7,208 tokens). Languages: python 68%, javascript 30%, typescript 2%. Not packed: 1 binary; 3 in default-excluded directories; 4 ignored by .gitignore/.intomdignore; 1 minified or source maps; 2 credential files."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Directory tree"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "stockroom/\n├── build/ (excluded, 1 file)\n├── docs/\n│   ├── deploy/\n│   │   └── signing.pem (excluded: secret file)\n│   └── notes_utf16.txt\n├── node_modules/ (excluded, 2 files)\n├── src/\n│   └── stockroom/\n│       ├── helpers/\n│       │   ├── .gitignore\n│       │   └── units.py\n│       ├── proto/\n│       │   └── item_pb2.py\n│       ├── __init__.py\n│       ├── inventory.py\n│       └── scale.py\n├── tests/\n│   ├── fixtures/\n│   │   └── creds.txt\n│   └── test_inventory.py\n├── web/\n│   ├── bundle.js\n│   ├── greeter.ts\n│   ├── logo.png (excluded: binary)\n│   └── vendor.min.js (excluded: minified)\n├── .env (excluded: secret file)\n├── .gitignore\n├── LICENSE\n├── README.md\n├── keep.log\n├── pyproject.toml\n└── uv.lock",
+        "filename": null,
+        "id": "b0004",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Files"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "bytes": "140",
+          "language": "markdown",
+          "packed_bytes": "139",
+          "tokens": "34"
+        },
+        "id": "b0006",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "README.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "README.md"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "# stockroom\n\nA small inventory service used as an intomd repo-pack fixture.\n\nRun `python -m stockroom` to print items that need reordering.",
+        "filename": "README.md",
+        "id": "b0007",
+        "language": "markdown",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "README.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "54",
+          "language": "gitignore",
+          "packed_bytes": "53",
+          "tokens": "17"
+        },
+        "id": "b0008",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": ".gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ".gitignore"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "*.log\n!keep.log\nbuild/\nlocal_settings.py\n__pycache__/",
+        "filename": ".gitignore",
+        "id": "b0009",
+        "language": "gitignore",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": ".gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "54",
+          "language": "text",
+          "packed_bytes": "53",
+          "tokens": "13"
+        },
+        "id": "b0010",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "LICENSE",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "LICENSE"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "CC0 1.0 Universal (fixture placeholder license text).",
+        "filename": "LICENSE",
+        "id": "b0011",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "LICENSE",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "50",
+          "language": "text",
+          "packed_bytes": "49",
+          "tokens": "20"
+        },
+        "id": "b0012",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "keep.log",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "keep.log"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "2026-01-01 00:00:00 INFO kept by a !negation rule",
+        "filename": "keep.log",
+        "id": "b0013",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "keep.log",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "131",
+          "language": "toml",
+          "packed_bytes": "130",
+          "tokens": "40"
+        },
+        "id": "b0014",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "pyproject.toml",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "pyproject.toml"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "[project]\nname = \"stockroom\"\nversion = \"0.1.0\"\ndescription = \"Tiny inventory service (intomd fixture).\"\nrequires-python = \">=3.12\"",
+        "filename": "pyproject.toml",
+        "id": "b0015",
+        "language": "toml",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "pyproject.toml",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "7910",
+          "language": "text",
+          "packed_bytes": "4939",
+          "tokens": "2637"
+        },
+        "id": "b0016",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 80,
+          "line_start": 1,
+          "page_label": null,
+          "path": "uv.lock",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "uv.lock"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "package-000==1.0.0 --hash=sha256:250a6728a4773d005822ae1bd6f1967b7107d692e8197e1502d9659017b278c4\npackage-001==1.1.0 --hash=sha256:3634c0e5a62cc707990c82dc542ddd601ef8b3e922d0f954067b3c605ca33f73\npackage-002==1.2.0 --hash=sha256:0f89a1134b81894b74e4f36c5446fe657a0dda8a5f70dfca3218aef79baad576\npackage-003==1.3.0 --hash=sha256:a8f39ace60c2712c62f4ef4109aa1797a3ab490f8a8258c51ec5454489eb4a2e\npackage-004==1.4.0 --hash=sha256:6c1aa1c6fc8b2d9b2dd5a17773ec8c7d9385c18021d06c626ee85572baa58725\npackage-005==1.5.0 --hash=sha256:a6809728f2d3b196e8f742e1e3ddae6c623071229a0e9f5385cb455fe5799c14\npackage-006==1.6.0 --hash=sha256:116fc250919cf1defc4c00acd652cae2c82638af5d55ac90736fbce0426e04c4\npackage-007==1.7.0 --hash=sha256:334ca2826616d498e9e24bf6a061623560cfa0bbfdce68f1f5709d0a8b2d3dc0\npackage-008==1.8.0 --hash=sha256:09bab8f8dc2c41f48d44eec90826d8eb1df65091b6693460a1a446758e4a000b\npackage-009==1.9.0 --hash=sha256:3d2024cada10b07249e560a3ba263d06785833e6dd90ed3dc157cf7e7847d77b\npackage-010==1.10.0 --hash=sha256:d076f85118186aa719e5fd6de92807e4b1e9b3997b64bf33ea016245e5f09649\npackage-011==1.11.0 --hash=sha256:96d361920ed212d32c5e2a069dc0f257668937f1fe032af2ce2ca2ef836199d3\npackage-012==1.12.0 --hash=sha256:dd50b461c567d5d93b0b68e87afb68639c7e8637e33197d9c783d8d556674d4a\npackage-013==1.13.0 --hash=sha256:c2a322ff54db0ab9c676a196f8f1403c94315e6bfafc9581524f97a3a0e3fe83\npackage-014==1.14.0 --hash=sha256:6cf389abd87e8c9b0c4e6aacc26ea7da346508560a9176480f9088b1b5827a76\npackage-015==1.15.0 --hash=sha256:ca065b1e2d82afda5e2ddb07ded93a1e7b71aac764ab8eb1d53ba8fd343bc4a6\npackage-016==1.16.0 --hash=sha256:6be685096bcd1103bcc5bc580918d3634b7945cf859301b673eb31d8bcf7631b\npackage-017==1.17.0 --hash=sha256:15fd70346e1397dfb5aa402f5261bfe521b580ecaf6422be4c40dabd7188a6fc\npackage-018==1.18.0 --hash=sha256:b6f038e622242643bd4f432a55ed5f32171d35194cda4c265288772e35b27248\npackage-019==1.19.0 --hash=sha256:814420cf741df90f967f52a017fe5ff52fd47a9a39da65c1ea8ae7b0d081af55\npackage-020==1.20.0 --hash=sha256:e5df16e469c09a8a22f429cacf535aa52885fd935a55ba2623ad5c4899f80ccb\npackage-021==1.21.0 --hash=sha256:c149c2429585aa6a2406bfc8171803e1e53aa6d44033963f7e7ed64dfb65a23a\npackage-022==1.22.0 --hash=sha256:3cb43ad1c8b2a9a998c0f96c9cd4d3fddfbbd2b03fd1cd35bc436e0bbb92611a\npackage-023==1.23.0 --hash=sha256:7c089557d89057c8e0ac9b3629035585415e8d6d105e9f3bfdd7abc64f0c917e\npackage-024==1.24.0 --hash=sha256:817c663b13646fe5dea07947c87849cf928fc24665d75b731a2b361cbe224743\npackage-025==1.25.0 --hash=sha256:e2dd213a2b4a302c46b8c34d3a92a893e7f1ba1f83be7433bebae4a950f4aaac\npackage-026==1.26.0 --hash=sha256:f53bc6d661a27da3de840c9a7caa174e76d87ea8f6e0ad39cb1709fe9b1a398b\npackage-027==1.27.0 --hash=sha256:2328ed0068f9f7c5ddb56055aac802a002ba1a0b299aa6f06c21affa34ae0767\npackage-028==1.28.0 --hash=sha256:46fc2e2a90ea212a9fb2fedbb354a3159d91b15cacb00ffee3f9c1856fb8038b\npackage-029==1.29.0 --hash=sha256:8da9c6ec6268c31bb0c0424f414080efb0027c4347ecb7be2f9bb65da24b5cea\npackage-030==1.30.0 --hash=sha256:f788c6874ef23b6742a656e18eedc8c29133a6d83dd8aeed958398a61079e695\npackage-031==1.31.0 --hash=sha256:148601b1025d7e471c876101678b2090946b055dc1e6958393f5493b2d891c4f\npackage-032==1.32.0 --hash=sha256:0b359e1f7f578129edc5db839000361f0b7a2beaa17e03d60c77769bde8b1296\npackage-033==1.33.0 --hash=sha256:7db62ae06baa1d8ef099e1ff2d9621568de7e56100b1987800e47daa18c6458a\npackage-034==1.34.0 --hash=sha256:2c9cae5d7f268e73794266f8e98f0d1d711f1799ae9bc184dcdec86e8ed129e2\npackage-035==1.35.0 --hash=sha256:cca21c5c3ed1b74171d6209ea243b2877b8ef358160ec7ada893548453fdf60d\npackage-036==1.36.0 --hash=sha256:270170dc62d17edac18ef7715cd68ccb7f0831635764d3f41e5cd7a995754c31\npackage-037==1.37.0 --hash=sha256:d2bbcc5465c9e527255a58ebc96c69a187e01723226651ba21f5ea53335ddc43\npackage-038==1.38.0 --hash=sha256:c9b7e12890c548734fbb2bb2c87f74ee6ced9176e6961a06f226199930f33999\npackage-039==1.39.0 --hash=sha256:12f2ce9075f78827e5cf78568fc3edd35e60d22c5e616656f933107a67d11f98\npackage-040==1.40.0 --hash=sha256:7b30987814e77084457c23ea97cb2f0e9d3bcfd3d32ecd9d11bff08b4fed47a4\npackage-041==1.41.0 --hash=sha256:79c7de7356cd22f8759c28df8832bac402f33a0223d4efe1933babdc3e847418\npackage-042==1.42.0 --hash=sha256:4dfa48f8615da30bc47c2f5e61a62c5ef697d382db04683b4e6b2ea5482e1a8d\npackage-043==1.43.0 --hash=sha256:3408182845d3c7ad68e28cc09701b1f9263091ea4d7ed696682b3114e94cf7d9\npackage-044==1.44.0 --hash=sha256:115fec9f920d09b5fcc945b950e80607f5b05433bf3ca478cd71d159e756cc58\npackage-045==1.45.0 --hash=sha256:9ccaa935e88588ba6df1fe4a29ca5fe09d4395968487881a5723e0d0ebfed55e\npackage-046==1.46.0 --hash=sha256:5fb4b2bdc237783e96d6aa827f864fe6cdfa8f4b15a4eaf139f723e3ce4e983b\npackage-047==1.47.0 --hash=sha256:da25524c329a1bb3c88ef1e0000102ccbf592c64c53feab6554133cb66c875ba\npackage-048==1.48.0 --hash=sha256:65c7b0bb3edf7515fde23bc6929d31737e75860e395659325685049297b5c3de\npackage-049==1.49.0 --hash=sha256:40eb85ccb1b015f1bcab47dc0c1351916a912c1c73c6cf95652bc73511150148\n... (lockfile truncated, 30 more lines)",
+        "filename": "uv.lock",
+        "id": "b0017",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 80,
+          "line_start": 1,
+          "page_label": null,
+          "path": "uv.lock",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "4996",
+          "language": "javascript",
+          "packed_bytes": "2000",
+          "tokens": "1036"
+        },
+        "id": "b0018",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/bundle.js",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "web/bundle.js"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "!function(){var a0=0;var a1=1;var a2=2;var a3=3;var a4=4;var a5=5;var a6=6;var a7=7;var a8=8;var a9=9;var a10=10;var a11=11;var a12=12;var a13=13;var a14=14;var a15=15;var a16=16;var a17=17;var a18=18;var a19=19;var a20=20;var a21=21;var a22=22;var a23=23;var a24=24;var a25=25;var a26=26;var a27=27;var a28=28;var a29=29;var a30=30;var a31=31;var a32=32;var a33=33;var a34=34;var a35=35;var a36=36;var a37=37;var a38=38;var a39=39;var a40=40;var a41=41;var a42=42;var a43=43;var a44=44;var a45=45;var a46=46;var a47=47;var a48=48;var a49=49;var a50=50;var a51=51;var a52=52;var a53=53;var a54=54;var a55=55;var a56=56;var a57=57;var a58=58;var a59=59;var a60=60;var a61=61;var a62=62;var a63=63;var a64=64;var a65=65;var a66=66;var a67=67;var a68=68;var a69=69;var a70=70;var a71=71;var a72=72;var a73=73;var a74=74;var a75=75;var a76=76;var a77=77;var a78=78;var a79=79;var a80=80;var a81=81;var a82=82;var a83=83;var a84=84;var a85=85;var a86=86;var a87=87;var a88=88;var a89=89;var a90=90;var a91=91;var a92=92;var a93=93;var a94=94;var a95=95;var a96=96;var a97=97;var a98=98;var a99=99;var a100=100;var a101=101;var a102=102;var a103=103;var a104=104;var a105=105;var a106=106;var a107=107;var a108=108;var a109=109;var a110=110;var a111=111;var a112=112;var a113=113;var a114=114;var a115=115;var a116=116;var a117=117;var a118=118;var a119=119;var a120=120;var a121=121;var a122=122;var a123=123;var a124=124;var a125=125;var a126=126;var a127=127;var a128=128;var a129=129;var a130=130;var a131=131;var a132=132;var a133=133;var a134=134;var a135=135;var a136=136;var a137=137;var a138=138;var a139=139;var a140=140;var a141=141;var a142=142;var a143=143;var a144=144;var a145=145;var a146=146;var a147=147;var a148=148;var a149=149;var a150=150;var a151=151;var a152=152;var a153=153;var a154=154;var a155=155;var a156=156;var a157=157;var a158=158;var a159=159;var a160=160;var a161=161;var a162=162;var a163=163;var a164=164;var a165=165;var a166=166;var a167=167;var a168=168;var a169=16\n... (minified, truncated, 2,996 more characters)",
+        "filename": "web/bundle.js",
+        "id": "b0019",
+        "language": "javascript",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/bundle.js",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "330",
+          "language": "typescript",
+          "packed_bytes": "329",
+          "tokens": "83"
+        },
+        "id": "b0020",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 14,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/greeter.ts",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "web/greeter.ts"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "// greeter.ts: a tiny TypeScript module (intomd fixture).\nimport { format } from \"./format\";\n\nexport interface Greeting {\n  name: string;\n  excited?: boolean;\n}\n\nexport function greet(g: Greeting): string {\n  const base = format(`Hello, ${g.name}`);\n  return g.excited ? base + \"!\" : base;\n}\n\nexport const DEFAULT_NAME = 'world';",
+        "filename": "web/greeter.ts",
+        "id": "b0021",
+        "language": "typescript",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 14,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/greeter.ts",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "26",
+          "language": "python",
+          "packed_bytes": "24",
+          "tokens": "5"
+        },
+        "id": "b0022",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/__init__.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/__init__.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "\"\"\"stockroom package.\"\"\"",
+        "filename": "src/stockroom/__init__.py",
+        "id": "b0023",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/__init__.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "1856",
+          "language": "python",
+          "packed_bytes": "1855",
+          "tokens": "475"
+        },
+        "id": "b0024",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 67,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/inventory.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/inventory.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an intomd fixture.\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        return self.quantity <= threshold\n\n    def restock(self, amount: int) -> None:\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.quantity += amount\n\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        self._items: dict[str, Item] = {}\n\n    def add(self, item: Item) -> None:\n        self._items[item.sku] = item\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        return sorted((i for i in self._items.values() if i.needs_reorder()), key=lambda i: i.sku)\n\n    def to_json(self) -> str:\n        return json.dumps({sku: item.quantity for sku, item in self._items.items()}, indent=2)\n\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    sent = 0\n    for _attempt in range(retries):\n        sent = len(inventory.low_stock())\n    return sent\n\n\ndef main() -> None:\n    inv = Inventory()\n    inv.add(Item(\"A-1\", \"Widget\", 3))\n    inv.add(Item(\"B-2\", \"Gadget\", 40))\n    for item in inv.low_stock():\n        print(f\"reorder {item.sku}: {item.name}\")\n\n\nif __name__ == \"__main__\":\n    main()",
+        "filename": "src/stockroom/inventory.py",
+        "id": "b0025",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 67,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/inventory.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "9187",
+          "language": "python",
+          "packed_bytes": "9186",
+          "tokens": "2692"
+        },
+        "id": "b0026",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 360,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/scale.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/scale.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "\"\"\"Generated-looking helpers to make the repo exceed small token budgets.\"\"\"\n\ndef helper_000(value: int, scale: int = 1) -> int:\n    \"\"\"Scale value by 1 and add a fixed offset.\"\"\"\n    offset = 0\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_001(value: int, scale: int = 2) -> int:\n    \"\"\"Scale value by 2 and add a fixed offset.\"\"\"\n    offset = 7\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_002(value: int, scale: int = 3) -> int:\n    \"\"\"Scale value by 3 and add a fixed offset.\"\"\"\n    offset = 1\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_003(value: int, scale: int = 4) -> int:\n    \"\"\"Scale value by 4 and add a fixed offset.\"\"\"\n    offset = 8\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_004(value: int, scale: int = 5) -> int:\n    \"\"\"Scale value by 5 and add a fixed offset.\"\"\"\n    offset = 2\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_005(value: int, scale: int = 6) -> int:\n    \"\"\"Scale value by 6 and add a fixed offset.\"\"\"\n    offset = 9\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_006(value: int, scale: int = 7) -> int:\n    \"\"\"Scale value by 7 and add a fixed offset.\"\"\"\n    offset = 3\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_007(value: int, scale: int = 8) -> int:\n    \"\"\"Scale value by 8 and add a fixed offset.\"\"\"\n    offset = 10\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_008(value: int, scale: int = 9) -> int:\n    \"\"\"Scale value by 9 and add a fixed offset.\"\"\"\n    offset = 4\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_009(value: int, scale: int = 10) -> int:\n    \"\"\"Scale value by 10 and add a fixed offset.\"\"\"\n    offset = 11\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_010(value: int, scale: int = 11) -> int:\n    \"\"\"Scale value by 11 and add a fixed offset.\"\"\"\n    offset = 5\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_011(value: int, scale: int = 12) -> int:\n    \"\"\"Scale value by 12 and add a fixed offset.\"\"\"\n    offset = 12\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_012(value: int, scale: int = 13) -> int:\n    \"\"\"Scale value by 13 and add a fixed offset.\"\"\"\n    offset = 6\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_013(value: int, scale: int = 14) -> int:\n    \"\"\"Scale value by 14 and add a fixed offset.\"\"\"\n    offset = 0\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_014(value: int, scale: int = 15) -> int:\n    \"\"\"Scale value by 15 and add a fixed offset.\"\"\"\n    offset = 7\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_015(value: int, scale: int = 16) -> int:\n    \"\"\"Scale value by 16 and add a fixed offset.\"\"\"\n    offset = 1\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_016(value: int, scale: int = 17) -> int:\n    \"\"\"Scale value by 17 and add a fixed offset.\"\"\"\n    offset = 8\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_017(value: int, scale: int = 18) -> int:\n    \"\"\"Scale value by 18 and add a fixed offset.\"\"\"\n    offset = 2\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_018(value: int, scale: int = 19) -> int:\n    \"\"\"Scale value by 19 and add a fixed offset.\"\"\"\n    offset = 9\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_019(value: int, scale: int = 20) -> int:\n    \"\"\"Scale value by 20 and add a fixed offset.\"\"\"\n    offset = 3\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_020(value: int, scale: int = 21) -> int:\n    \"\"\"Scale value by 21 and add a fixed offset.\"\"\"\n    offset = 10\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_021(value: int, scale: int = 22) -> int:\n    \"\"\"Scale value by 22 and add a fixed offset.\"\"\"\n    offset = 4\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_022(value: int, scale: int = 23) -> int:\n    \"\"\"Scale value by 23 and add a fixed offset.\"\"\"\n    offset = 11\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_023(value: int, scale: int = 24) -> int:\n    \"\"\"Scale value by 24 and add a fixed offset.\"\"\"\n    offset = 5\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_024(value: int, scale: int = 25) -> int:\n    \"\"\"Scale value by 25 and add a fixed offset.\"\"\"\n    offset = 12\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_025(value: int, scale: int = 26) -> int:\n    \"\"\"Scale value by 26 and add a fixed offset.\"\"\"\n    offset = 6\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_026(value: int, scale: int = 27) -> int:\n    \"\"\"Scale value by 27 and add a fixed offset.\"\"\"\n    offset = 0\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_027(value: int, scale: int = 28) -> int:\n    \"\"\"Scale value by 28 and add a fixed offset.\"\"\"\n    offset = 7\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_028(value: int, scale: int = 29) -> int:\n    \"\"\"Scale value by 29 and add a fixed offset.\"\"\"\n    offset = 1\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_029(value: int, scale: int = 30) -> int:\n    \"\"\"Scale value by 30 and add a fixed offset.\"\"\"\n    offset = 8\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_030(value: int, scale: int = 31) -> int:\n    \"\"\"Scale value by 31 and add a fixed offset.\"\"\"\n    offset = 2\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_031(value: int, scale: int = 32) -> int:\n    \"\"\"Scale value by 32 and add a fixed offset.\"\"\"\n    offset = 9\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_032(value: int, scale: int = 33) -> int:\n    \"\"\"Scale value by 33 and add a fixed offset.\"\"\"\n    offset = 3\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_033(value: int, scale: int = 34) -> int:\n    \"\"\"Scale value by 34 and add a fixed offset.\"\"\"\n    offset = 10\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_034(value: int, scale: int = 35) -> int:\n    \"\"\"Scale value by 35 and add a fixed offset.\"\"\"\n    offset = 4\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_035(value: int, scale: int = 36) -> int:\n    \"\"\"Scale value by 36 and add a fixed offset.\"\"\"\n    offset = 11\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_036(value: int, scale: int = 37) -> int:\n    \"\"\"Scale value by 37 and add a fixed offset.\"\"\"\n    offset = 5\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_037(value: int, scale: int = 38) -> int:\n    \"\"\"Scale value by 38 and add a fixed offset.\"\"\"\n    offset = 12\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_038(value: int, scale: int = 39) -> int:\n    \"\"\"Scale value by 39 and add a fixed offset.\"\"\"\n    offset = 6\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset\n\n\ndef helper_039(value: int, scale: int = 40) -> int:\n    \"\"\"Scale value by 40 and add a fixed offset.\"\"\"\n    offset = 0\n    result = value * scale\n    if result > 1000:\n        result = result % 1000\n    return result + offset",
+        "filename": "src/stockroom/scale.py",
+        "id": "b0027",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 360,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/scale.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "15",
+          "language": "gitignore",
+          "packed_bytes": "14",
+          "tokens": "4"
+        },
+        "id": "b0028",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/helpers/.gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/helpers/.gitignore"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "scratch/\n*.tmp",
+        "filename": "src/stockroom/helpers/.gitignore",
+        "id": "b0029",
+        "language": "gitignore",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/helpers/.gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "43",
+          "language": "python",
+          "packed_bytes": "42",
+          "tokens": "21"
+        },
+        "id": "b0030",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/helpers/units.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/helpers/units.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "CM_PER_INCH = 2.54\nGRAMS_PER_OUNCE = 28.35",
+        "filename": "src/stockroom/helpers/units.py",
+        "id": "b0031",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/helpers/units.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "68",
+          "language": "python",
+          "packed_bytes": "67",
+          "tokens": "17"
+        },
+        "id": "b0032",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/proto/item_pb2.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/proto/item_pb2.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "# Generated by the protocol buffer compiler.  DO NOT EDIT!\nITEM = 1",
+        "filename": "src/stockroom/proto/item_pb2.py",
+        "id": "b0033",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/proto/item_pb2.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "72",
+          "language": "text",
+          "packed_bytes": "42",
+          "tokens": "16"
+        },
+        "id": "b0034",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "docs/notes_utf16.txt",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "docs/notes_utf16.txt"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "Notes in UTF-16: café, naïve, 日本語.",
+        "filename": "docs/notes_utf16.txt",
+        "id": "b0035",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "docs/notes_utf16.txt",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "195",
+          "language": "python",
+          "packed_bytes": "194",
+          "tokens": "56"
+        },
+        "id": "b0036",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 7,
+          "line_start": 1,
+          "page_label": null,
+          "path": "tests/test_inventory.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "tests/test_inventory.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "from stockroom.inventory import Inventory, Item\n\n\ndef test_low_stock() -> None:\n    inv = Inventory()\n    inv.add(Item(\"A-1\", \"Widget\", 1))\n    assert [i.sku for i in inv.low_stock()] == ['A-1']",
+        "filename": "tests/test_inventory.py",
+        "id": "b0037",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 7,
+          "line_start": 1,
+          "page_label": null,
+          "path": "tests/test_inventory.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "189",
+          "language": "text",
+          "packed_bytes": "169",
+          "tokens": "42"
+        },
+        "id": "b0038",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": "tests/fixtures/creds.txt",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "tests/fixtures/creds.txt"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "# Test credentials accidentally committed (fake values, intomd fixture).\naws_secret_access_key = [REDACTED:aws_secret_access_key]\nauth_token: '[REDACTED:generic_secret]'",
+        "filename": "tests/fixtures/creds.txt",
+        "id": "b0039",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 3,
+          "line_start": 1,
+          "page_label": null,
+          "path": "tests/fixtures/creds.txt",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:2a313a81687bbf80a7813a03182620e723800a277abb968ba5ae1ed3c56ac1ea",
+    "converter_id": "code.repo_pack",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": "Tiny inventory service (intomd fixture).",
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "bytes": 25316,
+        "excluded.binary": 1,
+        "excluded.default_excluded": 3,
+        "excluded.gitignored": 4,
+        "excluded.minified": 1,
+        "excluded.secret_file": 2,
+        "files": 17,
+        "languages": "python, javascript, typescript",
+        "license_file": "LICENSE",
+        "packed_bytes": 19285,
+        "project": "stockroom",
+        "repo": "stockroom",
+        "tokens": 7208
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/zip",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.repo.zip",
+      "source_type": "repo",
+      "speakers": [],
+      "title": "stockroom"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 2,
+        "detail": {
+          "files": ".env, docs/deploy/signing.pem"
+        },
+        "kind": "secret_file_excluded",
+        "message": "Excluded 2 credential file(s): .env, docs/deploy/signing.pem.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 2,
+        "detail": {
+          "locations": "tests/fixtures/creds.txt:2, tests/fixtures/creds.txt:3",
+          "rule.aws_secret_access_key": 1,
+          "rule.generic_secret": 1
+        },
+        "kind": "secret_redacted",
+        "message": "Redacted 2 value(s) that look like secrets: aws_secret_access_key (1), generic_secret (1).",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 2,
+        "detail": {
+          "links": 1,
+          "unsafe_paths": 1
+        },
+        "kind": "archive_entry_skipped",
+        "message": "Skipped 2 archive entries with unsafe paths or symlinks.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:ccaa7563e5dc3c4be5fd0f4d56be15820d2bd5af5f50e4ddc45d4fb6fed7ebd6",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.repo_pack",
+    "converter_version": "0.0.1",
+    "description": "Tiny inventory service (intomd fixture).",
+    "extra": {
+      "bytes": 25316,
+      "excluded.binary": 1,
+      "excluded.default_excluded": 3,
+      "excluded.gitignored": 4,
+      "excluded.minified": 1,
+      "excluded.secret_file": 2,
+      "files": 17,
+      "languages": "python, javascript, typescript",
+      "license_file": "LICENSE",
+      "packed_bytes": 19285,
+      "project": "stockroom",
+      "repo": "stockroom",
+      "tokens": 7208
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.repo.zip",
+    "source_hash": "sha256:1d0348c51a02da7d5104f42734724bf50e822557104da86ac491a500d4e6ff5e",
+    "source_type": "code",
+    "title": "stockroom",
+    "tokens": {
+      "cl100k_base": 8499,
+      "claude_approx": 9188,
+      "o200k_base": 8507
+    },
+    "truncated": false,
+    "warnings": [
+      "secret_file_excluded",
+      "secret_redacted",
+      "archive_entry_skipped"
+    ],
+    "word_count": 2077
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 18,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 20,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 2411
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.repo_pack",
+    "engines_tried": [
+      "code.repo_pack"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 14319
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0005",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0006",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "README.md",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "README.md",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0008",
+      "line_end": 5,
+      "line_start": 1,
+      "path": ".gitignore",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0009",
+      "line_end": 5,
+      "line_start": 1,
+      "path": ".gitignore",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0010",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "LICENSE",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0011",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "LICENSE",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "keep.log",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0013",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "keep.log",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0014",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "pyproject.toml",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0015",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "pyproject.toml",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0016",
+      "line_end": 80,
+      "line_start": 1,
+      "path": "uv.lock",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0017",
+      "line_end": 80,
+      "line_start": 1,
+      "path": "uv.lock",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0018",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "web/bundle.js",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0019",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "web/bundle.js",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0020",
+      "line_end": 14,
+      "line_start": 1,
+      "path": "web/greeter.ts",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0021",
+      "line_end": 14,
+      "line_start": 1,
+      "path": "web/greeter.ts",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0022",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/__init__.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0023",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/__init__.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0024",
+      "line_end": 67,
+      "line_start": 1,
+      "path": "src/stockroom/inventory.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0025",
+      "line_end": 67,
+      "line_start": 1,
+      "path": "src/stockroom/inventory.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0026",
+      "line_end": 360,
+      "line_start": 1,
+      "path": "src/stockroom/scale.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0027",
+      "line_end": 360,
+      "line_start": 1,
+      "path": "src/stockroom/scale.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0028",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/helpers/.gitignore",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0029",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/helpers/.gitignore",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0030",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/helpers/units.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0031",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/helpers/units.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0032",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/proto/item_pb2.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0033",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/proto/item_pb2.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0034",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "docs/notes_utf16.txt",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0035",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "docs/notes_utf16.txt",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0036",
+      "line_end": 7,
+      "line_start": 1,
+      "path": "tests/test_inventory.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0037",
+      "line_end": 7,
+      "line_start": 1,
+      "path": "tests/test_inventory.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0038",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "tests/fixtures/creds.txt",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0039",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "tests/fixtures/creds.txt",
+      "source": "input.repo.zip",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 2098,
+      "offset_start": 1100,
+      "original_level": 2,
+      "original_title": "Directory tree",
+      "time_end": null,
+      "time_start": null,
+      "title": "Directory tree"
+    },
+    {
+      "block_id": "b0005",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 2119,
+      "offset_start": 2098,
+      "original_level": 2,
+      "original_title": "Files",
+      "time_end": null,
+      "time_start": null,
+      "title": "Files"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 2325,
+      "offset_start": 2119,
+      "original_level": 3,
+      "original_title": "README.md",
+      "time_end": null,
+      "time_start": null,
+      "title": "README.md"
+    },
+    {
+      "block_id": "b0008",
+      "id": "sec-2-2",
+      "level": 3,
+      "number": "2.2",
+      "offset_end": 2448,
+      "offset_start": 2325,
+      "original_level": 3,
+      "original_title": ".gitignore",
+      "time_end": null,
+      "time_start": null,
+      "title": ".gitignore"
+    },
+    {
+      "block_id": "b0010",
+      "id": "sec-2-3",
+      "level": 3,
+      "number": "2.3",
+      "offset_end": 2560,
+      "offset_start": 2448,
+      "original_level": 3,
+      "original_title": "LICENSE",
+      "time_end": null,
+      "time_start": null,
+      "title": "LICENSE"
+    },
+    {
+      "block_id": "b0012",
+      "id": "sec-2-4",
+      "level": 3,
+      "number": "2.4",
+      "offset_end": 2670,
+      "offset_start": 2560,
+      "original_level": 3,
+      "original_title": "keep.log",
+      "time_end": null,
+      "time_start": null,
+      "title": "keep.log"
+    },
+    {
+      "block_id": "b0014",
+      "id": "sec-2-5",
+      "level": 3,
+      "number": "2.5",
+      "offset_end": 2873,
+      "offset_start": 2670,
+      "original_level": 3,
+      "original_title": "pyproject.toml",
+      "time_end": null,
+      "time_start": null,
+      "title": "pyproject.toml"
+    },
+    {
+      "block_id": "b0016",
+      "id": "sec-2-6",
+      "level": 3,
+      "number": "2.6",
+      "offset_end": 7911,
+      "offset_start": 2873,
+      "original_level": 3,
+      "original_title": "uv.lock",
+      "time_end": null,
+      "time_start": null,
+      "title": "uv.lock"
+    },
+    {
+      "block_id": "b0018",
+      "id": "sec-2-7",
+      "level": 3,
+      "number": "2.7",
+      "offset_end": 10037,
+      "offset_start": 7911,
+      "original_level": 3,
+      "original_title": "web/bundle.js",
+      "time_end": null,
+      "time_start": null,
+      "title": "web/bundle.js"
+    },
+    {
+      "block_id": "b0020",
+      "id": "sec-2-8",
+      "level": 3,
+      "number": "2.8",
+      "offset_end": 10445,
+      "offset_start": 10037,
+      "original_level": 3,
+      "original_title": "web/greeter.ts",
+      "time_end": null,
+      "time_start": null,
+      "title": "web/greeter.ts"
+    },
+    {
+      "block_id": "b0022",
+      "id": "sec-2-9",
+      "level": 3,
+      "number": "2.9",
+      "offset_end": 10570,
+      "offset_start": 10445,
+      "original_level": 3,
+      "original_title": "src/stockroom/__init__.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/\\_\\_init\\_\\_.py"
+    },
+    {
+      "block_id": "b0024",
+      "id": "sec-2-10",
+      "level": 3,
+      "number": "2.10",
+      "offset_end": 12526,
+      "offset_start": 10570,
+      "original_level": 3,
+      "original_title": "src/stockroom/inventory.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/inventory.py"
+    },
+    {
+      "block_id": "b0026",
+      "id": "sec-2-11",
+      "level": 3,
+      "number": "2.11",
+      "offset_end": 21805,
+      "offset_start": 12526,
+      "original_level": 3,
+      "original_title": "src/stockroom/scale.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/scale.py"
+    },
+    {
+      "block_id": "b0028",
+      "id": "sec-2-12",
+      "level": 3,
+      "number": "2.12",
+      "offset_end": 21935,
+      "offset_start": 21805,
+      "original_level": 3,
+      "original_title": "src/stockroom/helpers/.gitignore",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/helpers/.gitignore"
+    },
+    {
+      "block_id": "b0030",
+      "id": "sec-2-13",
+      "level": 3,
+      "number": "2.13",
+      "offset_end": 22086,
+      "offset_start": 21935,
+      "original_level": 3,
+      "original_title": "src/stockroom/helpers/units.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/helpers/units.py"
+    },
+    {
+      "block_id": "b0032",
+      "id": "sec-2-14",
+      "level": 3,
+      "number": "2.14",
+      "offset_end": 22264,
+      "offset_start": 22086,
+      "original_level": 3,
+      "original_title": "src/stockroom/proto/item_pb2.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/proto/item_pb2.py"
+    },
+    {
+      "block_id": "b0034",
+      "id": "sec-2-15",
+      "level": 3,
+      "number": "2.15",
+      "offset_end": 22393,
+      "offset_start": 22264,
+      "original_level": 3,
+      "original_title": "docs/notes_utf16.txt",
+      "time_end": null,
+      "time_start": null,
+      "title": "docs/notes_utf16.txt"
+    },
+    {
+      "block_id": "b0036",
+      "id": "sec-2-16",
+      "level": 3,
+      "number": "2.16",
+      "offset_end": 22682,
+      "offset_start": 22393,
+      "original_level": 3,
+      "original_title": "tests/test_inventory.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "tests/test_inventory.py"
+    },
+    {
+      "block_id": "b0038",
+      "id": "sec-2-17",
+      "level": 3,
+      "number": "2.17",
+      "offset_end": 22945,
+      "offset_start": 22682,
+      "original_level": 3,
+      "original_title": "tests/fixtures/creds.txt",
+      "time_end": null,
+      "time_start": null,
+      "title": "tests/fixtures/creds.txt"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 8881,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "files": ".env, docs/deploy/signing.pem"
+      },
+      "kind": "secret_file_excluded",
+      "message": "Excluded 2 credential file(s): .env, docs/deploy/signing.pem.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "locations": "tests/fixtures/creds.txt:2, tests/fixtures/creds.txt:3",
+        "rule.aws_secret_access_key": 1,
+        "rule.generic_secret": 1
+      },
+      "kind": "secret_redacted",
+      "message": "Redacted 2 value(s) that look like secrets: aws_secret_access_key (1), generic_secret (1).",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "links": 1,
+        "unsafe_paths": 1
+      },
+      "kind": "archive_entry_skipped",
+      "message": "Skipped 2 archive entries with unsafe paths or symlinks.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 22,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.py",
+          "source": "input.py",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "lines": "22",
+          "tokens": "135"
+        },
+        "code": "# settings.py: application settings with planted fake secrets (intomd fixture).\nimport os\n\nDEBUG = os.environ.get(\"APP_DEBUG\", \"0\") == \"1\"\nAPI_SECRET_KEY = \"[REDACTED:generic_secret]\"\nSERVICE_TOKEN = [REDACTED:generic_secret]\nDATABASE_PASSWORD = \"changeme\"  # placeholder, must stay visible\nMAX_TOKENS = 4096\n\nSIGNING_KEY_PEM = '''\n[REDACTED:private_key]\n\n\n\n\n\n\n'''\n\n\ndef database_url(host: str) -> str:\n    return f\"postgresql://app:[REDACTED:basic_auth_url]@{host}/app\"",
+        "filename": "input.py",
+        "id": "b0002",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 22,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.py",
+          "source": "input.py",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:9ec9b86b15ed4980d6dfb8b3a51776669d368f6c7e64e5019b9eedcbf4aef3e8",
+    "converter_id": "code.source_file",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "bytes": 814,
+        "language": "python",
+        "lines": 22,
+        "tokens": 135
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/x-python",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.py",
+      "source_type": "code",
+      "speakers": [],
+      "title": "input.py"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 4,
+        "detail": {
+          "locations": "input.py:5, input.py:6, input.py:11, input.py:22",
+          "rule.basic_auth_url": 1,
+          "rule.generic_secret": 2,
+          "rule.private_key": 1
+        },
+        "kind": "secret_redacted",
+        "message": "Redacted 4 value(s) that look like secrets: basic_auth_url (1), generic_secret (2), private_key (1).",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:72d3e2b6a2037eb58ca39cb6cfbcaf493d823007b577caa93c4e24548c12dc36",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.source_file",
+    "converter_version": "0.0.1",
+    "extra": {
+      "bytes": 814,
+      "encoding": "utf-8",
+      "language": "python",
+      "lines": 22,
+      "tokens": 135
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.py",
+    "source_hash": "sha256:3845209bd860f02ab74a7d4e320464c86ddee7f422f253e56bbc453977e51616",
+    "source_type": "code",
+    "title": "input.py",
+    "tokens": {
+      "cl100k_base": 153,
+      "claude_approx": 167,
+      "o200k_base": 155
+    },
+    "truncated": false,
+    "warnings": [
+      "secret_redacted"
+    ],
+    "word_count": 40
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 48
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.source_file",
+    "engines_tried": [
+      "code.source_file"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 814
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 22,
+      "line_start": 1,
+      "path": "input.py",
+      "source": "input.py",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 22,
+      "line_start": 1,
+      "path": "input.py",
+      "source": "input.py",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 421,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 4,
+      "detail": {
+        "locations": "input.py:5, input.py:6, input.py:11, input.py:22",
+        "rule.basic_auth_url": 1,
+        "rule.generic_secret": 2,
+        "rule.private_key": 1
+      },
+      "kind": "secret_redacted",
+      "message": "Redacted 4 value(s) that look like secrets: basic_auth_url (1), generic_secret (2), private_key (1).",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

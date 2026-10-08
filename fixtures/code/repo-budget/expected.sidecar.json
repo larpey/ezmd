@@ -1,0 +1,1357 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "stockroom"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "10 files packed (11,900 source bytes, 835 tokens). Languages: python 68%, javascript 30%, typescript 2%. Not packed: 1 binary; 3 in default-excluded directories; 4 ignored by .gitignore/.intomdignore; 1 minified or source maps; 2 credential files. 7 files left out to fit the token budget (still listed in the tree)."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Directory tree"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "stockroom/\n├── build/ (excluded, 1 file)\n├── docs/\n│   ├── deploy/\n│   │   └── signing.pem (excluded: secret file)\n│   └── notes_utf16.txt\n├── node_modules/ (excluded, 2 files)\n├── src/\n│   └── stockroom/\n│       ├── helpers/\n│       │   ├── .gitignore (omitted: token budget)\n│       │   └── units.py (omitted: token budget)\n│       ├── proto/\n│       │   └── item_pb2.py (omitted: token budget)\n│       ├── __init__.py\n│       ├── inventory.py\n│       └── scale.py\n├── tests/\n│   ├── fixtures/\n│   │   └── creds.txt (omitted: token budget)\n│   └── test_inventory.py (omitted: token budget)\n├── web/\n│   ├── bundle.js (omitted: token budget)\n│   ├── greeter.ts\n│   ├── logo.png (excluded: binary)\n│   └── vendor.min.js (excluded: minified)\n├── .env (excluded: secret file)\n├── .gitignore\n├── LICENSE\n├── README.md\n├── keep.log\n├── pyproject.toml\n└── uv.lock (omitted: token budget)",
+        "filename": null,
+        "id": "b0004",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": ".",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Files"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "bytes": "140",
+          "language": "markdown",
+          "packed_bytes": "139",
+          "tokens": "34"
+        },
+        "id": "b0006",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "README.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "README.md"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "# stockroom\n\nA small inventory service used as an intomd repo-pack fixture.\n\nRun `python -m stockroom` to print items that need reordering.",
+        "filename": "README.md",
+        "id": "b0007",
+        "language": "markdown",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "README.md",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "54",
+          "language": "gitignore",
+          "packed_bytes": "53",
+          "tokens": "17"
+        },
+        "id": "b0008",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": ".gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ".gitignore"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "*.log\n!keep.log\nbuild/\nlocal_settings.py\n__pycache__/",
+        "filename": ".gitignore",
+        "id": "b0009",
+        "language": "gitignore",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": ".gitignore",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "54",
+          "language": "text",
+          "packed_bytes": "53",
+          "tokens": "13"
+        },
+        "id": "b0010",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "LICENSE",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "LICENSE"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "CC0 1.0 Universal (fixture placeholder license text).",
+        "filename": "LICENSE",
+        "id": "b0011",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "LICENSE",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "50",
+          "language": "text",
+          "packed_bytes": "49",
+          "tokens": "20"
+        },
+        "id": "b0012",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "keep.log",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "keep.log"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "2026-01-01 00:00:00 INFO kept by a !negation rule",
+        "filename": "keep.log",
+        "id": "b0013",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "keep.log",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "131",
+          "language": "toml",
+          "packed_bytes": "130",
+          "tokens": "40"
+        },
+        "id": "b0014",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "pyproject.toml",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "pyproject.toml"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "[project]\nname = \"stockroom\"\nversion = \"0.1.0\"\ndescription = \"Tiny inventory service (intomd fixture).\"\nrequires-python = \">=3.12\"",
+        "filename": "pyproject.toml",
+        "id": "b0015",
+        "language": "toml",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 5,
+          "line_start": 1,
+          "page_label": null,
+          "path": "pyproject.toml",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "330",
+          "language": "typescript",
+          "packed_bytes": "329",
+          "tokens": "83"
+        },
+        "id": "b0016",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 14,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/greeter.ts",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "web/greeter.ts"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "// greeter.ts: a tiny TypeScript module (intomd fixture).\nimport { format } from \"./format\";\n\nexport interface Greeting {\n  name: string;\n  excited?: boolean;\n}\n\nexport function greet(g: Greeting): string {\n  const base = format(`Hello, ${g.name}`);\n  return g.excited ? base + \"!\" : base;\n}\n\nexport const DEFAULT_NAME = 'world';",
+        "filename": "web/greeter.ts",
+        "id": "b0017",
+        "language": "typescript",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 14,
+          "line_start": 1,
+          "page_label": null,
+          "path": "web/greeter.ts",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "26",
+          "language": "python",
+          "packed_bytes": "24",
+          "tokens": "5"
+        },
+        "id": "b0018",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/__init__.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/__init__.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "\"\"\"stockroom package.\"\"\"",
+        "filename": "src/stockroom/__init__.py",
+        "id": "b0019",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 2,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/__init__.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "1856",
+          "language": "python",
+          "packed_bytes": "1010",
+          "tokens": "256"
+        },
+        "id": "b0020",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 67,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/inventory.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/inventory.py"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an intomd fixture.\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\n\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        return self.quantity <= threshold\n\n    def restock(self, amount: int) -> None:\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.quantity += amount\n\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        self._items: dict[str, Item] = {}\n\n    def add(self, item: Item) -> None:\n        self._items[item.sku] = item\n... (truncated, 27 more lines)",
+        "filename": "src/stockroom/inventory.py",
+        "id": "b0021",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 67,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/inventory.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "9187",
+          "language": "python",
+          "packed_bytes": "1180",
+          "tokens": "351"
+        },
+        "id": "b0022",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 360,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/scale.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "src/stockroom/scale.py (signatures only)"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "\"\"\"Generated-looking helpers to make the repo exceed small token budgets.\"\"\"\n\ndef helper_000(value: int, scale: int = 1) -> int:\n    \"\"\"Scale value by 1 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_001(value: int, scale: int = 2) -> int:\n    \"\"\"Scale value by 2 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_002(value: int, scale: int = 3) -> int:\n    \"\"\"Scale value by 3 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_003(value: int, scale: int = 4) -> int:\n    \"\"\"Scale value by 4 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_004(value: int, scale: int = 5) -> int:\n    \"\"\"Scale value by 5 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_005(value: int, scale: int = 6) -> int:\n    \"\"\"Scale value by 6 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_006(value: int, scale: int = 7) -> int:\n    \"\"\"Scale value by 7 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_007(value: int, scale: int = 8) -> int:\n    \"\"\"Scale value by 8 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_008(value: int, scale: int = 9) -> int:\n    \"\"\"Scale value by 9 and add a fixed offset.\"\"\"\n    ...\n\ndef helper_009(value: int, scale: int = 10) -> int:\n    \"\"\"Scale value by 10 and add a fixed offset.\"\"\"\n... (truncated, 121 more lines)",
+        "filename": "src/stockroom/scale.py",
+        "id": "b0023",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 360,
+          "line_start": 1,
+          "page_label": null,
+          "path": "src/stockroom/scale.py",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {
+          "bytes": "72",
+          "language": "text",
+          "packed_bytes": "42",
+          "tokens": "16"
+        },
+        "id": "b0024",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "docs/notes_utf16.txt",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "docs/notes_utf16.txt"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "Notes in UTF-16: café, naïve, 日本語.",
+        "filename": "docs/notes_utf16.txt",
+        "id": "b0025",
+        "language": "text",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 1,
+          "line_start": 1,
+          "page_label": null,
+          "path": "docs/notes_utf16.txt",
+          "source": "input.repo.zip",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:96cad1f5242f0502b36ebe7b8aadf3dc283e01ab44e98552fd68b6313947e398",
+    "converter_id": "code.repo_pack",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": "Tiny inventory service (intomd fixture).",
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "budget_actions": "dropped 3 lockfile, generated, or minified file(s) | dropped 2 test file(s) | compressed 1 file(s) over 300 lines to signatures | truncated 2 file(s) to their first 40 lines | dropped 2 file(s) from the deepest directories",
+        "bytes": 11900,
+        "excluded.binary": 1,
+        "excluded.default_excluded": 3,
+        "excluded.gitignored": 4,
+        "excluded.minified": 1,
+        "excluded.secret_file": 2,
+        "files": 10,
+        "languages": "python, javascript, typescript",
+        "license_file": "LICENSE",
+        "packed_bytes": 3009,
+        "project": "stockroom",
+        "repo": "stockroom",
+        "tokens": 835
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/zip",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.repo.zip",
+      "source_type": "repo",
+      "speakers": [],
+      "title": "stockroom"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 5,
+        "detail": {
+          "actions": "dropped 3 lockfile, generated, or minified file(s) | dropped 2 test file(s) | compressed 1 file(s) over 300 lines to signatures | truncated 2 file(s) to their first 40 lines | dropped 2 file(s) from the deepest directories",
+          "budget": 1100
+        },
+        "kind": "token_budget_applied",
+        "message": "Applied the 1,100-token budget: dropped 3 lockfile, generated, or minified file(s); dropped 2 test file(s); compressed 1 file(s) over 300 lines to signatures; truncated 2 file(s) to their first 40 lines; dropped 2 file(s) from the deepest directories.",
+        "page": null,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": 2,
+        "detail": {
+          "files": ".env, docs/deploy/signing.pem"
+        },
+        "kind": "secret_file_excluded",
+        "message": "Excluded 2 credential file(s): .env, docs/deploy/signing.pem.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:93e7a2698ac113932a7541e50a5c35e8d402d4235a90893564d2df29c0a40d8e",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.repo_pack",
+    "converter_version": "0.0.1",
+    "description": "Tiny inventory service (intomd fixture).",
+    "extra": {
+      "budget_actions": "dropped 3 lockfile, generated, or minified file(s) | dropped 2 test file(s) | compressed 1 file(s) over 300 lines to signatures | truncated 2 file(s) to their first 40 lines | dropped 2 file(s) from the deepest directories",
+      "bytes": 11900,
+      "excluded.binary": 1,
+      "excluded.default_excluded": 3,
+      "excluded.gitignored": 4,
+      "excluded.minified": 1,
+      "excluded.secret_file": 2,
+      "files": 10,
+      "languages": "python, javascript, typescript",
+      "license_file": "LICENSE",
+      "packed_bytes": 3009,
+      "project": "stockroom",
+      "repo": "stockroom",
+      "tokens": 835
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.repo.zip",
+    "source_hash": "sha256:20fcfe3c3805a06de500cb6971bb058f55f3105890b75bc091fe9797f03f3244",
+    "source_type": "code",
+    "title": "stockroom",
+    "tokens": {
+      "cl100k_base": 1814,
+      "claude_approx": 1957,
+      "o200k_base": 1812
+    },
+    "truncated": true,
+    "warnings": [
+      "token_budget_applied",
+      "secret_file_excluded"
+    ],
+    "word_count": 611
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 11,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 13,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 642
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.repo_pack",
+    "engines_tried": [
+      "code.repo_pack"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 14040
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0005",
+      "path": ".",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0006",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "README.md",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "README.md",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0008",
+      "line_end": 5,
+      "line_start": 1,
+      "path": ".gitignore",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0009",
+      "line_end": 5,
+      "line_start": 1,
+      "path": ".gitignore",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0010",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "LICENSE",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0011",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "LICENSE",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "keep.log",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0013",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "keep.log",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0014",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "pyproject.toml",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0015",
+      "line_end": 5,
+      "line_start": 1,
+      "path": "pyproject.toml",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0016",
+      "line_end": 14,
+      "line_start": 1,
+      "path": "web/greeter.ts",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0017",
+      "line_end": 14,
+      "line_start": 1,
+      "path": "web/greeter.ts",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0018",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/__init__.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0019",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "src/stockroom/__init__.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0020",
+      "line_end": 67,
+      "line_start": 1,
+      "path": "src/stockroom/inventory.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0021",
+      "line_end": 67,
+      "line_start": 1,
+      "path": "src/stockroom/inventory.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0022",
+      "line_end": 360,
+      "line_start": 1,
+      "path": "src/stockroom/scale.py",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0023",
+      "line_end": 360,
+      "line_start": 1,
+      "path": "src/stockroom/scale.py",
+      "source": "input.repo.zip",
+      "type": "code"
+    },
+    {
+      "block_id": "b0024",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "docs/notes_utf16.txt",
+      "source": "input.repo.zip",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0025",
+      "line_end": 1,
+      "line_start": 1,
+      "path": "docs/notes_utf16.txt",
+      "source": "input.repo.zip",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 2016,
+      "offset_start": 850,
+      "original_level": 2,
+      "original_title": "Directory tree",
+      "time_end": null,
+      "time_start": null,
+      "title": "Directory tree"
+    },
+    {
+      "block_id": "b0005",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 2037,
+      "offset_start": 2016,
+      "original_level": 2,
+      "original_title": "Files",
+      "time_end": null,
+      "time_start": null,
+      "title": "Files"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 2243,
+      "offset_start": 2037,
+      "original_level": 3,
+      "original_title": "README.md",
+      "time_end": null,
+      "time_start": null,
+      "title": "README.md"
+    },
+    {
+      "block_id": "b0008",
+      "id": "sec-2-2",
+      "level": 3,
+      "number": "2.2",
+      "offset_end": 2366,
+      "offset_start": 2243,
+      "original_level": 3,
+      "original_title": ".gitignore",
+      "time_end": null,
+      "time_start": null,
+      "title": ".gitignore"
+    },
+    {
+      "block_id": "b0010",
+      "id": "sec-2-3",
+      "level": 3,
+      "number": "2.3",
+      "offset_end": 2478,
+      "offset_start": 2366,
+      "original_level": 3,
+      "original_title": "LICENSE",
+      "time_end": null,
+      "time_start": null,
+      "title": "LICENSE"
+    },
+    {
+      "block_id": "b0012",
+      "id": "sec-2-4",
+      "level": 3,
+      "number": "2.4",
+      "offset_end": 2588,
+      "offset_start": 2478,
+      "original_level": 3,
+      "original_title": "keep.log",
+      "time_end": null,
+      "time_start": null,
+      "title": "keep.log"
+    },
+    {
+      "block_id": "b0014",
+      "id": "sec-2-5",
+      "level": 3,
+      "number": "2.5",
+      "offset_end": 2791,
+      "offset_start": 2588,
+      "original_level": 3,
+      "original_title": "pyproject.toml",
+      "time_end": null,
+      "time_start": null,
+      "title": "pyproject.toml"
+    },
+    {
+      "block_id": "b0016",
+      "id": "sec-2-6",
+      "level": 3,
+      "number": "2.6",
+      "offset_end": 3199,
+      "offset_start": 2791,
+      "original_level": 3,
+      "original_title": "web/greeter.ts",
+      "time_end": null,
+      "time_start": null,
+      "title": "web/greeter.ts"
+    },
+    {
+      "block_id": "b0018",
+      "id": "sec-2-7",
+      "level": 3,
+      "number": "2.7",
+      "offset_end": 3324,
+      "offset_start": 3199,
+      "original_level": 3,
+      "original_title": "src/stockroom/__init__.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/\\_\\_init\\_\\_.py"
+    },
+    {
+      "block_id": "b0020",
+      "id": "sec-2-8",
+      "level": 3,
+      "number": "2.8",
+      "offset_end": 4464,
+      "offset_start": 3324,
+      "original_level": 3,
+      "original_title": "src/stockroom/inventory.py",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/inventory.py"
+    },
+    {
+      "block_id": "b0022",
+      "id": "sec-2-9",
+      "level": 3,
+      "number": "2.9",
+      "offset_end": 5785,
+      "offset_start": 4464,
+      "original_level": 3,
+      "original_title": "src/stockroom/scale.py (signatures only)",
+      "time_end": null,
+      "time_start": null,
+      "title": "src/stockroom/scale.py (signatures only)"
+    },
+    {
+      "block_id": "b0024",
+      "id": "sec-2-10",
+      "level": 3,
+      "number": "2.10",
+      "offset_end": 5913,
+      "offset_start": 5785,
+      "original_level": 3,
+      "original_title": "docs/notes_utf16.txt",
+      "time_end": null,
+      "time_start": null,
+      "title": "docs/notes_utf16.txt"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 2242,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 5,
+      "detail": {
+        "actions": "dropped 3 lockfile, generated, or minified file(s) | dropped 2 test file(s) | compressed 1 file(s) over 300 lines to signatures | truncated 2 file(s) to their first 40 lines | dropped 2 file(s) from the deepest directories",
+        "budget": 1100
+      },
+      "kind": "token_budget_applied",
+      "message": "Applied the 1,100-token budget: dropped 3 lockfile, generated, or minified file(s); dropped 2 test file(s); compressed 1 file(s) over 300 lines to signatures; truncated 2 file(s) to their first 40 lines; dropped 2 file(s) from the deepest directories.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "files": ".env, docs/deploy/signing.pem"
+      },
+      "kind": "secret_file_excluded",
+      "message": "Excluded 2 credential file(s): .env, docs/deploy/signing.pem.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 14,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.go",
+          "source": "input.go",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.go"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "lines": "14",
+          "tokens": "63"
+        },
+        "code": "// Package shapes computes areas.\npackage shapes\n\nimport \"math\"\n\n// Circle is a round shape.\ntype Circle struct {\n\tRadius float64\n}\n\n// Area returns the area of the circle.\nfunc (c Circle) Area() float64 {\n\treturn math.Pi * c.Radius * c.Radius\n}",
+        "filename": "input.go",
+        "id": "b0002",
+        "language": "go",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 14,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.go",
+          "source": "input.go",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:3933ae88a4eafde3574d4ab379120dcbc2301419717c21a40350ec0835f35ce9",
+    "converter_id": "code.source_file",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "bytes": 246,
+        "language": "go",
+        "lines": 14,
+        "tokens": 63
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/x-golang",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.go",
+      "source_type": "code",
+      "speakers": [],
+      "title": "input.go"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:4467f0b55d8ac0055620946bfcb3432452debcf51b524f3d162f70ea0e10951e",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.source_file",
+    "converter_version": "0.0.1",
+    "extra": {
+      "bytes": 246,
+      "encoding": "utf-8",
+      "language": "go",
+      "lines": 14,
+      "tokens": 63
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.go",
+    "source_hash": "sha256:88bf7f791df925de04960074a47738b1824790f4cbeaf45baf1d65267e7de5a5",
+    "source_type": "code",
+    "title": "input.go",
+    "tokens": {
+      "cl100k_base": 81,
+      "claude_approx": 85,
+      "o200k_base": 79
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 39
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 44
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.source_file",
+    "engines_tried": [
+      "code.source_file"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 246
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 14,
+      "line_start": 1,
+      "path": "input.go",
+      "source": "input.go",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 14,
+      "line_start": 1,
+      "path": "input.go",
+      "source": "input.go",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 343,
+  "warnings": []
+}

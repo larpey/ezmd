@@ -1,0 +1,210 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 67,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.py",
+          "source": "input.py",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.py (signatures only)"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "compressed": "true",
+          "lines": "67",
+          "tokens": "289"
+        },
+        "code": "#!/usr/bin/env python3\n# inventory.py: a tiny stock ledger used as an intomd fixture.\n\n\"\"\"Track stock levels per SKU and report items that need reordering.\"\"\"\n\nfrom __future__ import annotations\nimport json\nfrom dataclasses import dataclass, field\n\nREORDER_THRESHOLD = 5\nLedger = dict[str, int]\n\n@dataclass\nclass Item:\n    \"\"\"One stock-keeping unit.\"\"\"\n\n    sku: str\n    name: str\n    quantity: int = 0\n    tags: list[str] = field(default_factory=list)\n\n    def needs_reorder(self, threshold: int = REORDER_THRESHOLD) -> bool:\n        \"\"\"True when the quantity is at or below the threshold.\"\"\"\n        ...\n\n    def restock(self, amount: int) -> None:\n        ...\n\nclass Inventory:\n    \"\"\"A collection of items keyed by SKU.\"\"\"\n\n    def __init__(self) -> None:\n        ...\n\n    def add(self, item: Item) -> None:\n        ...\n\n    def low_stock(self) -> list[Item]:\n        \"\"\"Items that need reordering, sorted by SKU.\"\"\"\n        ...\n\n    def to_json(self) -> str:\n        ...\n\nasync def sync_remote(inventory: Inventory, endpoint: str, *, retries: int = 3) -> int:\n    \"\"\"Push quantities to a remote endpoint; returns how many items were sent.\"\"\"\n    ...\n\ndef main() -> None:\n    ...",
+        "filename": "input.py",
+        "id": "b0002",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 67,
+          "line_start": 1,
+          "page_label": null,
+          "path": "input.py",
+          "source": "input.py",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:77cef6902234f0e7da881c307b8538751a14fa9034daca4a6fcfffb6eb9e2dcc",
+    "converter_id": "code.source_file",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "bytes": 1856,
+        "language": "python",
+        "lines": 67,
+        "shebang": "python3",
+        "tokens": 289
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/x-python",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "site_name": null,
+      "source": "input.py",
+      "source_type": "code",
+      "speakers": [],
+      "title": "input.py (signatures only)"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:71c9ef5a145022a86a1f57fe8a0ad1bbcb34d0ec56345ab77a1b652e508e2a2c",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "code.source_file",
+    "converter_version": "0.0.1",
+    "extra": {
+      "bytes": 1856,
+      "encoding": "utf-8",
+      "language": "python",
+      "lines": 67,
+      "shebang": "python3",
+      "tokens": 289
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.py",
+    "source_hash": "sha256:1152da8b3c3e5170b60e26fdaa7c8617e05ab2be323f443a546fc45ba0556374",
+    "source_type": "code",
+    "title": "input.py (signatures only)",
+    "tokens": {
+      "cl100k_base": 312,
+      "claude_approx": 335,
+      "o200k_base": 310
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 138
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 158
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "code.source_file",
+    "engines_tried": [
+      "code.source_file"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1856
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "line_end": 67,
+      "line_start": 1,
+      "path": "input.py",
+      "source": "input.py",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "line_end": 67,
+      "line_start": 1,
+      "path": "input.py",
+      "source": "input.py",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 591,
+  "warnings": []
+}

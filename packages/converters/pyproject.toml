@@ -10,6 +10,7 @@ dependencies = [
     "charset-normalizer>=3.4",
     "markdown-it-py>=3.0",
     "mdit-py-plugins>=0.4",
+    "pathspec>=0.12.1",
 ]
 
 [build-system]

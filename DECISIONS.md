@@ -258,3 +258,9 @@ Decision: `intomd-mcp` on the official MCP Python SDK 2.x (MIT): five Phase 1 to
 License policy: add MIT-0 (cffi, via mcp -> pyjwt[crypto] -> cryptography; strictly more permissive than MIT) and MIT-CMU (Pillow, via pikepdf; HPND-family, already allowed as HPND) to the default allowlist.
 `.gitignore`: `data/`, `*.sqlite`, `*.db` are anchored to the repo root; unanchored they silently excluded `packages/mcp/tests/data/` and the data family's fixtures. The repo hygiene test skips when `git ls-files` cannot run (worktree mounted in a container).
 Pending: mount `intomd_mcp.http.build_http_app` at `/mcp` in the API behind key auth (P1-T14/P4).
+
+## D-0025: Code family (P1-T03) merged
+Date: 2026-10-08
+Task: P1-T03
+Status: accepted
+Decision: `code.source_file` (about 43 code mimes, chains `[code.source_file, text.plain]`, specialist ranking per D-0021) and `code.repo_pack` (zip/tar.gz repos, GitHub URLs via a codeload FetchRequired, gitignore, budget actions, signatures-only) with Secretlint-style secret redaction that preserves source line numbering. Sizes are source bytes; `packed_bytes` reports emitted size. Goldens: 8 fixtures, Skeptic-accepted after two review rounds (line numbering, byte counts). The sidecar `redactions` list (part2 8b.4) waits for the core `Document.sidecar_extra` hook. Details: `docs/decisions/P1-T03-code.md`.

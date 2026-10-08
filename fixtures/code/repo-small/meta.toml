@@ -1,0 +1,10 @@
+converter = "code.repo_pack"
+max_seconds = 30
+hand_edited = false
+notes = "Repo zip: nested .gitignore with a !negation, lockfile (truncated to 50 lines), binary, minified bundle, .env and .pem (excluded), node_modules and build (collapsed), UTF-16 file, generated _pb2.py, planted secret in tests/fixtures/creds.txt (redacted), a symlink and a ../ entry (skipped)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/code/_generate.py"
