@@ -1,0 +1,305 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[0]",
+          "source": "input.docm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Expense Policy"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[1]",
+          "source": "input.docm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Claims are paid within ten working days."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[2]",
+          "source": "input.docm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Forms live on the shared drive and the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://intranet.example.com/forms",
+            "math": null,
+            "styles": [],
+            "text": "intranet"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:583df132813b287660da00db4efefb050a09fb9aaf69f3dc1d6e640e1cf67d61",
+    "converter_id": "documents.docx",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.docm",
+      "source_type": "docx",
+      "speakers": [],
+      "title": "Expense Policy"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 3,
+        "detail": {
+          "activex": 0,
+          "external_relationships": 2,
+          "macros": 1,
+          "ole_objects": 0
+        },
+        "kind": "removed_script_or_macro",
+        "message": "Removed macros, external relationships before parsing; nothing was executed.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:5e381b6c38456fdaba5d12423c69abeee38941d49825995120ad5a161594947d",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.docx",
+    "converter_version": "0.0.1",
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.docm",
+    "source_hash": "sha256:16733c98851ba2770724c68a7e74dc6ec467497a743469ddc89d298d2891c2d0",
+    "source_type": "docx",
+    "title": "Expense Policy",
+    "tokens": {
+      "cl100k_base": 37,
+      "claude_approx": 38,
+      "o200k_base": 35
+    },
+    "truncated": false,
+    "warnings": [
+      "removed_script_or_macro"
+    ],
+    "word_count": 19
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://intranet.example.com/forms",
+      "original_href": "https://intranet.example.com/forms",
+      "text": "intranet"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 1,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 18
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.docx",
+    "engines_tried": [
+      "documents.docx"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 3438
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "body[0]",
+      "source": "input.docm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "body[1]",
+      "source": "input.docm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "body[2]",
+      "source": "input.docm",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 273,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 3,
+      "detail": {
+        "activex": 0,
+        "external_relationships": 2,
+        "macros": 1,
+        "ole_objects": 0
+      },
+      "kind": "removed_script_or_macro",
+      "message": "Removed macros, external relationships before parsing; nothing was executed.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

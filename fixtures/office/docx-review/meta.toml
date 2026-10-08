@@ -1,0 +1,10 @@
+converter = "documents.docx"
+max_seconds = 30
+hand_edited = false
+notes = "Tracked insertions, deletions, a move, a formatting change by two authors; three comments incl. a reply and a resolved one; footnote; nested bullet list."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

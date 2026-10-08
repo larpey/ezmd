@@ -1,0 +1,1767 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "style": "title"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[0]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Field Guide to Ponds"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[1]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Introduction"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[2]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Ponds are small bodies of still water. The "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://example.org/ponds",
+            "math": null,
+            "styles": [],
+            "text": "pond survey portal"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " collects records"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ""
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " from volunteers"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "en-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ""
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "role": "textbox"
+        },
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[2]/textbox[0][0]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Safety first"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "role": "textbox"
+        },
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[2]/textbox[0][1]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Never sample alone after dark."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[3]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Visible text continues here."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[4]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Habitats"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[5]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Most ponds have a shallow margin and a deeper centre."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[6]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Plants"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "items": [
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body[8]",
+                  "source": "input.docx",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Common reed"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body[9]",
+                  "source": "input.docx",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Bulrush"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": true,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[7]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Reeds"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [
+                  {
+                    "checked": null,
+                    "children": [],
+                    "children_ordered": false,
+                    "children_start": 1,
+                    "provenance": {
+                      "bbox": null,
+                      "char_end": null,
+                      "char_start": null,
+                      "confidence": null,
+                      "engine": null,
+                      "line_end": null,
+                      "line_start": null,
+                      "page_label": null,
+                      "path": "body[12]",
+                      "source": "input.docx",
+                      "source_id": null,
+                      "source_label": null,
+                      "source_page": null,
+                      "time_end": null,
+                      "time_start": null
+                    },
+                    "spans": [
+                      {
+                        "change": null,
+                        "change_author": null,
+                        "change_id": null,
+                        "footnote_ref": null,
+                        "href": null,
+                        "math": null,
+                        "styles": [],
+                        "text": "Fragrant water lily"
+                      }
+                    ]
+                  }
+                ],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body[11]",
+                  "source": "input.docx",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "White lily"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": true,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[10]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Lilies"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[7]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[13]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Survey method"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[14]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Observe the margin"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[15]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Record each species"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[16]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Report within a week"
+              }
+            ]
+          }
+        ],
+        "ordered": true,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[14]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Reed counts by zone"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "Species"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "Zone"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "Count"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 2,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Common reed"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Shallow margin"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "40"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Deep margin"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 2,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Both zones combined"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "52"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": true,
+        "header_rows": 1,
+        "id": "b0013",
+        "n_cols": 3,
+        "n_rows": 4,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[17]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attribution": null,
+        "attrs": {},
+        "depth": 1,
+        "id": "b0015",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[19]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "A pond is a garden for things that swim."
+          }
+        ],
+        "type": "quote"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[20]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Area ratio: "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": "\\frac{a}{b}+{x}^{2}",
+            "styles": [],
+            "text": "ab+x2"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "code": "count = sum(zone_counts)\nprint(count)",
+        "filename": null,
+        "id": "b0020",
+        "language": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[21]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0019",
+        "level": 4,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[23]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Appendix"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0021",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[24]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Data were collected in spring 2025."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "kind": "footnote"
+        },
+        "id": "fn-1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "footnotes/1",
+          "source": "input.docx",
+          "source_id": "1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Records are checked by a county recorder."
+          }
+        ],
+        "type": "footnote"
+      },
+      {
+        "attrs": {
+          "kind": "endnote"
+        },
+        "id": "en-1",
+        "marker": "i",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "endnotes/1",
+          "source": "input.docx",
+          "source_id": "1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Volunteers are trained each April."
+          }
+        ],
+        "type": "footnote"
+      }
+    ],
+    "content_hash": "sha256:dbc75b3737b03739fe56949665da06faccc22aa650029bd2f412a5b062a562cc",
+    "converter_id": "documents.docx",
+    "metadata": {
+      "author": "Field Team",
+      "authors": [
+        "Field Team"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "revision": "3"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "modified": "2026-01-02T00:00:00Z",
+      "pages": null,
+      "published": "2026-01-01T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.docx",
+      "source_type": "docx",
+      "speakers": [],
+      "title": "Field Guide to Ponds"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 2,
+        "detail": {
+          "hidden_runs": 2
+        },
+        "kind": "removed_hidden_elements",
+        "message": "Excluded 2 hidden or white-on-white text runs from the body.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {},
+        "kind": "textbox_content_relocated",
+        "message": "Moved the content of 1 text boxes after their anchoring paragraphs.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {},
+        "kind": "heading_inferred_from_formatting",
+        "message": "Inferred 1 headings from bold, enlarged text.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [
+    {
+      "block_id": "fn-1",
+      "number": 1,
+      "source_marker": "1"
+    },
+    {
+      "block_id": "en-1",
+      "number": 2,
+      "source_marker": "i"
+    }
+  ],
+  "frontmatter": {
+    "author": "Field Team",
+    "content_hash": "sha256:69b90ee91fd6f791d8f20dec28fcb819150212e7b380e5ec64cfc2d4a100ec13",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.docx",
+    "converter_version": "0.0.1",
+    "created_at": "2026-01-01",
+    "extra": {
+      "revision": "3"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "modified_at": "2026-01-02",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.docx",
+    "source_hash": "sha256:4ae6a392864462c71f31659c89da4578da666ca5b74e8500fa97582806df3ec7",
+    "source_type": "docx",
+    "title": "Field Guide to Ponds",
+    "tokens": {
+      "cl100k_base": 488,
+      "claude_approx": 519,
+      "o200k_base": 481
+    },
+    "truncated": false,
+    "warnings": [
+      "removed_hidden_elements",
+      "textbox_content_relocated",
+      "heading_inferred_from_formatting"
+    ],
+    "word_count": 160
+  },
+  "heading_shift": 1,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://example.org/ponds",
+      "original_href": "https://example.org/ponds",
+      "text": "pond survey portal"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 2,
+      "headings": 6,
+      "images": 0,
+      "links": 1,
+      "list_items": 9,
+      "lists": 2,
+      "page_breaks": 0,
+      "paragraphs": 7,
+      "quotes": 1,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 10,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 115
+    },
+    "duration_seconds": 0.01500000013038516,
+    "engine": "documents.docx",
+    "engines_tried": [
+      "documents.docx"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 5674
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "body[0]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "body[1]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0003",
+      "path": "body[2]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "path": "body[2]/textbox[0][0]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0005",
+      "path": "body[2]/textbox[0][1]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "path": "body[3]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0007",
+      "path": "body[4]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0008",
+      "path": "body[5]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "path": "body[6]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0010",
+      "path": "body[7]",
+      "source": "input.docx",
+      "type": "list"
+    },
+    {
+      "block_id": "b0011",
+      "path": "body[13]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0012",
+      "path": "body[14]",
+      "source": "input.docx",
+      "type": "list"
+    },
+    {
+      "block_id": "b0013",
+      "path": "body[17]",
+      "source": "input.docx",
+      "type": "table"
+    },
+    {
+      "block_id": "b0015",
+      "path": "body[19]",
+      "source": "input.docx",
+      "type": "quote"
+    },
+    {
+      "block_id": "b0016",
+      "path": "body[20]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0020",
+      "path": "body[21]",
+      "source": "input.docx",
+      "type": "code"
+    },
+    {
+      "block_id": "b0019",
+      "path": "body[23]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0021",
+      "path": "body[24]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "fn-1",
+      "path": "footnotes/1",
+      "source": "input.docx",
+      "source_id": "1",
+      "type": "footnote"
+    },
+    {
+      "block_id": "en-1",
+      "path": "endnotes/1",
+      "source": "input.docx",
+      "source_id": "1",
+      "type": "footnote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0002",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 597,
+      "offset_start": 265,
+      "original_level": 1,
+      "original_title": "Introduction",
+      "time_end": null,
+      "time_start": null,
+      "title": "Introduction"
+    },
+    {
+      "block_id": "b0007",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 676,
+      "offset_start": 597,
+      "original_level": 1,
+      "original_title": "Habitats",
+      "time_end": null,
+      "time_start": null,
+      "title": "Habitats"
+    },
+    {
+      "block_id": "b0009",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 803,
+      "offset_start": 676,
+      "original_level": 2,
+      "original_title": "Plants",
+      "time_end": null,
+      "time_start": null,
+      "title": "Plants"
+    },
+    {
+      "block_id": "b0011",
+      "id": "sec-2-1-1",
+      "level": 4,
+      "number": "2.1.1",
+      "offset_end": 1357,
+      "offset_start": 803,
+      "original_level": 3,
+      "original_title": "Survey method",
+      "time_end": null,
+      "time_start": null,
+      "title": "Survey method"
+    },
+    {
+      "block_id": "b0019",
+      "id": "sec-2-1-1-1",
+      "level": 5,
+      "number": "2.1.1.1",
+      "offset_end": 1432,
+      "offset_start": 1357,
+      "original_level": 4,
+      "original_title": "Appendix",
+      "time_end": null,
+      "time_start": null,
+      "title": "Appendix"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0013",
+      "column_types": [
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Species",
+        "Zone",
+        "Count"
+      ],
+      "number": 1,
+      "offset_end": 1227,
+      "offset_start": 912,
+      "page": null,
+      "representation": "html",
+      "rows": 3,
+      "tokens": 113
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 773,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "hidden_runs": 2
+      },
+      "kind": "removed_hidden_elements",
+      "message": "Excluded 2 hidden or white-on-white text runs from the body.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {},
+      "kind": "textbox_content_relocated",
+      "message": "Moved the content of 1 text boxes after their anchoring paragraphs.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {},
+      "kind": "heading_inferred_from_formatting",
+      "message": "Inferred 1 headings from bold, enlarged text.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+converter = "documents.rtf"
+max_seconds = 30
+hand_edited = false
+notes = "RTF plain-text fallback (striprtf): info title and author, paragraphs, a cp1252 escape, a non-breaking space."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

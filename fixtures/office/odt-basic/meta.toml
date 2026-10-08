@@ -1,0 +1,10 @@
+converter = "documents.odf"
+max_seconds = 30
+hand_edited = false
+notes = "ODT without LibreOffice: headings, bold span, footnote, hyperlink, ordered and nested bullet lists, a table."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

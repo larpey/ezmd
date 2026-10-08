@@ -1,0 +1,315 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "para[0]",
+          "source": "input.rtf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Pond Visit Report"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "para[2]",
+          "source": "input.rtf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "We visited the north pond on a bright morning. The water was clear and cold."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "para[4]",
+          "source": "input.rtf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Three newts were seen near the shallow shelf, and one heron flew over twice."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "para[6]",
+          "source": "input.rtf",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Next visit: late May. Bring a net and the café flask."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:25f8ecd34c587e826cb94731df82607e4f1d5769e5c59bdb3bcbc4d41da16129",
+    "converter_id": "documents.rtf",
+    "metadata": {
+      "author": "Field Team",
+      "authors": [
+        "Field Team"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "cp1252",
+      "encoding_confidence": null,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/rtf",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.rtf",
+      "source_type": "rtf",
+      "speakers": [],
+      "title": "Pond Visit Report"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {},
+        "kind": "libreoffice_missing",
+        "message": "LibreOffice is not installed; the RTF was converted as plain text without formatting.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Field Team",
+    "content_hash": "sha256:ea238a104b4d96d1863f622f943a98012af7e287a2bcbbe3a4127abac7be1d44",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.rtf",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "cp1252"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.rtf",
+    "source_hash": "sha256:41fc3fa3c07b6de9fe0eab794f0cda85cb989a3d54ada5cea84e7d87b702560f",
+    "source_type": "other",
+    "title": "Pond Visit Report",
+    "tokens": {
+      "cl100k_base": 57,
+      "claude_approx": 62,
+      "o200k_base": 57
+    },
+    "truncated": false,
+    "warnings": [
+      "libreoffice_missing"
+    ],
+    "word_count": 44
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 3,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 43
+    },
+    "duration_seconds": 0.01500000013038516,
+    "engine": "documents.rtf",
+    "engines_tried": [
+      "documents.rtf"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 393
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "para[0]",
+      "source": "input.rtf",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "para[2]",
+      "source": "input.rtf",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "para[4]",
+      "source": "input.rtf",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "path": "para[6]",
+      "source": "input.rtf",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 321,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {},
+      "kind": "libreoffice_missing",
+      "message": "LibreOffice is not installed; the RTF was converted as plain text without formatting.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

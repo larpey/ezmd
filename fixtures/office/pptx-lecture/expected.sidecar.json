@@ -1,0 +1,1419 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "index": 1,
+        "layout": "Title Slide",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide1",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Pond Ecology 101",
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Pond Ecology 101",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": "b0001",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 1371600.0,
+            "x1": 7772400.0,
+            "y0": 3886200.0,
+            "y1": 5638800.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide1/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 1,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "subtitle",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "An introductory lecture"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "index": 2,
+        "layout": "Title and Content",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Why ponds matter",
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Why ponds matter",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "items": [
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [
+                  {
+                    "checked": null,
+                    "children": [],
+                    "children_ordered": false,
+                    "children_start": 1,
+                    "provenance": null,
+                    "spans": [
+                      {
+                        "change": null,
+                        "change_author": null,
+                        "change_id": null,
+                        "footnote_ref": null,
+                        "href": null,
+                        "math": null,
+                        "styles": [],
+                        "text": "Great crested newt"
+                      }
+                    ]
+                  }
+                ],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Amphibians"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": null,
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Insects"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Habitat for many species"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Store carbon"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 8686800.0,
+            "y0": 1600200.0,
+            "y1": 6126163.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {
+          "slide_part": "notes"
+        },
+        "id": "b0005",
+        "parent_id": "b0003",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide2/notes",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 2,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Start with a show of hands: who has visited a pond this year?"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "index": 3,
+        "layout": "Title Only",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Survey results",
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Survey results",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Site"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Species"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Visits"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "North pond"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "14"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "South pond"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "9"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 2,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Total"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "5"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": true,
+        "header_rows": 1,
+        "id": "b0007",
+        "n_cols": 3,
+        "n_rows": 4,
+        "parent_id": "b0006",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 5943600.0,
+            "y0": 1371600.0,
+            "y1": 3200400.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {
+          "slide_part": "notes"
+        },
+        "id": "b0008",
+        "parent_id": "b0006",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide3/notes",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 3,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "North pond had more visits because it is near the car park."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "index": 4,
+        "layout": "Title Only",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide4",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Species by season",
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Species by season",
+        "type": "slide"
+      },
+      {
+        "attrs": {
+          "chart_type": "columnChart"
+        },
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Chart: Species counted"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Category"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Plants"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Animals"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Spring"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "7"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Summer"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "18"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "11"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0010",
+        "n_cols": 3,
+        "n_rows": 3,
+        "parent_id": "b0009",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 914400.0,
+            "x1": 6400800.0,
+            "y0": 1371600.0,
+            "y1": 5029200.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide4/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 4,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {
+          "hidden": "true"
+        },
+        "id": "b0011",
+        "index": 5,
+        "layout": "Blank",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide5",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": "Backup: methods detail",
+          "source_page": 5,
+          "time_end": null,
+          "time_start": null
+        },
+        "title": "Backup: methods detail",
+        "type": "slide"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "parent_id": "b0011",
+        "provenance": {
+          "bbox": {
+            "page_height": 6858000.0,
+            "page_width": 9144000.0,
+            "x0": 457200.0,
+            "x1": 7772400.0,
+            "y0": 1463040.0,
+            "y1": 3291840.0
+          },
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide5/shape3",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 5,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Quadrats were placed every five metres along the margin."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "slide_part": "notes"
+        },
+        "id": "b0013",
+        "parent_id": "b0011",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "slide5/notes",
+          "source": "input.pptx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": 5,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Only show this slide if asked about methods."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:6166cd80d6528b6afe35e04f38a11fc5d57fe22e9c24c5b822a87af1021f69eb",
+    "converter_id": "documents.pptx",
+    "metadata": {
+      "author": "Field Team",
+      "authors": [
+        "Field Team"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "modified": "2026-01-01T00:00:00Z",
+      "pages": null,
+      "published": "2026-01-01T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": 5,
+      "source": "input.pptx",
+      "source_type": "pptx",
+      "speakers": [],
+      "title": "Pond Ecology 101"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "slides": "5"
+        },
+        "kind": "hidden_slides_included",
+        "message": "Included 1 hidden slides (marked hidden).",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Field Team",
+    "content_hash": "sha256:cb508b2116f15231f7e68b6623e42f3a1a6b167f694941959b2a9b7a806cfa12",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.pptx",
+    "converter_version": "0.0.1",
+    "created_at": "2026-01-01",
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "modified_at": "2026-01-01",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "slides": 5,
+    "source": "input.pptx",
+    "source_hash": "sha256:550b2c0227d70df03ca8db7887518c8fbc29236842128c39f8bf87f5bc5f860d",
+    "source_type": "pptx",
+    "title": "Pond Ecology 101",
+    "tokens": {
+      "cl100k_base": 487,
+      "claude_approx": 524,
+      "o200k_base": 485
+    },
+    "truncated": false,
+    "warnings": [
+      "hidden_slides_included"
+    ],
+    "word_count": 178
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 0,
+      "images": 0,
+      "links": 0,
+      "list_items": 5,
+      "lists": 1,
+      "page_breaks": 0,
+      "paragraphs": 5,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 5,
+      "table_cells": 20,
+      "tables": 2,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 78
+    },
+    "duration_seconds": 0.01500000013038516,
+    "engine": "documents.pptx",
+    "engines_tried": [
+      "documents.pptx"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 43834
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "slide1",
+      "source": "input.pptx",
+      "source_label": "Pond Ecology 101",
+      "source_page": 1,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 1371600.0,
+        "x1": 7772400.0,
+        "y0": 3886200.0,
+        "y1": 5638800.0
+      },
+      "block_id": "b0002",
+      "path": "slide1/shape3",
+      "source": "input.pptx",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "slide2",
+      "source": "input.pptx",
+      "source_label": "Why ponds matter",
+      "source_page": 2,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 8686800.0,
+        "y0": 1600200.0,
+        "y1": 6126163.0
+      },
+      "block_id": "b0004",
+      "path": "slide2/shape3",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "list"
+    },
+    {
+      "block_id": "b0005",
+      "path": "slide2/notes",
+      "source": "input.pptx",
+      "source_page": 2,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "path": "slide3",
+      "source": "input.pptx",
+      "source_label": "Survey results",
+      "source_page": 3,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 5943600.0,
+        "y0": 1371600.0,
+        "y1": 3200400.0
+      },
+      "block_id": "b0007",
+      "path": "slide3/shape3",
+      "source": "input.pptx",
+      "source_page": 3,
+      "type": "table"
+    },
+    {
+      "block_id": "b0008",
+      "path": "slide3/notes",
+      "source": "input.pptx",
+      "source_page": 3,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "path": "slide4",
+      "source": "input.pptx",
+      "source_label": "Species by season",
+      "source_page": 4,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 914400.0,
+        "x1": 6400800.0,
+        "y0": 1371600.0,
+        "y1": 5029200.0
+      },
+      "block_id": "b0010",
+      "path": "slide4/shape3",
+      "source": "input.pptx",
+      "source_page": 4,
+      "type": "table"
+    },
+    {
+      "block_id": "b0011",
+      "path": "slide5",
+      "source": "input.pptx",
+      "source_label": "Backup: methods detail",
+      "source_page": 5,
+      "type": "slide"
+    },
+    {
+      "bbox": {
+        "page_height": 6858000.0,
+        "page_width": 9144000.0,
+        "x0": 457200.0,
+        "x1": 7772400.0,
+        "y0": 1463040.0,
+        "y1": 3291840.0
+      },
+      "block_id": "b0012",
+      "path": "slide5/shape3",
+      "source": "input.pptx",
+      "source_page": 5,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0013",
+      "path": "slide5/notes",
+      "source": "input.pptx",
+      "source_page": 5,
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0001",
+      "id": "slide-1",
+      "level": 2,
+      "number": null,
+      "offset_end": 522,
+      "offset_start": 437,
+      "original_level": 2,
+      "original_title": "Slide 1: Pond Ecology 101",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 1: Pond Ecology 101"
+    },
+    {
+      "block_id": "b0003",
+      "id": "slide-2",
+      "level": 2,
+      "number": null,
+      "offset_end": 757,
+      "offset_start": 522,
+      "original_level": 2,
+      "original_title": "Slide 2: Why ponds matter",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 2: Why ponds matter"
+    },
+    {
+      "block_id": "b0006",
+      "id": "slide-3",
+      "level": 2,
+      "number": null,
+      "offset_end": 1149,
+      "offset_start": 757,
+      "original_level": 2,
+      "original_title": "Slide 3: Survey results",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 3: Survey results"
+    },
+    {
+      "block_id": "b0009",
+      "id": "slide-4",
+      "level": 2,
+      "number": null,
+      "offset_end": 1335,
+      "offset_start": 1149,
+      "original_level": 2,
+      "original_title": "Slide 4: Species by season",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 4: Species by season"
+    },
+    {
+      "block_id": "b0011",
+      "id": "slide-5",
+      "level": 2,
+      "number": null,
+      "offset_end": 1522,
+      "offset_start": 1335,
+      "original_level": 2,
+      "original_title": "Slide 5: Backup: methods detail (hidden)",
+      "time_end": null,
+      "time_start": null,
+      "title": "Slide 5: Backup: methods detail (hidden)"
+    }
+  ],
+  "segments": [],
+  "slides": [
+    {
+      "block_id": "b0001",
+      "index": 1,
+      "title": "Pond Ecology 101"
+    },
+    {
+      "block_id": "b0003",
+      "index": 2,
+      "title": "Why ponds matter"
+    },
+    {
+      "block_id": "b0006",
+      "index": 3,
+      "title": "Survey results"
+    },
+    {
+      "block_id": "b0009",
+      "index": 4,
+      "title": "Species by season"
+    },
+    {
+      "block_id": "b0011",
+      "index": 5,
+      "title": "Backup: methods detail"
+    }
+  ],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0007",
+      "column_types": [
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Site",
+        "Species",
+        "Visits"
+      ],
+      "number": 1,
+      "offset_end": 1075,
+      "offset_start": 813,
+      "page": 3,
+      "representation": "html",
+      "rows": 3,
+      "tokens": 107
+    },
+    {
+      "block_id": "b0010",
+      "column_types": [
+        "text",
+        "number",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Category",
+        "Plants",
+        "Animals"
+      ],
+      "number": 2,
+      "offset_end": 1333,
+      "offset_start": 1208,
+      "page": 4,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 44
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 772,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "slides": "5"
+      },
+      "kind": "hidden_slides_included",
+      "message": "Included 1 hidden slides (marked hidden).",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

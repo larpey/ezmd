@@ -1,0 +1,10 @@
+converter = "documents.pptx"
+max_seconds = 30
+hand_edited = false
+notes = "Five slides: title/subtitle, three-level bullets, table with a merged cell, column chart with two series, a hidden slide titled by a free text box; speaker notes on three slides."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

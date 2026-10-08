@@ -1,0 +1,10 @@
+converter = "documents.docx"
+max_seconds = 30
+hand_edited = false
+notes = "Macro-enabled package with an injected vbaProject.bin, an external attachedTemplate, and a file: hyperlink; all removed before parsing (removed_script_or_macro)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

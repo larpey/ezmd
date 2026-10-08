@@ -1,0 +1,10 @@
+converter = "documents.xlsx"
+max_seconds = 30
+hand_edited = false
+notes = "Three sheets (one hidden), formulas with cached values, a date column, percent and currency formats, two regions on one sheet, a merged header, a named range, a cell comment, a #REF! error."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/office/_generate.py"

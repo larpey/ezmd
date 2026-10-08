@@ -79,6 +79,7 @@ class WarningKind(StrEnum):
     EQUATION_PARTIAL = "equation_partial"
     TRACKED_CHANGES_PRESENT = "tracked_changes_present"
     COMMENTS_PRESENT = "comments_present"
+    SLIDE_CAP_REACHED = "slide_cap_reached"
 
     # Google
     PRIVATE_LINK = "private_link"
@@ -387,6 +388,9 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.LEGACY_TEXT_ONLY, "warning", "office",
              "A legacy binary format was converted as plain text, losing structure.",
              "Save the file as DOCX, XLSX or PPTX and reconvert."),
+    CodeSpec(WarningKind.SLIDE_CAP_REACHED, "warning", "office",
+             "The slide cap was reached; remaining slides were not converted.",
+             "Split the deck, or raise office.max_slides when self-hosting."),
     CodeSpec(WarningKind.LIBREOFFICE_MISSING, "warning", "office",
              "LibreOffice is not installed, so a lower-fidelity path was used.",
              "Install LibreOffice so soffice is on PATH, then reconvert."),
@@ -758,6 +762,7 @@ _TRUNCATING: frozenset[WarningKind] = frozenset(
         WarningKind.PAGE_CAP_REACHED,
         WarningKind.PAGE_TIMEOUT,
         WarningKind.ROW_CAP_REACHED,
+        WarningKind.SLIDE_CAP_REACHED,
         WarningKind.TIMEOUT_PARTIAL,
         WarningKind.TIMEOUT_HARD,
         WarningKind.SITEMAP_TRUNCATED,

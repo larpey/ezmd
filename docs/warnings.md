@@ -55,6 +55,7 @@ Generated from `packages/core/src/intomd/warnings/codes.py` by `tools/gen_warnin
 | `smartart_flattened` | info | office | SmartArt was flattened to a nested list of its text. | Check the source if the diagram's layout carries meaning. |
 | `ole_object_skipped` | warning | office | An embedded OLE object could not be converted and was skipped. | Extract the embedded object from the source and convert it separately. |
 | `legacy_text_only` | warning | office | A legacy binary format was converted as plain text, losing structure. | Save the file as DOCX, XLSX or PPTX and reconvert. |
+| `slide_cap_reached` | warning | office | The slide cap was reached; remaining slides were not converted. | Split the deck, or raise office.max_slides when self-hosting. |
 | `libreoffice_missing` | warning | office | LibreOffice is not installed, so a lower-fidelity path was used. | Install LibreOffice so soffice is on PATH, then reconvert. |
 | `pages_estimated` | info | office | Page numbers are estimated because the format has no fixed pages. | Cite by section heading rather than page number. |
 | `equation_partial` | warning | office | Some equations were converted only partially. | Compare equations with the source; DOCX with native equations converts best. |

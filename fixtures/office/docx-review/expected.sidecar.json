@@ -1,0 +1,1318 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "style": "title"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[0]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Quarterly Review Memo"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[1]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "subtitle",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Draft for the budget committee"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[2]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Summary"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[3]",
+          "source": "input.docx",
+          "source_id": "10000001",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The committee approved the "
+          },
+          {
+            "change": "insert",
+            "change_author": "Alice Moreau",
+            "change_id": "1",
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "annual "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "budget "
+          },
+          {
+            "change": "delete",
+            "change_author": "Bob Tanaka",
+            "change_id": "2",
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "quickly "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "after a short debate."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "anchor_block_id": "b0004",
+        "anchor_text": "budget",
+        "attrs": {},
+        "author": "Carol Diaz",
+        "created": "2026-01-02T13:00:00Z",
+        "id": "c-0",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "comments/0",
+          "source": "input.docx",
+          "source_id": "0",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "reply_to": null,
+        "resolved": false,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Which budget line does this cover?"
+          }
+        ],
+        "type": "comment"
+      },
+      {
+        "anchor_block_id": "b0004",
+        "anchor_text": "budget",
+        "attrs": {},
+        "author": "Alice Moreau",
+        "created": "2026-01-02T14:00:00Z",
+        "id": "c-1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "comments/1",
+          "source": "input.docx",
+          "source_id": "1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "reply_to": "c-0",
+        "resolved": false,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The operating budget only."
+          }
+        ],
+        "type": "comment"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[4]",
+          "source": "input.docx",
+          "source_id": "10000002",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Spending on outreach stays flat"
+          },
+          {
+            "change": "delete",
+            "change_author": "Alice Moreau",
+            "change_id": "3",
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " for now"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          },
+          {
+            "change": "insert",
+            "change_author": "Bob Tanaka",
+            "change_id": "4",
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " The board reviews it in June."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[5]",
+          "source": "input.docx",
+          "source_id": "10000003",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [],
+        "type": "paragraph"
+      },
+      {
+        "anchor_block_id": "b0006",
+        "attrs": {
+          "scope": "paragraph"
+        },
+        "author": "Bob Tanaka",
+        "change": "insert",
+        "created": "2026-01-03T10:00:00Z",
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[5]",
+          "source": "input.docx",
+          "source_id": "10000003",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This paragraph was added during review."
+          }
+        ],
+        "type": "tracked_change"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[6]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Details"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[7]",
+          "source": "input.docx",
+          "source_id": "10000004",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The reserve fund "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "must not"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " fall below three months of costs"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ""
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "anchor_block_id": "b0009",
+        "attrs": {},
+        "author": "Alice Moreau",
+        "change": "format",
+        "created": "2026-01-02T11:00:00Z",
+        "id": "b0010",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[7]",
+          "source": "input.docx",
+          "source_id": "10000004",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "must not"
+          }
+        ],
+        "type": "tracked_change"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[8]",
+          "source": "input.docx",
+          "source_id": "10000005",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [],
+        "type": "paragraph"
+      },
+      {
+        "anchor_block_id": "b0011",
+        "attrs": {
+          "move": "from",
+          "scope": "paragraph"
+        },
+        "author": "Alice Moreau",
+        "change": "delete",
+        "created": "2026-01-02T12:00:00Z",
+        "id": "b0012",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[8]",
+          "source": "input.docx",
+          "source_id": "10000005",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Travel costs are reviewed quarterly."
+          }
+        ],
+        "type": "tracked_change"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[9]",
+          "source": "input.docx",
+          "source_id": "10000006",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Hiring is paused until the audit closes."
+          },
+          {
+            "change": "insert",
+            "change_author": "Alice Moreau",
+            "change_id": "moveTo:8",
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " Travel costs are reviewed quarterly."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "anchor_block_id": "b0013",
+        "anchor_text": "Hiring is paused until the audit closes.",
+        "attrs": {},
+        "author": "Bob Tanaka",
+        "created": "2026-01-02T15:00:00Z",
+        "id": "c-2",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "comments/2",
+          "source": "input.docx",
+          "source_id": "2",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "reply_to": null,
+        "resolved": true,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Confirm the audit date with finance."
+          }
+        ],
+        "type": "comment"
+      },
+      {
+        "attrs": {},
+        "id": "b0014",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[10]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Next steps"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[11]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Circulate the memo"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body[13]",
+                  "source": "input.docx",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "By email"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": null,
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body[14]",
+                  "source": "input.docx",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "At the June meeting"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[12]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Collect objections"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": null,
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body[15]",
+              "source": "input.docx",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Publish the final version"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body[11]",
+          "source": "input.docx",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {
+          "kind": "footnote"
+        },
+        "id": "fn-1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "footnotes/1",
+          "source": "input.docx",
+          "source_id": "1",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Three months is the board's 2025 policy."
+          }
+        ],
+        "type": "footnote"
+      }
+    ],
+    "content_hash": "sha256:41289927cd2f5633bb6d56897b944388a5c381970f55cdcdc3f485da68f00361",
+    "converter_id": "documents.docx",
+    "metadata": {
+      "author": "Alice Moreau",
+      "authors": [
+        "Alice Moreau"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "revision": "3"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "modified": "2026-01-02T00:00:00Z",
+      "pages": null,
+      "published": "2026-01-01T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.docx",
+      "source_type": "docx",
+      "speakers": [],
+      "title": "Quarterly Review Memo"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [
+    {
+      "block_id": "fn-1",
+      "number": 1,
+      "source_marker": "1"
+    }
+  ],
+  "frontmatter": {
+    "author": "Alice Moreau",
+    "content_hash": "sha256:178db156c1b5efd6ff8e77c35817bdad1c4fc8288509727d9a5577b2288100ba",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "documents.docx",
+    "converter_version": "0.0.1",
+    "created_at": "2026-01-01",
+    "extra": {
+      "revision": "3"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "modified_at": "2026-01-02",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.docx",
+    "source_hash": "sha256:fcdf3c201b8ce014fc78c81ec65a0a51921d56b67b649663eee93be143ccde8a",
+    "source_type": "docx",
+    "title": "Quarterly Review Memo",
+    "tokens": {
+      "cl100k_base": 159,
+      "claude_approx": 171,
+      "o200k_base": 158
+    },
+    "truncated": false,
+    "warnings": [
+      "tracked_changes_present",
+      "comments_present"
+    ],
+    "word_count": 92
+  },
+  "heading_shift": 1,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 3,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 1,
+      "headings": 4,
+      "images": 0,
+      "links": 0,
+      "list_items": 5,
+      "lists": 1,
+      "page_breaks": 0,
+      "paragraphs": 7,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 3,
+      "transcript_segments": 0,
+      "words": 110
+    },
+    "duration_seconds": 0.0,
+    "engine": "documents.docx",
+    "engines_tried": [
+      "documents.docx"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 5602
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "body[0]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "body[1]",
+      "source": "input.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "body[2]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "path": "body[3]",
+      "source": "input.docx",
+      "source_id": "10000001",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c-0",
+      "path": "comments/0",
+      "source": "input.docx",
+      "source_id": "0",
+      "type": "comment"
+    },
+    {
+      "block_id": "c-1",
+      "path": "comments/1",
+      "source": "input.docx",
+      "source_id": "1",
+      "type": "comment"
+    },
+    {
+      "block_id": "b0005",
+      "path": "body[4]",
+      "source": "input.docx",
+      "source_id": "10000002",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "path": "body[5]",
+      "source": "input.docx",
+      "source_id": "10000003",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0007",
+      "path": "body[5]",
+      "source": "input.docx",
+      "source_id": "10000003",
+      "type": "tracked_change"
+    },
+    {
+      "block_id": "b0008",
+      "path": "body[6]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0009",
+      "path": "body[7]",
+      "source": "input.docx",
+      "source_id": "10000004",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0010",
+      "path": "body[7]",
+      "source": "input.docx",
+      "source_id": "10000004",
+      "type": "tracked_change"
+    },
+    {
+      "block_id": "b0011",
+      "path": "body[8]",
+      "source": "input.docx",
+      "source_id": "10000005",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0012",
+      "path": "body[8]",
+      "source": "input.docx",
+      "source_id": "10000005",
+      "type": "tracked_change"
+    },
+    {
+      "block_id": "b0013",
+      "path": "body[9]",
+      "source": "input.docx",
+      "source_id": "10000006",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c-2",
+      "path": "comments/2",
+      "source": "input.docx",
+      "source_id": "2",
+      "type": "comment"
+    },
+    {
+      "block_id": "b0014",
+      "path": "body[10]",
+      "source": "input.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0015",
+      "path": "body[11]",
+      "source": "input.docx",
+      "type": "list"
+    },
+    {
+      "block_id": "fn-1",
+      "path": "footnotes/1",
+      "source": "input.docx",
+      "source_id": "1",
+      "type": "footnote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 258,
+      "offset_start": 66,
+      "original_level": 1,
+      "original_title": "Summary",
+      "time_end": null,
+      "time_start": null,
+      "title": "Summary"
+    },
+    {
+      "block_id": "b0008",
+      "id": "sec-1-1",
+      "level": 3,
+      "number": "1.1",
+      "offset_end": 482,
+      "offset_start": 258,
+      "original_level": 2,
+      "original_title": "Details",
+      "time_end": null,
+      "time_start": null,
+      "title": "Details"
+    },
+    {
+      "block_id": "b0014",
+      "id": "sec-1-2",
+      "level": 3,
+      "number": "1.2",
+      "offset_end": 624,
+      "offset_start": 482,
+      "original_level": 2,
+      "original_title": "Next steps",
+      "time_end": null,
+      "time_start": null,
+      "title": "Next steps"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 441,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {},
+      "kind": "tracked_changes_present",
+      "message": "The source contains tracked changes; they were resolved.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {},
+      "kind": "comments_present",
+      "message": "The source contains review comments; they were omitted.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}
