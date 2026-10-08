@@ -15,10 +15,12 @@ export MSYS_NO_PATHCONV=1
 if command -v cygpath >/dev/null 2>&1; then ROOT="$(cygpath -m "$ROOT")"; fi
 IMAGE="python:3.12-slim-bookworm"
 UV_VERSION="0.12.23"
+# One virtualenv volume per checkout, so parallel worktrees never share (and corrupt) a venv.
+VENV_VOLUME="intomd-linux-venv-$(basename "$ROOT" | tr -c "A-Za-z0-9_.-" "_" | tr "A-Z" "a-z")"
 
 exec docker run --rm \
   -v "$ROOT":/src \
-  -v intomd-linux-venv:/venv \
+  -v "$VENV_VOLUME":/venv \
   -v intomd-linux-uv-cache:/root/.cache/uv \
   -e UV_PROJECT_ENVIRONMENT=/venv \
   -e UV_LINK_MODE=copy \
