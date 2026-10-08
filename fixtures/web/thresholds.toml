@@ -1,0 +1,5 @@
+# Web family thresholds (docs/spec/part2.md 5g: text similarity 0.95, headings 0.9, tables 0.9).
+[converters]
+"web.trafilatura" = 0.95
+"web.rules" = 0.95
+"web.html_raw" = 0.9

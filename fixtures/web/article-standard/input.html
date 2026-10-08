@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tide Tables for Small Harbors | Harbor Notes</title>
+<meta name="description" content="How to read a tide table and plan a launch around slack water.">
+<meta property="og:title" content="Tide Tables for Small Harbors">
+<meta property="og:site_name" content="Harbor Notes">
+<meta property="og:description" content="How to read a tide table and plan a launch around slack water.">
+<link rel="canonical" href="https://harbor.example.test/posts/tide-tables">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Tide Tables for Small Harbors",
+ "author": {"@type": "Person", "name": "Mara Quill"}, "datePublished": "2026-03-14T08:00:00Z",
+ "dateModified": "2026-03-15T10:30:00Z", "publisher": {"@type": "Organization", "name": "Harbor Notes"},
+ "keywords": ["tides", "boating", "planning"]}
+</script>
+<script>window.analytics = {track: function () {}};</script>
+<style>.promo { color: #333; }</style>
+</head>
+<body>
+<header class="site-header"><a class="logo" href="/">Harbor Notes</a>
+<nav><ul><li><a href="/">Home</a></li><li><a href="/archive">Archive</a></li>
+<li><a href="/about">About</a></li></ul></nav>
+</header>
+<div id="cookie-banner" class="cookie-consent"><p>We use cookies to improve your experience. By continuing you accept
+our cookie policy.</p><button>Accept all</button><button>Manage</button></div>
+<div class="layout">
+<main>
+<article>
+<header><h1>Tide Tables for Small Harbors</h1>
+<p class="byline">By Mara Quill, March 14, 2026</p></header>
+<p>A tide table tells you when the water is high, when it is low, and how far it will rise or fall. For a small
+harbor with a shallow entrance, those numbers decide whether you can launch at all. This guide walks through
+reading a table and turning it into a launch window.</p>
+<h2>Reading the columns</h2>
+<p>Most tables list the date, the time of each high and low, and the height relative to
+<a href="https://harbor.example.test/glossary#chart-datum">chart datum</a>. Heights can be negative when the water
+drops below the datum, which matters on <em>spring tides</em> after a full or new moon.</p>
+<ul>
+<li>Time of high and low water, in local time</li>
+<li>Height in meters above chart datum
+<ul><li>Positive values: above datum</li><li>Negative values: below datum</li></ul>
+</li>
+<li>Tidal range, the difference between consecutive high and low</li>
+</ul>
+<h2>Planning a launch</h2>
+<p>The rule of twelfths estimates how much the water moves in each hour of a six-hour tide. In the first hour it
+moves one twelfth of the range, then two, three, three, two, and one.</p>
+<ol>
+<li>Find the low water time before your planned launch.</li>
+<li>Compute the range from the neighbouring high water.</li>
+<li>Add the twelfths hour by hour until the depth clears your keel.</li>
+</ol>
+<pre><code class="language-python">def depth_after(hours, low, rng):
+    twelfths = [1, 2, 3, 3, 2, 1]
+    return low + rng * sum(twelfths[:hours]) / 12
+</code></pre>
+<figure><img src="https://harbor.example.test/img/tide-curve.png" alt="A tide curve over twelve hours">
+<figcaption>Water height over one tidal cycle.</figcaption></figure>
+<blockquote><p>Slack water is short. Be ready before it arrives.</p></blockquote>
+<p>Check the harbor notice board for local corrections, and read our <a href="/posts/entrance-bars">guide to
+entrance bars</a> before your first season.</p>
+<footer class="post-tags"><a href="/tag/tides">tides</a> <a href="/tag/boating">boating</a></footer>
+</article>
+<section class="comments" id="comments"><h2>Comments</h2>
+<div class="comment"><p>Great guide, the twelfths table saved my morning.</p></div>
+<div class="comment"><p>Could you cover tidal streams next?</p></div></section>
+</main>
+<aside class="sidebar"><h3>Related posts</h3><ul><li><a href="/posts/anchors">Choosing an anchor</a></li>
+<li><a href="/posts/knots">Five knots to know</a></li></ul>
+<div class="newsletter"><p>Subscribe to our newsletter for weekly harbor tips.</p></div></aside>
+</div>
+<div class="share-buttons"><a href="https://share.example.test/?u=1">Share</a> <a href="https://social.example.test/">Post</a></div>
+<footer class="site-footer"><p>Copyright 2026 Harbor Notes. All rights reserved.</p>
+<ul><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul></footer>
+</body></html>

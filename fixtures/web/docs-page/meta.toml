@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Docs page: table with caption, header row and colspan, code with language from class and from a wrapper class, KaTeX equation, footnote, definition list, details block."
+expected_errors = []
+
+[input]
+url = "https://docs.example.test/quayside/reference/config.html"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

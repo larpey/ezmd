@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Windows-1251 page declared by <meta http-equiv>; must decode to Cyrillic."
+expected_errors = []
+
+[input]
+url = "https://port.example.test/rules"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

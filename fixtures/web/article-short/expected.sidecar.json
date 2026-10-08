@@ -1,0 +1,212 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div > div > h1",
+          "source": "https://marina.example.test/news/closed-monday",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Harbor closed Monday"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "article#1",
+          "source": "https://marina.example.test/news/closed-monday",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The fuel dock and the slipway will be closed on Monday for dredging. Boats on the outer pontoon should move to the visitor berths by Sunday evening. The office stays open for keys and payments, and the harbormaster can be reached on channel 12 during the works. We expect normal service from Tuesday morning."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:618e0e707bce081abca897a23cc9035c7151c0924b03f181f2819d4c8bdcc7a1",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "readability_ratio": 1.0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "marina.example.test",
+      "slides": null,
+      "source": "https://marina.example.test/news/closed-monday",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Harbor closed Monday"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:68740f4e1b7ef334bfc1e762d4b7b0cf72dc2cdf274a0d826119ae265c7b4987",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8",
+      "readability_ratio": 1.0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://marina.example.test/news/closed-monday",
+    "source_hash": "sha256:74621a73f4cf42e10b6b2ba0b7a37392c865478292efe6e7c585d64e1fa82a43",
+    "source_type": "web",
+    "title": "Harbor closed Monday",
+    "tokens": {
+      "cl100k_base": 75,
+      "claude_approx": 81,
+      "o200k_base": 75
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 58
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 57
+    },
+    "duration_seconds": 0.10899999993853271,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 538
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > div > div > h1",
+      "source": "https://marina.example.test/news/closed-monday",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "article#1",
+      "source": "https://marina.example.test/news/closed-monday",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 350,
+  "warnings": []
+}

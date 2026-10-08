@@ -1,0 +1,13 @@
+converter = "web.rules"
+max_seconds = 30
+hand_edited = false
+notes = "Same page as article-standard through the Defuddle-style rule extractor."
+expected_errors = []
+
+[input]
+url = "https://harbor.example.test/posts/tide-tables"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

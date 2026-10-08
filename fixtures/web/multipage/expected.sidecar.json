@@ -1,0 +1,344 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > h1",
+          "source": "https://boats.example.test/build-a-dinghy",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Building a Dinghy, Part 1"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(1)",
+          "source": "https://boats.example.test/build-a-dinghy",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The first weekend is all about the strongback, the flat and level frame that holds the molds while the planks go on. Use straight, dry timber and check the diagonals twice."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(2)",
+          "source": "https://boats.example.test/build-a-dinghy",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Once the strongback is level, set up the molds at the stations marked on the plan and fair them with a long batten until the curve runs without a hump."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(3)",
+          "source": "https://boats.example.test/build-a-dinghy",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Page 1 of 3 "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://boats.example.test/build-a-dinghy?page=2",
+            "math": null,
+            "styles": [],
+            "text": "Next page"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:09aeadaf43b831331aa089674a16736c2bb4ea42debbbd9bf8993b49c76813d2",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "next_page": "https://boats.example.test/build-a-dinghy?page=2",
+        "readability_ratio": 1.0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "boats.example.test",
+      "slides": null,
+      "source": "https://boats.example.test/build-a-dinghy",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Building a Dinghy, Part 1"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "label": "Page 1 of 3",
+          "next_page": "https://boats.example.test/build-a-dinghy?page=2"
+        },
+        "kind": "multipage_article",
+        "message": "The article continues on another page, which was not fetched.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:d731adb953b4582468adedf4e81ad00f94378282fc0ceddae6a059152a215030",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8",
+      "next_page": "https://boats.example.test/build-a-dinghy?page=2",
+      "readability_ratio": 1.0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://boats.example.test/build-a-dinghy",
+    "source_hash": "sha256:f719b339269f444573d7c7f8484164a0c91e7e313998cf567d79995cfb78c0ba",
+    "source_type": "web",
+    "title": "Building a Dinghy, Part 1",
+    "tokens": {
+      "cl100k_base": 110,
+      "claude_approx": 118,
+      "o200k_base": 109
+    },
+    "truncated": false,
+    "warnings": [
+      "multipage_article"
+    ],
+    "word_count": 73
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://boats.example.test/build-a-dinghy?page=2",
+      "original_href": "https://boats.example.test/build-a-dinghy?page=2",
+      "text": "Next page"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 1,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 3,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 72
+    },
+    "duration_seconds": 0.0940000000409782,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 665
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > article > h1",
+      "source": "https://boats.example.test/build-a-dinghy",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(1)",
+      "source": "https://boats.example.test/build-a-dinghy",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(2)",
+      "source": "https://boats.example.test/build-a-dinghy",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(3)",
+      "source": "https://boats.example.test/build-a-dinghy",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 395,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "label": "Page 1 of 3",
+        "next_page": "https://boats.example.test/build-a-dinghy?page=2"
+      },
+      "kind": "multipage_article",
+      "message": "The article continues on another page, which was not fetched.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

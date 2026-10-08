@@ -1,0 +1,1384 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > h1",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Configuration reference"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > p:nth-of-type(1)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Quayside reads "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "code"
+            ],
+            "text": "quayside.toml"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " from the working directory. Every key is optional; the defaults are listed below."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": "fn-1",
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "1"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > h2:nth-of-type(1)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Keys"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Top-level keys"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Default"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "code"
+                ],
+                "text": "berths"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "integer"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "code"
+                ],
+                "text": "tide_source"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "string"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "\"local\""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 3,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Keys below are experimental."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "code"
+                ],
+                "text": "forecast_days"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "integer"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "3"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": true,
+        "header_rows": 1,
+        "id": "b0004",
+        "n_cols": 3,
+        "n_rows": 5,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > table",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > h2:nth-of-type(2)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Example"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "[harbor]\nberths = 24\ntide_source = \"noaa\"",
+        "filename": null,
+        "id": "b0006",
+        "language": "toml",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > div > pre",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > p:nth-of-type(2)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Load it from Python:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "code": "import tomllib\n\nwith open(\"quayside.toml\", \"rb\") as f:\n    config = tomllib.load(f)\nprint(config[\"harbor\"][\"berths\"])",
+        "filename": null,
+        "id": "b0008",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > pre",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > h2:nth-of-type(3)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Fee formula"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > p:nth-of-type(3)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The nightly fee scales with length: "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": "f = b + r L",
+            "styles": [],
+            "text": "f = b + r L"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " where L is the boat length in meters."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > h2:nth-of-type(4)",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Terms"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "kind": "definition"
+        },
+        "id": "b0012",
+        "items": [
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": "web.trafilatura",
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body > main > div > dl > dd:nth-of-type(1)",
+                  "source": "https://docs.example.test/quayside/reference/config.html",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "A numbered mooring place."
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.trafilatura",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > main > div > dl > dt:nth-of-type(1)",
+              "source": "https://docs.example.test/quayside/reference/config.html",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Berth"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": "web.trafilatura",
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body > main > div > dl > dd:nth-of-type(2)",
+                  "source": "https://docs.example.test/quayside/reference/config.html",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "The short period with no tidal stream."
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.trafilatura",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > main > div > dl > dt:nth-of-type(2)",
+              "source": "https://docs.example.test/quayside/reference/config.html",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Slack water"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > dl",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > details > summary",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Migration from version 1"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0014",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > details > p",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Rename "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "code"
+            ],
+            "text": "slips"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " to "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "code"
+            ],
+            "text": "berths"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "fn-1",
+        "marker": "1",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > main > div > section > ol > li",
+          "source": "https://docs.example.test/quayside/reference/config.html",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "section_id": null,
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Paths are resolved relative to the file."
+          }
+        ],
+        "type": "footnote"
+      }
+    ],
+    "content_hash": "sha256:271c63780cead5417d4b55a6bc83a2f3b6366e5adc22e8e34465fecec34948b1",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": "Reference for the quayside.toml configuration file.",
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "readability_ratio": 0.99
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "docs.example.test",
+      "slides": null,
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Configuration reference"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [
+    {
+      "block_id": "fn-1",
+      "number": 1,
+      "source_marker": "1"
+    }
+  ],
+  "frontmatter": {
+    "content_hash": "sha256:5bd451958f8b75432c841c552b7d1b21058ac4f969fed6d00eb715d6cdd37b94",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "description": "Reference for the quayside.toml configuration file.",
+    "extra": {
+      "encoding": "utf-8",
+      "readability_ratio": 0.99
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://docs.example.test/quayside/reference/config.html",
+    "source_hash": "sha256:4288e080820428ccf73942e63542177912d7038a553113563ea23d4ab02ca58f",
+    "source_type": "web",
+    "title": "Configuration reference",
+    "tokens": {
+      "cl100k_base": 453,
+      "claude_approx": 490,
+      "o200k_base": 454
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 149
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 2,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 1,
+      "headings": 6,
+      "images": 0,
+      "links": 0,
+      "list_items": 4,
+      "lists": 1,
+      "page_breaks": 0,
+      "paragraphs": 4,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 13,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 110
+    },
+    "duration_seconds": 0.11000000010244548,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 2280
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > h1",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > p:nth-of-type(1)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > h2:nth-of-type(1)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > table",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "table"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > h2:nth-of-type(2)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > div > pre",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "code"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > p:nth-of-type(2)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > pre",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "code"
+    },
+    {
+      "block_id": "b0009",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > h2:nth-of-type(3)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0010",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > p:nth-of-type(3)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0011",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > h2:nth-of-type(4)",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0012",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > dl",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "list"
+    },
+    {
+      "block_id": "b0013",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > details > summary",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0014",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > details > p",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "fn-1",
+      "engine": "web.trafilatura",
+      "path": "body > main > div > section > ol > li",
+      "source": "https://docs.example.test/quayside/reference/config.html",
+      "type": "footnote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 795,
+      "offset_start": 413,
+      "original_level": 2,
+      "original_title": "Keys",
+      "time_end": null,
+      "time_start": null,
+      "title": "Keys"
+    },
+    {
+      "block_id": "b0005",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1028,
+      "offset_start": 795,
+      "original_level": 2,
+      "original_title": "Example",
+      "time_end": null,
+      "time_start": null,
+      "title": "Example"
+    },
+    {
+      "block_id": "b0009",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 1144,
+      "offset_start": 1028,
+      "original_level": 2,
+      "original_title": "Fee formula",
+      "time_end": null,
+      "time_start": null,
+      "title": "Fee formula"
+    },
+    {
+      "block_id": "b0011",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 1266,
+      "offset_start": 1144,
+      "original_level": 2,
+      "original_title": "Terms",
+      "time_end": null,
+      "time_start": null,
+      "title": "Terms"
+    },
+    {
+      "block_id": "b0013",
+      "id": "sec-4-1",
+      "level": 3,
+      "number": "4.1",
+      "offset_end": 1339,
+      "offset_start": 1266,
+      "original_level": 3,
+      "original_title": "Migration from version 1",
+      "time_end": null,
+      "time_start": null,
+      "title": "Migration from version 1"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0004",
+      "column_types": [
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Type",
+        "Default"
+      ],
+      "number": 1,
+      "offset_end": 793,
+      "offset_start": 433,
+      "page": null,
+      "representation": "html",
+      "rows": 4,
+      "tokens": 132
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 731,
+  "warnings": []
+}

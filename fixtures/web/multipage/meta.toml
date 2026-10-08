@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Page 1 of 3 with rel=next; expects multipage_article and metadata next_page."
+expected_errors = []
+
+[input]
+url = "https://boats.example.test/build-a-dinghy"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

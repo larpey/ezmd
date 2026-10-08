@@ -1,0 +1,255 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > h1",
+          "source": "https://port.example.test/rules",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Правила причала"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(1)",
+          "source": "https://port.example.test/rules",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Швартуйтесь только к своим кольцам. Не оставляйте мусор на понтоне. Топливо выдаётся с восьми до восьми."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(2)",
+          "source": "https://port.example.test/rules",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Капитан порта дежурит на шестнадцатом канале."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:24f3497eaa0b5c2b0e922e1c1c53fa4120ed5786f95ec6ae9dad2c5e40068a8b",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "windows-1251",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "readability_ratio": 1.0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "ru",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "port.example.test",
+      "slides": null,
+      "source": "https://port.example.test/rules",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Правила причала"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:278a0e473bce12bc3746f03ea6f78090f48466d660766245ec1eee447fd0bf98",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "windows-1251",
+      "readability_ratio": 1.0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "ru",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://port.example.test/rules",
+    "source_hash": "sha256:e85b7840a10147573cb015634984ad2d2f9a30de2b79508e940e728d13b78852",
+    "source_type": "web",
+    "title": "Правила причала",
+    "tokens": {
+      "cl100k_base": 87,
+      "claude_approx": 68,
+      "o200k_base": 59
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 25
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 24
+    },
+    "duration_seconds": 0.1869999999180436,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 369
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > article > h1",
+      "source": "https://port.example.test/rules",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(1)",
+      "source": "https://port.example.test/rules",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(2)",
+      "source": "https://port.example.test/rules",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 320,
+  "warnings": []
+}

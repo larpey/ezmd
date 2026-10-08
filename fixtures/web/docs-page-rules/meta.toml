@@ -1,0 +1,13 @@
+converter = "web.rules"
+max_seconds = 30
+hand_edited = false
+notes = "Docs page through the rule extractor."
+expected_errors = []
+
+[input]
+url = "https://docs.example.test/quayside/reference/config.html"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

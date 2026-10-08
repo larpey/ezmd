@@ -8,11 +8,13 @@ license = "Apache-2.0"
 # metadata cycle (see DECISIONS.md D-0003).
 dependencies = [
     "charset-normalizer>=3.4",
+    "lxml>=6.1.3",
     "markdown-it-py>=3.0",
     "mdit-py-plugins>=0.4",
     "pathspec>=0.12.1",
     "pikepdf>=10.0,<11",
     "pypdfium2>=5.0,<6",
+    "trafilatura>=2.3.1,<3",
 ]
 
 [project.optional-dependencies]

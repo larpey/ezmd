@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Blog post with og/JSON-LD metadata, nav, cookie banner, sidebar, share bar, footer, comments (excluded), nested list, code with language, figure with caption, inline links."
+expected_errors = []
+
+[input]
+url = "https://harbor.example.test/posts/tide-tables?utm_source=feed"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Relative, root-relative, query and mailto links; lazy images (data-src, data-srcset), picture srcset on a protocol-relative CDN, an image without alt, an infinite-scroll marker, a PDF link."
+expected_errors = []
+
+[input]
+url = "https://boats.example.test/gallery/rigging/"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

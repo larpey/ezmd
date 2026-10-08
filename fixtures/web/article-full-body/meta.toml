@@ -1,0 +1,13 @@
+converter = "web.html_raw"
+max_seconds = 30
+hand_edited = false
+notes = "Same page through the full-body fallback: structural boilerplate and the cookie banner go, the <aside> sidebar is dropped as a tag, while class-pattern widgets (comments, share bar) stay; warns readability_fallback_full_body."
+expected_errors = []
+
+[input]
+url = "https://harbor.example.test/posts/tide-tables"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

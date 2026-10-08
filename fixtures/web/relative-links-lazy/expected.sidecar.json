@@ -1,0 +1,652 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > h1",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Rigging Gallery"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(1)",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Photos from the spring refit. See the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://boats.example.test/gallery/guides/standing-rigging",
+            "math": null,
+            "styles": [],
+            "text": "standing rigging guide"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://boats.example.test/downloads/refit-checklist.pdf",
+            "math": null,
+            "styles": [],
+            "text": "refit checklist (PDF)"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://boats.example.test/gallery/rigging/?page=2#top",
+            "math": null,
+            "styles": [],
+            "text": "next set"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ", and "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "mailto:crew@example.test",
+            "math": null,
+            "styles": [],
+            "text": "email the crew"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "alt": "Mast step after cleaning",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0003",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(2) > img",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "https://boats.example.test/gallery/rigging/img/mast-step.jpg",
+        "type": "image",
+        "width": null
+      },
+      {
+        "alt": "New shrouds on the spreaders",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0004",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(3) > img",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "https://boats.example.test/gallery/rigging/img/shrouds-1280.jpg",
+        "type": "image",
+        "width": null
+      },
+      {
+        "alt": "Boom vang fitting",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0005",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > picture > source > img",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "https://cdn.example.test/r/boom-1600.webp",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(4)",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Untitled detail shot:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "alt": "image",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0007",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > img",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "https://boats.example.test/img/detail-07.jpg",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p:nth-of-type(5)",
+          "source": "https://boats.example.test/gallery/rigging/",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "More photos load as you scroll."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:774987429c9b7f6d86ef7612f3f4ebca05565a918be3f8e49f5fbe12f89ea025",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "outbound_pdfs": "https://boats.example.test/downloads/refit-checklist.pdf",
+        "readability_ratio": 1.0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "boats.example.test",
+      "slides": null,
+      "source": "https://boats.example.test/gallery/rigging/",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Rigging Gallery"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "infinite_scroll": 1,
+          "lazy_images": 2
+        },
+        "kind": "lazy_content_possible",
+        "message": "The page loads some content lazily; images or sections may be missing without rendering.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {},
+        "kind": "images_without_alt",
+        "message": "1 images have no alt text or caption; they are labeled 'image'.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [
+    {
+      "alt": "Mast step after cleaning",
+      "bbox": null,
+      "block_id": "b0003",
+      "caption": null,
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 496,
+      "offset_start": 330,
+      "page": null,
+      "ref": "https://boats.example.test/gallery/rigging/img/mast-step.jpg"
+    },
+    {
+      "alt": "New shrouds on the spreaders",
+      "bbox": null,
+      "block_id": "b0004",
+      "caption": null,
+      "generated_caption": null,
+      "number": 2,
+      "ocr_text": null,
+      "offset_end": 674,
+      "offset_start": 498,
+      "page": null,
+      "ref": "https://boats.example.test/gallery/rigging/img/shrouds-1280.jpg"
+    },
+    {
+      "alt": "Boom vang fitting",
+      "bbox": null,
+      "block_id": "b0005",
+      "caption": null,
+      "generated_caption": null,
+      "number": 3,
+      "ocr_text": null,
+      "offset_end": 797,
+      "offset_start": 676,
+      "page": null,
+      "ref": "https://cdn.example.test/r/boom-1600.webp"
+    },
+    {
+      "alt": "image",
+      "bbox": null,
+      "block_id": "b0007",
+      "caption": null,
+      "generated_caption": null,
+      "number": 4,
+      "ocr_text": null,
+      "offset_end": 937,
+      "offset_start": 822,
+      "page": null,
+      "ref": "https://boats.example.test/img/detail-07.jpg"
+    }
+  ],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:0831d13d66044df8ada191d905f85fe48ce721e998a186bbc0f28ccd9fa4de9c",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8",
+      "outbound_pdfs": "https://boats.example.test/downloads/refit-checklist.pdf",
+      "readability_ratio": 1.0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://boats.example.test/gallery/rigging/",
+    "source_hash": "sha256:96805a18092a17fb50fbe0d0f1575c5c2c56e1b9c334edc458ded463c4b9eb97",
+    "source_type": "web",
+    "title": "Rigging Gallery",
+    "tokens": {
+      "cl100k_base": 250,
+      "claude_approx": 269,
+      "o200k_base": 249
+    },
+    "truncated": false,
+    "warnings": [
+      "lazy_content_possible",
+      "images_without_alt"
+    ],
+    "word_count": 46
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://boats.example.test/gallery/guides/standing-rigging",
+      "original_href": "https://boats.example.test/gallery/guides/standing-rigging",
+      "text": "standing rigging guide"
+    },
+    {
+      "href": "https://boats.example.test/downloads/refit-checklist.pdf",
+      "original_href": "https://boats.example.test/downloads/refit-checklist.pdf",
+      "text": "refit checklist (PDF)"
+    },
+    {
+      "href": "https://boats.example.test/gallery/rigging/?page=2#top",
+      "original_href": "https://boats.example.test/gallery/rigging/?page=2#top",
+      "text": "next set"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 4,
+      "links": 4,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 3,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 45
+    },
+    "duration_seconds": 0.1720000000204891,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1067
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > article > h1",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(1)",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(2) > img",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "image"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(3) > img",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "image"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "web.trafilatura",
+      "path": "body > article > picture > source > img",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "image"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(4)",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "web.trafilatura",
+      "path": "body > article > img",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "image"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "web.trafilatura",
+      "path": "body > article > p:nth-of-type(5)",
+      "source": "https://boats.example.test/gallery/rigging/",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 543,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "infinite_scroll": 1,
+        "lazy_images": 2
+      },
+      "kind": "lazy_content_possible",
+      "message": "The page loads some content lazily; images or sections may be missing without rendering.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {},
+      "kind": "images_without_alt",
+      "message": "1 images have no alt text or caption; they are labeled 'image'.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "reason": "empty_body_js_required",
+          "stub": "true"
+        },
+        "id": "b0001",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "https://app.example.test/dock",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This page shows its content only after JavaScript runs; the static HTML has no article text. Convert it with browser rendering or the browser extension."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:bb51d23ab85594e5af483426ae505d760fed5f93155d7263701b204cf4918cb5",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": "app.example.test",
+      "slides": null,
+      "source": "https://app.example.test/dock",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Dockmaster"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "elements": 1,
+          "hidden_text": "You need to enable JavaScript to run this app.",
+          "type.noscript": 1
+        },
+        "kind": "removed_hidden_elements",
+        "message": "Removed 1 hidden elements (noscript); their text is in the sidecar.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "root": "#root",
+          "script_bytes": 69535
+        },
+        "kind": "empty_body_js_required",
+        "message": "The page has no content without JavaScript; it needs browser rendering.",
+        "page": null,
+        "severity": "error"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:34ba20506ef79e9f611b8e26e26a0a68014338cfe1d2f20a8687f66999f937ef",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "extra": {
+      "encoding": "utf-8"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://app.example.test/dock",
+    "source_hash": "sha256:7e3e33a17246e135e9d0d245b13c50dd2dd443470478bb07183a3adfbc08e995",
+    "source_type": "web",
+    "title": "Dockmaster",
+    "tokens": {
+      "cl100k_base": 35,
+      "claude_approx": 39,
+      "o200k_base": 36
+    },
+    "truncated": false,
+    "warnings": [
+      "removed_hidden_elements",
+      "empty_body_js_required"
+    ],
+    "word_count": 27
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 0,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 25
+    },
+    "duration_seconds": 0.1869999999180436,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 69808
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "body",
+      "source": "https://app.example.test/dock",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 303,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "elements": 1,
+        "hidden_text": "You need to enable JavaScript to run this app.",
+        "type.noscript": 1
+      },
+      "kind": "removed_hidden_elements",
+      "message": "Removed 1 hidden elements (noscript); their text is in the sidecar.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "root": "#root",
+        "script_bytes": 69535
+      },
+      "kind": "empty_body_js_required",
+      "message": "The page has no content without JavaScript; it needs browser rendering.",
+      "page": null,
+      "severity": "error"
+    }
+  ]
+}

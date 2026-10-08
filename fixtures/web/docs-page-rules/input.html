@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Config reference - Quayside Docs</title>
+<meta name="description" content="Reference for the quayside.toml configuration file."></head>
+<body>
+<nav class="docs-nav" role="navigation"><a href="/docs/">Docs home</a> <a href="/docs/install">Install</a></nav>
+<div class="breadcrumbs"><a href="/docs/">Docs</a> / Reference</div>
+<main role="main">
+<div class="rst-content">
+<h1>Configuration reference</h1>
+<p>Quayside reads <code>quayside.toml</code> from the working directory. Every key is optional; the defaults are
+listed below.<sup><a href="#fn1" id="ref1" role="doc-noteref">1</a></sup></p>
+<h2>Keys</h2>
+<table>
+<caption>Top-level keys</caption>
+<thead><tr><th>Key</th><th>Type</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td><code>berths</code></td><td>integer</td><td>12</td></tr>
+<tr><td><code>tide_source</code></td><td>string</td><td>"local"</td></tr>
+<tr><td colspan="3">Keys below are experimental.</td></tr>
+<tr><td><code>forecast_days</code></td><td>integer</td><td>3</td></tr>
+</tbody>
+</table>
+<h2>Example</h2>
+<div class="highlight-toml"><pre>[harbor]
+berths = 24
+tide_source = "noaa"
+</pre></div>
+<p>Load it from Python:</p>
+<pre><code class="language-python">import tomllib
+
+with open("quayside.toml", "rb") as f:
+    config = tomllib.load(f)
+print(config["harbor"]["berths"])
+</code></pre>
+<h2>Fee formula</h2>
+<p>The nightly fee scales with length:
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>f</mi></mrow>
+<annotation encoding="application/x-tex">f = b + r L</annotation></semantics></math></span>
+<span class="katex-html" aria-hidden="true">f = b + rL</span></span> where L is the boat length in meters.</p>
+<h2>Terms</h2>
+<dl><dt>Berth</dt><dd>A numbered mooring place.</dd>
+<dt>Slack water</dt><dd>The short period with no tidal stream.</dd></dl>
+<details><summary>Migration from version 1</summary><p>Rename <code>slips</code> to <code>berths</code>.</p></details>
+<section class="footnotes" role="doc-endnotes"><ol>
+<li id="fn1"><p>Paths are resolved relative to the file. <a href="#ref1" role="doc-backlink">back</a></p></li>
+</ol></section>
+</div>
+</main>
+<footer role="contentinfo"><p>Quayside documentation, licensed CC0.</p></footer>
+</body></html>

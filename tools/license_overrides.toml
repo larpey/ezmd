@@ -15,6 +15,12 @@ version = "0.4.6"
 url = "https://github.com/tartley/colorama/blob/0.4.6/LICENSE.txt"
 note = "Metadata only has the ambiguous 'BSD License' classifier; LICENSE.txt is the 3-clause text (non-endorsement clause present). Windows-only dependency of click/rich."
 
+[packages.justext]
+license = "BSD-2-Clause"
+version = "3.0.2"
+url = "https://github.com/miso-belica/jusText/blob/v3.0.2/LICENSE.rst"
+note = "Metadata says 'The BSD 2-Clause License' (not an SPDX id); LICENSE.rst has the two redistribution clauses and no non-endorsement clause. Dependency of trafilatura (P1-T02)."
+
 [packages.pypdfium2]
 license = "BSD-3-Clause OR Apache-2.0"
 version = "5.14.0"

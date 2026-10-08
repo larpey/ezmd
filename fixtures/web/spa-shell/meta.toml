@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "JS-only shell: empty #root plus a 50 KB+ inline bundle; expects empty_body_js_required."
+expected_errors = ["empty_body_js_required"]
+
+[input]
+url = "https://app.example.test/dock"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

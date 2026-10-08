@@ -1,0 +1,1378 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > header > h1",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Tide Tables for Small Harbors"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > header > p",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "By Mara Quill, March 14, 2026"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(1)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "A tide table tells you when the water is high, when it is low, and how far it will rise or fall. For a small harbor with a shallow entrance, those numbers decide whether you can launch at all. This guide walks through reading a table and turning it into a launch window."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > h2:nth-of-type(1)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Reading the columns"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(2)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Most tables list the date, the time of each high and low, and the height relative to "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://harbor.example.test/glossary#chart-datum",
+            "math": null,
+            "styles": [],
+            "text": "chart datum"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": ". Heights can be negative when the water drops below the datum, which matters on "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "spring tides"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " after a full or new moon."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > div:nth-of-type(1) > main > article > ul > li:nth-of-type(1)",
+              "source": "https://harbor.example.test/posts/tide-tables",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Time of high and low water, in local time"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": "web.html_raw",
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body > div:nth-of-type(1) > main > article > ul > li:nth-of-type(2) > ul > li:nth-of-type(1)",
+                  "source": "https://harbor.example.test/posts/tide-tables",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Positive values: above datum"
+                  }
+                ]
+              },
+              {
+                "checked": null,
+                "children": [],
+                "children_ordered": false,
+                "children_start": 1,
+                "provenance": {
+                  "bbox": null,
+                  "char_end": null,
+                  "char_start": null,
+                  "confidence": null,
+                  "engine": "web.html_raw",
+                  "line_end": null,
+                  "line_start": null,
+                  "page_label": null,
+                  "path": "body > div:nth-of-type(1) > main > article > ul > li:nth-of-type(2) > ul > li:nth-of-type(2)",
+                  "source": "https://harbor.example.test/posts/tide-tables",
+                  "source_id": null,
+                  "source_label": null,
+                  "source_page": null,
+                  "time_end": null,
+                  "time_start": null
+                },
+                "spans": [
+                  {
+                    "change": null,
+                    "change_author": null,
+                    "change_id": null,
+                    "footnote_ref": null,
+                    "href": null,
+                    "math": null,
+                    "styles": [],
+                    "text": "Negative values: below datum"
+                  }
+                ]
+              }
+            ],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > div:nth-of-type(1) > main > article > ul > li:nth-of-type(2)",
+              "source": "https://harbor.example.test/posts/tide-tables",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Height in meters above chart datum"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > div:nth-of-type(1) > main > article > ul > li:nth-of-type(3)",
+              "source": "https://harbor.example.test/posts/tide-tables",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Tidal range, the difference between consecutive high and low"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > ul",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > h2:nth-of-type(2)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Planning a launch"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(3)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The rule of twelfths estimates how much the water moves in each hour of a six-hour tide. In the first hour it moves one twelfth of the range, then two, three, three, two, and one."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > div:nth-of-type(1) > main > article > ol > li:nth-of-type(1)",
+              "source": "https://harbor.example.test/posts/tide-tables",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Find the low water time before your planned launch."
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > div:nth-of-type(1) > main > article > ol > li:nth-of-type(2)",
+              "source": "https://harbor.example.test/posts/tide-tables",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Compute the range from the neighbouring high water."
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > div:nth-of-type(1) > main > article > ol > li:nth-of-type(3)",
+              "source": "https://harbor.example.test/posts/tide-tables",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Add the twelfths hour by hour until the depth clears your keel."
+              }
+            ]
+          }
+        ],
+        "ordered": true,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > ol",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "code": "def depth_after(hours, low, rng):\n    twelfths = [1, 2, 3, 3, 2, 1]\n    return low + rng * sum(twelfths[:hours]) / 12",
+        "filename": null,
+        "id": "b0010",
+        "language": "python",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > pre",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      },
+      {
+        "attrs": {},
+        "id": "fig-1",
+        "label": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > figure",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "figure"
+      },
+      {
+        "alt": "A tide curve over twelve hours",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0012",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": "fig-1",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > figure > img",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "https://harbor.example.test/img/tide-curve.png",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "parent_id": "fig-1",
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > figure > figcaption",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "caption",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Water height over one tidal cycle."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attribution": null,
+        "attrs": {},
+        "depth": 1,
+        "id": "b0014",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > blockquote",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Slack water is short. Be ready before it arrives."
+          }
+        ],
+        "type": "quote"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(4)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Check the harbor notice board for local corrections, and read our "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://harbor.example.test/posts/entrance-bars",
+            "math": null,
+            "styles": [],
+            "text": "guide to entrance bars"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " before your first season."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > section > h2",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Comments"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0017",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > section > div:nth-of-type(1) > p",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Great guide, the twelfths table saved my morning."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0018",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(1) > main > section > div:nth-of-type(2) > p",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Could you cover tidal streams next?"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0019",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > div:nth-of-type(2)",
+          "source": "https://harbor.example.test/posts/tide-tables",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://share.example.test/?u=1",
+            "math": null,
+            "styles": [],
+            "text": "Share"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": "https://social.example.test/",
+            "math": null,
+            "styles": [],
+            "text": "Post"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:5441e449220b7f97f1fe41b65875bfc8d364a97894aa70f0b17b990ca4090416",
+    "converter_id": "web.html_raw",
+    "metadata": {
+      "author": "Mara Quill",
+      "authors": [
+        "Mara Quill"
+      ],
+      "canonical_url": "https://harbor.example.test/posts/tide-tables",
+      "description": "How to read a tide table and plan a launch around slack water.",
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "readability_ratio": 1.0
+      },
+      "fetched": null,
+      "keywords": [
+        "tides",
+        "boating",
+        "planning"
+      ],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": "2026-03-15T10:30:00Z",
+      "pages": null,
+      "published": "2026-03-14T08:00:00Z",
+      "sheets": [],
+      "site_name": "Harbor Notes",
+      "slides": null,
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "source_type": "web",
+      "speakers": [],
+      "title": "Tide Tables for Small Harbors"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {},
+        "kind": "readability_fallback_full_body",
+        "message": "No article was detected; the whole page body was converted with boilerplate removed.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [
+    {
+      "alt": "A tide curve over twelve hours",
+      "bbox": null,
+      "block_id": "b0012",
+      "caption": "Water height over one tidal cycle.",
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 1578,
+      "offset_start": 1389,
+      "page": null,
+      "ref": "https://harbor.example.test/img/tide-curve.png"
+    }
+  ],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Mara Quill",
+    "content_hash": "sha256:54f89c2cd1acad6f16e87ab36b0fcbd6fcbaae6c52d3aa4b93da6dabd44300f9",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.html_raw",
+    "converter_version": "0.0.1",
+    "created_at": "2026-03-14T08:00:00Z",
+    "description": "How to read a tide table and plan a launch around slack water.",
+    "extra": {
+      "encoding": "utf-8",
+      "readability_ratio": 1.0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "modified_at": "2026-03-15T10:30:00Z",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://harbor.example.test/posts/tide-tables",
+    "source_hash": "sha256:27137cccb340e1134acb0b2c44d07eee4d29406a89dd595b1e9c83a23945a05b",
+    "source_type": "web",
+    "tags": [
+      "tides",
+      "boating",
+      "planning"
+    ],
+    "title": "Tide Tables for Small Harbors",
+    "tokens": {
+      "cl100k_base": 509,
+      "claude_approx": 546,
+      "o200k_base": 506
+    },
+    "truncated": false,
+    "warnings": [
+      "readability_fallback_full_body"
+    ],
+    "word_count": 293
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://harbor.example.test/glossary#chart-datum",
+      "original_href": "https://harbor.example.test/glossary#chart-datum",
+      "text": "chart datum"
+    },
+    {
+      "href": "https://harbor.example.test/posts/entrance-bars",
+      "original_href": "https://harbor.example.test/posts/entrance-bars",
+      "text": "guide to entrance bars"
+    },
+    {
+      "href": "https://share.example.test/?u=1",
+      "original_href": "https://share.example.test/?u=1",
+      "text": "Share"
+    },
+    {
+      "href": "https://social.example.test/",
+      "original_href": "https://social.example.test/",
+      "text": "Post"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 1,
+      "footnotes": 0,
+      "headings": 4,
+      "images": 1,
+      "links": 4,
+      "list_items": 8,
+      "lists": 2,
+      "page_breaks": 0,
+      "paragraphs": 9,
+      "quotes": 1,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 284
+    },
+    "duration_seconds": 0.125,
+    "engine": "web.html_raw",
+    "engines_tried": [
+      "web.html_raw"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 4385
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > header > h1",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > header > p",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(1)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > h2:nth-of-type(1)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(2)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > ul",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "list"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > h2:nth-of-type(2)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(3)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > ol",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "list"
+    },
+    {
+      "block_id": "b0010",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > pre",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "code"
+    },
+    {
+      "block_id": "fig-1",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > figure",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "figure"
+    },
+    {
+      "block_id": "b0012",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > figure > img",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "image"
+    },
+    {
+      "block_id": "b0013",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > figure > figcaption",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0014",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > blockquote",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "quote"
+    },
+    {
+      "block_id": "b0015",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > article > p:nth-of-type(4)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0016",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > section > h2",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0017",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > section > div:nth-of-type(1) > p",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0018",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(1) > main > section > div:nth-of-type(2) > p",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0019",
+      "engine": "web.html_raw",
+      "path": "body > div:nth-of-type(2)",
+      "source": "https://harbor.example.test/posts/tide-tables",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0004",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 864,
+      "offset_start": 343,
+      "original_level": 2,
+      "original_title": "Reading the columns",
+      "time_end": null,
+      "time_start": null,
+      "title": "Reading the columns"
+    },
+    {
+      "block_id": "b0007",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1800,
+      "offset_start": 864,
+      "original_level": 2,
+      "original_title": "Planning a launch",
+      "time_end": null,
+      "time_start": null,
+      "title": "Planning a launch"
+    },
+    {
+      "block_id": "b0016",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 1990,
+      "offset_start": 1800,
+      "original_level": 2,
+      "original_title": "Comments",
+      "time_end": null,
+      "time_start": null,
+      "title": "Comments"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 864,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {},
+      "kind": "readability_fallback_full_body",
+      "message": "No article was detected; the whole page body was converted with boilerplate removed.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

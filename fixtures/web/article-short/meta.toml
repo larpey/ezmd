@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Short notice in plain divs (spec 5f web/article-short). Trafilatura 2.3 keeps the whole notice here, so no fallback is expected; the fallback itself is covered by unit tests."
+expected_errors = []
+
+[input]
+url = "https://marina.example.test/news/closed-monday"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"

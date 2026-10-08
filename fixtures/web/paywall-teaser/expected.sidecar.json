@@ -1,0 +1,244 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > h1",
+          "source": "https://news.example.test/moorings",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The Quiet Economics of Moorings"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.trafilatura",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body > article > p",
+          "source": "https://news.example.test/moorings",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Swing moorings look like the cheapest way to keep a boat afloat, but the numbers behind them are less simple than the annual fee suggests. Chains wear, inspections cost money, and waiting lists distort the market."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:0ed0e82eb958a0dee1c48073328ba59977ad0002cbcc142fb6d7dac827bd7c47",
+    "converter_id": "web.trafilatura",
+    "metadata": {
+      "author": "Ines Varga",
+      "authors": [
+        "Ines Varga"
+      ],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 0.9,
+      "extra": {
+        "readability_ratio": 1.0
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": "en",
+      "language_source": "declared",
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": "2026-05-02T00:00:00Z",
+      "sheets": [],
+      "site_name": "news.example.test",
+      "slides": null,
+      "source": "https://news.example.test/moorings",
+      "source_type": "web",
+      "speakers": [],
+      "title": "The Quiet Economics of Moorings"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "triggers": "jsonld_isAccessibleForFree, selector:paywall",
+          "wall_prompts_removed": 1
+        },
+        "kind": "paywall_detected",
+        "message": "This page appears to be paywalled; only the free preview was captured.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Ines Varga",
+    "content_hash": "sha256:195e8045a65cfc1262622d209b7800b65d093338c42ccb9211bb715b4cbac7af",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "web.trafilatura",
+    "converter_version": "0.0.1",
+    "created_at": "2026-05-02",
+    "extra": {
+      "encoding": "utf-8",
+      "readability_ratio": 1.0
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "language": "en",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://news.example.test/moorings",
+    "source_hash": "sha256:f2de5aa2beb2fadd05fba164e3a2043419bfbbf12ae5ed49f5a1791f1ea9f7ed",
+    "source_type": "web",
+    "title": "The Quiet Economics of Moorings",
+    "tokens": {
+      "cl100k_base": 56,
+      "claude_approx": 58,
+      "o200k_base": 54
+    },
+    "truncated": false,
+    "warnings": [
+      "paywall_detected"
+    ],
+    "word_count": 42
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 41
+    },
+    "duration_seconds": 0.1720000000204891,
+    "engine": "web.trafilatura",
+    "engines_tried": [
+      "web.trafilatura"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 780
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "web.trafilatura",
+      "path": "body > article > h1",
+      "source": "https://news.example.test/moorings",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "web.trafilatura",
+      "path": "body > article > p",
+      "source": "https://news.example.test/moorings",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 347,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "triggers": "jsonld_isAccessibleForFree, selector:paywall",
+        "wall_prompts_removed": 1
+      },
+      "kind": "paywall_detected",
+      "message": "This page appears to be paywalled; only the free preview was captured.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

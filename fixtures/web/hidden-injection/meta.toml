@@ -1,0 +1,13 @@
+converter = "web.trafilatura"
+max_seconds = 30
+hand_edited = false
+notes = "Hidden prompt-injection text in display:none, a stylesheet-hidden class, aria-hidden, off-screen, white-on-white, noscript, template and an HTML comment; zero-width characters inside words and a Unicode tag-character payload. Hidden text must be absent from the body, present in the warning detail, and flagged; the visible quoted injection phrase is kept verbatim and flagged by the renderer."
+expected_errors = []
+
+[input]
+url = "https://boats.example.test/fender-care"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/web/_generate.py"
