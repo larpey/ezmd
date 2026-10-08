@@ -1,14 +1,14 @@
 # Status
 
 Last updated: 2026-10-08 by agent
-Current phase: 0
-Current task: P0-T12/P0-T13 (waiting on CI, then tag v0.0.1)
-Overall: 11 / 81 tasks done
+Current phase: 1 (not started; owner check-in after Phase 0)
+Current task: none (Phase 0 closed; awaiting owner go-ahead for Phase 1)
+Overall: 13 / 81 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
-| 0 | Foundation | in_progress | 11/13 | |
+| 0 | Foundation | done | 13/13 | v0.0.1 |
 | 1 | Permissive core, CLI, library, MCP, UI v1, compose | pending | 0/19 | |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
@@ -18,7 +18,7 @@ Overall: 11 / 81 tasks done
 ## Gates
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
-| G0 | open | | |
+| G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
 | G1 | open | | |
 | G2 | open | | |
 | G3 | open | | |
@@ -38,8 +38,8 @@ Overall: 11 / 81 tasks done
 | P0-T09 | API | done | ffa2fd7 | FastAPI+RQ+SSE; 162 API tests; openapi.json committed |
 | P0-T10 | Web UI | done | 4221d77 | React UI + @intomd/sdk (2.9 KB gz); 33 JS tests |
 | P0-T11 | Docker and Compose | done | 121f7e2 | api 443 MB (budget 480, D-0012), worker 621 MB, fetch-node 164 MB; local smoke PASS |
-| P0-T12 | CI and release workflow | in_progress | 1fb4294 | python x3 OS, ts, licenses, audit green; smoke fix pending |
-| P0-T13 | Docs skeleton and Phase 0 close | in_progress | 64bafd6 | docs build strict; council (D-0017) applied; tag pending CI |
+| P0-T12 | CI and release workflow | done | 036ab66 | CI green on ubuntu 3.12/3.13, macOS, Windows + ts, licenses, audit, images, compose smoke (run 37819863068) |
+| P0-T13 | Docs skeleton and Phase 0 close | done | 036ab66 | mkdocs --strict clean; council D-0017 applied; v0.0.1 |
 | P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | pending | |  |
 | P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | pending | |  |
 | P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | pending | |  |
@@ -110,7 +110,20 @@ Overall: 11 / 81 tasks done
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | pending | |  |
 
 ## Fixture scorecard (latest)
-(not yet run)
+exact: n/a, threshold: 4/4 (100%) — text.plain x3, text.markdown_passthrough x1, all 1.000 at threshold 0.95
+
+## Phase 0 summary
+Foundation complete and tagged v0.0.1 (2026-10-08). The project was renamed anymd -> intomd (npm name taken; D-0001).
+Shipped: the IR (schema 1.1) with 181 warning codes plus aliases; content detection (Magika + libmagic); a converter
+registry with fallback chains, ConvertContext, and experimental gating; the subprocess sandbox; the SSRF guard with
+DNS pinning; log redaction; plain-text and Markdown converters; four renderer profiles (Part 3 worked example
+byte-identical), chunker, injection scanner, opaque pagination cursors; fixture scorer and golden tooling; the CLI;
+the FastAPI/RQ API with SSE, rate limits, dedup, fetch-node endpoints and purge; the React web UI and @intomd/sdk;
+the multi-stage Docker image set and hardened compose stack (non-root, read-only, seccomp, no worker egress); CI,
+nightly and release workflows; the MkDocs site. The close council (D-0017) changed the contract before any
+converter depended on it and closed an anonymous residential-fetch pivot into the owner's LAN.
+Known gaps carried into Phase 1: PyPI/npm publish (human gate); intomd[server] extra and library `convert()`
+public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, share target (later phases).
 
 ## Blocked on human
 - (resolved 2026-10-08) GitHub token lacked the `workflow` scope; owner approved device login from phone.

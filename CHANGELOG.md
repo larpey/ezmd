@@ -2,7 +2,7 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
-## [Unreleased]
+## [0.0.1] - 2026-10-08
 
 ### Added
 - Phase 0 foundation: IR, detection, converter registry with fallback chains, sandbox, SSRF guard,
