@@ -9,6 +9,8 @@ export interface ResultViewProps {
   sidecar: Sidecar | null;
   warnings: readonly IntomdWarning[];
   tokens?: number;
+  /** Tokenizer behind `tokens` (e.g. o200k_base); shown as the badge tooltip. */
+  tokenizer?: string;
   profile: Profile;
   profiles: readonly Profile[];
   formats: readonly ResultFormat[];
@@ -29,7 +31,7 @@ async function copyText(text: string): Promise<boolean> {
 }
 
 export function ResultView(props: ResultViewProps) {
-  const { markdown, sidecar, warnings, tokens, profile, profiles, formats, busy, onProfileChange, onDownload } = props;
+  const { markdown, sidecar, warnings, tokens, tokenizer, profile, profiles, formats, busy, onProfileChange, onDownload } = props;
   const [tab, setTab] = useState("rendered");
   const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const [wrap, setWrap] = useState(true);
@@ -89,7 +91,7 @@ export function ResultView(props: ResultViewProps) {
           ))}
         </span>
         {tokens != null && (
-          <span className="badge" title="cl100k estimate" data-testid="result-tokens">
+          <span className="badge" title={tokenizer ? `${tokenizer} count` : "Token count"} data-testid="result-tokens">
             {tokens.toLocaleString()} tokens
           </span>
         )}

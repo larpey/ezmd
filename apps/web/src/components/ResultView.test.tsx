@@ -11,6 +11,7 @@ function setup(over: Partial<ResultViewProps> = {}) {
     sidecar: { schema: "intomd.sidecar/1", warnings: [] },
     warnings: [{ kind: "truncated", message: "Cut at the cap." }],
     tokens: 42,
+    tokenizer: "o200k_base",
     profile: "compact",
     profiles: ["full", "compact", "rag", "agent"],
     formats: ["md", "txt", "json"],
@@ -32,7 +33,7 @@ describe("ResultView", () => {
     expect(panel.querySelector("img")).toBeNull();
     expect(panel.textContent).toContain("<script>alert(1)</script>");
     expect(panel.textContent).not.toContain("tokens: 42");
-    expect(screen.getByText("42 tokens")).toHaveAttribute("title", "cl100k estimate");
+    expect(screen.getByText("42 tokens")).toHaveAttribute("title", "o200k_base count");
   });
 
   it("switches tabs with arrow keys following the WAI-ARIA tabs pattern", async () => {

@@ -28,15 +28,13 @@ test("files chosen right after a profile change are kept", async ({ page }) => {
   await expect(page.getByTestId("input-chip")).toContainText("1 file", { timeout: 3_000 });
 });
 
-// Known issue (docs/decisions/P1-T15.md): the API's frontmatter `tokens` is an object per tokenizer
-// ({cl100k_base, o200k_base, ...}) but JobCard reads it as a number, so the badge never renders.
-// test.fail flips to a failure once the web UI is fixed, so this marker gets removed then.
-test("result shows the cl100k token estimate badge", async ({ page }) => {
-  test.fail(true, "JobCard expects frontmatter.tokens to be a number; the API sends an object");
+// Regression (docs/decisions/P1-T15.md finding 3): frontmatter `tokens` is an object per tokenizer.
+test("result shows the o200k token count badge", async ({ page }) => {
   await openApp(page);
   await page.getByTestId("input-text").fill(uniqueText("Token badge"));
   const card = await convertAndWait(page);
-  await expect(card.getByTestId("result-tokens")).toContainText("tokens", { timeout: 3_000 });
+  await expect(card.getByTestId("result-tokens")).toContainText(/\d tokens/, { timeout: 3_000 });
+  await expect(card.getByTestId("result-tokens")).toHaveAttribute("title", "o200k_base count");
 });
 
 test("converts pasted text and reports progress", async ({ page }) => {

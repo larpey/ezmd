@@ -5,6 +5,7 @@ import { errorMessage } from "../lib/api";
 import { downloadName, saveBlob } from "../lib/input";
 import { stripFrontmatter } from "../lib/markdown";
 import { PREVIEW_CHARS } from "../lib/storage";
+import { tokenBadge } from "../lib/tokens";
 import { mergeWarnings } from "../lib/warnings";
 import { Progress } from "./Progress";
 import { ResultView } from "./ResultView";
@@ -43,10 +44,6 @@ interface LiveState {
 }
 
 const LOCAL_FORMATS: readonly ResultFormat[] = ["md", "txt"];
-
-function numberOrUndefined(v: unknown): number | undefined {
-  return typeof v === "number" && Number.isFinite(v) ? v : undefined;
-}
 
 /** Progress events carry 0..100 from this API; tolerate a 0..1 fraction too (spec part4 4.1.2 step 5). */
 export function toPercent(p: number): number {
@@ -91,7 +88,7 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
         setResult(res);
         setError(null);
         onResult(job.id, {
-          tokens: numberOrUndefined(res.frontmatter?.tokens),
+          tokens: tokenBadge(res.frontmatter?.tokens)?.count,
           preview: stripFrontmatter(res.markdown).trimStart().slice(0, PREVIEW_CHARS),
           title: typeof res.frontmatter?.title === "string" ? res.frontmatter.title : undefined,
           markdown: res.markdown,
@@ -151,6 +148,7 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
   };
 
   const warnings = mergeWarnings(liveWarnings, result?.sidecar?.warnings);
+  const badge = tokenBadge(result?.frontmatter?.tokens);
   const finished = live.state === "done" || live.state === "failed" || live.state === "expired" || live.state === "needs_user_action";
 
   return (
@@ -183,7 +181,8 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
           markdown={result.markdown}
           sidecar={result.sidecar}
           warnings={warnings}
-          tokens={numberOrUndefined(result.frontmatter?.tokens)}
+          tokens={badge?.count}
+          tokenizer={badge?.tokenizer ?? undefined}
           profile={profile}
           profiles={profiles}
           formats={formats}
