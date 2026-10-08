@@ -1,0 +1,16 @@
+# Per-package license decisions for tools/license_check.py.
+#
+# Use only when package metadata is missing or ambiguous (e.g. the bare "BSD License"
+# classifier) and a human has read the actual license file. Every entry needs:
+#   license  SPDX expression the file was verified to contain
+#   url      link to the license file at the pinned version (tag or commit, not a branch)
+#   version  optional; when set the override only applies to that exact version
+#   note     what was checked
+# Never use an override to relabel a license the allowlist rejects; change the dependency or
+# record a policy decision in DECISIONS.md instead.
+
+[packages.colorama]
+license = "BSD-3-Clause"
+version = "0.4.6"
+url = "https://github.com/tartley/colorama/blob/0.4.6/LICENSE.txt"
+note = "Metadata only has the ambiguous 'BSD License' classifier; LICENSE.txt is the 3-clause text (non-endorsement clause present). Windows-only dependency of click/rich."

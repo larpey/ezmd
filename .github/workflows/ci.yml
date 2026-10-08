@@ -1,0 +1,181 @@
+# CI gates (docs/spec/part4.md 4.15.1, adapted to Phase 0 of this repo; part1.md P0-T12).
+# Actions are pinned by commit SHA; Renovate (helpers:pinGitHubActionDigests) keeps them current.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+permissions:
+  contents: read
+env:
+  UV_FROZEN: "1"
+  PYTHONUTF8: "1"
+
+jobs:
+  python:
+    name: python ${{ matrix.os }} / ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.12"]
+        include:
+          - os: ubuntu-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: system deps (linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -q && sudo apt-get install -y -q libmagic1 pandoc
+      - name: system deps (macos)
+        if: runner.os == 'macOS'
+        run: brew install libmagic pandoc
+      # Windows: libmagic comes from python-magic-bin (wheel), pandoc is optional for Phase 0.
+      - run: uv sync --all-packages
+      - name: ruff
+        run: uv run ruff check . && uv run ruff format --check .
+      - name: mypy
+        run: |
+          uv run mypy --strict packages/core/src
+          uv run mypy apps/api/src packages/converters/src packages/mcp/src
+      - name: unit tests
+        run: >-
+          uv run pytest packages apps tests -q
+          --cov=intomd --cov=intomd_api --cov=intomd_converters
+          --cov-report=xml --cov-fail-under=80
+      - name: fixture (golden) tests
+        run: uv run pytest fixtures -q
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
+        with: { name: coverage, path: coverage.xml, if-no-files-found: ignore }
+
+  typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0 (version from packageManager)
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "22", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r lint
+      - run: pnpm -r typecheck
+      - run: pnpm -r test
+      - run: pnpm -r build
+
+  licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with: { enable-cache: true, cache-dependency-glob: uv.lock }
+      - run: uv sync --all-packages --no-dev
+      - name: python license allowlist
+        run: uv run --no-sync python tools/license_check.py
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "22", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: node license allowlist
+        run: |
+          pnpm licenses list --prod --json > "$RUNNER_TEMP/nodelic.json"
+          if [ -f tools/license_check.mjs ]; then
+            node tools/license_check.mjs < "$RUNNER_TEMP/nodelic.json"
+          else
+            uv run --no-sync python tools/license_check.py --skip-python --pnpm-json "$RUNNER_TEMP/nodelic.json"
+          fi
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with: { enable-cache: true, cache-dependency-glob: uv.lock }
+      - name: pip-audit (locked default tree)
+        run: |
+          uv export --no-dev --all-packages --format requirements-txt --no-emit-workspace > "$RUNNER_TEMP/req.txt"
+          IGNORES="$(uv run --no-project python -c "import tomllib,datetime as d; t=tomllib.load(open('tools/audit_ignore.toml','rb')); print(' '.join('--ignore-vuln '+e['id'] for e in t.get('pip',[]) if d.date.fromisoformat(str(e['expires']))>=d.date.today()))")"
+          # shellcheck disable=SC2086
+          uvx --from 'pip-audit>=2.7' pip-audit --strict --disable-pip -r "$RUNNER_TEMP/req.txt" $IGNORES
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "22", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --audit-level=high --prod
+
+  images:
+    needs: [python, typescript]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Uncompressed size budgets in MB (part1.md P0-T11 acceptance).
+        include:
+          - { target: api, budget_mb: 480 }  # D-0012: magika pulls onnxruntime + numpy (~136 MB)
+          - { target: worker, budget_mb: 1200 }
+          - { target: fetch-node, budget_mb: 400 }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: deploy/Dockerfile
+          target: ${{ matrix.target }}
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: ghcr.io/larpey/intomd-${{ matrix.target }}:ci
+          build-args: |
+            INTOMD_REQUIRE_WEB=1
+            VCS_REF=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.target }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.target }}
+      - name: size budget
+        run: |
+          bytes=$(docker image inspect --format '{{.Size}}' ghcr.io/larpey/intomd-${{ matrix.target }}:ci)
+          mb=$(( bytes / 1000000 )); budget=${{ matrix.budget_mb }}
+          echo "intomd-${{ matrix.target }}: ${mb} MB (budget ${budget} MB)" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$mb" -le "$budget" ] || { echo "::error::intomd-${{ matrix.target }} is ${mb} MB, over the ${budget} MB budget"; exit 1; }
+      - name: non-root and labels
+        run: |
+          img=ghcr.io/larpey/intomd-${{ matrix.target }}:ci
+          [ "$(docker image inspect --format '{{.Config.User}}' "$img")" = "10001:10001" ] || { echo "::error::image does not run as 10001"; exit 1; }
+          docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.licenses"}}' "$img" | grep -qx Apache-2.0
+      - name: trivy (HIGH/CRITICAL, fixed only)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ghcr.io/larpey/intomd-${{ matrix.target }}:ci
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+  smoke:
+    needs: [python]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: compose config (every overlay combination)
+        run: |
+          docker compose -f deploy/docker-compose.yml config -q
+          docker compose -f deploy/docker-compose.yml -f deploy/docker-compose.gpu.yml --profile media config -q
+      - name: compose up + smoke
+        run: bash deploy/smoke.sh --down
+      - name: compose logs
+        if: failure()
+        run: docker compose -f deploy/docker-compose.yml logs --no-color > "$RUNNER_TEMP/compose.log" 2>&1; docker compose -f deploy/docker-compose.yml ps
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with: { name: compose-logs, path: "${{ runner.temp }}/compose.log", if-no-files-found: ignore }

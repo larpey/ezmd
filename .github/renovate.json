@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits", "helpers:pinGitHubActionDigests", "docker:pinDigests"],
+  "schedule": ["before 6am on monday"],
+  "timezone": "America/Chicago",
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 6,
+  "lockFileMaintenance": { "enabled": true, "schedule": ["before 6am on monday"] },
+  "packageRules": [
+    { "matchManagers": ["pep621", "pip_requirements"], "groupName": "python deps (minor/patch)", "matchUpdateTypes": ["minor", "patch"], "automerge": true, "automergeType": "pr", "platformAutomerge": true },
+    { "matchManagers": ["npm"], "groupName": "node deps (minor/patch)", "matchUpdateTypes": ["minor", "patch"], "automerge": true, "platformAutomerge": true },
+    { "matchManagers": ["github-actions"], "groupName": "github actions", "automerge": true, "platformAutomerge": true },
+    { "matchManagers": ["dockerfile", "docker-compose"], "groupName": "base images", "automerge": true, "matchUpdateTypes": ["patch", "digest"] },
+    { "matchUpdateTypes": ["major"], "automerge": false, "labels": ["dependencies", "major"] },
+    { "matchPackageNames": ["yt-dlp"], "schedule": ["at any time"], "automerge": true, "labels": ["dependencies", "yt-dlp"] },
+    { "matchPackageNames": ["docling", "faster-whisper", "ctranslate2", "torch", "transformers"], "automerge": false, "labels": ["dependencies", "engine"], "prBodyNotes": ["Engine update: run `intomd fixtures run --tier full` locally and attach the scorecard diff."] }
+  ],
+  "vulnerabilityAlerts": { "enabled": true, "labels": ["security"], "schedule": ["at any time"], "automerge": true }
+}

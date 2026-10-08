@@ -1,0 +1,15 @@
+# Temporarily accepted advisories for `pip-audit` (key `pip`) and `pnpm audit` (key `pnpm`).
+# Every entry needs an expiry and a tracking issue. An expired entry stops being applied
+# (the audit fails again) and the nightly workflow reports it.
+#
+# [[pip]]
+# id = "GHSA-xxxx-xxxx-xxxx"        # or PYSEC-/CVE- id as reported by pip-audit
+# package = "example"
+# reason = "not reachable: we never call example.unsafe_api"
+# expires = 2026-12-31
+# issue = "https://github.com/larpey/intomd/issues/1"
+#
+# pnpm: mirror each entry in package.json `pnpm.auditConfig.ignoreGhsas` (pnpm reads only that).
+
+pip = []
+pnpm = []

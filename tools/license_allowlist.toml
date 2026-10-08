@@ -1,0 +1,29 @@
+# License policy for the default (non-dev) dependency tree. Format: Part 4 section 4.15.2.
+# Checked by tools/license_check.py. Changing this file is a policy decision: log it in DECISIONS.md.
+
+# SPDX ids accepted in the default dependency tree (core and all extras except nonfree)
+[allow]
+licenses = [
+  "Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC", "PSF-2.0", "Python-2.0", "CNRI-Python",
+  "MPL-2.0", "Unlicense", "0BSD", "CC0-1.0", "Zlib", "BSL-1.0", "HPND", "LGPL-2.1-only",
+  "LGPL-2.1-or-later", "LGPL-3.0-only", "LGPL-3.0-or-later",   # dynamic linking only; see notes
+]
+# Model weight licenses accepted for default pulls
+model_licenses = ["Apache-2.0", "MIT", "CC-BY-4.0", "CC0-1.0", "BSD-3-Clause"]
+
+[deny]
+licenses = ["GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-later", "AGPL-3.0-only",
+            "AGPL-3.0-or-later", "SSPL-1.0", "CC-BY-NC-4.0", "CC-BY-NC-SA-4.0", "OpenRAIL-M", "BigScience-OpenRAIL-M",
+            "Commons-Clause", "Elastic-2.0", "BUSL-1.1", "MinerU-License"]
+
+# Packages allowed only inside the `nonfree` extra; the checker verifies they are not in the default tree
+[nonfree]
+packages = ["pymupdf", "pymupdf4llm", "extract-msg", "olefile"]
+
+# Known mislabeled packages. Kept empty on purpose: every override lives in
+# tools/license_overrides.toml with a URL to the license file it was verified against.
+[overrides]
+
+[notes]
+lgpl = "LGPL deps are permitted when used as separately installed shared libraries or Python packages without modification; ship no static LGPL linking."
+binaries = "System executables (pandoc GPL-2.0-or-later, ffmpeg LGPL/GPL builds, libmagic BSD-2-Clause) are invoked as separate processes, not linked; they are listed in docs/licenses.md and are outside this check."
