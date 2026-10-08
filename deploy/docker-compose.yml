@@ -149,6 +149,12 @@ services:
   purge:
     <<: *app
     image: ghcr.io/larpey/intomd-api:${INTOMD_VERSION:-latest}
+    # Same build as `api` (BuildKit reuses the cache). Without a build section Compose tries to pull
+    # the tag before `api` has built it, which fails on a clean machine with a private registry.
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: api
     command: ["python", "-m", "intomd_api.purge", "--loop"]
     volumes:
       - state:/var/lib/intomd
