@@ -93,3 +93,14 @@ async def test_static_spa_fallback(tmp_path: Path, settings_factory: Callable[..
         assert api_miss.status_code == 404 and api_miss.json()["error"]["code"] == "not_found"
         assert (await client.post("/v1/nope")).status_code == 404
         assert (await client.get("/healthz")).json() == {"status": "ok"}
+
+
+@pytest.mark.skipif(not ENV_EXAMPLE.is_file(), reason="deploy/env.example is missing")
+def test_env_example_has_no_inline_comments() -> None:
+    """Docker Compose's env-file parser keeps `# ...` after an empty value as the value itself."""
+    bad = [
+        line
+        for line in ENV_EXAMPLE.read_text(encoding="utf-8").splitlines()
+        if line[:1].isupper() and "=" in line and "#" in line.split("=", 1)[1]
+    ]
+    assert bad == [], f"put comments on their own line: {bad}"

@@ -212,3 +212,10 @@ Decision: The template is `deploy/env.example` (no leading dot); compose docs, s
 Alternatives: weaken the permission rule (owner's call, not the agent's).
 Consequences: the settings drift test now runs instead of skipping.
 Council: not convened.
+
+## D-0019: Compose fixes found by the first CI smoke runs
+Date: 2026-10-08
+Task: P0-T11
+Status: accepted
+Decision: (1) The blobs volume mounts at `/var/lib/intomd-blobs` (`INTOMD_BLOB_FS_ROOT`) instead of inside the state volume: a volume nested in another volume makes every container start create the mountpoint in the shared parent, and concurrent starts fail with "file exists". (2) `deploy/env.example` keeps comments on their own lines: Compose's env-file parser returns `# comment` as the value of an empty variable, which crashed Settings validation; a test enforces this. (3) CI's smoke job sets `INTOMD_WORKER_DEFAULT_CPUS=1.5` for 2-CPU runners. (4) pandoc is dropped from CI installs until the Office converters need it (a stalled mirror download cost 11 minutes).
+Consequences: local and CI smoke run against the real template.

@@ -36,10 +36,10 @@ jobs:
           cache-dependency-glob: uv.lock
       - name: system deps (linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update -q && sudo apt-get install -y -q libmagic1 pandoc
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends libmagic1  # pandoc returns with the Office converters (P1-T01)
       - name: system deps (macos)
         if: runner.os == 'macOS'
-        run: brew install libmagic pandoc
+        run: brew install libmagic
       # Windows: libmagic comes from python-magic-bin (wheel), pandoc is optional for Phase 0.
       - run: uv sync --all-packages
       - name: ruff

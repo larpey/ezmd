@@ -2,13 +2,13 @@
 
 Last updated: 2026-10-08 by agent
 Current phase: 0
-Current task: P0-T02..P0-T12 (in progress, built in parallel)
-Overall: 1 / 81 tasks done
+Current task: P0-T12/P0-T13 (waiting on CI, then tag v0.0.1)
+Overall: 11 / 81 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
-| 0 | Foundation | in_progress | 1/13 | |
+| 0 | Foundation | in_progress | 11/13 | |
 | 1 | Permissive core, CLI, library, MCP, UI v1, compose | pending | 0/19 | |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
@@ -28,18 +28,18 @@ Overall: 1 / 81 tasks done
 | ID | Task | State | Last commit | Notes |
 |---|---|---|---|---|
 | P0-T01 | Name availability check | done | | intomd free on PyPI, npm, GitHub; intomd.dev unregistered; D-0001 |
-| P0-T02 | Repository scaffold | in_progress | |  |
-| P0-T03 | Core IR | in_progress | |  |
-| P0-T04 | Detection | in_progress | |  |
-| P0-T05 | Inputs, registry, chains, sandbox, netguard | in_progress | |  |
-| P0-T06 | Plain text and Markdown passthrough converters | in_progress | |  |
-| P0-T07 | Profiles, renderer skeleton, scoring | in_progress | |  |
-| P0-T08 | CLI | in_progress | |  |
-| P0-T09 | API | in_progress | |  |
-| P0-T10 | Web UI | in_progress | |  |
-| P0-T11 | Docker and Compose | in_progress | |  |
-| P0-T12 | CI and release workflow | in_progress | |  |
-| P0-T13 | Docs skeleton and Phase 0 close | pending | |  |
+| P0-T02 | Repository scaffold | done | 38b13f7 | uv + pnpm workspaces; spec split into docs/spec |
+| P0-T03 | Core IR | done | 41650a7 | IR schema 1.1 after council (D-0017); 181 warning codes + aliases |
+| P0-T04 | Detection | done | 798280f | Magika+libmagic; 10 MB detect well under 200 ms |
+| P0-T05 | Inputs, registry, chains, sandbox, netguard | done | 471000e | registry, chains, sandbox, netguard (39 SSRF tests), redaction, ConvertContext |
+| P0-T06 | Plain text and Markdown passthrough converters | done | 56b0953 | text.plain, text.markdown_passthrough; 4 fixtures at 1.0 (threshold 0.95), Skeptic-reviewed |
+| P0-T07 | Profiles, renderer skeleton, scoring | done | 8ddf3b3 | 4 profiles; Harbor Lane example byte-identical; render+profiles cov 94% |
+| P0-T08 | CLI | done | 2c1a2e9 | convert/capabilities/detect/version/serve; exit codes per Part 4 |
+| P0-T09 | API | done | ffa2fd7 | FastAPI+RQ+SSE; 162 API tests; openapi.json committed |
+| P0-T10 | Web UI | done | 4221d77 | React UI + @intomd/sdk (2.9 KB gz); 33 JS tests |
+| P0-T11 | Docker and Compose | done | 121f7e2 | api 443 MB (budget 480, D-0012), worker 621 MB, fetch-node 164 MB; local smoke PASS |
+| P0-T12 | CI and release workflow | in_progress | 1fb4294 | python x3 OS, ts, licenses, audit green; smoke fix pending |
+| P0-T13 | Docs skeleton and Phase 0 close | in_progress | 64bafd6 | docs build strict; council (D-0017) applied; tag pending CI |
 | P1-T01 | Document converters: PDF (Docling default, pypdf fallback), DOCX with tracked changes and comments (Pandoc `--track-changes=all`), PPTX with notes, XLSX with formulas and all sheets, ODF, RTF, EPUB, iWork via Docling | pending | |  |
 | P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | pending | |  |
 | P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | pending | |  |
@@ -113,6 +113,7 @@ Overall: 1 / 81 tasks done
 (not yet run)
 
 ## Blocked on human
+- (resolved 2026-10-08) GitHub token lacked the `workflow` scope; owner approved device login from phone.
 - First publish of `intomd` to PyPI and `@intomd/sdk` to npm (irreversible name claim). Release workflow publish steps stay `if: false` until approved.
 - Public instance (Hetzner VPS, domain, Cloudflare) and the Raspberry Pi fetch node are Phase 3/4; the owner has a Pi available (2026-10-08).
 

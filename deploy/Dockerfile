@@ -54,12 +54,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     HOME=/tmp \
     INTOMD_TMP=/tmp \
     INTOMD_DATA_DIR=/var/lib/intomd \
+    INTOMD_BLOB_FS_ROOT=/var/lib/intomd-blobs \
     INTOMD_CACHE_DIR=/var/lib/intomd/cache \
     INTOMD_MODEL_DIR=/opt/intomd/models
 RUN groupadd --system --gid 10001 intomd \
  && useradd --system --uid 10001 --gid 10001 --home-dir /var/lib/intomd --no-create-home --shell /usr/sbin/nologin intomd \
- && mkdir -p /app /var/lib/intomd/blobs /var/lib/intomd/cache /opt/intomd/models \
- && chown -R 10001:10001 /var/lib/intomd
+ && mkdir -p /app /var/lib/intomd/cache /var/lib/intomd-blobs /opt/intomd/models \
+ && chown -R 10001:10001 /var/lib/intomd /var/lib/intomd-blobs
 WORKDIR /app
 
 # ---------------------------------------------------------------------------------------------

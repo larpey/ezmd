@@ -45,7 +45,7 @@ x-worker: &worker
     - seccomp=./seccomp-worker.json
   volumes:
     - state:/var/lib/intomd
-    - blobs:/var/lib/intomd/blobs
+    - blobs:/var/lib/intomd-blobs
   depends_on:
     redis:
       condition: service_healthy
@@ -103,7 +103,7 @@ services:
       INTOMD_SCHEDULER_ENABLED: "false"
     volumes:
       - state:/var/lib/intomd
-      - blobs:/var/lib/intomd/blobs
+      - blobs:/var/lib/intomd-blobs
     depends_on:
       redis:
         condition: service_healthy
@@ -152,7 +152,7 @@ services:
     command: ["python", "-m", "intomd_api.purge", "--loop"]
     volumes:
       - state:/var/lib/intomd
-      - blobs:/var/lib/intomd/blobs
+      - blobs:/var/lib/intomd-blobs
     depends_on:
       api:
         condition: service_healthy

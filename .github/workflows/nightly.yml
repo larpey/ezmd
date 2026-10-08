@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with: { enable-cache: true, cache-dependency-glob: uv.lock }
-      - run: sudo apt-get update -q && sudo apt-get install -y -q libmagic1 pandoc
+      - run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends libmagic1  # pandoc returns with the Office converters (P1-T01)
       - run: uv sync --all-packages
       - run: uv run pytest fixtures -q
       - run: uv run pytest packages apps tests -q
