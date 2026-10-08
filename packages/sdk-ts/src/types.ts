@@ -1,5 +1,6 @@
-// Hand-written REST contract types (spec part1 section 7). When docs/api/openapi.json exists,
-// `pnpm -F @intomd/sdk generate` writes src/openapi.d.ts; these types are the stable public surface.
+// Public REST contract types (spec part1 section 7). They narrow the generated src/openapi.d.ts (string
+// enums become unions, JSON blobs get shapes); test/contract.ts fails typecheck when a schema gains or loses
+// a field these types do not mirror, and test/openapi-drift.test.ts fails when openapi.d.ts is stale.
 
 export type Profile = "full" | "compact" | "rag" | "agent";
 export type ResultFormat = "md" | "json" | "txt" | "zip";
@@ -82,11 +83,13 @@ export interface Job {
   stage_message: string;
   queue?: string;
   converter_id?: string | null;
-  created_at: string;
-  updated_at?: string;
-  expires_at: string;
+  created_at?: string | null;
+  updated_at?: string | null;
+  expires_at?: string | null;
   input: JobInput;
   profile: Profile | string;
+  /** Warning codes seen so far (full warnings are in the sidecar and the event stream). */
+  warnings?: string[];
   warnings_count?: number;
   truncated?: boolean;
   needs_action?: NeedsAction | null;
@@ -150,9 +153,25 @@ export interface Capabilities {
   fetch_node_online?: boolean;
   residential_platforms?: string[];
   public_mode?: boolean;
+  /** `"turnstile"` when URL submissions need a Turnstile token. */
+  challenge?: "turnstile" | null;
   turnstile_site_key?: string | null;
+  /** Spec part4 4.1.2 step 12 footer fields; not served by the API yet (optional). */
   instance_name?: string | null;
   sponsor?: string | null;
+}
+
+/** One entry of GET /v1/warnings: the canonical warning registry. */
+export interface WarningCodeInfo {
+  code: string;
+  severity: Severity;
+  family: string;
+  description: string;
+  suggestion: string;
+  /** True when the warning means content was cut. */
+  truncates: boolean;
+  /** Retired spellings that normalize to `code`. */
+  aliases: string[];
 }
 
 /** Payload of `format=json` (the JsonRenderer output). */

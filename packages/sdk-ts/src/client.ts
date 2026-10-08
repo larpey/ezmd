@@ -3,7 +3,7 @@ import { openStream } from "./sse.js";
 import { SDK_VERSION } from "./version.js";
 import type {
   Capabilities, ConvertInput, ConvertResponse, CreatedJob, EventSourceCtor, Job, JobEvent, JsonResult,
-  Profile, ResultFormat, Sidecar,
+  Profile, ResultFormat, Sidecar, WarningCodeInfo,
 } from "./types.js";
 import { TERMINAL_STATES } from "./types.js";
 
@@ -33,6 +33,14 @@ export interface ResultOptions {
   profile?: Profile;
   signal?: AbortSignal;
 }
+
+export interface EventsOptions {
+  signal?: AbortSignal;
+  /** Polling interval used when the event stream is unavailable. */
+  pollIntervalMs?: number;
+}
+
+const isTerminalEvent = (ev: JobEvent): boolean => ev.type === "done" || ev.type === "failed" || ev.type === "needs_user_action";
 
 const MAX_POLL_MS = 10_000;
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
@@ -125,6 +133,10 @@ export class IntomdClient {
         if (outcome instanceof Error) reject(outcome);
         else resolve(outcome);
       };
+      if (wait.signal?.aborted) {
+        onAbort();
+        return;
+      }
       const settleFromServer = (): void => {
         this.getJob(id, wait.signal).then(finish, finish);
       };
@@ -182,6 +194,70 @@ export class IntomdClient {
     return (await this.getResult(id, "json", opts)).sidecar;
   }
 
+  /** Async iterator over the job's events (spec part4 4.5.1); ends after the terminal event or on abort. */
+  async *events(id: string, opts: EventsOptions = {}): AsyncGenerator<JobEvent, void, undefined> {
+    const queue: JobEvent[] = [];
+    let wake: (() => void) | undefined;
+    let ended = false;
+    let failure: unknown;
+    const push = (ev: JobEvent): void => {
+      queue.push(ev);
+      wake?.();
+    };
+    const end = (err?: unknown): void => {
+      ended = true;
+      failure ??= err;
+      wake?.();
+    };
+    // An internal controller stops the stream when the consumer breaks out of the loop early.
+    const ctrl = new AbortController();
+    const onAbort = (): void => ctrl.abort();
+    if (opts.signal?.aborted) ctrl.abort();
+    opts.signal?.addEventListener("abort", onAbort);
+    this.waitForJob(id, { onEvent: push, signal: ctrl.signal, pollIntervalMs: opts.pollIntervalMs }).then(
+      (job) => {
+        // Polling fallback reports state changes only; close the sequence with a terminal event.
+        if (!queue.some(isTerminalEvent)) {
+          if (job.state === "done") push({ type: "done", warnings_count: job.warnings_count });
+          else if (job.state === "failed" && job.error) push({ type: "failed", error: job.error });
+          else if (job.state === "needs_user_action" && job.needs_action) push({ type: "needs_user_action", needs_action: job.needs_action });
+        }
+        end();
+      },
+      end,
+    );
+    try {
+      for (;;) {
+        const next = queue.shift();
+        if (next) {
+          yield next;
+          if (isTerminalEvent(next)) return;
+          continue;
+        }
+        if (ended) {
+          if (failure) throw failure;
+          return;
+        }
+        await new Promise<void>((r) => (wake = r));
+        wake = undefined;
+      }
+    } finally {
+      opts.signal?.removeEventListener("abort", onAbort);
+      ctrl.abort();
+    }
+  }
+
+  /** GET /v1/warnings: every canonical warning code with severity, suggestion, and aliases. */
+  async warningCodes(signal?: AbortSignal): Promise<WarningCodeInfo[]> {
+    const body = (await (await this.request("/v1/warnings", { signal })).json()) as { warnings?: WarningCodeInfo[] };
+    return body.warnings ?? [];
+  }
+
+  /** DELETE /v1/jobs/{id}: removes the job and its stored blobs. */
+  async deleteJob(id: string, signal?: AbortSignal): Promise<void> {
+    await this.request(`/v1/jobs/${encodeURIComponent(id)}`, { method: "DELETE", signal });
+  }
+
   async getCapabilities(signal?: AbortSignal): Promise<Capabilities> {
     return (await this.request("/v1/capabilities", { signal })).json() as Promise<Capabilities>;
   }
@@ -190,6 +266,11 @@ export class IntomdClient {
   static assertDone(job: Job): Job {
     if (job.state === "failed") throw errorFromBody(job.error, `Job ${job.id} failed.`);
     return job;
+  }
+
+  /** Spec part4 4.5.1 form: `result(id, { profile, format })`. */
+  result(id: string, opts: ResultOptions & { format?: "md" | "txt" } = {}): Promise<string> {
+    return this.getResult(id, opts.format ?? "md", opts);
   }
 
   // Aliases matching spec part4 4.5.1 naming.
