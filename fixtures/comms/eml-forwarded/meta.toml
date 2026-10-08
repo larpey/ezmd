@@ -1,0 +1,10 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "A forwarded message/rfc822 part converted recursively, with its own text attachment one level deeper."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

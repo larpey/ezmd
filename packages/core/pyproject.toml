@@ -30,6 +30,8 @@ data = ["intomd-converters[data]"]
 7z = ["intomd-converters[7z]"]
 mcp = ["intomd-mcp"]
 all = ["intomd-converters[docs,data,7z]", "intomd-mcp"]
+# Forbidden licenses (GPL extract-msg); never part of `all` (docs/spec/part4.md 4.3.3).
+nonfree = ["intomd-converters[nonfree]"]
 
 [project.scripts]
 intomd = "intomd.cli:app"

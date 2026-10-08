@@ -1,0 +1,1762 @@
+{
+  "children": [
+    {
+      "block_count": 5,
+      "converter": "documents.pdfium_text",
+      "depth": 1,
+      "path": "attachments/report.pdf",
+      "section_block_id": "c1-section",
+      "source_type": "pdf",
+      "title": "Quarterly cargo throughput"
+    },
+    {
+      "block_count": 20,
+      "converter": "documents.docx",
+      "depth": 1,
+      "path": "attachments/method.docx",
+      "section_block_id": "c2-section",
+      "source_type": "docx",
+      "title": "Field Guide to Ponds"
+    },
+    {
+      "block_count": 2,
+      "converter": "data.csv",
+      "depth": 1,
+      "path": "attachments/tally.csv",
+      "section_block_id": "c3-section",
+      "source_type": "data",
+      "title": "tally.csv"
+    }
+  ],
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "timestamp": "2024-10-03T09:00:00+00:00"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<att-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Survey files"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "headers"
+        },
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Message headers"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Header"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "From"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Ann Reed <ann@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "To"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Bob Stone <bob@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Date"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-10-03T09:00:00+00:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Subject"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Survey files"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Message-ID"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "<att-1@example.org>"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<att-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<att-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Attached are the survey files: the report, the tally, and the raw sheet."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "attachments",
+          "source": "input.eml",
+          "source_id": "<att-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Attachments"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "attachments"
+        },
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Status"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "report.pdf"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "application/pdf"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.7 KB"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (documents.pdfium_text)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "method.docx"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "5.5 KB"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (documents.docx)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "tally.csv"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "text/csv"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "26 B"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (data.csv)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "raw.bin"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "application/octet-stream"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.0 KB"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "not converted (unsupported type)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "winmail.dat"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "application/ms-tnef"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "64 B"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "not converted (TNEF)"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0005",
+        "n_cols": 4,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "attachments",
+          "source": "input.eml",
+          "source_id": "<att-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:c81c81a931a7abc04f6ae7538b7f0da71289705cdb6e0d5f16b62770d4b858d1",
+    "converter_id": "comms.eml",
+    "metadata": {
+      "author": "Ann Reed",
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "attachments": 5,
+        "body_alternatives": false,
+        "body_source": "text",
+        "message_id": "<att-1@example.org>"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "message/rfc822",
+      "modified": null,
+      "pages": null,
+      "published": "2024-10-03T09:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.eml",
+      "source_type": "email",
+      "speakers": [],
+      "title": "Survey files"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "name": "raw.bin",
+          "reason": "unsupported"
+        },
+        "kind": "attachment_unconverted",
+        "message": "raw.bin (application/octet-stream) has no available converter and is listed by name only.",
+        "page": null,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "name": "winmail.dat",
+          "reason": "tnef"
+        },
+        "kind": "tnef_unparsed",
+        "message": "winmail.dat is an Outlook TNEF (winmail.dat) container, which is not decoded.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "email_headers": [
+    {
+      "name": "From",
+      "value": "Ann Reed <ann@example.org>"
+    },
+    {
+      "name": "To",
+      "value": "Bob Stone <bob@example.org>"
+    },
+    {
+      "name": "Date",
+      "value": "Thu, 03 Oct 2024 09:00:00 +0000"
+    },
+    {
+      "name": "Subject",
+      "value": "Survey files"
+    },
+    {
+      "name": "Message-ID",
+      "value": "<att-1@example.org>"
+    },
+    {
+      "name": "MIME-Version",
+      "value": "1.0"
+    },
+    {
+      "name": "Content-Type",
+      "value": "multipart/mixed; boundary=\"=_att_1\""
+    }
+  ],
+  "figures": [],
+  "footnotes": [
+    {
+      "block_id": "c2-fn-1",
+      "number": 1,
+      "source_marker": "1"
+    },
+    {
+      "block_id": "c2-en-1",
+      "number": 2,
+      "source_marker": "i"
+    }
+  ],
+  "frontmatter": {
+    "author": "Ann Reed",
+    "content_hash": "sha256:6f85b5e85f3d763b7e82873ea2d303afec16b260a5216ee90fefb189bbca0cd9",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "comms.eml",
+    "converter_version": "0.0.1",
+    "created_at": "2024-10-03T09:00:00Z",
+    "extra": {
+      "attachments": 5,
+      "body_alternatives": false,
+      "body_source": "text",
+      "encoding": "utf-8",
+      "message_id": "<att-1@example.org>"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.eml",
+    "source_hash": "sha256:b8b344c56e820cc1f28d18f4208485e9a113977db08f00fd0fe9b6ce781f0747",
+    "source_type": "email",
+    "title": "Survey files",
+    "tokens": {
+      "cl100k_base": 1044,
+      "claude_approx": 1120,
+      "o200k_base": 1037
+    },
+    "truncated": false,
+    "warnings": [
+      "attachment_unconverted",
+      "tnef_unparsed",
+      "engine_fallback",
+      "removed_hidden_elements",
+      "textbox_content_relocated",
+      "heading_inferred_from_formatting"
+    ],
+    "word_count": 330
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://example.org/ponds",
+      "original_href": "https://example.org/ponds",
+      "text": "pond survey portal"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 2,
+      "headings": 10,
+      "images": 0,
+      "links": 1,
+      "list_items": 9,
+      "lists": 2,
+      "page_breaks": 1,
+      "paragraphs": 10,
+      "quotes": 1,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 72,
+      "tables": 5,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 239
+    },
+    "duration_seconds": 0.04600000008940697,
+    "engine": "comms.eml",
+    "engines_tried": [
+      "comms.eml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 13002
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<att-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<att-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "b0003",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<att-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "path": "attachments",
+      "source": "input.eml",
+      "source_id": "<att-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "path": "attachments",
+      "source": "input.eml",
+      "source_id": "<att-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "c1-section",
+      "path": "attachments/report.pdf",
+      "source": "input.eml!attachments/report.pdf",
+      "type": "heading"
+    },
+    {
+      "block_id": "c1-b0001",
+      "path": "attachments/1",
+      "source": "input.eml!attachments/report.pdf",
+      "source_page": 1,
+      "type": "page_break"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 397.96,
+        "y0": 110.84,
+        "y1": 120.09
+      },
+      "block_id": "c1-b0003",
+      "engine": "pdfium",
+      "path": "attachments/1",
+      "source": "input.eml!attachments/report.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.12,
+        "x1": 416.2,
+        "y0": 131.52,
+        "y1": 202.91
+      },
+      "block_id": "c1-b0004",
+      "engine": "pdfium",
+      "path": "attachments/1",
+      "source": "input.eml!attachments/report.pdf",
+      "source_page": 1,
+      "type": "table"
+    },
+    {
+      "bbox": {
+        "page_height": 792.0,
+        "page_width": 612.0,
+        "x0": 72.23,
+        "x1": 314.03,
+        "y0": 223.64,
+        "y1": 232.89
+      },
+      "block_id": "c1-b0005",
+      "engine": "pdfium",
+      "path": "attachments/1",
+      "source": "input.eml!attachments/report.pdf",
+      "source_page": 1,
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-section",
+      "path": "attachments/method.docx",
+      "source": "input.eml!attachments/method.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0002",
+      "path": "attachments/2!body[1]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0003",
+      "path": "attachments/2!body[2]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0004",
+      "path": "attachments/2!body[2]/textbox[0][0]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0005",
+      "path": "attachments/2!body[2]/textbox[0][1]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0006",
+      "path": "attachments/2!body[3]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0007",
+      "path": "attachments/2!body[4]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0008",
+      "path": "attachments/2!body[5]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0009",
+      "path": "attachments/2!body[6]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0010",
+      "path": "attachments/2!body[7]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "list"
+    },
+    {
+      "block_id": "c2-b0011",
+      "path": "attachments/2!body[13]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0012",
+      "path": "attachments/2!body[14]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "list"
+    },
+    {
+      "block_id": "c2-b0013",
+      "path": "attachments/2!body[17]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "table"
+    },
+    {
+      "block_id": "c2-b0015",
+      "path": "attachments/2!body[19]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "quote"
+    },
+    {
+      "block_id": "c2-b0016",
+      "path": "attachments/2!body[20]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-b0020",
+      "path": "attachments/2!body[21]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "code"
+    },
+    {
+      "block_id": "c2-b0019",
+      "path": "attachments/2!body[23]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "heading"
+    },
+    {
+      "block_id": "c2-b0021",
+      "path": "attachments/2!body[24]",
+      "source": "input.eml!attachments/method.docx",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c2-fn-1",
+      "path": "attachments/2!footnotes/1",
+      "source": "input.eml!attachments/method.docx",
+      "source_id": "1",
+      "type": "footnote"
+    },
+    {
+      "block_id": "c2-en-1",
+      "path": "attachments/2!endnotes/1",
+      "source": "input.eml!attachments/method.docx",
+      "source_id": "1",
+      "type": "footnote"
+    },
+    {
+      "block_id": "c3-section",
+      "path": "attachments/tally.csv",
+      "source": "input.eml!attachments/tally.csv",
+      "type": "heading"
+    },
+    {
+      "block_id": "c3-b0002",
+      "line_end": 3,
+      "line_start": 1,
+      "path": "attachments/3!A1:B3",
+      "source": "input.eml!attachments/tally.csv",
+      "type": "table"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0004",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 1416,
+      "offset_start": 913,
+      "original_level": 2,
+      "original_title": "Attachments",
+      "time_end": null,
+      "time_start": null,
+      "title": "Attachments"
+    },
+    {
+      "block_id": "c1-section",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1823,
+      "offset_start": 1416,
+      "original_level": 1,
+      "original_title": "attachments/report.pdf: Quarterly cargo throughput",
+      "time_end": null,
+      "time_start": null,
+      "title": "attachments/report.pdf: Quarterly cargo throughput"
+    },
+    {
+      "block_id": "c2-section",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 1884,
+      "offset_start": 1823,
+      "original_level": 1,
+      "original_title": "attachments/method.docx: Field Guide to Ponds",
+      "time_end": null,
+      "time_start": null,
+      "title": "attachments/method.docx: Field Guide to Ponds"
+    },
+    {
+      "block_id": "c2-b0002",
+      "id": "sec-3-1",
+      "level": 3,
+      "number": "3.1",
+      "offset_end": 2221,
+      "offset_start": 1884,
+      "original_level": 2,
+      "original_title": "Introduction",
+      "time_end": null,
+      "time_start": null,
+      "title": "Introduction"
+    },
+    {
+      "block_id": "c2-b0007",
+      "id": "sec-3-2",
+      "level": 3,
+      "number": "3.2",
+      "offset_end": 2305,
+      "offset_start": 2221,
+      "original_level": 2,
+      "original_title": "Habitats",
+      "time_end": null,
+      "time_start": null,
+      "title": "Habitats"
+    },
+    {
+      "block_id": "c2-b0009",
+      "id": "sec-3-2-1",
+      "level": 4,
+      "number": "3.2.1",
+      "offset_end": 2437,
+      "offset_start": 2305,
+      "original_level": 3,
+      "original_title": "Plants",
+      "time_end": null,
+      "time_start": null,
+      "title": "Plants"
+    },
+    {
+      "block_id": "c2-b0011",
+      "id": "sec-3-2-1-1",
+      "level": 5,
+      "number": "3.2.1.1",
+      "offset_end": 2996,
+      "offset_start": 2437,
+      "original_level": 4,
+      "original_title": "Survey method",
+      "time_end": null,
+      "time_start": null,
+      "title": "Survey method"
+    },
+    {
+      "block_id": "c2-b0019",
+      "id": "sec-3-2-1-1-1",
+      "level": 6,
+      "number": "3.2.1.1.1",
+      "offset_end": 3077,
+      "offset_start": 2996,
+      "original_level": 5,
+      "original_title": "Appendix",
+      "time_end": null,
+      "time_start": null,
+      "title": "Appendix"
+    },
+    {
+      "block_id": "c3-section",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 3182,
+      "offset_start": 3077,
+      "original_level": 1,
+      "original_title": "attachments/tally.csv",
+      "time_end": null,
+      "time_start": null,
+      "title": "attachments/tally.csv"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Header",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 837,
+      "offset_start": 600,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 79
+    },
+    {
+      "block_id": "b0005",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Name",
+        "Type",
+        "Size",
+        "Status"
+      ],
+      "number": 2,
+      "offset_end": 1414,
+      "offset_start": 940,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 136
+    },
+    {
+      "block_id": "c1-b0004",
+      "column_types": [
+        "text",
+        "number",
+        "number",
+        "number"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Terminal",
+        "Q1",
+        "Q2",
+        "Q3"
+      ],
+      "number": 3,
+      "offset_end": 1764,
+      "offset_start": 1576,
+      "page": 1,
+      "representation": "pipe",
+      "rows": 4,
+      "tokens": 81
+    },
+    {
+      "block_id": "c2-b0013",
+      "column_types": [
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Species",
+        "Zone",
+        "Count"
+      ],
+      "number": 4,
+      "offset_end": 2866,
+      "offset_start": 2551,
+      "page": null,
+      "representation": "html",
+      "rows": 3,
+      "tokens": 113
+    },
+    {
+      "block_id": "c3-b0002",
+      "column_types": [
+        "text",
+        "int"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "site",
+        "count"
+      ],
+      "number": 5,
+      "offset_end": 3181,
+      "offset_start": 3114,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 28
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 1372,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "name": "raw.bin",
+        "reason": "unsupported"
+      },
+      "kind": "attachment_unconverted",
+      "message": "raw.bin (application/octet-stream) has no available converter and is listed by name only.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "name": "winmail.dat",
+        "reason": "tnef"
+      },
+      "kind": "tnef_unparsed",
+      "message": "winmail.dat is an Outlook TNEF (winmail.dat) container, which is not decoded.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "child": "attachments/report.pdf",
+        "engine": "pdfium",
+        "extra": "docs",
+        "wanted": "docling"
+      },
+      "kind": "engine_fallback",
+      "message": "Docling is not installed (pip install 'intomd[docs]'); used the pypdfium2 text-layer engine: headings come from the structure tree, outline, or font sizes, and tables are best-effort.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 2,
+      "detail": {
+        "child": "attachments/method.docx",
+        "hidden_runs": 2
+      },
+      "kind": "removed_hidden_elements",
+      "message": "Excluded 2 hidden or white-on-white text runs from the body.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "child": "attachments/method.docx"
+      },
+      "kind": "textbox_content_relocated",
+      "message": "Moved the content of 1 text boxes after their anchoring paragraphs.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "child": "attachments/method.docx"
+      },
+      "kind": "heading_inferred_from_formatting",
+      "message": "Inferred 1 headings from bold, enlarged text.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

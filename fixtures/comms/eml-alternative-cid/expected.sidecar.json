@@ -1,0 +1,1010 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "timestamp": "2024-10-02T12:00:00+00:00"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Réunion au café"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "headers"
+        },
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Message headers"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Header"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "From"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "José Álvarez <jose@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "To"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Bob Stone <bob@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Date"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-10-02T12:00:00+00:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Subject"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Réunion au café"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Message-ID"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "<alt-1@example.org>"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "m0-b0001",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Café meeting moved to "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "Thursday"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "m0-b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "See the map below."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "alt": "map of the café",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "m0-b0003",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "images/map.png",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "attachments",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Attachments"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "attachments"
+        },
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Status"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "map.png"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "image/png"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "73 B"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "inline image"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0007",
+        "n_cols": 4,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "attachments",
+          "source": "input.eml",
+          "source_id": "<alt-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:778b654a35943102831f11a878bb14e3914e1eb11d02aa37856a4bdbf8be970e",
+    "converter_id": "comms.eml",
+    "metadata": {
+      "author": "José Álvarez",
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "attachments": 1,
+        "body_alternatives": false,
+        "body_source": "html",
+        "message_id": "<alt-1@example.org>"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "message/rfc822",
+      "modified": null,
+      "pages": null,
+      "published": "2024-10-02T12:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.eml",
+      "source_type": "email",
+      "speakers": [],
+      "title": "Réunion au café"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "email_headers": [
+    {
+      "name": "To",
+      "value": "Bob Stone <bob@example.org>"
+    },
+    {
+      "name": "Date",
+      "value": "Wed, 02 Oct 2024 12:00:00 +0000"
+    },
+    {
+      "name": "Subject",
+      "value": "Réunion au café"
+    },
+    {
+      "name": "Message-ID",
+      "value": "<alt-1@example.org>"
+    },
+    {
+      "name": "From",
+      "value": "José Álvarez <jose@example.org>"
+    },
+    {
+      "name": "MIME-Version",
+      "value": "1.0"
+    },
+    {
+      "name": "Content-Type",
+      "value": "multipart/alternative; boundary=\"=_alt_1\""
+    }
+  ],
+  "figures": [
+    {
+      "alt": "map of the café",
+      "bbox": null,
+      "block_id": "m0-b0003",
+      "caption": null,
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 401,
+      "offset_start": 335,
+      "page": null,
+      "ref": "images/map.png"
+    }
+  ],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "José Álvarez",
+    "content_hash": "sha256:2cd6639c791337a9a0e13e2c23f60a458cb7ca0524a18d77fdf8a5461522fb89",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "comms.eml",
+    "converter_version": "0.0.1",
+    "created_at": "2024-10-02T12:00:00Z",
+    "extra": {
+      "attachments": 1,
+      "body_alternatives": false,
+      "body_source": "html",
+      "encoding": "utf-8",
+      "message_id": "<alt-1@example.org>"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.eml",
+    "source_hash": "sha256:bfd1dbefa03f719e1aa53182d109c52be9152aafa4b783a341c841f1170c5f09",
+    "source_type": "email",
+    "title": "Réunion au café",
+    "tokens": {
+      "cl100k_base": 173,
+      "claude_approx": 186,
+      "o200k_base": 172
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 54
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 2,
+      "images": 1,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 2,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 20,
+      "tables": 2,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 45
+    },
+    "duration_seconds": 0.10999999986961484,
+    "engine": "comms.eml",
+    "engines_tried": [
+      "comms.eml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1117
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "m0-b0001",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "m0-b0002",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "m0-b0003",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "image"
+    },
+    {
+      "block_id": "b0006",
+      "path": "attachments",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "path": "attachments",
+      "source": "input.eml",
+      "source_id": "<alt-1@example.org>",
+      "type": "table"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0006",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 539,
+      "offset_start": 403,
+      "original_level": 2,
+      "original_title": "Attachments",
+      "time_end": null,
+      "time_start": null,
+      "title": "Attachments"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Header",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 277,
+      "offset_start": 28,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 84
+    },
+    {
+      "block_id": "b0007",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Name",
+        "Type",
+        "Size",
+        "Status"
+      ],
+      "number": 2,
+      "offset_end": 538,
+      "offset_start": 430,
+      "page": null,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 37
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 477,
+  "warnings": []
+}

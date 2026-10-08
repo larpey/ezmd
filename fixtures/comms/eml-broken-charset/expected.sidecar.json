@@ -1,0 +1,645 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "timestamp": "2024-10-04T08:00:00+02:00"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<broken-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Résumé des comptages"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "headers"
+        },
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Message headers"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Header"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "From"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Müller <muller@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "To"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "bob@example.org"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Date"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-10-04T08:00:00+02:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Subject"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Résumé des comptages"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Message-ID"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "<broken-1@example.org>"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<broken-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<broken-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Les hérons sont revenus à l'étang. Déjà quatorze oiseaux comptés."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:20e00033823189e204093bb0a0f13521d0f5ab8074b52a1849db3d9f52d8624a",
+    "converter_id": "comms.eml",
+    "metadata": {
+      "author": "Müller",
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "cp1252",
+      "encoding_confidence": 0.925,
+      "extra": {
+        "attachments": 0,
+        "body_alternatives": false,
+        "body_source": "text",
+        "message_id": "<broken-1@example.org>"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "message/rfc822",
+      "modified": null,
+      "pages": null,
+      "published": "2024-10-04T08:00:00+02:00",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.eml",
+      "source_type": "email",
+      "speakers": [],
+      "title": "Résumé des comptages"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "charsets": "x-unknown-8bit",
+          "reason": "unknown_header_charset"
+        },
+        "kind": "encoding_uncertain",
+        "message": "Header encoded words name an unknown charset (x-unknown-8bit); they were decoded as UTF-8 or Windows-1252.",
+        "page": null,
+        "severity": "warning"
+      },
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {
+          "encoding": "cp1252",
+          "reason": "declared_charset_mismatch"
+        },
+        "kind": "encoding_uncertain",
+        "message": "A body part's declared charset did not match its bytes (us-ascii (decoded as cp1252)); the text was decoded by detection.",
+        "page": null,
+        "severity": "warning"
+      }
+    ]
+  },
+  "email_headers": [
+    {
+      "name": "From",
+      "value": "Müller <muller@example.org>"
+    },
+    {
+      "name": "To",
+      "value": "bob@example.org"
+    },
+    {
+      "name": "Subject",
+      "value": "Résumé des comptages"
+    },
+    {
+      "name": "Date",
+      "value": "Fri, 04 Oct 2024 08:00:00 +0200"
+    },
+    {
+      "name": "Message-ID",
+      "value": "<broken-1@example.org>"
+    },
+    {
+      "name": "MIME-Version",
+      "value": "1.0"
+    },
+    {
+      "name": "Content-Type",
+      "value": "text/plain; charset=\"us-ascii\""
+    },
+    {
+      "name": "Content-Transfer-Encoding",
+      "value": "8bit"
+    }
+  ],
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Müller",
+    "content_hash": "sha256:ff44dba8bba24f4f3a8b6d4f5f43c22cdc53e1194b90944916147a86c0fd7cd6",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "comms.eml",
+    "converter_version": "0.0.1",
+    "created_at": "2024-10-04T06:00:00Z",
+    "extra": {
+      "attachments": 0,
+      "body_alternatives": false,
+      "body_source": "text",
+      "encoding": "cp1252",
+      "message_id": "<broken-1@example.org>"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.eml",
+    "source_hash": "sha256:ed0cf901c30ab3f1e4bf26288ac2ff47211faa9e3ffd1be13bc4ea70197c0820",
+    "source_type": "email",
+    "title": "Résumé des comptages",
+    "tokens": {
+      "cl100k_base": 113,
+      "claude_approx": 116,
+      "o200k_base": 107
+    },
+    "truncated": false,
+    "warnings": [
+      "encoding_uncertain"
+    ],
+    "word_count": 33
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 12,
+      "tables": 1,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 28
+    },
+    "duration_seconds": 0.0470000000204891,
+    "engine": "comms.eml",
+    "engines_tried": [
+      "comms.eml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 354
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<broken-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<broken-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "b0003",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<broken-1@example.org>",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Header",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 272,
+      "offset_start": 33,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 78
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 419,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "charsets": "x-unknown-8bit",
+        "reason": "unknown_header_charset"
+      },
+      "kind": "encoding_uncertain",
+      "message": "Header encoded words name an unknown charset (x-unknown-8bit); they were decoded as UTF-8 or Windows-1252.",
+      "page": null,
+      "severity": "warning"
+    },
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {
+        "encoding": "cp1252",
+        "reason": "declared_charset_mismatch"
+      },
+      "kind": "encoding_uncertain",
+      "message": "A body part's declared charset did not match its bytes (us-ascii (decoded as cp1252)); the text was decoded by detection.",
+      "page": null,
+      "severity": "warning"
+    }
+  ]
+}

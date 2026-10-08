@@ -1,0 +1,10 @@
+converter = "comms.msg"
+max_seconds = 60
+hand_edited = false
+notes = "Outlook .msg built by fixtures/comms/_cfb.py (a minimal MS-CFB writer; olefile cannot write): the body exists only as compressed RTF (LZFu) encapsulating HTML (fromhtml1), transport headers (0x007D) supply Message-ID and List-Id, To/Cc come from recipient storages, a CSV and a text attachment, and one embedded message (3701000D)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

@@ -48,8 +48,32 @@ def _with_annotations(ctx: RenderContext, block_id: str, text: str) -> str:
     return f"{text} {' '.join(notes)}".strip() if notes else text
 
 
+LINE_BREAKS_ATTR = "line_breaks"
+"""`Paragraph.attrs["line_breaks"] = "hard"`: newlines inside the spans are real line breaks (verse, addresses,
+`Key: value` lines in plain text and email). Rendered as CommonMark hard breaks (backslash at line end)."""
+
+
+def split_lines(spans: list[InlineSpan]) -> list[list[InlineSpan]]:
+    """Spans split at every newline, keeping each piece's styling. Empty lines are dropped."""
+    lines: list[list[InlineSpan]] = [[]]
+    for s in spans:
+        parts = s.text.split(_NL)
+        for i, part in enumerate(parts):
+            if i:
+                lines.append([])
+            if part:
+                lines[-1].append(s.model_copy(update={"text": part}))
+    return [ln for ln in lines if ln]
+
+
+def _hard_break_text(ctx: RenderContext, p: Paragraph) -> str:
+    rendered = [render_spans(ctx, ln) for ln in split_lines(p.spans)]
+    return (chr(92) + _NL).join(r for r in rendered if r)
+
+
 def render_paragraph(ctx: RenderContext, p: Paragraph) -> Unit | None:
-    text = render_spans(ctx, p.spans)
+    hard = p.attrs.get(LINE_BREAKS_ATTR) == "hard" and p.role not in ("title", "subtitle")
+    text = _hard_break_text(ctx, p) if hard else render_spans(ctx, p.spans)
     text = _with_annotations(ctx, p.id, text)
     if not text:
         return None

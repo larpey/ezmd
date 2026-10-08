@@ -1,0 +1,10 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "Declared us-ascii with cp1252 8-bit body bytes, an encoded word in an unknown charset, raw UTF-8 in Subject. Both charset problems are reported as encoding_uncertain (declared_charset_mismatch, unknown_header_charset)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

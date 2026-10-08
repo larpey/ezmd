@@ -1,0 +1,24 @@
+From: Carol Diaz <carol@example.org>
+To: Bob Stone <bob@example.org>
+Date: Mon, 30 Sep 2024 08:30:00 -0400
+Subject: Weekly report
+Message-ID: <html-1@example.org>
+Reply-To: survey@example.org
+List-Id: Marsh survey <survey.example.org>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><head><title>Weekly report</title></head><body>
+<p>Hello team,</p>
+<p>Here is the <b>weekly report</b> for the marsh survey.</p>
+<ul><li>Herons: 14</li><li>Egrets: 3</li></ul>
+<table><tr><th>Site</th><th>Count</th></tr><tr><td>East</td><td>14</td></tr><=
+tr><td>West</td><td>3</td></tr></table>
+<div class=3D"gmail_signature"><p>Carol Diaz, Survey Lead</p></div>
+<div class=3D"gmail_quote"><div class=3D"gmail_attr">
+On Fri, Sep 27, 2024 at 4:00 PM Ann Reed &lt;ann@example.org&gt; wrote:<br></=
+div>
+<blockquote class=3D"gmail_quote"><p>Please post the weekly report on Monday.=
+</p></blockquote></div>
+</body></html>

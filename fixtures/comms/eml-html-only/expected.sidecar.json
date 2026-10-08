@@ -1,0 +1,1193 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "timestamp": "2024-09-30T08:30:00-04:00"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Weekly report"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "headers"
+        },
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Message headers"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Header"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "From"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Carol Diaz <carol@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "To"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Bob Stone <bob@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Date"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-09-30T08:30:00-04:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Subject"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Weekly report"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Message-ID"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "<html-1@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Reply-To"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "survey@example.org"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "List-Id"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Marsh survey <survey.example.org>"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 8,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "m0-b0001",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Hello team,"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "m0-b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Here is the "
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "weekly report"
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": " for the marsh survey."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "m0-b0003",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > ul > li:nth-of-type(1)",
+              "source": "body.html",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Herons: 14"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": {
+              "bbox": null,
+              "char_end": null,
+              "char_start": null,
+              "confidence": null,
+              "engine": "web.html_raw",
+              "line_end": null,
+              "line_start": null,
+              "page_label": null,
+              "path": "body > ul > li:nth-of-type(2)",
+              "source": "body.html",
+              "source_id": null,
+              "source_label": null,
+              "source_page": null,
+              "time_end": null,
+              "time_start": null
+            },
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Egrets: 3"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Site"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Count"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "East"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "14"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "West"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "3"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "m0-b0004",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {
+          "role": "signature"
+        },
+        "id": "m0-b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Carol Diaz, Survey Lead"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {
+          "role": "reply_header"
+        },
+        "id": "m0-b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "On Fri, Sep 27, 2024 at 4:00 PM Ann Reed <ann@example.org> wrote:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attribution": null,
+        "attrs": {
+          "role": "reply_history"
+        },
+        "depth": 1,
+        "id": "m0-b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "web.html_raw",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<html-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Please post the weekly report on Monday."
+          }
+        ],
+        "type": "quote"
+      }
+    ],
+    "content_hash": "sha256:c2d0460b8159189822037b364912f729541e468ccc5c0fcb0ccf2e51dccfb030",
+    "converter_id": "comms.eml",
+    "metadata": {
+      "author": "Carol Diaz",
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "attachments": 0,
+        "body_alternatives": false,
+        "body_source": "html",
+        "message_id": "<html-1@example.org>"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "message/rfc822",
+      "modified": null,
+      "pages": null,
+      "published": "2024-09-30T08:30:00-04:00",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.eml",
+      "source_type": "email",
+      "speakers": [],
+      "title": "Weekly report"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "email_headers": [
+    {
+      "name": "From",
+      "value": "Carol Diaz <carol@example.org>"
+    },
+    {
+      "name": "To",
+      "value": "Bob Stone <bob@example.org>"
+    },
+    {
+      "name": "Date",
+      "value": "Mon, 30 Sep 2024 08:30:00 -0400"
+    },
+    {
+      "name": "Subject",
+      "value": "Weekly report"
+    },
+    {
+      "name": "Message-ID",
+      "value": "<html-1@example.org>"
+    },
+    {
+      "name": "Reply-To",
+      "value": "survey@example.org"
+    },
+    {
+      "name": "List-Id",
+      "value": "Marsh survey <survey.example.org>"
+    },
+    {
+      "name": "Content-Type",
+      "value": "text/html; charset=\"utf-8\""
+    },
+    {
+      "name": "Content-Transfer-Encoding",
+      "value": "quoted-printable"
+    },
+    {
+      "name": "MIME-Version",
+      "value": "1.0"
+    }
+  ],
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Carol Diaz",
+    "content_hash": "sha256:a760b4881e5025ab18934168450e3af831a4fef2fba90de967ad77840b34a7b3",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "comms.eml",
+    "converter_version": "0.0.1",
+    "created_at": "2024-09-30T12:30:00Z",
+    "extra": {
+      "attachments": 0,
+      "body_alternatives": false,
+      "body_source": "html",
+      "encoding": "utf-8",
+      "message_id": "<html-1@example.org>"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.eml",
+    "source_hash": "sha256:0b8c7c9a1e7c125b15a8c9202dfd7bde834767af311373213ac97c1b84eb82b2",
+    "source_type": "email",
+    "title": "Weekly report",
+    "tokens": {
+      "cl100k_base": 205,
+      "claude_approx": 222,
+      "o200k_base": 206
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 76
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 1,
+      "images": 0,
+      "links": 0,
+      "list_items": 2,
+      "lists": 1,
+      "page_breaks": 0,
+      "paragraphs": 4,
+      "quotes": 1,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 22,
+      "tables": 2,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 69
+    },
+    "duration_seconds": 0.09300000010989606,
+    "engine": "comms.eml",
+    "engines_tried": [
+      "comms.eml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 988
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "m0-b0001",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "m0-b0002",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "m0-b0003",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "list"
+    },
+    {
+      "block_id": "m0-b0004",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "m0-b0005",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "m0-b0006",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "m0-b0007",
+      "engine": "web.html_raw",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<html-1@example.org>",
+      "type": "quote"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Header",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 349,
+      "offset_start": 24,
+      "page": null,
+      "representation": "pipe",
+      "rows": 7,
+      "tokens": 101
+    },
+    {
+      "block_id": "m0-b0004",
+      "column_types": [
+        "text",
+        "number"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Site",
+        "Count"
+      ],
+      "number": 2,
+      "offset_end": 510,
+      "offset_start": 443,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 28
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 509,
+  "warnings": []
+}

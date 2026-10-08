@@ -18,7 +18,9 @@ licenses = ["GPL-2.0-only", "GPL-2.0-or-later", "GPL-3.0-only", "GPL-3.0-or-late
 
 # Packages allowed only inside the `nonfree` extra; the checker verifies they are not in the default tree
 [nonfree]
-packages = ["pymupdf", "pymupdf4llm", "extract-msg", "olefile"]
+packages = ["pymupdf", "pymupdf4llm", "extract-msg"]
+# olefile (BSD-2-Clause) left this list in P1-T04: it is the spec's default MSG reader (part2 9b step 2);
+# it was here only because extract-msg depends on it.
 
 # Known mislabeled packages. Kept empty on purpose: every override lives in
 # tools/license_overrides.toml with a URL to the license file it was verified against.

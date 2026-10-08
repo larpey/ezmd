@@ -1,0 +1,11 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "PDF, DOCX and CSV attachments converted as children; an unsupported .bin (attachment_unconverted) and a winmail.dat (tnef_unparsed) listed only."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"
+includes = "report.pdf is fixtures/pdf/simple-table/input.pdf and method.docx is fixtures/office/docx-structure/input.docx (both self-generated, CC0-1.0, by fixtures/pdf/_generate.py and fixtures/office/_generate.py)"

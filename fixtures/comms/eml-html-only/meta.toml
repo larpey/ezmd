@@ -1,0 +1,10 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "HTML-only body (quoted-printable) through the web module in file mode: list, table, Gmail signature and gmail_quote history; Reply-To and List-Id headers."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

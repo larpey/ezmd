@@ -1,0 +1,10 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "Real To (2,500 addresses) and Cc (1,500) headers plus a 70 KB X-Huge header, all cut at 16 KB in the table and the sidecar (truncated warning); a CR/LF Bcc injection through an encoded word (stays one header, no Bcc row); NUL and U+202E in the Subject (removed); forwarded messages nested five deep, stopped at max_attachment_depth 3 (attachment_skipped)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

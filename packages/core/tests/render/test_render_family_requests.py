@@ -405,3 +405,26 @@ def test_hidden_text_structural_and_tag_payloads_are_flagged() -> None:
     assert report.risk == "high"
     body_only = scan("Visible text " + tags, {})
     assert any(f.family == "encoding" for f in body_only.findings)
+
+
+def test_child_with_several_h1s_keeps_its_hierarchy() -> None:
+    # A child whose title is not its only H1 (DOCX with H1 sections): every heading shifts by the same amount,
+    # so an H2 stays one level below the H1 it belongs to (P1-T04 golden review).
+    doc = _child(
+        "guide.docx",
+        [heading("Guide", 1), heading("Introduction", 1), heading("Habitats", 1), heading("Plants", 2), para("x")],
+        title="Guide",
+    )
+    res = make_result([para("Parent.")], title="mail.eml", source_type=SourceType.EMAIL)
+    res = res.model_copy(update={"document": res.document.model_copy(update={"children": [doc]})})
+    body = render(res, "full").body
+    assert "### 1.2 Habitats {#sec-1-2}" in body
+    assert "#### 1.2.1 Plants {#sec-1-2-1}" in body
+
+
+def test_hard_line_breaks_render_per_profile() -> None:
+    res = make_result([para("Boat: Heron II\nSeats: 6", attrs={"line_breaks": "hard"}), para("soft\nwrap")])
+    body = render(res, "full").body
+    assert "Boat: Heron II\\\nSeats: 6" in body and "soft wrap" in body
+    txt = render(res, "full", "txt").body
+    assert "Boat: Heron II\nSeats: 6" in txt

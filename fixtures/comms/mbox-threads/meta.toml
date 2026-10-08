@@ -1,0 +1,10 @@
+converter = "comms.mbox"
+max_seconds = 60
+hand_edited = false
+notes = "Five messages, two threads: one via References/In-Reply-To, one by subject fallback (no headers) with a shared participant; Gmail labels; mboxrd >From escaping."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

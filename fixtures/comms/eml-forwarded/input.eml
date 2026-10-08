@@ -1,0 +1,45 @@
+From: Ann Reed <ann@example.org>
+To: Bob Stone <bob@example.org>
+Date: Tue, 01 Oct 2024 16:00:00 +0000
+Subject: Fwd: Boat booking
+Message-ID: <fwd-1@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_fwd_1"
+
+--=_fwd_1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+Forwarding the booking confirmation.
+
+--=_fwd_1
+Content-Type: message/rfc822; boundary="=_fwd_2"
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Disposition: attachment
+
+From: Dock Office <dock@example.org>
+To: Bob Stone <bob@example.org>
+Date: Tue, 01 Oct 2024 15:00:00 +0000
+Subject: Boat booking
+Message-ID: <boat-1@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_fwd_3"
+
+--=_fwd_3
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+The boat is booked for Friday at 7am.
+
+--=_fwd_3
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="booking.txt"
+MIME-Version: 1.0
+
+Qm9hdDogSGVyb24gSUkKU2VhdHM6IDYK
+
+--=_fwd_3--
+
+--=_fwd_1--

@@ -75,6 +75,7 @@ nav:
       - "Code converters": converters/code.md
       - "Data converters": converters/data.md
       - "Ebooks and notebooks": converters/ebooks.md
+      - "Email converters (communication family)": converters/comms.md
       - "Office documents": converters/office.md
       - "PDF converters": converters/pdf.md
       - "Plain text and Markdown": converters/text.md

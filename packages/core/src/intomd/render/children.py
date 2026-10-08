@@ -160,10 +160,13 @@ def _prefix_ids(value: Any, prefix: str) -> Any:
     return value
 
 
-def _child_block(b: Block, prefix: str, depth: int) -> Block:
+def _child_block(b: Block, prefix: str, depth: int, top: int) -> Block:
+    """`top` is the shallowest heading level left in the child after its title is consumed: it lands one level
+    below the section heading and every other heading keeps its distance from it, so a child with several H1s
+    keeps H2 below H1 (uniform shift)."""
     data = _prefix_ids(b.model_dump(mode="python"), prefix)
     if isinstance(b, Heading):
-        data["level"] = min(6, depth + max(b.level, 2) - 1)
+        data["level"] = min(6, depth + 1 + b.level - top)
     return _BLOCK_ADAPTER.validate_python(data)
 
 
@@ -210,10 +213,12 @@ def _walk(doc: Document, parts: list[str], depth: int, flat: _Flat) -> None:
             )
         )
         flat.index.block_child[section_id] = prefix
+        levels = [b.level for b in child.blocks if isinstance(b, Heading) and b.id not in consumed]
+        top = min(levels) if levels else 2
         for b in child.blocks:
             if b.id in consumed:
                 continue
-            nb = _child_block(b, prefix, depth)
+            nb = _child_block(b, prefix, depth, top)
             flat.blocks.append(nb)
             flat.index.block_child[nb.id] = prefix
         flat.warnings.extend(_child_warning(w, prefix, path) for w in child.warnings)

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import logging
 import mimetypes
+import re
 import threading
 from pathlib import Path
 from typing import Any
@@ -313,6 +314,46 @@ def _magika_guess(sample: bytes) -> tuple[str | None, str | None, float]:
     return label, mime, score
 
 
+RFC822 = "message/rfc822"
+_HEADER_LINE = re.compile(rb"[!-9;-~]{1,76}:[ \t]")
+_MAIL_EVIDENCE = re.compile(rb"(?i)(message-id|received|mime-version|return-path):")
+_FROM = re.compile(rb"(?i)from:[ \t]")
+TEXTUAL_EXTENSIONS = frozenset(
+    {".md", ".markdown", ".mdown", ".txt", ".text", ".rst", ".adoc", ".asciidoc", ".org", ".log", ".csv", ".tsv",
+     ".tex", ".html", ".htm", ".xml", ".json", ".yaml", ".yml", ".toml", ".ini", ".cfg"}
+)  # fmt: skip
+"""Extensions a header sniff overrides only on strong evidence (part2 13.1: the extension decides between
+text-like formats)."""
+
+
+def rfc822_evidence(sample: bytes) -> int:
+    """How strongly the start of `sample` looks like an RFC 5322 message: 0 unless the input opens with a header
+    block in which every line is a header field or a folded continuation and one field is `From:`; otherwise the
+    number of distinct mail-only fields (Message-ID, Received, MIME-Version, Return-Path) in it. `Date:` and
+    `Subject:` count for nothing (notes and HTTP header dumps have them). An mbox `From ` line scores 0."""
+    head = sample[:2048]
+    end = re.search(rb"\r?\n\r?\n", head)
+    block = head[: end.start()] if end else head
+    lines = block.splitlines()
+    if not lines or not _HEADER_LINE.match(lines[0]):
+        return 0
+    checked = lines if end else lines[:-1]  # the last line of a cut sample may be partial
+    if any(not (_HEADER_LINE.match(ln) or ln[:1] in (b" ", b"\t")) for ln in checked):
+        return 0
+    fields = [ln for ln in lines if _HEADER_LINE.match(ln)]
+    if not any(_FROM.match(ln) for ln in fields):
+        return 0
+    found = {m.group(1).lower() for ln in fields if (m := _MAIL_EVIDENCE.match(ln))}
+    return len(found)
+
+
+def looks_like_rfc822(sample: bytes, extension: str | None = None) -> bool:
+    """A header block with `From:` and at least one mail-only field; two when the extension names another
+    text-like format (`notes.md` with `Title:/From:/Date:` lines stays Markdown)."""
+    need = 2 if extension in TEXTUAL_EXTENSIONS else 1
+    return rfc822_evidence(sample) >= need
+
+
 class MagicDetector:
     """The default Detector."""
 
@@ -342,6 +383,10 @@ class MagicDetector:
             mime, confidence = mg_mime, score
         else:
             mime, confidence = OCTET, 0.0
+        if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
+            # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
+            # decide (docs/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
+            mime, confidence = RFC822, max(confidence, 0.9)
         return Detected(
             mime=mime,
             extension=ext,

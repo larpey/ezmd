@@ -1,0 +1,1077 @@
+{
+  "children": [
+    {
+      "block_count": 5,
+      "converter": "comms.eml",
+      "depth": 1,
+      "path": "attachments/Boat booking.eml",
+      "section_block_id": "c1-section",
+      "source_type": "email",
+      "title": "Boat booking"
+    },
+    {
+      "block_count": 1,
+      "converter": "text.plain",
+      "depth": 2,
+      "path": "attachments/booking.txt",
+      "section_block_id": "c1.1-section",
+      "source_type": "text",
+      "title": null
+    }
+  ],
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {
+          "timestamp": "2024-10-01T16:00:00+00:00"
+        },
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<fwd-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Fwd: Boat booking"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "headers"
+        },
+        "caption": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Message headers"
+          }
+        ],
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Header"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "From"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Ann Reed <ann@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "To"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Bob Stone <bob@example.org>"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Date"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2024-10-01T16:00:00+00:00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Subject"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Fwd: Boat booking"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Message-ID"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "<fwd-1@example.org>"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "headers",
+          "source": "input.eml",
+          "source_id": "<fwd-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "body",
+          "source": "input.eml",
+          "source_id": "<fwd-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Forwarding the booking confirmation."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "attachments",
+          "source": "input.eml",
+          "source_id": "<fwd-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Attachments"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {
+          "role": "attachments"
+        },
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Status"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Boat booking.eml"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "message/rfc822"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "545 B"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "converted (comms.eml)"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0005",
+        "n_cols": 4,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "attachments",
+          "source": "input.eml",
+          "source_id": "<fwd-1@example.org>",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:97a7c789f3a1e68b4c7b16856d371caa24c1290a13016a72d64c8ecdfba72350",
+    "converter_id": "comms.eml",
+    "metadata": {
+      "author": "Ann Reed",
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "attachments": 1,
+        "body_alternatives": false,
+        "body_source": "text",
+        "message_id": "<fwd-1@example.org>"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "message/rfc822",
+      "modified": null,
+      "pages": null,
+      "published": "2024-10-01T16:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.eml",
+      "source_type": "email",
+      "speakers": [],
+      "title": "Fwd: Boat booking"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "email_headers": [
+    {
+      "name": "From",
+      "value": "Ann Reed <ann@example.org>"
+    },
+    {
+      "name": "To",
+      "value": "Bob Stone <bob@example.org>"
+    },
+    {
+      "name": "Date",
+      "value": "Tue, 01 Oct 2024 16:00:00 +0000"
+    },
+    {
+      "name": "Subject",
+      "value": "Fwd: Boat booking"
+    },
+    {
+      "name": "Message-ID",
+      "value": "<fwd-1@example.org>"
+    },
+    {
+      "name": "MIME-Version",
+      "value": "1.0"
+    },
+    {
+      "name": "Content-Type",
+      "value": "multipart/mixed; boundary=\"=_fwd_1\""
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "From",
+      "value": "Dock Office <dock@example.org>"
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "To",
+      "value": "Bob Stone <bob@example.org>"
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "Date",
+      "value": "Tue, 01 Oct 2024 15:00:00 +0000"
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "Subject",
+      "value": "Boat booking"
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "Message-ID",
+      "value": "<boat-1@example.org>"
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "MIME-Version",
+      "value": "1.0"
+    },
+    {
+      "child": "attachments/Boat booking.eml",
+      "name": "Content-Type",
+      "value": "multipart/mixed; boundary=\"=_fwd_3\""
+    }
+  ],
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "author": "Ann Reed",
+    "content_hash": "sha256:70e7a7070d6b18cc7a58dc073e84f48d279fc2c53fbe0a0d0d13efb6ca5d4b9d",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "comms.eml",
+    "converter_version": "0.0.1",
+    "created_at": "2024-10-01T16:00:00Z",
+    "extra": {
+      "attachments": 1,
+      "body_alternatives": false,
+      "body_source": "text",
+      "encoding": "utf-8",
+      "message_id": "<fwd-1@example.org>"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.eml",
+    "source_hash": "sha256:a9c3bf40def3e79924de476fc19f4db7a59b388fb860c3f2ce749214f715b5b5",
+    "source_type": "email",
+    "title": "Fwd: Boat booking",
+    "tokens": {
+      "cl100k_base": 349,
+      "claude_approx": 376,
+      "o200k_base": 348
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 104
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 4,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 3,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 40,
+      "tables": 4,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 80
+    },
+    "duration_seconds": 0.01500000013038516,
+    "engine": "comms.eml",
+    "engines_tried": [
+      "comms.eml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1099
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<fwd-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "headers",
+      "source": "input.eml",
+      "source_id": "<fwd-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "b0003",
+      "path": "body",
+      "source": "input.eml",
+      "source_id": "<fwd-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0004",
+      "path": "attachments",
+      "source": "input.eml",
+      "source_id": "<fwd-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "path": "attachments",
+      "source": "input.eml",
+      "source_id": "<fwd-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "c1-section",
+      "path": "attachments/Boat booking.eml",
+      "source": "input.eml!attachments/Boat booking.eml",
+      "type": "heading"
+    },
+    {
+      "block_id": "c1-b0002",
+      "path": "attachments/1!headers",
+      "source": "input.eml!attachments/Boat booking.eml",
+      "source_id": "<boat-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "c1-b0003",
+      "path": "attachments/1!body",
+      "source": "input.eml!attachments/Boat booking.eml",
+      "source_id": "<boat-1@example.org>",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "c1-b0004",
+      "path": "attachments/1!attachments",
+      "source": "input.eml!attachments/Boat booking.eml",
+      "source_id": "<boat-1@example.org>",
+      "type": "heading"
+    },
+    {
+      "block_id": "c1-b0005",
+      "path": "attachments/1!attachments",
+      "source": "input.eml!attachments/Boat booking.eml",
+      "source_id": "<boat-1@example.org>",
+      "type": "table"
+    },
+    {
+      "block_id": "c1.1-section",
+      "path": "attachments/booking.txt",
+      "source": "Boat booking.eml!attachments/booking.txt",
+      "type": "heading"
+    },
+    {
+      "block_id": "c1.1-b0001",
+      "line_end": 2,
+      "line_start": 1,
+      "path": "attachments/1",
+      "source": "Boat booking.eml!attachments/booking.txt",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0004",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 471,
+      "offset_start": 310,
+      "original_level": 2,
+      "original_title": "Attachments",
+      "time_end": null,
+      "time_start": null,
+      "title": "Attachments"
+    },
+    {
+      "block_id": "c1-section",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 812,
+      "offset_start": 471,
+      "original_level": 1,
+      "original_title": "attachments/Boat booking.eml: Boat booking",
+      "time_end": null,
+      "time_start": null,
+      "title": "attachments/Boat booking.eml: Boat booking"
+    },
+    {
+      "block_id": "c1-b0004",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 969,
+      "offset_start": 812,
+      "original_level": 2,
+      "original_title": "Attachments",
+      "time_end": null,
+      "time_start": null,
+      "title": "Attachments"
+    },
+    {
+      "block_id": "c1.1-section",
+      "id": "sec-2-2",
+      "level": 3,
+      "number": "2.2",
+      "offset_end": 1038,
+      "offset_start": 969,
+      "original_level": 2,
+      "original_title": "attachments/booking.txt",
+      "time_end": null,
+      "time_start": null,
+      "title": "attachments/booking.txt"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Header",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 270,
+      "offset_start": 28,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 83
+    },
+    {
+      "block_id": "b0005",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Name",
+        "Type",
+        "Size",
+        "Status"
+      ],
+      "number": 2,
+      "offset_end": 469,
+      "offset_start": 337,
+      "page": null,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 46
+    },
+    {
+      "block_id": "c1-b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Header",
+        "Value"
+      ],
+      "number": 3,
+      "offset_end": 771,
+      "offset_start": 529,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 79
+    },
+    {
+      "block_id": "c1-b0005",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Name",
+        "Type",
+        "Size",
+        "Status"
+      ],
+      "number": 4,
+      "offset_end": 967,
+      "offset_start": 844,
+      "page": null,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 41
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 661,
+  "warnings": []
+}

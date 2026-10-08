@@ -28,7 +28,7 @@ From `tools/license_allowlist.toml`:
 | Allowed in the default tree | Apache-2.0, MIT, BSD-2-Clause, BSD-3-Clause, ISC, PSF-2.0, Python-2.0, CNRI-Python, MPL-2.0, Unlicense, 0BSD, CC0-1.0, Zlib, BSL-1.0, HPND, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, LGPL-3.0-or-later |
 | Model weights accepted for default pulls | Apache-2.0, MIT, CC-BY-4.0, CC0-1.0, BSD-3-Clause |
 | Denied | GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, AGPL-3.0-only, AGPL-3.0-or-later, SSPL-1.0, CC-BY-NC-4.0, CC-BY-NC-SA-4.0, OpenRAIL-M, BigScience-OpenRAIL-M, Commons-Clause, Elastic-2.0, BUSL-1.1, MinerU-License |
-| Only inside the `nonfree` extra | pymupdf, pymupdf4llm, extract-msg, olefile |
+| Only inside the `nonfree` extra | pymupdf, pymupdf4llm, extract-msg |
 
 LGPL dependencies are allowed only as separately installed shared libraries or unmodified Python
 packages; nothing is statically linked.

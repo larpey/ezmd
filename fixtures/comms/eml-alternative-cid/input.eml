@@ -1,0 +1,41 @@
+To: Bob Stone <bob@example.org>
+Date: Wed, 02 Oct 2024 12:00:00 +0000
+Subject: =?utf-8?q?R=C3=A9union_au_caf=C3=A9?=
+Message-ID: <alt-1@example.org>
+From: =?utf-8?q?Jos=C3=A9_=C3=81lvarez?= <jose@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="=_alt_1"
+
+--=_alt_1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Café meeting moved to Thursday.
+
+See the map below.
+
+--=_alt_1
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="=_alt_2"
+
+--=_alt_2
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><p>Caf=C3=A9 meeting moved to <em>Thursday</em>.</p>
+<p>See the map below.</p><p><img src=3D"cid:map1@example.org" alt=3D"map of t=
+he caf=C3=A9"></p></body></html>
+
+--=_alt_2
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="map.png"
+Content-ID: <map1@example.org>
+MIME-Version: 1.0
+
+iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAEElEQVR42mMQaDgARAwQCgAiDgVB
+l4TkPAAAAABJRU5ErkJggg==
+
+--=_alt_2--
+
+--=_alt_1--

@@ -1,0 +1,10 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "format=flowed plain text with a bullet list, a '-- ' signature, an 'On ... wrote:' reply header and one-level quoted history (marked reply_history); fixed lines (Thanks, / Ann, the signature lines, each quoted line) stay separate."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

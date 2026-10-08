@@ -1,0 +1,6 @@
+# Email (docs/spec/part2.md 9g): headers table exact and body text_similarity 0.97; the golden score bundles
+# both, so the converter threshold is 0.97.
+[converters]
+"comms.eml" = 0.97
+"comms.mbox" = 0.97
+"comms.msg" = 0.97

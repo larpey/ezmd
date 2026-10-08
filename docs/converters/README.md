@@ -23,6 +23,10 @@ loaded or unavailable with the reason, and `intomd doctor` for system programs s
 | `archives.sevenzip` | archives | sevenzip | `application/x-7z-compressed` | extra `7z` | Beta | 0 | 0.85 | [archives](archives.md) |
 | `code.repo_pack` | code | repo_pack | `application/gzip`, `application/x-compressed-tar`, `application/x-gzip` and 3 more | default | Beta | 3 | 0.99 | [code](code.md) |
 | `code.source_file` | code | source_file | `text/x-python`, `application/typescript`, `text/x-typescript` and 40 more | default | Beta | 5 | 0.99 | [code](code.md) |
+| `comms.eml` | comms | eml | `message/rfc822`, `message/global` | default | Beta | 7 | 0.97 | [comms](comms.md) |
+| `comms.mbox` | comms | mbox | `application/mbox`, `application/x-mbox` | default | Beta | 1 | 0.97 | [comms](comms.md) |
+| `comms.msg` | comms | msg | `application/vnd.ms-outlook`, `application/x-msg` | default | Beta | 1 | 0.97 | [comms](comms.md) |
+| `comms.msg_extract` | comms | msg_extract | (by URL) | extra `nonfree` | Beta | 0 | 0.85 | [comms](comms.md) |
 | `data.connection_string` | data | connection_string | `text/x-uri`, `text/plain` | default | Beta | 1 | 1.00 | [data](data.md) |
 | `data.csv` | data | csv | `text/csv`, `text/tab-separated-values` | default | Beta | 4 | 1.00 | [data](data.md) |
 | `data.json` | data | json | `application/json`, `application/jsonl`, `application/x-ndjson` | default | Beta | 3 | 1.00 | [data](data.md) |
@@ -53,7 +57,7 @@ loaded or unavailable with the reason, and `intomd doctor` for system programs s
 
 Converters behind a flag are off by default; they are listed here as they behave with the flag set (`INTOMD_ENABLE_SOCIAL=1`).
 
-31 converters, 62 fixtures.
+35 converters, 71 fixtures.
 
 ## Fallback chains
 
@@ -67,6 +71,7 @@ tried (`intomd.chains`).
 | `application/javascript` | `code.source_file` then `text.plain` |
 | `application/json` | `data.json` |
 | `application/jsonl` | `data.json` |
+| `application/mbox` | `comms.mbox` |
 | `application/msword` | `documents.libreoffice` |
 | `application/pdf` | `documents.docling_pdf` then `documents.pdfium_text` |
 | `application/rtf` | `documents.libreoffice` then `documents.rtf` |
@@ -79,6 +84,7 @@ tried (`intomd.chains`).
 | `application/vnd.ms-excel` | `documents.libreoffice` |
 | `application/vnd.ms-excel.sheet.binary.macroenabled.12` | `documents.libreoffice` |
 | `application/vnd.ms-excel.sheet.macroenabled.12` | `documents.xlsx` |
+| `application/vnd.ms-outlook` | `comms.msg` then `comms.msg_extract` |
 | `application/vnd.ms-powerpoint` | `documents.libreoffice` |
 | `application/vnd.ms-powerpoint.presentation.macroenabled.12` | `documents.pptx` |
 | `application/vnd.ms-word.document.macroenabled.12` | `documents.docx` |
@@ -116,6 +122,8 @@ tried (`intomd.chains`).
 | `application/xhtml+xml` | `web.trafilatura` then `web.rules` then `web.html_raw` |
 | `application/xml` | `data.xml` |
 | `application/yaml` | `data.yaml` |
+| `message/global` | `comms.eml` |
+| `message/rfc822` | `comms.mbox` then `comms.eml` |
 | `text/coffeescript` | `code.source_file` then `text.plain` |
 | `text/csv` | `data.csv` |
 | `text/html` | `web.trafilatura` then `web.rules` then `web.html_raw` |
@@ -164,6 +172,10 @@ tried (`intomd.chains`).
 - `archives.sevenzip`: `application/x-7z-compressed`
 - `code.repo_pack`: `application/gzip`, `application/x-compressed-tar`, `application/x-gzip`, `application/x-tar`, `application/zip`, `text/x-uri`
 - `code.source_file`: `text/x-python`, `application/typescript`, `text/x-typescript`, `application/javascript`, `text/javascript`, `text/x-golang`, `text/x-go`, `application/x-rust`, `text/x-rust`, `text/x-c`, `text/x-h`, `text/x-java`, `application/x-ruby`, `text/x-ruby`, `text/x-php`, `text/x-shellscript`, `application/x-sh`, `text/x-swift`, `application/x-scala`, `text/x-perl`, `text/x-groovy`, `text/x-julia`, `text/x-lisp`, `text/x-clojure`, `text/coffeescript`, `application/x-powershell`, `text/x-msdos-batch`, `text/x-asm`, `text/x-proto`, `text/x-objcsrc`, `text/x-r`, `text/x-matlab`, `text/x-pascal`, `text/x-erlang`, `text/zig`, `application/x-tcl`, `text/x-verilog`, `text/x-vhdl`, `text/x-cmake`, `text/x-makefile`, `text/x-dockerfile`, `text/x-hcl`, `text/vbscript`
+- `comms.eml`: `message/rfc822`, `message/global`
+- `comms.mbox`: `application/mbox`, `application/x-mbox`
+- `comms.msg`: `application/vnd.ms-outlook`, `application/x-msg`
+- `comms.msg_extract`: none; it claims inputs by URL pattern
 - `data.connection_string`: `text/x-uri`, `text/plain`
 - `data.csv`: `text/csv`, `text/tab-separated-values`
 - `data.json`: `application/json`, `application/jsonl`, `application/x-ndjson`

@@ -1,0 +1,10 @@
+converter = "comms.eml"
+max_seconds = 60
+hand_edited = false
+notes = "multipart/alternative with multipart/related HTML preferred over text/plain, an inline cid: image, RFC 2047 encoded From and Subject. Headers start with To: and Magika/libmagic call it HTML; detection's RFC 5322 header rule makes it message/rfc822."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/comms/_generate.py"

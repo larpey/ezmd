@@ -30,6 +30,7 @@ from intomd.ir import (
 )
 from intomd.profiles import Profile
 from intomd.render.base import RenderedOutput, TokenCounter
+from intomd.render.blocks import LINE_BREAKS_ATTR, split_lines
 from intomd.render.context import RenderContext
 from intomd.render.headings import plan_headings, resolve_title
 from intomd.render.inline import plain_spans
@@ -116,6 +117,8 @@ def _block(ctx: RenderContext, b: Block) -> list[str]:
         case Paragraph():
             if b.role in ("header", "footer", "page_number") and ctx.profile.furniture == "drop":
                 return []
+            if b.attrs.get(LINE_BREAKS_ATTR) == "hard":
+                return [_NL.join(plain_spans(ctx, ln) for ln in split_lines(b.spans))]
             return [plain_spans(ctx, b.spans)]
         case Quote():
             return [plain_spans(ctx, b.spans) + (f" ({b.attribution})" if b.attribution else "")]

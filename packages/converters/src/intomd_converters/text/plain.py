@@ -14,6 +14,7 @@ from intomd.core.textclean import CleanStats, clean_text
 from intomd.inputs import InputRef
 from intomd.ir import Document, Heading, InlineSpan, Metadata, Paragraph, Provenance, SourceType, Warning, WarningKind
 from intomd.registry import ConversionError, ConvertOptions
+from intomd_converters.text.lines import LINE_BREAKS_ATTR, LINE_BREAKS_HARD, join_lines
 
 _UNDERLINE = re.compile(r"^(=+|-+)\s*$")
 _MAX_HEADING_CHARS = 200
@@ -120,16 +121,23 @@ def _blocks(text: str, source: str) -> list[Heading | Paragraph]:
     start = 0
 
     def flush(end_line: int) -> None:
+        # One Paragraph per blank-line run. Hard-wrapped lines join (text.lines: full-width or lowercase
+        # continuation, never into list items or code); lines that do not join are kept as hard line breaks.
         nonlocal para
-        if para:
-            body = "\n".join(para).strip("\n")
-            if body.strip():
-                out.append(
-                    Paragraph(
-                        spans=[InlineSpan(text=body)],
-                        provenance=Provenance(source=source, line_start=start + 1, line_end=end_line),
-                    )
+        logical = join_lines(para)
+        if logical:
+            # A run that is one wrapped paragraph keeps its source newlines (the renderer joins them); a run
+            # with real line breaks keeps one line per logical line, wraps joined with a space.
+            hard = len(logical) > 1
+            attrs = {LINE_BREAKS_ATTR: LINE_BREAKS_HARD} if hard else {}
+            body = "\n".join(x.text for x in logical) if hard else "\n".join(para).strip("\n")
+            out.append(
+                Paragraph(
+                    spans=[InlineSpan(text=body)],
+                    provenance=Provenance(source=source, line_start=start + 1, line_end=end_line),
+                    attrs=attrs,
                 )
+            )
         para = []
 
     i = 0
