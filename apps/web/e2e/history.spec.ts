@@ -46,7 +46,8 @@ test("history survives a reload and re-opens the live result", async ({ page }) 
   await expect(page.getByTestId("job-card")).toHaveCount(0);
   await openHistory(page);
   const row = page.locator(`[data-testid="history-row"][data-job-id="${jobId}"]`);
-  // The row title becomes the result's frontmatter title; the preview holds the first characters.
+  // Pasted text keeps its submit-time title (not the server's "pasted"); the preview holds the first characters.
+  await expect(row).toContainText(/Pasted text \(\d+ words\)/);
   await expect(row).toContainText("History entry");
   await expect(row).toContainText("compact");
   await row.getByTestId("history-open").click();

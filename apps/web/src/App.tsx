@@ -109,7 +109,9 @@ export function App({ client = defaultClient, store = keptResults }: AppProps) {
   const onResult = useCallback(
     (id: string, info: ResultInfo) => {
       const prev = historyRef.current.find((e) => e.id === id);
-      const title = info.title ?? prev?.title ?? id;
+      // Pasted text has no name of its own: the server titles it after the SDK's placeholder file
+      // ("pasted"), so the title chosen at submit time stays. Files and URLs take the document title.
+      const title = (prev?.source_kind === "text" ? prev.title : info.title) ?? prev?.title ?? id;
       setFinished((m) => ({ ...m, [id]: { title, markdown: info.markdown } }));
       setHistory((h) => {
         const entry = h.find((e) => e.id === id);

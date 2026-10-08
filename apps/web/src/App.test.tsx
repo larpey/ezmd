@@ -87,7 +87,8 @@ describe("App", () => {
     expect(within(card).getByTestId("result-tokens")).toHaveTextContent("7 tokens");
     expect(within(card).getAllByText("Cut at 2 MB.").length).toBeGreaterThan(0);
     const stored = JSON.parse(localStorage.getItem(HISTORY_KEY)!) as Array<{ id: string; title: string; preview: string }>;
-    expect(stored[0]).toMatchObject({ id: "job_1", title: "Doc job_1" });
+    // Pasted text keeps its submit-time title; the server only knows it as "pasted".
+    expect(stored[0]).toMatchObject({ id: "job_1", title: "Pasted text (3 words)" });
     expect(stored[0]!.preview.startsWith("# Doc job_1")).toBe(true);
     expect(stored[0]).toMatchObject({ tokens: 7 });
     expect(JSON.stringify(stored)).not.toContain("tokens: 7");
@@ -113,6 +114,9 @@ describe("App", () => {
     await screen.findByRole("heading", { name: /\(rag\)/ });
     expect(client.convert).toHaveBeenCalledTimes(1);
     expect(client.getResult).toHaveBeenLastCalledWith("job_1", "json", expect.objectContaining({ profile: "rag" }));
+    // A URL entry is retitled after the document.
+    const stored = JSON.parse(localStorage.getItem(HISTORY_KEY)!) as Array<{ title: string }>;
+    expect(stored[0]!.title).toBe("Doc job_1");
   });
 
   it("keeps a result on the device and clears both stores", async () => {
