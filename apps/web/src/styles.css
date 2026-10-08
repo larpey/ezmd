@@ -131,6 +131,8 @@ progress { width: 100%; height: 10px; accent-color: var(--accent); }
 
 .raw { background: var(--code-bg); padding: 12px; border-radius: var(--radius); overflow: auto; font-size: 0.9rem; max-height: 70vh; }
 .raw.wrap { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* Inset so the ring is not clipped by the scroll container. */
+.raw:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
 .markdown-body { overflow-wrap: anywhere; }
 .markdown-body pre { background: var(--code-bg); padding: 12px; border-radius: var(--radius); overflow: auto; }
 .markdown-body code { background: var(--code-bg); padding: 0 4px; border-radius: 4px; }

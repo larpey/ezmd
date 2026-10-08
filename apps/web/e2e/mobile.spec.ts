@@ -22,10 +22,8 @@ test("@mobile core flow: paste text, convert, read, download", async ({ page }) 
   expect(md.name).toMatch(/\.md$/);
 });
 
-// Known issue (docs/decisions/P1-T15.md): on a phone the Raw tab's <pre> scrolls horizontally but is
-// not focusable (axe scrollable-region-focusable, serious). test.fail flips once ResultView fixes it.
+// Regression (docs/decisions/P1-T15.md finding 4): the Raw tab's scrolling <pre> must be focusable.
 test("@mobile raw tab passes axe", async ({ page }) => {
-  test.fail(true, "pre.raw is a scrollable region without tabindex on narrow viewports");
   await openApp(page);
   await page.getByTestId("input-text").fill(uniqueText("Mobile raw axe"));
   const card = await convertAndWait(page);

@@ -54,6 +54,20 @@ describe("ResultView", () => {
     expect(rendered).toHaveAttribute("aria-selected", "true");
   });
 
+  it("makes the scrollable raw and sidecar blocks keyboard-focusable named regions", async () => {
+    setup();
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("tab", { name: "Raw" }));
+    const raw = screen.getByRole("region", { name: "Raw Markdown" });
+    expect(raw).toBe(screen.getByTestId("result-raw"));
+    expect(raw).toHaveAttribute("tabindex", "0");
+    screen.getByTestId("result-wrap").focus();
+    await user.tab();
+    expect(raw).toHaveFocus();
+    await user.click(screen.getByRole("tab", { name: "Sidecar JSON" }));
+    expect(screen.getByRole("region", { name: "Sidecar JSON" })).toHaveAttribute("tabindex", "0");
+  });
+
   it("shows the sidecar JSON tab", async () => {
     setup();
     await userEvent.setup().click(screen.getByRole("tab", { name: "Sidecar JSON" }));

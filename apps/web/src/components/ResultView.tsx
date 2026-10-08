@@ -19,6 +19,10 @@ export interface ResultViewProps {
   onDownload: (format: ResultFormat) => void;
 }
 
+// Scrollable <pre> blocks must be reachable by keyboard (axe scrollable-region-focusable): a named,
+// focusable region lets keyboard users scroll a long or unwrapped line with the arrow keys.
+const SCROLL_REGION = { tabIndex: 0, role: "region" } as const;
+
 const DOWNLOAD_LABELS: Record<ResultFormat, string> = { md: ".md", txt: ".txt", json: ".json", zip: ".zip" };
 
 async function copyText(text: string): Promise<boolean> {
@@ -54,14 +58,20 @@ export function ResultView(props: ResultViewProps) {
           <label className="inline-check">
             <input type="checkbox" data-testid="result-wrap" checked={wrap} onChange={(e) => setWrap(e.target.checked)} /> Soft wrap
           </label>
-          <pre className={wrap ? "raw wrap" : "raw"} data-testid="result-raw">{markdown}</pre>
+          <pre className={wrap ? "raw wrap" : "raw"} data-testid="result-raw" {...SCROLL_REGION} aria-label="Raw Markdown">
+            {markdown}
+          </pre>
         </>
       ),
     },
     {
       id: "sidecar",
       label: "Sidecar JSON",
-      content: sidecar ? <pre className="raw wrap">{JSON.stringify(sidecar, null, 2)}</pre> : <p className="muted">No sidecar for this profile.</p>,
+      content: sidecar ? (
+          <pre className="raw wrap" {...SCROLL_REGION} aria-label="Sidecar JSON">
+            {JSON.stringify(sidecar, null, 2)}
+          </pre>
+        ) : <p className="muted">No sidecar for this profile.</p>,
     },
     { id: "warnings", label: `Warnings (${warnings.length})`, content: <WarningsPanel warnings={warnings} expanded /> },
   ];
