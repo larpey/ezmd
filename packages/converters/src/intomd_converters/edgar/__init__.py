@@ -3,7 +3,8 @@ accession lookups, and full-text search. Implemented directly against the docume
 `edgartools` is not used because it hard-depends on Unidecode (GPL-2.0+), see docs/decisions/P1-T07.md.
 
 The converter claims inputs by URL and pattern (sec.gov Archives, browse-edgar, efts.sec.gov, accession
-numbers), so it owns no mime chain: the registry's specialist rule puts it ahead of the text/html chain.
+numbers) and, for uploads without a URL, by the inline XBRL namespace, so it owns no mime chain: the
+registry's specialist rule puts it ahead of the text/html and XML chains.
 """
 
 from __future__ import annotations

@@ -31,9 +31,9 @@ SMOKE_CORPUS = [
     "pdf/born-digital-report",
     "office/odt-basic",
     "web/article-standard",
+    # An uploaded inline-XBRL filing is claimed by specialized.edgar through its namespace (no EDGAR URL).
+    "edgar/tva-8k",
 ]
-# edgar/ is URL-routed (its fixtures force specialized.edgar); an uploaded inline-XBRL .htm is
-# detected as XML and goes to data.xml, so it is not part of the upload corpus.
 
 # Job states in pipeline order (apps/api/src/intomd_api/jobs.py); SSE `state` events must not go back.
 STATE_ORDER = ["queued", "fetching", "converting", "rendering", "done"]
@@ -84,6 +84,15 @@ def test_smoke_corpus_converts(owner: httpx.Client, fixture: str) -> None:
     r = owner.get(f"/v1/jobs/{job_id}/result", params={"format": "md", "profile": "full"})
     assert r.status_code == 200, r.text
     assert _golden_heading(fixture) in r.text
+
+
+def test_uploaded_inline_xbrl_filing_uses_edgar(owner: httpx.Client) -> None:
+    path = _input_of("edgar/tva-8k")
+    r = upload(owner, path.read_bytes(), path.name, content_type="application/octet-stream")
+    assert r.status_code in (200, 202), r.text
+    body = wait_for(owner, str(r.json()["job"]["id"]))
+    assert body["state"] == "done", body
+    assert body["converter_id"] == "specialized.edgar", body
 
 
 def test_sse_stage_order(owner: httpx.Client) -> None:

@@ -100,6 +100,28 @@ def test_pipeline_routes_edgar_url_ahead_of_web_chain() -> None:
     assert result.converter_id == "specialized.edgar"
 
 
+@pytest.mark.parametrize("fixture", ["tva-8k", "synthetic-10k"])
+def test_uploaded_inline_xbrl_routes_to_edgar(fixture: str) -> None:
+    """An uploaded filing has no EDGAR URL; the inline XBRL namespace claims it ahead of data.xml/web."""
+    path = next((FIX / fixture).glob("input.*"))
+    ref = InputRef.from_bytes(path.read_bytes(), filename=path.name)
+    detect(ref)
+    assert EdgarConverter().can_handle(ref) == pytest.approx(0.95)
+    result = convert_ref(ref, ConvertOptions())
+    assert result.converter_id == "specialized.edgar"
+    assert _headings(result.document, 2)[0] == "Cover page"
+
+
+def test_inline_xbrl_sniff_needs_html_and_the_namespace() -> None:
+    xml = b'<?xml version="1.0"?><xbrl xmlns:ix="http://www.xbrl.org/2013/inlineXBRL"/>'
+    ref = InputRef.from_bytes(xml, filename="facts.xml")
+    detect(ref)
+    assert EdgarConverter().can_handle(ref) == 0.0
+    plain = InputRef.from_bytes(b"<html><body>inlineXBRL is mentioned here</body></html>", filename="a.htm")
+    detect(plain)
+    assert EdgarConverter().can_handle(plain) == 0.0
+
+
 def test_plain_html_without_edgar_url_is_not_claimed() -> None:
     ref = InputRef.from_bytes(b"<html><body><p>Item 1. Business</p></body></html>", filename="a.html")
     detect(ref)
@@ -316,11 +338,11 @@ def test_index_keeps_filer_role_addresses_and_ixbrl_marker() -> None:
     assert "tve-20260424.htm (iXBRL)" in cells
 
 
-def test_forced_conversion_without_edgar_url() -> None:
+def test_conversion_without_edgar_url() -> None:
     ref = InputRef.from_path(FIX / "synthetic-10k" / "input.htm")
     detect(ref)
     conv = EdgarConverter()
-    assert conv.can_handle(ref) == 0.0
+    assert conv.can_handle(ref) == pytest.approx(0.95)  # claimed by its inline XBRL namespace
     doc = conv.convert(ref, ConvertOptions())
     assert "Item 8. Financial Statements and Supplementary Data" in _headings(doc, 2)
     assert "TABLE OF CONTENTS" in doc.plain_text()

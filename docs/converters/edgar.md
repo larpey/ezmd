@@ -17,8 +17,10 @@ dependencies.
 | Full-text search | `https://efts.sec.gov/LATEST/search-index?q=...` | a table of matching filings (not converted) |
 
 The converter claims inputs by URL (confidence 0.95), so a sec.gov filing goes to it rather than to the
-generic web chain. A plain HTML file without an EDGAR URL is not claimed, but a saved filing converts with
-`--converter specialized.edgar`. A company page (`browse-edgar`) body without network access is handed back
+generic web chain. An uploaded or saved inline XBRL filing (the `http://www.xbrl.org/2013/inlineXBRL`
+namespace in the first 64 KiB of an HTML/XHTML/XML body) is claimed at the same confidence without a URL, ahead
+of `data.xml` and the web chain. A plain HTML file without an EDGAR URL or inline XBRL is not claimed, but a
+saved older (non-iXBRL) filing converts with `--converter specialized.edgar`. A company page (`browse-edgar`) body without network access is handed back
 to the web chain.
 
 ## Network, identity, and rate limit

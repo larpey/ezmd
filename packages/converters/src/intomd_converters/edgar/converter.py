@@ -35,6 +35,12 @@ SEARCH_URL = "https://efts.sec.gov/LATEST/search-index?q={q}"
 DEFAULT_FORM = "10-K"
 MAX_EXHIBITS = 10
 _CONVERTIBLE = (".htm", ".html", ".txt", ".xml", ".pdf")
+# An uploaded filing has no EDGAR URL to claim it by; inline XBRL (every EDGAR primary document since
+# 2019) declares this namespace on the root element, and detection may call the file XML because of its
+# `<?xml ...?>` declaration. The sniff reads only the head of the body.
+IXBRL_NAMESPACE = b"http://www.xbrl.org/2013/inlineXBRL"
+_SNIFF_BYTES = 64 * 1024
+_SNIFF_MIMES = ("text/html", "application/xhtml+xml", "application/xml")
 
 
 def _opt_bool(options: ConvertOptions, key: str, default: bool) -> bool:
@@ -45,6 +51,18 @@ def _opt_bool(options: ConvertOptions, key: str, default: bool) -> bool:
 def _opt_str(options: ConvertOptions, key: str) -> str | None:
     v = options.extra.get(f"specialized.{key}")
     return str(v).strip() or None if v is not None else None
+
+
+def _is_inline_xbrl(ref: InputRef) -> bool:
+    """True for a body that is an inline XBRL (X)HTML document: an uploaded EDGAR filing."""
+    mime = ref.detected.mime if ref.detected else None
+    if not ref.has_body or mime not in _SNIFF_MIMES:
+        return False
+    try:
+        head = ref.head(_SNIFF_BYTES)
+    except OSError:
+        return False
+    return IXBRL_NAMESPACE in head and b"<html" in head.lower()
 
 
 class EdgarConverter:
@@ -62,7 +80,7 @@ class EdgarConverter:
     def can_handle(self, ref: InputRef) -> float:
         target = parse_target(ref.url) or parse_target(ref.display)
         if target is None:
-            return 0.0
+            return 0.95 if _is_inline_xbrl(ref) else 0.0
         mime = ref.detected.mime if ref.detected else None
         if ref.has_body and mime not in MIMES:
             return 0.0
