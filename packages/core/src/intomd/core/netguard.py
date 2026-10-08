@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import ipaddress
 import logging
+import os
 import socket
 import ssl
 import time
@@ -49,6 +50,17 @@ DNS_TIMEOUT = 3.0
 DEFAULT_MAX_BYTES = 10 * 1024 * 1024
 DEFAULT_TOTAL_TIMEOUT = 30.0
 USER_AGENT = "intomd-fetch/0.0.1 (+https://github.com/larpey/intomd)"
+# The SEC refuses automated requests whose User-Agent does not name the requester with a contact email
+# (https://www.sec.gov/os/accessing-edgar-data), so sec.gov hosts get the operator's EDGAR identity.
+EDGAR_IDENTITY_ENV = "INTOMD_EDGAR_IDENTITY"
+
+
+def _host_user_agent(host: str) -> str:
+    identity = os.environ.get(EDGAR_IDENTITY_ENV, "").strip()
+    if identity and (host == "sec.gov" or host.endswith(".sec.gov")):
+        return identity
+    return USER_AGENT
+
 
 _BLOCKED_HOSTNAMES = frozenset(
     {"localhost", "metadata.google.internal", "metadata", "instance-data", "metadata.azure.com"}
@@ -437,7 +449,8 @@ def fetch(
 ) -> FetchResult:
     """GET `url` with the full SSRF guard. See the module docstring."""
     t0 = time.monotonic()
-    send_headers = {"user-agent": USER_AGENT, "accept": "*/*", **{k.lower(): v for k, v in (headers or {}).items()}}
+    send_headers = {"accept": "*/*", **{k.lower(): v for k, v in (headers or {}).items()}}
+    caller_agent = "user-agent" in send_headers
     current = url
     redirects: list[str] = []
     first_host: str | None = None
@@ -447,6 +460,8 @@ def fetch(
             first_host = v.host
         elif v.host != first_host:
             send_headers = {k: val for k, val in send_headers.items() if k not in _HOP_DROP_HEADERS}
+        if not caller_agent:
+            send_headers["user-agent"] = _host_user_agent(v.host)
         if policy is not None:
             state = policy.state(v.host)
             if state == "disabled":

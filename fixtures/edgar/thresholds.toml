@@ -1,0 +1,3 @@
+# EDGAR thresholds (docs/spec/part2.md 12g: item headings exact, statement cells exact, text_similarity 0.95).
+[converters]
+"specialized.edgar" = 0.95

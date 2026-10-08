@@ -1,0 +1,4235 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 12,
+    "headers_synthesized": 2,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Harbor Lane Shipping Corp. 10-K December 31, 2025"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Field"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Form"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "10-K"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Period"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "December 31, 2025"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "CIK"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0009999999"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Ticker"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "HLSC"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Commission file number"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "001-99999"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Filer status"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Non-accelerated Filer"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Fiscal year end"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "--12-31"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Shares outstanding"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12,500,000"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Fiscal year focus"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2025"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Fiscal period focus"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "FY"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 11,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Amendment"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 11,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "false"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 12,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Cover page"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "UNITED STATES"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "SECURITIES AND EXCHANGE COMMISSION"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Washington, D.C. 20549"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "FORM 10-K"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "☒ ANNUAL REPORT PURSUANT TO SECTION 13 OR 15(d) OF THE SECURITIES EXCHANGE ACT OF 1934"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "For the fiscal year ended December 31, 2025"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Commission File Number 001-99999"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Harbor Lane Shipping Corp."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "(Exact name of registrant as specified in its charter)"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Title of each class"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Trading Symbol(s)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Common Stock, $0.01 par value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "HLSC"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 0,
+        "id": "b0013",
+        "n_cols": 2,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0014",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Emerging growth company ☐"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "As of February 27, 2026, the registrant had 12,500,000 shares of common stock outstanding."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "TABLE OF CONTENTS"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i0",
+                "math": null,
+                "styles": [],
+                "text": "PART I"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i1",
+                "math": null,
+                "styles": [],
+                "text": "Item 1."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Business"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "4"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i2",
+                "math": null,
+                "styles": [],
+                "text": "Item 1A."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Risk Factors"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "5"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i3",
+                "math": null,
+                "styles": [],
+                "text": "Item 1B."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Unresolved Staff Comments"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "6"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i4",
+                "math": null,
+                "styles": [],
+                "text": "PART II"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "7"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i5",
+                "math": null,
+                "styles": [],
+                "text": "Item 7."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Management's Discussion and Analysis of Financial Condition and Results of Operations"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "8"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i6",
+                "math": null,
+                "styles": [],
+                "text": "Item 7A."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Quantitative and Qualitative Disclosures About Market Risk"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "9"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i7",
+                "math": null,
+                "styles": [],
+                "text": "Item 8."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Financial Statements and Supplementary Data"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "10"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i8",
+                "math": null,
+                "styles": [],
+                "text": "PART IV"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "11"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "#i9",
+                "math": null,
+                "styles": [],
+                "text": "Item 15."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Exhibits and Financial Statement Schedules"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 0,
+        "id": "b0017",
+        "n_cols": 3,
+        "n_rows": 10,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0018",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "part/I",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "PART I"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0019",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 1. Business"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0020",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Overview"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0021",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Harbor Lane operates a fleet of eleven feeder container vessels on short-sea routes between regional ports. Charter terms are typically twelve to thirty-six months."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0022",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Fleet"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0023",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The fleet had an average age of 9.4 years at December 31, 2025. See Item 7 for charter coverage."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0024",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1A",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 1A. Risk Factors"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0025",
+        "level": 4,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1A",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Risks related to our industry"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0026",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1A",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Charter rates are volatile and a sustained decline would reduce revenue and cash flow."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0027",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1B",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 1B. Unresolved Staff Comments"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0028",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/I-1B",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "None."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0029",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "part/II",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "PART II"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0030",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-7",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0031",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-7",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Results of Operations"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0032",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-7",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Charter revenue increased 15.1 percent to $48.2 million, driven by two vessels delivered in 2025."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0033",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-7A",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 7A. Quantitative and Qualitative Disclosures About Market Risk"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0034",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-7A",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Our exposure to interest rate risk is limited because all borrowings carry fixed rates."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0035",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-8",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 8. Financial Statements and Supplementary Data"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0036",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-8",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Consolidated Statements of Income (in thousands)"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 2,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "Year ended December 31,"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "2025"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "2024"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Charter revenue"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "$48,210"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "$41,877"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Voyage expenses"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(19,402)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(17,050)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Depreciation"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(6,115)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(5,980)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Operating income"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "$22,693"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "$18,847"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Foreign exchange loss"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(1,204)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(312)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Net income"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "$21,489"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "$18,535"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": true,
+        "header_rows": 2,
+        "id": "b0037",
+        "n_cols": 3,
+        "n_rows": 8,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/II-8",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0038",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "part/IV",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "PART IV"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0039",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/IV-15",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 15. Exhibits and Financial Statement Schedules"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "Exhibit"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "Description"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "21.1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Subsidiaries of the registrant"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "31.1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Certification of the Chief Executive Officer"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0040",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/IV-15",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0041",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "SIGNATURES"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0042",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned, thereunto duly authorized."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0043",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "/s/ Mara Quill, Chief Executive Officer, March 3, 2026"
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:7c096bf50c27d77bb86af6454ec9fcd3e0d647626a50bb6b56393c0f7e1da67d",
+    "converter_id": "specialized.edgar",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": null,
+      "extra": {
+        "edgar.cik": "9999999",
+        "edgar.company": "Harbor Lane Shipping Corp.",
+        "edgar.form": "10-K",
+        "edgar.period": "December 31, 2025",
+        "edgar.url": "https://filings.example.invalid/hlsc/hlsc-20251231.htm"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "source_type": "html",
+      "speakers": [],
+      "title": "Harbor Lane Shipping Corp. 10-K December 31, 2025"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 12,
+        "detail": {},
+        "kind": "removed_running_header_footer",
+        "message": "Removed 12 page numbers and repeated page links.",
+        "page": null,
+        "severity": "info"
+      },
+      {
+        "block_id": null,
+        "count": 5,
+        "detail": {},
+        "kind": "heading_inferred_from_formatting",
+        "message": "5 sub-headings were inferred from bold or italic lines.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:d7142e990291aef7602eff77164598f3d35b12785de5bb7d44c62601b05f733f",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "specialized.edgar",
+    "converter_version": "0.0.1",
+    "extra": {
+      "edgar.cik": "9999999",
+      "edgar.company": "Harbor Lane Shipping Corp.",
+      "edgar.form": "10-K",
+      "edgar.period": "December 31, 2025",
+      "edgar.url": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "encoding": "utf-8"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+    "source_hash": "sha256:4852db38e9c1e88f0d3be7e76d307b9350ae10d9d84cd8afd3229367bf70597e",
+    "source_type": "web",
+    "title": "Harbor Lane Shipping Corp. 10-K December 31, 2025",
+    "tokens": {
+      "cl100k_base": 1639,
+      "claude_approx": 1773,
+      "o200k_base": 1642
+    },
+    "truncated": false,
+    "warnings": [
+      "removed_running_header_footer",
+      "heading_inferred_from_formatting"
+    ],
+    "word_count": 642
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 18,
+      "images": 0,
+      "links": 10,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 20,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 87,
+      "tables": 5,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 437
+    },
+    "duration_seconds": 0.015999999828636646,
+    "engine": "specialized.edgar",
+    "engines_tried": [
+      "specialized.edgar"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 27758
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "table"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0010",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0011",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0012",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0013",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "table"
+    },
+    {
+      "block_id": "b0014",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0015",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0016",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0017",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "table"
+    },
+    {
+      "block_id": "b0018",
+      "engine": "specialized.edgar",
+      "path": "part/I",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0019",
+      "engine": "specialized.edgar",
+      "path": "item/I-1",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0020",
+      "engine": "specialized.edgar",
+      "path": "item/I-1",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0021",
+      "engine": "specialized.edgar",
+      "path": "item/I-1",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0022",
+      "engine": "specialized.edgar",
+      "path": "item/I-1",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0023",
+      "engine": "specialized.edgar",
+      "path": "item/I-1",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0024",
+      "engine": "specialized.edgar",
+      "path": "item/I-1A",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0025",
+      "engine": "specialized.edgar",
+      "path": "item/I-1A",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0026",
+      "engine": "specialized.edgar",
+      "path": "item/I-1A",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0027",
+      "engine": "specialized.edgar",
+      "path": "item/I-1B",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0028",
+      "engine": "specialized.edgar",
+      "path": "item/I-1B",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0029",
+      "engine": "specialized.edgar",
+      "path": "part/II",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0030",
+      "engine": "specialized.edgar",
+      "path": "item/II-7",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0031",
+      "engine": "specialized.edgar",
+      "path": "item/II-7",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0032",
+      "engine": "specialized.edgar",
+      "path": "item/II-7",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0033",
+      "engine": "specialized.edgar",
+      "path": "item/II-7A",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0034",
+      "engine": "specialized.edgar",
+      "path": "item/II-7A",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0035",
+      "engine": "specialized.edgar",
+      "path": "item/II-8",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0036",
+      "engine": "specialized.edgar",
+      "path": "item/II-8",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0037",
+      "engine": "specialized.edgar",
+      "path": "item/II-8",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "table"
+    },
+    {
+      "block_id": "b0038",
+      "engine": "specialized.edgar",
+      "path": "part/IV",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0039",
+      "engine": "specialized.edgar",
+      "path": "item/IV-15",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0040",
+      "engine": "specialized.edgar",
+      "path": "item/IV-15",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "table"
+    },
+    {
+      "block_id": "b0041",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0042",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0043",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://filings.example.invalid/hlsc/hlsc-20251231.htm",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 2914,
+      "offset_start": 1660,
+      "original_level": 2,
+      "original_title": "Cover page",
+      "time_end": null,
+      "time_start": null,
+      "title": "Cover page"
+    },
+    {
+      "block_id": "b0018",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 2936,
+      "offset_start": 2914,
+      "original_level": 2,
+      "original_title": "PART I",
+      "time_end": null,
+      "time_start": null,
+      "title": "PART I"
+    },
+    {
+      "block_id": "b0019",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 2968,
+      "offset_start": 2936,
+      "original_level": 2,
+      "original_title": "Item 1. Business",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 1. Business"
+    },
+    {
+      "block_id": "b0020",
+      "id": "sec-3-1",
+      "level": 3,
+      "number": "3.1",
+      "offset_end": 3163,
+      "offset_start": 2968,
+      "original_level": 3,
+      "original_title": "Overview",
+      "time_end": null,
+      "time_start": null,
+      "title": "Overview"
+    },
+    {
+      "block_id": "b0022",
+      "id": "sec-3-2",
+      "level": 3,
+      "number": "3.2",
+      "offset_end": 3287,
+      "offset_start": 3163,
+      "original_level": 3,
+      "original_title": "Fleet",
+      "time_end": null,
+      "time_start": null,
+      "title": "Fleet"
+    },
+    {
+      "block_id": "b0024",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 3324,
+      "offset_start": 3287,
+      "original_level": 2,
+      "original_title": "Item 1A. Risk Factors",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 1A. Risk Factors"
+    },
+    {
+      "block_id": "b0025",
+      "id": "sec-4-1",
+      "level": 3,
+      "number": "4.1",
+      "offset_end": 3462,
+      "offset_start": 3324,
+      "original_level": 4,
+      "original_title": "Risks related to our industry",
+      "time_end": null,
+      "time_start": null,
+      "title": "Risks related to our industry"
+    },
+    {
+      "block_id": "b0027",
+      "id": "sec-5",
+      "level": 2,
+      "number": "5",
+      "offset_end": 3519,
+      "offset_start": 3462,
+      "original_level": 2,
+      "original_title": "Item 1B. Unresolved Staff Comments",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 1B. Unresolved Staff Comments"
+    },
+    {
+      "block_id": "b0029",
+      "id": "sec-6",
+      "level": 2,
+      "number": "6",
+      "offset_end": 3542,
+      "offset_start": 3519,
+      "original_level": 2,
+      "original_title": "PART II",
+      "time_end": null,
+      "time_start": null,
+      "title": "PART II"
+    },
+    {
+      "block_id": "b0030",
+      "id": "sec-7",
+      "level": 2,
+      "number": "7",
+      "offset_end": 3651,
+      "offset_start": 3542,
+      "original_level": 2,
+      "original_title": "Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations"
+    },
+    {
+      "block_id": "b0031",
+      "id": "sec-7-1",
+      "level": 3,
+      "number": "7.1",
+      "offset_end": 3792,
+      "offset_start": 3651,
+      "original_level": 3,
+      "original_title": "Results of Operations",
+      "time_end": null,
+      "time_start": null,
+      "title": "Results of Operations"
+    },
+    {
+      "block_id": "b0033",
+      "id": "sec-8",
+      "level": 2,
+      "number": "8",
+      "offset_end": 3964,
+      "offset_start": 3792,
+      "original_level": 2,
+      "original_title": "Item 7A. Quantitative and Qualitative Disclosures About Market Risk",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 7A. Quantitative and Qualitative Disclosures About Market Risk"
+    },
+    {
+      "block_id": "b0035",
+      "id": "sec-9",
+      "level": 2,
+      "number": "9",
+      "offset_end": 4031,
+      "offset_start": 3964,
+      "original_level": 2,
+      "original_title": "Item 8. Financial Statements and Supplementary Data",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 8. Financial Statements and Supplementary Data"
+    },
+    {
+      "block_id": "b0036",
+      "id": "sec-9-1",
+      "level": 3,
+      "number": "9.1",
+      "offset_end": 4668,
+      "offset_start": 4031,
+      "original_level": 3,
+      "original_title": "Consolidated Statements of Income (in thousands)",
+      "time_end": null,
+      "time_start": null,
+      "title": "Consolidated Statements of Income (in thousands)"
+    },
+    {
+      "block_id": "b0038",
+      "id": "sec-10",
+      "level": 2,
+      "number": "10",
+      "offset_end": 4693,
+      "offset_start": 4668,
+      "original_level": 2,
+      "original_title": "PART IV",
+      "time_end": null,
+      "time_start": null,
+      "title": "PART IV"
+    },
+    {
+      "block_id": "b0039",
+      "id": "sec-11",
+      "level": 2,
+      "number": "11",
+      "offset_end": 4910,
+      "offset_start": 4693,
+      "original_level": 2,
+      "original_title": "Item 15. Exhibits and Financial Statement Schedules",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 15. Exhibits and Financial Statement Schedules"
+    },
+    {
+      "block_id": "b0041",
+      "id": "sec-12",
+      "level": 2,
+      "number": "12",
+      "offset_end": 5180,
+      "offset_start": 4910,
+      "original_level": 2,
+      "original_title": "SIGNATURES",
+      "time_end": null,
+      "time_start": null,
+      "title": "SIGNATURES"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Field",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 1658,
+      "offset_start": 1306,
+      "page": null,
+      "representation": "pipe",
+      "rows": 11,
+      "tokens": 116
+    },
+    {
+      "block_id": "b0013",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "col_2"
+      ],
+      "number": 2,
+      "offset_end": 2208,
+      "offset_start": 2047,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 53
+    },
+    {
+      "block_id": "b0017",
+      "column_types": [
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "col_2",
+        "col_3"
+      ],
+      "number": 3,
+      "offset_end": 2912,
+      "offset_start": 2354,
+      "page": null,
+      "representation": "pipe",
+      "rows": 10,
+      "tokens": 176
+    },
+    {
+      "block_id": "b0037",
+      "column_types": [
+        "text",
+        "number",
+        "number"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "Year ended December 31, / 2025",
+        "Year ended December 31, / 2024"
+      ],
+      "number": 4,
+      "offset_end": 4666,
+      "offset_start": 4100,
+      "page": null,
+      "representation": "html",
+      "rows": 6,
+      "tokens": 228
+    },
+    {
+      "block_id": "b0040",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Exhibit",
+        "Description"
+      ],
+      "number": 5,
+      "offset_end": 4908,
+      "offset_start": 4762,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 42
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 2002,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 12,
+      "detail": {},
+      "kind": "removed_running_header_footer",
+      "message": "Removed 12 page numbers and repeated page links.",
+      "page": null,
+      "severity": "info"
+    },
+    {
+      "block_id": null,
+      "count": 5,
+      "detail": {},
+      "kind": "heading_inferred_from_formatting",
+      "message": "5 sub-headings were inferred from bold or italic lines.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

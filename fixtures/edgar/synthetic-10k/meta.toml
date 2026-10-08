@@ -1,0 +1,13 @@
+converter = "specialized.edgar"
+max_seconds = 30
+hand_edited = false
+notes = "Self-generated Workiva-style inline XBRL 10-K: dei cover facts, table of contents (deduplicated), parts and items, bold/italic sub-headings, page-break furniture, a financial statement with spacer columns, separate $ cells and split negatives, Wingdings check boxes, signatures. Fictitious filer, so the input URL is a non-SEC placeholder and the converter is forced; net income foots (operating income minus FX loss)."
+expected_errors = []
+
+[input]
+url = "https://filings.example.invalid/hlsc/hlsc-20251231.htm"
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/edgar/_generate.py"

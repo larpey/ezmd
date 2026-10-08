@@ -1,0 +1,2444 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Tennessee Valley Authority 8-K 2026-04-24"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Filing"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Field"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Form"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "8-K"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Form description"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Current report"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Accession"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0001376986-26-000026"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Filing Date"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2026-04-24"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Accepted"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2026-04-24 17:24:22"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Documents"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "14"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Period of Report"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2026-04-24"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Filer"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Tennessee Valley Authority (CIK 1376986)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Filer mailing address"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "400 WEST SUMMIT HILL DRIVE, KNOXVILLE TN 37902"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Filer business address"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "400 WEST SUMMIT HILL DRIVE, KNOXVILLE TN 37902, 865-632-2101"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 11,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Filer details"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 11,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EIN.: 620474417 | Fiscal Year End: 0930; Type: 8-K | Act: 34 | File No.: 000-52313 | Film No.: 26895864; SIC: 4911 Electric Services; (CF Office: 01 Energy & Transportation)"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0003",
+        "n_cols": 2,
+        "n_rows": 12,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index/items",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Items"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "items": [
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Item 5.02: Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers: Compensatory Arrangements of Certain Officers"
+              }
+            ]
+          },
+          {
+            "checked": null,
+            "children": [],
+            "children_ordered": false,
+            "children_start": 1,
+            "provenance": null,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Item 9.01: Financial Statements and Exhibits"
+              }
+            ]
+          }
+        ],
+        "ordered": false,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index/items",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "start": 1,
+        "type": "list"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index/documents",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Documents"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Seq"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Description"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Document"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "8-K"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424.htm"
+              },
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": " (iXBRL)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "8-K"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "29167"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EX-10.1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+                "math": null,
+                "styles": [],
+                "text": "offerletter.htm"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EX-10.1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "16464"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "7"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_g1.jpg",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424_g1.jpg"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "GRAPHIC"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "60651"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Complete submission text file"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026.txt",
+                "math": null,
+                "styles": [],
+                "text": "0001376986-26-000026.txt"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "337911"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0007",
+        "n_cols": 5,
+        "n_rows": 5,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index/documents",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index/data",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Data files"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Seq"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Description"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Document"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Type"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Size"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "XBRL TAXONOMY EXTENSION SCHEMA DOCUMENT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.xsd",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424.xsd"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EX-101.SCH"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2020"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "4"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "XBRL TAXONOMY EXTENSION DEFINITION LINKBASE DOCUMENT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_def.xml",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424_def.xml"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EX-101.DEF"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "13993"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "5"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "XBRL TAXONOMY EXTENSION LABEL LINKBASE DOCUMENT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_lab.xml",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424_lab.xml"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EX-101.LAB"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "24582"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "6"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "XBRL TAXONOMY EXTENSION PRESENTATION LINKBASE DOCUMENT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_pre.xml",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424_pre.xml"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EX-101.PRE"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "14527"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "17"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EXTRACTED XBRL INSTANCE DOCUMENT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_htm.xml",
+                "math": null,
+                "styles": [],
+                "text": "tve-20260424_htm.xml"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "XML"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2635"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0009",
+        "n_cols": 5,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "index/data",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:a30528dedbd0490c100b6447366dce321527fbf64ebbc1b7a30d260038907ee3",
+    "converter_id": "specialized.edgar",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "edgar.accession": "0001376986-26-000026",
+        "edgar.cik": "1376986",
+        "edgar.company": "Tennessee Valley Authority",
+        "edgar.filed": "2026-04-24",
+        "edgar.form": "8-K",
+        "edgar.period": "2026-04-24",
+        "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": "2026-04-24T00:00:00Z",
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_type": "html",
+      "speakers": [],
+      "title": "Tennessee Valley Authority 8-K 2026-04-24"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:a9a2eee9e8297e464eb6d46e8363b2fea2dfffc184899fcfc538be1eec2e7a29",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "specialized.edgar",
+    "converter_version": "0.0.1",
+    "created_at": "2026-04-24",
+    "extra": {
+      "edgar.accession": "0001376986-26-000026",
+      "edgar.cik": "1376986",
+      "edgar.company": "Tennessee Valley Authority",
+      "edgar.filed": "2026-04-24",
+      "edgar.form": "8-K",
+      "edgar.period": "2026-04-24",
+      "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+    "source_hash": "sha256:ed55d22fb8426b56b6057b21b4911e4e5c029075ee84b84476bb637f0df134f9",
+    "source_type": "web",
+    "title": "Tennessee Valley Authority 8-K 2026-04-24",
+    "tokens": {
+      "cl100k_base": 1002,
+      "claude_approx": 1075,
+      "o200k_base": 995
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 219
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "text": "tve-20260424.htm"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+      "text": "offerletter.htm"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_g1.jpg",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_g1.jpg",
+      "text": "tve-20260424_g1.jpg"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026.txt",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026.txt",
+      "text": "0001376986-26-000026.txt"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.xsd",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.xsd",
+      "text": "tve-20260424.xsd"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_def.xml",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_def.xml",
+      "text": "tve-20260424_def.xml"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_lab.xml",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_lab.xml",
+      "text": "tve-20260424_lab.xml"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_pre.xml",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_pre.xml",
+      "text": "tve-20260424_pre.xml"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_htm.xml",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_htm.xml",
+      "text": "tve-20260424_htm.xml"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 5,
+      "images": 0,
+      "links": 9,
+      "list_items": 2,
+      "lists": 1,
+      "page_breaks": 0,
+      "paragraphs": 0,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 79,
+      "tables": 3,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 197
+    },
+    "duration_seconds": 0.0,
+    "engine": "specialized.edgar",
+    "engines_tried": [
+      "specialized.edgar"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 10699
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "specialized.edgar",
+      "path": "index",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "specialized.edgar",
+      "path": "index",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "specialized.edgar",
+      "path": "index",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "specialized.edgar",
+      "path": "index/items",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "specialized.edgar",
+      "path": "index/items",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "list"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "specialized.edgar",
+      "path": "index/documents",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "specialized.edgar",
+      "path": "index/documents",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "specialized.edgar",
+      "path": "index/data",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0009",
+      "engine": "specialized.edgar",
+      "path": "index/data",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/0001376986-26-000026-index.html",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0002",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 739,
+      "offset_start": 52,
+      "original_level": 2,
+      "original_title": "Filing",
+      "time_end": null,
+      "time_start": null,
+      "title": "Filing"
+    },
+    {
+      "block_id": "b0004",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 967,
+      "offset_start": 739,
+      "original_level": 2,
+      "original_title": "Items",
+      "time_end": null,
+      "time_start": null,
+      "title": "Items"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 1712,
+      "offset_start": 967,
+      "original_level": 2,
+      "original_title": "Documents",
+      "time_end": null,
+      "time_start": null,
+      "title": "Documents"
+    },
+    {
+      "block_id": "b0008",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 2797,
+      "offset_start": 1712,
+      "original_level": 2,
+      "original_title": "Data files",
+      "time_end": null,
+      "time_start": null,
+      "title": "Data files"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0003",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Field",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 737,
+      "offset_start": 74,
+      "page": null,
+      "representation": "pipe",
+      "rows": 11,
+      "tokens": 235
+    },
+    {
+      "block_id": "b0007",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 5,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Seq",
+        "Description",
+        "Document",
+        "Type",
+        "Size"
+      ],
+      "number": 2,
+      "offset_end": 1710,
+      "offset_start": 992,
+      "page": null,
+      "representation": "pipe",
+      "rows": 4,
+      "tokens": 273
+    },
+    {
+      "block_id": "b0009",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text",
+        "number"
+      ],
+      "columns": 5,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Seq",
+        "Description",
+        "Document",
+        "Type",
+        "Size"
+      ],
+      "number": 3,
+      "offset_end": 2796,
+      "offset_start": 1738,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 383
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 1409,
+  "warnings": []
+}

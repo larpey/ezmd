@@ -240,3 +240,42 @@ def test_pinned_backend_refuses_other_hosts() -> None:
     b = netguard._PinnedBackend("example.com", PUBLIC)
     with pytest.raises(httpcore.ConnectError):
         b.connect_tcp("evil.com", 80)
+
+
+def _capture_headers(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, str]]:
+    seen: list[dict[str, str]] = []
+
+    def fake_one(v: object, ip: str, headers: dict[str, str], *args: object) -> tuple[int, dict[str, str], bytes, None]:
+        seen.append(dict(headers))
+        return 200, {"content-type": "text/html"}, b"<p>ok</p>", None
+
+    monkeypatch.setattr(netguard, "_fetch_one", fake_one)
+    return seen
+
+
+@pytest.mark.parametrize("host", ["www.sec.gov", "data.sec.gov", "efts.sec.gov", "sec.gov"])
+def test_sec_hosts_get_edgar_identity(host: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    """SEC refuses requests whose User-Agent does not name the requester (P1-T07 core change request)."""
+    monkeypatch.setenv("INTOMD_EDGAR_IDENTITY", "Example Operator ops@example.com")
+    seen = _capture_headers(monkeypatch)
+    fetch(f"https://{host}/Archives/edgar/data/1/x.htm", resolver=fake_resolver({host: [PUBLIC]}))
+    assert seen[0]["user-agent"] == "Example Operator ops@example.com"
+
+
+@pytest.mark.parametrize("host", ["example.com", "notsec.gov", "sec.gov.evil.com"])
+def test_other_hosts_keep_default_user_agent(host: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("INTOMD_EDGAR_IDENTITY", "Example Operator ops@example.com")
+    seen = _capture_headers(monkeypatch)
+    fetch(f"https://{host}/", resolver=fake_resolver({host: [PUBLIC]}))
+    assert seen[0]["user-agent"] == netguard.USER_AGENT
+
+
+def test_sec_without_identity_or_with_explicit_header(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("INTOMD_EDGAR_IDENTITY", raising=False)
+    seen = _capture_headers(monkeypatch)
+    resolver = fake_resolver({"www.sec.gov": [PUBLIC]})
+    fetch("https://www.sec.gov/", resolver=resolver)
+    monkeypatch.setenv("INTOMD_EDGAR_IDENTITY", "Example Operator ops@example.com")
+    fetch("https://www.sec.gov/", resolver=resolver, headers={"User-Agent": "caller ua@example.com"})
+    assert seen[0]["user-agent"] == netguard.USER_AGENT
+    assert seen[1]["user-agent"] == "caller ua@example.com"

@@ -325,3 +325,12 @@ Decision: Add P4-B01 to P4-B04 (harness, corpora and metrics, iterate-to-win loo
 Alternatives: benchmark only on the intomd fixture corpus (self-graded, not credible); require a win on every metric (speed vs. quality trade-offs make that unfalsifiable); start the loop in Phase 1 (competitors and our converters both change before launch; the shadow-run command from P1-T18 and the fixture scorer are the seed).
 Consequences: launch waits on the loop. Scanned-PDF OCR and formula-heavy papers are the likeliest categories to need the exemption path, since the strongest tools there use GPL or RAIL-licensed models; the loop must try permissive models first. Results, including losses, are published in docs/benchmarks.md.
 Council: not convened (owner directive; the win criterion and exemption rule are open to owner revision).
+
+## D-0033: SEC EDGAR converter and social stubs (P1-T07) merged
+Date: 2026-10-08
+Task: P1-T07
+Status: accepted
+Decision: `specialized.edgar` is built directly on the documented EDGAR endpoints (Archives, filing index, data.sec.gov submissions, company_tickers.json, efts search) instead of edgartools: edgartools is MIT but hard-depends on Unidecode (GPL-2.0-or-later) and does its own HTTP outside netguard. It claims EDGAR URLs and saved filings at 0.95, emits one H2 per Part/Item, exact financial tables (spacer columns removed, `$(1,204)` kept whole), cover facts from `dei:`, and exhibits as a table (children with `edgar_exhibits=true`). Network only with `allow_network`, identity from `INTOMD_EDGAR_IDENTITY`, 5 req/s per process, no retry on 403/429. `netguard.fetch` sends that identity as the User-Agent to sec.gov and its subdomains (per hop, unless the caller set one), so library and API URL inputs are not refused. Reddit and HN stubs (`web.social_reddit`, `web.social_hn`) are Unavailable unless `INTOMD_ENABLE_SOCIAL` is set; full adapters are P3-T02. Details: docs/decisions/P1-T07.md.
+Alternatives: edgartools (GPL transitive dependency, unguarded network); edgartools in the nonfree extra (loses EDGAR from the default install).
+Consequences: 3 fixtures at 1.000 (threshold 0.95); the TVA filing is treated as a US Government work (17 USC 105, defensible, not settled; D-P1-T07-4). XBRL statement tables wait for the XBRL converter. CLI `--form`/`--year` need library support for bare tickers and are deferred; use a browse-edgar URL.
+Council: not convened; independent Skeptic review rejected two goldens (Wingdings check box inside ix tags, dropped filer address block); both fixed in the converter.

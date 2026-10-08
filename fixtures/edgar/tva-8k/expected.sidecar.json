@@ -1,0 +1,3293 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 3,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "TENNESSEE VALLEY AUTHORITY 8-K April 24, 2026"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Field"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Form"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "8-K"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Period"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "April 24, 2026"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "CIK"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0001376986"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Commission file number"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "000-52313"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Fiscal year focus"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2026"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Fiscal period focus"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "FY"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Amendment"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "FALSE"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Accession"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "0001376986-26-000026"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0002",
+        "n_cols": 2,
+        "n_rows": 9,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0003",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Cover page"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "UNITED STATES"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0005",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "SECURITIES AND EXCHANGE COMMISSION"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Washington, D.C. 20549"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "FORM 8-K"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "CURRENT REPORT"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "Pursuant to Section 13, 15(d), or 37 of the Securities Exchange Act of 1934"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Date of Report (Date of earliest event reported): April 24, 2026"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "alt": "TVA_Logo_RGB_Blue.jpg",
+        "attrs": {},
+        "caption": null,
+        "chart_data": null,
+        "generated_caption": null,
+        "height": null,
+        "id": "b0011",
+        "mime": null,
+        "ocr_text": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "ref": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_g1.jpg",
+        "type": "image",
+        "width": null
+      },
+      {
+        "attrs": {},
+        "id": "b0012",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "bold"
+            ],
+            "text": "TENNESSEE VALLEY AUTHORITY"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "(Exact name of registrant as specified in its charter)"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "A corporate agency of the United States created by an act of Congress "
+              },
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "italic"
+                ],
+                "text": " (State or other jurisdiction of incorporation or organization)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "000-52313 "
+              },
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "italic"
+                ],
+                "text": "(Commission file number)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "62-0474417 "
+              },
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "italic"
+                ],
+                "text": " (IRS Employer Identification No.)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "400 W. Summit Hill Drive Knoxville, Tennessee "
+              },
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "italic"
+                ],
+                "text": " (Address of principal executive offices)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "37902 "
+              },
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "italic"
+                ],
+                "text": " (Zip Code)"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 0,
+        "id": "b0014",
+        "n_cols": 3,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "(865) 632-2101"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0016",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "(Registrant's telephone number, including area code)"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0017",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "None"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0018",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "italic"
+            ],
+            "text": "(Former name or former address, if changed since last report)"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0019",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Check the appropriate box below if the Form 8-K filing is intended to simultaneously satisfy the filing obligation of the registrant under any of the following provisions:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0020",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[ ] Written communications pursuant to Rule 425 under the Securities Act (17 CFR 230.425)"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0021",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[ ] Soliciting material pursuant to Rule 14a-12 under the Exchange Act (17 CFR 240.14a-12)"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0022",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[ ] Pre-commencement communications pursuant to Rule 14d-2(b) under the Exchange Act (17 CFR 240.14d-2(b))"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0023",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "[ ] Pre-commencement communications pursuant to Rule 13e-4(c) under the Exchange Act (17 CFR 240.13e-4(c))"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0024",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Securities registered pursuant to Section 12(b) of the Act:"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Title of each class"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Trading Symbol(s)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Name of each exchange on which registered"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "N/A"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "N/A"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "N/A"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 0,
+        "id": "b0025",
+        "n_cols": 3,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0026",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Indicate by check mark whether the registrant is an emerging growth company as defined in Rule 405 of the Securities Act of 1933 (§230.405 of this chapter) or Rule 12b-2 of the Securities Exchange Act of 1934 (§240.12b-2 of this chapter)."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0027",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Emerging growth company      ☐"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0028",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "cover",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "If an emerging growth company, indicate by check mark if the registrant has elected not to use the extended transition period for complying with any new or revised financial accounting standards provided pursuant to Section 13(a) of the Exchange Act. ☐"
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0029",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/5.02",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 5.02 Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers."
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0030",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/5.02",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "On April 24, 2026, the Tennessee Valley Authority (“TVA”) announced that Michael D. Skaggs has been appointed as TVA’s new Interim President and Chief Executive Officer, starting April 24, 2026, and ending on April 24, 2027. Mr. Skaggs will succeed Donald A. Moul, who previously announced his intention to retire on July 1, 2026."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0031",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/5.02",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Mr. Skaggs, age 65, served at TVA from 1994 until his retirement in January 2022. After joining TVA in 1994 as Manager of Projects at Watts Bar Nuclear Plant (“Watts Bar”), Mr. Skaggs held several management positions, including Executive Vice President and Advisor to the CEO from June 2021 to January 2022, as Executive Vice President and Chief Operating Officer from October 2018 to June 2021, as Executive Vice President, Operations from October 2016 to September 2018, as Senior Vice President, Watts Bar Operations and Construction from September 2013 to October 2016, as Senior Vice President, Nuclear Construction from February 2012 to September 2013, as Senior Vice President of Nuclear Generation Development and Construction from October 2011 to February 2012, as Site Vice President of Sequoyah Nuclear Plant from November 2010 to October 2011, as Vice President of Nuclear Operations Support from December 2009 to November 2010, as Site Vice President at Watts Bar from July 2005 to December 2009, and as Site Vice President at Browns Ferry Nuclear Plant from July 2004 to July 2005."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0032",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/5.02",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Mr. Skaggs will be entitled to an annual salary of $500,000. In addition, Mr. Skaggs may be entitled to receive additional compensation (“Additional Compensation”), payable as a lump sum within two months of the end of his term, if he meets certain criteria established by the TVA Board of Directors (“TVA Board”)."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0033",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/5.02",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "The TVA Board may remove Mr. Skaggs from office only for Gross Misconduct, as defined in his offer letter, a copy which is attached hereto as Exhibit 10.1 (“Offer Letter”). Removal for any other reason may entitle Mr. Skaggs to receive an accelerated payment of any remaining salary and the Additional Compensation. The foregoing description of the compensation to which Mr. Skaggs is entitled is qualified in its entirety by reference to the Offer Letter."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0034",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/5.02",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "There are no family relationships between Mr. Skaggs and any director, executive officer, or person nominated or chosen to become a director or executive officer of TVA. Mr. Skaggs does not have a direct or indirect material interest in any transaction or arrangement in which TVA is a participant other than in connection with his employment as described in this report."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "id": "b0035",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/9.01",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Item 9.01 Financial Statements and Exhibits."
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "EXHIBIT NO."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "DESCRIPTION OF EXHIBIT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "10.1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Offer Letter Between TVA and Michael D. Skaggs Dated as of April 24, 2026"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0036",
+        "n_cols": 2,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "item/9.01",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0037",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "SIGNATURES"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0038",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Tennessee Valley Authority"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(Registrant)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Date: April 24, 2026"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/s/ Thomas C. Rice"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Thomas C. Rice"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": []
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Executive Vice President and Chief Financial Officer"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 0,
+        "id": "b0039",
+        "n_cols": 2,
+        "n_rows": 5,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0040",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "EXHIBIT INDEX"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0041",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This exhibit is filed pursuant to Item 5.02 hereof."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "EXHIBIT NO."
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [
+                  "bold"
+                ],
+                "text": "DESCRIPTION OF EXHIBIT"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+                "math": null,
+                "styles": [],
+                "text": "10.1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+                "math": null,
+                "styles": [],
+                "text": "Offer Letter Between TVA and Michael D. Skaggs Dated as of April 24, 2026"
+              }
+            ]
+          }
+        ],
+        "column_types": null,
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0042",
+        "n_cols": 2,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": "specialized.edgar",
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "signatures",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+          "source_id": "0001376986-26-000026",
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      }
+    ],
+    "content_hash": "sha256:586982956e5cc49299c62544d2995133472b90f9a8737f33fffb32ce6c047276",
+    "converter_id": "specialized.edgar",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": null,
+      "extra": {
+        "edgar.accession": "0001376986-26-000026",
+        "edgar.cik": "1376986",
+        "edgar.company": "TENNESSEE VALLEY AUTHORITY",
+        "edgar.form": "8-K",
+        "edgar.period": "April 24, 2026",
+        "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "text/html",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_type": "html",
+      "speakers": [],
+      "title": "TENNESSEE VALLEY AUTHORITY 8-K April 24, 2026"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": 1,
+        "detail": {},
+        "kind": "heading_inferred_from_formatting",
+        "message": "1 sub-headings were inferred from bold or italic lines.",
+        "page": null,
+        "severity": "info"
+      }
+    ]
+  },
+  "figures": [
+    {
+      "alt": "TVA_Logo_RGB_Blue.jpg",
+      "bbox": null,
+      "block_id": "b0011",
+      "caption": null,
+      "generated_caption": null,
+      "number": 1,
+      "ocr_text": null,
+      "offset_end": 1422,
+      "offset_start": 1207,
+      "page": null,
+      "ref": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424_g1.jpg"
+    }
+  ],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:91bbf4ffb0722559a229484cf4b34c2046bdc5db6e6a423f7fde2ccce8da8a54",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "specialized.edgar",
+    "converter_version": "0.0.1",
+    "extra": {
+      "edgar.accession": "0001376986-26-000026",
+      "edgar.cik": "1376986",
+      "edgar.company": "TENNESSEE VALLEY AUTHORITY",
+      "edgar.form": "8-K",
+      "edgar.period": "April 24, 2026",
+      "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "encoding": "utf-8"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+    "source_hash": "sha256:13c0f80d7cf0c8730721be61bc0056f621f57ef37242790fcffcb45dd9f47399",
+    "source_type": "web",
+    "title": "TENNESSEE VALLEY AUTHORITY 8-K April 24, 2026",
+    "tokens": {
+      "cl100k_base": 1943,
+      "claude_approx": 2065,
+      "o200k_base": 1912
+    },
+    "truncated": false,
+    "warnings": [
+      "heading_inferred_from_formatting"
+    ],
+    "word_count": 992
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+      "text": "10.1"
+    },
+    {
+      "href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+      "original_href": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/offerletter.htm",
+      "text": "Offer Letter Between TVA and Michael D. Skaggs Dated as of April 24, 2026"
+    }
+  ],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 6,
+      "images": 1,
+      "links": 2,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 29,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 48,
+      "tables": 6,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 896
+    },
+    "duration_seconds": 0.015999999828636646,
+    "engine": "specialized.edgar",
+    "engines_tried": [
+      "specialized.edgar"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 29276
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0003",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0004",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0005",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0006",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0007",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0008",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0009",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0010",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0011",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "image"
+    },
+    {
+      "block_id": "b0012",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0013",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0014",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0015",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0016",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0017",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0018",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0019",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0020",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0021",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0022",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0023",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0024",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0025",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0026",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0027",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0028",
+      "engine": "specialized.edgar",
+      "path": "cover",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0029",
+      "engine": "specialized.edgar",
+      "path": "item/5.02",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0030",
+      "engine": "specialized.edgar",
+      "path": "item/5.02",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0031",
+      "engine": "specialized.edgar",
+      "path": "item/5.02",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0032",
+      "engine": "specialized.edgar",
+      "path": "item/5.02",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0033",
+      "engine": "specialized.edgar",
+      "path": "item/5.02",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0034",
+      "engine": "specialized.edgar",
+      "path": "item/5.02",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0035",
+      "engine": "specialized.edgar",
+      "path": "item/9.01",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0036",
+      "engine": "specialized.edgar",
+      "path": "item/9.01",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0037",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0038",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0039",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    },
+    {
+      "block_id": "b0040",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0041",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0042",
+      "engine": "specialized.edgar",
+      "path": "signatures",
+      "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
+      "source_id": "0001376986-26-000026",
+      "type": "table"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0003",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 3449,
+      "offset_start": 913,
+      "original_level": 2,
+      "original_title": "Cover page",
+      "time_end": null,
+      "time_start": null,
+      "title": "Cover page"
+    },
+    {
+      "block_id": "b0029",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 6219,
+      "offset_start": 3449,
+      "original_level": 2,
+      "original_title": "Item 5.02 Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers.",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 5.02 Departure of Directors or Certain Officers; Election of Directors; Appointment of Certain Officers; Compensatory Arrangements of Certain Officers"
+    },
+    {
+      "block_id": "b0035",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 6428,
+      "offset_start": 6219,
+      "original_level": 2,
+      "original_title": "Item 9.01 Financial Statements and Exhibits.",
+      "time_end": null,
+      "time_start": null,
+      "title": "Item 9.01 Financial Statements and Exhibits"
+    },
+    {
+      "block_id": "b0037",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 6899,
+      "offset_start": 6428,
+      "original_level": 2,
+      "original_title": "SIGNATURES",
+      "time_end": null,
+      "time_start": null,
+      "title": "SIGNATURES"
+    },
+    {
+      "block_id": "b0040",
+      "id": "sec-4-1",
+      "level": 3,
+      "number": "4.1",
+      "offset_end": 7307,
+      "offset_start": 6899,
+      "original_level": 3,
+      "original_title": "EXHIBIT INDEX",
+      "time_end": null,
+      "time_start": null,
+      "title": "EXHIBIT INDEX"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0002",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Field",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 911,
+      "offset_start": 651,
+      "page": null,
+      "representation": "pipe",
+      "rows": 8,
+      "tokens": 90
+    },
+    {
+      "block_id": "b0014",
+      "column_types": [
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "col_2",
+        "col_3"
+      ],
+      "number": 2,
+      "offset_end": 1946,
+      "offset_start": 1514,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 112
+    },
+    {
+      "block_id": "b0025",
+      "column_types": [
+        "text",
+        "text",
+        "text"
+      ],
+      "columns": 3,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "col_2",
+        "col_3"
+      ],
+      "number": 3,
+      "offset_end": 2920,
+      "offset_start": 2724,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 62
+    },
+    {
+      "block_id": "b0036",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "EXHIBIT NO.",
+        "DESCRIPTION OF EXHIBIT"
+      ],
+      "number": 4,
+      "offset_end": 6426,
+      "offset_start": 6278,
+      "page": null,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 52
+    },
+    {
+      "block_id": "b0039",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "col_1",
+        "col_2"
+      ],
+      "number": 5,
+      "offset_end": 6897,
+      "offset_start": 6639,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 79
+    },
+    {
+      "block_id": "b0042",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "EXHIBIT NO.",
+        "DESCRIPTION OF EXHIBIT"
+      ],
+      "number": 6,
+      "offset_end": 7306,
+      "offset_start": 6986,
+      "page": null,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 109
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 2312,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": 1,
+      "detail": {},
+      "kind": "heading_inferred_from_formatting",
+      "message": "1 sub-headings were inferred from bold or italic lines.",
+      "page": null,
+      "severity": "info"
+    }
+  ]
+}

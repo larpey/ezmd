@@ -1,0 +1,14 @@
+converter = "specialized.edgar"
+max_seconds = 30
+hand_edited = false
+notes = "Recorded Form 8-K primary document (Workiva inline XBRL): ix:header dei cover facts, Items 5.02 and 9.01, an exhibit table, signatures, an exhibit index, page-break furniture."
+expected_errors = []
+
+[input]
+url = "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm"
+
+[provenance]
+origin = "public-domain"
+license = "LicenseRef-US-Government-Work"
+source = "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm"
+notes = "Filed by the Tennessee Valley Authority, a corporate agency of the United States; a work of the United States Government (17 U.S.C. 105), recorded 2026-10-08 unmodified."
