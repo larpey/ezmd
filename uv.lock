@@ -1448,10 +1448,34 @@ dependencies = [
     { name = "typer" },
 ]
 
+[package.optional-dependencies]
+7z = [
+    { name = "intomd-converters", extra = ["7z"] },
+]
+all = [
+    { name = "intomd-converters", extra = ["7z", "data", "docs"] },
+    { name = "intomd-mcp" },
+]
+data = [
+    { name = "intomd-converters", extra = ["data"] },
+]
+docs = [
+    { name = "intomd-converters", extra = ["docs"] },
+]
+mcp = [
+    { name = "intomd-mcp" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "httpx", specifier = ">=0.28" },
     { name = "intomd-converters", editable = "packages/converters" },
+    { name = "intomd-converters", extras = ["7z"], marker = "extra == '7z'", editable = "packages/converters" },
+    { name = "intomd-converters", extras = ["data"], marker = "extra == 'data'", editable = "packages/converters" },
+    { name = "intomd-converters", extras = ["docs"], marker = "extra == 'docs'", editable = "packages/converters" },
+    { name = "intomd-converters", extras = ["docs", "data", "7z"], marker = "extra == 'all'", editable = "packages/converters" },
+    { name = "intomd-mcp", marker = "extra == 'all'", editable = "packages/mcp" },
+    { name = "intomd-mcp", marker = "extra == 'mcp'", editable = "packages/mcp" },
     { name = "magika", specifier = ">=0.6" },
     { name = "markdown-it-py", specifier = ">=3.0" },
     { name = "pydantic", specifier = ">=2.9" },
@@ -1463,6 +1487,7 @@ requires-dist = [
     { name = "tiktoken", specifier = ">=0.8" },
     { name = "typer", specifier = ">=0.15" },
 ]
+provides-extras = ["docs", "data", "7z", "mcp", "all"]
 
 [[package]]
 name = "intomd-api"

@@ -21,6 +21,16 @@ dependencies = [
     "markdown-it-py>=3.0",
 ]
 
+[project.optional-dependencies]
+# docs/spec/part4.md 4.3.3: users install `intomd[<extra>]`; the converter extras live on intomd-converters
+# (D-0003), so intomd forwards them. media, ocr, web and fetch arrive with their phases; server needs intomd-api,
+# which is not published yet.
+docs = ["intomd-converters[docs]"]
+data = ["intomd-converters[data]"]
+7z = ["intomd-converters[7z]"]
+mcp = ["intomd-mcp"]
+all = ["intomd-converters[docs,data,7z]", "intomd-mcp"]
+
 [project.scripts]
 intomd = "intomd.cli:app"
 intomd-score = "intomd.testing.cli:score"
