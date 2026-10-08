@@ -377,7 +377,7 @@ class ConverterRegistry:
             engine=conv.id,
             engines_tried=list(tried),
             input_bytes=ref.size() if ref.has_body else None,
-            counts=doc.counts(),
+            counts=doc.counts(include_children=True),
         )
         return ConversionResult(
             document=doc,

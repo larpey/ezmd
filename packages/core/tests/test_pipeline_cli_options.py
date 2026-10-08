@@ -85,3 +85,24 @@ def test_fixture_requires_binaries() -> None:
     assert missing_requirements({"requires_binaries": ["definitely-not-a-real-tool-xyz"]}) is not None
     assert missing_requirements({"requires_binaries": []}) is None
     assert missing_requirements({"requires_binaries": "soffice"}) is not None
+
+
+def test_counts_include_children() -> None:
+    from intomd.ir import Document, Metadata, Paragraph, Provenance, SourceType
+    from intomd.ir import InlineSpan as Span
+
+    child = Document(
+        metadata=Metadata(source="a.zip!x.txt", source_type=SourceType.TEXT),
+        blocks=[Paragraph(spans=[Span(text="two words")], provenance=Provenance(source="x"))],
+    )
+    parent = Document(metadata=Metadata(source="a.zip", source_type=SourceType.ARCHIVE), children=[child])
+    assert parent.counts().paragraphs == 0
+    totals = parent.counts(include_children=True)
+    assert totals.paragraphs == 1 and totals.words == 2
+
+
+def test_archive_extensions_map_to_archive_mimes() -> None:
+    from intomd.detect import extension_mime
+
+    assert extension_mime("a.7z") == "application/x-7z-compressed"
+    assert extension_mime("a.tar") == "application/x-tar"

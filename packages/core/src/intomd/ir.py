@@ -790,7 +790,9 @@ class Document(_Model):
                 )
             )
 
-    def counts(self) -> ElementCounts:
+    def counts(self, *, include_children: bool = False) -> ElementCounts:
+        """Element counts for this Document; with `include_children`, archive members and attachments
+        (`children`, recursively) are added so the totals describe everything that is rendered."""
         values: dict[str, int] = {}
         for b in self.blocks:
             name = _COUNT_FIELD[b.type]
@@ -806,6 +808,10 @@ class Document(_Model):
                 case _:
                     pass
         values["words"] = len(self.plain_text().split())
+        if include_children:
+            for child in self.children:
+                for key, n in child.counts(include_children=True).model_dump().items():
+                    values[key] = values.get(key, 0) + int(n)
         return ElementCounts(**values)
 
     def sections(self) -> list[tuple[Heading, list[Block]]]:
