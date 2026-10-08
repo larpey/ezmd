@@ -1,0 +1,28 @@
+[project]
+name = "intomd-api"
+version = "0.0.1"
+description = "intomd HTTP API and RQ workers."
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+    "intomd",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic-settings>=2.6",
+    "sqlalchemy>=2.0.36",
+    "alembic>=1.14",
+    "redis>=5.2",
+    "rq>=2.0",
+    "python-multipart>=0.0.18",
+    "pyjwt>=2.10",
+]
+
+[project.optional-dependencies]
+s3 = ["boto3>=1.35"]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/intomd_api"]
