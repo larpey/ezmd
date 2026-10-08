@@ -1,0 +1,10 @@
+converter = "data.csv"
+max_seconds = 20
+hand_edited = false
+notes = "1,200-row CSV: full Table in the IR; the renderer samples it and writes the CSV attachment."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

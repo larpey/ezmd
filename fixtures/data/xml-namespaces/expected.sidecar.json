@@ -1,0 +1,3587 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.xml"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "XML document with root element catalog and 29 elements; 2 namespace(s)."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Prefix"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Namespace URI"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "(default)"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "urn:example:catalog"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "dc"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "http://purl.org/dc/elements/1.1/"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0003",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Structure"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Element path"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Count"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Attributes"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Text sample"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@version"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/dc:title"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Spring parts catalog"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/book"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "6"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@id @lang"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/book/dc:creator"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "6"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "R. Field"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/book/price"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "6"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@currency"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12.50"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/supplier"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@code"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/supplier/name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 7,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "North Mill"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/supplier/city"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 8,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Oslo"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/notes"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 9,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "/catalog/notes/note"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": ""
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 10,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Prices exclude VAT."
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "int",
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0005",
+        "n_cols": 4,
+        "n_rows": 11,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Data"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@version"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "dc:title"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Spring parts catalog"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0007",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0008",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/book",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "book"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@id"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@lang"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "dc:creator"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "price.@currency"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "price.#text"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "b1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "en"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "R. Field"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EUR"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "12.50"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "b2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "pt"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "M. Costa"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EUR"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "9.00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "b3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "no"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "K. Berg"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "NOK"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "110"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "b4"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "en"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "A. Moss"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "GBP"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "7.25"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "b5"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "es"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "L. Vega"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EUR"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "15.00"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "b6"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "lv"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 2,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "I. Ozola"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 3,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "EUR"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 4,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 6,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "11.40"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text",
+          "text",
+          "text",
+          "float"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0009",
+        "n_cols": 5,
+        "n_rows": 7,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/book",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0010",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/supplier",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "supplier"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "level": 4,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/supplier[1]",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "supplier 1"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@code"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "S1"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "North Mill"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "city"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Oslo"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0012",
+        "n_cols": 2,
+        "n_rows": 4,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/supplier[1]",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0013",
+        "level": 4,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/supplier[2]",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "supplier 2"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "@code"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "S2"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Harbor Works"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "city"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Lisbon"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0014",
+        "n_cols": 2,
+        "n_rows": 4,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/supplier[2]",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0015",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/notes",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "notes"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "note"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "[\"Prices exclude VAT.\", \"Stock is updated nightly.\"]"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0016",
+        "n_cols": 2,
+        "n_rows": 2,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/catalog/notes",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0017",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Source"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<catalog xmlns=\"urn:example:catalog\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2\">\n  <dc:title>Spring parts catalog</dc:title>\n  <book id=\"b1\" lang=\"en\">\n    <dc:creator>R. Field</dc:creator>\n    <price currency=\"EUR\">12.50</price>\n  </book>\n  <book id=\"b2\" lang=\"pt\">\n    <dc:creator>M. Costa</dc:creator>\n    <price currency=\"EUR\">9.00</price>\n  </book>\n  <book id=\"b3\" lang=\"no\">\n    <dc:creator>K. Berg</dc:creator>\n    <price currency=\"NOK\">110</price>\n  </book>\n  <book id=\"b4\" lang=\"en\">\n    <dc:creator>A. Moss</dc:creator>\n    <price currency=\"GBP\">7.25</price>\n  </book>\n  <book id=\"b5\" lang=\"es\">\n    <dc:creator>L. Vega</dc:creator>\n    <price currency=\"EUR\">15.00</price>\n  </book>\n  <book id=\"b6\" lang=\"lv\">\n    <dc:creator>I. Ozola</dc:creator>\n    <price currency=\"EUR\">11.40</price>\n  </book>\n  <supplier code=\"S1\"><name>North Mill</name><city>Oslo</city></supplier>\n  <supplier code=\"S2\"><name>Harbor Works</name><city>Lisbon</city></supplier>\n  <notes>\n    <note>Prices exclude VAT.</note>\n    <note>Stock is updated nightly.</note>\n  </notes>\n</catalog>",
+        "filename": null,
+        "id": "b0018",
+        "language": "xml",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 34,
+          "line_start": 1,
+          "page_label": null,
+          "path": "/",
+          "source": "input.xml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:b75254ccece0d27d169d9427ce55dcfb3c872fe1cc93e9d242502fb7d7efedea",
+    "converter_id": "data.xml",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {
+        "elements": 29,
+        "format": "XML",
+        "root": "catalog"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/xml",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.xml",
+      "source_type": "data",
+      "speakers": [],
+      "title": "input.xml"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:74a68f5c02760e7169782503dabe5c03a6988b5dbe58f0a6bfd285b5fc1a6a23",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "data.xml",
+    "converter_version": "0.0.1",
+    "extra": {
+      "elements": 29,
+      "format": "XML",
+      "root": "catalog"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.xml",
+    "source_hash": "sha256:92f640fa7bd1415edd5b4ec8aec4f317b306badc83a873d25a4c094f35815617",
+    "source_type": "data",
+    "title": "input.xml",
+    "tokens": {
+      "cl100k_base": 1175,
+      "claude_approx": 1275,
+      "o200k_base": 1181
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 289
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 9,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 111,
+      "tables": 7,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 223
+    },
+    "duration_seconds": 0.0,
+    "engine": "data.xml",
+    "engines_tried": [
+      "data.xml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 1124
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "/",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "/",
+      "source": "input.xml",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "/catalog",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0004",
+      "path": "/",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "path": "/",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0006",
+      "path": "/",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "path": "/catalog",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0008",
+      "path": "/catalog/book",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0009",
+      "path": "/catalog/book",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0010",
+      "path": "/catalog/supplier",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0011",
+      "path": "/catalog/supplier[1]",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0012",
+      "path": "/catalog/supplier[1]",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0013",
+      "path": "/catalog/supplier[2]",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0014",
+      "path": "/catalog/supplier[2]",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0015",
+      "path": "/catalog/notes",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0016",
+      "path": "/catalog/notes",
+      "source": "input.xml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0017",
+      "path": "/",
+      "source": "input.xml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0018",
+      "line_end": 34,
+      "line_start": 1,
+      "path": "/",
+      "source": "input.xml",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0004",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 1054,
+      "offset_start": 522,
+      "original_level": 2,
+      "original_title": "Structure",
+      "time_end": null,
+      "time_start": null,
+      "title": "Structure"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 1167,
+      "offset_start": 1054,
+      "original_level": 2,
+      "original_title": "Data",
+      "time_end": null,
+      "time_start": null,
+      "title": "Data"
+    },
+    {
+      "block_id": "b0008",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 1567,
+      "offset_start": 1167,
+      "original_level": 3,
+      "original_title": "book",
+      "time_end": null,
+      "time_start": null,
+      "title": "book"
+    },
+    {
+      "block_id": "b0010",
+      "id": "sec-2-2",
+      "level": 3,
+      "number": "2.2",
+      "offset_end": 1596,
+      "offset_start": 1567,
+      "original_level": 3,
+      "original_title": "supplier",
+      "time_end": null,
+      "time_start": null,
+      "title": "supplier"
+    },
+    {
+      "block_id": "b0011",
+      "id": "sec-2-2-1",
+      "level": 4,
+      "number": "2.2.1",
+      "offset_end": 1725,
+      "offset_start": 1596,
+      "original_level": 4,
+      "original_title": "supplier 1",
+      "time_end": null,
+      "time_start": null,
+      "title": "supplier 1"
+    },
+    {
+      "block_id": "b0013",
+      "id": "sec-2-2-2",
+      "level": 4,
+      "number": "2.2.2",
+      "offset_end": 1858,
+      "offset_start": 1725,
+      "original_level": 4,
+      "original_title": "supplier 2",
+      "time_end": null,
+      "time_start": null,
+      "title": "supplier 2"
+    },
+    {
+      "block_id": "b0015",
+      "id": "sec-2-3",
+      "level": 3,
+      "number": "2.3",
+      "offset_end": 1988,
+      "offset_start": 1858,
+      "original_level": 3,
+      "original_title": "notes",
+      "time_end": null,
+      "time_start": null,
+      "title": "notes"
+    },
+    {
+      "block_id": "b0017",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 3145,
+      "offset_start": 1988,
+      "original_level": 2,
+      "original_title": "Source",
+      "time_end": null,
+      "time_start": null,
+      "title": "Source"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0003",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Prefix",
+        "Namespace URI"
+      ],
+      "number": 1,
+      "offset_end": 520,
+      "offset_start": 393,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 45
+    },
+    {
+      "block_id": "b0005",
+      "column_types": [
+        "text",
+        "int",
+        "text",
+        "text"
+      ],
+      "columns": 4,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Element path",
+        "Count",
+        "Attributes",
+        "Text sample"
+      ],
+      "number": 2,
+      "offset_end": 1052,
+      "offset_start": 547,
+      "page": null,
+      "representation": "pipe",
+      "rows": 10,
+      "tokens": 180
+    },
+    {
+      "block_id": "b0007",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 3,
+      "offset_end": 1165,
+      "offset_start": 1074,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 30
+    },
+    {
+      "block_id": "b0009",
+      "column_types": [
+        "text",
+        "text",
+        "text",
+        "text",
+        "float"
+      ],
+      "columns": 5,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "@id",
+        "@lang",
+        "dc:creator",
+        "price.@currency",
+        "price.#text"
+      ],
+      "number": 4,
+      "offset_end": 1565,
+      "offset_start": 1192,
+      "page": null,
+      "representation": "pipe",
+      "rows": 6,
+      "tokens": 157
+    },
+    {
+      "block_id": "b0012",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 5,
+      "offset_end": 1723,
+      "offset_start": 1632,
+      "page": null,
+      "representation": "pipe",
+      "rows": 3,
+      "tokens": 33
+    },
+    {
+      "block_id": "b0014",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 6,
+      "offset_end": 1856,
+      "offset_start": 1761,
+      "page": null,
+      "representation": "pipe",
+      "rows": 3,
+      "tokens": 33
+    },
+    {
+      "block_id": "b0016",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 7,
+      "offset_end": 1986,
+      "offset_start": 1884,
+      "page": null,
+      "representation": "pipe",
+      "rows": 1,
+      "tokens": 31
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 1438,
+  "warnings": []
+}

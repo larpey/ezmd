@@ -1,0 +1,1435 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "level": 1,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "input.toml"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0002",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "TOML object with 8 keys; nesting depth 4."
+          }
+        ],
+        "type": "paragraph"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "title"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Warehouse sync"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "version"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "3"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "ratio"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 3,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "1.10"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "enabled"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 4,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "true"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "started"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 5,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "2026-02-03T04:05:06Z"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0003",
+        "n_cols": 2,
+        "n_rows": 6,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0004",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/owner",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "owner"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Operations"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "email"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "ops@example.invalid"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0005",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/owner",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0006",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/sync",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "sync"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "id": "b0007",
+        "level": 3,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/sync/schedule",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "schedule"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Key"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "Value"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "cron"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "*/15 * * * *"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "zones"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "[\"eu\", \"us\"]"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "text"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0008",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/sync/schedule",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0009",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/targets",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "targets"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "caption": null,
+        "cells": [
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "name"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": true,
+            "raw_value": null,
+            "row": 0,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "weight"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "primary"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 1,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "70"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 0,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "backup"
+              }
+            ]
+          },
+          {
+            "bbox": null,
+            "col": 1,
+            "col_span": 1,
+            "formula": null,
+            "is_header": false,
+            "raw_value": null,
+            "row": 2,
+            "row_span": 1,
+            "spans": [
+              {
+                "change": null,
+                "change_author": null,
+                "change_id": null,
+                "footnote_ref": null,
+                "href": null,
+                "math": null,
+                "styles": [],
+                "text": "30"
+              }
+            ]
+          }
+        ],
+        "column_types": [
+          "text",
+          "int"
+        ],
+        "continued_from": null,
+        "has_merged_cells": false,
+        "header_rows": 1,
+        "id": "b0010",
+        "n_cols": 2,
+        "n_rows": 3,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/targets",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "table"
+      },
+      {
+        "attrs": {},
+        "id": "b0011",
+        "level": 2,
+        "number": null,
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "Source"
+          }
+        ],
+        "type": "heading"
+      },
+      {
+        "attrs": {},
+        "code": "title = \"Warehouse sync\"\nversion = 3\nratio = 1.10\nenabled = true\nstarted = 2026-02-03T04:05:06Z\n\n[owner]\nname = \"Operations\"\nemail = \"ops@example.invalid\"\n\n[sync.schedule]\ncron = \"*/15 * * * *\"\nzones = [\"eu\", \"us\"]\n\n[[targets]]\nname = \"primary\"\nweight = 70\n\n[[targets]]\nname = \"backup\"\nweight = 30",
+        "filename": null,
+        "id": "b0012",
+        "language": "toml",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": 21,
+          "line_start": 1,
+          "page_label": null,
+          "path": "/",
+          "source": "input.toml",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "type": "code"
+      }
+    ],
+    "content_hash": "sha256:5b861348e7c436e16a1b3a651c0b3f80ca4679638c8226893e85d20fc66e4db3",
+    "converter_id": "data.toml",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": "utf-8",
+      "encoding_confidence": 1.0,
+      "extra": {
+        "depth": 4,
+        "format": "TOML"
+      },
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": "application/toml",
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.toml",
+      "source_type": "data",
+      "speakers": [],
+      "title": "input.toml"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": []
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:23a8f66815f5995f6de9cc8b4a01fc7291df8b00c0018b18a86f924713073ca4",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "data.toml",
+    "converter_version": "0.0.1",
+    "extra": {
+      "depth": 4,
+      "encoding": "utf-8",
+      "format": "TOML"
+    },
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "intomd_version": "0.0.1",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.toml",
+    "source_hash": "sha256:bedd90a56b47d88b14c75b0299a201116733a895461a88e56de6f5feadbecf86",
+    "source_type": "data",
+    "title": "input.toml",
+    "tokens": {
+      "cl100k_base": 413,
+      "claude_approx": 446,
+      "o200k_base": 413
+    },
+    "truncated": false,
+    "warnings": [],
+    "word_count": 120
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 1,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 6,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 30,
+      "tables": 4,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 99
+    },
+    "duration_seconds": 0.0,
+    "engine": "data.toml",
+    "engines_tried": [
+      "data.toml"
+    ],
+    "estimated_tokens": 0,
+    "fetch_seconds": null,
+    "input_bytes": 298
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "/",
+      "source": "input.toml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0002",
+      "path": "/",
+      "source": "input.toml",
+      "type": "paragraph"
+    },
+    {
+      "block_id": "b0003",
+      "path": "/",
+      "source": "input.toml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0004",
+      "path": "/owner",
+      "source": "input.toml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0005",
+      "path": "/owner",
+      "source": "input.toml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0006",
+      "path": "/sync",
+      "source": "input.toml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0007",
+      "path": "/sync/schedule",
+      "source": "input.toml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0008",
+      "path": "/sync/schedule",
+      "source": "input.toml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0009",
+      "path": "/targets",
+      "source": "input.toml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0010",
+      "path": "/targets",
+      "source": "input.toml",
+      "type": "table"
+    },
+    {
+      "block_id": "b0011",
+      "path": "/",
+      "source": "input.toml",
+      "type": "heading"
+    },
+    {
+      "block_id": "b0012",
+      "line_end": 21,
+      "line_start": 1,
+      "path": "/",
+      "source": "input.toml",
+      "type": "code"
+    }
+  ],
+  "schema": "intomd.sidecar/1",
+  "sections": [
+    {
+      "block_id": "b0004",
+      "id": "sec-1",
+      "level": 2,
+      "number": "1",
+      "offset_end": 521,
+      "offset_start": 406,
+      "original_level": 2,
+      "original_title": "owner",
+      "time_end": null,
+      "time_start": null,
+      "title": "owner"
+    },
+    {
+      "block_id": "b0006",
+      "id": "sec-2",
+      "level": 2,
+      "number": "2",
+      "offset_end": 541,
+      "offset_start": 521,
+      "original_level": 2,
+      "original_title": "sync",
+      "time_end": null,
+      "time_start": null,
+      "title": "sync"
+    },
+    {
+      "block_id": "b0007",
+      "id": "sec-2-1",
+      "level": 3,
+      "number": "2.1",
+      "offset_end": 659,
+      "offset_start": 541,
+      "original_level": 3,
+      "original_title": "schedule",
+      "time_end": null,
+      "time_start": null,
+      "title": "schedule"
+    },
+    {
+      "block_id": "b0009",
+      "id": "sec-3",
+      "level": 2,
+      "number": "3",
+      "offset_end": 758,
+      "offset_start": 659,
+      "original_level": 2,
+      "original_title": "targets",
+      "time_end": null,
+      "time_start": null,
+      "title": "targets"
+    },
+    {
+      "block_id": "b0011",
+      "id": "sec-4",
+      "level": 2,
+      "number": "4",
+      "offset_end": 1090,
+      "offset_start": 758,
+      "original_level": 2,
+      "original_title": "Source",
+      "time_end": null,
+      "time_start": null,
+      "title": "Source"
+    }
+  ],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [
+    {
+      "block_id": "b0003",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 1,
+      "offset_end": 404,
+      "offset_start": 252,
+      "page": null,
+      "representation": "pipe",
+      "rows": 5,
+      "tokens": 58
+    },
+    {
+      "block_id": "b0005",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 2,
+      "offset_end": 519,
+      "offset_start": 427,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 27
+    },
+    {
+      "block_id": "b0008",
+      "column_types": [
+        "text",
+        "text"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "Key",
+        "Value"
+      ],
+      "number": 3,
+      "offset_end": 657,
+      "offset_start": 570,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 35
+    },
+    {
+      "block_id": "b0010",
+      "column_types": [
+        "text",
+        "int"
+      ],
+      "columns": 2,
+      "csv": null,
+      "formulas": [],
+      "header": [
+        "name",
+        "weight"
+      ],
+      "number": 4,
+      "offset_end": 756,
+      "offset_start": 682,
+      "page": null,
+      "representation": "pipe",
+      "rows": 2,
+      "tokens": 28
+    }
+  ],
+  "tokens_estimated": false,
+  "tokens_total": 672,
+  "warnings": []
+}

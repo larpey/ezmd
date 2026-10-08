@@ -1,0 +1,21 @@
+title = "Warehouse sync"
+version = 3
+ratio = 1.10
+enabled = true
+started = 2026-02-03T04:05:06Z
+
+[owner]
+name = "Operations"
+email = "ops@example.invalid"
+
+[sync.schedule]
+cron = "*/15 * * * *"
+zones = ["eu", "us"]
+
+[[targets]]
+name = "primary"
+weight = 70
+
+[[targets]]
+name = "backup"
+weight = 30

@@ -1,0 +1,11 @@
+# Data family thresholds (ROADMAP P1-T05: "data fixtures exact-match"). Spec Part 2 10g asks for cell accuracy
+# 0.98/0.99, exact element counts and exact output for security fixtures; every data golden must match exactly.
+[converters]
+"data.csv" = 1.0
+"data.json" = 1.0
+"data.yaml" = 1.0
+"data.toml" = 1.0
+"data.xml" = 1.0
+"data.sqlite" = 1.0
+"data.parquet" = 1.0
+"data.connection_string" = 1.0

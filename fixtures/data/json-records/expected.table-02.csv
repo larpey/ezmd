@@ -1,0 +1,4 @@
+id,name,score,active,address.city,address.zip,tags,note
+1234567890123456789,Ada,1.10,true,Lisbon,1100-001,"[""admin"", ""ops""]",
+2,Grace,2.50,false,Oslo,null,[],
+3,Linus | Jr,1e400,null,Quito,,,only here

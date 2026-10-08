@@ -1,0 +1,66 @@
+{
+  "service": {
+    "name": "inventory-api",
+    "version": "2.4.1",
+    "debug": false
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "tls": {
+      "enabled": true,
+      "cert": "/etc/certs/api.pem",
+      "ciphers": [
+        "TLS_AES_128_GCM_SHA256"
+      ]
+    }
+  },
+  "database": {
+    "primary": {
+      "url": "file:inventory.db",
+      "pool": {
+        "min": 1,
+        "max": 8
+      }
+    },
+    "replicas": [
+      {
+        "region": "eu-west",
+        "lag_ms": 120
+      },
+      {
+        "region": "us-east",
+        "lag_ms": 340
+      }
+    ]
+  },
+  "features": [
+    "search",
+    "export",
+    "audit"
+  ],
+  "limits": {
+    "a": {
+      "b": {
+        "c": {
+          "d": {
+            "e": {
+              "f": "deep value"
+            }
+          }
+        }
+      }
+    }
+  },
+  "matrix": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "empty": {}
+}

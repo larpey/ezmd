@@ -1,0 +1,10 @@
+converter = "data.csv"
+max_seconds = 20
+hand_edited = false
+notes = "Tab-separated values with negative decimals, dates, and an empty cell."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

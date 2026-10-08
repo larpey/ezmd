@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:example:catalog" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2">
+  <dc:title>Spring parts catalog</dc:title>
+  <book id="b1" lang="en">
+    <dc:creator>R. Field</dc:creator>
+    <price currency="EUR">12.50</price>
+  </book>
+  <book id="b2" lang="pt">
+    <dc:creator>M. Costa</dc:creator>
+    <price currency="EUR">9.00</price>
+  </book>
+  <book id="b3" lang="no">
+    <dc:creator>K. Berg</dc:creator>
+    <price currency="NOK">110</price>
+  </book>
+  <book id="b4" lang="en">
+    <dc:creator>A. Moss</dc:creator>
+    <price currency="GBP">7.25</price>
+  </book>
+  <book id="b5" lang="es">
+    <dc:creator>L. Vega</dc:creator>
+    <price currency="EUR">15.00</price>
+  </book>
+  <book id="b6" lang="lv">
+    <dc:creator>I. Ozola</dc:creator>
+    <price currency="EUR">11.40</price>
+  </book>
+  <supplier code="S1"><name>North Mill</name><city>Oslo</city></supplier>
+  <supplier code="S2"><name>Harbor Works</name><city>Lisbon</city></supplier>
+  <notes>
+    <note>Prices exclude VAT.</note>
+    <note>Stock is updated nightly.</note>
+  </notes>
+</catalog>

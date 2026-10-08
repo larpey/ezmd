@@ -1,0 +1,10 @@
+converter = "data.sqlite"
+max_seconds = 20
+hand_edited = false
+notes = "SQLite with two tables, a foreign key, an index, a view, NULLs, and a BLOB column; 130 rows sampled to 100 + 20."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

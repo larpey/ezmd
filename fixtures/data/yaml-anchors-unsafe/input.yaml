@@ -1,0 +1,20 @@
+# Deployment settings for the demo service.
+defaults: &defaults
+  retries: 3
+  timeout_s: 1.50
+  region: eu-west
+staging:
+  <<: *defaults
+  replicas: 2
+production:
+  <<: *defaults
+  replicas: 6
+  region: us-east
+hooks:
+  - name: notify
+    url: https://hooks.example.invalid/notify
+  - name: audit
+    url: https://hooks.example.invalid/audit
+# The next value must never be constructed as a Python object.
+payload: !!python/object/apply:os.system ["echo pwned"]
+released: 2026-04-01

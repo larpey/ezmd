@@ -1,0 +1,10 @@
+converter = "data.connection_string"
+max_seconds = 20
+hand_edited = false
+notes = "A Postgres URL with credentials: refused with the stub note; the password never appears."
+expected_errors = ["connection_string_refused"]
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

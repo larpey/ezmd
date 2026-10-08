@@ -1,0 +1,1 @@
+postgres://user:hunter2@db.example.invalid:5432/sales

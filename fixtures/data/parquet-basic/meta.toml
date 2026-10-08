@@ -1,0 +1,11 @@
+converter = "data.parquet"
+max_seconds = 20
+hand_edited = false
+notes = "Parquet with 3 row groups, decimal, zone-aware timestamp, struct, nullable bool: schema, statistics, head and tail sample."
+requires = ["data"]
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

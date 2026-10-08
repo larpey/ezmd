@@ -1,0 +1,10 @@
+converter = "data.json"
+max_seconds = 20
+hand_edited = false
+notes = "Nested config: Key/Value tables per object, headings per nested key down to H6, code fallback below H6, records table, list of lists as code."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

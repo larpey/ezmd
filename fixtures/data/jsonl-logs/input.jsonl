@@ -1,0 +1,13 @@
+{"ts": "2026-05-01T10:00:00Z", "level": "INFO", "msg": "request 0 handled", "ms": 10}
+{"ts": "2026-05-01T10:01:00Z", "level": "WARN", "msg": "request 1 handled", "ms": 13}
+{"ts": "2026-05-01T10:02:00Z", "level": "ERROR", "msg": "request 2 handled", "ms": 16}
+{"ts": "2026-05-01T10:03:00Z", "level": "INFO", "msg": "request 3 handled", "ms": 19}
+{"ts": "2026-05-01T10:04:00Z", "level": "WARN", "msg": "request 4 handled", "ms": 22}
+{"ts": "2026-05-01T10:05:00Z", "level": "ERROR", "msg": "request 5 handled", "ms": 25}
+{"ts": "2026-05-01T10:06:00Z", "level": "INFO", "msg": "request 6 handled", "ms": 28}
+{"ts": "2026-05-01T10:07:00Z", "level": "WARN", "msg": "request 7 handled", "ms": 31}
+{"ts": "2026-05-01T10:08:00Z", "level": "ERROR", "msg": "request 8 handled", "ms": 34}
+{"ts": "2026-05-01T10:09:00Z", "level": "INFO", "msg": "request 9 handled", "ms": 37}
+{"ts": "2026-05-01T10:10:00Z", "level": "WARN", "msg": "request 10 handled", "ms": 40}
+{"ts": "2026-05-01T10:11:00Z", "level": "ERROR", "msg": "request 11 handled", "ms": 43}
+{"ts": "2026-05-01T10:12:00Z", "level": "INFO", "msg": "trunc

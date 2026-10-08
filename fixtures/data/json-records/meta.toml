@@ -1,0 +1,10 @@
+converter = "data.json"
+max_seconds = 20
+hand_edited = false
+notes = "Array of objects: records table with dot-path flattening, 19-digit id, 1.10 and 1e400 kept verbatim, null vs missing keys, a pipe in a value."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

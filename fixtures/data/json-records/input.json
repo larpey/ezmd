@@ -1,0 +1,5 @@
+[
+  {"id": 1234567890123456789, "name": "Ada", "score": 1.10, "active": true, "address": {"city": "Lisbon", "zip": "1100-001"}, "tags": ["admin", "ops"]},
+  {"id": 2, "name": "Grace", "score": 2.50, "active": false, "address": {"city": "Oslo", "zip": null}, "tags": []},
+  {"id": 3, "name": "Linus | Jr", "score": 1e400, "active": null, "address": {"city": "Quito"}, "note": "only here"}
+]

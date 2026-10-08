@@ -1,0 +1,10 @@
+converter = "data.yaml"
+max_seconds = 20
+hand_edited = false
+notes = "YAML anchors and merge keys, verbatim 1.50, a !!python/object/apply tag rendered inert (yaml_unsafe_tags), comments kept as source."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

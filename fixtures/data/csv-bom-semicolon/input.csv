@@ -1,0 +1,6 @@
+﻿id;name;amount;note
+1;"Müller, Anna";1234,50;"first line
+second line"
+2;Søren;99,00;plain
+3;"O""Brien";0,75;"has ; semicolon"
+4;Zoe;-12,30;

@@ -1,0 +1,9 @@
+sku,name,city,qty,price,weight_kg,color,supplier,lead_days,in_stock,rating,updated
+SKU-1000,bolts,Lisbon,10,3.00,0.5,red,Supplier A,7,true,4.0,2026-01-10
+SKU-1001,washers,Oslo,20,4.25,0.6,blue,Supplier B,8,false,4.5,2026-02-11
+SKU-1002,hinges,Quito,30,5.50,0.7,green,Supplier C,9,true,4.0,2026-03-12
+SKU-1003,brackets,Nairobi,40,6.75,0.8,red,Supplier D,10,false,4.5,2026-04-13
+SKU-1004,rivets,Hanoi,50,8.00,0.9,blue,Supplier E,11,true,4.0,2026-05-14
+SKU-1005,springs,Perth,60,9.25,1.0,green,Supplier F,12,false,4.5,2026-06-15
+SKU-1006,gaskets,Tromso,70,10.50,1.1,red,Supplier G,13,true,4.0,2026-07-16
+SKU-1007,clamps,Cusco,80,11.75,1.2,blue,Supplier H,14,false,4.5,2026-08-17

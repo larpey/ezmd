@@ -1,0 +1,10 @@
+converter = "data.xml"
+max_seconds = 20
+hand_edited = false
+notes = "XXE and entity-expansion attempt: no file, network, or entity content may appear (unsupported_feature)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

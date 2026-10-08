@@ -1,0 +1,10 @@
+converter = "data.toml"
+max_seconds = 20
+hand_edited = false
+notes = "TOML scalars, dotted tables as headings, arrays of tables as a records table, verbatim float."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

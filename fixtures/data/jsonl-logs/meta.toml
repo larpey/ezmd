@@ -1,0 +1,10 @@
+converter = "data.json"
+max_seconds = 20
+hand_edited = false
+notes = "JSON Lines log with a truncated last line (markup_partial)."
+expected_errors = []
+
+[provenance]
+origin = "self-generated"
+license = "CC0-1.0"
+source = "fixtures/data/_generate.py"

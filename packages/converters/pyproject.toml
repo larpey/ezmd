@@ -8,12 +8,14 @@ license = "Apache-2.0"
 # metadata cycle (see DECISIONS.md D-0003).
 dependencies = [
     "charset-normalizer>=3.4",
+    "defusedxml>=0.7.1",
     "lxml>=6.1.3",
     "markdown-it-py>=3.0",
     "mdit-py-plugins>=0.4",
     "pathspec>=0.12.1",
     "pikepdf>=10.0,<11",
     "pypdfium2>=5.0,<6",
+    "pyyaml>=6.0",
     "trafilatura>=2.3.1,<3",
 ]
 
@@ -23,6 +25,9 @@ dependencies = [
 # service client), which would downgrade the default install's CLI dependencies in the universal lock.
 # opencv-python-headless (Apache-2.0) is imported by Docling's TableFormer; the full `docling` gets it via RapidOCR.
 docs = ["docling-slim[format-pdf,models-local,convert-core]>=2.135,<3", "opencv-python-headless>=4.10"]
+# Parquet (data.parquet). pyarrow is Apache-2.0 but ~50 MB per wheel, too big for the default install
+# budget (docs/spec/part4.md 4.3.3); see docs/decisions/P1-T05-data.md.
+data = ["pyarrow>=17.0"]
 
 [build-system]
 requires = ["hatchling>=1.26"]
