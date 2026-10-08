@@ -1,7 +1,9 @@
 """intomd_api.static: serve the built web UI (`apps/web/dist`) at `/` with an SPA fallback.
 
 Hashed assets under `assets/` are cached for a year (immutable); everything else, including the
-`index.html` fallback, is `no-cache`. API paths never fall through to the SPA.
+`index.html` fallback, is `no-cache`. API and reserved operator paths (`/v1`, `/admin`, `/metrics`, ...)
+never fall through to the SPA: unknown ones answer 404, so an unmounted admin or metrics route is not
+mistaken for a live page (docs/spec/part4.md 4.14.5 item 7).
 """
 
 from __future__ import annotations
@@ -16,7 +18,32 @@ from intomd_api.errors import ApiError
 
 IMMUTABLE = "public, max-age=31536000, immutable"
 NO_CACHE = "no-cache"
-_API_PREFIXES = ("v1/", "healthz", "readyz", "openapi.json")
+# First path segments the SPA never claims (compared case-insensitively).
+RESERVED_SEGMENTS = frozenset(
+    {
+        "v1",
+        "v2",
+        "api",
+        "admin",
+        "metrics",
+        "healthz",
+        "readyz",
+        "livez",
+        "openapi.json",
+        "docs",
+        "redoc",
+        "mcp",
+        "fetch-node",
+        "internal",
+        "debug",
+        ".well-known",
+    }
+)
+
+
+def is_reserved(path: str) -> bool:
+    """True when `path` (no leading slash) starts with a reserved segment."""
+    return path.split("/", 1)[0].lower() in RESERVED_SEGMENTS
 
 
 def default_web_dist() -> Path:
@@ -41,7 +68,7 @@ def mount_static(app: FastAPI, dist: Path | None) -> bool:
     # Registered for every method so unknown API paths answer 404 (not 405) through this catch-all.
     @app.api_route("/{path:path}", methods=["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"], include_in_schema=False)
     def spa(path: str, request: Request) -> Response:
-        if request.method not in ("GET", "HEAD") or path.startswith(_API_PREFIXES):
+        if request.method not in ("GET", "HEAD") or is_reserved(path):
             raise ApiError("not_found", "Not found.")
         target = _resolve(root, path) if path else None
         if target is not None:

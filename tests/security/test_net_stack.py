@@ -93,13 +93,7 @@ def test_edge_security_headers(client: httpx.Client) -> None:
     ("method", "path"),
     [
         ("GET", "/metrics"),
-        pytest.param(
-            "GET",
-            "/admin",
-            marks=pytest.mark.xfail(
-                strict=True, reason="the SPA fallback serves index.html for /admin (P1-T15 request: 404 it)"
-            ),
-        ),
+        ("GET", "/admin"),
         ("POST", "/v1/fetch-node/claim"),
         ("GET", "/v1/fetch-node/jobs"),
     ],

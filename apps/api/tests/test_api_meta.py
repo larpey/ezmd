@@ -95,6 +95,24 @@ async def test_static_spa_fallback(tmp_path: Path, settings_factory: Callable[..
         assert (await client.get("/healthz")).json() == {"status": "ok"}
 
 
+@pytest.mark.parametrize(
+    "path",
+    ["/admin", "/admin/", "/ADMIN/users", "/metrics", "/v1", "/v2/jobs", "/api/x", "/mcp", "/.well-known/x"],
+)
+async def test_static_fallback_404s_reserved_paths(
+    path: str, tmp_path: Path, settings_factory: Callable[..., Settings]
+) -> None:
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<!doctype html><title>intomd</title>", encoding="utf-8")
+    async with api_client(settings_factory(web_dist=dist)) as (client, _):
+        r = await client.get(path)
+        assert r.status_code == 404, path
+        assert r.json()["error"]["code"] == "not_found"
+        # Paths that only share a prefix with a reserved segment stay SPA routes.
+        assert (await client.get("/administration")).status_code == 200
+
+
 @pytest.mark.skipif(not ENV_EXAMPLE.is_file(), reason="deploy/env.example is missing")
 def test_env_example_has_no_inline_comments() -> None:
     """Docker Compose's env-file parser keeps `# ...` after an empty value as the value itself."""
