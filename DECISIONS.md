@@ -371,3 +371,13 @@ Decision: Rename everything to ezmd ("easy md"): PyPI `ezmd`, `ezmd-converters`,
 Alternatives: keep intomd (clear but generic); n2md ("into" pun, reads as "N-format to md", collides with a Notion converter of the same name); omd (collides with the Checkmk `omd` command and crowded search); markitall (too close to Microsoft's MarkItDown).
 Consequences: CI and image names change; old `INTOMD_*` variables are not read (no deployments exist yet). The npm `ezmd` org and the ezmd.dev domain should be registered by the owner to hold the name.
 Council: not convened (owner decision).
+
+## D-0038: Release candidates publish to PyPI as pre-releases; TestPyPI dropped
+Date: 2026-10-08
+Task: P1-T16
+Status: accepted (owner decision)
+Context: TestPyPI's `ezmd` belongs to another user (SiLeader, one 1.0.0 upload of an unrelated markdown formatter), so a release candidate cannot rehearse the real package name there. Real PyPI's `ezmd`, `ezmd-converters`, and `ezmd-mcp` are free.
+Decision: `vX.Y.Z-rcN` tags publish to PyPI as PEP 440 pre-releases (pip and uv install them only with `--pre` or an exact pin) through the same `release` environment and owner approval as finals; npm and the MCP registry stay final-only. The `testpypi` job and environment are removed.
+Alternatives: keep TestPyPI for the other two packages and publish `ezmd` only at the final (the main package would never be rehearsed and `pip install ezmd` from TestPyPI would fetch the other project).
+Consequences: the first candidate claims all three PyPI names. PyPI versions are permanent, so a broken candidate is yanked and followed by the next rcN rather than replaced.
+Council: not convened (owner decision).

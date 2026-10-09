@@ -1,7 +1,7 @@
 """Validate a release tag against the package versions (used by .github/workflows/release.yml).
 
     python tools/release_version.py v1.2.0        # final release
-    python tools/release_version.py v1.2.0-rc1    # release candidate: TestPyPI only
+    python tools/release_version.py v1.2.0-rc1    # release candidate: PyPI pre-release, not npm
 
 Accepted tags: vMAJOR.MINOR.PATCH and vMAJOR.MINOR.PATCH-rcN. Every published Python package must carry
 the matching PEP 440 version (1.2.0 / 1.2.0rc1); for a final release the npm SDK must carry 1.2.0 too

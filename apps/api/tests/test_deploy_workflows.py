@@ -1,5 +1,5 @@
 """Structural checks on the release and image workflows (P1-T16): the human publish gate, OIDC-only
-publishing, release candidates confined to TestPyPI, and scan/SBOM/sign before any image is tagged."""
+publishing, release candidates on PyPI only as pre-releases, and scan/SBOM/sign before any image is tagged."""
 
 from __future__ import annotations
 
@@ -14,8 +14,8 @@ import yaml
 
 REPO = Path(__file__).resolve().parents[3]
 WORKFLOWS = REPO / ".github" / "workflows"
-PUBLISH_JOBS = {"testpypi", "pypi", "npm", "mcp-registry"}
-FINAL_ONLY = {"pypi", "npm", "mcp-registry"}
+PUBLISH_JOBS = {"pypi", "npm", "mcp-registry"}
+FINAL_ONLY = {"npm", "mcp-registry"}
 SHA_PIN = re.compile(r"^[\w.-]+/[\w./-]+@[0-9a-f]{40}$")
 
 
@@ -68,17 +68,18 @@ def test_publish_jobs_are_gated(release: dict[str, Any]) -> None:
         assert "publish-gate" in job["needs"], name
         assert "needs.publish-gate.outputs.enabled == 'true'" in job["if"], name
         env = job["environment"]["name"]
-        assert env == ("testpypi" if name == "testpypi" else "release"), name
+        assert env == "release", name
         assert job["permissions"].get("id-token") == "write", name
 
 
-def test_release_candidates_reach_testpypi_only(release: dict[str, Any]) -> None:
+def test_release_candidates_reach_pypi_but_not_npm_or_mcp(release: dict[str, Any]) -> None:
+    """Candidates go to PyPI as pre-releases (installers skip them without --pre); npm and the MCP registry
+    get final releases only. TestPyPI is not used (D-0038)."""
     jobs = release["jobs"]
-    assert "needs.preflight.outputs.prerelease == 'true'" in jobs["testpypi"]["if"]
+    assert "testpypi" not in jobs
+    assert "prerelease" not in jobs["pypi"]["if"]
     for name in FINAL_ONLY:
         assert "needs.preflight.outputs.prerelease == 'false'" in jobs[name]["if"], name
-    test_step = next(s for s in _steps(jobs["testpypi"]) if "gh-action-pypi-publish" in s.get("uses", ""))
-    assert test_step["with"]["repository-url"] == "https://test.pypi.org/legacy/"
     prod_step = next(s for s in _steps(jobs["pypi"]) if "gh-action-pypi-publish" in s.get("uses", ""))
     assert "repository-url" not in prod_step["with"]
 

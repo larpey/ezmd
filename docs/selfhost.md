@@ -85,7 +85,7 @@ Every process brings the database to the Alembic head at startup. A database cre
 
 ## Releases and image verification
 
-The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-release and publishes to TestPyPI only; `vX.Y.Z` also publishes to PyPI, npm (`@ezmd/sdk`) and the MCP registry. Images are pushed by digest, scanned with Trivy (HIGH/CRITICAL findings with a fix fail the release), given an SPDX SBOM (syft; also attached to the GitHub release) and signed with cosign keyless before any tag points at them:
+The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-release and publishes to PyPI as a pre-release (pip and uv install it only with `--pre` or an exact version); `vX.Y.Z` publishes to PyPI, npm (`@ezmd/sdk`) and the MCP registry. Every PyPI publish waits for the owner's approval in the `release` environment. Images are pushed by digest, scanned with Trivy (HIGH/CRITICAL findings with a fix fail the release), given an SPDX SBOM (syft; also attached to the GitHub release) and signed with cosign keyless before any tag points at them:
 
 ```sh
 cosign verify ghcr.io/larpey/ezmd-api:0.1.0 \
@@ -98,8 +98,8 @@ cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0 \
 
 One-time owner setup before the first publish (until then the publish jobs skip with a notice):
 
-1. GitHub, Settings, Environments: create `release` with required reviewers (the owner) and deployment tags limited to `v*`; create `testpypi` (reviewers optional). `publish-gate` refuses to publish when `release` has no required reviewers.
-2. PyPI and TestPyPI: add a trusted publisher (a pending publisher for new names) for each of `ezmd`, `ezmd-converters` and `ezmd-mcp`: owner `larpey`, repository `ezmd`, workflow `release.yml`, environment `release` (PyPI) or `testpypi` (TestPyPI).
+1. GitHub, Settings, Environments: create `release` with required reviewers (the owner) and deployment tags limited to `v*`; `publish-gate` refuses to publish when `release` has no required reviewers.
+2. PyPI: add a trusted publisher for each of `ezmd`, `ezmd-converters` and `ezmd-mcp`: owner `larpey`, repository `ezmd`, workflow `release.yml`, environment `release`. PyPI lets one pending publisher configuration be pending for a single project at a time, so for brand-new names add `ezmd` first, release, then add the next one and re-run its failed publish job.
 3. npm: create the `@ezmd` scope and configure trusted publishing for `@ezmd/sdk`: repository `larpey/ezmd`, workflow `release.yml`, environment `release`. npm requires the package to exist before trusted publishing can be set, so the very first publish may need a one-off manual `npm publish` by the owner.
 4. MCP registry: nothing to configure; `mcp-publisher login github-oidc` proves ownership of `io.github.larpey/*`.
 5. Settings, Variables: set `EZMD_PUBLISH_ENABLED` to `true`.
