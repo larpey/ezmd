@@ -48,33 +48,5 @@
         }
       ]
     }
-  ],
-  "remotes": [
-    {
-      "type": "streamable-http",
-      "url": "https://{host}/mcp",
-      "variables": {
-        "host": {
-          "description": "Host name of the ezmd instance (public or self-hosted)",
-          "isRequired": true
-        }
-      },
-      "headers": [
-        {
-          "name": "Authorization",
-          "description": "Bearer token: an API key for the instance",
-          "value": "Bearer {api_key}",
-          "isRequired": true,
-          "isSecret": true,
-          "variables": {
-            "api_key": {
-              "description": "ezmd API key",
-              "isRequired": true,
-              "isSecret": true
-            }
-          }
-        }
-      ]
-    }
   ]
 }
