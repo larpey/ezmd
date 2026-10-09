@@ -1,13 +1,13 @@
 [project]
 name = "ezmd"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 description = "Convert anything to LLM-ready Markdown."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 authors = [{ name = "ezmd contributors" }]
 dependencies = [
-    "ezmd-converters==0.1.0rc1",
+    "ezmd-converters==0.1.0rc2",
     "pydantic>=2.9",
     "pyyaml>=6.0",
     "tiktoken>=0.8",

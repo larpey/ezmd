@@ -1094,7 +1094,7 @@ wheels = [
 
 [[package]]
 name = "ezmd"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 source = { editable = "packages/core" }
 dependencies = [
     { name = "ezmd-converters" },
@@ -1158,7 +1158,7 @@ provides-extras = ["docs", "data", "7z", "mcp", "all", "nonfree"]
 
 [[package]]
 name = "ezmd-api"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 source = { editable = "apps/api" }
 dependencies = [
     { name = "alembic" },
@@ -1198,7 +1198,7 @@ provides-extras = ["s3"]
 
 [[package]]
 name = "ezmd-converters"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 source = { editable = "packages/converters" }
 dependencies = [
     { name = "charset-normalizer" },
@@ -1256,7 +1256,7 @@ provides-extras = ["7z", "docs", "data", "nonfree"]
 
 [[package]]
 name = "ezmd-fetch-node"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 source = { editable = "apps/fetch-node" }
 dependencies = [
     { name = "httpx" },
@@ -1267,7 +1267,7 @@ requires-dist = [{ name = "httpx", specifier = ">=0.28" }]
 
 [[package]]
 name = "ezmd-mcp"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 source = { editable = "packages/mcp" }
 dependencies = [
     { name = "ezmd" },

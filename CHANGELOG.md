@@ -2,9 +2,21 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
+## [0.1.0-rc2] - 2026-10-08
+
+Second release candidate. Published to PyPI as a pre-release.
+
+### Fixed
+- On Windows, `ezmd convert` crashed with `UnicodeEncodeError` when its output was piped or redirected
+  (the stream used the legacy cp1252 code page). The CLI now writes UTF-8 to stdout and stderr.
+- Parquet column statistics render zone-aware timestamps the same way on every pyarrow version.
+
+### Changed
+- Renamed from intomd to ezmd before the first release (D-0037).
+
 ## [0.1.0-rc1] - 2026-10-08
 
-First release candidate (Phase 1). Published to TestPyPI only.
+First release candidate (Phase 1). Published to PyPI as a pre-release.
 
 ### Added
 - Converters: PDF (pypdfium2 text with structure-tree headings; Docling layout engine in the `docs` extra),

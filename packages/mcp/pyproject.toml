@@ -1,13 +1,13 @@
 [project]
 name = "ezmd-mcp"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 description = "MCP server for ezmd: convert files, URLs and text to LLM-ready Markdown from any MCP client."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 authors = [{ name = "ezmd contributors" }]
 dependencies = [
-    "ezmd==0.1.0rc1",
+    "ezmd==0.1.0rc2",
     "mcp>=2.2,<3",
     "httpx>=0.28",
     "starlette>=0.48",

@@ -1,6 +1,6 @@
 [project]
 name = "ezmd-fetch-node"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 description = "Residential fetch worker for ezmd (Phase 3)."
 requires-python = ">=3.12"
 license = "Apache-2.0"

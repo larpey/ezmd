@@ -9,13 +9,13 @@
     "subfolder": "packages/mcp"
   },
   "websiteUrl": "https://github.com/larpey/ezmd",
-  "version": "0.1.0rc1",
+  "version": "0.1.0rc2",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "ezmd-mcp",
-      "version": "0.1.0rc1",
+      "version": "0.1.0rc2",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"
