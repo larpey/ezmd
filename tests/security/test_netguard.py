@@ -318,3 +318,39 @@ def test_ipv4_mapped_addresses_are_judged_by_the_ipv4_address(literal: str, bloc
     import ipaddress
 
     assert is_blocked_ip(ipaddress.IPv6Address(literal)) is blocked
+
+
+@pytest.mark.parametrize("module", ["brotli", "brotlicffi"])
+def test_brotli_bomb_is_capped_without_full_allocation(module: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    """64 MB of zeros compresses to a few bytes; decoding with a 1 MB cap must stop near the cap."""
+    import sys
+    import tracemalloc
+
+    lib = pytest.importorskip(module)
+    bomb = lib.compress(b"\0" * (64 * 1024 * 1024), quality=1)
+    assert len(bomb) < 64 * 1024
+    if module == "brotlicffi":  # force the fallback import path
+        monkeypatch.setitem(sys.modules, "brotli", None)
+    cap = 1024 * 1024
+    tracemalloc.start()
+    try:
+        with pytest.raises(ResponseTooLarge):
+            netguard._decode_capped(bomb, "br", cap, "https://example.com/")
+        _, peak = tracemalloc.get_traced_memory()
+    finally:
+        tracemalloc.stop()
+    assert peak < 8 * cap, f"peak {peak} bytes"
+
+
+@pytest.mark.parametrize("module", ["brotli", "brotlicffi"])
+def test_brotli_under_cap_round_trips(module: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    import sys
+
+    lib = pytest.importorskip(module)
+    if module == "brotlicffi":
+        monkeypatch.setitem(sys.modules, "brotli", None)
+    payload = b"hello brotli " * 5000
+    out = netguard._decode_capped(lib.compress(payload), "br", len(payload), "https://example.com/")
+    assert out == payload
+    with pytest.raises(ResponseTooLarge):
+        netguard._decode_capped(lib.compress(payload), "br", len(payload) - 1, "https://example.com/")

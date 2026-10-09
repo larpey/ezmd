@@ -619,13 +619,41 @@ def _decode_capped(body: bytes, encoding: str, max_bytes: int, url: str) -> byte
             raise ResponseTooLarge(f"decompressed body exceeds cap {max_bytes}", url=url)
         return out
     if encoding == "br":
+        return _decode_brotli_capped(body, max_bytes, url)
+    raise FetchFailed(f"unsupported content-encoding {encoding!r}", url=url)
+
+
+def _brotli_decompressor(url: str) -> Any:
+    """A Decompressor from `brotli` or `brotlicffi` (py7zr pulls in one of them; neither is a core dep)."""
+    try:
+        import brotli
+    except ImportError:
         try:
-            import brotli
+            import brotlicffi as brotli
         except ImportError as e:
             raise FetchFailed("brotli-encoded response but brotli is not installed", url=url) from e
-        dec = brotli.Decompressor()
-        out = dec.process(body)
+    return brotli.Decompressor()
+
+
+def _decode_brotli_capped(body: bytes, max_bytes: int, url: str) -> bytes:
+    """Bounded brotli decode: `process(..., output_buffer_limit=)` (brotli and brotlicffi >= 1.2) never
+    grows its output past the limit, so a few-byte bomb stops at about `max_bytes`. Older releases
+    have no bounded API and are refused rather than decoded unbounded."""
+    dec = _brotli_decompressor(url)
+    if not hasattr(dec, "can_accept_more_data"):
+        raise FetchFailed("brotli is too old for bounded decoding (need >= 1.2)", url=url)
+    out = bytearray()
+    data = body
+    while True:
+        try:
+            piece = dec.process(data, output_buffer_limit=max_bytes - len(out) + 1)
+        except TypeError as e:
+            raise FetchFailed("brotli is too old for bounded decoding (need >= 1.2)", url=url) from e
+        except Exception as e:  # brotli.error / brotlicffi.error
+            raise FetchFailed(f"invalid brotli body: {e}", url=url) from e
+        out.extend(piece)
         if len(out) > max_bytes:
             raise ResponseTooLarge(f"decompressed body exceeds cap {max_bytes}", url=url)
-        return bytes(out)
-    raise FetchFailed(f"unsupported content-encoding {encoding!r}", url=url)
+        data = b""
+        if dec.is_finished() or (dec.can_accept_more_data() and not piece):
+            return bytes(out)
