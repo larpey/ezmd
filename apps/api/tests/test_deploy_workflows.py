@@ -174,3 +174,56 @@ def test_release_version_checks_packages(tmp_path: Path) -> None:
     assert mod.check_versions(tmp_path, "1.2.0rc1", "1.2.0-rc1", True) == []  # npm not checked for rc
     problems = mod.check_versions(tmp_path, "1.2.0", "1.2.0", False)
     assert len(problems) == 4 and any("sdk" in p for p in problems)
+
+
+CHANGELOG = """# Changelog
+
+## [0.1.0-rc2] - 2026-10-08
+
+rc2 notes.
+
+## [0.1.0-rc1] - 2026-10-08
+
+rc1 notes.
+"""
+
+
+def _changelog_section() -> ModuleType:
+    spec = importlib.util.spec_from_file_location("changelog_section", REPO / "tools" / "changelog_section.py")
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_changelog_section_matches_the_heading_exactly() -> None:
+    section = _changelog_section().section
+    assert section(CHANGELOG, "0.1.0-rc1").strip() == "rc1 notes."
+    assert section(CHANGELOG, "0.1.0-rc2").strip() == "rc2 notes."
+    with pytest.raises(LookupError):
+        section(CHANGELOG, "0.1.0")  # a substring of 0.1.0-rc2; must not pick up rc2's notes
+    with pytest.raises(LookupError):
+        section(CHANGELOG, "0.1")
+
+
+def test_changelog_section_falls_back_to_unreleased() -> None:
+    section = _changelog_section().section
+    text = CHANGELOG.replace("# Changelog\n", "# Changelog\n\n## [Unreleased]\n\nupcoming.\n")
+    assert section(text, "0.1.0").strip() == "upcoming."
+    assert section(text, "0.1.0-rc1").strip() == "rc1 notes."  # an exact heading still wins
+    assert section("## [0.1.0]\n\nfinal.\n", "0.1.0").strip() == "final."  # heading without a date
+
+
+def test_changelog_section_cli_fails_loudly(tmp_path: Path) -> None:
+    mod = _changelog_section()
+    path = tmp_path / "CHANGELOG.md"
+    path.write_text(CHANGELOG, encoding="utf-8")
+    assert mod.main(["0.1.0", str(path)]) == 1
+    assert mod.main(["0.1.0-rc1", str(path)]) == 0
+
+
+def test_release_notes_come_from_the_changelog_script(release: dict[str, Any]) -> None:
+    steps = _steps(release["jobs"]["github-release"])
+    step = next(s for s in steps if s.get("name") == "changelog section")
+    assert "tools/changelog_section.py" in step["run"]
+    assert "awk" not in step["run"]

@@ -218,13 +218,8 @@ jobs:
       - name: checksums
         run: (cd dist && sha256sum -- * > SHA256SUMS)
       - name: changelog section
-        run: |
-          ver="${GITHUB_REF_NAME#v}"
-          awk -v v="$ver" '
-            /^## / { if (found) exit; if (index($0, v)) { found=1; next } }
-            found { print }
-          ' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
-          [ -s "$RUNNER_TEMP/notes.md" ] || awk '/^## /{n++} n==1' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+        # Exact `## [<version>]` heading, else `## [Unreleased]`; fails the job rather than publish other notes.
+        run: python3 tools/changelog_section.py "${GITHUB_REF_NAME#v}" CHANGELOG.md > "$RUNNER_TEMP/notes.md"
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           body_path: ${{ runner.temp }}/notes.md
