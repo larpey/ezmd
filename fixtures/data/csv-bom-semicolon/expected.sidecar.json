@@ -570,7 +570,7 @@
     "content_hash": "sha256:ba6fab0a24d271130790153078edf431b26bff2a047045f5348283becc37b137",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.csv",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "bom": true,
       "columns": 4,
@@ -581,7 +581,7 @@
       "header_row": true,
       "rows": 4
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -626,13 +626,11 @@
       "transcript_segments": 0,
       "words": 26
     },
-    "duration_seconds": 0.0,
     "engine": "data.csv",
     "engines_tried": [
       "data.csv"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 145
   },
   "profile": "full",

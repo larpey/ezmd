@@ -17541,7 +17541,7 @@
     "content_hash": "sha256:6be6121d191d7bdbe9496376278a23fccd205f2b3a490319bb28bbe72b419367",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.parquet",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "exports": {
       "tables": [
         "tables/table-03.csv"
@@ -17554,9 +17554,9 @@
       "row_groups": 3,
       "rows": 150
     },
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
-    "ezmd_version": "0.1.0rc1",
     "profile": "full",
     "provenance": "block",
     "schema_version": 1,
@@ -17601,13 +17601,11 @@
       "transcript_segments": 0,
       "words": 1184
     },
-    "duration_seconds": 0.07899999991059303,
     "engine": "data.parquet",
     "engines_tried": [
       "data.parquet"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 7742
   },
   "profile": "full",
@@ -17792,7 +17790,7 @@
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 5679,
+  "tokens_total": 5682,
   "warnings": [
     {
       "block_id": null,

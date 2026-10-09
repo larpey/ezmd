@@ -514,7 +514,7 @@
     "content_hash": "sha256:768fa03b859ee8e1ca8f1b077eb2c6edfa756ee1ef43add839c51d2f68279ac3",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "pdf_heading_source": "font_size",
       "pdf_page_modes": "hybrid=2,scanned=1",
@@ -522,7 +522,7 @@
       "pdf_pages_without_text": "2",
       "pdf_tagged": false
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "pages": 3,
@@ -572,13 +572,11 @@
       "transcript_segments": 0,
       "words": 76
     },
-    "duration_seconds": 0.01600000006146729,
     "engine": "documents.pdfium_text",
     "engines_tried": [
       "documents.pdfium_text"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 2890
   },
   "profile": "full",

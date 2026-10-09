@@ -1054,12 +1054,12 @@
     "content_hash": "sha256:178db156c1b5efd6ff8e77c35817bdad1c4fc8288509727d9a5577b2288100ba",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.docx",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "created_at": "2026-01-01",
     "extra": {
       "revision": "3"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "modified_at": "2026-01-02",
@@ -1108,13 +1108,11 @@
       "transcript_segments": 0,
       "words": 110
     },
-    "duration_seconds": 0.0,
     "engine": "documents.docx",
     "engines_tried": [
       "documents.docx"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 5602
   },
   "profile": "full",

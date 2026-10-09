@@ -2658,7 +2658,7 @@
     "content_hash": "sha256:79f61390ceb0c3c8ee15bde8b71d7b3620a2de2845b609154ce53eadbe30f462",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "specialized.edgar",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "edgar.accession": "0001376986-26-000026",
       "edgar.cik": "1376986",
@@ -2668,7 +2668,7 @@
       "edgar.url": "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm",
       "encoding": "utf-8"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -2726,13 +2726,11 @@
       "transcript_segments": 0,
       "words": 896
     },
-    "duration_seconds": 0.01600000006146729,
     "engine": "specialized.edgar",
     "engines_tried": [
       "specialized.edgar"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 29276
   },
   "profile": "full",

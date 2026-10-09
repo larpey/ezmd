@@ -479,13 +479,13 @@
     "content_hash": "sha256:0831d13d66044df8ada191d905f85fe48ce721e998a186bbc0f28ccd9fa4de9c",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "encoding": "utf-8",
       "outbound_pdfs": "https://boats.example.test/downloads/refit-checklist.pdf",
       "readability_ratio": 1.0
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "language": "en",
@@ -550,13 +550,11 @@
       "transcript_segments": 0,
       "words": 45
     },
-    "duration_seconds": 0.2649999998975545,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 1067
   },
   "profile": "full",

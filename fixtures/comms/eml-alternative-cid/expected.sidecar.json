@@ -819,7 +819,7 @@
     "content_hash": "sha256:2cd6639c791337a9a0e13e2c23f60a458cb7ca0524a18d77fdf8a5461522fb89",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "comms.eml",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "created_at": "2024-10-02T12:00:00Z",
     "extra": {
       "attachments": 1,
@@ -828,7 +828,7 @@
       "encoding": "utf-8",
       "message_id": "<alt-1@example.org>"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -873,13 +873,11 @@
       "transcript_segments": 0,
       "words": 45
     },
-    "duration_seconds": 0.34399999980814755,
     "engine": "comms.eml",
     "engines_tried": [
       "comms.eml"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 1117
   },
   "profile": "full",

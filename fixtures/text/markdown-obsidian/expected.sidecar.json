@@ -952,12 +952,12 @@
     "content_hash": "sha256:09ee2c34968ef56a4845196f15f0a00fc1eb8d257570162dd7d1ab579e10e2c4",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "text.markdown_passthrough",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "encoding": "utf-8",
       "front_matter": "title: Tide Station Notes\ntags: [harbour, tides]\naliases:\n  - tide notes\ncreated: 2024-05-02"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -1002,13 +1002,11 @@
       "transcript_segments": 0,
       "words": 100
     },
-    "duration_seconds": 0.0,
     "engine": "text.markdown_passthrough",
     "engines_tried": [
       "text.markdown_passthrough"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 932
   },
   "profile": "full",

@@ -2575,13 +2575,13 @@
     "content_hash": "sha256:172275ec36aa401a209e31aa16bbbff9e736917e3e48d15917c42ee7540719ca",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "comms.mbox",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "merged_splits": 0,
       "messages": 5,
       "threads": 2
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -2626,13 +2626,11 @@
       "transcript_segments": 0,
       "words": 174
     },
-    "duration_seconds": 0.015999999828636646,
     "engine": "comms.mbox",
     "engines_tried": [
       "comms.mbox"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 1879
   },
   "profile": "full",

@@ -1565,8 +1565,8 @@
     "content_hash": "sha256:fbf2926aeb7315dda93455cf56d443eb9767833b50ff3fff898aff31b66864e2",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.xlsx",
-    "converter_version": "0.1.0rc1",
-    "ezmd_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -1621,13 +1621,11 @@
       "transcript_segments": 0,
       "words": 70
     },
-    "duration_seconds": 0.03100000019185245,
     "engine": "documents.xlsx",
     "engines_tried": [
       "documents.xlsx"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 7769
   },
   "profile": "full",

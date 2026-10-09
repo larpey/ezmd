@@ -543,7 +543,7 @@
     "content_hash": "sha256:dab888c987f3d8a0607633ad8bca5de813dd79d5dea9fc13cc48eadaee4bd343",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "archives.archive",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "archive_bytes_extracted": 0,
       "archive_compressed_bytes": 2288,
@@ -556,7 +556,7 @@
       "archive_other": 0,
       "archive_rejected": 0
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -603,13 +603,11 @@
       "transcript_segments": 0,
       "words": 38
     },
-    "duration_seconds": 0.0,
     "engine": "archives.archive",
     "engines_tried": [
       "archives.archive"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 2288
   },
   "profile": "full",

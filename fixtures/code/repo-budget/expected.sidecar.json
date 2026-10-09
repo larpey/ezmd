@@ -940,7 +940,7 @@
     "content_hash": "sha256:3e48ef4c6e4ff3b166b8ee4040338ec07282bdb2b6f17d1192840b49b8a5d9c7",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.repo_pack",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "description": "Tiny inventory service (ezmd fixture).",
     "extra": {
       "budget_actions": "dropped 3 lockfile, generated, or minified file(s) | dropped 2 test file(s) | compressed 1 file(s) over 300 lines to signatures | truncated 2 file(s) to their first 40 lines | dropped 2 file(s) from the deepest directories",
@@ -958,7 +958,7 @@
       "repo": "stockroom",
       "tokens": 831
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -1006,13 +1006,11 @@
       "transcript_segments": 0,
       "words": 642
     },
-    "duration_seconds": 0.0940000000409782,
     "engine": "code.repo_pack",
     "engines_tried": [
       "code.repo_pack"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 14137
   },
   "profile": "full",

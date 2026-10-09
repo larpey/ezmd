@@ -206,11 +206,11 @@
     "content_hash": "sha256:ea238a104b4d96d1863f622f943a98012af7e287a2bcbbe3a4127abac7be1d44",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.rtf",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "encoding": "cp1252"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -257,13 +257,11 @@
       "transcript_segments": 0,
       "words": 43
     },
-    "duration_seconds": 0.0470000000204891,
     "engine": "documents.rtf",
     "engines_tried": [
       "documents.rtf"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 393
   },
   "profile": "full",

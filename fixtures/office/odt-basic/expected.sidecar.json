@@ -809,11 +809,11 @@
     "content_hash": "sha256:f2bc90424e57df3fa447f779d31bd82e234d1dd8f9c90c16d80e2b00d18cc8b2",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.odf",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "odf_kind": "text"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -867,13 +867,11 @@
       "transcript_segments": 0,
       "words": 66
     },
-    "duration_seconds": 0.01500000013038516,
     "engine": "documents.odf",
     "engines_tried": [
       "documents.odf"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 2554
   },
   "profile": "full",

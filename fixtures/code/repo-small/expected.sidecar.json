@@ -1428,7 +1428,7 @@
     "content_hash": "sha256:6bc1c7bd7acbbac05995f0636ff960079cb91d687ec8c7d95c837513f2057f28",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.repo_pack",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "description": "Tiny inventory service (ezmd fixture).",
     "extra": {
       "bytes": 25306,
@@ -1445,7 +1445,7 @@
       "repo": "stockroom",
       "tokens": 7199
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -1494,13 +1494,11 @@
       "transcript_segments": 0,
       "words": 2411
     },
-    "duration_seconds": 0.10900000017136335,
     "engine": "code.repo_pack",
     "engines_tried": [
       "code.repo_pack"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 14416
   },
   "profile": "full",

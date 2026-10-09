@@ -905,12 +905,12 @@
     "content_hash": "sha256:105cc16401bd1a1639482091cea47b6c978bf3bec7c9996db46b8c5200335793",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.ipynb",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "kernel_language": "python",
       "nbformat": 4
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -955,13 +955,11 @@
       "transcript_segments": 0,
       "words": 94
     },
-    "duration_seconds": 0.0,
     "engine": "documents.ipynb",
     "engines_tried": [
       "documents.ipynb"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 3352
   },
   "profile": "full",

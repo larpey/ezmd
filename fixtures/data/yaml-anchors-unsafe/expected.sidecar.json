@@ -3972,14 +3972,14 @@
     "content_hash": "sha256:4ddc50e9c34d7e87389a4fdbc72f5765b39d96b4555cb42a0a6cc1abe43fc347",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.yaml",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "anchors_expanded": true,
       "documents": 1,
       "encoding": "utf-8",
       "format": "YAML"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -4026,13 +4026,11 @@
       "transcript_segments": 0,
       "words": 225
     },
-    "duration_seconds": 0.014999999897554517,
     "engine": "data.yaml",
     "engines_tried": [
       "data.yaml"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 483
   },
   "profile": "full",

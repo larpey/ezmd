@@ -708,7 +708,7 @@
     "content_hash": "sha256:880fc324dac02a239b3400468257117c17f5d03f7c97ff8e871c66a013c77fb5",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.repo_pack",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "description": "Tiny inventory service (ezmd fixture).",
     "extra": {
       "bytes": 11442,
@@ -722,7 +722,7 @@
       "repo": "acme/stockroom",
       "tokens": 3273
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -767,13 +767,11 @@
       "transcript_segments": 0,
       "words": 1896
     },
-    "duration_seconds": 0.10899999993853271,
     "engine": "code.repo_pack",
     "engines_tried": [
       "code.repo_pack"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 2060
   },
   "profile": "full",

@@ -800,7 +800,7 @@
     "content_hash": "sha256:f0bc753c61002e6c5682be30d3eff999a1c9016dcd3dcd4065f737b756643bb9",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.repo_pack",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "bytes": 1139,
       "excluded.gitignored": 2,
@@ -811,7 +811,7 @@
       "repo": "tidepool",
       "tokens": 317
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -859,13 +859,11 @@
       "transcript_segments": 0,
       "words": 200
     },
-    "duration_seconds": 0.0940000000409782,
     "engine": "code.repo_pack",
     "engines_tried": [
       "code.repo_pack"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 2860
   },
   "profile": "full",

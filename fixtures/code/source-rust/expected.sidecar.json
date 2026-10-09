@@ -119,7 +119,7 @@
     "content_hash": "sha256:b6f4edfc210a5c3421d64564ef40d5a7ddf984daea429fa72402dba49f94dd05",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "code.source_file",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "bytes": 1134,
       "encoding": "utf-8",
@@ -127,7 +127,7 @@
       "lines": 45,
       "tokens": 332
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -172,13 +172,11 @@
       "transcript_segments": 0,
       "words": 126
     },
-    "duration_seconds": 0.10900000017136335,
     "engine": "code.source_file",
     "engines_tried": [
       "code.source_file"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 1134
   },
   "profile": "full",

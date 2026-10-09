@@ -113,11 +113,11 @@
     "content_hash": "sha256:34ba20506ef79e9f611b8e26e26a0a68014338cfe1d2f20a8687f66999f937ef",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "encoding": "utf-8"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "language": "en",
@@ -166,13 +166,11 @@
       "transcript_segments": 0,
       "words": 25
     },
-    "duration_seconds": 0.2660000000614673,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 69808
   },
   "profile": "full",

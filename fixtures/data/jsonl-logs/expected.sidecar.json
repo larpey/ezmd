@@ -2199,13 +2199,13 @@
     "content_hash": "sha256:b214a46a3aef6f784ed237149e786bfae21da6da26649b02616488555e1b94c5",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.json",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "extra": {
       "depth": 2,
       "encoding": "utf-8",
       "format": "JSON Lines"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -2252,13 +2252,11 @@
       "transcript_segments": 0,
       "words": 136
     },
-    "duration_seconds": 0.015999999828636646,
     "engine": "data.json",
     "engines_tried": [
       "data.json"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 1100
   },
   "profile": "full",

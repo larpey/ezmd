@@ -17562,7 +17562,7 @@
     "content_hash": "sha256:ccfaee7c58f7086427a17d65e19013c22eab8d950098625ba780724900c30ae5",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.sqlite",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "exports": {
       "tables": [
         "tables/table-07.csv"
@@ -17573,7 +17573,7 @@
       "tables": 2,
       "views": 1
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -17620,13 +17620,11 @@
       "transcript_segments": 0,
       "words": 1079
     },
-    "duration_seconds": 0.0,
     "engine": "data.sqlite",
     "engines_tried": [
       "data.sqlite"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 16384
   },
   "profile": "full",

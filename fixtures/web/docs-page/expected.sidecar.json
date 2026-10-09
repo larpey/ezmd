@@ -1113,13 +1113,13 @@
     "content_hash": "sha256:5bd451958f8b75432c841c552b7d1b21058ac4f969fed6d00eb715d6cdd37b94",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "web.trafilatura",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "description": "Reference for the quayside.toml configuration file.",
     "extra": {
       "encoding": "utf-8",
       "readability_ratio": 0.99
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "language": "en",
@@ -1165,13 +1165,11 @@
       "transcript_segments": 0,
       "words": 110
     },
-    "duration_seconds": 0.1559999999590218,
     "engine": "web.trafilatura",
     "engines_tried": [
       "web.trafilatura"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 2280
   },
   "profile": "full",

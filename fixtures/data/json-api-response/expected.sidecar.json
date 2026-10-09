@@ -5761,7 +5761,7 @@
     "content_hash": "sha256:64913b6608d7b1590c3c8ac496fc2783f0325ddcb6f1fdffc1220979f1a8b270",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "data.json",
-    "converter_version": "0.1.0rc1",
+    "converter_version": "<normalized>",
     "exports": {
       "tables": [
         "tables/table-02.csv"
@@ -5772,7 +5772,7 @@
       "encoding": "utf-8",
       "format": "JSON"
     },
-    "ezmd_version": "0.1.0rc1",
+    "ezmd_version": "<normalized>",
     "fetched_at": "2026-01-01T00:00:00Z",
     "injection_risk": "none",
     "profile": "full",
@@ -5817,13 +5817,11 @@
       "transcript_segments": 0,
       "words": 311
     },
-    "duration_seconds": 0.0,
     "engine": "data.json",
     "engines_tried": [
       "data.json"
     ],
     "estimated_tokens": 0,
-    "fetch_seconds": null,
     "input_bytes": 3873
   },
   "profile": "full",
