@@ -18,6 +18,11 @@ purpose, and they tell you their license the first time they load.
   all platforms) and `pnpm licenses list --json --prod | node tools/license_check.mjs` for the
   JavaScript tree. Per-package decisions live in `tools/license_overrides.toml`, each with a URL to the
   license file it was verified against.
+- One named exception: on Linux, torch (pulled only by the `docs` extra) depends on NVIDIA's CUDA
+  runtime wheels, which are under NVIDIA's proprietary license. They are GPU libraries that torch loads at
+  runtime, installed by your resolver from PyPI; ezmd does not bundle them, and the published worker image
+  does not include `docs`. They are listed by name in the `[platform_runtime]` section of
+  `tools/license_allowlist.toml`; see `docs/decisions/audit-fix-packaging.md`.
 
 ## Allowlist
 
@@ -46,7 +51,7 @@ Optional extras of `ezmd-converters` (from source: `uv sync --all-packages --ext
 
 | Extra | What it adds | License |
 |---|---|---|
-| `docs` | Docling (`docling-slim`) for PDF layout, with CPU torch and OpenCV | MIT (Docling), BSD-3-Clause (torch), Apache-2.0 (OpenCV); about 1.2 GB |
+| `docs` | Docling (`docling-slim`) for PDF layout, with torch and OpenCV | MIT (Docling), BSD-3-Clause (torch), Apache-2.0 (OpenCV); about 1.2 GB. On Linux, PyPI's torch also pulls the NVIDIA CUDA runtime wheels (NVIDIA proprietary, several GB; see Policy) |
 | `data` | pyarrow, for Parquet | Apache-2.0 |
 | `7z` | py7zr, for 7z archives | LGPL-2.1-or-later (dynamically imported, never bundled in images) |
 

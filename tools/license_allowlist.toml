@@ -22,6 +22,21 @@ packages = ["pymupdf", "pymupdf4llm", "extract-msg"]
 # olefile (BSD-2-Clause) left this list in P1-T04: it is the spec's default MSG reader (part2 9b step 2);
 # it was here only because extract-msg depends on it.
 
+# Explicit exception class: proprietary GPU runtime libraries (docs/decisions/audit-fix-packaging.md).
+# torch, pulled only by the optional `docs` extra, depends on NVIDIA's CUDA wheels on Linux (x86_64 and
+# aarch64; PyPI metadata cannot point pip at the CPU-only torch index). They are shared libraries torch loads
+# at runtime, installed by the user's resolver from PyPI under NVIDIA's own license; ezmd does not bundle or
+# redistribute them (the published worker image does not install `docs`). Listed by exact name: a new NVIDIA
+# package fails the gate until someone reviews it and adds it here. tests/test_license_check.py keeps every
+# entry out of the no-extras tree. Changing this list is a policy decision.
+[platform_runtime]
+reason = "NVIDIA CUDA runtime wheel (LicenseRef-NVIDIA-Proprietary or no license metadata) pulled by torch on Linux via the optional docs extra; dynamically loaded GPU runtime, installed from PyPI by the user, not distributed by ezmd"
+packages = [
+  "cuda-toolkit", "nvidia-cublas", "nvidia-cuda-cupti", "nvidia-cuda-nvrtc", "nvidia-cuda-runtime",
+  "nvidia-cudnn-cu13", "nvidia-cufft", "nvidia-cufile", "nvidia-curand", "nvidia-cusolver", "nvidia-cusparse",
+  "nvidia-cusparselt-cu13", "nvidia-nccl-cu13", "nvidia-nvjitlink", "nvidia-nvshmem-cu13",
+]
+
 # Known mislabeled packages. Kept empty on purpose: every override lives in
 # tools/license_overrides.toml with a URL to the license file it was verified against.
 [overrides]

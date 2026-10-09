@@ -5,18 +5,23 @@ Usage:
     uv run python tools/license_check.py --offline         # never query PyPI
     uv run python tools/license_check.py --pnpm-json f.json   # also check `pnpm licenses list --prod --json`
 
-The Python package set comes from `uv export --no-dev --all-packages` (every platform marker, so
-packages that only install on another OS are still checked). License metadata comes from the
+The Python package set comes from `uv export --no-dev --all-packages --all-extras --no-extra nonfree`
+(every platform marker, so packages that only install on another OS are still checked, and every
+optional extra except `nonfree`, which is the one place copyleft engines may live). License metadata comes from the
 installed distribution when available, else from the PyPI JSON API for the exact locked version.
 Each license is normalized to SPDX (License-Expression, then classifiers, then the License field),
 compared against tools/license_allowlist.toml, with per-package decisions from
-tools/license_overrides.toml. Exit 1 lists every offender with name, version, and evidence.
+tools/license_overrides.toml. Packages in the allowlist's [platform_runtime] exception class
+(proprietary GPU runtime libraries that only an optional extra pulls in, on some platforms) pass with
+their own verdict source; a test keeps them out of the no-extras tree. Exit 1 lists every offender with
+name, version, and evidence.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -129,6 +134,8 @@ class Policy:
     deny: frozenset[str]
     nonfree: frozenset[str]
     overrides: dict[str, dict[str, Any]] = field(default_factory=dict)
+    platform_runtime: frozenset[str] = frozenset()
+    platform_runtime_reason: str = ""
 
 
 def normalize_name(name: str) -> str:
@@ -146,21 +153,29 @@ def load_policy(allowlist: Path, overrides_path: Path) -> Policy:
             if not isinstance(entry, dict) or not entry.get("license") or not entry.get("url"):
                 raise SystemExit(f"{overrides_path}: override for {name!r} needs both 'license' and 'url'")
             overrides[normalize_name(name)] = {**entry, "source": overrides_path.name}
+    runtime = data.get("platform_runtime", {})
+    runtime_packages = frozenset(normalize_name(p) for p in runtime.get("packages", []))
+    if runtime_packages and not str(runtime.get("reason", "")).strip():
+        raise SystemExit(f"{allowlist}: [platform_runtime] needs a 'reason'")
     return Policy(
         allow=frozenset(data.get("allow", {}).get("licenses", [])),
         deny=frozenset(data.get("deny", {}).get("licenses", [])),
         nonfree=frozenset(normalize_name(p) for p in data.get("nonfree", {}).get("packages", [])),
         overrides=overrides,
+        platform_runtime=runtime_packages,
+        platform_runtime_reason=str(runtime.get("reason", "")),
     )
 
 
-def exported_packages() -> list[Package]:
+def exported_packages(*, extras: bool = True) -> list[Package]:
+    """The locked non-dev tree; with `extras`, every optional extra except `nonfree` is included."""
     cmd = [
-        "uv",
+        os.environ.get("UV", "uv"),
         "export",
         "--frozen",
         "--no-dev",
         "--all-packages",
+        *(["--all-extras", "--no-extra", "nonfree"] if extras else []),
         "--format",
         "requirements-txt",
         "--no-hashes",
@@ -308,6 +323,8 @@ def resolve_spdx(md: dict[str, Any], known: frozenset[str]) -> tuple[str | None,
 def check_package(pkg: Package, policy: Policy, offline: bool) -> Verdict:
     if pkg.name in policy.nonfree:
         return Verdict(pkg, None, "-", "nonfree package", False, "nonfree package in the default tree")
+    if pkg.name in policy.platform_runtime:
+        return Verdict(pkg, None, "platform-runtime exception", policy.platform_runtime_reason.strip(), True)
     ov = policy.overrides.get(pkg.name)
     if ov and (not ov.get("version") or ov["version"] == pkg.version):
         ov_spdx = str(ov["license"])

@@ -32,3 +32,43 @@ license = "BSD-2-Clause"
 version = "0.47"
 url = "https://github.com/decalage2/olefile/blob/v0.47/LICENSE.txt"
 note = "Metadata only has the ambiguous 'BSD License' classifier; LICENSE.txt has the two redistribution clauses and no non-endorsement clause. Default MSG reader for comms.msg (P1-T04)."
+
+# The entries below surfaced when the gate started covering every extra except nonfree (audit-fix-packaging).
+# torch (docs extra) pulls jinja2, sympy, mpmath; docling pulls torchvision and transformers; py7zr (7z extra)
+# pulls pycryptodomex.
+
+[packages.jinja2]
+license = "BSD-3-Clause"
+version = "3.1.6"
+url = "https://github.com/pallets/jinja/blob/3.1.6/LICENSE.txt"
+note = "Metadata only has the ambiguous 'BSD License' classifier; LICENSE.txt is the 3-clause text (non-endorsement clause present). Dependency of torch (docs extra)."
+
+[packages.mpmath]
+license = "BSD-3-Clause"
+version = "1.3.0"
+url = "https://github.com/mpmath/mpmath/blob/1.3.0/LICENSE"
+note = "Metadata says 'BSD'; LICENSE is the 3-clause text (clause c, non-endorsement). Dependency of sympy (docs extra)."
+
+[packages.sympy]
+license = "BSD-3-Clause AND MIT"
+version = "1.14.0"
+url = "https://github.com/sympy/sympy/blob/sympy-1.14.0/LICENSE"
+note = "Metadata says 'BSD'. LICENSE: SymPy, the Diofant patches, the multipledispatch and PyDy submodules are 3-clause BSD; sympy/parsing/latex (from latex2sympy) is MIT. Dependency of torch (docs extra)."
+
+[packages.torchvision]
+license = "BSD-3-Clause"
+version = "0.29.1"
+url = "https://github.com/pytorch/vision/blob/v0.29.1/LICENSE"
+note = "Metadata says 'BSD' with no classifier; LICENSE is the 3-clause text. Dependency of docling (docs extra)."
+
+[packages.transformers]
+license = "Apache-2.0"
+version = "5.19.0"
+url = "https://github.com/huggingface/transformers/blob/v5.19.0/LICENSE"
+note = "Metadata says 'Apache 2.0 License' (not mapped); LICENSE is the Apache License 2.0 text. Dependency of docling (docs extra). Model weights are a separate check (model_licenses)."
+
+[packages.pycryptodomex]
+license = "BSD-2-Clause AND Unlicense"
+version = "3.24.0"
+url = "https://github.com/Legrandin/pycryptodome/blob/v3.24.0/LICENSE.rst"
+note = "Metadata says 'BSD, Public Domain'. LICENSE.rst: code from PyCrypto is public domain under the verbatim Unlicense text (it links unlicense.org); direct contributions are BSD 2-clause (no non-endorsement clause). Dependency of py7zr (7z extra)."

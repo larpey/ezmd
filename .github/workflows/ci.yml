@@ -41,6 +41,11 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install libmagic
       # Windows: libmagic comes from python-magic-bin (wheel), pandoc is optional for Phase 0.
+      # UV_FROZEN makes every later uv call trust uv.lock as is; this fails when a pyproject change (e.g. a
+      # version bump) was committed without `uv lock`. uv ignores UV_FROZEN for --check (it warns).
+      - name: uv.lock is up to date
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
+        run: uv lock --check
       - run: uv sync --all-packages
       - name: ruff
         run: uv run ruff check . && uv run ruff format --check .
