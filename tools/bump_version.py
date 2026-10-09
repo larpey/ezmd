@@ -1,10 +1,13 @@
 """Set one release version everywhere it is recorded (the counterpart of tools/release_version.py).
 
     python tools/bump_version.py 0.1.0rc1     # PEP 440: Python packages, ezmd.__version__, server.json
-    python tools/bump_version.py 0.1.0 --npm  # also the npm SDK (final releases only; npm takes the semver)
+    python tools/bump_version.py 0.1.0 --npm  # also the npm SDK: package.json and src/version.ts (final
+                                              # releases only; npm takes the semver)
 
-The published Python packages pin each other exactly (`ezmd` -> `ezmd-converters==V`,
-`ezmd-mcp` -> `ezmd==V`) so an install never mixes releases. Run `uv lock` afterwards.
+The published Python packages pin each other exactly (`ezmd` -> `ezmd-converters==V`, the `ezmd[mcp]` and
+`ezmd[all]` extras -> `ezmd-mcp==V`, `ezmd-mcp` -> `ezmd==V`) so an install never mixes releases. The
+ezmd <-> ezmd-mcp pin is circular on purpose; pip and uv resolve an exact pin both ways. Run `uv lock`
+afterwards.
 """
 
 from __future__ import annotations
@@ -18,6 +21,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PEP440 = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(rc[1-9][0-9]*)?$")
 PYPROJECTS = ("packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node")
 PINS = {"packages/core": "ezmd-converters", "packages/mcp": "ezmd"}
+# Inline pins inside [project.optional-dependencies] lists: package dir -> (dependency, expected count).
+EXTRA_PINS = {"packages/core": ("ezmd-mcp", 2)}
 
 
 def _sub_once(text: str, pattern: str, repl: str, where: str) -> str:
@@ -39,6 +44,11 @@ def bump(root: Path, version: str, *, npm: bool) -> list[str]:
         if pkg in PINS:
             dep = re.escape(PINS[pkg])
             text = _sub_once(text, rf'^    "{dep}(==[^"]*)?",$', f'    "{PINS[pkg]}=={version}",', str(path))
+        if pkg in EXTRA_PINS:
+            name, expected = EXTRA_PINS[pkg]
+            text, n = re.subn(rf'"{re.escape(name)}(==[^"]*)?"', f'"{name}=={version}"', text)
+            if n != expected:
+                raise SystemExit(f"{path}: expected {expected} {name} pins in the extras, found {n}")
         path.write_text(text, encoding="utf-8", newline="\n")
         changed.append(str(path.relative_to(root)))
     init = root / "packages/core/src/ezmd/__init__.py"
@@ -62,6 +72,15 @@ def bump(root: Path, version: str, *, npm: bool) -> list[str]:
         )
         pkg_json.write_text(text, encoding="utf-8", newline="\n")
         changed.append(str(pkg_json.relative_to(root)))
+        sdk = root / "packages/sdk-ts/src/version.ts"
+        text = _sub_once(
+            sdk.read_text(encoding="utf-8"),
+            r'^export const SDK_VERSION = "[^"]*";$',
+            f'export const SDK_VERSION = "{version}";',
+            str(sdk),
+        )
+        sdk.write_text(text, encoding="utf-8", newline="\n")
+        changed.append(str(sdk.relative_to(root)))
     return changed
 
 

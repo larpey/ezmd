@@ -19,6 +19,7 @@ FILES = [
     "packages/core/src/ezmd/__init__.py",
     "packages/mcp/server.json",
     "packages/sdk-ts/package.json",
+    "packages/sdk-ts/src/version.ts",
 ]
 
 
@@ -46,6 +47,8 @@ def test_rc_bump_satisfies_release_check(tree: Path) -> None:
     mcp = tomllib.loads((tree / "packages/mcp/pyproject.toml").read_text(encoding="utf-8"))["project"]
     assert "ezmd-converters==0.9.0rc2" in core["dependencies"]
     assert "ezmd==0.9.0rc2" in mcp["dependencies"]
+    assert core["optional-dependencies"]["mcp"] == ["ezmd-mcp==0.9.0rc2"]
+    assert "ezmd-mcp==0.9.0rc2" in core["optional-dependencies"]["all"]
     server = json.loads((tree / "packages/mcp/server.json").read_text(encoding="utf-8"))
     assert server["version"] == "0.9.0rc2" and all(p["version"] == "0.9.0rc2" for p in server["packages"])
     assert '__version__ = "0.9.0rc2"' in (tree / "packages/core/src/ezmd/__init__.py").read_text(encoding="utf-8")
@@ -53,8 +56,21 @@ def test_rc_bump_satisfies_release_check(tree: Path) -> None:
 
 def test_final_bump_with_npm(tree: Path) -> None:
     bump, check = _load("bump_version"), _load("release_version")
+    sdk_before = (tree / "packages/sdk-ts/src/version.ts").read_text(encoding="utf-8")
     bump.bump(tree, "0.9.0", npm=True)
     assert check.check_versions(tree, "0.9.0", "0.9.0", False) == []
+    sdk = (tree / "packages/sdk-ts/src/version.ts").read_text(encoding="utf-8")
+    assert sdk == sdk_before.replace(sdk_before.split('"')[1], "0.9.0")
+    assert 'export const SDK_VERSION = "0.9.0";' in sdk
+
+
+def test_rc_bump_leaves_npm_sdk_alone(tree: Path) -> None:
+    before = {
+        r: (tree / r).read_text(encoding="utf-8")
+        for r in ("packages/sdk-ts/package.json", "packages/sdk-ts/src/version.ts")
+    }
+    _load("bump_version").bump(tree, "0.9.0rc2", npm=False)
+    assert {r: (tree / r).read_text(encoding="utf-8") for r in before} == before
 
 
 @pytest.mark.parametrize("bad", ["0.9", "v0.9.0", "0.9.0-rc1", "0.9.0rc0"])
@@ -78,3 +94,4 @@ def test_repo_versions_are_consistent() -> None:
     (version,) = versions
     core = tomllib.loads((ROOT / "packages/core/pyproject.toml").read_text(encoding="utf-8"))["project"]
     assert f"ezmd-converters=={version}" in core["dependencies"]
+    assert core["optional-dependencies"]["mcp"] == [f"ezmd-mcp=={version}"]

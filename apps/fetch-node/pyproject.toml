@@ -4,7 +4,7 @@ version = "0.1.0rc2"
 description = "Residential fetch worker for ezmd (Phase 3)."
 requires-python = ">=3.12"
 license = "Apache-2.0"
-dependencies = ["httpx>=0.28"]
+dependencies = ["httpx>=0.28,<1"]
 
 [build-system]
 requires = ["hatchling>=1.26"]

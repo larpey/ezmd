@@ -5,11 +5,12 @@ description = "MCP server for ezmd: convert files, URLs and text to LLM-ready Ma
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "ezmd contributors" }]
 dependencies = [
     "ezmd==0.1.0rc2",
     "mcp>=2.2,<3",
-    "httpx>=0.28",
+    "httpx>=0.28,<1",
     "starlette>=0.48",
     "uvicorn>=0.31",
 ]
