@@ -19,7 +19,7 @@ Overall: 32 / 85 tasks done
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
 | G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
-| G1 | blocked on owner | 2026-10-09 | Done: 19/19 P1 tasks; 94 fixtures pass; CI + integration green; PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc2 published and verified from a clean install (Windows pipe fix included); `uvx ezmd-mcp==0.1.0rc2` passes an MCP stdio handshake, lists 5 tools, converts a DOCX, refuses paths outside --allowed-dirs; docs site deploys to https://larpey.github.io/ezmd/. Owner steps left: create the npm `ezmd` org (first `@ezmd/sdk` publish may be manual), open Claude Desktop with the README config and convert a file (record here), then tag v0.1.0 and approve. |
+| G1 | blocked on owner | 2026-10-09 | Done: 19/19 P1 tasks; 94 fixtures pass; CI + integration green; PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc2 published and verified from a clean install (Windows pipe fix included); `uvx ezmd-mcp==0.1.0rc2` passes an MCP stdio handshake, lists 5 tools, converts a DOCX, refuses paths outside --allowed-dirs; docs site deploys to https://larpey.github.io/ezmd/. ezmd is in the owner's Claude Desktop config (uvx ezmd-mcp==0.1.0rc2, allowed dirs Documents/Downloads/Desktop; original backed up as claude_desktop_config.before-ezmd.json). Owner steps left: restart Claude Desktop and convert a file (record here); create the npm `ezmd` org, publish `@ezmd/sdk` once by hand and add its trusted publisher; then tag v0.1.0 and approve. |
 | G2 | open | | |
 | G3 | open | | |
 | G4 | open | | |
