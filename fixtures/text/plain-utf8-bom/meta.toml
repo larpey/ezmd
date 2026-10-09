@@ -4,6 +4,11 @@ hand_edited = false
 notes = "UTF-8 with BOM and a zero-width space; exercises BOM handling and removed_hidden_elements."
 expected_errors = []
 
+must_not_contain = [
+    "\u200b",
+    "\ufeff",
+]
+
 [provenance]
 origin = "self-generated"
 license = "CC0-1.0"

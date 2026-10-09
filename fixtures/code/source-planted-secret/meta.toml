@@ -4,6 +4,17 @@ hand_edited = false
 notes = "Planted fake secrets (generic assignments, a PEM private key block, a password in a URL) must be redacted as [REDACTED:<rule>]; the placeholder password stays visible."
 expected_errors = []
 
+must_contain = [
+    "DATABASE_PASSWORD = \"changeme\"",
+    "[REDACTED:private_key]",
+]
+must_not_contain = [
+    "ad06f8903f370cf2",
+    "c77c8f7e7cc1d8bf",
+    "a8c0da6ef6257a09",
+    "ZXptZCBmYWtlIGtleSBtYXRlcmlhbCBmb3Igc2V0dGluZ3M7IG5vdCBhIHJlYWwg",
+]
+
 [provenance]
 origin = "self-generated"
 license = "CC0-1.0"

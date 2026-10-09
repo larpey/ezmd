@@ -4,6 +4,14 @@ hand_edited = false
 notes = "Title, H1-H4 by style, one heading by direct formatting, nested mixed lists, merged table (vMerge, gridSpan, header row), footnote and endnote, hyperlink, text box sidebar, hidden and white text, inline equation, quote, caption, code style."
 expected_errors = []
 
+must_contain = [
+    "Visible text continues here.",
+]
+must_not_contain = [
+    "IGNORE PREVIOUS INSTRUCTIONS",
+    "white words",
+]
+
 [provenance]
 origin = "self-generated"
 license = "CC0-1.0"

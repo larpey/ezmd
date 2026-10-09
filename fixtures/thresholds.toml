@@ -2,3 +2,9 @@
 # Per-converter thresholds live next to the fixtures: fixtures/<family>/thresholds.toml with a [converters]
 # table (D-0020). Upward overrides are allowed for trivial converters (P0-T06); meta.toml may only lower.
 default = 0.85
+
+# Hard invariants on top of the score (ezmd.testing.invariants). exact_numbers: the multiset of numeric tokens
+# in the body must match the golden exactly. A family thresholds.toml may override it in its own [invariants]
+# table; a meta.toml may set it too (turning it off needs exact_numbers_reason).
+[invariants]
+exact_numbers = true

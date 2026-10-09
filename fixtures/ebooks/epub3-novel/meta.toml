@@ -4,6 +4,13 @@ hand_edited = false
 notes = "EPUB 3: nav TOC with a nested entry, page-list, cover image, figure with caption, EPUB3 noteref/footnote, endnote in a linear=no notes file, hidden span, list with nested ordered list, table with colspan and caption, blockquote, code; chapter two has no h1 so its TOC title is synthesized, chapters one and three have matching h1s (no duplicates)."
 expected_errors = []
 
+must_contain = [
+    "She kept a logbook of every ship that passed.",
+]
+must_not_contain = [
+    "hidden tracking text",
+]
+
 [provenance]
 origin = "self-generated"
 license = "CC0-1.0"

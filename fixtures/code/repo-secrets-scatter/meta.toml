@@ -4,6 +4,22 @@ hand_edited = false
 notes = "Repo zip whose fake secrets sit inside packed files: Dockerfile ENV token, YAML password, INI webhook secret, a Bearer header in JS, a password in a postgres URL in Markdown (all redacted with secret_redacted); placeholders (changeme, ${UPSTREAM_API_KEY}, <your password here>) stay visible; .npmrc and an id_ed25519 key are excluded (secret_file_excluded); secrets/ is ignored and the !secrets/README.md negation cannot re-include it (git semantics)."
 expected_errors = []
 
+must_contain = [
+    "<your password here>",
+    "${UPSTREAM_API_KEY}",
+    "postgres://ingest:changeme@localhost/tide",
+]
+must_not_contain = [
+    "db5ff3102adeede6",
+    "fc484333dc5476ac",
+    "c8b2f5fe21a414f3",
+    "de6cbc7c5cfe2194",
+    "eb8e7c8696040368",
+    "ae4f9b8c3047eabe",
+    "0974ca583e0db46f",
+    "ZXptZCBmYWtlIGtleSBtYXRlcmlhbCBmb3IgZGVwbG95LXNzaDsgbm90IGEgcmVh",
+]
+
 [provenance]
 origin = "self-generated"
 license = "CC0-1.0"

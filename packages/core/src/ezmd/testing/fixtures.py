@@ -14,6 +14,10 @@ expected_errors = []              # error-severity warning codes that are expect
 requires = ["docs"]               # optional extras the fixture needs; skipped when not installed
 requires_modules = ["pyarrow"]    # optional importable modules the fixture needs; skipped when missing
 requires_binaries = ["soffice"]   # optional executables on PATH the fixture needs; skipped when missing
+must_contain = ["kept phrase"]    # optional; each must appear in the rendered Markdown (case-sensitive)
+must_not_contain = ["payload"]    # optional; none may appear (case-insensitive; raw match too, for invisibles)
+exact_numbers = false             # optional; only to turn the numeric-token invariant off, with a reason
+exact_numbers_reason = "why the numbers legitimately vary"
 
 [provenance]                       # required (part4 4.14.7)
 origin = "self-generated"         # self-generated | public-domain | cc0 | cc-by
@@ -21,7 +25,21 @@ license = "CC0-1.0"
 source = ""                       # URL when not self-generated
 ```
 
-`fixtures/thresholds.toml` holds `default = 0.85` and `[converters]` per-id thresholds.
+`fixtures/thresholds.toml` holds `default = 0.85` and `[converters]` per-id thresholds, plus an `[invariants]`
+table (`exact_numbers = true`) that a family `thresholds.toml` may override.
+
+A fixture passes when its score reaches the threshold AND it has no hard failure. Hard failures: a conversion
+error, an unexpected error-severity warning, exceeding `max_seconds`, any `ezmd.testing.invariants` mismatch
+against the golden (math, block counts, list nesting, table spans, links, images, frontmatter `warnings`,
+`injection_risk` and `truncated`, and the numeric-token multiset when `exact_numbers` is on), a broken
+`must_contain` or `must_not_contain` entry, or a sidecar that differs from `expected.sidecar.json`.
+
+`must_contain` and `must_not_contain` are lists of TOML strings; write invisible characters as TOML escapes
+(`"\\u200b"`, `"\\U000e0069"`). List every hidden or secret payload of the input in `must_not_contain`,
+so a leak fails even when it barely moves the score.
+
+Sidecars are compared exactly after `normalize_sidecar` (`metrics` timing removed, `frontmatter` versions
+replaced by a placeholder), and `write_golden` writes them normalized.
 """
 
 from __future__ import annotations
@@ -39,10 +57,18 @@ from ezmd.inputs import InputRef
 from ezmd.ir import ConversionResult
 from ezmd.pipeline import convert_ref
 from ezmd.registry import ConversionError, ConvertOptions, ExtraValue
+from ezmd.testing.invariants import check as check_invariants
+from ezmd.testing.invariants import check_text
 from ezmd.testing.score import Score, parse, score
 
 PINNED_TIME = "2026-01-01T00:00:00Z"
 ALLOWED_ORIGINS = frozenset({"self-generated", "public-domain", "cc0", "cc-by"})
+NORMALIZED = "<normalized>"
+"""Placeholder for sidecar fields that change on every release (versions)."""
+VOLATILE_TIMING = ("duration_seconds", "fetch_seconds")
+"""`metrics` timing fields, removed from sidecars before they are written or compared."""
+VOLATILE_VERSIONS = ("converter_version", "ezmd_version")
+"""`frontmatter` version fields, replaced by NORMALIZED before sidecars are written or compared."""
 
 
 EXTRA_PROBES: dict[str, str] = {"docs": "docling", "data": "pyarrow", "7z": "py7zr"}
@@ -101,6 +127,19 @@ class FixtureRun:
     @property
     def passed(self) -> bool:
         return not self.hard_failures and self.score is not None and self.score.overall >= self.threshold
+
+
+@dataclass(frozen=True, slots=True)
+class Verdict:
+    """The judgement of one rendering against a fixture's goldens."""
+
+    score: Score
+    threshold: float
+    failures: tuple[str, ...]
+
+    @property
+    def passed(self) -> bool:
+        return not self.failures and self.score.overall >= self.threshold
 
 
 def _importable(module: str) -> bool:
@@ -182,6 +221,97 @@ def threshold_for(fx: Fixture, root: Path) -> float:
     return base
 
 
+def exact_numbers_for(fx: Fixture, root: Path) -> bool:
+    """`[invariants] exact_numbers` from the root thresholds.toml, overridden by the family's, then by meta.toml
+    (turning it off there needs `exact_numbers_reason`)."""
+    value = True
+    for path in (root / "thresholds.toml", root / fx.path.parent.name / "thresholds.toml"):
+        if path.exists():
+            table = tomllib.loads(path.read_text(encoding="utf-8")).get("invariants", {})
+            if "exact_numbers" in table:
+                value = bool(table["exact_numbers"])
+    if "exact_numbers" in fx.meta:
+        own = fx.meta["exact_numbers"]
+        if not isinstance(own, bool):
+            raise FixtureError(f"{fx.id}: exact_numbers must be a boolean")
+        if not own and not fx.meta.get("exact_numbers_reason"):
+            raise FixtureError(f"{fx.id}: exact_numbers = false needs exact_numbers_reason")
+        value = own
+    return value
+
+
+def _strings(fx: Fixture, key: str) -> list[str]:
+    raw = fx.meta.get(key, [])
+    if not isinstance(raw, list) or not all(isinstance(v, str) and v for v in raw):
+        raise FixtureError(f"{fx.id}: {key} must be a list of non-empty strings")
+    return [str(v) for v in raw]
+
+
+def normalize_sidecar(sidecar: dict[str, Any]) -> dict[str, Any]:
+    """A copy of `sidecar` without volatile fields: `metrics` timing removed, `frontmatter` versions set to
+    NORMALIZED. Everything else is kept as is."""
+    out = dict(sidecar)
+    metrics = out.get("metrics")
+    if isinstance(metrics, dict):
+        out["metrics"] = {k: v for k, v in metrics.items() if k not in VOLATILE_TIMING}
+    fm = out.get("frontmatter")
+    if isinstance(fm, dict):
+        out["frontmatter"] = {k: (NORMALIZED if k in VOLATILE_VERSIONS else v) for k, v in fm.items()}
+    return out
+
+
+def _first_difference(expected: object, actual: object, path: str = "$") -> str | None:
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        for key in sorted(set(expected) | set(actual), key=str):
+            if key not in actual:
+                return f"{path}.{key} missing"
+            if key not in expected:
+                return f"{path}.{key} unexpected"
+            found = _first_difference(expected[key], actual[key], f"{path}.{key}")
+            if found:
+                return found
+        return None
+    if isinstance(expected, list) and isinstance(actual, list):
+        for i, (e, a) in enumerate(zip(expected, actual, strict=False)):
+            found = _first_difference(e, a, f"{path}[{i}]")
+            if found:
+                return found
+        if len(expected) != len(actual):
+            return f"{path} has {len(actual)} items, expected {len(expected)}"
+        return None
+    if expected != actual:
+        return f"{path}: expected {expected!r}, got {actual!r}"
+    return None
+
+
+def _jsonable(sidecar: dict[str, Any]) -> dict[str, Any]:
+    """The sidecar as it reads back from disk (tuples become lists, keys become strings)."""
+    loaded: dict[str, Any] = json.loads(json.dumps(sidecar, ensure_ascii=False))
+    return loaded
+
+
+def compare_sidecar(fx: Fixture, actual: dict[str, Any]) -> list[str]:
+    """Exact comparison of the normalized sidecar with the normalized `expected.sidecar.json`."""
+    if not fx.expected_sidecar.exists():
+        return ["expected.sidecar.json missing (run ezmd-golden --write, then get Skeptic review)"]
+    expected = normalize_sidecar(json.loads(fx.expected_sidecar.read_text(encoding="utf-8")))
+    diff = _first_difference(expected, normalize_sidecar(_jsonable(actual)))
+    return [f"sidecar differs from expected.sidecar.json at {diff}"] if diff else []
+
+
+def evaluate(fx: Fixture, root: Path, markdown: str, sidecar: dict[str, Any] | None = None) -> Verdict:
+    """Judge a rendering against the fixture's goldens: score, invariants, the must lists and, when `sidecar`
+    is given, the sidecar. The Markdown golden must exist."""
+    expected = fx.expected_md.read_text(encoding="utf-8")
+    failures = check_invariants(expected, markdown, exact_numbers=exact_numbers_for(fx, root))
+    failures += check_text(
+        markdown, must_contain=_strings(fx, "must_contain"), must_not_contain=_strings(fx, "must_not_contain")
+    )
+    if sidecar is not None:
+        failures += compare_sidecar(fx, sidecar)
+    return Verdict(score=score(expected, markdown), threshold=threshold_for(fx, root), failures=tuple(failures))
+
+
 def convert_fixture(fx: Fixture) -> ConversionResult:
     """Convert a fixture input. `[input] url = "https://..."` in meta.toml makes the input behave like a
     fetched URL (frozen body, `ref.url` and display set to the URL) so web converters can resolve links;
@@ -248,7 +378,9 @@ def run_fixture(fx: Fixture, root: Path) -> FixtureRun:
     expected = fx.expected_md.read_text(encoding="utf-8")
     if not result.document.blocks and _has_blocks(expected):
         run.hard_failures.append("document has zero blocks but the golden has content")
-    run.score = score(expected, run.markdown)
+    verdict = evaluate(fx, root, run.markdown, run.sidecar or {})
+    run.score = verdict.score
+    run.hard_failures.extend(verdict.failures)
     return run
 
 
@@ -262,6 +394,8 @@ def write_golden(fx: Fixture) -> tuple[Path, Path]:
     md, sidecar = render_full(result)
     fx.expected_md.write_text(md, encoding="utf-8", newline="\n")
     fx.expected_sidecar.write_text(
-        json.dumps(sidecar or {}, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n"
+        json.dumps(normalize_sidecar(_jsonable(sidecar or {})), indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
     return fx.expected_md, fx.expected_sidecar

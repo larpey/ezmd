@@ -7,11 +7,13 @@ profile, and returns sub-scores in [0, 1]:
   term (fraction of expected parent->child heading relations preserved).
 - table_score (0.25): each expected table matched to the best actual table by caption and shape;
   cell accuracy after whitespace and number normalization; minus 0.1 per unexpected extra table.
-- text_score (0.30): rapidfuzz ratio over the concatenated, NFKC-normalized paragraph text.
+- text_score (0.30): rapidfuzz ratio over the concatenated, NFKC-normalized paragraph text (list item
+  paragraphs included, so a changed list item is not invisible to the score).
 - structure_score (0.20): per block-type count agreement averaged over types present in expected.
 
-Frontmatter is ignored (it holds timestamps). Anchors (`{#sec-1}`) and derived heading numbers are
-normalized away so that numbering changes do not dominate the heading score.
+Frontmatter is ignored here (it holds timestamps); the fields that matter are compared exactly by
+`ezmd.testing.invariants`, together with the structure a similarity score cannot see. Anchors (`{#sec-1}`)
+and derived heading numbers are normalized away so that numbering changes do not dominate the heading score.
 """
 
 from __future__ import annotations
@@ -104,7 +106,7 @@ def parse(md: str) -> Parsed:
         t = tokens[i]
         if t.type == "heading_open":
             out.headings.append((int(t.tag[1]), _heading_text(tokens[i + 1].content)))
-        elif t.type == "paragraph_open" and list_depth == 0:
+        elif t.type == "paragraph_open":
             content = tokens[i + 1].content
             last_paragraph = content
             if not _is_caption(content):
