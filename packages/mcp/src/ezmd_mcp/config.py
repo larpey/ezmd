@@ -19,6 +19,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from ezmd_mcp.options import OperatorLimits
 from ezmd_mcp.paths import AllowedRoots
 
 __all__ = ["DEFAULT_PORT", "LOOPBACK_HOSTS", "Settings", "is_loopback"]
@@ -46,6 +47,7 @@ class Settings:
     allowed_dirs: AllowedRoots = field(default_factory=lambda: AllowedRoots((Path.cwd().resolve(),)))
     wait_seconds: float = 120.0
     allow_private_networks: bool = False
+    limits: OperatorLimits = field(default_factory=OperatorLimits)
 
     @classmethod
     def from_env(
@@ -58,6 +60,10 @@ class Settings:
         allowed_dirs: list[str] | None = None,
         wait_seconds: float | None = None,
         allow_private_networks: bool = False,
+        max_bytes: int | None = None,
+        max_seconds: float | None = None,
+        max_pages: int | None = None,
+        max_duration_seconds: float | None = None,
     ) -> Settings:
         env = os.environ if env is None else env
         dirs = allowed_dirs
@@ -77,4 +83,17 @@ class Settings:
             allowed_dirs=AllowedRoots.from_strings(dirs),
             wait_seconds=max(0.0, wait),
             allow_private_networks=allow_private_networks,
+            limits=_limits(max_bytes, max_seconds, max_pages, max_duration_seconds),
         )
+
+
+def _limits(
+    max_bytes: int | None, max_seconds: float | None, max_pages: int | None, max_duration_seconds: float | None
+) -> OperatorLimits:
+    base = OperatorLimits()
+    return OperatorLimits(
+        max_bytes=base.max_bytes if max_bytes is None else max_bytes,
+        max_seconds=base.max_seconds if max_seconds is None else float(max_seconds),
+        max_pages=base.max_pages if max_pages is None else max_pages,
+        max_duration_seconds=base.max_duration_seconds if max_duration_seconds is None else float(max_duration_seconds),
+    )

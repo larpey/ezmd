@@ -136,10 +136,21 @@ All tools accept `profile` (`full`, `compact`, `rag`, `agent`; default `agent`) 
 | `get_job` | `job_id`, `cursor?`, `max_tokens?`, `profile?` | Returns `{status: "running"}` while a remote job runs, else the page at `cursor` (page 1 without one). |
 | `list_capabilities` | none | Converters (with the extra a missing one needs), profiles, formats, limits, whether fetching is allowed, and the allowed directories in local mode. |
 
-`options` takes the library's conversion options, the same keys as the `options` object of
-`POST /v1/convert` (`ocr`, `max_pages`, `languages`, `converter`, `experimental`, `render`, ...; see
-[the REST API](api.md)). Unknown keys are rejected with `invalid_request`. `allow_private_networks` is refused unless the server was started with
-`--allow-private-networks`, so a document cannot talk the model into fetching intranet URLs.
+`options` takes an allowlist of the library's conversion options, because tool arguments come from
+the model and the model reads untrusted documents:
+
+- output options: `ocr`, `asr_model`, `diarize`, `languages`, `extract_images`, `tracked_changes`,
+  `comments`, `formulas`, `render` (dotted profile overrides such as `{"chunks.chunk_tokens": 512}`);
+- limits, which a tool call may only lower: `max_pages`, `max_bytes`, `max_seconds`,
+  `max_duration_seconds`. The ceilings are the operator's `--max-*` flags (below); a higher value, or
+  `null` (unlimited), is rejected with `invalid_request`;
+- refused with `invalid_request`: `extra` (family engine settings such as archive caps), `converter`,
+  `experimental`, and any unknown key.
+
+`allow_private_networks` is refused unless the server was started with `--allow-private-networks`,
+so a document cannot talk the model into fetching intranet URLs. `list_capabilities` reports the
+ceilings under `limits` and the settable keys under `tool_options`. In remote mode the instance's own
+REST option rules apply.
 
 `search_result` (BM25 search inside a result) arrives in Phase 2.
 
@@ -224,6 +235,10 @@ The API container mounts the same HTTP app at `/mcp` behind its API-key middlewa
 | `--token` | `EZMD_MCP_TOKEN` | generated (loopback) | HTTP bearer token |
 | `--no-auth` | | off | HTTP without a token (loopback only) |
 | `--allow-private-networks` | | off | Let tool calls set `options.allow_private_networks` |
+| `--max-bytes N` | | `104857600` | Local mode: input size ceiling for tool calls |
+| `--max-seconds S` | | `600` | Local mode: per-conversion time ceiling |
+| `--max-pages N` | | `500` | Local mode: page ceiling |
+| `--max-duration-seconds S` | | `10800` | Local mode: audio/video duration ceiling |
 | `--log-level` | | `WARNING` | stderr log level |
 
 ## Registry

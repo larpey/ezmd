@@ -21,8 +21,23 @@ from dataclasses import dataclass
 from ezmd_mcp import __version__
 from ezmd_mcp.backend import PROFILES, Backend
 from ezmd_mcp.config import DEFAULT_PORT, Settings, is_loopback
+from ezmd_mcp.options import OperatorLimits
 
 __all__ = ["HttpConfig", "main", "parse_args", "resolve_http"]
+
+
+def _positive_int(raw: str) -> int:
+    value = int(raw)
+    if value < 1:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return value
+
+
+def _positive_float(raw: str) -> float:
+    value = float(raw)
+    if not value > 0:
+        raise argparse.ArgumentTypeError("must be a positive number")
+    return value
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -48,6 +63,23 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--allow-private-networks",
         action="store_true",
         help="Local mode: let tool callers set options.allow_private_networks (intranet URLs)",
+    )
+    limits = OperatorLimits()
+    p.add_argument(
+        "--max-bytes", type=_positive_int, default=None, help=f"Local mode: input size cap ({limits.max_bytes})"
+    )
+    p.add_argument(
+        "--max-seconds",
+        type=_positive_float,
+        default=None,
+        help=f"Local mode: per-conversion time cap ({limits.max_seconds:g})",
+    )
+    p.add_argument("--max-pages", type=_positive_int, default=None, help=f"Local mode: page cap ({limits.max_pages})")
+    p.add_argument(
+        "--max-duration-seconds",
+        type=_positive_float,
+        default=None,
+        help=f"Local mode: audio/video duration cap ({limits.max_duration_seconds:g})",
     )
     p.add_argument("--log-level", default="WARNING", help="stderr log level (default WARNING)")
     p.add_argument("--version", action="version", version=f"ezmd-mcp {__version__}")
@@ -99,7 +131,7 @@ def _backend(settings: Settings) -> Backend:
         return RemoteBackend(settings.remote, api_key=settings.api_key, wait_seconds=settings.wait_seconds)
     from ezmd_mcp.local import LocalBackend
 
-    return LocalBackend(allow_private_networks=settings.allow_private_networks)
+    return LocalBackend(allow_private_networks=settings.allow_private_networks, limits=settings.limits)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -113,6 +145,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             allowed_dirs=args.allowed_dirs,
             wait_seconds=args.wait_seconds,
             allow_private_networks=args.allow_private_networks,
+            max_bytes=args.max_bytes,
+            max_seconds=args.max_seconds,
+            max_pages=args.max_pages,
+            max_duration_seconds=args.max_duration_seconds,
         )
         if settings.profile not in PROFILES:
             raise StartupError(f"unknown profile {settings.profile!r}; expected one of {', '.join(PROFILES)}")

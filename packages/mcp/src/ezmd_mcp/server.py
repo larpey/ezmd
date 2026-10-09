@@ -233,8 +233,9 @@ def build_server(settings: Settings, backend: Backend) -> MCPServer[Any]:
     ) -> CallToolResult:
         """Convert a web page or document URL (http/https) to Markdown. Returns page 1 of the result (at most
         max_tokens, default 8000, max 50000), the section list, warnings, and next_cursor for get_job.
-        profile: full | compact | rag | agent (default agent). options: conversion options such as
-        {"ocr": false, "max_pages": 50}."""
+        profile: full | compact | rag | agent (default agent). options: output options such as
+        {"ocr": false, "languages": ["en"], "max_pages": 50}; limits (max_pages, max_bytes, max_seconds,
+        max_duration_seconds) may only be lowered, and extra, converter and experimental are refused."""
         return await tools.run(lambda: tools.convert_url(url, profile, max_tokens, options))
 
     @server.tool(annotations=read_only)
@@ -247,7 +248,8 @@ def build_server(settings: Settings, backend: Backend) -> MCPServer[Any]:
     ) -> CallToolResult:
         """Convert a local file (PDF, DOCX, PPTX, XLSX, HTML, CSV, images, audio, ...) to Markdown. path must be
         absolute and inside the server's allowed directories. Clients without a filesystem may instead pass
-        data_url (a base64 data: URL under 1 MB). Returns page 1, sections, warnings and next_cursor."""
+        data_url (a base64 data: URL under 1 MB). Returns page 1, sections, warnings and next_cursor. options:
+        as for convert_url (output options; limits may only be lowered)."""
         return await tools.run(lambda: tools.convert_file(path, data_url, profile, max_tokens, options))
 
     @server.tool(annotations=ToolAnnotations(read_only_hint=True, open_world_hint=False))

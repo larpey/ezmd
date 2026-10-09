@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any
 
 from ezmd_mcp.backend import JobRef
 from ezmd_mcp.errors import ToolFailure, from_exception
+from ezmd_mcp.options import LIMIT_FIELDS, TOOL_FIELDS, OperatorLimits, tool_options
 from ezmd_mcp.paging import Outline, RenderedPage, sections_from_sidecar, warning_dict
 
 if TYPE_CHECKING:
@@ -35,8 +36,15 @@ def _validation_message(exc: Exception) -> str:
 class LocalBackend:
     mode = "local"
 
-    def __init__(self, *, allow_private_networks: bool = False, max_jobs: int = MAX_JOBS) -> None:
+    def __init__(
+        self,
+        *,
+        allow_private_networks: bool = False,
+        max_jobs: int = MAX_JOBS,
+        limits: OperatorLimits | None = None,
+    ) -> None:
         self.allow_private_networks = allow_private_networks
+        self.limits = limits or OperatorLimits()
         self.max_jobs = max_jobs
         self._jobs: OrderedDict[str, Result] = OrderedDict()
         self._lock = threading.Lock()
@@ -72,8 +80,9 @@ class LocalBackend:
                 "invalid_request",
                 "allow_private_networks is disabled on this server (start it with --allow-private-networks).",
             )
+        kwargs = tool_options(options, self.limits)
         try:
-            return Options(**options)
+            return Options(**kwargs)
         except (ValidationError, TypeError) as e:
             raise ToolFailure("invalid_request", _validation_message(e)) from None
 
@@ -157,21 +166,16 @@ class LocalBackend:
         return dict(out.sidecar or {})
 
     async def capabilities(self) -> dict[str, Any]:
-        from ezmd.library import Options, capabilities
+        from ezmd.library import capabilities
 
         caps = await asyncio.to_thread(capabilities)
-        defaults = Options()
         return {
             **caps,
             "mode": "local",
             "fetch_allowed": True,
             "private_networks_allowed": self.allow_private_networks,
-            "limits": {
-                "max_bytes": defaults.max_bytes,
-                "max_pages": defaults.max_pages,
-                "max_duration_seconds": defaults.max_duration_seconds,
-                "max_seconds": defaults.max_seconds,
-            },
+            "limits": self.limits.as_dict(),
+            "tool_options": [*TOOL_FIELDS, *LIMIT_FIELDS],
         }
 
     async def aclose(self) -> None:
