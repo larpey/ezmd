@@ -2,7 +2,7 @@
 
 Last updated: 2026-10-08 by agent
 Current phase: 1
-Current task: gate G1 owner steps (publish, Claude Desktop check, docs hosting); Phase 2 not started
+Current task: v0.1.0 release (npm org, Claude Desktop check, final tag); Phase 2 not started
 Overall: 32 / 85 tasks done
 
 ## Phases
@@ -19,7 +19,7 @@ Overall: 32 / 85 tasks done
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
 | G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
-| G1 | blocked on owner | 2026-10-08 | Done: 19/19 P1 tasks; 94 fixtures pass (2 skip without py7zr/pyarrow); CI 37847449194 and integration (compose + Playwright) green on fa16fa8. Owner steps left: v0.1.0 publish to PyPI/npm/GHCR (setup in Blocked on human), `uvx ezmd-mcp` manual check in Claude Desktop, docs site hosting (GitHub Pages on a private repo needs a paid plan or a public repo). |
+| G1 | blocked on owner | 2026-10-09 | Done: 19/19 P1 tasks; 94 fixtures pass; CI + integration green; PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc2 published and verified from a clean install (Windows pipe fix included); `uvx ezmd-mcp==0.1.0rc2` passes an MCP stdio handshake, lists 5 tools, converts a DOCX, refuses paths outside --allowed-dirs; docs site deploys to https://larpey.github.io/ezmd/. Owner steps left: create the npm `ezmd` org (first `@ezmd/sdk` publish may be manual), open Claude Desktop with the README config and convert a file (record here), then tag v0.1.0 and approve. |
 | G2 | open | | |
 | G3 | open | | |
 | G4 | open | | |

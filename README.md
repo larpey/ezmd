@@ -10,14 +10,23 @@ ezmd turns an input into an intermediate representation and renders it as Markdo
 frontmatter under one of four output profiles, plus a JSON sidecar with block provenance and an explicit
 list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
 
-> **Status: Phase 1, pre-release.** The repository is private and nothing is published yet: there is no
-> PyPI package, npm package, container image, or public instance. Install from source as shown below.
-> Commands marked "after the first release" do not work yet. See [STATUS.md](STATUS.md) and
-> [ROADMAP.md](ROADMAP.md).
+> **Status: release candidate.** `0.1.0rc2` is on PyPI as a pre-release, so installers need `--pre` (or an
+> exact version) until `0.1.0`. The npm SDK and the public instance come with the final release. See
+> [STATUS.md](STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Install
 
-From source (needs [uv](https://docs.astral.sh/uv/) and Python 3.12 or newer):
+From PyPI (Python 3.12 or newer):
+
+<!-- readme: skip (installs from the network) -->
+```sh
+pip install --pre ezmd                 # or: uv tool install --prerelease allow ezmd
+pip install --pre "ezmd[docs]"         # optional: Docling for PDF layout (large, pulls torch)
+uvx --prerelease allow ezmd convert https://example.com
+uvx ezmd-mcp==0.1.0rc2                 # the MCP server
+```
+
+From source (needs [uv](https://docs.astral.sh/uv/)):
 
 <!-- readme: skip (clones from the network) -->
 ```sh
@@ -39,13 +48,11 @@ uv run ezmd capabilities
 uv run ezmd doctor
 ```
 
-After the first release (not available yet):
+After the final `0.1.0` release (not available yet): `pip install ezmd` and `uvx ezmd-mcp` without
+`--pre`, and the TypeScript client:
 
 <!-- readme: skip (not published yet) -->
 ```sh
-pip install ezmd
-uvx ezmd convert https://example.com
-uvx ezmd-mcp
 npm install @ezmd/sdk
 ```
 
@@ -97,24 +104,26 @@ From a source checkout, point your MCP client at `uv run ezmd-mcp`. Claude Code:
 
 <!-- readme: skip (needs the Claude Code CLI) -->
 ```sh
-claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp
+claude mcp add ezmd -- uvx ezmd-mcp==0.1.0rc2
+claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp   # from a source checkout
 ```
 
-Claude Desktop (`claude_desktop_config.json`):
+Claude Desktop (`claude_desktop_config.json`), using the published package:
 
 ```json
 {
   "mcpServers": {
     "ezmd": {
-      "command": "uv",
-      "args": ["--directory", "/path/to/ezmd", "run", "ezmd-mcp", "--allowed-dirs", "/Users/you/Documents"]
+      "command": "uvx",
+      "args": ["ezmd-mcp==0.1.0rc2", "--allowed-dirs", "/Users/you/Documents"]
     }
   }
 }
 ```
 
-After the first release the command becomes `uvx ezmd-mcp`. Other clients, tools, and the HTTP
-transport: [docs/mcp.md](docs/mcp.md).
+From a source checkout, use `"command": "uv"` with `"args": ["--directory", "/path/to/ezmd", "run",
+"ezmd-mcp", ...]`. After `0.1.0` the version pin can go. Other clients, tools, and the HTTP transport:
+[docs/mcp.md](docs/mcp.md).
 
 ### REST API and web UI
 
@@ -148,7 +157,8 @@ The Compose stack (Caddy, API, sandboxed workers, Redis) builds from this checko
 bash deploy/bootstrap.sh --plain-http --build
 ```
 
-Then open http://localhost:8080. Prebuilt images on GHCR come with the first release. Everything else
+Then open http://localhost:8080. Signed images for each release are on GHCR (`ghcr.io/larpey/ezmd-api`,
+`ezmd-worker`, `ezmd-fetch-node`). Everything else
 (TLS, API keys, backups, upgrades, every environment variable): [docs/selfhost.md](docs/selfhost.md).
 
 ## What it converts
