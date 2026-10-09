@@ -198,3 +198,39 @@ def test_metadata_slides_and_sheets_fields() -> None:
     m = Metadata(source="b.xlsx", source_type=SourceType.XLSX, sheets=["Budget", "Hidden"], slides=None)
     assert m.sheets == ["Budget", "Hidden"]
     assert InlineSpan(text="x", change="insert", change_author="Ann", change_id="7").change == "insert"
+
+
+def test_named_unavailable_converter_says_how_to_install_it() -> None:
+    reg = ConverterRegistry()
+    reg.register(
+        Unavailable(
+            id="documents.docling_pdf",
+            family="documents",
+            reason="Docling is not installed",
+            requires_extras=("docs",),
+            mimes=("application/pdf",),
+        )
+    )
+    with pytest.raises(ConversionError) as info:
+        reg.convert(_ref(DOC), ConvertOptions(), converter_id="documents.docling_pdf")
+    msg = info.value.user_message
+    assert "Unknown converter" not in msg
+    assert "Docling is not installed" in msg and "pip install 'ezmd[docs]'" in msg
+
+
+def test_unavailable_reason_with_an_install_hint_is_not_repeated() -> None:
+    reg = ConverterRegistry()
+    reg.register(
+        Unavailable(
+            id="data.parquet",
+            family="data",
+            reason="Parquet needs pyarrow; install it with pip install 'ezmd[data]'.",
+            requires_extras=("data",),
+            mimes=(DOC,),
+        )
+    )
+    with pytest.raises(ConversionError) as info:
+        reg.convert(_ref(DOC), ConvertOptions())
+    msg = info.value.user_message
+    assert msg.count("pip install") == 1, msg
+    assert "ezmd[data]" in msg

@@ -25,6 +25,7 @@ from ezmd.ir import (
     Block,
     Document,
     InlineSpan,
+    InlineStyle,
     ListBlock,
     ListItem,
     Metadata,
@@ -559,9 +560,10 @@ def _extra_required(doc: Document, source: str) -> Document:
         Paragraph(
             spans=[
                 InlineSpan(
-                    text="This is a 7z archive. Reading 7z needs the optional `7z` extra "
-                    "(pip install 'ezmd-converters[7z]'), which is not installed."
-                )
+                    text="This is a 7z archive. Reading 7z needs the optional 7z extra, which is not installed: "
+                ),
+                InlineSpan(text="pip install 'ezmd[7z]'", styles=[InlineStyle.CODE]),
+                InlineSpan(text="."),
             ],
             provenance=Provenance(source=source),
         )

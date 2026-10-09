@@ -182,3 +182,15 @@ def test_invisible_characters_in_member_names_are_removed_and_counted() -> None:
     assert [c.metadata.source for c in doc.children] == ["n.zip!report.txt"]
     warn = next(w for w in doc.warnings if w.kind == WarningKind.REMOVED_HIDDEN_ELEMENTS)
     assert warn.detail["invisible_chars"] == 1
+
+
+def test_sevenzip_without_extra_names_the_ezmd_extra_unescaped(monkeypatch: pytest.MonkeyPatch) -> None:
+    from ezmd.render import render
+    from ezmd_converters.archives import sevenzip
+
+    monkeypatch.setattr(sevenzip, "available", lambda: False)
+    ref = InputRef.from_bytes(b"7z" + bytes([0xBC, 0xAF, 0x27, 0x1C]) + bytes(64), filename="x.7z")
+    detect(ref)
+    body = render(convert_ref(ref), "full").body
+    assert "`pip install 'ezmd[7z]'`" in body, body
+    assert "ezmd-converters" not in body and chr(92) not in body, body

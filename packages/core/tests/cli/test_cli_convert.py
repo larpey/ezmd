@@ -205,3 +205,34 @@ def test_auto_profile(monkeypatch: pytest.MonkeyPatch) -> None:
     assert auto_profile(None, True) == "full"
     monkeypatch.setattr(sys.stdout, "isatty", lambda: False)
     assert auto_profile(None, False) == "full"
+
+
+def test_resolve_engine_matches_underscore_parts_of_an_id() -> None:
+    from ezmd.cli.options import resolve_engine
+
+    rows: list[dict[str, object]] = [
+        {"id": "documents.docling_pdf", "family": "documents"},
+        {"id": "documents.pdfium_text", "family": "documents"},
+        {"id": "text.plain", "family": "text"},
+    ]
+    assert resolve_engine("pdf=docling", rows) == "documents.docling_pdf"
+    assert resolve_engine("pdf=pdfium", rows) == "documents.pdfium_text"
+    assert resolve_engine("text=plain", rows) == "text.plain"
+    with pytest.raises(ValueError, match="no converter matches"):
+        resolve_engine("pdf=nothing", rows)
+
+
+PDF = Path(__file__).resolve().parents[4] / "fixtures/pdf/born-digital-report/input.pdf"
+
+
+@pytest.mark.parametrize(
+    "args", [["--engine", "pdf=docling"], ["--converter", "documents.docling_pdf"]], ids=["engine", "converter"]
+)
+def test_docling_without_the_extra_names_the_extra(args: list[str]) -> None:
+    import importlib.util
+
+    if importlib.util.find_spec("docling") is not None:
+        pytest.skip("docling is installed")
+    res = runner.invoke(app, ["convert", str(PDF), *args])
+    assert res.exit_code != 0
+    assert "ezmd[docs]" in res.output and "Unknown converter" not in res.output, res.output

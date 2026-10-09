@@ -175,6 +175,10 @@ def serve(
     try:
         from ezmd_api.main import serve as api_serve  # type: ignore[import-untyped,unused-ignore]
     except ImportError as e:
-        raise fail("The API is not installed. Install ezmd-api (pip install ezmd-api).", EXIT_ARGS) from e
+        raise fail(
+            "The API (ezmd-api) is not installed, and it is not published on PyPI yet. Self-host it with Docker "
+            "Compose (https://larpey.github.io/ezmd/selfhost/), or run `uv run ezmd serve` from a source checkout.",
+            EXIT_ARGS,
+        ) from e
     typer.echo(f"ezmd serving on http://{host}:{port}", err=True)
     api_serve(host=host, port=port)

@@ -55,3 +55,13 @@ def test_forwarded_extras_exist_on_converters() -> None:
             m = re.fullmatch(r"ezmd-converters\[([a-z0-9_,-]+)\]", req)
             if m:
                 assert set(m.group(1).split(",")) <= conv_extras, req
+
+
+def test_doctor_planned_extras_match_pending() -> None:
+    """`ezmd doctor` lists not-yet-published extras as "coming in a later release"; they must be the ones
+    PENDING tracks, never a declared extra (which doctor reads from the installed metadata instead)."""
+    from ezmd.cli.doctor import PLANNED_EXTRAS, declared_extras
+
+    assert set(PLANNED_EXTRAS) <= set(PENDING)
+    assert not set(PLANNED_EXTRAS) & _declared()
+    assert set(declared_extras()) == _declared() - {"all"}

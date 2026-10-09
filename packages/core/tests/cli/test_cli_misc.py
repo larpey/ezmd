@@ -88,3 +88,13 @@ def test_detect(tmp_path: Path) -> None:
 
 def test_serve_refuses_public_bind() -> None:
     assert runner.invoke(app, ["serve", "--host", "0.0.0.0"]).exit_code == 2
+
+
+def test_serve_without_the_api_points_at_self_hosting(monkeypatch: pytest.MonkeyPatch) -> None:
+    import sys
+
+    monkeypatch.setitem(sys.modules, "ezmd_api.main", None)
+    res = runner.invoke(app, ["serve"])
+    assert res.exit_code == 2
+    assert "pip install ezmd-api" not in res.output
+    assert "selfhost" in res.output and "Docker" in res.output, res.output

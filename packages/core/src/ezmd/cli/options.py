@@ -88,7 +88,9 @@ def resolve_engine(spec: str, converters: list[dict[str, object]]) -> str:
 
     Tried in order, stopping at the first tier with matches: the exact id `name`; the id `family.name`;
     ids whose dotted segments contain `name` and whose family (or a segment) is `family`; ids whose last
-    segment is `name`.
+    segment is `name`; then the same two looser tiers on the underscore-separated parts of each segment, so
+    `pdf=docling` finds `documents.docling_pdf` and `pdf=pdfium` finds `documents.pdfium_text`. A converter
+    whose engine is not installed still resolves; converting with it then says which extra to install.
     """
     family, sep, name = (s.strip() for s in spec.partition("="))
     if not sep or not family or not name:
@@ -99,11 +101,16 @@ def resolve_engine(spec: str, converters: list[dict[str, object]]) -> str:
     def seg(i: str) -> list[str]:
         return i.split(".")
 
+    def parts(i: str) -> list[str]:
+        return [p for s in seg(i) for p in (s, *s.split("_"))]
+
     tiers = [
         [i for i in ids if i == name],
         [i for i in ids if i == f"{family}.{name}"],
         [i for i in ids if name in seg(i) and (fam_of.get(i) == family or family in seg(i))],
         [i for i in ids if seg(i)[-1] == name],
+        [i for i in ids if name in parts(i) and (fam_of.get(i) == family or family in parts(i))],
+        [i for i in ids if name in parts(i)],
     ]
     for tier in tiers:
         if len(tier) == 1:

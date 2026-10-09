@@ -284,9 +284,14 @@ class ConverterRegistry:
             try:
                 cands = [(1.0, self.get(converter_id))]
             except KeyError as e:
-                raise ConversionError(
-                    str(e), user_message=f"Unknown converter {converter_id!r}.", retryable_with_fallback=False
-                ) from e
+                reg = self._regs.get(converter_id)
+                if reg is not None and isinstance(reg.converter, Unavailable):
+                    raise _named_unavailable_error(reg.converter) from e
+                if reg is not None:
+                    message = f"Converter {converter_id!r} is not available: {reg.import_error}."
+                else:
+                    message = f"Unknown converter {converter_id!r}; see `ezmd capabilities`."
+                raise ConversionError(str(e), user_message=message, retryable_with_fallback=False) from e
             if cands[0][1].experimental and not options.experimental:
                 raise _experimental_disabled(ref)
         else:
@@ -434,13 +439,37 @@ def _unavailable_error(ref: InputRef, blocked: list[Unavailable]) -> ConversionE
         reason = CODES[normalize_code(code)].description.rstrip(".")
     message = reason if code is None or code in reason else f"{reason} ({code})"
     extras = sorted({e for b in blocked for e in b.requires_extras})
-    if extras:
-        message += ". Install it with: pip install " + " ".join(f"'ezmd[{e}]'" for e in extras)
-    elif code is not None:
+    if extras and not all(f"ezmd[{e}]" in message for e in extras):
+        message += ". " + _install_hint(extras)
+    elif code is not None and not extras:
         message += ". " + CODES[normalize_code(code)].suggestion.rstrip(".")
     mime = ref.detected.mime if ref.detected else None
     return ConversionError(
         f"no available converter for {ref.display} (mime={mime}); unavailable: {', '.join(b.id for b in blocked)}",
+        user_message=message + ".",
+        retryable_with_fallback=False,
+        code=code or CONVERSION_FAILED,
+    )
+
+
+def _install_hint(extras: list[str]) -> str:
+    return "Install it with: pip install " + " ".join(f"'ezmd[{e}]'" for e in extras)
+
+
+def _named_unavailable_error(blocked: Unavailable) -> ConversionError:
+    """`--converter <id>` (or `--engine`) named a converter whose optional engine is not installed."""
+    reason = blocked.reason.strip().rstrip(".")
+    code = _reason_code(blocked.reason)
+    if code is not None and reason == code:
+        reason = CODES[normalize_code(code)].description.rstrip(".")
+    message = f"Converter {blocked.id!r} is not available: {reason}"
+    extras = list(blocked.requires_extras)
+    if extras and not all(f"ezmd[{e}]" in message for e in extras):
+        message += ". " + _install_hint(extras)
+    elif code is not None and not extras:
+        message += ". " + CODES[normalize_code(code)].suggestion.rstrip(".")
+    return ConversionError(
+        f"converter {blocked.id} unavailable: {blocked.reason}",
         user_message=message + ".",
         retryable_with_fallback=False,
         code=code or CONVERSION_FAILED,
