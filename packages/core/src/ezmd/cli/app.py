@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 
 import typer
 
@@ -23,9 +24,21 @@ app = typer.Typer(
 )
 
 
+def _utf8_streams() -> None:
+    """Markdown output is UTF-8 everywhere. A Windows pipe or redirect gets the legacy code page (cp1252) as
+    the stream encoding, which cannot encode most of what documents contain, so switch the standard streams to
+    UTF-8 before any command writes. Consoles keep working: Python writes to them through the wide-char API."""
+    for stream in (sys.stdout, sys.stderr):
+        encoding = (getattr(stream, "encoding", None) or "").lower().replace("-", "")
+        reconfigure = getattr(stream, "reconfigure", None)
+        if encoding != "utf8" and callable(reconfigure):
+            reconfigure(encoding="utf-8")
+
+
 @app.callback()
 def _setup() -> None:
     """Convert anything to LLM-ready Markdown."""
+    _utf8_streams()
     logger = logging.getLogger("ezmd")
     if not any(getattr(h, "_ezmd_cli", False) for h in logger.handlers):
         from rich.logging import RichHandler
