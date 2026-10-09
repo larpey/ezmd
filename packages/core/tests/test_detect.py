@@ -128,3 +128,27 @@ def test_large_file_is_fast(tmp_path: Path) -> None:
     assert d.mime == "text/plain"
     if not os.environ.get("CI"):
         assert elapsed < 0.2, elapsed
+
+
+def test_import_magic_silences_the_windows_wheel_syntax_warning(monkeypatch: pytest.MonkeyPatch) -> None:
+    """python-magic-bin compiles with a SyntaxWarning ('is' with an int literal) that users must not see."""
+    import importlib
+    import types
+    import warnings
+
+    from ezmd.detect import import_magic
+
+    fake = types.ModuleType("magic")
+
+    def noisy_import(name: str) -> types.ModuleType:
+        assert name == "magic"
+        warnings.warn_explicit(
+            '"is" with \'int\' literal. Did you mean "=="?', SyntaxWarning, "magic.py", 201, module="magic"
+        )
+        return fake
+
+    monkeypatch.setattr(importlib, "import_module", noisy_import)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        assert import_magic() is fake
+    assert not [w for w in caught if issubclass(w.category, SyntaxWarning)]

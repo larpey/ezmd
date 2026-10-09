@@ -18,6 +18,7 @@ import logging
 import mimetypes
 import re
 import threading
+import warnings
 from pathlib import Path
 from typing import Any
 
@@ -269,13 +270,24 @@ class _Engines:
         if cls._magic_failed:
             return None
         try:
-            import magic
-
+            magic = import_magic()
             return normalize_mime(magic.from_buffer(sample, mime=True))
         except Exception as e:
             log.warning("libmagic unavailable: %s", e)
             cls._magic_failed = True
             return None
+
+
+def import_magic() -> Any:
+    """Import python-magic without its compile-time noise. python-magic-bin (the Windows wheel) has an
+    `is -1` comparison that makes CPython print a SyntaxWarning the first time the module compiles; users
+    would see it on every fresh install, so that one warning from that one module is silenced."""
+    import importlib
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=SyntaxWarning, module=r"magic(\..*)?$")
+        warnings.filterwarnings("ignore", category=SyntaxWarning, message=r".*\"is\" with '?int'? literal.*")
+        return importlib.import_module("magic")
 
 
 def _sample(ref: InputRef) -> tuple[bytes, int]:

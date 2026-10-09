@@ -146,7 +146,9 @@ def _binaries() -> list[Check]:
 
 def _libmagic() -> Check:
     try:
-        magic = importlib.import_module("magic")
+        from ezmd.detect import import_magic
+
+        magic = import_magic()
         magic.from_buffer(b"hello world", mime=True)
     except Exception as e:
         fix = "Install libmagic (apt install libmagic1 / brew install libmagic); detection falls back to Magika"
