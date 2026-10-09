@@ -67,6 +67,29 @@ jobs:
         if: always() && matrix.os == 'ubuntu-latest' && matrix.python == '3.12'
         with: { name: coverage, path: coverage.xml, if-no-files-found: ignore }
 
+  # Optional extras the default job never installs: 7z (py7zr) and data (pyarrow), so archives.sevenzip,
+  # data.parquet and their fixtures run somewhere. Docling (`docs`) is left out: torch plus its layout models
+  # are well over 1 GB to install and download per run, and no golden fixture needs it yet.
+  extras:
+    name: python extras (7z, data)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: system deps
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends libmagic1
+      - run: uv sync --all-packages --extra 7z --extra data
+      - name: extras are importable (a missing one would silently skip its tests)
+        run: uv run python -c "import py7zr, pyarrow"
+      - name: archive and data converter tests
+        run: uv run pytest packages/converters/tests/archives packages/converters/tests/data -q -rs
+      - name: fixture (golden) tests, sevenzip and parquet included
+        run: uv run pytest fixtures -q -rs
+
   typescript:
     runs-on: ubuntu-latest
     steps:

@@ -55,7 +55,9 @@ def test_pptx_options(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
     assert any(w.kind == WarningKind.SLIDE_CAP_REACHED for w in capped.warnings)
 
 
-def test_pptx_picture_smartart_comments(run: Run) -> None:
+def test_pptx_picture_alt_text(run: Run) -> None:
+    """A picture shape becomes an Image with its `descr` alt text and its media part path. python-pptx is a dev
+    dependency, so this runs in CI (it was skipped everywhere before)."""
     pptx = pytest.importorskip("pptx")
     from pptx.util import Inches
 
