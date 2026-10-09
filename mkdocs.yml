@@ -1,4 +1,5 @@
 site_name: ezmd
+site_url: https://larpey.github.io/ezmd/
 site_description: Convert anything to LLM-ready Markdown. No silent loss. Apache-2.0.
 repo_url: https://github.com/larpey/ezmd
 repo_name: larpey/ezmd
