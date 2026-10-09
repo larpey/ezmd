@@ -381,3 +381,39 @@ Decision: `vX.Y.Z-rcN` tags publish to PyPI as PEP 440 pre-releases (pip and uv 
 Alternatives: keep TestPyPI for the other two packages and publish `ezmd` only at the final (the main package would never be rehearsed and `pip install ezmd` from TestPyPI would fetch the other project).
 Consequences: the first candidate claims all three PyPI names. PyPI versions are permanent, so a broken candidate is yanked and followed by the next rcN rather than replaced.
 Council: not convened (owner decision).
+
+## D-0039: Dependency caps for pre-release majors; LICENSE/NOTICE in dists; license gate covers extras
+Date: 2026-10-09
+Task: audit (fix-packaging)
+Status: accepted
+Context: the pre-release audit found `pip install --pre ezmd` resolved httpx 1.0.dev6, which dropped httpcore (imported by netguard), so URL conversion crashed; no wheel or sdist shipped LICENSE or NOTICE; the license gate exported the tree without extras although it claims to cover them.
+Decision: httpx is capped `<1` everywhere and ezmd declares httpcore; any direct dependency with a pre-release of a new major is capped below it (lxml `<7`), enforced by tests/test_packaging.py. ezmd, ezmd-converters and ezmd-mcp carry committed copies of the root LICENSE and NOTICE (`license-files`), kept byte-identical by a test. The `mcp`/`all` extras pin `ezmd-mcp==V`. The gate runs over `--all-extras --no-extra nonfree`; NVIDIA CUDA runtime wheels pulled by torch on Linux via the `docs` extra are a named `[platform_runtime]` exception listed by exact package name (CPU-only torch cannot be expressed in PyPI metadata). CI runs `uv lock --check`. Details: docs/decisions/audit-fix-packaging.md.
+Consequences: changing the platform_runtime list is a policy decision; a new NVIDIA package fails the gate until reviewed.
+Council: not convened (audit fix).
+
+## D-0040: The API derives client IPs only from Caddy's X-Real-IP on the internal network
+Date: 2026-10-09
+Task: audit (fix-security)
+Status: accepted
+Context: uvicorn ran with `--proxy-headers --forwarded-allow-ips "*"` and took the leftmost, client-supplied X-Forwarded-For entry, so behind Cloudflare a client could choose the IP used by rate limits, quotas, Turnstile binding and API-key IP pinning.
+Decision: uvicorn runs with `--no-proxy-headers`. Caddy overwrites `X-Real-IP` with its trusted-proxy-aware `{client_ip}` on every `reverse_proxy` block (`trusted_proxies_strict`). Compose sets `EZMD_TRUST_PROXY_HEADER=X-Real-IP` and `EZMD_TRUSTED_PROXIES` to the private ranges; the API has no published port, so only containers on the internal network can reach it. Header values that are not valid IPs are ignored. The fetch-node CIDR check uses the same `client_ip()`.
+Alternatives: pin Caddy's container IP (fragile across compose networks); keep proxy headers with a narrowed allow-list (uvicorn still trusts the whole XFF chain from that peer).
+Same branch: brotli decoding is bounded with `output_buffer_limit`; MCP tool calls may set only whitelisted options and may only lower `ezmd-mcp --max-*` limits; Pillow `MAX_IMAGE_PIXELS` is 50 MP (spec part1 8.2).
+Council: not convened (audit fix).
+
+## D-0041: Golden fixtures pass only with no hard invariant failure; sidecars compared
+Date: 2026-10-09
+Task: audit (fix-tests)
+Status: accepted
+Context: the 0.95 similarity threshold passed a leaked hidden-injection paragraph, a downgraded `injection_risk`, dropped table spans, changed totals and removed links.
+Decision: `ezmd.testing.invariants` adds exact checks against the golden (math, block counts, list nesting, table spans, link and image targets, numeric tokens by default, frontmatter warnings/injection_risk/truncated); meta.toml gains `must_contain`/`must_not_contain`; normalized `expected.sidecar.json` is compared exactly. CI gains an `extras` job (7z, data). Details: docs/decisions/audit-fix-tests.md.
+Consequences: goldens were generated on Windows; a platform difference now fails CI and is treated as a real difference, not a reason to loosen.
+Council: not convened (audit fix).
+
+## D-0042: server.json lists no remote until the API mounts /mcp; doctor reads extras from metadata
+Date: 2026-10-09
+Task: audit (fix-docs)
+Status: accepted
+Context: server.json advertised `https://{host}/mcp`, which the API never mounts (D-0024 pending), and `ezmd doctor` recommended unpublished extras.
+Decision: `remotes` is removed until apps/api mounts `/mcp` (a test ties the two together; deviates from part4 4.4.5 until then). Doctor reads published extras from the installed metadata and shows unpublished spec extras as coming later. `--engine pdf=docling` resolves by id parts; naming an unavailable converter names its extra. Release notes come from the exact changelog heading or `[Unreleased]`, else the release fails. Details: docs/decisions/audit-fix-docs.md.
+Council: not convened (audit fix).

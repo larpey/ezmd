@@ -1,4 +1,4 @@
-## D-XXXX: server.json lists no remote until the API mounts /mcp; doctor reads extras from metadata
+## D-0042: server.json lists no remote until the API mounts /mcp; doctor reads extras from metadata
 Date: 2026-10-09
 Task: audit (fix-docs)
 Status: accepted

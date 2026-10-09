@@ -7,16 +7,27 @@ All notable changes are generated from Conventional Commits. This project uses s
 Fixes from the pre-release audit.
 
 ### Security
-- Client-IP spoofing behind proxies is fixed: a client can no longer pick the address that rate limits and logs use.
-- Brotli-encoded responses are capped like gzip and deflate (decompression bomb).
-- The MCP server accepts only a whitelist of conversion options from tool calls.
-- Images are opened with a Pillow pixel cap.
+- Client-IP spoofing behind proxies is fixed: uvicorn no longer rewrites the peer from `X-Forwarded-For`;
+  the API trusts only Caddy's `X-Real-IP` from the internal network (`EZMD_TRUST_PROXY_HEADER`,
+  `EZMD_TRUSTED_PROXIES`), so a client can no longer pick the address that rate limits, quotas, Turnstile and
+  API-key IP pinning use.
+- Brotli-encoded responses are decompressed with a cap, like gzip and deflate (decompression bomb).
+- MCP tool calls may set only whitelisted conversion options and may lower, never raise, the operator's
+  limits (new `ezmd-mcp --max-*` flags).
+- Pillow's pixel cap is set to 50 megapixels.
 
 ### Packaging
-- `httpx` is capped below 1.0, so `pip install --pre ezmd` no longer pulls an incompatible httpx pre-release.
-- LICENSE and NOTICE are included in every wheel.
-- Extras forward to `ezmd-converters` at the exact matching version.
-- The license gate covers the optional extras too.
+- `httpx` is capped below 1.0 and `httpcore` is declared, so `pip install --pre ezmd` no longer pulls an
+  httpx pre-release that breaks URL conversion; `lxml` is capped below 7 for the same reason.
+- LICENSE and NOTICE are included in every wheel and sdist.
+- The `mcp` and `all` extras pin `ezmd-mcp` to the exact matching version.
+- The license gate covers every extra except `nonfree`; NVIDIA's CUDA runtime wheels, pulled by torch on Linux
+  through the `docs` extra, are a named, reviewed exception.
+
+### Tests
+- Golden checks add hard structural invariants (math, blockquotes, list nesting, table spans, links, exact
+  numbers, key frontmatter fields) and per-fixture `must_contain`/`must_not_contain`; sidecar goldens are
+  compared. CI gains an `extras` job that runs the 7z and data converters.
 
 ### Fixed
 - `ezmd doctor` lists the published extras (`7z`, `data`, `docs`, `mcp`, `nonfree`) from the package metadata,

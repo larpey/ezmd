@@ -32,10 +32,13 @@ operators and users. Items marked Planned are specified but not built yet.
 - Text: NUL bytes are stripped, invalid UTF-8 is replaced, and bidi overrides, zero-width and other
   non-printing format characters, and Unicode tag characters are removed and counted in the
   `removed_hidden_elements` warning.
-- Planned with their converter families (Phase 1 onward): archive limits (total size, entry count,
-  nesting depth, compression ratio), PDF sanitizing (JavaScript, launch actions, embedded files),
-  Office macro and external-relationship removal, SVG and XML hardening, the image pixel cap, and
-  media probing before transcription.
+- Built with their converter families in Phase 1: archive limits (total size, per-entry size, entry
+  count, nesting depth, compression ratio; symlinks and traversal paths skipped, nothing extracted to
+  disk), PDF sanitizing (`pdf/sanitize.py`), Office macro and external-relationship handling, XML parsed
+  with defusedxml or lxml with entity resolution and network access off, and an image pixel cap
+  (Pillow `MAX_IMAGE_PIXELS` = 50 megapixels: Pillow warns above it and refuses images above twice it).
+  HTTP responses are decompressed with a cap for gzip, deflate and brotli.
+- Planned: media probing before transcription (Phase 2).
 
 ## SSRF protection
 
@@ -71,14 +74,17 @@ is on a trusted network.
 - Retention: jobs and blobs are purged after `EZMD_RETENTION_HOURS` (default 24);
   `DELETE /v1/jobs/{id}` purges immediately.
 - Dependency audit (`pip-audit`, `pnpm audit`) and the license check run in CI.
-- Planned: MCP server auth defaults (Phase 1); extension data minimization (Phase 3).
+- MCP server: the HTTP transport requires a bearer token by default and refuses a non-loopback bind
+  without one; tool calls may only set whitelisted options and may lower, never raise, the operator's
+  `--max-*` limits.
+- Planned: extension data minimization (Phase 3).
 
 ## Threat model
 
 | Threat | Asset | Attack vector | Controls | Residual risk |
 |---|---|---|---|---|
-| Malicious document executes code in the worker | Worker host, other jobs | PDF JavaScript, Office macros, OLE, engine parser bugs | Sanitize before parse (Planned per family); sandboxed child process; read-only filesystem; seccomp; no egress; non-root | An engine zero-day escaping the container; limited by dropped capabilities and resource limits, not eliminated |
-| Decompression bomb | Worker memory and disk | Nested zip, PDF stream bomb, PNG bomb | Ratio and size caps (Planned with archives); address-space limit; tmpfs size; pixel cap (Planned) | Allocation inside an engine before the caps engage |
+| Malicious document executes code in the worker | Worker host, other jobs | PDF JavaScript, Office macros, OLE, engine parser bugs | Sanitize before parse (PDF, Office); sandboxed child process; read-only filesystem; seccomp; no egress; non-root | An engine zero-day escaping the container; limited by dropped capabilities and resource limits, not eliminated |
+| Decompression bomb | Worker memory and disk | Nested zip, PDF stream bomb, PNG bomb | Ratio, size, count and depth caps on archives; capped HTTP decompression; address-space limit; tmpfs size; Pillow pixel cap | Allocation inside an engine before the caps engage |
 | Denial of service through slow or huge inputs | Instance availability | Long audio, huge PDFs, slow uploads, held SSE connections | Byte, page, and duration caps; per-IP and global concurrency caps; streaming upload limits; SSE keepalive and connection caps | Distributed abuse beyond the challenge; tighten caps |
 | SSRF to internal services or cloud metadata | Host, Redis, private network | URL input, redirects, DNS rebinding | netguard with resolve-once pinning, scheme allowlist, private and CGNAT range block, re-checked redirects; converters run without network | A new private range or IPv6 transition trick; the block list is tested |
 | Forged fetch node | Job content, residential egress | Stolen secret, spoofed claim | Shared secret plus source CIDR check; per-job claim tokens; upload bound to the claim | A leaked secret on the node; rotate it |
