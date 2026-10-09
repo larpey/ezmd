@@ -1,9 +1,24 @@
 # Install
 
-!!! note "Pre-release"
-    ezmd is not published yet: there is no PyPI package, npm package, or container image. Install from
-    source. The commands under [After the first release](#after-the-first-release) are what the
-    published packages will use.
+!!! note "Release candidate"
+    `0.1.0rc2` is on PyPI as a pre-release (`ezmd`, `ezmd-converters`, `ezmd-mcp`), and signed container
+    images tagged `0.1.0-rc2` are on GHCR. pip and uv skip pre-releases unless asked, so pin the exact version
+    until `0.1.0` is final; after that, plain `pip install ezmd` works. The npm package `@ezmd/sdk` is
+    published with `0.1.0`.
+
+## From PyPI
+
+Python 3.12 or newer. On Linux and macOS, also install libmagic (`apt install libmagic1`,
+`brew install libmagic`); on Windows it comes from a wheel.
+
+```sh
+pip install ezmd==0.1.0rc2                   # library and CLI
+uv tool install ezmd==0.1.0rc2               # or: the CLI as a uv tool
+uvx ezmd==0.1.0rc2 convert https://example.com   # run without installing
+uvx ezmd-mcp==0.1.0rc2                       # MCP server (see MCP server)
+```
+
+With an extra: `pip install "ezmd[docs]==0.1.0rc2"`. Once `0.1.0` is out, drop the `==0.1.0rc2`.
 
 ## From source
 
@@ -24,18 +39,34 @@ For the web UI and the TypeScript SDK, also install Node 22 and pnpm, then `pnpm
 
 ## Extras
 
-Optional engines live in extras of `ezmd-converters`. From source, add them with `--extra`:
+Optional engines live in extras. From PyPI, install `ezmd[<extra>]`; from source, add them with `--extra`:
 
-| Extra | Adds | Size | Command |
+| Extra | Adds | Size | From source |
 |---|---|---|---|
 | `docs` | Docling layout analysis for PDF (headings, tables, reading order), CPU torch | about 1.2 GB | `uv sync --all-packages --extra docs` |
 | `data` | pyarrow, for Parquet | 30 to 50 MB | `uv sync --all-packages --extra data` |
 | `7z` | py7zr, for 7z archives (LGPL-2.1-or-later) | a few MB | `uv sync --all-packages --extra 7z` |
+| `mcp` | the MCP server (`ezmd-mcp`) | small | installed by `uv sync --all-packages` |
+| `nonfree` | extract-msg, a fallback reader for Outlook `.msg` (GPL-3.0; see [Licenses](licenses.md)) | small | `uv sync --all-packages --extra nonfree` |
+| `all` | `docs`, `data`, `7z` and `mcp` (never `nonfree`) | | |
 
 Without an extra, its converter is listed as unavailable with the reason, and inputs fall back to the
 next converter in the chain (PDF uses the pypdfium2 text-layer engine and emits `engine_fallback`). See
 which converters need which extra in the [converter matrix](converters/README.md), and the licenses in
-[Licenses](licenses.md).
+[Licenses](licenses.md). The media, OCR, web and fetch extras in the spec come in later releases.
+
+### Docling models (`docs` extra)
+
+ezmd never lets Docling download models during a conversion (it sets `HF_HUB_OFFLINE=1`), so download the
+layout and table models once and point ezmd at them:
+
+```sh
+docling-tools models download layout tableformer -o ~/.cache/ezmd/docling
+export EZMD_DOCLING_ARTIFACTS=~/.cache/ezmd/docling     # Windows: set EZMD_DOCLING_ARTIFACTS=...
+```
+
+Without the models, Docling fails and PDFs fall back to the text-layer engine with an `engine_fallback`
+warning. Details: [PDF converters](converters/pdf.md).
 
 ## System programs
 
@@ -53,21 +84,16 @@ uv run ezmd capabilities    # every converter, loaded or unavailable with the re
 
 ## Docker
 
-The Compose stack builds from the checkout; see [Self-hosting](selfhost.md):
+Signed images for each release are on GHCR: `ghcr.io/larpey/ezmd-api`, `ghcr.io/larpey/ezmd-worker`, and
+`ghcr.io/larpey/ezmd-fetch-node` (tags `0.1.0-rc1` and `0.1.0-rc2` today). The Compose stack can pull them
+or build from the checkout; see [Self-hosting](selfhost.md):
 
 ```sh
-bash deploy/bootstrap.sh --plain-http --build
+bash deploy/bootstrap.sh --plain-http --version 0.1.0-rc2   # pull the release candidate images
+bash deploy/bootstrap.sh --plain-http --build              # or build from this checkout
 ```
 
-## After the first release
+## TypeScript client
 
-These commands do not work yet:
-
-```sh
-pip install ezmd                       # library and CLI
-uvx ezmd convert https://example.com   # run without installing
-uvx ezmd-mcp                           # MCP server
-npm install @ezmd/sdk                  # TypeScript client
-```
-
-The published images will be `ghcr.io/larpey/ezmd-api`, `-worker`, and `-fetch-node`.
+`npm install @ezmd/sdk` works once `0.1.0` is released; until then, build it from the checkout
+(`pnpm install && pnpm --filter @ezmd/sdk build`).

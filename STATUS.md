@@ -146,10 +146,12 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 - EDGAR: no XBRL statement tables yet; accession-only lookups assume the filer prefix is the CIK; CLI `--form`/`--year` deferred (library treats a bare ticker as a path).
 - shadow-run: `--timeout` relies on converters checking their deadline.
 - Web UI: no upload path for files over 8 MB yet; capabilities lack instance name, sponsor, docx export flag, and queue position.
+- Repo packing: a local `*.repo.zip` / `*.repo.tar.gz` goes to `archives.archive` (it outranks `code.repo_pack`'s 0.95 name score); pass `--converter code.repo_pack` or a GitHub URL. Local directories are not an input.
+- The API does not mount the hosted MCP endpoint at `/mcp` yet, so `packages/mcp/server.json` lists only the stdio package (no `remotes`).
 
 ## Deferred core change requests
 - `render/tables._html` does not fill missing cells, so columns shift (xlsx works around it; from P1-T19).
-- `--engine pdf=docling` does not resolve (docs use `--converter documents.docling_pdf`); compact frontmatter shows `warnings: []` while the CLI prints info warnings: check against spec (from P1-T17).
+- ~~`--engine pdf=docling` does not resolve~~ (fixed in the audit: `--engine` also matches the underscore parts of an id, and an unavailable converter names its extra); compact frontmatter shows `warnings: []` while the CLI prints info warnings: check against spec (from P1-T17).
 - `server` extra needs ezmd-api published; `iwork` extra not packaged (tests/test_extras_hints.py PENDING).
 - Split converter metadata from the registry so the api image can drop about 100 MB of converter dependencies (from P1-T14).
 - `Provenance.timestamp` (comms keeps it in `Heading.attrs`), compact profile dropping `reply_history`/`reply_header`/`signature` roles, a `signature` paragraph role (from P1-T04).

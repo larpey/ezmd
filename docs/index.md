@@ -8,22 +8,23 @@ frontmatter under one of four output profiles (`full`, `compact`, `rag`, `agent`
 sidecar with block provenance and an explicit list of warnings. When something cannot be converted,
 ezmd says so in the warnings instead of dropping it quietly.
 
-!!! note "Status: Phase 1, pre-release"
-    Nothing is published yet (no PyPI or npm package, no container image, no public instance); install
-    from source. Audio, video, OCR, email, and chat exports arrive in later phases; see the
+!!! note "Status: release candidate"
+    `0.1.0rc2` is on PyPI as a pre-release (`pip install ezmd==0.1.0rc2`; plain `pip install ezmd` works once
+    `0.1.0` is final), and signed images tagged `0.1.0-rc2` are on GHCR. The npm SDK and the public instance
+    come with `0.1.0`. Audio, video, OCR, and chat exports arrive in later phases; see the
     [roadmap](roadmap.md) and [status](status.md).
 
 ## What works today
 
 | Area | Status |
 |---|---|
-| Converters: PDF, DOCX, PPTX, XLSX, ODF, RTF, legacy Office (LibreOffice), EPUB, notebooks, HTML, CSV, JSON, YAML, TOML, XML, SQLite, Parquet, source code and repositories, archives, SEC EDGAR, plain text, Markdown | Available; see the [converter matrix](converters/README.md) |
+| Converters: PDF, DOCX, PPTX, XLSX, ODF, RTF, legacy Office (LibreOffice), EPUB, notebooks, HTML, CSV, JSON, YAML, TOML, XML, SQLite, Parquet, source code and repository archives, archives, email (EML, MBOX, MSG), SEC EDGAR, plain text, Markdown | Available; see the [converter matrix](converters/README.md) |
 | CLI: `convert`, `batch`, `shadow-run`, `doctor`, `capabilities`, `detect`, `version`, `serve` | Available |
 | Python library: `convert`, `convert_async`, `convert_many`, `Result` | Available |
-| MCP server (stdio and streamable HTTP, local and remote modes) | Available |
+| MCP server (stdio and streamable HTTP, local and remote modes; a hosted `/mcp` on the API is planned) | Available |
 | REST API with jobs, SSE progress, API keys, rate limits; web UI served by the API | Available |
 | Docker Compose self-host stack with sandboxed workers, bootstrap, backup, and restore scripts | Available |
-| Media (ASR, OCR), email, chat exports, browser extension, fetch node, public instance | Planned (Phases 2 to 4) |
+| Media (ASR, OCR), chat exports, social platforms, browser extension, fetch node, public instance | Planned (Phases 2 to 4) |
 
 ## Where to go next
 

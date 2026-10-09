@@ -589,7 +589,7 @@
   },
   "ocr_unavailable": {
     "severity": "warning",
-    "suggestion": "Install the ocr extra, e.g. pip install 'ezmd[ocr]', or use an instance with OCR enabled.",
+    "suggestion": "OCR (the ocr extra) is coming in a later release; use a text-layer PDF or an instance with OCR enabled.",
     "aliases": []
   },
   "ole_object_skipped": {

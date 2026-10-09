@@ -9,11 +9,12 @@ its own.
 uvx ezmd-mcp                       # stdio, local mode
 ```
 
-!!! note "Before the first release"
-    `ezmd-mcp` is not on PyPI yet, so `uvx ezmd-mcp` does not work. From a source checkout (see
-    [Install](install.md)), replace `uvx ezmd-mcp` in every example below with
-    `uv --directory /path/to/ezmd run ezmd-mcp`; in JSON configs that is
-    `"command": "uv", "args": ["--directory", "/path/to/ezmd", "run", "ezmd-mcp", ...]`. For example:
+!!! note "Release candidate"
+    `ezmd-mcp` `0.1.0rc2` is on PyPI as a pre-release, and `uvx` skips pre-releases unless the version is
+    pinned. Until `0.1.0` is final, write `ezmd-mcp==0.1.0rc2` wherever the examples below say `ezmd-mcp`
+    after `uvx`, for example `claude mcp add ezmd -- uvx ezmd-mcp==0.1.0rc2`, or in JSON
+    `"args": ["ezmd-mcp==0.1.0rc2", ...]`. From a source checkout (see [Install](install.md)), use
+    `uv --directory /path/to/ezmd run ezmd-mcp` instead:
 
     ```bash
     claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp
@@ -44,8 +45,8 @@ you want `convert_file` to read.
 
 ```bash
 claude mcp add ezmd -- uvx ezmd-mcp
-# a remote instance over streamable HTTP:
-claude mcp add --transport http ezmd https://ezmd.example/mcp --header "Authorization: Bearer $EZMD_API_KEY"
+# an ezmd-mcp you started with --transport http (see Transports and security):
+claude mcp add --transport http ezmd http://127.0.0.1:8765/mcp --header "Authorization: Bearer $EZMD_MCP_TOKEN"
 ```
 
 or commit a project-scoped `.mcp.json`:
@@ -217,8 +218,9 @@ Local jobs live in memory (the 32 most recent) for the life of the server proces
 - **Content**: the default `agent` profile wraps converted text in an `<untrusted_content>` fence and flags
   suspected prompt injection as a warning; the text itself is never altered or removed.
 
-The API container mounts the same HTTP app at `/mcp` behind its API-key middleware
-(`ezmd_mcp.http.build_http_app(server, token=None)`), so a remote instance is one URL for REST and MCP.
+A hosted `/mcp` endpoint on the API (the same HTTP app mounted behind the API-key middleware, so one URL
+serves REST and MCP) is planned and not mounted yet. Today, reach a self-hosted instance from a stdio client
+with `--remote` (below), or run `ezmd-mcp --transport http` yourself.
 
 ## Options and environment
 
@@ -243,5 +245,8 @@ The API container mounts the same HTTP app at `/mcp` behind its API-key middlewa
 
 ## Registry
 
-The package is listed in the official MCP registry as `io.github.larpey/ezmd` (`packages/mcp/server.json`,
-validated against the registry schema in the test suite and with `mcp-publisher validate` in CI).
+The package is published to the official MCP registry as `io.github.larpey/ezmd` with the final `0.1.0`
+release (release candidates are not listed). `packages/mcp/server.json` is validated against the registry
+schema in the test suite; the registry validates it again when the release workflow runs
+`mcp-publisher publish`. It lists the stdio package only; a `remotes` entry for a hosted `/mcp` is added
+once the API serves it.

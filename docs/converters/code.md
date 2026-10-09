@@ -6,7 +6,7 @@ Postman, SQL schemas, config files, logs, and stack traces are later Phase 1 tas
 | Converter | Inputs | Status |
 |---|---|---|
 | `code.source_file` | One source file: Magika code mimes (`text/x-python`, `application/typescript`, `application/javascript`, `text/x-golang`, `application/x-rust`, `text/x-c`, `text/x-java`, shell, Ruby, PHP, Swift, and about 30 more), and `text/plain` files whose name is a known code extension or file name (`.rs`, `.kt`, `.cs`, `Dockerfile`, ...) | Stable |
-| `code.repo_pack` | A zip or tar(.gz) of a repository: automatic for `*.repo.zip` / `*.repo.tar.gz` / `*.repo.tgz` names and for GitHub codeload tarballs, otherwise `--converter code.repo_pack`. A `https://github.com/<owner>/<repo>[/tree/<ref>[/<path>]]` URL makes the converter request the codeload tarball (`FetchRequired`); the pipeline fetches it through the SSRF guard and the converter packs the result | Stable |
+| `code.repo_pack` | A zip or tar(.gz) of a repository, selected with `--converter code.repo_pack` (a local archive, even one named `*.repo.zip` or `*.repo.tar.gz`, goes to `archives.archive` unless you ask: the archive converter outranks repo_pack's 0.95 name score). A `https://github.com/<owner>/<repo>[/tree/<ref>[/<path>]]` URL makes the converter request the codeload tarball (`FetchRequired`); the pipeline fetches it through the SSRF guard and the converter packs the result | Stable |
 
 Fallback chains: every code mime tries `code.source_file`, then `text.plain`. The family never claims
 `text/plain`, `text/markdown`, or `application/zip`; for those it relies on confidence (0.95 for a code file
@@ -78,7 +78,10 @@ reported), `secret_file_excluded`,
 ## Known limitations
 
 - Local directory inputs are not supported yet: the core `InputRef` has no directory kind. Zip the repository
-  (`git archive --format=zip -o repo.repo.zip HEAD`) or pass a GitHub URL.
+  (`git archive --format=zip -o repo.zip HEAD`) and convert it with `--converter code.repo_pack`, or pass a
+  GitHub URL.
+- A local `*.repo.zip` / `*.repo.tar.gz` name is not enough to pick `code.repo_pack`: `archives.archive`
+  claims every zip and tar first, so pass `--converter code.repo_pack`.
 - `text/plain` is pinned to `text.plain` by the text family's chain, so a code file Magika calls `text/plain`
   (Rust, Kotlin, C#, Lua, Dart) reaches `code.source_file` only when that chain lets other candidates in or
   with `--converter code.source_file`.

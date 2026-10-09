@@ -330,7 +330,7 @@ _SPECS: tuple[CodeSpec, ...] = (
              "Some pages have no text layer; their content is missing.",
              "Enable OCR or upload a text-layer PDF."),
     CodeSpec(WarningKind.OCR_UNAVAILABLE, "warning", "pdf", "OCR was needed but no OCR engine is available.",
-             "Install the ocr extra, e.g. pip install 'ezmd[ocr]', or use an instance with OCR enabled."),
+             "OCR (the ocr extra) is coming in a later release; use a text-layer PDF or an instance with OCR enabled."),
     CodeSpec(WarningKind.OCR_CONFIDENCE_LOW, "warning", "pdf",
              "OCR confidence was low on some pages or regions; text may be wrong.",
              "Upload a higher-resolution scan (300 DPI or more) or try a layout OCR engine."),

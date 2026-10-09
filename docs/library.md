@@ -3,8 +3,8 @@
 The library is the product: the CLI, the API workers, and the MCP server all call it, so there is exactly one
 conversion path. `import ezmd` is light; engines load on first use.
 
-From a source checkout, run your code with `uv run python ...` (see [Install](install.md)). After the first
-release: `pip install ezmd`.
+Install with `pip install ezmd==0.1.0rc2` (the release candidate; plain `pip install ezmd` once `0.1.0` is
+final), or from a source checkout run your code with `uv run python ...` (see [Install](install.md)).
 
 ## Convert
 

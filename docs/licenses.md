@@ -47,22 +47,22 @@ allowlist (D-0011).
 
 ## Extras
 
-Optional extras of `ezmd-converters` (from source: `uv sync --all-packages --extra <name>`):
+Optional extras, installed as `pip install 'ezmd[<name>]'` (forwarded to `ezmd-converters`; from source:
+`uv sync --all-packages --extra <name>`):
 
 | Extra | What it adds | License |
 |---|---|---|
 | `docs` | Docling (`docling-slim`) for PDF layout, with torch and OpenCV | MIT (Docling), BSD-3-Clause (torch), Apache-2.0 (OpenCV); about 1.2 GB. On Linux, PyPI's torch also pulls the NVIDIA CUDA runtime wheels (NVIDIA proprietary, several GB; see Policy) |
 | `data` | pyarrow, for Parquet | Apache-2.0 |
 | `7z` | py7zr, for 7z archives | LGPL-2.1-or-later (dynamically imported, never bundled in images) |
+| `nonfree` | extract-msg, a fallback reader for Outlook `.msg` (the native reader in the default install handles most files) | GPL-3.0; prints a one-time notice when used; never part of `all` |
 
-The known non-permissive extras, each of which prints a one-time notice when used, are planned:
+Further non-permissive engines are planned, each behind an extra that prints a one-time notice when used:
 
-| Extra | License | Status |
+| Engine | License | Status |
 |---|---|---|
 | `pymupdf` | AGPL-3.0 | Planned |
-| `extract-msg` | GPL-3.0 | Planned (Outlook `.msg`, P1-T04) |
 | `chandra` | OpenRAIL-M (model weights) | Planned |
-| `nonfree` | AGPL-3.0 / GPL-3.0 (bundles the copyleft engines) | Planned |
 
 Network use of AGPL software can oblige you to publish your source. Read each license before
 installing a non-permissive extra on a server.

@@ -5,7 +5,7 @@ Package `ezmd_converters.archives`, converter family `archives` (spec: docs/spec
 
 | Converter | Formats | Status | Engine |
 |---|---|---|---|
-| `archives.archive` | zip; tar, tar.gz/tgz, tar.bz2, tar.xz; single-file `.gz`/`.bz2`/`.xz`; 7z with the `7z` extra | Stable | stdlib `zipfile`, `tarfile`, `gzip`, `bz2`, `lzma`; `py7zr` (LGPL-2.1-or-later) only with `pip install 'ezmd-converters[7z]'` |
+| `archives.archive` | zip; tar, tar.gz/tgz, tar.bz2, tar.xz; single-file `.gz`/`.bz2`/`.xz`; 7z with the `7z` extra | Stable | stdlib `zipfile`, `tarfile`, `gzip`, `bz2`, `lzma`; `py7zr` (LGPL-2.1-or-later) only with `pip install 'ezmd[7z]'` |
 | `archives.sevenzip` | listed as unavailable when py7zr is missing | Unavailable entry | capabilities shows the reason and the `7z` extra |
 
 Formats are detected by magic bytes. Plain zips have no pinned chain on purpose: zip-based documents (EPUB,

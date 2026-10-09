@@ -84,7 +84,8 @@ type, record count, nesting depth). Every block carries `provenance.path`: a cel
 
 ## Options
 
-Set through `ConvertOptions.extra` as `data.<name>` (CLI `--data.<name>=...` once the CLI exposes it):
+Set through `ConvertOptions.extra` as `data.<name>`; from the CLI, `--opt extra.data.<name>=<value>` (for
+example `ezmd convert big.json --opt extra.data.max_rows=200`):
 
 | Option | Default | Meaning |
 |---|---|---|

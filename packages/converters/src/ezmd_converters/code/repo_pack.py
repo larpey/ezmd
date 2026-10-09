@@ -1,7 +1,8 @@
 """code.repo_pack: a repository archive packed into one Markdown document (docs/spec/part2.md 8c steps 1-10).
 
-Inputs: a zip or tar(.gz) of a repository (selected with `--converter code.repo_pack`, or automatically for
-`*.repo.zip` / `*.repo.tar.gz` names and for GitHub codeload tarballs), or a github.com repository URL without a
+Inputs: a zip or tar(.gz) of a repository (selected with `--converter code.repo_pack`; the 0.95 score for
+`*.repo.zip` / `*.repo.tar.gz` names loses to `archives.archive`, so local archives need the flag; codeload
+tarballs fetched for a GitHub URL score 1.0), or a github.com repository URL without a
 body, for which the converter raises `FetchRequired` with the codeload tarball URL. Options (`--opt extra.<key>`):
 `signatures_only`, `token_budget`, `max_file_bytes` (512 KB), `respect_gitignore` (true), `include` / `exclude`
 (comma-separated globs), `tests_first` (false), `subpath`.

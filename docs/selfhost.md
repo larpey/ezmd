@@ -9,8 +9,11 @@ environment variables, never the sandbox.
 
 ```sh
 git clone https://github.com/larpey/ezmd && cd ezmd
-deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 0.1.0
+deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 0.1.0-rc2
 ```
+
+`--version` is an image tag on GHCR. The release candidates `0.1.0-rc1` and `0.1.0-rc2` are published
+today; `0.1.0` is available from the v0.1.0 release, so use the rc tag until then.
 
 `bootstrap.sh` is safe to run again; it only fills in what is missing:
 
@@ -106,10 +109,10 @@ Every process brings the database to the Alembic head at startup. A database cre
 The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-release and publishes to PyPI as a pre-release (pip and uv install it only with `--pre` or an exact version); `vX.Y.Z` publishes to PyPI, npm (`@ezmd/sdk`) and the MCP registry. Every PyPI publish waits for the owner's approval in the `release` environment. Images are pushed by digest, scanned with Trivy (HIGH/CRITICAL findings with a fix fail the release), given an SPDX SBOM (syft; also attached to the GitHub release) and signed with cosign keyless before any tag points at them:
 
 ```sh
-cosign verify ghcr.io/larpey/ezmd-api:0.1.0 \
+cosign verify ghcr.io/larpey/ezmd-api:0.1.0-rc2 \
   --certificate-identity-regexp '^https://github.com/larpey/ezmd/.github/workflows/images.yml@refs/tags/v' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
-cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0 \
+cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0-rc2 \
   --certificate-identity-regexp '^https://github.com/larpey/ezmd/.github/workflows/images.yml@refs/tags/v' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```

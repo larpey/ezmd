@@ -10,8 +10,9 @@ ezmd turns an input into an intermediate representation and renders it as Markdo
 frontmatter under one of four output profiles, plus a JSON sidecar with block provenance and an explicit
 list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
 
-> **Status: release candidate.** `0.1.0rc2` is on PyPI as a pre-release, so installers need `--pre` (or an
-> exact version) until `0.1.0`. The npm SDK and the public instance come with the final release. See
+> **Status: release candidate.** `0.1.0rc2` is on PyPI as a pre-release (`ezmd`, `ezmd-converters`,
+> `ezmd-mcp`), and signed images tagged `0.1.0-rc2` are on GHCR. Until `0.1.0` is final, install the exact
+> version shown below. The npm SDK (`@ezmd/sdk`) and the public instance come with the final release. See
 > [STATUS.md](STATUS.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Install
@@ -20,11 +21,14 @@ From PyPI (Python 3.12 or newer):
 
 <!-- readme: skip (installs from the network) -->
 ```sh
-pip install --pre ezmd                 # or: uv tool install --prerelease allow ezmd
-pip install --pre "ezmd[docs]"         # optional: Docling for PDF layout (large, pulls torch)
-uvx --prerelease allow ezmd convert https://example.com
-uvx ezmd-mcp==0.1.0rc2                 # the MCP server
+pip install ezmd==0.1.0rc2                 # or: uv tool install ezmd==0.1.0rc2
+pip install "ezmd[docs]==0.1.0rc2"         # optional: Docling for PDF layout (large, pulls torch)
+uvx ezmd==0.1.0rc2 convert https://example.com
+uvx ezmd-mcp==0.1.0rc2                     # the MCP server
 ```
+
+Once `0.1.0` is final, plain `pip install ezmd`, `uvx ezmd` and `uvx ezmd-mcp` work without a version.
+The Docling extra also needs its models downloaded once; see [docs/install.md](docs/install.md#extras).
 
 From source (needs [uv](https://docs.astral.sh/uv/)):
 
@@ -48,8 +52,7 @@ uv run ezmd capabilities
 uv run ezmd doctor
 ```
 
-After the final `0.1.0` release (not available yet): `pip install ezmd` and `uvx ezmd-mcp` without
-`--pre`, and the TypeScript client:
+The TypeScript client is published to npm with the final `0.1.0` release (not available yet):
 
 <!-- readme: skip (not published yet) -->
 ```sh
@@ -165,18 +168,20 @@ Then open http://localhost:8080. Signed images for each release are on GHCR (`gh
 
 | Family | Formats |
 |---|---|
-| Documents | PDF (text layer by default; Docling layout with the `docs` extra), DOCX, PPTX, XLSX, ODF, RTF, legacy Office through LibreOffice |
+| Documents | PDF (text layer by default; Docling layout with the `docs` extra), DOCX, PPTX, XLSX, ODF, RTF, legacy Office (`.doc`, `.xls`, `.ppt`) when LibreOffice is installed |
 | Ebooks and notebooks | EPUB, Jupyter notebooks |
 | Web | HTML pages and URLs (Trafilatura, rules-based, raw) |
-| Data | CSV, TSV, JSON, JSON Lines, YAML, TOML, XML, SQLite, Parquet (`data` extra), connection strings |
-| Code | Source files, repositories and directories packed with a secret scan |
-| Archives | ZIP, TAR, and compressed TAR with bomb limits; 7z with the `7z` extra |
+| Data | CSV, TSV, JSON, JSON Lines, YAML, TOML, XML, SQLite, Parquet (`data` extra); database connection strings are refused without echoing credentials |
+| Code | Source files; repository archives (zip or tar) packed with a secret scan, with `--converter code.repo_pack` or from a GitHub repository URL |
+| Archives | ZIP, TAR, and gzip/bzip2/xz TAR with bomb limits; 7z with the `7z` extra |
+| Email | EML, MBOX, Outlook MSG |
 | Specialized | SEC EDGAR filings |
 | Text | Plain text, Markdown |
 
 The full list, with engines, extras, status, fixture counts, and thresholds, is the generated
-[converter matrix](docs/converters/README.md). Audio, video, OCR, email, and chat exports are on the
-[roadmap](ROADMAP.md).
+[converter matrix](docs/converters/README.md). Local directories are not an input yet (zip the folder, or
+use `ezmd batch` to convert the files in it one by one). Audio, video, OCR, chat exports, and social
+platforms are on the [roadmap](ROADMAP.md).
 
 ## Output profiles
 
@@ -202,6 +207,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) (setup, the council process, the fixture 
 
 ## License
 
-Apache-2.0 (see [LICENSE](LICENSE) and [NOTICE](NOTICE)). Optional extras (for example `7z`, and the
-planned `nonfree` extra) and some model weights carry their own licenses; they are listed in
+Apache-2.0 (see [LICENSE](LICENSE) and [NOTICE](NOTICE)). Optional extras (for example `7z` and
+`nonfree`) and some model weights carry their own licenses; they are listed in
 [docs/licenses.md](docs/licenses.md).

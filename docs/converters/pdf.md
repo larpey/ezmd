@@ -61,10 +61,16 @@ empty formulas warn `equation_unrecognized`), Footnote, caption paragraphs. Page
 dropped and counted. Pictures are counted in `pdf_pictures` (no image payloads yet).
 Models are never downloaded during conversion unless `allow_network` is true (`HF_HUB_OFFLINE=1` is set before
 Docling loads). Pre-fetch with `docling-tools models download layout tableformer -o DIR` and set
-`EZMD_DOCLING_ARTIFACTS=DIR`. Any Docling error is retryable, so the registry falls back to the text-layer
+`EZMD_DOCLING_ARTIFACTS=DIR` (`docling-tools` is installed with the `docs` extra; see
+[Install](../install.md#docling-models-docs-extra)). Any Docling error is retryable, so the registry falls back to the text-layer
 engine (`engine_fallback`). `EZMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
 
-## Options (`ConvertOptions.extra`, CLI `--pdf.<name>=...`)
+## Options (`ConvertOptions.extra`, CLI `--opt extra.pdf.<name>=...`)
+
+From the CLI, pass each option as `--opt extra.pdf.<name>=<value>`, for example
+`ezmd convert report.pdf --opt extra.pdf.engine=pdfium --opt extra.pdf.max_pages=20`. There are no
+`--pdf.<name>` flags. `--engine pdf=docling` (or `--converter documents.docling_pdf`) forces the Docling
+engine and, without the `docs` extra, fails with the install command.
 
 | Option | Values (default first) | |
 |---|---|---|
