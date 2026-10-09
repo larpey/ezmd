@@ -23,6 +23,24 @@ if TYPE_CHECKING:
 
 log = logging.getLogger(__name__)
 
+MAX_IMAGE_PIXELS = 50_000_000
+"""Pillow decompression-bomb cap (docs/spec/part1.md 8.2): Pillow warns above it and raises
+DecompressionBombError above twice it, before decoding pixels."""
+
+
+def _cap_pillow() -> None:
+    """Set Pillow's pixel cap process-wide. Every converter module is imported through this package
+    (registry, conversion child, direct imports), so this runs before any converter opens an image.
+    Pillow is a transitive dependency of several engines; without it there is nothing to cap."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return
+    Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
+
+
+_cap_pillow()
+
 
 def family_names() -> list[str]:
     return sorted(m.name for m in pkgutil.iter_modules(__path__) if m.ispkg and not m.name.startswith("_"))
