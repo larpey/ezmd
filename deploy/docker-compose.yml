@@ -107,12 +107,17 @@ services:
       dockerfile: deploy/Dockerfile
       target: api
     command: ["uvicorn", "ezmd_api.main:app", "--host", "0.0.0.0", "--port", "8000",
-              "--workers", "${EZMD_API_WORKERS:-2}", "--proxy-headers", "--forwarded-allow-ips", "*", "--no-access-log"]
+              "--workers", "${EZMD_API_WORKERS:-2}", "--no-proxy-headers", "--no-access-log"]
     expose: ["8000"]
     environment:
       <<: *app-env
       # Retention runs in the `purge` sidecar, not inside every uvicorn worker process.
       EZMD_SCHEDULER_ENABLED: "false"
+      # Client IP: uvicorn runs --no-proxy-headers (request.client is the TCP peer) and the app reads
+      # X-Real-IP, which Caddy overwrites with its Cloudflare-aware {client_ip}, only from a peer on
+      # the private ranges. The api has no published port, so only containers on `internal` reach it.
+      EZMD_TRUST_PROXY_HEADER: ${EZMD_TRUST_PROXY_HEADER:-X-Real-IP}
+      EZMD_TRUSTED_PROXIES: ${EZMD_TRUSTED_PROXIES:-172.16.0.0/12,10.0.0.0/8,192.168.0.0/16}
     volumes:
       - state:/var/lib/ezmd
       - blobs:/var/lib/ezmd-blobs

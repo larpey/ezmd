@@ -64,3 +64,52 @@ def test_scheduler_heartbeat(tmp_path: Path) -> None:
     assert beat.exists()
     sched.heartbeat = tmp_path / "missing-dir" / "hb"
     sched._beat()  # logs a warning, never raises
+
+
+def _api_commands() -> list[list[str]]:
+    """The uvicorn argv from compose and from the Dockerfile api stage CMD."""
+    import json
+
+    compose_cmd = [str(a) for a in _services()["api"]["command"]]
+    docker_cmd: list[str] = []
+    stage = ""
+    for line in (COMPOSE.parent / "Dockerfile").read_text(encoding="utf-8").splitlines():
+        parts = line.split()
+        if parts[:1] == ["FROM"] and len(parts) >= 4:
+            stage = parts[3]
+        elif stage == "api" and line.startswith("CMD "):
+            docker_cmd = json.loads(line[4:])
+    assert docker_cmd, "api stage has no exec-form CMD"
+    return [compose_cmd, docker_cmd]
+
+
+def test_uvicorn_never_rewrites_the_peer_from_forwarded_headers() -> None:
+    """--forwarded-allow-ips * makes uvicorn take the leftmost (client-supplied) X-Forwarded-For entry.
+    The app derives the client IP itself (ezmd_api.auth.client_ip), so uvicorn must not."""
+    for cmd in _api_commands():
+        assert "--forwarded-allow-ips" not in cmd, cmd
+        assert "--proxy-headers" not in cmd, cmd
+        assert "--no-proxy-headers" in cmd, cmd
+
+
+def test_compose_api_trusts_only_caddys_x_real_ip() -> None:
+    env = _services()["api"]["environment"]
+    assert str(env["EZMD_TRUST_PROXY_HEADER"]).endswith(":-X-Real-IP}")
+    proxies = str(env["EZMD_TRUSTED_PROXIES"])
+    assert "0.0.0.0/0" not in proxies
+    assert "172.16.0.0/12" in proxies
+
+
+def test_caddy_sets_x_real_ip_on_every_api_proxy() -> None:
+    """Caddy forwards client headers; a reverse_proxy without header_up X-Real-IP would pass a spoofed one."""
+    lines = (COMPOSE.parent / "Caddyfile").read_text(encoding="utf-8").splitlines()
+    proxies = [i for i, line in enumerate(lines) if line.strip().startswith("reverse_proxy api:8000")]
+    assert proxies
+    for i in proxies:
+        assert lines[i].rstrip().endswith("{"), f"reverse_proxy on line {i + 1} has no block"
+        block: list[str] = []
+        for line in lines[i + 1 :]:
+            if line.strip() == "}" and line.startswith("\t\t}"):
+                break
+            block.append(line.strip())
+        assert "header_up X-Real-IP {client_ip}" in block, f"line {i + 1}"

@@ -42,6 +42,24 @@ Every app container runs as uid 10001 with a read-only root filesystem, a `/tmp`
 capabilities dropped, `no-new-privileges`, and CPU, memory, and pid limits. Workers also load
 `deploy/seccomp-worker.json`. See [Security](security.md) and `deploy/README.md` for details.
 
+### Client IP (direct and behind Cloudflare)
+
+Rate limits, API-key IP restrictions, Turnstile and the fetch-node CIDR check use the client IP.
+The stack derives it in one place, and no client-supplied header can set it:
+
+1. Caddy computes `{client_ip}`: the TCP peer, or `CF-Connecting-IP` when the peer is one of the
+   Cloudflare ranges in its `trusted_proxies`. It overwrites `X-Real-IP` with that value on every
+   request to the API.
+2. uvicorn runs with `--no-proxy-headers`, so the API sees the real TCP peer (Caddy). Never add
+   `--proxy-headers --forwarded-allow-ips "*"`: uvicorn then takes the leftmost
+   `X-Forwarded-For` entry, which the client chooses.
+3. The API reads `EZMD_TRUST_PROXY_HEADER` (compose default `X-Real-IP`) only when the peer is in
+   `EZMD_TRUSTED_PROXIES` (compose default: the private ranges; the API has no published port).
+
+The same settings work with or without Cloudflare in front; nothing changes when you switch. When
+you run the API without compose, leave `EZMD_TRUST_PROXY_HEADER` empty unless a proxy that
+overwrites the header sits in front, and set `EZMD_TRUSTED_PROXIES` to that proxy's address.
+
 Planned: the media worker and model init container (Phase 2), Postgres and MinIO profiles, and the
 public and Raspberry Pi overlays (Phases 3 and 4).
 
@@ -236,8 +254,8 @@ Field `foo_bar` is read from `EZMD_FOO_BAR`. Comma lists are plain comma-separat
 | Variable | Type | Default | Description |
 |---|---|---|---|
 | `EZMD_CORS_ORIGINS` | comma list | empty | Comma-separated origins allowed by CORS. Empty: same-origin only. |
-| `EZMD_TRUST_PROXY_HEADER` | str | empty | Header carrying the client IP (for example `X-Forwarded-For` or `CF-Connecting-IP`). Honored only when the peer is in `EZMD_TRUSTED_PROXIES`. |
-| `EZMD_TRUSTED_PROXIES` | comma list | empty | Comma-separated CIDRs of reverse proxies whose client-IP header is trusted. |
+| `EZMD_TRUST_PROXY_HEADER` | str | empty | Header carrying the client IP, honored only when the TCP peer is in `EZMD_TRUSTED_PROXIES`. Compose sets `X-Real-IP` (Caddy overwrites it, Cloudflare-aware). Empty: the TCP peer address. See Client IP above. |
+| `EZMD_TRUSTED_PROXIES` | comma list | empty | Comma-separated CIDRs of the reverse proxies allowed to set that header. Compose sets the private ranges (only containers on `internal` reach the API). |
 
 ### Observability
 

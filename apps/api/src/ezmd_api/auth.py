@@ -85,20 +85,34 @@ def _in_networks(ip: str, cidrs: list[str]) -> bool:
     return any(addr in ipaddress.ip_network(c, strict=False) for c in cidrs)
 
 
+def _valid_ip(value: str) -> bool:
+    try:
+        ipaddress.ip_address(value)
+    except ValueError:
+        return False
+    return True
+
+
 def client_ip(request: Request, settings: Settings) -> str:
-    """The peer address, or the proxy header value when the peer is a trusted proxy."""
+    """The peer address, or the proxy header value when the peer is a trusted proxy.
+
+    `request.client.host` must be the real TCP peer: uvicorn runs with `--no-proxy-headers` (with
+    `--forwarded-allow-ips *` it would take the leftmost, client-supplied X-Forwarded-For entry).
+    Only EZMD_TRUST_PROXY_HEADER is read, only from a peer inside EZMD_TRUSTED_PROXIES. The compose
+    stack uses X-Real-IP, which Caddy overwrites with its trusted_proxies-aware {client_ip}. A
+    list-valued header is walked right to left past trusted hops; an unparsable value is ignored.
+    """
     peer = request.client.host if request.client else "0.0.0.0"  # noqa: S104 - placeholder, never bound
     header = settings.trust_proxy_header.strip().lower()
     if not header or not _in_networks(peer, settings.trusted_proxies):
         return peer
-    value = request.headers.get(header, "")
-    if not value:
+    hops = [h.strip() for h in request.headers.get(header, "").split(",") if h.strip()]
+    if not hops or not all(_valid_ip(h) for h in hops):
         return peer
-    hops = [h.strip() for h in value.split(",") if h.strip()]
     for hop in reversed(hops):
         if not _in_networks(hop, settings.trusted_proxies):
             return hop
-    return hops[0] if hops else peer
+    return hops[0]
 
 
 def hash_ip(settings: Settings, ip: str) -> str:
@@ -197,6 +211,6 @@ def require_fetch_node(request: Request) -> None:
         or not hmac.compare_digest(presented.strip().encode(), secret.get_secret_value().encode())
     ):
         raise ApiError("unauthorized", "Fetch-node authentication failed.")
-    peer = request.client.host if request.client else ""
-    if not _in_networks(peer, settings.fetch_node_cidr):
+    # Judged on the proxy-reported client address (Caddy also gates the path on its own remote_ip).
+    if not _in_networks(client_ip(request, settings), settings.fetch_node_cidr):
         raise ApiError("forbidden", "Fetch-node requests must arrive from the fetch-node network.")

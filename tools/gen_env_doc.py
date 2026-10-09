@@ -96,9 +96,11 @@ DESCRIPTIONS: dict[str, str] = {
     "Unset: the fetch-node endpoints are not mounted.",
     "fetch_node_cidr": "Comma-separated CIDRs fetch nodes may connect from (the Tailscale range by default).",
     "cors_origins": "Comma-separated origins allowed by CORS. Empty: same-origin only.",
-    "trust_proxy_header": "Header carrying the client IP (for example `X-Forwarded-For` or `CF-Connecting-IP`). "
-    "Honored only when the peer is in `EZMD_TRUSTED_PROXIES`.",
-    "trusted_proxies": "Comma-separated CIDRs of reverse proxies whose client-IP header is trusted.",
+    "trust_proxy_header": "Header carrying the client IP, honored only when the TCP peer is in "
+    "`EZMD_TRUSTED_PROXIES`. Compose sets `X-Real-IP` (Caddy overwrites it, Cloudflare-aware). "
+    "Empty: the TCP peer address. See Client IP above.",
+    "trusted_proxies": "Comma-separated CIDRs of the reverse proxies allowed to set that header. Compose "
+    "sets the private ranges (only containers on `internal` reach the API).",
     "log_level": "Log level.",
     "log_format": "`json` (one object per line) or `text`.",
 }
