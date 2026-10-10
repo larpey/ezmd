@@ -1,6 +1,6 @@
 [project]
 name = "ezmd-converters"
-version = "0.1.0rc2"
+version = "0.1.0rc3"
 description = "Built-in converter families for ezmd."
 readme = "README.md"
 requires-python = ">=3.12"

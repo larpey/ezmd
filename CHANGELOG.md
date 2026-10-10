@@ -2,9 +2,9 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
-## [Unreleased]
+## [0.1.0-rc3] - 2026-10-09
 
-Fixes from the pre-release audit.
+Fixes from the pre-release audit (D-0039 to D-0042).
 
 ### Security
 - Client-IP spoofing behind proxies is fixed: uvicorn no longer rewrites the peer from `X-Forwarded-For`;
@@ -30,6 +30,8 @@ Fixes from the pre-release audit.
   compared. CI gains an `extras` job that runs the 7z and data converters.
 
 ### Fixed
+- `.mbox` detection no longer depends on the host's `mime.types` (a spurious `misnamed_file` warning on
+  Ubuntu and macOS); SQLite's `dbstat` size column can be turned off with `data.sqlite_sizes = false`.
 - `ezmd doctor` lists the published extras (`7z`, `data`, `docs`, `mcp`, `nonfree`) from the package metadata,
   detects them by their real requirements, and shows spec extras that are not published yet as coming in a
   later release instead of printing a pip command that fails.

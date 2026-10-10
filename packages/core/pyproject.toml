@@ -1,6 +1,6 @@
 [project]
 name = "ezmd"
-version = "0.1.0rc2"
+version = "0.1.0rc3"
 description = "Convert anything to LLM-ready Markdown."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -8,7 +8,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [{ name = "ezmd contributors" }]
 dependencies = [
-    "ezmd-converters==0.1.0rc2",
+    "ezmd-converters==0.1.0rc3",
     "pydantic>=2.9",
     "pyyaml>=6.0",
     "tiktoken>=0.8",
@@ -40,8 +40,8 @@ docs = ["ezmd-converters[docs]"]
 data = ["ezmd-converters[data]"]
 7z = ["ezmd-converters[7z]"]
 # ezmd-mcp is pinned exactly like ezmd-converters (tools/bump_version.py keeps both pins in step).
-mcp = ["ezmd-mcp==0.1.0rc2"]
-all = ["ezmd-converters[docs,data,7z]", "ezmd-mcp==0.1.0rc2"]
+mcp = ["ezmd-mcp==0.1.0rc3"]
+all = ["ezmd-converters[docs,data,7z]", "ezmd-mcp==0.1.0rc3"]
 # Forbidden licenses (GPL extract-msg); never part of `all` (docs/spec/part4.md 4.3.3).
 nonfree = ["ezmd-converters[nonfree]"]
 
