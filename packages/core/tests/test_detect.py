@@ -152,3 +152,13 @@ def test_import_magic_silences_the_windows_wheel_syntax_warning(monkeypatch: pyt
         warnings.simplefilter("always")
         assert import_magic() is fake
     assert not [w for w in caught if issubclass(w.category, SyntaxWarning)]
+
+
+def test_mbox_extension_is_platform_independent_and_not_misnamed() -> None:
+    from ezmd.detect import same_family
+
+    # Ubuntu's /etc/mime.types maps .mbox and Windows does not; the answer must not depend on the host.
+    assert extension_mime("archive.mbox") == "application/mbox"
+    # Magika labels an mbox "eml": the same family, so no misnamed_file warning.
+    assert same_family("application/mbox", "message/rfc822")
+    assert not same_family("application/mbox", "application/pdf")

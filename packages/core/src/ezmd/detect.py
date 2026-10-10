@@ -50,6 +50,8 @@ EXECUTABLE_MIMES = frozenset(
 _EXTENSION_MIMES: dict[str, str] = {
     ".md": "text/markdown",
     ".markdown": "text/markdown",
+    # Only some systems' mime.types list .mbox (Ubuntu's does; Windows and slim images do not).
+    ".mbox": "application/mbox",
     ".mdx": "text/markdown",
     ".txt": "text/plain",
     ".text": "text/plain",
@@ -192,6 +194,8 @@ _MIME_FAMILY: dict[str, str] = {
     "application/vnd.ms-powerpoint.presentation.macroenabled.12": _PPTX,
     _OOXML + "presentationml.template": _PPTX,
     "application/vnd.ms-powerpoint.template.macroenabled.12": _PPTX,
+    # An mbox is concatenated RFC 5322 messages; Magika labels one "eml", which is not a misnamed file.
+    "application/mbox": "message/rfc822",
     _OOXML + "presentationml.slideshow": _PPTX,
     "application/vnd.ms-powerpoint.slideshow.macroenabled.12": _PPTX,
 }
