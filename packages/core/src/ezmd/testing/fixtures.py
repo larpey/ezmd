@@ -279,9 +279,29 @@ def _first_difference(expected: object, actual: object, path: str = "$") -> str 
         if len(expected) != len(actual):
             return f"{path} has {len(actual)} items, expected {len(expected)}"
         return None
+    if _within_bbox_tolerance(path, expected, actual):
+        return None
     if expected != actual:
         return f"{path}: expected {expected!r}, got {actual!r}"
     return None
+
+
+# PDF engines report glyph boxes with small per-platform float differences: pdfium's Windows and Linux
+# wheels differ by about 0.1 pt on a left edge and up to about 0.5 pt on a right edge (glyph advances add up
+# along a line). Provenance boxes locate text on a page, so coordinates match within 1 pt (0.35 mm);
+# everything else in the sidecar is exact.
+BBOX_TOLERANCE_PT = 1.0
+
+
+def _within_bbox_tolerance(path: str, expected: object, actual: object) -> bool:
+    if ".bbox." not in path:
+        return False
+    numeric = (int, float)
+    if not isinstance(expected, numeric) or not isinstance(actual, numeric):
+        return False
+    if isinstance(expected, bool) or isinstance(actual, bool):
+        return False
+    return abs(float(expected) - float(actual)) <= BBOX_TOLERANCE_PT
 
 
 def _jsonable(sidecar: dict[str, Any]) -> dict[str, Any]:

@@ -253,3 +253,22 @@ def test_parquet_statistic_timestamps_render_the_same_for_naive_and_aware_utc() 
     assert _stat_text(naive.replace(tzinfo=dt.UTC)) == "2026-01-07T05:00:00Z"
     plus_two = dt.timezone(dt.timedelta(hours=2))
     assert _stat_text(dt.datetime(2026, 1, 7, 7, 0, tzinfo=plus_two)) == "2026-01-07T05:00:00Z"
+
+
+def _has_dbstat() -> bool:
+    con = sqlite3.connect(":memory:")
+    try:
+        con.execute("SELECT * FROM dbstat LIMIT 1")
+    except sqlite3.OperationalError:
+        return False
+    finally:
+        con.close()
+    return True
+
+
+@pytest.mark.parametrize("sizes", [True, False])
+def test_sqlite_size_column_follows_dbstat_and_option(tmp_path: Path, convert: Convert, sizes: bool) -> None:
+    db = _db(tmp_path / "s.sqlite", 'CREATE TABLE "we""ird" (id INTEGER PRIMARY KEY, v TEXT);', rows=20)
+    doc = convert(SqliteConverter(), db.read_bytes(), "s.sqlite", sqlite_sizes=sizes)
+    header = _cells(_tables(doc)[0])[0]
+    assert ("Size (bytes)" in header) == (sizes and _has_dbstat())

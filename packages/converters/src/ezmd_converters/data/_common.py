@@ -49,13 +49,22 @@ class DataOptions:
     sqlite_max_bytes: int = 2 * 1024 * 1024 * 1024
     statement_timeout_s: float = 5.0
     stats_max_rows: int = 1_000_000
+    # SQLite table sizes come from `dbstat`, which only some SQLite builds include (Linux CPython's does,
+    # Windows' does not); `data.sqlite_sizes = false` leaves the column out on every platform.
+    sqlite_sizes: bool = True
 
     @classmethod
     def from_options(cls, options: ConvertOptions) -> DataOptions:
         values: dict[str, Any] = {}
         for f in fields(cls):
             raw = options.extra.get(f"data.{f.name}")
-            if raw is None or isinstance(raw, bool):
+            if raw is None:
+                continue
+            if isinstance(getattr(cls(), f.name), bool):
+                if isinstance(raw, bool):
+                    values[f.name] = raw
+                continue
+            if isinstance(raw, bool):
                 continue
             if isinstance(raw, int | float) and raw > 0:
                 values[f.name] = type(getattr(cls(), f.name))(raw)

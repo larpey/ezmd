@@ -93,6 +93,7 @@ example `ezmd convert big.json --opt extra.data.max_rows=200`):
 | `data.max_rows` | 1000 | arrays longer than this are sampled to head + tail |
 | `data.schema_sample` / `data.schema_max_paths` | 10,000 / 200 | schema and structure table limits |
 | `data.stats_max_rows` | 1,000,000 | SQLite tables above this get no statistics |
+| `data.sqlite_sizes` | true | SQLite size column from `dbstat` (only in SQLite builds that include it, e.g. Linux CPython, not Windows); `false` leaves it out everywhere |
 | `data.head_rows` / `data.tail_rows` | 100 / 20 | sample sizes for arrays, SQLite tables and Parquet |
 | `data.max_cols` | 50 | columns kept in records, SQLite and Parquet samples |
 | `data.schema_depth` | 3 | dot-path flattening depth inside records |

@@ -108,3 +108,18 @@ def test_write_golden_writes_a_normalized_sidecar(tmp_path: Path) -> None:
     # Byte-identical to the committed sidecar, whatever the installed ezmd version and however long it took.
     assert fx.expected_sidecar.read_text(encoding="utf-8") == sidecar_before
     assert "duration_seconds" not in _load(fx.expected_sidecar)["metrics"]
+
+
+def test_bbox_coordinates_match_within_tolerance_only() -> None:
+    from ezmd.testing.fixtures import BBOX_TOLERANCE_PT, _first_difference
+
+    def side(x0: float, page: int = 1) -> dict[str, Any]:
+        return {"provenance": [{"page": page, "bbox": {"x0": x0, "y0": 10.0}}]}
+
+    # pdfium's Windows and Linux wheels differ by up to about 0.5 pt on the same glyphs.
+    assert _first_difference(side(72.38), side(72.25)) is None
+    assert _first_difference(side(344.32), side(343.8)) is None
+    assert _first_difference(side(72.0), side(72.0 + BBOX_TOLERANCE_PT + 0.01)) is not None
+    # The tolerance is for bbox coordinates only: other numbers stay exact.
+    assert _first_difference(side(72.0, page=1), side(72.0, page=2)) is not None
+    assert _first_difference({"metrics": {"x0": 1.0}}, {"metrics": {"x0": 1.1}}) is not None

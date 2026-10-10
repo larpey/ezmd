@@ -8,3 +8,7 @@ expected_errors = []
 origin = "self-generated"
 license = "CC0-1.0"
 source = "fixtures/data/_generate.py"
+
+[input]
+# dbstat (the Size column) exists only in some SQLite builds; off so the golden is the same on every OS.
+options = { "extra.data.sqlite_sizes" = false }

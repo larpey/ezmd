@@ -214,7 +214,7 @@ class _Builder:
         )
         info = [(str(t[1]), self.columns(str(t[1]))) for t in tables]
         counts = [self.count(name) for name, _ in info]
-        sizes = self.sizes()
+        sizes = self.sizes() if self.opts.sqlite_sizes else {}
         self.heading(2, "Tables", "/")
         header = ["Table", "Rows", "Columns"]
         types: list[ColumnType] = ["text", "int" if all(c.isdigit() for c in counts) else "text", "int"]
