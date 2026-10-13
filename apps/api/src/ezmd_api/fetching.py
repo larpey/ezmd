@@ -14,12 +14,14 @@ back to the fetch queue.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 from typing import Any
 
 from ezmd_api import queue as q
 from ezmd_api.db import ApiKeyRow
 from ezmd_api.fetchpolicy import DISABLED, RESIDENTIAL_ONLY, policy_state
 from ezmd_api.jobs import CONVERTING, FETCHING, QUEUED, JobGone
+from ezmd_api.keys import KeyRecord, record_from_row
 from ezmd_api.services import Services
 from ezmd_api.util import strip_fragment
 
@@ -32,6 +34,7 @@ _FETCH_MESSAGES = {
     "platform_disabled": "This site is disabled on this instance.",
     "fetch_failed": "The URL could not be fetched.",
 }
+_SOURCE_FORBIDDEN = "This API key may not fetch from this site."
 
 
 def input_key(job_id: str) -> str:
@@ -94,7 +97,11 @@ def fetch_job(services: Services, job_id: str) -> None:
             total_timeout=FETCH_TIMEOUT_SECONDS,
             policy=policy,
             allow_private=settings.allow_private_networks,
+            host_allowed=_source_check(services, row.api_key_id),
         )
+    except netguard.SourceNotAllowed:
+        jobs.fail(job_id, "forbidden", _SOURCE_FORBIDDEN)
+        return
     except netguard.ResidentialOnly:
         if not _key_allows_residential(services, row.api_key_id):
             jobs.fail(job_id, "forbidden", "This API key may not use residential fetches.")
@@ -122,12 +129,32 @@ def fetch_job(services: Services, job_id: str) -> None:
     hand_off(services, job_id, q.queue_for_mime(res.content_type))
 
 
+def _key_record(services: Services, api_key_id: str) -> KeyRecord | None:
+    """The job's key from `keys.json` or the database; None when it is gone or revoked (fail closed)."""
+    if services.keys is not None:
+        for record in services.keys.records():
+            if record.id == api_key_id:
+                return record
+    with services.db.session() as s:
+        row = s.get(ApiKeyRow, api_key_id)
+        if row is None or row.revoked_at is not None:
+            return None
+        return record_from_row(row)
+
+
 def _key_allows_residential(services: Services, api_key_id: str | None) -> bool:
     if api_key_id is None:
         return True  # anonymous jobs reach residential only through a residential_only policy
-    with services.db.session() as s:
-        key = s.get(ApiKeyRow, api_key_id)
-        return bool(key is not None and key.residential_allowed)
+    key = _key_record(services, api_key_id)
+    return bool(key is not None and key.residential_allowed)
+
+
+def _source_check(services: Services, api_key_id: str | None) -> Callable[[str], bool] | None:
+    """The per-hop host check for a keyed job: its key's allowed and disabled sources."""
+    if api_key_id is None:
+        return None
+    key = _key_record(services, api_key_id)
+    return key.allows_source if key is not None else (lambda _host: False)
 
 
 def follow_fetch_required(services: Services, job_id: str, url: str | None, child_depth: int) -> None:
@@ -152,6 +179,10 @@ def follow_fetch_required(services: Services, job_id: str, url: str | None, chil
     state = policy_state(settings, validated.host)
     if state == DISABLED:
         jobs.fail(job_id, "platform_disabled", _FETCH_MESSAGES["platform_disabled"])
+        return
+    allowed = _source_check(services, row.api_key_id)
+    if allowed is not None and not allowed(validated.host):
+        jobs.fail(job_id, "forbidden", _SOURCE_FORBIDDEN)
         return
     residential = state == RESIDENTIAL_ONLY
     if residential and not _key_allows_residential(services, row.api_key_id):

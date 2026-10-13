@@ -256,6 +256,29 @@ def test_redirect_to_private_rechecked(server: int, monkeypatch: pytest.MonkeyPa
         assert len(calls) == 2
 
 
+def test_host_allowed_is_checked_on_every_hop(monkeypatch: pytest.MonkeyPatch) -> None:
+    """An open redirect on an allowed site must not reach a host outside the caller's sources."""
+    sent: list[str] = []
+
+    def fake_one(v: netguard.ValidatedUrl, *args: object) -> tuple[int, dict[str, str], bytes, str | None]:
+        sent.append(v.host)
+        return 302, {}, b"", "https://evil.test/payload"
+
+    monkeypatch.setattr(netguard, "_fetch_one", fake_one)
+    resolver = fake_resolver({"docs.example.com": [PUBLIC], "evil.test": [PUBLIC]})
+    checked: list[str] = []
+
+    def allowed(host: str) -> bool:
+        checked.append(host)
+        return host.endswith("example.com")
+
+    with pytest.raises(netguard.SourceNotAllowed) as ei:
+        fetch("https://docs.example.com/go", resolver=resolver, host_allowed=allowed)
+    assert ei.value.code == "forbidden"
+    assert checked == ["docs.example.com", "evil.test"]
+    assert sent == ["docs.example.com"]  # nothing was ever sent to the disallowed host
+
+
 def test_pinned_backend_refuses_other_hosts() -> None:
     import httpcore
 

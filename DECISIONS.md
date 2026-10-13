@@ -417,3 +417,13 @@ Status: accepted
 Context: server.json advertised `https://{host}/mcp`, which the API never mounts (D-0024 pending), and `ezmd doctor` recommended unpublished extras.
 Decision: `remotes` is removed until apps/api mounts `/mcp` (a test ties the two together; deviates from part4 4.4.5 until then). Doctor reads published extras from the installed metadata and shows unpublished spec extras as coming later. `--engine pdf=docling` resolves by id parts; naming an unavailable converter names its extra. Release notes come from the exact changelog heading or `[Unreleased]`, else the release fails. Details: docs/decisions/audit-fix-docs.md.
 Council: not convened (audit fix).
+
+## D-0043: Key source restrictions are checked on every hop; a challenge JWT covers 5 URL jobs
+Date: 2026-10-13
+Task: audit (residual security items)
+Status: accepted
+Context: an API key's `allowed_sources` / `disabled_sources` were checked only on the submitted URL, so an open redirect on an allowed host reached any public host; converter-requested fetches (`follow_fetch_required`) skipped the check too. The Turnstile challenge JWT was accepted for any number of jobs until it expired, while part4 4.11.2 allows 5. The fetch worker looked up `residential_allowed` in the database only, so `keys.json` keys were failed on residential-only redirects.
+Decision: `netguard.fetch` takes `host_allowed: Callable[[str], bool]` and calls it on each hop right after `validate_url`, raising `SourceNotAllowed` (`forbidden`) before any request to that host. The fetch worker builds it from the job's key (file or database; a missing or revoked key allows nothing) and applies it to `follow_fetch_required` URLs. The challenge JWT carries a nonce; each convert call spends one use with `gauge_incr("challenge:<nonce>", ttl + 5)` and more than `CHALLENGE_MAX_USES` (5) needs a new Turnstile token. Key lookup for the worker covers file keys.
+Alternatives: re-check only the final URL after redirects (the request to the forbidden host has already been sent); bind the JWT to a job count in its claims (stateless but cannot be decremented).
+Consequences: the residential fetch node does not apply the per-hop check yet; it gets the same rule with its Phase 3 redirect handling.
+Council: not convened (audit fix).

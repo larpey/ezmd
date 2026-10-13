@@ -2,6 +2,21 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
+## [Unreleased]
+
+### Added
+- `ezmd --version` (and `-V`) prints the same line as `ezmd version`.
+
+### Security
+- API-key `allowed_sources` / `disabled_sources` now hold across redirects and converter-requested
+  fetches; before, an open redirect on an allowed site could reach any public host (D-0043).
+- A Turnstile challenge JWT covers at most 5 URL jobs, counted per nonce, instead of any number until it
+  expired (docs/spec/part4.md 4.11.2; D-0043).
+
+### Fixed
+- The fetch worker finds `keys.json` keys: a file key with `residential_allowed` is no longer failed
+  when a redirect lands on a residential-only host.
+
 ## [0.1.0-rc3] - 2026-10-09
 
 Fixes from the pre-release audit (D-0039 to D-0042).

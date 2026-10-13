@@ -49,7 +49,8 @@ operators and users. Items marked Planned are specified but not built yet.
    (`100.64.0.0/10`), and IPv6 ULA ranges are rejected, as are `localhost`, `*.localhost`,
    `*.internal`, `*.local`, `*.arpa`, and cloud metadata hostnames.
 3. DNS is resolved once and the connection is pinned to the checked address (no rebinding).
-4. At most 5 redirects, each re-checked; credentials are dropped across hosts.
+4. At most 5 redirects, each re-checked (including an API key's `allowed_sources` and
+   `disabled_sources`); credentials are dropped across hosts.
 5. Response bodies are capped and time-limited; executable content types are rejected.
 6. A `platforms.toml` (`EZMD_PLATFORMS_FILE`) can mark hosts `disabled` or `residential_only`.
 

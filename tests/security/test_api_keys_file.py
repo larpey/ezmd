@@ -3,6 +3,7 @@ restrictions, expiry, reload, and fail-fast on a malformed file."""
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import time
@@ -14,7 +15,7 @@ import pytest
 
 from ezmd_api.keys import KeysFileError, KeyStore, file_key_id, hash_api_key
 from ezmd_api.settings import Settings
-from ezmd_api.testing import api_client, make_settings, upload, use_in_process_isolation
+from ezmd_api.testing import api_client, make_settings, upload, use_in_process_isolation, wait_for_state
 
 PEPPER = "p" * 40
 KEY = "ak_test_FileKeyForTheTestSuite01"
@@ -171,3 +172,52 @@ async def test_key_source_allow_and_deny_lists(
         assert await post("https://docs.example.com/a.html") == 202
         assert await post("https://private.example.com/a.html") == 403
         assert await post("https://example.org/a.html") == 403
+
+
+async def test_key_sources_hold_across_redirects(
+    settings_for: Callable[..., Settings], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The fetch worker hands the key's source check to netguard, which applies it to every redirect hop."""
+    from ezmd.core import netguard
+
+    seen: list[bool] = []
+
+    def redirecting(url: str, **kwargs: Any) -> Any:
+        allowed = kwargs["host_allowed"]
+        seen.extend([allowed("docs.example.com"), allowed("private.example.com"), allowed("evil.org")])
+        raise netguard.SourceNotAllowed("evil.org is not an allowed source", url="https://evil.org/")
+
+    monkeypatch.setattr(netguard, "fetch", redirecting)
+    entry = _hashed(_base(), allowed_sources=["*.example.com"], disabled_sources=["private.example.com"])
+    async with api_client(settings_for([entry])) as (client, _app):
+        r = await client.post("/v1/convert", json={"url": "https://docs.example.com/go"}, headers={"X-API-Key": KEY})
+        assert r.status_code == 202, r.text
+        body = await wait_for_state(client, r.json()["job"]["id"], headers={"X-API-Key": KEY})
+    assert seen == [True, False, False]
+    assert body["state"] == "failed"
+    assert body["error"]["code"] == "forbidden"
+
+
+async def test_file_key_residential_permission_reaches_the_fetch_worker(
+    settings_for: Callable[..., Settings], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A residential_only redirect target routes a keys.json key with residential_allowed to the fetch node
+    (the worker used to look the key up in the database only and fail it)."""
+    from ezmd.core import netguard
+
+    def residential(url: str, **kwargs: Any) -> Any:
+        raise netguard.ResidentialOnly("needs a residential fetch", url=url)
+
+    monkeypatch.setattr(netguard, "fetch", residential)
+    entry = _hashed(_base(), residential_allowed=True)
+    async with api_client(settings_for([entry])) as (client, app):
+        r = await client.post("/v1/convert", json={"url": "https://example.com/v"}, headers={"X-API-Key": KEY})
+        assert r.status_code == 202, r.text
+        row = app.state.services.jobs.require(r.json()["job"]["id"])
+        for _ in range(100):
+            if row.queue == "fetch_residential" or row.state == "failed":
+                break
+            await asyncio.sleep(0.02)
+            row = app.state.services.jobs.require(row.id)
+    assert row.state != "failed", row.error_code
+    assert row.queue == "fetch_residential"

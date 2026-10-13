@@ -20,7 +20,9 @@ adapters that need a client). Guarantees:
    cookies are dropped across hosts.
 5. Bodies are streamed and capped (abort at cap + 1), total time is bounded, and executable
    content types are refused.
-6. A platform policy file maps hosts to `sanctioned`, `residential_only`, or `disabled`.
+6. A platform policy file maps hosts to `sanctioned`, `residential_only`, or `disabled`. A caller's
+   own source restriction (`host_allowed`, e.g. an API key's `allowed_sources`) is checked on every
+   hop too, so an open redirect on an allowed site cannot leave the allowlist.
 7. Every fetch is logged with a redacted URL, the resolved IP, status, bytes, and duration.
 """
 
@@ -156,6 +158,12 @@ class NetguardError(Exception):
 
 class UrlBlocked(NetguardError):
     code = "url_blocked"
+
+
+class SourceNotAllowed(NetguardError):
+    """A hop's host fails the caller's `host_allowed` check (an API key's source restriction)."""
+
+    code = "forbidden"
 
 
 class PlatformDisabled(NetguardError):
@@ -509,8 +517,12 @@ def fetch(
     allow_private: bool = False,
     verify: ssl.SSLContext | bool = True,
     request_id: str | None = None,
+    host_allowed: Callable[[str], bool] | None = None,
 ) -> FetchResult:
-    """GET `url` with the full SSRF guard. See the module docstring."""
+    """GET `url` with the full SSRF guard. See the module docstring.
+
+    `host_allowed`, when given, is called with every hop's host (the first URL and each redirect
+    target); a False answer raises `SourceNotAllowed` before anything is sent to that host."""
     t0 = time.monotonic()
     send_headers = {"accept": "*/*", **{k.lower(): v for k, v in (headers or {}).items()}}
     caller_agent = "user-agent" in send_headers
@@ -519,6 +531,8 @@ def fetch(
     first_host: str | None = None
     while True:
         v = validate_url(current, allow_private=allow_private)
+        if host_allowed is not None and not host_allowed(v.host):
+            raise SourceNotAllowed(f"{v.host} is not an allowed source", url=current)
         if first_host is None:
             first_host = v.host
         elif v.host != first_host:
