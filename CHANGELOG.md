@@ -2,7 +2,9 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
-## [Unreleased]
+## [0.1.0-rc4] - 2026-10-13
+
+Release candidate for the pre-0.1.0 test pass. The npm SDK stays at 0.1.0-rc.3 (unchanged).
 
 ### Added
 - `ezmd --version` (and `-V`) prints the same line as `ezmd version`.
