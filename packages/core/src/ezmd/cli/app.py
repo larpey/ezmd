@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import sys
+from typing import Annotated
 
 import typer
 
@@ -35,8 +36,21 @@ def _utf8_streams() -> None:
             reconfigure(encoding="utf-8")
 
 
+def _print_version(value: bool) -> None:
+    """`ezmd --version` / `-V`: the same line as `ezmd version`, then exit."""
+    if value:
+        _utf8_streams()
+        version()
+        raise typer.Exit()
+
+
 @app.callback()
-def _setup() -> None:
+def _setup(
+    _version: Annotated[
+        bool,
+        typer.Option("--version", "-V", callback=_print_version, is_eager=True, help="Print the version and exit."),
+    ] = False,
+) -> None:
     """Convert anything to LLM-ready Markdown."""
     _utf8_streams()
     logger = logging.getLogger("ezmd")

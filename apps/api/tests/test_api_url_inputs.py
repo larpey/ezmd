@@ -118,6 +118,31 @@ async def test_turnstile_required_in_public_mode(
         assert again.status_code == 202
 
 
+async def test_challenge_jwt_covers_five_jobs_then_needs_a_new_token(
+    monkeypatch: pytest.MonkeyPatch, settings_factory: Callable[..., Settings]
+) -> None:
+    """docs/spec/part4.md 4.11.2: one JWT is good for up to 5 convert calls, then it is spent (no replay)."""
+    from ezmd.core import netguard
+    from ezmd_api.auth import CHALLENGE_MAX_USES
+
+    monkeypatch.setattr(netguard, "fetch", _fake_fetch(b"hi\n"))
+    secret = "s" * 32
+    settings = settings_factory(public_mode=True, jwt_secret=secret, key_pepper=secret, turnstile_secret="ts-secret")
+    async with api_client(settings) as (client, app):
+        app.state.turnstile_verifier = lambda s, token, ip: token == "good"
+        first = await client.post("/v1/convert", json={"url": "https://example.com/0.txt", "turnstile_token": "good"})
+        assert first.status_code == 202
+        jwt_value = client.cookies.get("ezmd_challenge")
+        assert jwt_value
+        client.cookies.clear()
+        headers = {"X-Ezmd-Challenge": jwt_value}
+        codes = []
+        for i in range(1, CHALLENGE_MAX_USES + 2):
+            r = await client.post("/v1/convert", json={"url": f"https://example.com/{i}.txt"}, headers=headers)
+            codes.append(r.status_code)
+        assert codes == [202] * CHALLENGE_MAX_USES + [401]
+
+
 async def test_turnstile_off_by_default(client: Any) -> None:
     r = await client.post("/v1/convert", json={"url": "https://example.com/x"})
     assert r.status_code == 202

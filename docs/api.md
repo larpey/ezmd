@@ -111,7 +111,8 @@ client are capped by `EZMD_ANON_SSE_MAX`.
 
 Anonymous use is allowed unless `EZMD_REQUIRE_API_KEY=true`; API keys are sent as `X-API-Key`.
 When Turnstile is enabled, URL jobs need a `turnstile_token` in the JSON body; a successful check sets
-a short-lived challenge cookie. Responses carry `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and
+a short-lived challenge cookie (also accepted as the `X-Ezmd-Challenge` header) that covers up to 5
+further URL jobs from the same client IP before a new token is needed. Responses carry `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and
 `X-RateLimit-Reset`; `429 rate_limited` and `503 queue_unavailable` include `Retry-After`. Defaults are
 in [Self-hosting](selfhost.md#api-environment-variables).
 
@@ -151,7 +152,8 @@ Every field except `name` and one of `key_hash` / `key` is optional (defaults sh
 preferred: `ezmd-admin keys create --store file --name NAME` appends an entry with the hash and
 prints the key once. Unknown fields are rejected (typos fail loudly). `ips` (CIDRs) and `user_agents`
 (globs) restrict where a key may be used (`403 forbidden` otherwise); `allowed_sources` /
-`disabled_sources` are host globs checked for URL inputs. Expired keys are `401 unauthorized`.
+`disabled_sources` are host globs checked for URL inputs, on the submitted URL and again on every
+redirect and converter-requested fetch (a job that leaves the list fails with `forbidden`). Expired keys are `401 unauthorized`.
 `allowed_families` is stored but not enforced yet.
 
 ## Warning codes

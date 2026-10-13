@@ -52,6 +52,13 @@ def test_version_json_and_text() -> None:
     assert runner.invoke(app, ["version"]).stdout.startswith(f"ezmd {__version__}")
 
 
+@pytest.mark.parametrize("flag", ["--version", "-V"])
+def test_version_flag_prints_and_exits(flag: str) -> None:
+    res = runner.invoke(app, [flag])
+    assert res.exit_code == 0, res.output
+    assert res.stdout.startswith(f"ezmd {__version__}")
+
+
 def test_version_reads_build_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     f = tmp_path / "_build_info.json"
     f.write_text(json.dumps({"commit": "abc123", "build_date": "2026-10-01"}), encoding="utf-8")

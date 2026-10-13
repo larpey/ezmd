@@ -5,7 +5,9 @@
   store only HMAC-SHA256(pepper, key). A key may restrict the client IP and User-Agent.
 - Raw client IPs are never stored; `client_ip_hash` is a salted sha256.
 - Turnstile is implemented but off unless `EZMD_TURNSTILE_SECRET` is set (or public mode demands it).
-  A verified token yields a short-lived signed JWT cookie so one solve covers one job creation.
+  A verified token yields a short-lived signed JWT cookie bound to the client IP hash and a nonce;
+  it covers `CHALLENGE_MAX_USES` further URL jobs (counted per nonce in the state backend, so a
+  copied cookie cannot be replayed beyond that) until it expires (docs/spec/part4.md 4.13).
 - Fetch nodes need `Authorization: Bearer <EZMD_FETCH_NODE_SECRET>` and a source address inside
   `EZMD_FETCH_NODE_CIDR`; both checks are required.
 """
@@ -51,6 +53,8 @@ log = logging.getLogger("ezmd.api.auth")
 TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 CHALLENGE_COOKIE = "ezmd_challenge"
 CHALLENGE_HEADER = "x-ezmd-challenge"
+CHALLENGE_MAX_USES = 5
+"""URL jobs one challenge JWT may cover (docs/spec/part4.md: "good for up to 5 convert calls")."""
 _EPHEMERAL_JWT_KEY = secrets.token_bytes(32)
 
 
@@ -157,12 +161,29 @@ def issue_challenge_jwt(settings: Settings, ip_hash: str) -> str:
     return jwt.encode(claims, _jwt_key(settings), algorithm="HS256")
 
 
-def check_challenge_jwt(settings: Settings, token: str, ip_hash: str) -> bool:
+def challenge_nonce(settings: Settings, token: str, ip_hash: str) -> str | None:
+    """The nonce of a valid, unexpired challenge JWT issued to `ip_hash`, else None."""
     try:
-        claims = jwt.decode(token, _jwt_key(settings), algorithms=["HS256"], options={"require": ["exp", "sub"]})
+        claims = jwt.decode(
+            token, _jwt_key(settings), algorithms=["HS256"], options={"require": ["exp", "sub", "nonce"]}
+        )
     except jwt.PyJWTError:
-        return False
-    return hmac.compare_digest(str(claims.get("sub", "")), ip_hash)
+        return None
+    if not hmac.compare_digest(str(claims.get("sub", "")), ip_hash):
+        return None
+    nonce = claims.get("nonce")
+    return nonce if isinstance(nonce, str) and nonce else None
+
+
+def check_challenge_jwt(settings: Settings, token: str, ip_hash: str) -> bool:
+    return challenge_nonce(settings, token, ip_hash) is not None
+
+
+def _spend_challenge(request: Request, settings: Settings, nonce: str) -> bool:
+    """Count one use of the challenge `nonce`; False once it has covered CHALLENGE_MAX_USES jobs."""
+    state = request.app.state.services.state
+    uses = int(state.gauge_incr(f"challenge:{nonce}", settings.turnstile_jwt_ttl_s + 5))
+    return uses <= CHALLENGE_MAX_USES
 
 
 def verify_turnstile(settings: Settings, token: str, remote_ip: str) -> bool:
@@ -184,7 +205,8 @@ def require_url_challenge(request: Request, caller: Caller, token: str | None) -
     if caller.api_key is not None or not settings.turnstile_required:
         return None
     existing = request.headers.get(CHALLENGE_HEADER) or request.cookies.get(CHALLENGE_COOKIE)
-    if existing and check_challenge_jwt(settings, existing, caller.ip_hash):
+    nonce = challenge_nonce(settings, existing, caller.ip_hash) if existing else None
+    if nonce is not None and _spend_challenge(request, settings, nonce):
         return None
     if not token:
         raise ApiError("turnstile_required", "URL inputs require a Turnstile token on this instance.")

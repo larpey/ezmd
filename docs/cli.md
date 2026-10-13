@@ -11,6 +11,7 @@ Usage: ezmd [OPTIONS] COMMAND [ARGS]...
   Convert anything to LLM-ready Markdown.
 
 Options:
+  -V, --version         Print the version and exit.
   --install-completion  Install completion for the current shell.
   --show-completion     Show completion for the current shell, to copy it or customize the
                         installation.
