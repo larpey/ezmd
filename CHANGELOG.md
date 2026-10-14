@@ -15,6 +15,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   is inherited (D-0057).
 - URL fetches refuse hostnames with a label over 63 octets, over 253 in total, or an empty label (before,
   `getaddrinfo` raised UnicodeError and the job failed with a 500); a trailing dot is normalized.
+- Executables detected by Magika (`application/x-executable-elf`, Mach-O, COFF, DEX, Windows drivers,
+  Python bytecode and the rest of Magika's executable group) are refused like libmagic's; Magika's archive
+  labels need the archive's signature when libmagic disagrees (1 MiB of `a` is no longer an ISO image);
+  Magika's ONNX session uses `EZMD_MAGIKA_THREADS` threads (default 1) (D-0058).
 
 ### Documentation
 - Install docs no longer pin `0.1.0rc2`: pip and uv take the newest release candidate while no final exists.

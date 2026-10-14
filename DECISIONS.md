@@ -511,3 +511,13 @@ Decision: `archives.backends.zip_directory_problem` reads the EOCD record (ZIP64
 Golden: fixtures/archives/zip-nested-mixed `archive_bytes_extracted` 3258 to 5084: the 1826 declared bytes of `season/report.docx` inside `bundle/season.tar.gz` are now charged. Nothing else changed.
 Alternatives: charge the document's actual bytes from inside the Office converter (needs the archive budget threaded through `convert_child` and every converter).
 Council: not convened (hardening).
+
+## D-0058: Executables include Magika's executable group; container labels need their signature; Magika runs on bounded threads
+Date: 2026-10-13
+Task: pre-0.1.0 red team (rc5 core, from rc5-api)
+Status: accepted
+Context: in the rc4 image `/bin/ls` and libc detect as Magika's `application/x-executable-elf`, which `EXECUTABLE_MIMES` lacked, so executables were not refused (part1 8.2). Magika labels 1 MiB of one repeated byte `iso` (application/x-iso9660-image) at 0.9986 while libmagic says text/plain. Magika's ONNX Runtime session sizes its thread pools to the machine and ignores OMP_NUM_THREADS, which collides with the API worker's RLIMIT_NPROC (rc5-api D-0047).
+Decision: `EXECUTABLE_MIMES` is a static set (libmagic names plus Magika 1.0's executable group: x-executable-elf, x-mach-o, x-coff, x-android-dex/dey, x-windows-driver, x-bytecode.python) united with the "executable" group read from Magika's `config/content_types_kb.min.json` (located with `find_spec`, so magika/onnxruntime are not imported), minus application/octet-stream (the group's `rll` label). That also refuses APK, CRX, SWF, WebAssembly and Java class files. When Magika's label is an archive label (iso, zip, sevenzip, rar, gzip, bzip, xz, zst, tar, cab, rpm, deb, lha, arj), libmagic gives a different mime, and the label's magic bytes are absent (ISO: `CD001` at 0x8001/0x8801/0x9001), Magika's answer is dropped and the usual fallback chain decides. Magika's session is built with `intra_op_num_threads = inter_op_num_threads = EZMD_MAGIKA_THREADS` (default 1) and sequential execution, by overriding the private `Magika._init_onnx_session`; if that fails, plain `Magika()` is used with a logged warning.
+Alternatives: patch onnxruntime's global thread pool through env vars (ORT reads none reliably for session pools); a stand-alone signature table for every Magika label (most labels are text formats where signatures do not exist).
+Consequences: the private-API override must be checked when magika is upgraded (a test reads the session's options). The API worker should set `EZMD_MAGIKA_THREADS` if it wants more than 1.
+Council: not convened (security bug fix).
