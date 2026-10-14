@@ -377,3 +377,41 @@ def test_brotli_under_cap_round_trips(module: str, monkeypatch: pytest.MonkeyPat
     assert out == payload
     with pytest.raises(ResponseTooLarge):
         netguard._decode_capped(lib.compress(payload), "br", len(payload) - 1, "https://example.com/")
+
+
+# -- hostname length limits (red team: a 3000-octet label reached getaddrinfo and raised UnicodeError) ----
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://" + "a" * 3000 + ".com/",
+        "http://" + "a" * 64 + ".example.com/",
+        "http://" + ".".join(["a" * 60] * 5) + ".com/",  # 309 octets
+        "http://a..example.com/",
+        "http://./",
+    ],
+)
+def test_overlong_or_empty_labels_are_blocked(url: str) -> None:
+    from ezmd.core.netguard import UrlBlocked, validate_url
+
+    with pytest.raises(UrlBlocked):
+        validate_url(url)
+
+
+def test_63_octet_label_and_trailing_dot_are_fine() -> None:
+    from ezmd.core.netguard import validate_url
+
+    v = validate_url("http://" + "a" * 63 + ".example.com./x")
+    assert v.host == "a" * 63 + ".example.com"
+    assert validate_url("https://Example.COM./").host == "example.com"
+
+
+def test_resolver_unicode_error_becomes_url_blocked() -> None:
+    from ezmd.core.netguard import UrlBlocked, resolve_checked, validate_url
+
+    def boom(host: str, port: int) -> list[str]:
+        raise UnicodeError("label empty or too long")
+
+    with pytest.raises(UrlBlocked):
+        resolve_checked(validate_url("http://example.com/"), resolver=boom)

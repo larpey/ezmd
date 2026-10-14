@@ -13,6 +13,8 @@ All notable changes are generated from Conventional Commits. This project uses s
   block that are not kept, documents inside archives), refuse oversized zip directories before parsing
   them, DOCTYPE-check every XML-looking package part, and keep Docling offline even when `HF_HUB_OFFLINE=0`
   is inherited (D-0057).
+- URL fetches refuse hostnames with a label over 63 octets, over 253 in total, or an empty label (before,
+  `getaddrinfo` raised UnicodeError and the job failed with a 500); a trailing dot is normalized.
 
 ### Documentation
 - Install docs no longer pin `0.1.0rc2`: pip and uv take the newest release candidate while no final exists.

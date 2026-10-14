@@ -282,6 +282,22 @@ def redact_url(url: str) -> str:
     return urlunsplit((parts.scheme, netloc, parts.path, "&".join(query_items), ""))
 
 
+MAX_HOSTNAME = 253
+MAX_LABEL = 63
+
+
+def _check_dns_name(host: str, url: str) -> None:
+    """RFC 1035 lengths: labels of 1 to 63 octets, 253 in total. Longer names reach getaddrinfo and fail
+    there with UnicodeError instead of a refusal."""
+    if len(host) > MAX_HOSTNAME:
+        raise UrlBlocked(f"hostname is {len(host)} octets; the limit is {MAX_HOSTNAME}", url=url[:300])
+    for label in host.split("."):
+        if not label:
+            raise UrlBlocked("hostname has an empty label", url=url)
+        if len(label) > MAX_LABEL:
+            raise UrlBlocked(f"a hostname label is {len(label)} octets; the limit is {MAX_LABEL}", url=url[:300])
+
+
 @dataclass(frozen=True, slots=True)
 class ValidatedUrl:
     url: str
@@ -310,12 +326,16 @@ def validate_url(url: str, *, allow_private: bool = False) -> ValidatedUrl:
     host = parts.hostname
     if not host:
         raise UrlBlocked("URL has no host", url=url)
-    host = host.rstrip(".")
+    host = host.rstrip(".")  # "example.com." is the same host as "example.com"
+    if not host:
+        raise UrlBlocked("URL has no host", url=url)
     try:
         host_idna = host.encode("idna").decode("ascii") if not host.isascii() else host
     except UnicodeError as e:
         raise UrlBlocked("invalid internationalized hostname", url=url) from e
     ip = parse_ip_literal(host_idna)
+    if ip is None:
+        _check_dns_name(host_idna, url)
     if ip is not None:
         if not allow_private and is_blocked_ip(ip):
             raise UrlBlocked(f"address {ip} is in a blocked range", url=url)
@@ -358,6 +378,8 @@ def resolve_checked(
         raise FetchFailed(f"DNS lookup for {v.host} timed out", url=v.url) from e
     except OSError as e:
         raise FetchFailed(f"DNS lookup for {v.host} failed", url=v.url) from e
+    except UnicodeError as e:  # the idna codec rejects the name (should already be caught by validate_url)
+        raise UrlBlocked(f"hostname {v.host[:80]!r} cannot be resolved: {e}", url=v.url) from e
     if not addrs:
         raise FetchFailed(f"DNS lookup for {v.host} returned no addresses", url=v.url)
     parsed: list[IPAddress] = []
