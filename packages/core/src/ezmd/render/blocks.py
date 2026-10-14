@@ -179,7 +179,7 @@ def render_equation(ctx: RenderContext, block: Equation) -> Unit | None:
         ctx.warn(WarningKind.EQUATION_AS_TEXT, "An equation could not be converted to LaTeX.", block_id=block.id)
         from ezmd.render.text import code_span
 
-        text = code_span(collapse_ws(block.text.strip())) + "\n<!-- ezmd: equation not converted -->"
+        text = code_span(collapse_ws(block.text.strip())) + "\n" + ctx.marker("ezmd: equation not converted")
         return Unit(text=text, kind="equation", block_ids=[block.id], page=page)
     return None
 
@@ -335,7 +335,7 @@ def render_image(
         bbox = _bbox(block)
         if bbox:
             attrs.append(f"bbox={bbox}")
-        lines.append(f"<!-- image: {' '.join(attrs)} -->")
+        lines.append(ctx.marker(f"image: {' '.join(attrs)}", source_text=ref))
     if not lines:
         return None
     text = "\n".join(lines)

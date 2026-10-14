@@ -124,7 +124,7 @@ def _slide_units(ctx: RenderContext, slide: Slide, has_headings: bool) -> list[U
         time_start=slide.provenance.time_start,
         time_end=slide.provenance.time_end,
     )
-    marker = f"<!-- slide {slide.index} -->\n" if ctx.profile.page_markers else ""
+    marker = ctx.marker(f"slide {slide.index}") + "\n" if ctx.profile.page_markers else ""
     return [
         Unit(
             text=marker + heading_markdown(ctx, info),
@@ -171,7 +171,7 @@ def _heading_units(ctx: RenderContext, b: Heading) -> list[Unit]:
     label = b.provenance.source_label
     marker = ""
     if ctx.source_type_of(b.id) == SourceType.XLSX and label and ctx.profile.page_markers:
-        marker = f'<!-- sheet "{label.replace(chr(34), chr(39))}" -->\n'
+        marker = ctx.marker(f'sheet "{label.replace(chr(34), chr(39))}"', source_text=label) + "\n"
     units = [
         Unit(
             text=marker + heading_markdown(ctx, info),
