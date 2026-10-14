@@ -41,9 +41,12 @@ def test_spawn_child_converts(tmp_path: Path) -> None:
 
 @pytest.mark.real_sandbox
 def test_spawn_child_reports_conversion_error(tmp_path: Path) -> None:
-    outcome = run_isolated(_req(tmp_path, BINARY, "x.bin"))
-    assert outcome.status == "error"
-    assert outcome.code == "conversion_failed"
+    # A damaged file of a supported type is conversion_failed; a type nothing converts carries core's
+    # stable unsupported_media_type through the child (D-0065).
+    broken = run_isolated(_req(tmp_path, b"%PDF-1.7\n" + b"\x00\x01garbage" * 64, "broken.pdf"))
+    assert (broken.status, broken.code) == ("error", "conversion_failed")
+    blob = run_isolated(_req(tmp_path, BINARY, "x.bin"))
+    assert (blob.status, blob.code) == ("error", "unsupported_media_type")
 
 
 @pytest.mark.real_sandbox
