@@ -447,3 +447,13 @@ Decision: `ezmd_api.worker.build_worker` creates every worker with `worker_ttl=q
 Alternatives: widen the readiness window to ~420 s (a dead worker would look ready for 7 minutes, and the spec says 60 s); a separate heartbeat thread (duplicates what RQ already does).
 Consequences: each idle worker makes one BLPOP round trip to Redis every 30 s instead of every 405 s.
 Council: not convened (audit fix).
+
+## D-0046: The reaper reconciles active jobs with RQ every 30 s
+Date: 2026-10-13
+Task: audit (rc5 pre-release testing)
+Status: accepted
+Context: Redis runs without persistence (`--save '' --appendonly no`), so a Redis restart drops every RQ job while the database still says `queued`; the reaper only looked at fetching/converting/rendering rows, so those jobs stayed queued until retention and held their caller's concurrency slot. A worker that died mid-job left its row `converting` until the queue timeout plus 150 s grace (about 12.8 minutes on `default`).
+Decision: `JobQueue.liveness(job_id, rq_job_id)` reports WAITING (queued/deferred/scheduled), RUNNING (started, and the RQ job's own heartbeat, which its worker refreshes every 30 s, is within 60 s), LOST (no such RQ job; finished, failed, stopped or canceled while the row is active; or started with a silent worker), or UNKNOWN (Redis unreachable: do nothing). `purge.reconcile_queue` runs on every reaper tick before `reap_stale`, over active non-residential rows unchanged for 60 s (so an enqueue or hand-off in flight is never judged): a LOST `queued` row is enqueued again, since no worker started it; any other LOST row fails with `internal_error` ("The worker running this job stopped before it finished"). Failing a row frees the slot, because admission counts active rows. Inline mode never reports LOST. `ezmd-admin reap` prints the count as `lost=`.
+Alternatives: requeue started jobs too (a poison input that kills its worker would loop forever); shorten the stale grace instead (the stale path has to allow a job's full wall time); use RQ's StartedJobRegistry cleanup (it only moves RQ's own record and does not touch our rows).
+Consequences: a job that crashes its worker reaches `failed` about 60-90 s after the last heartbeat. A requeued job keeps its id, so clients following it see it start late rather than fail.
+Council: not convened (audit fix).

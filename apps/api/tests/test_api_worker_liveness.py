@@ -59,3 +59,118 @@ async def test_readyz_200_with_an_idle_worker(
     async with api_client(settings_factory(queue="rq"), redis_client=redis) as (client, _app):
         r = await client.get("/readyz")
     assert r.status_code == 200, r.text
+
+
+# ---------------------------------------------------------------------------
+# Reaper reconciliation with RQ
+# ---------------------------------------------------------------------------
+
+
+async def _job(client: Any) -> str:
+    from ezmd_api.testing import upload
+
+    r = await upload(client, b"reconcile me\n", "r.txt")
+    assert r.status_code == 202, r.text
+    job_id: str = r.json()["job"]["id"]
+    return job_id
+
+
+def _age(services: Any, job_id: str, seconds: float, **fields: Any) -> None:
+    from ezmd_api.db import JobRow
+    from ezmd_api.util import utcnow
+
+    with services.db.session() as s:
+        row = s.get(JobRow, job_id)
+        for k, v in fields.items():
+            setattr(row, k, v)
+        row.updated_at = utcnow() - timedelta(seconds=seconds)
+
+
+def _rq_job(services: Any, job_id: str) -> Any:
+    from rq.job import Job
+
+    row = services.jobs.require(job_id)
+    return Job.fetch(row.rq_job_id, connection=services.redis)
+
+
+def _started(services: Any, job_id: str, beat_age_s: float) -> None:
+    from rq.job import JobStatus
+
+    job = _rq_job(services, job_id)
+    job.set_status(JobStatus.STARTED)
+    job.heartbeat(datetime.now(UTC) - timedelta(seconds=beat_age_s), 600)
+
+
+async def test_queued_job_missing_from_rq_is_requeued(
+    settings_factory: Callable[..., Settings], redis: fakeredis.FakeRedis
+) -> None:
+    """S1: Redis restarted (no persistence) and the RQ job is gone; the row would sit queued forever."""
+    from rq import Queue
+
+    from ezmd_api.purge import reconcile_queue
+
+    async with api_client(settings_factory(queue="rq"), redis_client=redis) as (client, app):
+        services = app.state.services
+        job_id = await _job(client)
+        old_rq_id = services.jobs.require(job_id).rq_job_id
+        redis.flushall()
+        _age(services, job_id, q.HEARTBEAT_MAX_AGE_S + 1)
+        assert reconcile_queue(services) == 1
+        row = services.jobs.require(job_id)
+        assert row.state == "queued"
+        assert row.rq_job_id and row.rq_job_id != old_rq_id
+        assert [j.args for j in Queue("default", connection=redis).get_jobs()] == [(job_id,)]
+
+
+async def test_started_job_with_a_dead_worker_fails_fast_and_frees_the_slot(
+    settings_factory: Callable[..., Settings], redis: fakeredis.FakeRedis
+) -> None:
+    """S2: the worker died mid-job; fail within ~a minute instead of the queue timeout plus 150 s."""
+    from ezmd_api.purge import reconcile_queue
+
+    async with api_client(settings_factory(queue="rq", anon_concurrency=1), redis_client=redis) as (client, app):
+        services = app.state.services
+        job_id = await _job(client)
+        _age(services, job_id, q.HEARTBEAT_MAX_AGE_S + 1, state="converting")
+        _started(services, job_id, beat_age_s=q.HEARTBEAT_MAX_AGE_S + 30)
+        assert reconcile_queue(services) == 1
+        row = services.jobs.require(job_id)
+        assert row.state == "failed"
+        assert row.error_code == "internal_error"
+        assert services.jobs.count_active() == 0
+        again = await _job(client)  # the caller's concurrency slot is free again
+        assert again != job_id
+
+
+async def test_started_job_missing_from_rq_fails(
+    settings_factory: Callable[..., Settings], redis: fakeredis.FakeRedis
+) -> None:
+    from ezmd_api.purge import reconcile_queue
+
+    async with api_client(settings_factory(queue="rq"), redis_client=redis) as (client, app):
+        services = app.state.services
+        job_id = await _job(client)
+        redis.flushall()
+        _age(services, job_id, q.HEARTBEAT_MAX_AGE_S + 1, state="converting")
+        assert reconcile_queue(services) == 1
+        assert services.jobs.require(job_id).state == "failed"
+
+
+@pytest.mark.parametrize("case", ["live_worker", "still_queued", "recently_touched"])
+async def test_reconcile_leaves_healthy_jobs_alone(
+    case: str, settings_factory: Callable[..., Settings], redis: fakeredis.FakeRedis
+) -> None:
+    from ezmd_api.purge import reconcile_queue
+
+    async with api_client(settings_factory(queue="rq"), redis_client=redis) as (client, app):
+        services = app.state.services
+        job_id = await _job(client)
+        if case == "live_worker":
+            _age(services, job_id, 600, state="converting")
+            _started(services, job_id, beat_age_s=5)
+        elif case == "still_queued":
+            _age(services, job_id, 3600)  # a long backlog: RQ still has it queued
+        else:
+            redis.flushall()  # missing from RQ, but the row changed moments ago (enqueue in flight)
+        assert reconcile_queue(services) == 0
+        assert services.jobs.require(job_id).state in ("queued", "converting")
