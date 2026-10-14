@@ -50,6 +50,17 @@ def test_worker_silent_past_the_window_is_dead(redis: fakeredis.FakeRedis) -> No
     assert q.RQQueue(redis).workers_alive() is False
 
 
+def test_worker_reregisters_after_redis_loses_its_registry(redis: fakeredis.FakeRedis) -> None:
+    """B2b: Redis restarted without persistence; RQ's worker set is gone and a plain heartbeat only
+    rewrites the worker hash, so Worker.all() stays empty and /readyz says 503 until a worker restarts."""
+    w = worker.build_worker([q.DEFAULT], redis)
+    w.register_birth()
+    redis.flushall()
+    assert q.RQQueue(redis).workers_alive() is False
+    w.heartbeat()
+    assert q.RQQueue(redis).workers_alive() is True
+
+
 async def test_readyz_200_with_an_idle_worker(
     settings_factory: Callable[..., Settings], redis: fakeredis.FakeRedis
 ) -> None:

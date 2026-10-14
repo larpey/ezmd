@@ -242,8 +242,17 @@ def build_worker(queue_names: list[str], connection: Any) -> Any:
     """The RQ worker for `queue_names`, with the heartbeat cadence /readyz relies on (queue.WORKER_TTL_S)."""
     from rq import Queue, Worker
 
+    class _Worker(Worker):
+        def heartbeat(self, timeout: int | None = None, pipeline: Any = None) -> None:
+            # A Redis restart without persistence drops RQ's worker set; a plain heartbeat only rewrites
+            # the worker hash, so Worker.all() (and /readyz) would miss this worker until it restarts.
+            if pipeline is None and not self.connection.exists(self.key):
+                log.warning("worker registration lost (Redis restarted?); registering again")
+                self.register_birth()  # type: ignore[no-untyped-call]
+            super().heartbeat(timeout, pipeline)
+
     queues = [Queue(name, connection=connection) for name in queue_names]
-    return Worker(queues, connection=connection, worker_ttl=q.WORKER_TTL_S)
+    return _Worker(queues, connection=connection, worker_ttl=q.WORKER_TTL_S)
 
 
 def main(argv: list[str] | None = None) -> None:
