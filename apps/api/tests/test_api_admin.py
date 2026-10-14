@@ -49,7 +49,7 @@ def test_db_key_create_list_revoke(settings: Settings) -> None:
         listed = runner.invoke(admin.app, ["keys", "list", "--json"])
         assert listed.exit_code == 0
         assert key not in listed.output and hash_api_key(settings, key) not in listed.output
-        assert any(r["id"] == key_id for r in json.loads(listed.output))
+        assert any(r["id"] == key_id for r in json.loads(listed.stdout))
         revoked = runner.invoke(admin.app, ["keys", "revoke", key_id])
         assert revoked.exit_code == 0, revoked.output
         assert lookup_api_key(services.db, settings, key) is None
@@ -131,7 +131,7 @@ def test_jobs_list_and_kill(settings: Settings) -> None:
     done = _job(settings, "done")
     listed = runner.invoke(admin.app, ["jobs", "list", "--state", "active", "--json"])
     assert listed.exit_code == 0, listed.output
-    assert [j["id"] for j in json.loads(listed.output)] == [running]
+    assert [j["id"] for j in json.loads(listed.stdout)] == [running]
     assert runner.invoke(admin.app, ["jobs", "list", "--state", "nope"]).exit_code == 1
     killed = runner.invoke(admin.app, ["jobs", "kill", running])
     assert killed.exit_code == 0, killed.output
