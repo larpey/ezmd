@@ -31,7 +31,7 @@ export interface paths {
         };
         /**
          * Readiness: database, Redis, and a live worker
-         * @description 200 when the database and state backend answer and a worker heartbeated in the last 60 s; else 503.
+         * @description 200 when the database and state backend answer and a worker heartbeated in the last 60 s (ezmd workers beat every 30 s, idle or busy); else 503.
          */
         get: operations["readyz"];
         put?: never;
@@ -1117,7 +1117,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description `url_blocked`: The URL (or a URL a converter asked for) failed the SSRF guard. `platform_disabled`: The site is disabled by this instance's platform policy. */
+            /** @description `extra_required`: The converter for this input needs an optional extra this instance does not have installed. `sandbox_unavailable`: The converter must run sandboxed (LibreOffice under bubblewrap) and cannot here. `url_blocked`: The URL (or a URL a converter asked for) failed the SSRF guard. `platform_disabled`: The site is disabled by this instance's platform policy. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -1162,7 +1162,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description `queue_unavailable`: The queue is down or the instance is at its active-job cap. */
+            /** @description `queue_unavailable`: The queue is down or the instance is at its active-job cap. `turnstile_unavailable`: Turnstile siteverify was unreachable or refused this instance's secret; see Retry-After. */
             503: {
                 headers: {
                     [name: string]: unknown;
