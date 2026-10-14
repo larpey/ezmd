@@ -117,3 +117,20 @@ def test_compose_routes_siteverify_through_the_caddy_relay() -> None:
     assert "header_up Host challenges.cloudflare.com" in relay
     # Never published on the host.
     assert not any("9180" in str(p) for p in services["caddy"]["ports"])
+
+
+def test_challenge_needs_a_shared_jwt_secret(settings_factory: Callable[..., Settings]) -> None:
+    """Red team MED-5: without EZMD_JWT_SECRET each uvicorn worker signed challenge JWTs with its own random
+    key, so a cookie issued by one worker failed on the other. Refuse to start instead."""
+    with pytest.raises(ValueError, match="EZMD_JWT_SECRET"):
+        settings_factory(turnstile_secret="ts-secret")
+    with pytest.raises(ValueError, match="EZMD_JWT_SECRET"):
+        settings_factory(turnstile_required_for_fetch=True, turnstile_secret="ts-secret", jwt_secret="short")
+    assert settings_factory(turnstile_secret="ts-secret", jwt_secret=SECRET).turnstile_required
+
+
+@pytest.mark.parametrize("flag", ["public_mode", "turnstile_required_for_fetch"])
+def test_required_challenge_needs_a_secret(flag: str, settings_factory: Callable[..., Settings]) -> None:
+    """Red team MED-6: public mode without a Turnstile secret refused every anonymous URL job with 403."""
+    with pytest.raises(ValueError, match="EZMD_TURNSTILE_SECRET"):
+        settings_factory(**{flag: True}, jwt_secret=SECRET, key_pepper=SECRET)

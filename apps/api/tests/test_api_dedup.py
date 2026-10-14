@@ -51,7 +51,7 @@ async def test_idempotency_key(client: httpx.AsyncClient) -> None:
 
 async def test_public_mode_no_dedup_across_ips(settings_factory: Callable[..., Settings]) -> None:
     secret = "x" * 32
-    settings = settings_factory(public_mode=True, jwt_secret=secret, key_pepper=secret)
+    settings = settings_factory(public_mode=True, jwt_secret=secret, key_pepper=secret, turnstile_secret="ts-secret")
     async with api_client(settings, client_addr=("198.51.100.1", 1)) as (a, _):
         job_id = await _done(a)
         same_ip = await upload(a, BODY, "a.txt")

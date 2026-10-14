@@ -256,7 +256,9 @@ async def test_public_mode_forces_random_agent_salt(
     monkeypatch: pytest.MonkeyPatch, settings_factory: Callable[..., Settings]
 ) -> None:
     seen = _capture_renderer(monkeypatch)
-    settings = settings_factory(public_mode=True, jwt_secret=PUBLIC_SECRET, key_pepper=PUBLIC_SECRET)
+    settings = settings_factory(
+        public_mode=True, jwt_secret=PUBLIC_SECRET, key_pepper=PUBLIC_SECRET, turnstile_secret="ts-secret"
+    )
     async with api_client(settings) as (client, _):
         r = await upload(client, b"hello agent\n", "a.txt", options={"profile": "agent"})
         job_id = r.json()["job"]["id"]

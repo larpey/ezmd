@@ -169,6 +169,15 @@ class Settings(BaseSettings):
                     raise ValueError(
                         f"EZMD_{name.upper()} must be at least {MIN_SECRET_BYTES} bytes when EZMD_PUBLIC_MODE=true"
                     )
+        if (self.public_mode or self.turnstile_required_for_fetch) and not self.turnstile_enabled:
+            # Otherwise every anonymous URL job is refused with turnstile_failed and nothing says why.
+            raise ValueError("EZMD_TURNSTILE_SECRET must be set when URL jobs require a Turnstile challenge")
+        if self.turnstile_enabled and len(self.jwt_secret.get_secret_value().encode()) < MIN_SECRET_BYTES:
+            # Without it each API process signs challenge JWTs with its own random key.
+            raise ValueError(
+                f"EZMD_JWT_SECRET must be at least {MIN_SECRET_BYTES} bytes when Turnstile is on "
+                "(every API worker must verify the same challenge cookies)"
+            )
         if self.fetch_node_secret is not None and len(self.fetch_node_secret.get_secret_value()) < 16:
             raise ValueError("EZMD_FETCH_NODE_SECRET must be at least 16 characters")
         if self.metrics_token is not None and len(self.metrics_token.get_secret_value()) < 16:

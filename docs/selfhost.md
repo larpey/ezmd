@@ -70,7 +70,10 @@ overwrites the header sits in front, and set `EZMD_TRUSTED_PROXIES` to that prox
 
 ### Turnstile
 
-Turnstile is off until `EZMD_TURNSTILE_SECRET` is set (public mode requires it for URL jobs).
+Turnstile is off until `EZMD_TURNSTILE_SECRET` is set. `EZMD_PUBLIC_MODE=true` and
+`EZMD_TURNSTILE_REQUIRED_FOR_FETCH=true` refuse to start without it, and Turnstile refuses to start
+without an `EZMD_JWT_SECRET` of at least 32 bytes, which every API worker uses to verify the challenge
+cookie (`bootstrap.sh` generates one).
 
 1. In the Cloudflare dashboard create a Turnstile widget for your hostname ("Managed", invisible
    preferred). Put the site key in `EZMD_TURNSTILE_SITEKEY` and the secret in `EZMD_TURNSTILE_SECRET`,
@@ -265,7 +268,7 @@ Field `foo_bar` is read from `EZMD_FOO_BAR`. Comma lists are plain comma-separat
 
 | Variable | Type | Default | Description |
 |---|---|---|---|
-| `EZMD_PUBLIC_MODE` | bool | `false` | Public-instance mode. Requires `EZMD_JWT_SECRET` and `EZMD_KEY_PEPPER` of at least 32 bytes, requires a Turnstile challenge for URL jobs. |
+| `EZMD_PUBLIC_MODE` | bool | `false` | Public-instance mode. Requires `EZMD_JWT_SECRET` and `EZMD_KEY_PEPPER` of at least 32 bytes, requires a Turnstile challenge for URL jobs (so `EZMD_TURNSTILE_SECRET` must be set). |
 | `EZMD_PUBLIC_URL` | str | `http://localhost:8000` | Externally visible base URL. Used for links in error documents and to decide whether cookies are marked `Secure`. |
 | `EZMD_DATA_DIR` | path | `~/.ezmd` | Base directory for the default SQLite database and filesystem blob store. |
 | `EZMD_WEB_DIST` | path | unset | Directory with the built web UI (`apps/web/dist`) to serve at `/`. Unset: `apps/web/dist` next to the source tree when present, else no UI. The compose stack defaults it to the image's `/app/apps/web/dist`. |
