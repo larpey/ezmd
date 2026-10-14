@@ -124,3 +124,13 @@ def test_compose_core_profile_shape() -> None:
         assert svc["environment"]["EZMD_WEB_DIST"] == "${EZMD_WEB_DIST:-/app/apps/web/dist}", name
         assert svc["env_file"][0]["path"] == "${EZMD_ENV_FILE:-.env}", name
         assert "egress" not in svc["networks"] or name == "worker-fetch", f"{name} must not have egress"
+
+
+def test_curl_never_writes_to_dev_null() -> None:
+    """S5: lib.sh exports MSYS_NO_PATHCONV=1, so under Git Bash native curl gets `-o /dev/null` verbatim and
+    fails with (23). Status probes go through lib.sh `curl_w`, which discards the body itself."""
+    for name in [*BASH_SCRIPTS, "lib.sh"]:
+        for n, line in enumerate((DEPLOY / name).read_text(encoding="utf-8").splitlines(), 1):
+            if "curl" in line or "CURL" in line:
+                assert "-o /dev/null" not in line, f"{name}:{n}"
+    assert "curl_w()" in (DEPLOY / "lib.sh").read_text(encoding="utf-8")

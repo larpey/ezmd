@@ -102,14 +102,14 @@ if [ -n "${SMOKE_API_KEY:-}" ]; then CURL+=(-H "X-API-Key: $SMOKE_API_KEY"); fi
 
 # 1. readiness
 deadline=$(( $(date +%s) + TIMEOUT_S ))
-until [ "$("${CURL[@]}" -o /dev/null -w '%{http_code}' "$BASE/readyz" 2>/dev/null || true)" = "200" ]; do
+until [ "$(curl_w '%{http_code}' "${CURL[@]}" "$BASE/readyz" 2>/dev/null || true)" = "200" ]; do
   [ "$(date +%s)" -lt "$deadline" ] || fail "$BASE/readyz not 200 after ${TIMEOUT_S}s"
   sleep 2
 done
 ok "readyz $BASE"
 
 # 1b. the web UI is served at /
-ui="$("${CURL[@]}" -o /dev/null -w '%{http_code} %{content_type}' "$BASE/")" || fail "GET / failed"
+ui="$(curl_w '%{http_code} %{content_type}' "${CURL[@]}" "$BASE/")" || fail "GET / failed"
 case "$ui" in
   "200 text/html"*) ok "web UI at /" ;;
   *) fail "GET / returned '$ui'; expected 200 text/html (is EZMD_WEB_DIST pointing at the built UI?)" ;;
