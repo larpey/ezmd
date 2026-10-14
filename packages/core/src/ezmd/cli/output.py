@@ -64,6 +64,9 @@ class Outcome:
     tokens: int = 0
     truncated: bool = False
     stem: str = "output"
+    needs_extra: bool = False
+    """The top-level document is a stub saying an optional extra is needed (`extra_required`, error): the
+    CLI exits 2 like an unavailable converter. Warnings of nested members (a 7z inside a zip) do not count."""
 
     @property
     def status(self) -> str:
@@ -94,7 +97,14 @@ def outcome_from_result(result: Any, *, source: str, profile: str, fmt: str) -> 
         tokens=int(rendered.tokens),
         truncated=bool(rendered.truncated),
         stem=_stem_of(source),
+        needs_extra=_needs_extra(result),
     )
+
+
+def _needs_extra(result: Any) -> bool:
+    conversion = getattr(result, "conversion", None)
+    doc = getattr(conversion, "document", None)
+    return any(str(w.kind) == "extra_required" and w.severity == "error" for w in getattr(doc, "warnings", None) or [])
 
 
 def safe_stem(name: str, limit: int = 80) -> str:

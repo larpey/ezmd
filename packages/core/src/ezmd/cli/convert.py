@@ -173,7 +173,7 @@ def convert(
         else:
             err_console().print(f"error: {f.message}", style="red", markup=False, highlight=False)
         raise typer.Exit(f.exit_code) from e
-    code = EXIT_PARTIAL if outcome.status == "partial" else EXIT_OK
+    code = EXIT_ARGS if outcome.needs_extra else EXIT_PARTIAL if outcome.status == "partial" else EXIT_OK
     _report(outcome, target, as_json=as_json, quiet=quiet, exit_code=code)
     raise typer.Exit(code)
 

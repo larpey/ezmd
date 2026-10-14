@@ -1,8 +1,11 @@
 """Exit codes (docs/spec/part4.md 4.2.2) and the mapping from exceptions and API error codes to them.
 
-0 success; 1 generic failure; 2 bad arguments or missing dependency; 3 partial success (a usable result
-with an error-severity warning, or a batch with failures under --continue-on-error; D-0017 item 7);
-4 fetch blocked by platform; 5 input too large or duration cap; 6 unsupported type; 130 interrupted.
+0 success; 1 generic failure; 2 bad arguments or missing dependency (a missing file, or an optional extra
+the input needs: `extra_required`, whether the converter is unavailable or returned a stub that says so);
+3 partial success (a usable result with an error-severity warning, or a batch with failures under
+--continue-on-error; D-0017 item 7); 4 fetch blocked by platform; 5 input too large or duration cap;
+6 unsupported type (`unsupported_media_type`); 130 interrupted. Library errors are classified by their
+stable `ConversionError.code`, never by message text (D-0054).
 """
 
 from __future__ import annotations
@@ -17,8 +20,6 @@ EXIT_BLOCKED = 4
 EXIT_TOO_LARGE = 5
 EXIT_UNSUPPORTED = 6
 EXIT_INTERRUPTED = 130
-
-_NOT_SUPPORTED_MESSAGE = "This file type is not supported yet."
 
 API_EXIT_CODES: dict[str, int] = {
     "invalid_request": EXIT_ARGS,
@@ -35,6 +36,7 @@ API_EXIT_CODES: dict[str, int] = {
     "duration_cap": EXIT_TOO_LARGE,
     "unsupported_media_type": EXIT_UNSUPPORTED,
     "experimental_disabled": EXIT_UNSUPPORTED,
+    "extra_required": EXIT_ARGS,
 }
 """REST error codes (docs/errors.md) to CLI exit codes; anything else is a generic failure (1)."""
 
@@ -64,7 +66,7 @@ def classify(e: BaseException) -> Failure:
     from ezmd.core.netguard import NetguardError, PlatformDisabled, ResidentialOnly, ResponseTooLarge
     from ezmd.inputs import FetchRequired, InputTooLarge
     from ezmd.pipeline import UnsupportedMediaType
-    from ezmd.registry import EXPERIMENTAL_DISABLED, ConversionError
+    from ezmd.registry import EXPERIMENTAL_DISABLED, EXTRA_REQUIRED, UNSUPPORTED_MEDIA_TYPE, ConversionError
 
     if isinstance(e, RemoteError):
         code = API_EXIT_CODES.get(e.code, EXIT_FAIL)
@@ -73,10 +75,10 @@ def classify(e: BaseException) -> Failure:
     if isinstance(e, UnsupportedMediaType):
         return Failure(EXIT_UNSUPPORTED, "unsupported_media_type", e.user_message)
     if isinstance(e, ConversionError):
-        if e.user_message == _NOT_SUPPORTED_MESSAGE:
-            return Failure(EXIT_UNSUPPORTED, "unsupported_media_type", e.user_message)
-        if e.code == EXPERIMENTAL_DISABLED:
+        if e.code in (UNSUPPORTED_MEDIA_TYPE, EXPERIMENTAL_DISABLED):
             return Failure(EXIT_UNSUPPORTED, e.code, e.user_message)
+        if e.code == EXTRA_REQUIRED:
+            return Failure(EXIT_ARGS, e.code, e.user_message, "extra_required")
         return Failure(EXIT_FAIL, e.code, e.user_message)
     if isinstance(e, (InputTooLarge, ResponseTooLarge)):
         return Failure(EXIT_TOO_LARGE, "input_too_large", str(e) or "Input too large.", "size_cap")

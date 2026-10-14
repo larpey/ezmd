@@ -37,10 +37,11 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 |---|---|
 | 0 | Success. |
 | 1 | Generic failure. |
-| 2 | Bad arguments, missing file or dependency, or a result with an error-severity warning (the output is still written). |
+| 2 | Bad arguments, missing file, or missing dependency: an optional extra the input needs (`extra_required`), whether no converter is available or the converter wrote a stub saying so. |
+| 3 | Partial success: a usable result with an error-severity warning (the output is still written), or batch failures with `--continue-on-error`. |
 | 4 | Fetch blocked by platform policy. |
 | 5 | Input too large. |
-| 6 | Unsupported type. |
+| 6 | Unsupported type (`unsupported_media_type`). |
 | 130 | Interrupted. |
 
 ## Warnings

@@ -178,7 +178,7 @@ def test_experimental_disabled_error() -> None:
     assert forced.value.code == "experimental_disabled"
     with pytest.raises(ConversionError) as none:
         ConverterRegistry().convert(_ref(), ConvertOptions(experimental=False))
-    assert none.value.code == "conversion_failed"
+    assert none.value.code == "unsupported_media_type"
 
 
 @pytest.mark.parametrize(("behavior", "expected"), [("ok", False), ("page_cap", True), ("doc_truncated", True)])

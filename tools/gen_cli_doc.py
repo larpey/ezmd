@@ -24,11 +24,11 @@ FENCE = "`" * 3
 EXIT_CODES = [
     ("0", "Success."),
     ("1", "Generic failure (the converter failed)."),
-    ("2", "Bad arguments, missing file, or missing dependency."),
+    ("2", "Bad arguments, missing file, or missing dependency: an optional extra the input needs (`extra_required`)."),
     ("3", "Partial success: a usable result with an error warning, or batch failures with --continue-on-error."),
     ("4", "The fetch was blocked by platform policy (residential-only host or fetch required)."),
     ("5", "Input too large."),
-    ("6", "Unsupported input type."),
+    ("6", "Unsupported input type (`unsupported_media_type`)."),
     ("130", "Interrupted."),
 ]
 

@@ -469,3 +469,13 @@ Evidence: on en.wikipedia.org/wiki/Albert_Einstein (saved 2026-10-13, not commit
 Alternatives: always prefer og:title (breaks news sites whose og:title is a social teaser); a Wikipedia-specific rule (the same shape appears on other MediaWiki and schema.org sites).
 Consequences: a site whose JSON-LD headline legitimately differs from every visible title now gets its og:title or `<title>`; the spec text should be updated to match when part2 is next revised.
 Council: not convened (bug fix; spec deviation logged here).
+
+## D-0054: Missing extras exit 2 with `extra_required`; unsupported types carry `unsupported_media_type`
+Date: 2026-10-13
+Task: pre-0.1.0 test pass (rc5 core)
+Status: accepted
+Context: a missing optional extra exited 1 for Parquet (the registry's unavailable-converter error carried `conversion_failed`) and 3 for 7z (the archive converter writes a stub document with an error-severity `extra_required` warning, which the CLI counts as partial), while docs/cli.md says 2. "Unsupported type" (exit 6) was recognized by comparing the user message with "This file type is not supported yet.", and docs/errors.md listed different meanings for 2 and omitted 3.
+Decision: `ezmd.registry` defines `UNSUPPORTED_MEDIA_TYPE` and `EXTRA_REQUIRED`. "No converter for this type" and `UnsupportedMediaType` (executables) raise with `unsupported_media_type`; both unavailable-converter errors (by chain and by `--converter`) raise with `extra_required` whenever the blocked converter names an extra. `classify` maps by code only: `unsupported_media_type`/`experimental_disabled` to 6, `extra_required` to 2 (with an `extra_required` warning in `--json`); remote `extra_required` maps to 2 too. The CLI exits 2 when the top-level document carries an error-severity `extra_required` warning (the 7z stub); the same warning on a nested member (a 7z inside a zip) still means partial (3). The 7z stub document stays, so library, API and MCP callers still get the explanation as content. docs/errors.md and the generated docs/cli.md now agree.
+Alternatives: make the 7z converter raise instead of returning a stub (changes library and API results, which currently show the install hint inline); keep matching on message text (breaks on any rewording).
+Consequences: MCP clients now see `unsupported_media_type` / `extra_required` (with the warning-table suggestion) where they saw `conversion_failed`. The API passes through only codes in its `PASSTHROUGH_CONVERSION_CODES`, so its responses are unchanged; adding these two there (415 for unsupported) is a choice for the apps/api owner. `ezmd batch` still counts a 7z stub as converted with an error warning.
+Council: not convened (bug fix).

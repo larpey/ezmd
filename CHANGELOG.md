@@ -23,6 +23,9 @@ All notable changes are generated from Conventional Commits. This project uses s
 - Web pages: Wikipedia articles are titled by their name, not the JSON-LD short description; og:title loses
   a trailing site name; MediaWiki references become footnotes (`[^n]`) instead of digits glued to the text;
   unresolved references keep their brackets; empty table rows (image-only infobox rows) are dropped (D-0053).
+- A missing optional extra exits 2 (`extra_required`) for every input type; Parquet exited 1 and 7z 3.
+  Unsupported types carry the stable code `unsupported_media_type` (exit 6) instead of being recognized by
+  their message (D-0054).
 
 ## [0.1.0-rc4] - 2026-10-13
 
