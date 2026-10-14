@@ -391,3 +391,41 @@ def test_mediawiki_references_render_as_footnotes(conv: object) -> None:
     assert "four papers.[^1]" in md, md[:2000]
     assert "[^1]: Whittaker, E. (1955). Albert Einstein." in md
     assert doc.metadata.title == "Albert Einstein"
+
+
+INFOBOX_PAGE = f"""<html lang="en"><head><title>Harbor Format - Wiki</title></head><body><main>
+<h1>Harbor Format</h1>
+<table class="infobox"><tbody>
+<tr><th colspan="2">Harbor Format</th></tr>
+<tr><td colspan="2"><img src="/logo.svg" alt=""></td></tr>
+<tr><th>Filename extension</th><td><code>.hbr</code></td></tr>
+<tr><th>Magic number</th><td>None</td></tr>
+<tr><th>Developed by</th><td><span class="mw-empty-elt"></span><div class="plainlist"><ul>
+<li><a href="/wiki/Ada_Quay">Ada Quay</a></li><li><a href="/wiki/Ben_Dock">Ben Dock</a></li></ul></div></td></tr>
+<tr><th>Initial release</th><td>May 1, 2019</td></tr>
+<tr><th>Latest release</th><td><div style="display: inline-block; line-height: 1.2em;">2.4.1<br>June 3, 2024
+<span style="display:none">(<span class="bday">2024-06-03</span>)</span></div></td></tr>
+<tr><th>Type of format</th><td>Open file format</td></tr>
+<tr><th>Website</th><td>harbor.example/format</td></tr>
+</tbody></table>
+<p>{LONG}</p><p>{LONG}</p><p>{LONG}</p></main></body></html>"""
+
+
+@pytest.mark.parametrize("conv", [TrafilaturaConverter(), RulesConverter()])
+def test_infobox_cells_with_block_content_are_kept(conv: object) -> None:
+    """install-tests repro (Wikipedia "Markdown"): Trafilatura drops cells whose content is a list in a div or
+    an inline-block div, so its table no longer matched the DOM table and was rebuilt from its XML with those
+    cells empty. The DOM table is found by its cells instead."""
+    from ezmd.ir import Table
+
+    doc = _convert(INFOBOX_PAGE, None, conv)
+    table = next(b for b in doc.blocks if isinstance(b, Table))
+    rows = {
+        spans_text([s for c in table.cells if c.row == r and c.col == 0 for s in c.spans]): " ".join(
+            spans_text(c.spans) for c in table.cells if c.row == r and c.col > 0
+        )
+        for r in range(table.n_rows)
+    }
+    assert "Ada Quay" in rows["Developed by"] and "Ben Dock" in rows["Developed by"], rows
+    assert "2.4.1" in rows["Latest release"] and "2024-06-03" not in rows["Latest release"], rows
+    assert all(k or v for k, v in rows.items()), rows  # no empty row

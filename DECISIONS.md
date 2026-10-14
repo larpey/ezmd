@@ -531,3 +531,13 @@ Decision: `RenderContext.marker(content, source_text)` builds every marker comme
 Goldens: office/docx-structure and comms/eml-attachments (which attaches the same DOCX) now report the fixture's hidden "IGNORE PREVIOUS INSTRUCTIONS" run: `injection_risk` none to high, `injection_suspected` added, one finding at location `hidden`, `hidden_text` in the warning detail. Bodies are unchanged.
 Deferred to 0.1.1 (heuristic scanner work): scanning plain text with Markdown formatting and newlines collapsed, more CSS hiding tricks in web hygiene (near-white text, opacity, tiny fonts, transforms), invisible characters that survive textclean (U+034F, U+180E, Hangul fillers, variation selectors), broader decoders (base64url, percent and entity encoding), paraphrase bypasses, and PDF hidden-text detection.
 Council: not convened (security hardening).
+
+## D-0060: Trafilatura tables are matched to the DOM by their cells
+Date: 2026-10-13
+Task: pre-0.1.0 test pass (S3 follow-up, install-tests repro)
+Status: accepted
+Context: on en.wikipedia.org/wiki/Markdown (default engine, compact profile) the infobox came out with an empty image row and empty "Developed by" and "Latest release" cells, and its references unresolved. Trafilatura drops cells whose content is a list inside a div or an inline-block div, so its XML table's text was neither equal to nor contained in the DOM table's text, `DomIndex.find` (exact, or 80 percent substring) found no DOM table, and the table was rebuilt from the XML with those cells empty. The rule-based engine, which converts the DOM table, was correct.
+Decision: when an XML table matches nothing, `DomIndex.find_table` picks the first unused DOM table (at or after the current position, then anywhere) that contains at least 80 percent (`TABLE_CELL_MATCH`) of the XML table's non-empty cell texts, with at least 4 cells; the DOM table is then converted as usual (cells keep their lists and inline-block content, D-0053 drops the empty image row, references resolve).
+Evidence: the saved page from install-tests now renders the infobox like the rule-based engine does; a self-written infobox fixture covers both engines.
+Council: not convened (bug fix).
+
