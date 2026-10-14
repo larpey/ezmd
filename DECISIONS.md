@@ -457,3 +457,13 @@ Decision: `JobQueue.liveness(job_id, rq_job_id)` reports WAITING (queued/deferre
 Alternatives: requeue started jobs too (a poison input that kills its worker would loop forever); shorten the stale grace instead (the stale path has to allow a job's full wall time); use RQ's StartedJobRegistry cleanup (it only moves RQ's own record and does not touch our rows).
 Consequences: a job that crashes its worker reaches `failed` about 60-90 s after the last heartbeat. A requeued job keeps its id, so clients following it see it start late rather than fail.
 Council: not convened (audit fix).
+
+## D-0047: The conversion child relies on the container's cgroup pids limit, not RLIMIT_NPROC 64
+Date: 2026-10-13
+Task: audit (rc5 pre-release testing)
+Status: accepted
+Context: `isolation._apply_limits` set RLIMIT_NPROC to 64. The kernel counts that limit over every thread of the real uid on the whole host, and every ezmd container runs as 10001, so the API's uvicorn threads, the purge loop, other workers and other stacks all count against the child. numpy/OpenBLAS and ONNX Runtime (Magika) start a thread per host core; on a 24-core host the child failed while importing the converters (reproduced in the rc4 worker image with the `ezmdred` stack running; the same child converts with the fix).
+Decision: when `/sys/fs/cgroup/pids.max` (v2) or `/sys/fs/cgroup/pids/pids.max` (v1) holds a number, the child sets no RLIMIT_NPROC: the per-container cgroup limit (compose `pids: 256`) is the fork-bomb cap and counts only that container. Without one (bare metal, or `pids.max` = `max`) the child sets RLIMIT_NPROC 4096 as a backstop. The child also defaults OMP_NUM_THREADS, OPENBLAS_NUM_THREADS and MKL_NUM_THREADS to 4 (an operator's values win), so the pools do not grow with the host's core count inside a 3-CPU, 256-pid container.
+Alternatives: raise the fixed limit (any fixed value can be exhausted by other containers of the same uid); give each container its own uid (a larger compose change, and still host-wide per uid); count the uid's threads and add headroom (other containers' processes are not visible inside the pid namespace).
+Consequences: a bare-metal worker whose user already has more than 4096 threads would still fail; ONNX Runtime's own intra-op pool is not governed by these variables (Magika's session options are core code).
+Council: not convened (audit fix).
