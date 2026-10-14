@@ -90,9 +90,10 @@ http://:9180 {
 		respond 404
 	}
 
+	# The API sets Cache-Control on static paths (immutable for hashed /assets/*, no-store on misses);
+	# setting it here too duplicated the header and made 404s cacheable for a year.
 	@static path /assets/* /icons/* /models/* /manifest.webmanifest
 	handle @static {
-		header Cache-Control "public, max-age=31536000, immutable"
 		reverse_proxy api:8000 {
 			header_up X-Real-IP {client_ip}
 		}
