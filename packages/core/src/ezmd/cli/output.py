@@ -7,6 +7,7 @@ with `--json`, one JSON object.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 import unicodedata
@@ -29,6 +30,7 @@ __all__ = [
     "progress_display",
     "safe_stem",
     "sidecar_path",
+    "silence_progress_bars",
     "write_outcome",
 ]
 
@@ -43,6 +45,19 @@ _STAGE_LABELS = {
     "done": "Done",
 }
 """Labels for the job states the web UI and the SSE stream use (Part 3)."""
+
+
+_PROGRESS_ENV = {"TQDM_DISABLE": "1", "HF_HUB_DISABLE_PROGRESS_BARS": "1"}
+"""tqdm (`TQDM_DISABLE`, read by tqdm 4.66+) and Hugging Face / transformers (`HF_HUB_DISABLE_PROGRESS_BARS`)
+progress bars, such as Docling's "Loading weights"."""
+
+
+def silence_progress_bars() -> None:
+    """Turn off third-party progress bars for `-q` / `--json` (ezmd's own bar is already off then). Set in
+    the environment so engines imported later, and batch worker processes, see it; an explicit user value
+    wins."""
+    for key, value in _PROGRESS_ENV.items():
+        os.environ.setdefault(key, value)
 
 
 def err_console() -> Console:

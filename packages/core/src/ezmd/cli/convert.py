@@ -24,6 +24,7 @@ from ezmd.cli.output import (
     outcome_from_result,
     print_warnings,
     progress_display,
+    silence_progress_bars,
     write_outcome,
 )
 
@@ -143,6 +144,8 @@ def convert(
 ) -> None:
     """Convert one input to Markdown (stdout, or a file with --out)."""
     cfg = load_config_or_exit(as_json=as_json, quiet=quiet)
+    if quiet or as_json:
+        silence_progress_bars()
     try:
         chosen_fmt = check_format(fmt or cfg.format, "--format")
         if chosen_fmt not in SUPPORTED_FORMATS:
