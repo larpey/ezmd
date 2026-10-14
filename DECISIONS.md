@@ -477,3 +477,13 @@ Decision: `ezmd_api.detection.detect_supported` (used for uploads, fetch-node me
 Alternatives: extend the executable list in the API (it belongs in core detection; the no-converter rule already catches these types); keep accepting and fail later (the reported bug).
 Consequences: the API image must register the same converters as the worker image, or an upload is refused that a worker could convert (both images install the same converter packages; extras that are missing register as unavailable, which still admits the input). Core follow-ups: add the Magika executable-group mimes (`application/x-executable-elf`, `application/x-mach-o`, `application/x-coff`, `application/x-android-dex`, `application/x-windows-driver`, ...) to EXECUTABLE_MIMES; Magika calls a megabyte of a single repeated byte an ISO image.
 Council: not convened (audit fix).
+
+## D-0049: Job-creation requests that create nothing give their rate-limit hits back
+Date: 2026-10-13
+Task: audit (rc5 pre-release testing)
+Status: accepted
+Context: `limit_job_creation` records the per-window and daily hits before the body is read, so an upload refused with 413, a request refused by concurrency admission (429), or a later window's 429 still used up the earlier window. A client retrying after `Retry-After` could lock itself out. `Retry-After` was also one second over the window (61 for 60 s): the reset was `int(oldest + window) + 1`.
+Decision: `RateResult` carries the recorded hit (`key`, `member`) and the exact `reset_at`; `retry_after` is `ceil(reset_at - now)` and the reset epoch is its ceiling. `POST /v1/convert` refunds every hit the request recorded when it ends with `rate_limited`, `input_too_large` or `queue_unavailable` (the global active-job cap; the server's capacity, not the caller's use). Other errors (invalid options, blocked URLs, 415) still count, so the limit keeps bounding the work the instance spends on a caller.
+Alternatives: check limits after reading the body (an anonymous client could then stream unlimited 200 MB bodies before being limited); peek without recording and record at the end (two concurrent requests could both pass).
+Consequences: the memory backend's member is the hit's timestamp; two hits in the same `time.time()` tick refund either one, which is equivalent.
+Council: not convened (audit fix).

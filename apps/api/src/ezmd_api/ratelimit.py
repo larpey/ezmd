@@ -37,9 +37,16 @@ def _record(request: Request, result: RateResult) -> None:
         request.state.ratelimit = result
 
 
+REFUNDED_CODES = frozenset({"rate_limited", "input_too_large", "queue_unavailable"})
+"""A job-creation request that ends with one of these created nothing, so its window hits are given back."""
+
+
 def enforce(request: Request, bucket: str, identity: str, limit: int, window_s: int) -> RateResult:
     result = _services(request).state.rate_hit(f"{bucket}:{window_s}:{identity}", limit, window_s)
     _record(request, result)
+    if result.member:
+        hits: list[RateResult] = getattr(request.state, "rate_hits", [])
+        request.state.rate_hits = [*hits, result]
     if not result.allowed:
         record_rate_limited(_services(request).state, bucket)
         headers = {**rate_headers(result), "Retry-After": str(result.retry_after)}
@@ -64,6 +71,14 @@ def limit_job_creation(request: Request, caller: Caller) -> None:
     else:
         enforce(request, "create", caller.identity, s.anon_ratelimit_max, s.anon_ratelimit_window_s)
         enforce(request, "create", caller.identity, s.anon_daily_max, DAY)
+
+
+def refund_hits(request: Request) -> None:
+    """Give back every window hit this request recorded (see REFUNDED_CODES)."""
+    state = _services(request).state
+    for hit in getattr(request.state, "rate_hits", []):
+        state.rate_refund(hit.key, hit.member)
+    request.state.rate_hits = []
 
 
 def admit_job(request: Request, caller: Caller) -> None:

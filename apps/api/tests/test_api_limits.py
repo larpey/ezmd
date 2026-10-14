@@ -132,3 +132,36 @@ def test_detection_input_too_large_is_a_413(monkeypatch: pytest.MonkeyPatch, tmp
         _detect_upload(UploadedFile(path=path, filename="f.txt", content_type=None, size=1, sha256="0" * 64))
     assert info.value.code == "input_too_large"
     assert info.value.status == 413
+
+
+@pytest.mark.parametrize("backend", ["memory", "redis"])
+def test_retry_after_never_exceeds_the_window(backend: str) -> None:
+    """N4: a 60 s window answered Retry-After: 61."""
+    import fakeredis
+
+    from ezmd_api.state import MemoryState, RedisState
+
+    state = MemoryState() if backend == "memory" else RedisState(fakeredis.FakeRedis())
+    assert state.rate_hit("k", 1, 60).allowed
+    denied = state.rate_hit("k", 1, 60)
+    assert not denied.allowed
+    assert 59 <= denied.retry_after <= 60
+
+
+async def test_413_and_429_do_not_spend_creation_tokens(settings_factory: Callable[..., Settings]) -> None:
+    """N4: rejected requests (over the size cap, over the concurrency cap) no longer use up the window."""
+    import fakeredis
+
+    settings = settings_factory(queue="rq", anon_ratelimit_max=2, anon_max_upload_mb=1, anon_concurrency=1)
+    async with api_client(settings, redis_client=fakeredis.FakeRedis()) as (client, app):
+        for _ in range(3):
+            assert (await upload(client, b"x" * (1024 * 1024 + 1), "big.txt")).status_code == 413
+        first = await upload(client, b"first\n", "a.txt")
+        assert first.status_code == 202  # stays queued: no worker in this test
+        for _ in range(3):
+            assert (await upload(client, b"second\n", "b.txt")).status_code == 429  # concurrency
+        app.state.services.jobs.fail(first.json()["job"]["id"], "internal_error", "test")
+        assert (await upload(client, b"third\n", "c.txt")).status_code == 202
+        limited = await upload(client, b"fourth\n", "d.txt")
+        assert limited.status_code == 429
+        assert limited.json()["error"]["detail"]["window_seconds"] == 60

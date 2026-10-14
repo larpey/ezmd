@@ -22,7 +22,7 @@ from ezmd_api.errors import ApiError, error_response
 from ezmd_api.fetching import input_key, route_residential
 from ezmd_api.fetchpolicy import DISABLED, policy_state, wants_residential
 from ezmd_api.jobs import DONE, FAILED, NEEDS_USER_ACTION, QUEUED
-from ezmd_api.ratelimit import admit_job, limit_job_creation
+from ezmd_api.ratelimit import REFUNDED_CODES, admit_job, limit_job_creation, refund_hits
 from ezmd_api.rendering import FORMATS, RenderUnavailable, render_cached
 from ezmd_api.routes.common import (
     enqueue_or_fail,
@@ -244,13 +244,18 @@ async def create_job(
 ) -> Response:
     services = services_of(request)
     _check_format(format)
-    limit_job_creation(request, caller)
-    ctype = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
-    if ctype == "multipart/form-data":
-        return await _create_from_upload(request, services, caller, wait, format)
-    if ctype == "application/json":
-        return await _create_from_url(request, services, caller, wait, format)
-    raise ApiError("invalid_request", "Send multipart/form-data with a `file` part, or JSON with a `url`.")
+    try:
+        limit_job_creation(request, caller)
+        ctype = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+        if ctype == "multipart/form-data":
+            return await _create_from_upload(request, services, caller, wait, format)
+        if ctype == "application/json":
+            return await _create_from_url(request, services, caller, wait, format)
+        raise ApiError("invalid_request", "Send multipart/form-data with a `file` part, or JSON with a `url`.")
+    except ApiError as e:
+        if e.code in REFUNDED_CODES:
+            refund_hits(request)
+        raise
 
 
 async def _create_from_upload(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:
