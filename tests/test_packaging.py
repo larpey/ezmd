@@ -20,10 +20,12 @@ ROOT = Path(__file__).resolve().parents[1]
 # Every workspace member with dependencies; the first three are published to PyPI (release.yml python-dist).
 MEMBERS = ("packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node")
 PUBLISHED = ("packages/core", "packages/converters", "packages/mcp")
-# Direct dependencies with a pre-release of a new major on PyPI (checked against the PyPI JSON API when this
-# list was written). `pip install --pre ezmd` lets those pre-releases satisfy an open `>=` bound, so each
-# declaration must stay below that major. httpx 1.0.devN dropped httpcore, which ezmd.core.netguard imports.
-PRERELEASE_MAJORS = {"httpx": 1, "lxml": 7}
+# Direct dependencies with a pre-release newer than their latest final on PyPI, mapped to the first release
+# series that has one (checked against the PyPI JSON API when this list was written; last on 2026-10-13).
+# `pip install --pre ezmd` lets those pre-releases satisfy an open `>=` bound, so each declaration must stay
+# below that series. httpx 1.0.devN dropped httpcore, which ezmd.core.netguard imports; defusedxml 0.8.0rc2
+# and openpyxl 3.2.0b1 were picked by `--pre` in the rc4 install test.
+PRERELEASE_SERIES = {"httpx": "1.0", "lxml": "7.0", "defusedxml": "0.8", "openpyxl": "3.2"}
 # Modules imported directly that only arrive transitively unless declared (import name, distribution).
 IMPORTED_DIRECTLY = {"httpcore": "httpcore"}
 
@@ -47,14 +49,14 @@ def _names(member: str) -> set[str]:
 
 
 @pytest.mark.parametrize("member", MEMBERS)
-def test_prerelease_majors_are_capped(member: str) -> None:
+def test_prerelease_series_are_capped(member: str) -> None:
     for req in _requirements(member):
-        major = PRERELEASE_MAJORS.get(req.name.lower())
-        if major is None:
+        series = PRERELEASE_SERIES.get(req.name.lower())
+        if series is None:
             continue
-        first_bad = Version(f"{major}.0.dev0")
+        first_bad = Version(f"{series}.dev0")
         assert not req.specifier.contains(first_bad, prereleases=True), (
-            f"{member}: {req} admits {req.name} {major}.x pre-releases under --pre; add an upper bound <{major}"
+            f"{member}: {req} admits {req.name} {series} pre-releases under --pre; add an upper bound <{series}"
         )
 
 

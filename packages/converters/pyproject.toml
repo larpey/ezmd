@@ -10,12 +10,12 @@ license-files = ["LICENSE", "NOTICE"]
 # metadata cycle (see DECISIONS.md D-0003).
 dependencies = [
     "charset-normalizer>=3.4",
-    "defusedxml>=0.7.1",
+    "defusedxml>=0.7.1,<0.8",
     "lxml>=6.1.3,<7",
     "markdown-it-py>=3.0",
     "olefile>=0.47,<0.48",
     "mdit-py-plugins>=0.4",
-    "openpyxl>=3.1",
+    "openpyxl>=3.1,<3.2",
     "striprtf>=0.0.26",
     "pathspec>=0.12.1",
     "pikepdf>=10.0,<11",

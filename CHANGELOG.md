@@ -8,6 +8,8 @@ All notable changes are generated from Conventional Commits. This project uses s
 - PDF text layers whose font size is carried by the text matrix (`1 Tf` with a scaled `Tm` or CTM) no
   longer split every word at ascenders and descenders into one-glyph lines and spurious N-column tables;
   rotated tables on upright pages keep whole lines too (D-0050).
+- `pip install --pre ezmd` no longer resolves defusedxml 0.8.0rc2 or openpyxl 3.2.0b1: both are capped
+  below the pre-released series, like httpx and lxml (D-0039).
 
 ## [0.1.0-rc4] - 2026-10-13
 
