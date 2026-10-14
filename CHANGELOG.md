@@ -9,6 +9,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   updates links, fields or charts, and never recalculates on load, so linked files and URLs and
   `WEBSERVICE()` are not fetched. `office.require_sandbox` (default on with `EZMD_REQUIRE_SANDBOX=1` or
   `EZMD_SERVER=1`) refuses to run LibreOffice without bubblewrap; local runs without it log a warning (D-0056).
+- Archive and package limits now count every decompressed byte (skipped tar members, 7z entries in a solid
+  block that are not kept, documents inside archives), refuse oversized zip directories before parsing
+  them, DOCTYPE-check every XML-looking package part, and keep Docling offline even when `HF_HUB_OFFLINE=0`
+  is inherited (D-0057).
 
 ### Documentation
 - Install docs no longer pin `0.1.0rc2`: pip and uv take the newest release candidate while no final exists.

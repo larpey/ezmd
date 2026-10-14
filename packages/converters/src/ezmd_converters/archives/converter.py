@@ -13,6 +13,7 @@ from __future__ import annotations
 import io
 import mimetypes
 import posixpath
+import zipfile
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -48,11 +49,13 @@ from ezmd_converters.archives.backends import (
     is_tar_stream,
     sniff,
     tar_entries,
+    zip_directory_problem,
 )
 from ezmd_converters.archives.guard import (
     DEFAULT_MAX_DEPTH,
     DEFAULT_MAX_ENTRIES,
     DEFAULT_MAX_TOTAL,
+    LISTING_HARD_CAP_FACTOR,
     ArchiveLimits,
     BombError,
     Budget,
@@ -396,6 +399,7 @@ class ArchiveConverter:
             if child_state.bomb:
                 state.bomb = state.bomb or child_state.bomb
             return
+        _charge_document_zip(state, data, row)
         try:
             ref = InputRef.from_bytes(data, filename=label, max_bytes=max(len(data), 1))
         except InputTooLarge:
@@ -584,6 +588,25 @@ def first_member_name(head: bytes) -> bytes:
         return b""
     n = int.from_bytes(head[26:28], "little")
     return head[30 : 30 + n]
+
+
+def _charge_document_zip(state: _State, data: bytes, row: _Row) -> None:
+    """A DOCX, EPUB or other zip-based document converted from inside an archive expands under its own
+    converter's limits; charge what its central directory declares (zipfile never produces more) to this
+    archive's budget first, so the parent's caps hold across it. Raises BombError like any member."""
+    if sniff(data[:512]) != "zip":
+        return
+    fp = io.BytesIO(data)
+    problem = zip_directory_problem(fp, state.budget.limits.max_entries * LISTING_HARD_CAP_FACTOR)
+    try:
+        declared = None if problem else sum(i.file_size for i in zipfile.ZipFile(fp).infolist())
+    except (zipfile.BadZipFile, ValueError, OSError):
+        return  # the document's own converter reports a damaged file
+    if declared is None or declared > state.budget.remaining:
+        row.status = "not extracted (archive limit)"
+        state.budget.bombed = state.budget.bombed or "max_total"
+        raise BombError("max_total", "a document inside the archive expands beyond the archive byte limit")
+    state.budget.charge(declared)
 
 
 def _is_document_zip(head: bytes) -> bool:

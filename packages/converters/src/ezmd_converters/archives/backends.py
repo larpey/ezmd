@@ -80,24 +80,52 @@ def sniff(head: bytes) -> str | None:
 # ---------------------------------------------------------------------------
 
 
-def zip_declared_entries(fp: IO[bytes]) -> int | None:
-    """Entry count from the end-of-central-directory record, read without parsing the directory."""
+ZIP_DIRECTORY_BYTES_PER_ENTRY = 46 + 1024
+"""Central-directory bytes allowed per permitted entry: the 46-byte fixed header plus a generous name,
+extra field and comment."""
+
+
+def _eocd(fp: IO[bytes]) -> tuple[int | None, int | None]:
+    """(entry count, central-directory size) from the end-of-central-directory record (ZIP64 when the
+    classic fields are saturated), read without parsing the directory. None for a field that is unknown."""
     fp.seek(0, io.SEEK_END)
     size = fp.tell()
     tail_len = min(size, 65_536 + 22)
     fp.seek(size - tail_len)
     tail = fp.read(tail_len)
+    fp.seek(0)
     pos = tail.rfind(b"PK\x05\x06")
     if pos < 0 or pos + 22 > len(tail):
-        return None
-    (total,) = struct.unpack("<H", tail[pos + 10 : pos + 12])
-    if total == 0xFFFF:
+        return None, None
+    total, cd_size = struct.unpack("<HI", tail[pos + 10 : pos + 16])
+    entries: int | None = int(total)
+    directory: int | None = int(cd_size)
+    if total == 0xFFFF or cd_size == 0xFFFFFFFF:
         loc = tail.rfind(b"PK\x06\x06")
-        if loc >= 0 and loc + 40 <= len(tail):
-            (total64,) = struct.unpack("<Q", tail[loc + 32 : loc + 40])
-            return int(total64)
-        return None
-    return int(total)
+        if loc >= 0 and loc + 48 <= len(tail):
+            total64, size64 = struct.unpack("<QQ", tail[loc + 32 : loc + 48])
+            entries, directory = int(total64), int(size64)
+        else:
+            entries = None if total == 0xFFFF else entries
+            directory = None if cd_size == 0xFFFFFFFF else directory
+    return entries, directory
+
+
+def zip_declared_entries(fp: IO[bytes]) -> int | None:
+    """Entry count from the end-of-central-directory record, read without parsing the directory."""
+    return _eocd(fp)[0]
+
+
+def zip_directory_problem(fp: IO[bytes], max_entries: int) -> str | None:
+    """Why a zip's central directory is too big to parse, checked from the EOCD record alone: zipfile parses
+    the whole directory when it opens, so a cap applied to `infolist()` comes too late. The entry count can be
+    forged, so the directory's byte size is bounded too. Leaves `fp` at offset 0."""
+    entries, directory = _eocd(fp)
+    if entries is not None and entries > max_entries:
+        return f"{entries} entries exceed {max_entries}"
+    if directory is not None and directory > max_entries * ZIP_DIRECTORY_BYTES_PER_ENTRY:
+        return f"a {directory}-byte central directory exceeds the limit for {max_entries} entries"
+    return None
 
 
 def _zip_kind(info: zipfile.ZipInfo) -> EntryKind:

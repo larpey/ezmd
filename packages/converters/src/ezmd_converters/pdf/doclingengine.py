@@ -19,6 +19,7 @@ from __future__ import annotations
 import importlib
 import importlib.metadata
 import os
+import sys
 import threading
 from typing import Any
 
@@ -63,6 +64,15 @@ from ezmd_converters.pdf.textengine import heading_sources, heading_warnings, sc
 _LOCK = threading.Lock()
 _CONVERTERS: dict[tuple[str | None, bool], Any] = {}
 _SKIP_ENGINES = ("pdfium", "pypdf")
+
+
+def _force_offline() -> None:
+    """Docling must not download during a conversion: force `HF_HUB_OFFLINE` even when the environment says
+    otherwise, and flip huggingface_hub's constant too, since it reads the variable once at import."""
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    constants = sys.modules.get("huggingface_hub.constants")
+    if constants is not None:
+        vars(constants)["HF_HUB_OFFLINE"] = True
 
 
 def _mod(name: str) -> Any:
@@ -308,7 +318,7 @@ class DoclingPdfConverter:
                         missing_message(status),
                         user_message=f"Docling's models are not downloaded. Run: {DOWNLOAD_HINT}.",
                     )
-                os.environ.setdefault("HF_HUB_OFFLINE", "1")
+                _force_offline()
             apply_metadata(doc, san)
             path = str(san.path)
             layer, rep = scan_only(path, san.info, popts, options)

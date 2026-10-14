@@ -25,6 +25,7 @@ from lxml import etree  # type: ignore[import-untyped]
 
 from ezmd.ir import Warning, WarningKind
 from ezmd.registry import ConversionError
+from ezmd_converters.archives.backends import zip_directory_problem
 
 MAX_ENTRIES = 10_000
 MAX_RATIO = 100
@@ -115,6 +116,13 @@ def _classify_removed(name: str) -> str | None:
     return None
 
 
+def _looks_xml(data: bytes) -> bool:
+    """XML whatever the part is called (customXml items, glossary parts, extension-less parts): after an
+    optional BOM and whitespace it starts with `<`."""
+    head = data[:64].removeprefix(b"\xef\xbb\xbf").lstrip()
+    return head.startswith(b"<") or head.startswith(b"\xff\xfe<") or head.startswith(b"\xfe\xff\x00<")
+
+
 class OfficePackage:
     """A validated, sanitized view of a zip-based Office package. Members are read on demand, bounded by the
     sizes the central directory declares (zipfile stops decompressing at the declared size)."""
@@ -127,11 +135,14 @@ class OfficePackage:
                 "regular .docx/.xlsx/.pptx without a password and convert again.",
                 retryable_with_fallback=True,
             )
+        self.what = what
+        problem = zip_directory_problem(io.BytesIO(data), MAX_ENTRIES)
+        if problem is not None:
+            raise self._bomb(problem)
         try:
             self._zip = zipfile.ZipFile(io.BytesIO(data))
         except (zipfile.BadZipFile, ValueError) as e:
             raise ConversionError(f"{what} input is not a zip package: {e}", user_message="The file is damaged.") from e
-        self.what = what
         self.removed = Removed()
         self.members: dict[str, zipfile.ZipInfo] = {}
         self._removed_parts: set[str] = set()
@@ -288,7 +299,9 @@ class OfficePackage:
             for name in self.members:
                 data = self.read(name)
                 low = name.lower()
-                if low.endswith((".xml", ".rels", ".vml")) and any(m in data for m in _DOCTYPE_MARKERS):
+                if (low.endswith((".xml", ".rels", ".vml")) or _looks_xml(data)) and any(
+                    m in data for m in _DOCTYPE_MARKERS
+                ):
                     parse_xml(data, name)  # raises
                 if low.endswith(".rels"):
                     data = self._filtered_rels(name, data)

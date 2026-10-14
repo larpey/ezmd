@@ -18,7 +18,7 @@ truncated: false
 warnings: [archive_encrypted]
 injection_risk: none
 extra:
-  archive_bytes_extracted: 3258
+  archive_bytes_extracted: 5084
   archive_compressed_bytes: 1996
   archive_converted: 2
   archive_directories: 0
