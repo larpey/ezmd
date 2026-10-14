@@ -38,6 +38,7 @@ ERROR_STATUS: dict[str, int] = {
     "not_implemented": 501,
     "fetch_failed": 502,
     "queue_unavailable": 503,
+    "turnstile_unavailable": 503,
     "timeout": 504,
 }
 
@@ -76,6 +77,7 @@ ERROR_DESCRIPTIONS: dict[str, str] = {
     "not_implemented": "The format exists in the contract but is not built yet (docx).",
     "fetch_failed": "The URL could not be fetched.",
     "queue_unavailable": "The queue is down or the instance is at its active-job cap.",
+    "turnstile_unavailable": "Turnstile siteverify was unreachable or refused this instance's secret; see Retry-After.",
     "timeout": "The conversion exceeded its time limit.",
 }
 

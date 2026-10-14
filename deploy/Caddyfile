@@ -21,6 +21,37 @@
 # overwrites that header with {client_ip}: the TCP peer, or CF-Connecting-IP when the peer is a
 # Cloudflare edge listed in trusted_proxies above. A client-sent X-Real-IP never reaches the API.
 
+# Turnstile siteverify relay (D-0044). The api container has no egress; this is its only way out, and
+# it reaches exactly one upstream and one path. Port 9180 is never published, so only containers on
+# the compose networks can reach it, and only private source addresses are served. Not logged: the
+# request body carries the Turnstile secret.
+http://:9180 {
+	@siteverify {
+		method POST
+		path /turnstile/v0/siteverify
+		remote_ip private_ranges
+	}
+	handle @siteverify {
+		request_body {
+			max_size 16KB
+		}
+		reverse_proxy https://challenges.cloudflare.com {
+			header_up Host challenges.cloudflare.com
+			header_up -X-Forwarded-For
+			header_up -X-Forwarded-Proto
+			header_up -X-Forwarded-Host
+			header_up -X-Real-IP
+			transport http {
+				dial_timeout 5s
+				response_header_timeout 10s
+			}
+		}
+	}
+	handle {
+		respond 404
+	}
+}
+
 (security_headers) {
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"

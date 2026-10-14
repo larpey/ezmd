@@ -242,6 +242,7 @@ Field `foo_bar` is read from `EZMD_FOO_BAR`. Comma lists are plain comma-separat
 | `EZMD_TURNSTILE_SECRET` | secret | empty | Cloudflare Turnstile secret (secret). Setting it turns the challenge on for URL jobs. |
 | `EZMD_TURNSTILE_REQUIRED_FOR_FETCH` | bool | `false` | Require a Turnstile challenge for URL jobs even outside public mode. |
 | `EZMD_TURNSTILE_JWT_TTL_S` | int | `120` | Lifetime of the challenge cookie issued after a successful Turnstile check, in seconds. |
+| `EZMD_TURNSTILE_VERIFY_URL` | str | `https://challenges.cloudflare.com/turnstile/v0/siteverify` | Where the API posts Turnstile siteverify requests. Compose points it at Caddy's internal relay (`http://caddy:9180/turnstile/v0/siteverify`) because the API container has no egress (D-0044). |
 
 ### Fetch
 

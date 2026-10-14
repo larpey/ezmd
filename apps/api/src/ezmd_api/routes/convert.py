@@ -100,6 +100,7 @@ _CREATE_RESPONSES: dict[int | str, dict[str, Any]] = {
         "not_implemented",
         "fetch_failed",
         "queue_unavailable",
+        "turnstile_unavailable",
         "timeout",
     ),
 }

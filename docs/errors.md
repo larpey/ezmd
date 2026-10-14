@@ -29,6 +29,7 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="not_implemented"></a>`not_implemented` | 501 | The feature exists in the contract but is not built yet (for example `format=docx`). |
 | <a id="fetch_failed"></a>`fetch_failed` | 502 | The URL could not be fetched. |
 | <a id="queue_unavailable"></a>`queue_unavailable` | 503 | The queue is down or the global active-job cap is reached; retry after `Retry-After` seconds. |
+| <a id="turnstile_unavailable"></a>`turnstile_unavailable` | 503 | The instance could not get a verdict from Turnstile siteverify (unreachable, or its secret was rejected). Not the visitor's fault; retry after `Retry-After` seconds. The operator sees the cause in the API log. |
 | <a id="timeout"></a>`timeout` | 504 | The conversion exceeded its time limit. |
 
 ## CLI exit codes

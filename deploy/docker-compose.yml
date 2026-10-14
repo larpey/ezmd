@@ -10,7 +10,8 @@
 # Network model (Part 1 section 8.1):
 #   internal  internal: true, no route to the internet. api, worker-default, purge, redis.
 #   egress    normal bridge. caddy (ACME + clients) and worker-fetch (URL fetches; SSRF guard).
-# worker-default and the API never get general egress. Later phases add worker-media and
+# worker-default and the API never get general egress (the API's one outbound call, Turnstile
+# siteverify, goes through Caddy's fixed-upstream relay on :9180, which is never published). Later phases add worker-media and
 # model-init (profile "media"), postgres/minio profiles, and the public/pi/gpu overlays.
 name: ezmd
 
@@ -118,6 +119,9 @@ services:
       # the private ranges. The api has no published port, so only containers on `internal` reach it.
       EZMD_TRUST_PROXY_HEADER: ${EZMD_TRUST_PROXY_HEADER:-X-Real-IP}
       EZMD_TRUSTED_PROXIES: ${EZMD_TRUSTED_PROXIES:-172.16.0.0/12,10.0.0.0/8,192.168.0.0/16}
+      # The api has no egress. Turnstile siteverify goes through Caddy's internal relay, whose only
+      # upstream is challenges.cloudflare.com (Caddyfile `http://:9180`, D-0044).
+      EZMD_TURNSTILE_VERIFY_URL: ${EZMD_TURNSTILE_VERIFY_URL:-http://caddy:9180/turnstile/v0/siteverify}
     volumes:
       - state:/var/lib/ezmd
       - blobs:/var/lib/ezmd-blobs

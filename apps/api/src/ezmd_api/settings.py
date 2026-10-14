@@ -20,6 +20,7 @@ MIN_SECRET_BYTES = 32
 QUEUE_TIMEOUTS: dict[str, int] = {"default": 600, "media": 3600, "fetch": 120, "fetch_residential": 3600}
 
 CommaList = Annotated[list[str], NoDecode]
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
 
 def _split_csv(value: object) -> object:
@@ -93,6 +94,13 @@ class Settings(BaseSettings):
     turnstile_secret: SecretStr = SecretStr("")
     turnstile_required_for_fetch: bool = False
     turnstile_jwt_ttl_s: int = Field(default=120, ge=10)
+    turnstile_verify_url: str = Field(
+        default=TURNSTILE_VERIFY_URL,
+        description=(
+            "Where the API posts Turnstile siteverify requests. Compose points it at Caddy's internal relay "
+            "(`http://caddy:9180/turnstile/v0/siteverify`) because the API container has no egress (D-0044)."
+        ),
+    )
 
     # ---- Fetch ----
     allow_private_networks: bool = False
