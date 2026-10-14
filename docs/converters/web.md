@@ -44,7 +44,9 @@ All three share the same decoding, hygiene pass, metadata extraction, and HTML-t
 ## Metadata
 
 Precedence: JSON-LD `Article`/`NewsArticle`/`BlogPosting` > `citation_*` > OpenGraph/Twitter > Trafilatura >
-`<title>`/`<h1>`. Fields: title, author(s), published, modified, site_name, description, keywords (tags),
+`<title>`/`<h1>`. For the title, a JSON-LD `headline` (or `name`) counts only when it agrees with another title
+on the page (OpenGraph, Twitter, `<title>` or `<h1>`), so Wikipedia's short-description `headline` is skipped,
+and OpenGraph/Twitter titles lose a trailing site name ("Albert Einstein - Wikipedia"). Fields: title, author(s), published, modified, site_name, description, keywords (tags),
 canonical_url, language (`<html lang>`, `language_source=declared`), encoding. The canonical URL becomes the
 document source only when it is same-origin with the final URL; otherwise `extra.canonical_cross_origin` is set.
 `extra.readability_ratio` is extracted characters over cleaned-page characters; `extra.outbound_pdfs` lists

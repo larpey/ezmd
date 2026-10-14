@@ -116,7 +116,11 @@ def render_spans(ctx: RenderContext, spans: list[InlineSpan], *, heading: bool =
             if heading or profile.footnotes == "drop":
                 continue
             n = ctx.footnote_number(span.footnote_ref)
-            parts.append(f"[^{n}]" if n is not None else escape_inline(collapse_ws(clean_text(span.text, ctx.stats))))
+            if n is not None:
+                parts.append(f"[^{n}]")
+            else:  # the note itself was not extracted: keep the marker readable, not glued to the word
+                marker = collapse_ws(clean_text(span.text, ctx.stats)).strip().strip("[]")
+                parts.append(escape_inline(f"[{marker}]") if marker else "")
             first_is_prose = False if first_is_prose is None else first_is_prose
             continue
         raw = clean_text(span.text, ctx.stats)

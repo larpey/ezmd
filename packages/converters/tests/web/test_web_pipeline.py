@@ -340,3 +340,54 @@ def test_trafilatura_layout_page_source_order_without_chrome() -> None:
     )
     assert table_at < thanks_at
     assert isinstance(doc.blocks[table_at], Table)
+
+
+WIKI_HEAD = """<html lang="en"><head><title>Albert Einstein - Wikipedia</title>
+<meta property="og:title" content="Albert Einstein - Wikipedia">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "name": "Albert Einstein",
+"headline": "German-born theoretical physicist (1879-1955)", "author": {"@type": "Organization",
+"name": "Contributors to Wikimedia projects"}}</script></head>"""
+
+
+def test_jsonld_headline_that_disagrees_with_every_title_is_not_the_title() -> None:
+    """Wikipedia's JSON-LD `headline` is the short description; og:title, <title> and h1 all name the
+    article, so the title is the h1 (og:title minus the site suffix)."""
+    pm = extract_meta(parse_html(WIKI_HEAD + "<body><h1>Albert Einstein</h1></body></html>"), None, None)
+    assert pm.title == "Albert Einstein"
+    pm = extract_meta(parse_html(WIKI_HEAD + "<body></body></html>"), None, None)
+    assert pm.title == "Albert Einstein"  # JSON-LD name agrees with og:title
+
+
+def test_og_title_site_suffix_is_dropped() -> None:
+    head = '<html><head><meta property="og:title" content="The port log | Harbor Weekly">'
+    pm = extract_meta(parse_html(head + "</head><body><h1>The port log</h1></body></html>"), None, None)
+    assert pm.title == "The port log"
+    head = '<html><head><meta property="og:title" content="Tides: why the port floods">'
+    pm = extract_meta(parse_html(head + "</head><body><h1>Tides</h1></body></html>"), None, None)
+    assert pm.title == "Tides: why the port floods"  # a subtitle is not a site suffix
+
+
+def test_jsonld_headline_still_wins_when_it_agrees() -> None:
+    pm = extract_meta(parse_html(ARTICLE), None, None)
+    assert pm.title == "Port log, the full story"
+
+
+@pytest.mark.parametrize("conv", [TrafilaturaConverter(), RulesConverter()])
+def test_mediawiki_references_render_as_footnotes(conv: object) -> None:
+    ref = (
+        '<sup class="mw-ref reference" id="cite_ref-p_1-0"><a href="#cite_note-p-1"><span class="mw-reflink-text">'
+        '<span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></span></a></sup>'
+    )
+    html = (
+        f"{WIKI_HEAD}<body><main><h1>Albert Einstein</h1><p>He published four papers.{ref} {LONG}</p>"
+        f'<p>{LONG}</p><h2>References</h2><div class="reflist"><ol class="mw-references references">'
+        '<li id="cite_note-p-1"><span class="mw-cite-backlink"><a href="#cite_ref-p_1-0">^</a></span>'
+        '<span class="reference-text">Whittaker, E. (1955). Albert Einstein.</span></li></ol></div>'
+        "</main></body></html>"
+    )
+    result = convert_ref(_ref(html), ConvertOptions(), converter_id=conv.id)  # type: ignore[attr-defined]
+    md = render(result, "full", "md").markdown
+    doc = result.document
+    assert "four papers.[^1]" in md, md[:2000]
+    assert "[^1]: Whittaker, E. (1955). Albert Einstein." in md
+    assert doc.metadata.title == "Albert Einstein"

@@ -20,6 +20,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   missing models and the download command. `ezmd doctor` checks the models (D-0052).
 - `ezmd doctor` no longer shows ffmpeg as MISSING while the `media` extra is unreleased, and `--quiet`
   prints only problems.
+- Web pages: Wikipedia articles are titled by their name, not the JSON-LD short description; og:title loses
+  a trailing site name; MediaWiki references become footnotes (`[^n]`) instead of digits glued to the text;
+  unresolved references keep their brackets; empty table rows (image-only infobox rows) are dropped (D-0053).
 
 ## [0.1.0-rc4] - 2026-10-13
 
