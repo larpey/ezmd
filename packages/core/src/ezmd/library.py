@@ -15,7 +15,7 @@ from collections.abc import Callable, Iterable, Iterator
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import IO, Any
+from typing import IO, TYPE_CHECKING, Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -23,6 +23,9 @@ from ezmd.inputs import InputRef
 from ezmd.ir import ConversionResult, Document, Warning
 from ezmd.pipeline import convert_ref
 from ezmd.registry import Converter, ConvertOptions, default_registry
+
+if TYPE_CHECKING:
+    from ezmd.render.base import RenderedOutput
 
 __all__ = [
     "Options",
@@ -113,9 +116,9 @@ class Result:
         self.conversion = conversion
         self.profile = profile
         self._overrides = dict(render or {})
-        self._cache: dict[str, Any] = {}
+        self._cache: dict[str, RenderedOutput] = {}
 
-    def render(self, profile: str | None = None, format: str = "md", **overrides: object) -> Any:
+    def render(self, profile: str | None = None, format: str = "md", **overrides: object) -> RenderedOutput:
         """Render another profile or format from the retained IR. Returns `ezmd.render.RenderedOutput`."""
         from ezmd.render import render
 
