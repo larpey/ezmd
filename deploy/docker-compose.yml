@@ -156,7 +156,9 @@ services:
     environment:
       <<: *worker-env
       # The conversion child's address-space cap. It must stay below the container limit: the input copy
-      # on the /tmp tmpfs and the RQ parent count against the same memory cgroup. Raise both together.
+      # on the /tmp tmpfs and the RQ parent count against the same memory cgroup: 4096 MB limit - 3072 MB
+      # child = 1024 MB for the input copy (up to the 200 MB anonymous cap; more for keyed uploads) and the
+      # parent (~200-300 MB). Raise both together.
       EZMD_JOB_MEM_MB: ${EZMD_JOB_MEM_MB:-3072}
     deploy:
       resources:

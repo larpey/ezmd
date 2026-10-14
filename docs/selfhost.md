@@ -184,6 +184,8 @@ Office files anyway, pick one of these:
   them has a long history of privilege-escalation bugs. Keep the host kernel patched. On hosts that
   restrict unprivileged user namespaces in AppArmor (Ubuntu 23.10 and later), bubblewrap may still
   fail; the worker then keeps refusing LibreOffice, it never falls back to running it unsandboxed.
+  A full LibreOffice conversion inside bubblewrap has not been tested yet (only bubblewrap itself and
+  pandoc under it, as uid 10001 with every capability dropped).
 - **Unsandboxed LibreOffice, trusted input only.** Set `EZMD_REQUIRE_SANDBOX=0` in the env file.
   soffice then runs with only the container's isolation (no internet, but the same `/tmp` and network
   as the worker, which can reach `api` and `redis`).
