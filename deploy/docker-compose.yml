@@ -69,6 +69,11 @@ x-worker: &worker
   depends_on:
     redis:
       condition: service_healthy
+    # Docker fills a new named volume from the image on first mount; containers mounting `state` at the
+    # same moment race on that copy and fail with "mkdir .../cache: file exists". Starting the workers
+    # after the api lets one container populate the volume.
+    api:
+      condition: service_started
 
 services:
   caddy:

@@ -50,6 +50,8 @@ benchmark (D-0044 to D-0071).
 - Wrong HTTP methods get 405; `Retry-After` is exact; rejected creations refund their rate-limit hits (D-0049).
 - The API reports its real version; the plain-HTTP port binds to loopback by default; `upgrade.sh` prunes only
   ezmd images; status probes work under Git Bash.
+- The first `docker compose up` on a new install no longer fails intermittently with `mkdir .../cache: file
+  exists`: the workers start after the API, so only one container populates the new `state` volume.
 - `@ezmd/sdk` resolves its types under node10 module resolution and lists the new error codes.
 
 ### Packaging
