@@ -63,7 +63,7 @@ class RemoteError(Exception):
 
 def classify(e: BaseException) -> Failure:
     """Map an exception raised by the library, the fetcher, or the remote client to a Failure."""
-    from ezmd.core.netguard import NetguardError, PlatformDisabled, ResidentialOnly, ResponseTooLarge
+    from ezmd.core.netguard import NetguardError, PlatformDisabled, ResidentialOnly, ResponseTooLarge, SchemeNotAllowed
     from ezmd.inputs import FetchRequired, InputTooLarge
     from ezmd.pipeline import UnsupportedMediaType
     from ezmd.registry import EXPERIMENTAL_DISABLED, EXTRA_REQUIRED, UNSUPPORTED_MEDIA_TYPE, ConversionError
@@ -86,6 +86,8 @@ def classify(e: BaseException) -> Failure:
         return Failure(EXIT_BLOCKED, e.code, str(e), "other")
     if isinstance(e, FetchRequired):
         return Failure(EXIT_BLOCKED, "fetch_blocked_by_platform", "The input needs a fetch this CLI cannot do.")
+    if isinstance(e, SchemeNotAllowed):
+        return Failure(EXIT_ARGS, e.code, str(e), "other")
     if isinstance(e, NetguardError):
         return Failure(EXIT_FAIL, e.code, str(e), "other")
     if isinstance(e, FileNotFoundError):

@@ -160,6 +160,18 @@ class UrlBlocked(NetguardError):
     code = "url_blocked"
 
 
+class SchemeNotAllowed(UrlBlocked):
+    """Not an http(s) URL (ftp://, s3://, file://...). Same API code; the CLI treats it as a bad argument."""
+
+
+def scheme_refusal(scheme: str, url: str) -> SchemeNotAllowed:
+    return SchemeNotAllowed(
+        f"scheme {scheme!r} is not allowed: ezmd fetches only http and https URLs; download the file and pass its "
+        "path instead",
+        url=url,
+    )
+
+
 class SourceNotAllowed(NetguardError):
     """A hop's host fails the caller's `host_allowed` check (an API key's source restriction)."""
 
@@ -292,7 +304,7 @@ def validate_url(url: str, *, allow_private: bool = False) -> ValidatedUrl:
         raise UrlBlocked(f"malformed URL: {e}", url=url) from e
     scheme = parts.scheme.lower()
     if scheme not in ALLOWED_SCHEMES:
-        raise UrlBlocked(f"scheme {scheme!r} is not allowed", url=url)
+        raise scheme_refusal(scheme, url)
     if parts.username is not None or parts.password is not None or "@" in parts.netloc:
         raise UrlBlocked("URLs with credentials are not allowed", url=url)
     host = parts.hostname

@@ -101,3 +101,23 @@ def test_extra_required_code_maps_to_exit_2() -> None:
 
     f = classify(ConversionError("x", user_message="Install it.", code=EXTRA_REQUIRED))
     assert (f.exit_code, f.code, f.warning_kind) == (EXIT_ARGS, "extra_required", "extra_required")
+
+
+@pytest.mark.parametrize("url", ["ftp://example.com/report.pdf", "FTP://example.com/a", "s3://bucket/key.csv"])
+def test_non_http_url_is_an_unsupported_scheme_not_a_missing_file(url: str) -> None:
+    res = runner.invoke(app, ["convert", url, "--json"])
+    payload = _json(res)
+    assert res.exit_code == 2, payload
+    message = str(payload["error"]["message"])  # type: ignore[index]
+    assert "no such file" not in message and "http and https" in message and url.split(":")[0].lower() in message
+
+
+def test_library_and_netguard_raise_scheme_not_allowed() -> None:
+    from ezmd.core.netguard import SchemeNotAllowed, UrlBlocked, validate_url
+    from ezmd.library import convert
+
+    with pytest.raises(SchemeNotAllowed) as e:
+        convert("ftp://example.com/a.pdf")
+    assert isinstance(e.value, UrlBlocked) and str(e.value).startswith("scheme 'ftp'")
+    with pytest.raises(SchemeNotAllowed):
+        validate_url("gopher://example.com/")

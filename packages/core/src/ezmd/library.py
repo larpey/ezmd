@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import io
 import json
+import re
 from collections.abc import Callable, Iterable, Iterator
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -188,6 +189,10 @@ class Result:
         return f"<ezmd.Result {self.conversion.converter_id} {self.conversion.input_ref.display!r}>"
 
 
+_URL_SCHEME = re.compile(r"^([A-Za-z][A-Za-z0-9+.-]+)://")
+"""A URL with a scheme other than http(s) (two letters or more, so `C://dir` stays a Windows path)."""
+
+
 def _ref(source: Source, *, filename: str | None, opts: Options) -> InputRef:
     if isinstance(source, InputRef):
         return source
@@ -210,6 +215,11 @@ def _ref(source: Source, *, filename: str | None, opts: Options) -> InputRef:
         ref.display = res.url
         return ref
     p = Path(text)
+    scheme = _URL_SCHEME.match(text) if isinstance(source, str) else None
+    if scheme is not None and not p.exists():
+        from ezmd.core.netguard import scheme_refusal
+
+        raise scheme_refusal(scheme.group(1).lower(), text)
     if not p.is_file():
         raise FileNotFoundError(text)
     ref = InputRef.from_path(p, max_bytes=opts.max_bytes)
