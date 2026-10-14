@@ -214,3 +214,31 @@ def test_markdown_callout_title_keeps_its_own_paragraph() -> None:
         b for b in parse_markdown("> [!note]- Folded" + nl + "> body" + nl, "x.md")[0] if isinstance(b, Quote)
     )
     assert folded.attrs == {"callout": "note", "callout_fold": "closed"}
+
+
+@pytest.mark.parametrize("conv, name", [(PlainTextConverter, "big.txt"), (MarkdownPassthroughConverter, "big.md")])
+def test_text_over_the_size_cap_is_truncated_at_a_line(conv: type, name: str) -> None:
+    """Part 2 13.4: plain text and Markdown cap at 50 MB and truncate with a warning. Uncapped, a 150 MB
+    upload used more than the worker's 3 GB and was OOM-killed (rc5 stack retest)."""
+    from ezmd_converters.text.common import DEFAULT_MAX_TEXT_BYTES
+
+    assert DEFAULT_MAX_TEXT_BYTES == 50 * 1024 * 1024
+    data = b"".join(b"line %04d of the file\n" % i for i in range(200))
+    ref = InputRef.from_bytes(data, filename=name)
+    detect(ref)
+    doc = conv().convert(ref, ConvertOptions(extra={"text.max_bytes": 1000}))
+    assert doc.truncated is True
+    capped = [w for w in doc.warnings if w.kind == WarningKind.SIZE_CAP]
+    assert len(capped) == 1 and capped[0].detail["max_bytes"] == 1000
+    text = "\n".join(s.text for b in doc.blocks for s in getattr(b, "spans", []))
+    assert "line 0000" in text and "line 0199" not in text
+    assert "line 0044 of the file" in text and "line 0045" not in text  # cut at the last full line
+
+
+@pytest.mark.parametrize("conv, name", [(PlainTextConverter, "small.txt"), (MarkdownPassthroughConverter, "s.md")])
+def test_text_under_the_cap_is_not_truncated(conv: type, name: str) -> None:
+    ref = InputRef.from_bytes(b"short\n", filename=name)
+    detect(ref)
+    doc = conv().convert(ref, ConvertOptions(extra={"text.max_bytes": 1000}))
+    assert doc.truncated is False
+    assert all(w.kind != WarningKind.SIZE_CAP for w in doc.warnings)

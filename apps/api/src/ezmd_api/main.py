@@ -1,4 +1,4 @@
-"""ezmd_api.main: the FastAPI app factory (docs/spec/part1.md sections 7 and 8.4).
+"""ezmd_api.main: the FastAPI app factory (docs/internal/spec/part1.md sections 7 and 8.4).
 
 Run with `uvicorn ezmd_api.main:app` (uses env settings) or call `serve(host, port)`, which is
 what `ezmd serve` uses; it defaults to the inline queue when EZMD_QUEUE is unset.
@@ -72,7 +72,23 @@ EXPOSED_HEADERS = [
     "X-Ezmd-Injection-Risk",
     "X-Ezmd-Job",
 ]
+# Job envelopes, status, events, results and attachments are per-caller documents: no browser, proxy or
+# CDN may store them (docs/internal/spec/part4.md 4.12 Cloudflare rules: "Part 3 sets private, no-store on /v1/*").
+PRIVATE_PATH_PREFIXES = ("/v1/jobs", "/v1/convert", "/v1/fetch-node")
+PRIVATE_CACHE_CONTROL = "no-store, private"
 _CLIENT_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{8,64}$")
+
+
+def _vary_with_key(headers: list[tuple[bytes, bytes]]) -> str:
+    """The response's Vary values (e.g. CORS's Origin) plus X-API-Key: a keyed job's response must never be
+    served from a cache to a request without that key (red-team F1)."""
+    values: list[str] = []
+    for k, v in headers:
+        if k.lower() == b"vary":
+            values += [part.strip() for part in v.decode("latin-1").split(",") if part.strip()]
+    if not any(part.lower() == "x-api-key" for part in values):
+        values.append("X-API-Key")
+    return ", ".join(dict.fromkeys(values))
 
 
 class EdgeMiddleware:
@@ -101,9 +117,15 @@ class EdgeMiddleware:
             if message["type"] == "http.response.start":
                 status_holder["started"] = True
                 status_holder["status"] = message["status"]
-                headers = [(k, v) for k, v in message.get("headers", []) if k.lower() != b"x-request-id"]
+                private = str(scope.get("path", "")).startswith(PRIVATE_PATH_PREFIXES)
+                raw = message.get("headers", [])
+                dropped = {b"x-request-id", b"cache-control", b"vary"} if private else {b"x-request-id"}
+                headers = [(k, v) for k, v in raw if k.lower() not in dropped]
                 present = {k.lower() for k, _ in headers}
                 extra: dict[str, str] = {"X-Request-Id": request_id, **SECURITY_HEADERS}
+                if private:
+                    extra["Cache-Control"] = PRIVATE_CACHE_CONTROL
+                    extra["Vary"] = _vary_with_key(raw)
                 rl = state.get("ratelimit")
                 if rl is not None:
                     extra.update(rate_headers(rl))

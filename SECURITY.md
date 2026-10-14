@@ -17,9 +17,8 @@ latest minor version receives security fixes.
 
 Report privately; do not open a public issue, discussion, or pull request.
 
-- Preferred: a private security advisory on the GitHub repository (Security, Report a vulnerability).
-- Email: security@ezmd.dev. This address is a placeholder until the project domain is set up; until
-  then use the private advisory. A PGP key will be published here with the address.
+- Open a private security advisory on the GitHub repository: Security, then Report a vulnerability
+  (<https://github.com/larpey/ezmd/security/advisories/new>).
 
 Include the affected version or commit, the component (converter, API, worker, MCP server, web UI,
 deploy configuration), a minimal reproduction or input file, and the impact you observed.
@@ -67,4 +66,4 @@ findings is planned.
 
 The threat model and the controls in place (sandboxed workers, SSRF guard, input validation, upload
 limits, log redaction, retention) are described in `docs/security.md` and in section 8 of
-`docs/spec/part1.md`.
+`docs/internal/spec/part1.md`.

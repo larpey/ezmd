@@ -1,4 +1,4 @@
-# Release (docs/spec/part4.md 4.15.4; P1-T16). Triggered by a version tag pushed by the owner.
+# Release (docs/internal/spec/part4.md 4.15.4; P1-T16). Triggered by a version tag pushed by the owner.
 #
 #   vX.Y.Z-rcN  release candidate: images (GHCR, no :latest), PyPI as a pre-release (pip and uv skip it
 #               unless asked with --pre), GitHub pre-release. Never npm or the MCP registry.

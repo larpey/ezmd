@@ -1,6 +1,6 @@
 """Data family: CSV/TSV, JSON/JSON Lines, YAML, TOML, XML, SQLite, Parquet (extra), connection strings.
 
-docs/spec/part2.md section 10 (and section 2c steps 35 to 37 for CSV). Parquet needs pyarrow from the
+docs/internal/spec/part2.md section 10 (and section 2c steps 35 to 37 for CSV). Parquet needs pyarrow from the
 `data` extra; without it `data.parquet` is listed as unavailable.
 """
 

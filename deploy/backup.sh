@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ezmd backup (docs/spec/part4.md 4.9.9). Works while the stack is running.
+# ezmd backup (docs/internal/spec/part4.md 4.9.9). Works while the stack is running.
 #
 #   deploy/backup.sh [--no-blobs] [--out DIR] [--keep N]
 #

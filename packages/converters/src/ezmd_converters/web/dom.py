@@ -1,7 +1,7 @@
 """DOM helpers for the web family: decoding, safe parsing, CSS-ish locators, text normalization.
 
 Parsing uses lxml's HTML parser with network access off and the huge-tree switch off (libxml2's default
-depth and size limits stay in force; docs/spec/part1.md 8.2). HTML has no external entities to resolve.
+depth and size limits stay in force; docs/internal/spec/part1.md 8.2). HTML has no external entities to resolve.
 """
 
 from __future__ import annotations

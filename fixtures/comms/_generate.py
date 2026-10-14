@@ -260,7 +260,7 @@ def _rtf_from_html(html: str) -> bytes:
 
 def msg_outlook() -> bytes:
     """An Outlook message: RTF-encapsulated HTML body (compressed RTF only), transport headers, recipients,
-    two attachments, and one embedded message (docs/spec/part2.md 9f fixture 4)."""
+    two attachments, and one embedded message (docs/internal/spec/part2.md 9f fixture 4)."""
     from _cfb import MsgAttachment, MsgSpec, compress_rtf, write_msg
 
     from ezmd_converters.comms.rtf import PREBUF

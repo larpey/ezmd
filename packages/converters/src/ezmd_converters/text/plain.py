@@ -1,8 +1,8 @@
 """text.plain: plain text and any `text/*` not claimed by a more specific converter.
 
-docs/spec/part1.md P0-T06: decode with charset detection (charset-normalizer, MIT), split paragraphs
+docs/internal/spec/part1.md P0-T06: decode with charset detection (charset-normalizer, MIT), split paragraphs
 on blank lines, promote setext-style underlined headings (`===` -> level 1, `---` -> level 2) and
-short ALL-CAPS lines standing alone between blank lines (docs/spec/part2.md 4c step 22 rule 3: under 60
+short ALL-CAPS lines standing alone between blank lines (docs/internal/spec/part2.md 4c step 22 rule 3: under 60
 characters, at least 3 words or a trailing colon) to level-2 headings, keep blocks indented by 4+ spaces
 or a tab as code (rule 5) unless they read as an indented quote or sub-list, turn runs of 3+ lines whose
 columns line up on 2+ space gaps into tables (rule 6), keep outline items on their own lines (rule 4, through
@@ -32,6 +32,7 @@ from ezmd.ir import (
     WarningKind,
 )
 from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.text.common import mark_truncated, read_capped
 from ezmd_converters.text.lines import LINE_BREAKS_ATTR, LINE_BREAKS_HARD, join_lines
 
 _UNDERLINE = re.compile(r"^(=+|-+)\s*$")
@@ -137,7 +138,7 @@ def decode_text_detailed(raw: bytes) -> tuple[str, str, bool, float]:
         pass
     from charset_normalizer import from_bytes
 
-    # `uncertain` follows docs/spec/part2.md 13.2: only when detection confidence is low (< 0.7)
+    # `uncertain` follows docs/internal/spec/part2.md 13.2: only when detection confidence is low (< 0.7)
     # and the decode still contains replacement characters. A clean Latin-1/cp1252 decode is not
     # uncertain (D-0015).
     best = from_bytes(raw).best()
@@ -172,10 +173,12 @@ class PlainTextConverter:
         return 0.0
 
     def convert(self, ref: InputRef, options: ConvertOptions) -> Document:
-        raw = ref.read()
+        raw, cap = read_capped(ref, options)
         source = ref.display
         meta = Metadata(source=source, source_type=SourceType.TEXT, mime=ref.detected.mime if ref.detected else None)
         doc = Document(metadata=meta)
+        if cap is not None:
+            mark_truncated(doc, cap)
         if not raw.strip():
             doc.warnings.append(
                 Warning(kind=WarningKind.EXTRACTION_EMPTY, severity="error", message="The file contains no text.")

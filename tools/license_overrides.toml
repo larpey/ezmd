@@ -7,7 +7,7 @@
 #   version  optional; when set the override only applies to that exact version
 #   note     what was checked
 # Never use an override to relabel a license the allowlist rejects; change the dependency or
-# record a policy decision in DECISIONS.md instead.
+# record a policy decision in docs/internal/DECISIONS.md instead.
 
 [packages.colorama]
 license = "BSD-3-Clause"

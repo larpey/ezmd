@@ -1,4 +1,4 @@
-"""File collection for repository packs (docs/spec/part2.md 8c steps 2 to 4).
+"""File collection for repository packs (docs/internal/spec/part2.md 8c steps 2 to 4).
 
 Filters in spec order: nested `.gitignore` chains and `.ezmdignore` (pathspec gitwildmatch; the deepest
 file with a matching rule wins, so negations in nested files work), default excludes (VCS, vendor, build

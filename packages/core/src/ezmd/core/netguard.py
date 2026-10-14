@@ -1,4 +1,4 @@
-"""ezmd.core.netguard: SSRF-safe URL fetching (docs/spec/part1.md section 8.3).
+"""ezmd.core.netguard: SSRF-safe URL fetching (docs/internal/spec/part1.md section 8.3).
 
 Every outbound fetch of user-supplied URLs goes through `fetch()` (or `guarded_client()` for
 adapters that need a client). Guarantees:
@@ -10,8 +10,8 @@ adapters that need a client). Guarantees:
    are normalized first. Hostnames `localhost`, `*.localhost`, `*.internal`, `*.local`, `*.arpa`,
    and cloud metadata names are rejected. Ports of internal services (Redis, databases, Docker,
    Kubernetes, etcd, Consul, message brokers, mail, SMB, ...) are rejected on every host, so a public
-   name cannot be used to reach them either (docs/spec/part4.md 4.14.5 item 1: "ports 6379 and 5432 on
-   public hosts"). Section 8.3 names no port list; this is a denylist (docs/decisions/P1-T15.md,
+   name cannot be used to reach them either (docs/internal/spec/part4.md 4.14.5 item 1: "ports 6379 and 5432 on
+   public hosts"). Section 8.3 names no port list; this is a denylist (docs/internal/decisions/P1-T15.md,
    D-P1-T15-5), so web servers on arbitrary ports keep working.
 3. DNS is resolved once (3 s timeout); if any A/AAAA answer is blocked the fetch is refused. The
    connection is then pinned to the resolved address while SNI and Host keep the original name, so
@@ -147,7 +147,7 @@ _EXTRA_BLOCKED_NETS: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...] =
 
 
 class NetguardError(Exception):
-    """Base class. `code` maps to the API error schema (docs/spec/part1.md section 7.5)."""
+    """Base class. `code` maps to the API error schema (docs/internal/spec/part1.md section 7.5)."""
 
     code = "url_blocked"
 
@@ -158,6 +158,18 @@ class NetguardError(Exception):
 
 class UrlBlocked(NetguardError):
     code = "url_blocked"
+
+
+class SchemeNotAllowed(UrlBlocked):
+    """Not an http(s) URL (ftp://, s3://, file://...). Same API code; the CLI treats it as a bad argument."""
+
+
+def scheme_refusal(scheme: str, url: str) -> SchemeNotAllowed:
+    return SchemeNotAllowed(
+        f"scheme {scheme!r} is not allowed: ezmd fetches only http and https URLs; download the file and pass its "
+        "path instead",
+        url=url,
+    )
 
 
 class SourceNotAllowed(NetguardError):
@@ -270,6 +282,22 @@ def redact_url(url: str) -> str:
     return urlunsplit((parts.scheme, netloc, parts.path, "&".join(query_items), ""))
 
 
+MAX_HOSTNAME = 253
+MAX_LABEL = 63
+
+
+def _check_dns_name(host: str, url: str) -> None:
+    """RFC 1035 lengths: labels of 1 to 63 octets, 253 in total. Longer names reach getaddrinfo and fail
+    there with UnicodeError instead of a refusal."""
+    if len(host) > MAX_HOSTNAME:
+        raise UrlBlocked(f"hostname is {len(host)} octets; the limit is {MAX_HOSTNAME}", url=url[:300])
+    for label in host.split("."):
+        if not label:
+            raise UrlBlocked("hostname has an empty label", url=url)
+        if len(label) > MAX_LABEL:
+            raise UrlBlocked(f"a hostname label is {len(label)} octets; the limit is {MAX_LABEL}", url=url[:300])
+
+
 @dataclass(frozen=True, slots=True)
 class ValidatedUrl:
     url: str
@@ -292,18 +320,27 @@ def validate_url(url: str, *, allow_private: bool = False) -> ValidatedUrl:
         raise UrlBlocked(f"malformed URL: {e}", url=url) from e
     scheme = parts.scheme.lower()
     if scheme not in ALLOWED_SCHEMES:
-        raise UrlBlocked(f"scheme {scheme!r} is not allowed", url=url)
+        raise scheme_refusal(scheme, url)
     if parts.username is not None or parts.password is not None or "@" in parts.netloc:
         raise UrlBlocked("URLs with credentials are not allowed", url=url)
     host = parts.hostname
     if not host:
         raise UrlBlocked("URL has no host", url=url)
-    host = host.rstrip(".")
+    if host.endswith("."):
+        # "example.com." is the same host as "example.com"; drop the dot from the URL too, since the
+        # pinned connection and the TLS certificate check both compare the bare name.
+        host = host.rstrip(".")
+        if not host:
+            raise UrlBlocked("URL has no host", url=url)
+        netloc = host if port is None else f"{host}:{port}"
+        url = urlunsplit((parts.scheme, netloc, parts.path, parts.query, parts.fragment))
     try:
         host_idna = host.encode("idna").decode("ascii") if not host.isascii() else host
     except UnicodeError as e:
         raise UrlBlocked("invalid internationalized hostname", url=url) from e
     ip = parse_ip_literal(host_idna)
+    if ip is None:
+        _check_dns_name(host_idna, url)
     if ip is not None:
         if not allow_private and is_blocked_ip(ip):
             raise UrlBlocked(f"address {ip} is in a blocked range", url=url)
@@ -346,6 +383,8 @@ def resolve_checked(
         raise FetchFailed(f"DNS lookup for {v.host} timed out", url=v.url) from e
     except OSError as e:
         raise FetchFailed(f"DNS lookup for {v.host} failed", url=v.url) from e
+    except UnicodeError as e:  # the idna codec rejects the name (should already be caught by validate_url)
+        raise UrlBlocked(f"hostname {v.host[:80]!r} cannot be resolved: {e}", url=v.url) from e
     if not addrs:
         raise FetchFailed(f"DNS lookup for {v.host} returned no addresses", url=v.url)
     parsed: list[IPAddress] = []
@@ -367,11 +406,16 @@ def resolve_checked(
 # ---------------------------------------------------------------------------
 
 
+def _pin_name(host: str) -> str:
+    """The form both sides of the pin compare: lower case, no IPv6 brackets, no trailing root dot."""
+    return host.lower().strip("[]").rstrip(".")
+
+
 class _PinnedBackend(httpcore.NetworkBackend):
     """Connects to the pinned address for the one hostname this client may reach."""
 
     def __init__(self, host: str, ip: str) -> None:
-        self._host = host
+        self._host = _pin_name(host)
         self._ip = ip
         self._inner = httpcore.SyncBackend()
 
@@ -383,7 +427,7 @@ class _PinnedBackend(httpcore.NetworkBackend):
         local_address: str | None = None,
         socket_options: Iterable[Any] | None = None,
     ) -> httpcore.NetworkStream:
-        if host.lower().strip("[]") not in (self._host, self._ip):
+        if _pin_name(host) not in (self._host, self._ip):
             raise httpcore.ConnectError(f"connection to unpinned host {host!r} refused")
         return self._inner.connect_tcp(self._ip, port, timeout, local_address, socket_options)
 
@@ -398,7 +442,7 @@ class _PinnedBackend(httpcore.NetworkBackend):
 
 class _AsyncPinnedBackend(httpcore.AsyncNetworkBackend):
     def __init__(self, host: str, ip: str) -> None:
-        self._host = host
+        self._host = _pin_name(host)
         self._ip = ip
         self._inner = httpcore.AnyIOBackend()
 
@@ -410,7 +454,7 @@ class _AsyncPinnedBackend(httpcore.AsyncNetworkBackend):
         local_address: str | None = None,
         socket_options: Iterable[Any] | None = None,
     ) -> httpcore.AsyncNetworkStream:
-        if host.lower().strip("[]") not in (self._host, self._ip):
+        if _pin_name(host) not in (self._host, self._ip):
             raise httpcore.ConnectError(f"connection to unpinned host {host!r} refused")
         return await self._inner.connect_tcp(self._ip, port, timeout, local_address, socket_options)
 

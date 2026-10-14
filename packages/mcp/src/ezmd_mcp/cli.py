@@ -100,7 +100,7 @@ class StartupError(Exception):
 
 def resolve_http(args: argparse.Namespace, env: Mapping[str, str] | None = None) -> HttpConfig:
     """Bind loopback unless --host or EZMD_MCP_BIND says otherwise; a token is required by default, and a
-    non-loopback bind without an explicit token refuses to start (docs/spec/part4.md 4.4.3, part1 8.4)."""
+    non-loopback bind without an explicit token refuses to start (docs/internal/spec/part4.md 4.4.3, part1 8.4)."""
     env = os.environ if env is None else env
     host = args.host or env.get("EZMD_MCP_BIND") or "127.0.0.1"
     try:

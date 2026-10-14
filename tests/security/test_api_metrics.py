@@ -1,4 +1,4 @@
-"""GET /metrics (docs/spec/part4.md 4.10.5, P1-T10): not mounted without EZMD_METRICS_TOKEN, bearer
+"""GET /metrics (docs/internal/spec/part4.md 4.10.5, P1-T10): not mounted without EZMD_METRICS_TOKEN, bearer
 required, Prometheus text with the job, queue, duration, warning, rate-limit, and fetch-node series."""
 
 from __future__ import annotations

@@ -61,12 +61,14 @@ Query parameters on `POST /v1/convert`:
   the job metadata is in the `X-Ezmd-Job` header.
 - `format`: the result format when `wait` returns a result.
 
-Identical input, options, and profile from the same caller return the existing job with
-`"deduplicated": true` and status `200`. An `Idempotency-Key` header (at most 255 characters) also
-deduplicates. In public mode anonymous jobs are never deduplicated across clients.
+Identical input, options, and profile as a finished, unexpired job return that job with
+`"deduplicated": true` and status `200`. The scope is the API key for keyed callers and the client
+IP for anonymous callers (in every mode: the job id grants access to the job). An `Idempotency-Key`
+header (at most 255 characters, scoped to the caller) also deduplicates.
 
-The detected type, never the file extension, decides how a file is handled. Executables are
-rejected with `unsupported_media_type`.
+The detected type, never the file extension, decides how a file is handled. Executables and types
+no installed converter handles are rejected with `415 unsupported_media_type` before a job is
+created (`detail.reason` is `executable` or `no_converter`).
 
 ## Job states
 
@@ -186,7 +188,8 @@ Counters live in Redis (memory in inline mode), so API and worker processes add 
 ## Admin CLI
 
 Administration is host-only: there are no admin HTTP endpoints. `ezmd-admin` reads the same
-`EZMD_*` environment as the API (`docker compose exec api ezmd-admin ...`):
+`EZMD_*` environment as the API. In the compose stack, run it inside the `api` container from the
+repository root: `docker compose -f deploy/docker-compose.yml --env-file deploy/.env exec api ezmd-admin ...`.
 
 | Command | Does |
 |---|---|
@@ -195,11 +198,15 @@ Administration is host-only: there are no admin HTTP endpoints. `ezmd-admin` rea
 | `ezmd-admin keys revoke ID` | Revoke a database key (`key_...`) or remove a file key (`kf_...`) |
 | `ezmd-admin jobs list [--state STATE\|active] [--limit N] [--json]` | Most recent jobs |
 | `ezmd-admin jobs kill ID` | Fail an active job and cancel or stop its RQ job |
-| `ezmd-admin reap [--now] [--temp-age-s N]` | One reaper pass: expired claims, stale jobs, expired jobs, orphaned temp dirs |
+| `ezmd-admin reap [--now] [--temp-age-s N]` | One reaper pass: expired claims, jobs the queue lost, stale jobs, expired jobs, orphaned temp dirs |
 
-The reaper (also run by the API scheduler every 30 s and by `python -m ezmd_api.purge`) fails
-jobs nobody updated for longer than their queue's timeout plus 150 s with `timeout`, unless the job
-is still waiting in its queue. `--now` drops the 150 s grace.
+The reaper (also run by the `purge` service every 30 s, by the API scheduler outside compose, and by
+`python -m ezmd_api.purge`) first reconciles active jobs with RQ. A job that has not changed for 60 s
+and that RQ no longer holds is enqueued again if it was still `queued` (Redis restarted without
+persistence, so no worker ever started it); otherwise it fails with `internal_error`, as does a
+started job whose worker stopped heartbeating for 60 s. Either way the caller's concurrency slot is
+freed. Then it fails jobs nobody updated for longer than their queue's timeout plus 150 s with
+`timeout`, unless the job is still waiting in its queue. `--now` drops the 150 s grace.
 
 ## Errors
 

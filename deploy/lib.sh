@@ -20,6 +20,16 @@ die() {
   exit 1
 }
 
+# curl_w <write-out> <curl command...>: run the curl command and print only its --write-out text (for
+# example '%{http_code}'); the body is dropped here. Not `-o /dev/null`: with MSYS_NO_PATHCONV=1 native
+# Windows curl (Git Bash) gets /dev/null verbatim and fails with "(23) error on write".
+curl_w() {
+  local fmt="$1" out
+  shift
+  out="$("$@" -w "\n__ezmd_w__$fmt")" || return
+  printf '%s\n' "${out##*__ezmd_w__}"
+}
+
 # native_path <path>: the path as the docker CLI expects it (C:/... under Git Bash, unchanged elsewhere).
 native_path() {
   if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else printf '%s\n' "$1"; fi
@@ -117,7 +127,7 @@ wait_ready() {
   url="$(stack_url)"
   read -r -a extra <<<"$(stack_curl_args)"
   while :; do
-    code="$(curl -sS -k --max-time 10 ${extra[@]+"${extra[@]}"} -o /dev/null -w '%{http_code}' "$url/readyz" 2>/dev/null || true)"
+    code="$(curl_w '%{http_code}' curl -sS -k --max-time 10 ${extra[@]+"${extra[@]}"} "$url/readyz" 2>/dev/null || true)"
     [ "$code" = 200 ] && return 0
     [ "$(date +%s)" -lt "$deadline" ] || return 1
     sleep 2

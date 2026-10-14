@@ -15,7 +15,7 @@ import hashlib
 import re
 import secrets
 import unicodedata
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Literal
@@ -45,7 +45,6 @@ _INTERLEAVED = re.compile(r"(?<=\w)[.\-_*·](?=\w)")
 _B64 = re.compile(r"[A-Za-z0-9+/]{24,}={0,2}")
 _HEX = re.compile(r"\b(?:[0-9a-fA-F]{2}){16,}\b")
 _CODE_FENCE = re.compile(r"^(`{3,}|~{3,})[^\n]*\n.*?^\1\s*$", re.S | re.M)
-_GENERATED = re.compile(r"^<!-- (page \d+|slide \d+|sheet \"|image: |chunk id=|/chunk|ezmd: )[^\n]*-->$", re.M)
 _ESCAPE = re.compile(r"\\([!-/:-@\[-`{-~])")
 _COMMON = {"the", "you", "and", "ignore", "instructions", "system", "prompt", "all", "previous", "now", "are", "must"}
 _CONFUSABLES = str.maketrans(
@@ -132,9 +131,13 @@ def normalize(text: str) -> str:
     return t.casefold()
 
 
-def scan_copy(body: str) -> str:
-    """The body as the scanner sees it: renderer-generated markers removed and Markdown escapes undone."""
-    return _ESCAPE.sub(r"\1", _GENERATED.sub("", body))
+def scan_copy(body: str, generated: Mapping[str, str] | None = None) -> str:
+    """The body as the scanner sees it: the marker lines this render emitted (`generated`, exact lines)
+    replaced by the source text inside them, and Markdown escapes undone. Nothing is exempt by its shape: a
+    `<!-- ezmd: ... -->` written by the document itself is scanned (D-0059)."""
+    if generated:
+        body = "\n".join(generated.get(line, line) for line in body.split("\n"))
+    return _ESCAPE.sub(r"\1", body)
 
 
 def _snippet(text: str, start: int) -> str:
@@ -204,9 +207,15 @@ def _heuristics(text: str) -> list[Finding]:
 
 
 def scan(
-    body: str, metadata: dict[str, str], hidden_text: str = "", *, bidi_or_tags: bool = False, chat: bool = False
+    body: str,
+    metadata: dict[str, str],
+    hidden_text: str = "",
+    *,
+    bidi_or_tags: bool = False,
+    chat: bool = False,
+    generated: Mapping[str, str] | None = None,
 ) -> InjectionReport:
-    text = scan_copy(body)
+    text = scan_copy(body, generated)
     code_spans = [(m.start(), m.end()) for m in _CODE_FENCE.finditer(text)]
 
     def in_code(off: int) -> bool:

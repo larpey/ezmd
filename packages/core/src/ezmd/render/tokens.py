@@ -1,4 +1,4 @@
-"""ezmd.render.tokens: token counting (docs/spec/part3.md section 20).
+"""ezmd.render.tokens: token counting (docs/internal/spec/part3.md section 20).
 
 Encodings load lazily on first use (never at import). When tiktoken or its BPE files are unavailable
 (air-gapped install without the cache) counts fall back to len/3.8 for Latin and len/1.6 for CJK text and

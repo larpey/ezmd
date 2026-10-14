@@ -1,4 +1,4 @@
-"""ezmd.chains: default fallback chains per mime type (docs/spec/part1.md section 5.3).
+"""ezmd.chains: default fallback chains per mime type (docs/internal/spec/part1.md section 5.3).
 
 Exact keys are matched before wildcard keys (`audio/*`). Each converter family declares the chains for
 the mimes it owns in `ezmd_converters.<family>.CHAINS` (D-0020); `DEFAULT_CHAINS` holds only chains

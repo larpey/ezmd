@@ -1,4 +1,4 @@
-"""ezmd_api.schemas: request and response models (docs/spec/part1.md section 7.3).
+"""ezmd_api.schemas: request and response models (docs/internal/spec/part1.md section 7.3).
 
 Field descriptions and examples here are what docs/api/openapi.json publishes.
 """
@@ -306,7 +306,7 @@ class ErrorDetail(BaseModel):
 
 
 class ErrorResponse(BaseModel):
-    """The error schema of docs/spec/part1.md section 7.5."""
+    """The error schema of docs/internal/spec/part1.md section 7.5."""
 
     model_config = ConfigDict(
         json_schema_extra={

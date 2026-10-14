@@ -1,5 +1,5 @@
 """ezmd_api.ircache: the fingerprint that decides whether a finished job's cached IR may be served
-again (dedup, docs/spec/part1.md 7.1; DECISIONS.md D-0017 item 6).
+again (dedup, docs/internal/spec/part1.md 7.1; docs/internal/DECISIONS.md D-0017 item 6).
 
 The key covers the IR `schema_version`, the converter id and the version of the package that ships
 it, and the ezmd core version, so an upgrade never serves IR produced by older code.

@@ -1,4 +1,4 @@
-"""The three web/pages converters (docs/spec/part2.md section 5).
+"""The three web/pages converters (docs/internal/spec/part2.md section 5).
 
 - `web.trafilatura`: Trafilatura chooses the article; blocks are rebuilt from the matching DOM elements.
   Falls back to the rule extractor when Trafilatura returns under 200 characters or under 25 percent of the

@@ -1,4 +1,4 @@
-"""ezmd_api.queue: queue routing and enqueue helpers (docs/spec/part1.md section 7.2).
+"""ezmd_api.queue: queue routing and enqueue helpers (docs/internal/spec/part1.md section 7.2).
 
 The RQ payload is the job id only; workers load everything else from the job store. With
 `EZMD_QUEUE=inline` jobs run on a small thread pool inside the API process (for `ezmd serve`
@@ -23,6 +23,23 @@ FETCH_RESIDENTIAL = "fetch_residential"
 RQ_QUEUES = (DEFAULT, MEDIA, FETCH)
 ALL_QUEUES = (DEFAULT, MEDIA, FETCH, FETCH_RESIDENTIAL)
 WORKER_ENTRY = "ezmd_api.worker.rq_entry"
+HEARTBEAT_MAX_AGE_S = 60
+"""/readyz needs a worker heartbeat at most this old (docs/internal/spec/part1.md section 7.3)."""
+WORKER_TTL_S = 45
+"""RQ `worker_ttl` for ezmd workers. An idle RQ worker beats once per dequeue timeout (worker_ttl - 15 s)
+and a busy one every `job_monitoring_interval` (30 s), so both beat twice per readiness window. RQ's
+default of 420 s left an idle worker silent for 405 s and /readyz answered 503 (D-0045)."""
+
+
+# What the queue knows about one job (JobQueue.liveness), for the reaper's reconciliation.
+WAITING = "waiting"
+"""In a queue, not started by any worker."""
+RUNNING = "running"
+"""Started by a worker that is still heartbeating (or the backend cannot tell)."""
+LOST = "lost"
+"""The queue no longer holds the job, or its worker stopped heartbeating: nobody will finish it."""
+UNKNOWN = "unknown"
+"""The queue backend could not be asked (Redis down); the reaper does nothing."""
 
 
 def queue_for_mime(mime: str | None) -> str:
@@ -42,6 +59,10 @@ class JobQueue(Protocol):
     def workers_alive(self) -> bool: ...
     def waiting(self, job_id: str, rq_job_id: str | None) -> bool:
         """True while the job sits in a queue and no worker has started it (the reaper leaves it alone)."""
+        ...
+
+    def liveness(self, job_id: str, rq_job_id: str | None) -> str:
+        """WAITING, RUNNING, LOST, or UNKNOWN (see the constants above)."""
         ...
 
     def cancel(self, job_id: str, rq_job_id: str | None) -> None:
@@ -73,6 +94,10 @@ class InlineQueue:
     def waiting(self, job_id: str, rq_job_id: str | None) -> bool:
         with self._lock:
             return job_id in self._pending
+
+    def liveness(self, job_id: str, rq_job_id: str | None) -> str:
+        """Threads cannot be lost without the process, so anything not pending counts as running."""
+        return WAITING if self.waiting(job_id, rq_job_id) else RUNNING
 
     def cancel(self, job_id: str, rq_job_id: str | None) -> None:
         """A thread cannot be killed; the job's failed state makes the runner skip or abandon it."""
@@ -127,14 +152,36 @@ class RQQueue:
             return None
 
     def waiting(self, job_id: str, rq_job_id: str | None) -> bool:
-        job = self._job(rq_job_id)
-        if job is None:
-            return False
+        return self.liveness(job_id, rq_job_id) == WAITING
+
+    def liveness(self, job_id: str, rq_job_id: str | None) -> str:
+        """From the RQ job: queued/deferred/scheduled is WAITING; started is RUNNING while the job's
+        heartbeat (refreshed every `job_monitoring_interval` by its worker) is within HEARTBEAT_MAX_AGE_S,
+        else LOST; missing (Redis restarted without persistence) or finished/failed/stopped is LOST."""
+        from datetime import UTC, datetime
+
+        from rq.exceptions import NoSuchJobError
+        from rq.job import Job
+
+        if not rq_job_id:
+            return LOST
         try:
+            job = Job.fetch(rq_job_id, connection=self.redis)
             status = str(getattr(job.get_status(), "value", job.get_status()))
+        except NoSuchJobError:
+            return LOST
         except Exception:
-            return False
-        return status in ("queued", "deferred", "scheduled")
+            log.warning("could not read RQ job state", extra={"job_id": job_id})
+            return UNKNOWN
+        if status in ("queued", "deferred", "scheduled"):
+            return WAITING
+        if status != "started":
+            return LOST
+        hb = job.last_heartbeat
+        if hb is None:
+            return RUNNING
+        hb = hb if hb.tzinfo else hb.replace(tzinfo=UTC)
+        return RUNNING if (datetime.now(UTC) - hb).total_seconds() <= HEARTBEAT_MAX_AGE_S else LOST
 
     def cancel(self, job_id: str, rq_job_id: str | None) -> None:
         job = self._job(rq_job_id)
@@ -152,7 +199,7 @@ class RQQueue:
             log.warning("could not cancel RQ job", extra={"job_id": job_id})
 
     def workers_alive(self) -> bool:
-        """At least one RQ worker heartbeated in the last 60 s (readiness)."""
+        """At least one RQ worker heartbeated in the last HEARTBEAT_MAX_AGE_S (readiness)."""
         from datetime import UTC, datetime
 
         from rq import Worker
@@ -167,7 +214,7 @@ class RQQueue:
             if hb is None:
                 continue
             hb = hb if hb.tzinfo else hb.replace(tzinfo=UTC)
-            if (now - hb).total_seconds() <= 60:
+            if (now - hb).total_seconds() <= HEARTBEAT_MAX_AGE_S:
                 return True
         return False
 

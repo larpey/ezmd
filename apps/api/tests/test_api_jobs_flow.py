@@ -174,17 +174,20 @@ async def test_wait_returns_result_body(client: httpx.AsyncClient) -> None:
     assert envelope["state"] == "done"
 
 
+# A PDF header over garbage: detection and admission accept it, the PDF converter fails on it. (A blob
+# nothing can convert is refused with 415 before a job exists; see test_api_unsupported.py.)
+BROKEN_PDF = b"%PDF-1.7\n" + b"\x00\x01garbage" * 64
+
+
 async def test_wait_returns_error_for_failed_job(client: httpx.AsyncClient) -> None:
-    r = await upload(
-        client, b"\x00\x01\x02\xff" * 64, "blob.bin", content_type="application/octet-stream", params={"wait": 20}
-    )
+    r = await upload(client, BROKEN_PDF, "broken.pdf", content_type="application/pdf", params={"wait": 20})
     assert r.status_code == 500
     assert r.json()["error"]["code"] == "conversion_failed"
     assert json.loads(r.headers["x-ezmd-job"])["state"] == "failed"
 
 
 async def test_failed_job_exposes_error(client: httpx.AsyncClient) -> None:
-    r = await upload(client, b"\x00\x01\x02\xff" * 64, "blob.bin", content_type="application/octet-stream")
+    r = await upload(client, BROKEN_PDF, "broken.pdf", content_type="application/pdf")
     body = await wait_for_state(client, r.json()["job"]["id"])
     assert body["state"] == "failed"
     assert body["error"]["code"] == "conversion_failed"
@@ -213,3 +216,24 @@ async def test_invalid_options_rejected(client: httpx.AsyncClient) -> None:
     assert r.status_code == 400
     r = await client.post("/v1/convert", content=b"hello", headers={"content-type": "text/plain"})
     assert r.status_code == 400
+
+
+async def test_job_responses_are_never_cached(client: httpx.AsyncClient) -> None:
+    """S10: results, job status, events and attachments carry Cache-Control: no-store, private."""
+    r = await upload(client, b"# Cache\n\nbody\n", "c.md", content_type="text/markdown")
+    assert r.headers["cache-control"] == "no-store, private"
+    assert "x-api-key" in r.headers["vary"].lower()
+    job_id = r.json()["job"]["id"]
+    await wait_for_state(client, job_id)
+    for path in (
+        f"/v1/jobs/{job_id}",
+        f"/v1/jobs/{job_id}/result",
+        f"/v1/jobs/{job_id}/result?format=json",
+        f"/v1/jobs/{job_id}/events",
+        f"/v1/jobs/{job_id}/attachments/missing.png",
+        "/v1/jobs/job_0000000000000000000000",
+    ):
+        resp = await client.get(path)
+        assert resp.headers.get("cache-control") == "no-store, private", path
+        assert "x-api-key" in resp.headers.get("vary", "").lower(), path
+    assert (await client.get("/v1/warnings")).headers["cache-control"] == "public, max-age=3600"

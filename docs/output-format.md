@@ -1,8 +1,8 @@
 # Output format
 
 This page summarizes the output format as implemented today. The normative definition is
-[Part 3, section D](spec/part3.md#d-output-format) of the specification; where this page and the
-spec differ, the spec is the target and `DECISIONS.md` (D-0014, D-0015) records the deliberate
+[Part 3, section D](https://github.com/larpey/ezmd/blob/main/docs/internal/spec/part3.md#d-output-format) of the specification; where this page and the
+spec differ, the spec is the target and `docs/internal/DECISIONS.md` (D-0014, D-0015) records the deliberate
 deviations.
 
 Every converter produces the same IR, and only the renderer produces bytes. Rendering is

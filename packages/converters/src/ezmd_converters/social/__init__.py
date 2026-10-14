@@ -1,4 +1,4 @@
-"""Social and forum family, Phase 1 stub (docs/spec/part2.md section 7; ROADMAP P1-T07, full adapters P3-T02).
+"""Social and forum family, Phase 1 stub (docs/internal/spec/part2.md section 7; ROADMAP P1-T07, full adapters P3-T02).
 
 Behind the family flag `EZMD_ENABLE_SOCIAL` (off by default). Off: the Reddit and Hacker News converters are
 registered as `Unavailable`, so capabilities list them with the reason and their URLs fall through to the

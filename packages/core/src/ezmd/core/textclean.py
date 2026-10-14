@@ -1,4 +1,4 @@
-"""ezmd.core.textclean: body-text sanitation shared by every converter (docs/spec/part1.md 8.2).
+"""ezmd.core.textclean: body-text sanitation shared by every converter (docs/internal/spec/part1.md 8.2).
 
 Removes NUL and C0/C1 control characters (keeping tab and newline), bidi overrides and isolates,
 zero-width and other invisible format characters, the BOM, and the Unicode Tags block, and counts

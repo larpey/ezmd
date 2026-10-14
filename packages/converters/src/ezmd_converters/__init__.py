@@ -4,8 +4,8 @@ Each converter family is a subpackage (`ezmd_converters.<family>`) that exposes:
 
 - `converters() -> list[Converter | Unavailable]`: instances to register. A converter whose optional
   engine is not installed is returned as `ezmd.registry.Unavailable(...)` so capabilities can list it
-  with the reason and the extra that provides it (docs/spec/part4.md 4.3.3).
-- `CHAINS: dict[str, list[str]]`: fallback chains for the mimes the family owns (docs/spec/part1.md 5.3).
+  with the reason and the extra that provides it (docs/internal/spec/part4.md 4.3.3).
+- `CHAINS: dict[str, list[str]]`: fallback chains for the mimes the family owns (docs/internal/spec/part1.md 5.3).
 
 Families are discovered automatically, so adding a family never edits a shared list (D-0020). One family
 failing to import never takes down the others; the failure is recorded as an unavailable entry.
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 MAX_IMAGE_PIXELS = 50_000_000
-"""Pillow decompression-bomb cap (docs/spec/part1.md 8.2): Pillow warns above it and raises
+"""Pillow decompression-bomb cap (docs/internal/spec/part1.md 8.2): Pillow warns above it and raises
 DecompressionBombError above twice it, before decoding pixels."""
 
 

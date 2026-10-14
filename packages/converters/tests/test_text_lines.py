@@ -60,3 +60,14 @@ def test_mixed_prose_and_list() -> None:
 
 def test_flowed_input_is_never_joined() -> None:
     assert [x.text for x in join_lines(["a", "b"], flowed=True)] == ["a", "b"]
+
+
+def test_join_lines_is_linear_on_one_long_wrapped_run() -> None:
+    """A 20 MB log with no blank lines is one run; joining by repeated concatenation took 384 s."""
+    import time
+
+    lines = ["a" * 99] * 100_000
+    t = time.perf_counter()
+    out = join_lines(lines)
+    assert time.perf_counter() - t < 5
+    assert len(out) == 1 and len(out[0].text) == 100 * 100_000 - 1

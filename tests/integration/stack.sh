@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Integration stack for tests/integration, `tests/security -m network` and the Playwright suite
-# (P1-T15; docs/spec/part4.md 4.14.3). Used by .github/workflows/integration.yml and locally.
+# (P1-T15; docs/internal/spec/part4.md 4.14.3). Used by .github/workflows/integration.yml and locally.
 #
 #   tests/integration/stack.sh up        bootstrap the core compose stack plus the fixture server, built
 #                                        from this checkout (deploy/bootstrap.sh --plain-http --build)

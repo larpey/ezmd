@@ -1,4 +1,4 @@
-"""ezmd_api.worker: RQ worker entry and the job runner (docs/spec/part1.md sections 7.1, 7.2, 8.1).
+"""ezmd_api.worker: RQ worker entry and the job runner (docs/internal/spec/part1.md sections 7.1, 7.2, 8.1).
 
 `process_job(services, job_id)` drives one job through fetching (`fetching.py`; a fetched body is
 always re-enqueued, so parsing never runs in the egress-capable fetch worker), converting (in a spawn
@@ -82,18 +82,17 @@ def _process(services: Services, job_id: str) -> None:
 def _detect_fetched(services: Services, job_id: str, body: Path) -> str | None:
     """Detect a fetched body's type here, outside the fetch worker. Returns the mime, or None when
     the job was failed or handed to another queue."""
-    from ezmd.detect import detect, is_executable
-    from ezmd.inputs import InputRef
+    from ezmd_api.detection import Unsupported, detect_supported
 
     row = services.jobs.require(job_id)
     if row.mime:
         return row.mime
     path_part = (row.input_url or "").split("?", 1)[0]
     name = sanitize_filename(path_part.rsplit("/", 1)[-1], fallback="download")
-    probe = InputRef(kind="bytes", display=name, local_path=body, declared_mime=row.declared_mime)
-    mime = detect(probe).mime
-    if is_executable(mime):
-        services.jobs.fail(job_id, "unsupported_media_type", "Executable files are not accepted.")
+    try:
+        mime = detect_supported(body, display=name, declared_mime=row.declared_mime)
+    except Unsupported as e:
+        services.jobs.fail(job_id, "unsupported_media_type", e.message)
         return None
     services.jobs.update(job_id, mime=mime)
     target = q.queue_for_mime(mime)
@@ -239,16 +238,30 @@ def rq_entry(job_id: str) -> None:
     process_job(_services(), job_id)
 
 
+def build_worker(queue_names: list[str], connection: Any) -> Any:
+    """The RQ worker for `queue_names`, with the heartbeat cadence /readyz relies on (queue.WORKER_TTL_S)."""
+    from rq import Queue, Worker
+
+    class _Worker(Worker):
+        def heartbeat(self, timeout: int | None = None, pipeline: Any = None) -> None:
+            # A Redis restart without persistence drops RQ's worker set; a plain heartbeat only rewrites
+            # the worker hash, so Worker.all() (and /readyz) would miss this worker until it restarts.
+            if pipeline is None and not self.connection.exists(self.key):
+                log.warning("worker registration lost (Redis restarted?); registering again")
+                self.register_birth()  # type: ignore[no-untyped-call]
+            super().heartbeat(timeout, pipeline)
+
+    queues = [Queue(name, connection=connection) for name in queue_names]
+    return _Worker(queues, connection=connection, worker_ttl=q.WORKER_TTL_S)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ezmd-worker", description="Run an ezmd RQ worker.")
     parser.add_argument("--queues", nargs="+", default=[q.DEFAULT], choices=list(q.RQ_QUEUES))
     parser.add_argument("--burst", action="store_true", help="exit when the queues are empty")
     args = parser.parse_args(argv)
-    from rq import Queue, Worker
-
     services = _services()
-    queues = [Queue(name, connection=services.redis) for name in args.queues]
-    Worker(queues, connection=services.redis).work(burst=args.burst, with_scheduler=False)
+    build_worker(args.queues, services.redis).work(burst=args.burst, with_scheduler=False)
 
 
 if __name__ == "__main__":

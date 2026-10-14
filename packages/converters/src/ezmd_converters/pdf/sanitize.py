@@ -1,4 +1,4 @@
-"""PDF sanitization with pikepdf (MPL-2.0) before any engine sees the file (docs/spec/part1.md 8.2).
+"""PDF sanitization with pikepdf (MPL-2.0) before any engine sees the file (docs/internal/spec/part1.md 8.2).
 
 Removes `/OpenAction`, `/AA`, JavaScript (`/JavaScript` name tree, `/JS`, JavaScript actions), `/Launch` and
 other active actions, `/EmbeddedFiles` and file-attachment annotations (one `attachment_skipped` warning per

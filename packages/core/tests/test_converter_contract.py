@@ -1,4 +1,4 @@
-"""Converter authoring checklist (docs/spec/part1.md 5.5), enforced against every registered converter."""
+"""Converter authoring checklist (docs/internal/spec/part1.md 5.5), enforced against every registered converter."""
 
 from __future__ import annotations
 

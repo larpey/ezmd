@@ -1,4 +1,4 @@
-"""ezmd_api.errors: the error schema (docs/spec/part1.md section 7.5) and exception handlers.
+"""ezmd_api.errors: the error schema (docs/internal/spec/part1.md section 7.5) and exception handlers.
 
 Messages never carry stack traces, server paths, or engine internals; those are logged with the
 request id instead.
@@ -30,6 +30,8 @@ ERROR_STATUS: dict[str, int] = {
     "url_blocked": 422,
     "platform_disabled": 422,
     "experimental_disabled": 422,
+    "extra_required": 422,
+    "sandbox_unavailable": 422,
     "fetch_depth_exceeded": 422,
     "result_too_large": 422,
     "rate_limited": 429,
@@ -38,6 +40,7 @@ ERROR_STATUS: dict[str, int] = {
     "not_implemented": 501,
     "fetch_failed": 502,
     "queue_unavailable": 503,
+    "turnstile_unavailable": 503,
     "timeout": 504,
 }
 
@@ -68,6 +71,8 @@ ERROR_DESCRIPTIONS: dict[str, str] = {
     "url_blocked": "The URL (or a URL a converter asked for) failed the SSRF guard.",
     "platform_disabled": "The site is disabled by this instance's platform policy.",
     "experimental_disabled": "Only an experimental converter handles this input and experimental converters are off.",
+    "extra_required": "The converter for this input needs an optional extra this instance does not have installed.",
+    "sandbox_unavailable": "The converter must run sandboxed (LibreOffice under bubblewrap) and cannot here.",
     "fetch_depth_exceeded": "A converter asked for more nested fetches than ezmd.inputs.MAX_FETCH_DEPTH allows.",
     "result_too_large": "The converter's result exceeded EZMD_MAX_RESULT_BYTES.",
     "rate_limited": "Too many requests, jobs, or concurrent jobs; see Retry-After.",
@@ -76,6 +81,7 @@ ERROR_DESCRIPTIONS: dict[str, str] = {
     "not_implemented": "The format exists in the contract but is not built yet (docx).",
     "fetch_failed": "The URL could not be fetched.",
     "queue_unavailable": "The queue is down or the instance is at its active-job cap.",
+    "turnstile_unavailable": "Turnstile siteverify was unreachable or refused this instance's secret; see Retry-After.",
     "timeout": "The conversion exceeded its time limit.",
 }
 

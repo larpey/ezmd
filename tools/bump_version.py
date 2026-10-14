@@ -1,6 +1,7 @@
 """Set one release version everywhere it is recorded (the counterpart of tools/release_version.py).
 
-    python tools/bump_version.py 0.1.0rc1     # PEP 440: Python packages, ezmd.__version__, server.json
+    python tools/bump_version.py 0.1.0rc1     # PEP 440: Python packages, ezmd.__version__, server.json,
+                                              # the OpenAPI document's info.version
     python tools/bump_version.py 0.1.0 --npm  # also the npm SDK: package.json and src/version.ts (final
                                               # releases only; npm takes the semver)
 
@@ -58,6 +59,14 @@ def bump(root: Path, version: str, *, npm: bool) -> list[str]:
         newline="\n",
     )
     changed.append(str(init.relative_to(root)))
+    # The API's version comes from its package metadata; the committed OpenAPI document records it too.
+    openapi = root / "docs/api/openapi.json"
+    doc = json.loads(openapi.read_text(encoding="utf-8"))
+    doc["info"]["version"] = version
+    openapi.write_text(
+        json.dumps(doc, sort_keys=True, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n"
+    )
+    changed.append(str(openapi.relative_to(root)))
     server = root / "packages/mcp/server.json"
     data = json.loads(server.read_text(encoding="utf-8"))
     data["version"] = version

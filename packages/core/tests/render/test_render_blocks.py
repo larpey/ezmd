@@ -318,3 +318,13 @@ def test_unknown_object_uses_unrendered_fence_only_for_non_blocks() -> None:
     ctx = RenderContext(profile=FULL, result=res)
     units = _block_units(ctx, InlineSpan(text="not a block"), False)  # type: ignore[arg-type]
     assert units[0].text.startswith("```ezmd-unrendered")
+
+
+def test_unresolved_footnote_reference_keeps_its_brackets() -> None:
+    """A reference whose note was not extracted renders as a bracketed marker, not digits glued to the
+    word before it ("papers).10")."""
+    blocks = [
+        Paragraph(spans=[span("four papers)."), span("10", footnote="missing"), span(" In them")], provenance=prov())
+    ]
+    md = render(make_result(blocks)).markdown
+    assert r"four papers).\[10\] In them" in md or "four papers).[10] In them" in md, md

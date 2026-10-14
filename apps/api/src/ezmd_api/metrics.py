@@ -1,4 +1,4 @@
-"""ezmd_api.metrics: Prometheus text exposition for GET /metrics (docs/spec/part4.md 4.10.5).
+"""ezmd_api.metrics: Prometheus text exposition for GET /metrics (docs/internal/spec/part4.md 4.10.5).
 
 No client library: the API and the RQ workers are separate processes, so cumulative counters and the
 conversion-duration histogram live in the shared state backend (a Redis hash; memory in inline mode)

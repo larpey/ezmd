@@ -1,4 +1,4 @@
-"""Job routes: state, SSE events, results, attachments, supply, delete (docs/spec/part1.md 7.3)."""
+"""Job routes: state, SSE events, results, attachments, supply, delete (docs/internal/spec/part1.md 7.3)."""
 
 from __future__ import annotations
 
@@ -155,7 +155,7 @@ def job_events(
     return StreamingResponse(
         _event_stream(request, services, job_id, last_id, slot),
         media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        headers={"Cache-Control": "no-store, private", "X-Accel-Buffering": "no"},
     )
 
 

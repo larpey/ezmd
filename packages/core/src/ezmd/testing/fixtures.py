@@ -1,4 +1,4 @@
-"""ezmd.testing.fixtures: discover, run, and score golden fixtures (docs/spec/part1.md 2.4, part4 4.14.2).
+"""ezmd.testing.fixtures: discover, run, and score golden fixtures (docs/internal/spec/part1.md 2.4, part4 4.14.2).
 
 Layout: `fixtures/<family>/<name>/` with `input.<ext>` (or `input.url` plus a frozen `input.html`),
 `expected.full.md`, `expected.sidecar.json`, and `meta.toml`:

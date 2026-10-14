@@ -1,4 +1,4 @@
-"""Thread reconstruction for mailboxes (docs/spec/part2.md 9c step 5).
+"""Thread reconstruction for mailboxes (docs/internal/spec/part2.md 9c step 5).
 
 A simplified JWZ pass: each message's parent is the nearest `References` id (last first) or `In-Reply-To`
 that is present in the mailbox; messages without a present parent are roots. Roots whose normalized subject

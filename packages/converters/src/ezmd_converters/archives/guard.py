@@ -1,6 +1,6 @@
 """archives.guard: decompression limits shared by the archive converter and zip-based document converters.
 
-Implements docs/spec/part1.md 8.2 (binding): total uncompressed size `EZMD_ARCHIVE_MAX_BYTES` (default
+Implements docs/internal/spec/part1.md 8.2 (binding): total uncompressed size `EZMD_ARCHIVE_MAX_BYTES` (default
 500 MB), at most 10,000 entries, nesting depth 3, a 100:1 per-entry compression-ratio cap that aborts,
 no symlinks, absolute paths or `..` components, members streamed into memory instead of extracted to disk,
 and nested archives counted against the parent's budget (one `Budget` object is shared down the tree).

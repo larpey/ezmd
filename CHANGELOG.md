@@ -2,6 +2,68 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
+## [Unreleased]
+
+Fixes from the pre-0.1.0 test pass on rc4: install tests, a self-hosted stack test, a red team and a competitive
+benchmark (D-0044 to D-0071).
+
+### Security
+- Anonymous jobs are never deduplicated across client IPs; before, a second caller submitting the same file or
+  URL got the first caller's job id and filename, and could delete the job (D-0061).
+- LibreOffice no longer fetches linked content (images, OLE/DDE links, fields, recalculation), and servers can
+  require it to run under bubblewrap (`EZMD_REQUIRE_SANDBOX`, on in the worker; `sandbox_unavailable` 422 when it
+  cannot). The worker image ships bubblewrap; an opt-in seccomp profile lets it run (D-0056, D-0064, D-0066).
+- Admission is atomic: parallel requests can no longer exceed a caller's concurrency limit; anonymous traffic
+  gets a share of the global cap so keyed callers keep headroom; one upload is read per caller at a time
+  (D-0062).
+- IPv6 clients are counted per /64 for rate limits, quotas and Turnstile binding (D-0063).
+- Job, result, attachment and convert responses send `Cache-Control: no-store, private` and `Vary: X-API-Key`.
+- Caddy's access log redacts job ids and token/key query values.
+- The prompt-injection scan covers DOCX hidden text and spoofed `<!-- ezmd: -->` markers; marker comments cannot
+  be closed early; links are emitted only for http(s), relative and fragment targets (D-0059).
+- Archives charge every decompressed byte and bound zip directories before parsing (D-0057); executables in
+  Magika's executable group are refused, Magika's archive labels need the archive's signature, and Magika uses
+  `EZMD_MAGIKA_THREADS` threads (default 1) (D-0058); overlong hostnames are refused as `url_blocked`.
+- The API refuses to start with a Turnstile setup that cannot work (no JWT secret, no Turnstile secret).
+
+### Fixed
+- PDF text layer: lines are grouped by baseline with the effective font size, so real PDFs no longer split into
+  one line per glyph (51.7% to 0.5% broken words on a 101-page benchmark sample; olmOCR-Bench 0.277 to 0.335)
+  (D-0050).
+- Turnstile verifies through an internal Caddy relay instead of failing (the API has no egress); no verdict is
+  `503 turnstile_unavailable` (D-0044).
+- `/readyz` stays 200 while workers are idle and recovers after a Redis restart (D-0045).
+- Anonymous uploads up to the tier cap no longer return 500; larger ones get 413. Unsupported and executable
+  inputs get 415 before a job exists (D-0048).
+- Plain text and Markdown truncate at 50 MB with a `size_cap` warning, and long wrapped runs convert in linear
+  time; a 150 MB text upload no longer kills the worker (D-0071).
+- The reaper requeues jobs Redis lost and fails jobs whose worker died within about a minute (D-0046).
+- External tools and the conversion child use the container's pids limit instead of `RLIMIT_NPROC` 64, which
+  broke Magika, LibreOffice, bubblewrap and pandoc (D-0047).
+- Docling is skipped up front when its models are missing, and `ezmd doctor` checks them (D-0052).
+- Wikipedia titles, footnote references and infobox cells (D-0053, D-0070).
+- Missing extras exit 2 with `extra_required`; unsupported types carry `unsupported_media_type` (D-0054); `batch`
+  stops at the first failure; `-q` silences model loading bars; non-http URLs are refused as a scheme; `-f zip` explains what to use instead (D-0055).
+- `ezmd doctor` no longer reports ffmpeg as missing while the `media` extra is unreleased, and `--quiet` prints
+  only problems.
+- Trailing-dot hosts (`https://example.com./`) are fetched.
+- Wrong HTTP methods get 405; `Retry-After` is exact; rejected creations refund their rate-limit hits (D-0049).
+- The API reports its real version; the plain-HTTP port binds to loopback by default; `upgrade.sh` prunes only
+  ezmd images; status probes work under Git Bash.
+- `@ezmd/sdk` resolves its types under node10 module resolution and lists the new error codes.
+
+### Packaging
+- `defusedxml` is capped below 0.8 and `openpyxl` below 3.2 so `pip install --pre` does not pull pre-releases.
+
+### Documentation
+- Linux `ezmd[docs]` documents the CPU-only torch install (about 6 GB of CUDA torch and NVIDIA wheels
+  otherwise, D-0051); install docs no longer pin a release candidate; the self-hosting guide covers the
+  Turnstile relay, 413/415 and dedup rules, readiness, key restrictions, LibreOffice sandboxing and Git Bash.
+- The build specification, decision log, status and roadmap trackers and agent instructions moved to
+  `docs/internal/` and `.claude/CLAUDE.md` and are no longer published on the docs site, which gets a short
+  public roadmap instead. `ezmd` and `ezmd-converters` have real PyPI descriptions. Security reports go
+  through GitHub private vulnerability reporting; the placeholder email addresses are gone.
+
 ## [0.1.0-rc4] - 2026-10-13
 
 Release candidate for the pre-0.1.0 test pass. The npm SDK stays at 0.1.0-rc.3 (unchanged).

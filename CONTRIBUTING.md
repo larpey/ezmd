@@ -1,8 +1,16 @@
 # Contributing to ezmd
 
 Thanks for helping. This guide covers setup, conventions, the converter contract, and the two processes
-specific to this project: the council and the fixture process. The build specification lives in
-`docs/spec/` and the layout and commands in `CLAUDE.md`.
+specific to this project: the council and the fixture process.
+
+ezmd was built largely by AI coding agents working from a written specification, with a human owner
+reviewing and approving releases. The working files from that process are kept in the repository, not
+on the docs site: the specification (`docs/internal/spec/`), the decision log
+(`docs/internal/DECISIONS.md`), the status and roadmap trackers (`docs/internal/STATUS.md`,
+`docs/internal/ROADMAP.md`), per-task notes (`docs/internal/decisions/`) and the agent instructions
+(`.claude/CLAUDE.md`, which also lists the layout and commands). Early entries use the project's first
+name, intomd. The "council" below is the review step: one or more reviewers, human or agent, sign off
+on a change before it lands.
 
 ## Setup
 
@@ -36,8 +44,8 @@ uv run mkdocs build --strict
   `feat(converters): add DOCX tracked changes`, and the roadmap task in the footer (`Task: P1-T01`).
 - Every pull request that changes behavior adds a line to `CHANGELOG.md` under "Unreleased", and comes
   with tests.
-- Non-trivial choices are recorded in `DECISIONS.md` (append-only); per-task approach notes go in
-  `docs/decisions/<task>.md`.
+- Non-trivial choices are recorded in `docs/internal/DECISIONS.md` (append-only); per-task approach notes go in
+  `docs/internal/decisions/<task>.md`.
 
 ## Adding a converter
 
@@ -90,7 +98,7 @@ The pull request carries a council section with:
 
 Engine swaps need two approvals; converter fixes need one. Each reviewer writes a short position
 (position, evidence, risks, recommendation); the decision and a summary of each position are logged in
-`DECISIONS.md`. A council iterates at most three times on one problem. A converter that still misses its
+`docs/internal/DECISIONS.md`. A council iterates at most three times on one problem. A converter that still misses its
 threshold after that ships with `experimental = True`, an `experimental_converter` warning on every
 result, and a "Known limitations" paragraph stating exactly what fails on which inputs.
 

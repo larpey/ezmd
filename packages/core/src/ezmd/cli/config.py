@@ -1,4 +1,4 @@
-"""CLI configuration: the config file (docs/spec/part4.md 4.2.1), environment overrides, and precedence.
+"""CLI configuration: the config file (docs/internal/spec/part4.md 4.2.1), environment overrides, and precedence.
 
 Precedence, highest first: command-line flags, environment variables (`EZMD_PROFILE`, `EZMD_FORMAT`,
 `EZMD_REMOTE`, `EZMD_API_KEY`, `EZMD_SIDECAR`), the config file, built-in defaults. The file lives at
@@ -135,9 +135,23 @@ def check_profile(value: str, origin: str) -> str:
     return value
 
 
+_NOT_CLI_FORMATS = {
+    "zip": (
+        "zip is the API's download bundle (GET /v1/jobs/{id}/result?format=zip), not a CLI format; with --out the "
+        "CLI writes the same files: <name>.md and its <name>.ezmd.json sidecar"
+    ),
+}
+
+
 def check_format(value: str, origin: str) -> str:
+    if value in _NOT_CLI_FORMATS:
+        raise ConfigError(f"{origin}: {_NOT_CLI_FORMATS[value]}")
     if value not in FORMATS:
-        raise ConfigError(f"{origin}: unknown format {value!r}; expected one of {', '.join(FORMATS)}")
+        planned = [f for f in FORMATS if f not in SUPPORTED_FORMATS]
+        raise ConfigError(
+            f"{origin}: unknown format {value!r}; expected one of {', '.join(SUPPORTED_FORMATS)} "
+            f"({', '.join(planned)} come in a later release)"
+        )
     return value
 
 

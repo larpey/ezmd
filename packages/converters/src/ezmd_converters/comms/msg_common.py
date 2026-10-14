@@ -1,4 +1,4 @@
-"""Shared assembly of an Outlook message into a ParsedMessage (docs/spec/part2.md 9c step 7).
+"""Shared assembly of an Outlook message into a ParsedMessage (docs/internal/spec/part2.md 9c step 7).
 
 Both MSG engines (the native olefile reader and the optional extract-msg adapter) fill a `MapiMessage`;
 `assemble` parses the transport headers (property 0x007D) as the real RFC 5322 headers when present, lets the

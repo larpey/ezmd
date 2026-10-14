@@ -1,6 +1,6 @@
 # P1-T05: data converters — decisions and approach notes
 
-Date: 2026-10-08. Task: P1-T05. Branch: `task/P1-T05-data`. Spec: docs/spec/part2.md section 10 (and 2c
+Date: 2026-10-08. Task: P1-T05. Branch: `task/P1-T05-data`. Spec: docs/internal/spec/part2.md section 10 (and 2c
 steps 35 to 37 for CSV), 13.4 caps, part1 8.2 input validation.
 
 ## Approach notes (part1 2.5)

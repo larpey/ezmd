@@ -1,4 +1,4 @@
-"""The `ezmd` command line (docs/spec/part4.md 4.2).
+"""The `ezmd` command line (docs/internal/spec/part4.md 4.2).
 
 Commands: convert, batch, doctor, capabilities, detect, version, serve. Every command is a thin client
 over the library (`ezmd.convert`, `ezmd.capabilities`) or, with `--remote`, the REST API.

@@ -1,4 +1,4 @@
-"""ezmd_api.ratelimit: sliding-window limits and admission control (docs/spec/part1.md 7.6, 8.4).
+"""ezmd_api.ratelimit: sliding-window limits and admission control (docs/internal/spec/part1.md 7.6, 8.4).
 
 Windows live in Redis (or memory in inline mode). The most restrictive window checked during a
 request is reported in `X-RateLimit-Limit/Remaining/Reset` by the middleware in `main.py`.
@@ -37,16 +37,23 @@ def _record(request: Request, result: RateResult) -> None:
         request.state.ratelimit = result
 
 
+REFUNDED_CODES = frozenset({"rate_limited", "input_too_large", "queue_unavailable"})
+"""A job-creation request that ends with one of these created nothing, so its window hits are given back."""
+
+
 def enforce(request: Request, bucket: str, identity: str, limit: int, window_s: int) -> RateResult:
     result = _services(request).state.rate_hit(f"{bucket}:{window_s}:{identity}", limit, window_s)
     _record(request, result)
+    if result.member:
+        hits: list[RateResult] = getattr(request.state, "rate_hits", [])
+        request.state.rate_hits = [*hits, result]
     if not result.allowed:
         record_rate_limited(_services(request).state, bucket)
         headers = {**rate_headers(result), "Retry-After": str(result.retry_after)}
         raise ApiError(
             "rate_limited",
             "Too many requests. Try again later.",
-            detail={"limit": limit, "window_seconds": window_s},
+            detail={"reason": "rate", "limit": limit, "window_seconds": window_s},
             headers=headers,
         )
     return result
@@ -66,10 +73,31 @@ def limit_job_creation(request: Request, caller: Caller) -> None:
         enforce(request, "create", caller.identity, s.anon_daily_max, DAY)
 
 
-def admit_job(request: Request, caller: Caller) -> None:
-    """Concurrency admission before enqueue: per caller, then the global active-job cap."""
+def refund_hits(request: Request) -> None:
+    """Give back every window hit, and the challenge-JWT use, this request recorded (see REFUNDED_CODES)."""
+    state = _services(request).state
+    for hit in getattr(request.state, "rate_hits", []):
+        state.rate_refund(hit.key, hit.member)
+    request.state.rate_hits = []
+    challenge = getattr(request.state, "challenge_use", None)
+    if challenge:
+        state.gauge_decr(challenge)
+        request.state.challenge_use = None
+
+
+def admit_job(request: Request, caller: Caller, *, created: bool = False) -> None:
+    """Concurrency admission: per caller, the anonymous share of the global cap, then the global cap.
+
+    Called twice per job (D-0062): before the row exists (`created=False`, a cheap early refusal) and
+    right after it was inserted (`created=True`, the counts include it). Two parallel requests can both
+    pass the first check, but whichever counts second sees both rows and is refused, so a burst never
+    admits more than the limit. The caller deletes its row when the second check raises."""
     services = _services(request)
     s = services.settings
+
+    def over(active: int, limit: int) -> bool:
+        return active > limit if created else active >= limit
+
     if not caller.unlimited:
         if caller.api_key is not None:
             limit = caller.api_key.concurrency
@@ -77,21 +105,56 @@ def admit_job(request: Request, caller: Caller) -> None:
         else:
             limit = s.anon_concurrency
             active = services.jobs.count_active(client_ip_hash=caller.ip_hash)
-        if active >= limit:
+        if over(active, limit):
             record_rate_limited(services.state, "concurrency")
             raise ApiError(
                 "rate_limited",
                 "Your previous conversion is still running. Try again when it finishes.",
-                detail={"concurrent_limit": limit, "active": active},
+                detail={"reason": "concurrency", "concurrent_limit": limit, "active": active},
                 headers={"Retry-After": "5"},
             )
-    if services.jobs.count_active() >= s.active_job_cap:
+    anon_full = caller.api_key is None and over(services.jobs.count_active(anonymous=True), s.anon_active_job_cap)
+    if anon_full or over(services.jobs.count_active(), s.active_job_cap):
         record_rate_limited(services.state, "active_job_cap")
         raise ApiError(
             "queue_unavailable",
             "The server is busy. Try again shortly.",
             headers={"Retry-After": str(QUEUE_RETRY_AFTER_SECONDS)},
         )
+
+
+UPLOAD_SLOT_TTL_S = 3600
+"""Upper bound on how long a crashed process can hold an upload slot (a slot is released in `finally`)."""
+
+
+def upload_slot_key(identity: str) -> str:
+    return f"upload:{identity}"
+
+
+def take_upload_slot(request: Request, caller: Caller) -> str | None:
+    """Reserve one in-flight upload for this caller before its body is read, so a caller cannot stream
+    many large bodies to disk at once: at most its concurrency limit at a time (D-0062). Returns the slot
+    key for `release_upload_slot`, or None for unlimited keys."""
+    if caller.unlimited:
+        return None
+    services = _services(request)
+    limit = caller.api_key.concurrency if caller.api_key is not None else services.settings.anon_concurrency
+    key = upload_slot_key(caller.identity)
+    if services.state.gauge_incr(key, UPLOAD_SLOT_TTL_S) > limit:
+        services.state.gauge_decr(key)
+        record_rate_limited(services.state, "upload_slot")
+        raise ApiError(
+            "rate_limited",
+            "Another upload from you is still in progress. Try again when it finishes.",
+            detail={"reason": "upload_in_progress", "concurrent_limit": limit},
+            headers={"Retry-After": "5"},
+        )
+    return key
+
+
+def release_upload_slot(request: Request, key: str | None) -> None:
+    if key is not None:
+        _services(request).state.gauge_decr(key)
 
 
 def limit_result_fetch(request: Request, caller: Caller) -> None:

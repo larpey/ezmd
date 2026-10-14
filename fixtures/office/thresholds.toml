@@ -1,4 +1,4 @@
-# Office family thresholds (docs/spec/part2.md 2g). Overall golden score minimums per converter.
+# Office family thresholds (docs/internal/spec/part2.md 2g). Overall golden score minimums per converter.
 # DOCX/PPTX/XLSX follow the spec's 0.95+ sub-score targets; ODF uses the no-LibreOffice fallback
 # allowance (0.9) and RTF is a plain-text fallback (0.9).
 [converters]

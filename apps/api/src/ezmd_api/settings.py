@@ -1,6 +1,6 @@
 """ezmd_api.settings: every EZMD_* variable the API and its workers read.
 
-Implemented from docs/spec/part1.md sections 7 and 8 and docs/spec/part4.md 4.9.6 / 4.11.1.
+Implemented from docs/internal/spec/part1.md sections 7 and 8 and docs/internal/spec/part4.md 4.9.6 / 4.11.1.
 `deploy/env.example` documents exactly these fields; `tests/test_env_example.py` fails on drift.
 """
 
@@ -16,10 +16,11 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 MIB = 1024 * 1024
 MIN_SECRET_BYTES = 32
 
-# Per-queue RQ worker timeouts (docs/spec/part1.md section 7.2). EZMD_JOB_TIMEOUT_S caps all of them.
+# Per-queue RQ worker timeouts (docs/internal/spec/part1.md section 7.2). EZMD_JOB_TIMEOUT_S caps all of them.
 QUEUE_TIMEOUTS: dict[str, int] = {"default": 600, "media": 3600, "fetch": 120, "fetch_residential": 3600}
 
 CommaList = Annotated[list[str], NoDecode]
+TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
 
 def _split_csv(value: object) -> object:
@@ -61,6 +62,14 @@ class Settings(BaseSettings):
     worker_default_concurrency: int = Field(default=2, ge=1)
     worker_media_concurrency: int = Field(default=1, ge=1)
     max_active_jobs: int | None = None
+    max_active_anon_jobs: int | None = Field(
+        default=None,
+        ge=1,
+        description=(
+            "Active anonymous jobs allowed at once, so anonymous traffic cannot fill the whole active-job cap. "
+            "Unset: the cap minus a third of it (at least one slot stays free for API keys)."
+        ),
+    )
     residential_wait_seconds: int = Field(default=180, ge=0)
     max_result_bytes: int = Field(default=256 * MIB, ge=1024)
     """Cap on the IR JSON a conversion child may hand back (D-0017 item 6)."""
@@ -93,6 +102,13 @@ class Settings(BaseSettings):
     turnstile_secret: SecretStr = SecretStr("")
     turnstile_required_for_fetch: bool = False
     turnstile_jwt_ttl_s: int = Field(default=120, ge=10)
+    turnstile_verify_url: str = Field(
+        default=TURNSTILE_VERIFY_URL,
+        description=(
+            "Where the API posts Turnstile siteverify requests. Compose points it at Caddy's internal relay "
+            "(`http://caddy:9180/turnstile/v0/siteverify`) because the API container has no egress (D-0044)."
+        ),
+    )
 
     # ---- Fetch ----
     allow_private_networks: bool = False
@@ -104,6 +120,15 @@ class Settings(BaseSettings):
     cors_origins: CommaList = Field(default_factory=list)
     trust_proxy_header: str = ""
     trusted_proxies: CommaList = Field(default_factory=list)
+    ipv6_identity_prefix: int = Field(
+        default=64,
+        ge=32,
+        le=128,
+        description=(
+            "IPv6 clients are counted per network of this many bits for rate limits, quotas, dedup and the "
+            "challenge (a /64 is usually one subscriber). 128 counts single addresses."
+        ),
+    )
 
     # ---- Observability ----
     log_level: Literal["debug", "info", "warning", "error"] = "info"
@@ -144,6 +169,15 @@ class Settings(BaseSettings):
                     raise ValueError(
                         f"EZMD_{name.upper()} must be at least {MIN_SECRET_BYTES} bytes when EZMD_PUBLIC_MODE=true"
                     )
+        if (self.public_mode or self.turnstile_required_for_fetch) and not self.turnstile_enabled:
+            # Otherwise every anonymous URL job is refused with turnstile_failed and nothing says why.
+            raise ValueError("EZMD_TURNSTILE_SECRET must be set when URL jobs require a Turnstile challenge")
+        if self.turnstile_enabled and len(self.jwt_secret.get_secret_value().encode()) < MIN_SECRET_BYTES:
+            # Without it each API process signs challenge JWTs with its own random key.
+            raise ValueError(
+                f"EZMD_JWT_SECRET must be at least {MIN_SECRET_BYTES} bytes when Turnstile is on "
+                "(every API worker must verify the same challenge cookies)"
+            )
         if self.fetch_node_secret is not None and len(self.fetch_node_secret.get_secret_value()) < 16:
             raise ValueError("EZMD_FETCH_NODE_SECRET must be at least 16 characters")
         if self.metrics_token is not None and len(self.metrics_token.get_secret_value()) < 16:
@@ -175,6 +209,13 @@ class Settings(BaseSettings):
         if self.max_active_jobs is not None:
             return self.max_active_jobs
         return 2 * (self.worker_default_concurrency + self.worker_media_concurrency)
+
+    @property
+    def anon_active_job_cap(self) -> int:
+        if self.max_active_anon_jobs is not None:
+            return min(self.max_active_anon_jobs, self.active_job_cap)
+        cap = self.active_job_cap
+        return max(1, cap - max(1, cap // 3))
 
     @property
     def retention_seconds(self) -> int:

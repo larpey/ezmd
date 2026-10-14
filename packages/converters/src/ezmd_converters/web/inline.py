@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 
 from ezmd.ir import Image, InlineSpan, InlineStyle
+from ezmd.render.links import safe_link
 from ezmd_converters.web.build import STYLE_TAGS, Builder
 from ezmd_converters.web.dom import BLOCK_TAGS, HtmlElement, is_element, tag_of
 
@@ -105,7 +106,7 @@ class Inline:
         new_href = href
         if tag == "a":
             raw = (el.get("href") or "").strip()
-            if raw and not raw.lower().startswith("javascript:"):
+            if raw and safe_link(raw):
                 new_href = raw if raw.startswith("#") else self.b.url(raw)
                 if not raw.startswith("#"):
                     self.b.link_hrefs.append(new_href)

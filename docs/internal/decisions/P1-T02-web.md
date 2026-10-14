@@ -3,7 +3,7 @@
 ## P1-T02-a: Approach note (spec part1 2.5)
 Date: 2026-10-08
 Task: P1-T02
-Status: proposed (folded into DECISIONS.md at merge)
+Status: proposed (folded into docs/internal/DECISIONS.md at merge)
 
 - Library: Trafilatura 2.3.1, Apache-2.0, verified against the LICENSE file in the adbar/trafilatura
   repository (Apache License 2.0 text). Entry point: `trafilatura.extract(tree, output_format="xml",

@@ -1,4 +1,4 @@
-"""API hardening (docs/spec/part1.md sections 7.5, 8.2, 8.4): security headers, error schema,
+"""API hardening (docs/internal/spec/part1.md sections 7.5, 8.2, 8.4): security headers, error schema,
 executables, multipart filename sanitization, CORS, log redaction, settings guards."""
 
 from __future__ import annotations
@@ -259,8 +259,8 @@ async def test_raw_ip_absent_from_database(tmp_path: Path) -> None:
 @pytest.mark.parametrize("name", ["EZMD_JWT_SECRET", "EZMD_KEY_PEPPER"])
 def test_public_mode_refuses_short_secrets(tmp_path: Path, name: str) -> None:
     good = "k" * 32
-    values = {"jwt_secret": good, "key_pepper": good}
+    values = {"jwt_secret": good, "key_pepper": good, "turnstile_secret": "ts"}
     values[name.removeprefix("EZMD_").lower()] = "short"
     with pytest.raises(ValueError, match=name):
         Settings(public_mode=True, data_dir=tmp_path, **values)  # type: ignore[arg-type]
-    Settings(public_mode=True, data_dir=tmp_path, jwt_secret=good, key_pepper=good)  # type: ignore[arg-type]
+    Settings(public_mode=True, data_dir=tmp_path, jwt_secret=good, key_pepper=good, turnstile_secret="ts")  # type: ignore[arg-type]

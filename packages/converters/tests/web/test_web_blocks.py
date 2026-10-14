@@ -215,3 +215,60 @@ def test_sparse_data_table_is_kept() -> None:
         "<tr><td></td><td></td><td>Wed</td></tr></table>"
     )
     assert any(isinstance(b, Table) for b in blocks)
+
+
+def _wiki_ref(target: str, label: str) -> str:
+    """A MediaWiki (Parsoid) reference marker: the brackets are separate spans inside the link."""
+    return (
+        f'<sup class="mw-ref reference" id="cite_ref-{target}"><a href="#cite_note-{target}">'
+        f'<span class="mw-reflink-text"><span class="cite-bracket">[</span>{label}'
+        f'<span class="cite-bracket">]</span></span></a></sup>'
+    )
+
+
+def _wiki_list(*items: tuple[str, str]) -> str:
+    lis = "".join(
+        f'<li id="cite_note-{t}"><span class="mw-cite-backlink"><a href="#cite_ref-{t}">^</a></span>'
+        f'<span class="reference-text">{text}</span></li>'
+        for t, text in items
+    )
+    return f'<div class="reflist"><ol class="mw-references references">{lis}</ol></div>'
+
+
+def test_reference_lists_on_the_ol_become_footnotes_with_unique_ids() -> None:
+    """MediaWiki puts the footnote class on the `<ol>` itself and has one list per group (notes, then
+    references), each numbered from 1: both must become Footnote blocks with ids unique across lists."""
+    blocks, _ = _blocks(
+        f"<p>Born in Ulm{_wiki_ref('n1', 'note 1')} in 1879.{_wiki_ref('r1', '1')} He moved.{_wiki_ref('r2', '2')}</p>"
+        f"<h2>Notes</h2>{_wiki_list(('n1', 'Citizenship note.'))}"
+        f"<h2>References</h2>{_wiki_list(('r1', 'Whittaker 1955.'), ('r2', 'Pais 1982.'))}"
+    )
+    p = blocks[0]
+    assert isinstance(p, Paragraph)
+    refs = [s.footnote_ref for s in p.spans if s.footnote_ref]
+    notes = {b.id: spans_text(b.spans) for b in blocks if isinstance(b, Footnote)}
+    assert len(refs) == 3 and len(set(refs)) == 3
+    assert [notes[r] for r in refs] == ["Citizenship note.", "Whittaker 1955.", "Pais 1982."]
+    assert not [b for b in blocks if isinstance(b, ListBlock)]
+
+
+def test_table_rows_left_empty_are_dropped() -> None:
+    """An infobox row whose only content is an image (a signature) converts to an empty row; it is dropped,
+    while a row a rowspan reaches into stays."""
+    blocks, _ = _blocks(
+        '<table class="infobox"><tr><th colspan="2">Albert Einstein</th></tr>'
+        "<tr><th>Born</th><td>14 March 1879</td></tr>"
+        '<tr><th rowspan="2">Spouses</th><td>Mileva Mari&#263;</td></tr><tr><td></td></tr>'
+        '<tr><td colspan="2"><img src="/sig.svg" alt=""></td></tr>'
+        "<tr></tr>"
+        "<tr><th>Website</th><td>example.org</td></tr></table>"
+    )
+    table = next(b for b in blocks if isinstance(b, Table))
+    rows = [[spans_text(c.spans) for c in table.cells if c.row == r] for r in range(table.n_rows)]
+    assert rows == [
+        ["Albert Einstein"],
+        ["Born", "14 March 1879"],
+        ["Spouses", "Mileva Marić"],
+        [""],
+        ["Website", "example.org"],
+    ]

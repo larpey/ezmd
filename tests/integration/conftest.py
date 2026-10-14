@@ -1,4 +1,4 @@
-"""Integration tier: tests against a running compose stack (docs/spec/part4.md 4.14.3).
+"""Integration tier: tests against a running compose stack (docs/internal/spec/part4.md 4.14.3).
 
 Every test here is marked `integration` and skips unless EZMD_BASE_URL points at a stack
 (`tests/integration/stack.sh up`, then `stack.sh env`). Owner-key calls read the key from

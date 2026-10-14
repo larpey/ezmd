@@ -328,3 +328,109 @@ def test_hybrid_scanned_page_warns_for_that_page_only() -> None:
     stub = [b for b in doc.blocks if isinstance(b, Paragraph) and b.attrs.get("pdf_stub")]
     assert [b.provenance.source_page for b in stub] == [2]
     assert any(isinstance(b, Heading) and b.provenance.source_page == 3 for b in doc.blocks)
+
+
+# -- effective font size (Tf 1 with the scale in the text matrix or CTM) -------
+
+
+def _scaled_pdf(tmp_path: Path, lines: list[tuple[float, float, float, str]], *, ctm: float = 1.0) -> Path:
+    """Each line is (x, y, size, text) drawn with `/F1 1 Tf` and the size carried by the text matrix
+    (`size 0 0 size x y Tm`), the way many PDF producers emit text. With `ctm` != 1 the whole page is
+    drawn under `ctm 0 0 ctm 0 0 cm` and the coordinates and sizes are divided by it."""
+    pdf = new_pdf([[]])
+    ops: list[tuple[list[object], str]] = [([], "q"), ([ctm, 0, 0, ctm, 0, 0], "cm")]
+    for x, y, size, text in lines:
+        s = size / ctm
+        ops += [
+            ([], "BT"),
+            ([Name("/F1"), 1], "Tf"),
+            ([s, 0, 0, s, x / ctm, y / ctm], "Tm"),
+            ([pikepdf.String(text)], "Tj"),
+            ([], "ET"),
+        ]
+    ops.append(([], "Q"))
+    pdf.pages[0].obj.Contents = pdf.make_indirect(pikepdf.Stream(pdf, pikepdf.unparse_content_stream(ops)))
+    return save(pdf, tmp_path / f"scaled{len(list(tmp_path.iterdir()))}.pdf")
+
+
+def _page_lines(path: Path) -> list[Line]:
+    import pypdfium2 as pdfium
+
+    from ezmd.core.textclean import CleanStats
+    from ezmd_converters.pdf.textlayer import read_page
+
+    doc = pdfium.PdfDocument(str(path))
+    try:
+        return read_page(doc, 0, [], CleanStats(), 0).lines
+    finally:
+        doc.close()
+
+
+@pytest.mark.parametrize("ctm", [1.0, 0.1])
+def test_matrix_scaled_text_keeps_whole_lines(tmp_path: Path, ctm: float) -> None:
+    """Regression: the nominal Tf size (1.0) was used as the em, so every ascender/descender started a new
+    line and every inter-word space split a column (olmOCR multi_column pages came out as N-column tables)."""
+    path = _scaled_pdf(
+        tmp_path,
+        [
+            (72, 700, 18, "Key Benefits of Typography"),
+            (72, 670, 10.5, "Broadcaster offers a virtual presence in a football game, quietly."),
+            (72, 657, 10.5, "Subscribers get profile-based filtering and the viewer is in control."),
+        ],
+        ctm=ctm,
+    )
+    lines = _page_lines(path)
+    assert [ln.text for ln in lines] == [
+        "Key Benefits of Typography",
+        "Broadcaster offers a virtual presence in a football game, quietly.",
+        "Subscribers get profile-based filtering and the viewer is in control.",
+    ]
+    assert [round(ln.size, 1) for ln in lines] == [18.0, 10.5, 10.5]
+
+
+def test_matrix_scaled_text_converts_to_heading_and_paragraph(tmp_path: Path) -> None:
+    path = _scaled_pdf(
+        tmp_path,
+        [
+            (72, 700, 18, "Key Benefits"),
+            (72, 670, 10.5, "Broadcaster offers a virtual presence in a football game."),
+            (72, 657, 10.5, "Subscribers get profile-based filtering of the content."),
+        ],
+    )
+    doc = convert_path(path)
+    assert not [b for b in doc.blocks if isinstance(b, Table)]
+    assert _headings(doc) == [(1, "Key Benefits")]
+    paras = [spans_text(b.spans) for b in doc.blocks if isinstance(b, Paragraph)]
+    assert paras == [
+        "Broadcaster offers a virtual presence in a football game. "
+        "Subscribers get profile-based filtering of the content."
+    ]
+
+
+def test_superscript_marker_stays_on_its_line(tmp_path: Path) -> None:
+    """Grouping is by baseline: a raised footnote marker (smaller, baseline +0.35 em) joins its line."""
+    path = _scaled_pdf(tmp_path, [(72, 700, 10, "Tides rise twice daily"), (171.5, 703.5, 6, "1")])
+    lines = _page_lines(path)
+    assert len(lines) == 1 and lines[0].text.startswith("Tides rise twice daily") and lines[0].text.endswith("1")
+    assert round(lines[0].size, 1) == 10.0
+
+
+def test_text_running_up_an_upright_page_keeps_whole_lines(tmp_path: Path) -> None:
+    """A rotated table on an unrotated page: the text matrix turns the glyphs 90 degrees, so baselines are
+    compared along the page x axis, not y."""
+    pdf = new_pdf([[]])
+    ops: list[tuple[list[object], str]] = []
+    for x, text in ((100, "Table 1. Anticonvulsant activity in mice"), (120, "Rotorod test and protective index")):
+        ops += [
+            ([], "BT"),
+            ([Name("/F1"), 1], "Tf"),
+            ([0, 9.96, -9.96, 0, x, 200], "Tm"),
+            ([pikepdf.String(text)], "Tj"),
+            ([], "ET"),
+        ]
+    pdf.pages[0].obj.Contents = pdf.make_indirect(pikepdf.Stream(pdf, pikepdf.unparse_content_stream(ops)))
+    lines = _page_lines(save(pdf, tmp_path / "up.pdf"))
+    assert [ln.text for ln in lines] == [
+        "Table 1. Anticonvulsant activity in mice",
+        "Rotorod test and protective index",
+    ]

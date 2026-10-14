@@ -1,10 +1,13 @@
-"""ezmd_api.purge: retention purge and the residential-fetch reaper (docs/spec/part1.md 7.1, 7.2, 8.4).
+"""ezmd_api.purge: retention purge and the residential-fetch reaper (docs/internal/spec/part1.md 7.1, 7.2, 8.4).
 
 `purge_expired()` deletes the blobs (prefix `jobs/{id}/`) and rows of jobs past `expires_at`.
 `reap_residential()` returns expired fetch-node claims to the queue once and moves jobs that cannot
-be fetched to `needs_user_action`. `reap_stale()` fails jobs whose worker stopped updating them for
-longer than the queue's wall time (docs/spec/part4.md 4.11.3), and `clean_temp()` removes orphaned
-job and upload temp directories. `Scheduler` runs the first three on a background thread; run
+be fetched to `needs_user_action`. `reconcile_queue()` compares active rows with RQ: a queued job RQ
+lost (Redis restarted) is enqueued again, and a started job whose worker stopped heartbeating, or
+that RQ no longer holds, fails within about a minute (D-0046). `reap_stale()` fails jobs whose worker
+stopped updating them for longer than the queue's wall time (docs/internal/spec/part4.md 4.11.3), and
+`clean_temp()` removes orphaned job and upload temp directories. `Scheduler` runs all but the last
+on a background thread; run
 `python -m ezmd_api.purge` for one pass (or `--loop`) as its own process, or `ezmd-admin reap`.
 """
 
@@ -22,9 +25,20 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 
+from ezmd_api import queue as q
 from ezmd_api.blobs import job_prefix
 from ezmd_api.db import JobRow
-from ezmd_api.jobs import CONVERTING, EXPIRED, FETCHING, NEEDS_USER_ACTION, RENDERING, InvalidTransition, JobGone
+from ezmd_api.jobs import (
+    ACTIVE_STATES,
+    CONVERTING,
+    EXPIRED,
+    FETCHING,
+    NEEDS_USER_ACTION,
+    QUEUED,
+    RENDERING,
+    InvalidTransition,
+    JobGone,
+)
 from ezmd_api.util import as_utc, utcnow
 
 if TYPE_CHECKING:
@@ -112,6 +126,54 @@ def reap_residential(services: Services) -> int:
     return changed
 
 
+WORKER_LOST_MESSAGE = "The worker running this job stopped before it finished. Submit the file again."
+
+
+def reconcile_queue(services: Services) -> int:
+    """Reconcile active rows with RQ. Rows touched within HEARTBEAT_MAX_AGE_S are skipped (an enqueue or
+    hand-off may be in flight). A queued row RQ lost is enqueued again: no worker started it, so a retry
+    is safe. Any other row RQ lost, or whose worker went silent, fails with `internal_error`, which also
+    frees the caller's concurrency slot. Returns the number of rows changed."""
+    cutoff = utcnow() - timedelta(seconds=q.HEARTBEAT_MAX_AGE_S)
+    with services.db.session() as s:
+        rows = list(
+            s.execute(
+                select(JobRow)
+                .where(
+                    JobRow.state.in_(ACTIVE_STATES),
+                    JobRow.queue != q.FETCH_RESIDENTIAL,
+                    JobRow.updated_at <= cutoff,
+                )
+                .limit(1000)
+            ).scalars()
+        )
+    changed = 0
+    for row in rows:
+        if services.queue.liveness(row.id, row.rq_job_id) != q.LOST:
+            continue
+        if row.state == QUEUED:
+            changed += _requeue(services, row)
+        elif services.jobs.fail(row.id, "internal_error", WORKER_LOST_MESSAGE) is not None:
+            log.warning("failed a job its worker lost", extra={"job_id": row.id, "state": row.state})
+            changed += 1
+    return changed
+
+
+def _requeue(services: Services, row: JobRow) -> int:
+    queue = row.queue or q.DEFAULT
+    try:
+        rq_id = services.queue.enqueue(row.id, queue, timeout_s=services.settings.queue_timeout(queue))
+    except Exception:
+        log.warning("could not requeue a lost job", extra={"job_id": row.id})
+        return 0
+    try:
+        services.jobs.update(row.id, rq_job_id=rq_id)
+    except JobGone:
+        return 0
+    log.info("requeued a job the queue lost", extra={"job_id": row.id})
+    return 1
+
+
 def reap_stale(services: Services, *, now_grace: bool = False) -> int:
     """Fail fetching/converting/rendering jobs (not residential fetches, which `reap_residential` owns) whose
     row was not touched for longer than the queue's timeout plus STALE_GRACE_SECONDS: the worker died or
@@ -176,6 +238,7 @@ class Scheduler:
         while not self._stop.is_set():
             try:
                 reap_residential(self.services)
+                reconcile_queue(self.services)
                 reap_stale(self.services)
                 if time.monotonic() - last_purge >= self.services.settings.purge_interval_s:
                     purge_expired(self.services)
@@ -219,6 +282,7 @@ def main(argv: list[str] | None = None) -> None:
     services.db.ensure_schema()
     if not args.loop:
         reap_residential(services)
+        reconcile_queue(services)
         reap_stale(services)
         purge_expired(services)
         services.close()

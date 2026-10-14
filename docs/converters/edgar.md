@@ -1,8 +1,8 @@
 # SEC EDGAR
 
-Package `ezmd_converters.edgar`, converter `specialized.edgar`, family `specialized` (spec: docs/spec/part2.md
+Package `ezmd_converters.edgar`, converter `specialized.edgar`, family `specialized` (spec: docs/internal/spec/part2.md
 section 12, EdgarConverter; ROADMAP P1-T07). Implemented directly against the documented EDGAR endpoints;
-`edgartools` is not used (it hard-depends on Unidecode, GPL-2.0+; see docs/decisions/P1-T07.md). No new
+`edgartools` is not used (it hard-depends on Unidecode, GPL-2.0+; see docs/internal/decisions/P1-T07.md). No new
 dependencies.
 
 | Input | Example | What happens |

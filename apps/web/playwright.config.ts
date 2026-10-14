@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Browser tier (docs/spec/part4.md 4.14.6). Runs against a served web UI: the compose stack
+// Browser tier (docs/internal/spec/part4.md 4.14.6). Runs against a served web UI: the compose stack
 // (tests/integration/stack.sh, PLAYWRIGHT_BASE_URL=http://localhost:8080) or `uv run uvicorn` serving
 // apps/web/dist. Every test skips when PLAYWRIGHT_BASE_URL/healthz does not answer.
 // One worker: the anonymous per-IP limits (concurrency, creations per minute) are shared by all tests.

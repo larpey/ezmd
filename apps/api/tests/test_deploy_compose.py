@@ -113,3 +113,79 @@ def test_caddy_sets_x_real_ip_on_every_api_proxy() -> None:
                 break
             block.append(line.strip())
         assert "header_up X-Real-IP {client_ip}" in block, f"line {i + 1}"
+
+
+def test_caddy_access_log_never_records_job_ids() -> None:
+    """F3: a job id grants access to the job; the access log keeps the path shape, never the id."""
+    import re
+
+    text = (COMPOSE.parent / "Caddyfile").read_text(encoding="utf-8")
+    line = next(ln.strip() for ln in text.splitlines() if ln.strip().startswith("request>uri regexp"))
+    pattern, repl = re.findall(r'"([^"]*)"', line)
+    sub = re.sub(
+        pattern, repl.replace("${1}", r"\1").replace("${2}", r"\2"), "/v1/jobs/job_abc/result?format=md&token=t"
+    )
+    assert sub == "/v1/jobs/REDACTED/result?format=md&token=REDACTED"
+
+
+def test_workers_ship_bubblewrap_and_require_the_office_sandbox() -> None:
+    """LibreOffice is opt-in (EZMD_WORKER_APT_PACKAGES); when present it must run under bwrap or be refused
+    (office.require_sandbox via EZMD_REQUIRE_SANDBOX), never unsandboxed (D-0064)."""
+    services = _services()
+    for name in ("worker-default", "worker-fetch"):
+        assert services[name]["environment"]["EZMD_REQUIRE_SANDBOX"] == "${EZMD_REQUIRE_SANDBOX:-1}", name
+    dockerfile = (COMPOSE.parent / "Dockerfile").read_text(encoding="utf-8")
+    worker = dockerfile.split("FROM runtime-common AS worker", 1)[1].split("\nFROM ", 1)[0]
+    assert "bubblewrap" in worker.split("apt-get install", 1)[1].split("\n", 1)[0]
+
+
+def test_worker_job_memory_leaves_room_below_the_container_limit() -> None:
+    """The child's RLIMIT_AS (EZMD_JOB_MEM_MB) equalled the 4g worker limit, and the input copy on the /tmp
+    tmpfs plus the RQ parent count against the same cgroup, so a large job could be OOM-killed."""
+    import re
+
+    worker = _services()["worker-default"]
+    job_mb = int(re.fullmatch(r"\$\{EZMD_JOB_MEM_MB:-(\d+)\}", worker["environment"]["EZMD_JOB_MEM_MB"]).group(1))
+    limit = worker["deploy"]["resources"]["limits"]["memory"]
+    limit_mb = int(re.fullmatch(r"\$\{EZMD_WORKER_DEFAULT_MEM:-(\d+)g\}", limit).group(1)) * 1024
+    assert job_mb <= limit_mb - 1024, (job_mb, limit_mb)
+
+
+NAMESPACE_SYSCALLS = {"clone", "clone3", "unshare", "setns", "mount", "umount2", "pivot_root"}
+
+
+def _rules(name: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    import json
+
+    profile = json.loads((COMPOSE.parent / name).read_text(encoding="utf-8"))
+    return profile, profile["syscalls"]
+
+
+def test_userns_profile_differs_from_the_default_only_in_what_bwrap_needs() -> None:
+    """D-0066: the opt-in profile for sandboxed LibreOffice. Everything else must match seccomp-worker.json."""
+    base, base_rules = _rules("seccomp-worker.json")
+    userns, userns_rules = _rules("seccomp-worker-userns.json")
+    assert {k: v for k, v in base.items() if k != "syscalls"} == {k: v for k, v in userns.items() if k != "syscalls"}
+
+    def without_namespace_calls(rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        out = []
+        for rule in rules:
+            names = [n for n in rule["names"] if n not in NAMESPACE_SYSCALLS]
+            if names:
+                out.append({**rule, "names": names})
+        return out
+
+    added = [r for r in userns_rules if set(r["names"]) & NAMESPACE_SYSCALLS]
+    assert all(set(r["names"]) <= NAMESPACE_SYSCALLS for r in added), "bwrap rules are kept separate"
+    assert without_namespace_calls(base_rules) == without_namespace_calls(userns_rules)
+    allowed = {n for r in added if r["action"] == "SCMP_ACT_ALLOW" for n in r["names"]}
+    assert allowed == {"clone", "unshare", "setns", "mount", "umount2", "pivot_root"}
+    assert all("includes" not in r and "args" not in r for r in added if r["action"] == "SCMP_ACT_ALLOW")
+    # clone3 cannot be filtered by flags; ENOSYS makes glibc fall back to clone.
+    assert [r for r in added if r["names"] == ["clone3"]] == [
+        {"names": ["clone3"], "action": "SCMP_ACT_ERRNO", "errnoRet": 38}
+    ]
+    # The default stays strict, and compose uses it unless an operator switches.
+    assert "pivot_root" not in {n for r in base_rules if r["action"] == "SCMP_ACT_ALLOW" for n in r["names"]}
+    for name in ("worker-default", "worker-fetch"):
+        assert "seccomp=./${EZMD_WORKER_SECCOMP:-seccomp-worker.json}" in _services()[name]["security_opt"]

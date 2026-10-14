@@ -1,7 +1,7 @@
 """ezmd.registry: converter protocol, options, registry with priority resolution, fallback chains,
 and entry-point plugin discovery.
 
-Implemented from docs/spec/part1.md section 5.2, plus wildcard chain matching (section 5.3).
+Implemented from docs/internal/spec/part1.md section 5.2, plus wildcard chain matching (section 5.3).
 """
 
 from __future__ import annotations
@@ -28,14 +28,22 @@ FAMILIES = frozenset(
 
 CONVERSION_FAILED = "conversion_failed"
 EXPERIMENTAL_DISABLED = "experimental_disabled"
+UNSUPPORTED_MEDIA_TYPE = "unsupported_media_type"
+"""No converter handles the detected type, or the type is refused (executables)."""
+EXTRA_REQUIRED = "extra_required"
+"""Every converter that could handle the input needs an optional extra that is not installed."""
+SANDBOX_UNAVAILABLE = "sandbox_unavailable"
+"""The converter must run an external program sandboxed (office.require_sandbox) and bubblewrap cannot run:
+a configuration problem, never retried (D-0056)."""
 
 
 class ConversionError(Exception):
     """A converter could not produce a Document. `retryable_with_fallback` tells the registry whether
     to try the next converter in the chain. `user_message` is safe to show to end users. `code` is a
     stable machine-readable reason: "conversion_failed" (default), "experimental_disabled" (only
-    experimental converters could handle the input and options.experimental is False), or "timeout"
-    (raised by ConvertContext.check_deadline)."""
+    experimental converters could handle the input and options.experimental is False),
+    "unsupported_media_type" (no converter for the type), "extra_required" (the converters for the type
+    need an extra that is not installed), or "timeout" (raised by ConvertContext.check_deadline)."""
 
     def __init__(
         self,
@@ -306,6 +314,7 @@ class ConverterRegistry:
                 f"no converter for {ref.display} (mime={ref.detected.mime if ref.detected else None})",
                 user_message="This file type is not supported yet.",
                 retryable_with_fallback=False,
+                code=UNSUPPORTED_MEDIA_TYPE,
             )
         tried: list[str] = []
         last: Exception | None = None
@@ -358,7 +367,9 @@ class ConverterRegistry:
         if not doc.finalized:
             doc.finalize()
         pipeline_warnings: list[Warning] = []
-        if index > 0:
+        # A converter that explains its own fallback (pdfium_text when Docling's models are missing) is not
+        # repeated with the generic note.
+        if index > 0 and not any(w.kind == WarningKind.ENGINE_FALLBACK for w in doc.warnings):
             pipeline_warnings.append(
                 Warning(
                     kind=WarningKind.ENGINE_FALLBACK,
@@ -448,7 +459,7 @@ def _unavailable_error(ref: InputRef, blocked: list[Unavailable]) -> ConversionE
         f"no available converter for {ref.display} (mime={mime}); unavailable: {', '.join(b.id for b in blocked)}",
         user_message=message + ".",
         retryable_with_fallback=False,
-        code=code or CONVERSION_FAILED,
+        code=EXTRA_REQUIRED if extras else code or CONVERSION_FAILED,
     )
 
 
@@ -472,12 +483,12 @@ def _named_unavailable_error(blocked: Unavailable) -> ConversionError:
         f"converter {blocked.id} unavailable: {blocked.reason}",
         user_message=message + ".",
         retryable_with_fallback=False,
-        code=code or CONVERSION_FAILED,
+        code=EXTRA_REQUIRED if extras else code or CONVERSION_FAILED,
     )
 
 
 class Unavailable:
-    """A built-in converter whose optional engine is not installed (docs/spec/part4.md 4.3.3).
+    """A built-in converter whose optional engine is not installed (docs/internal/spec/part4.md 4.3.3).
 
     Families return these from `converters()` instead of raising, so `ezmd capabilities` and
     `GET /v1/capabilities` list the converter with the reason and the extra that would enable it,

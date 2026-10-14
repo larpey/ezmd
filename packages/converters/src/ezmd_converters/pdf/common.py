@@ -30,7 +30,7 @@ from ezmd_converters.pdf.textlayer import PageText
 
 PDF_MIME = "application/pdf"
 MAX_PDF_BYTES = 500 * 1024 * 1024
-"""docs/spec/part2.md 13.4 local default."""
+"""docs/internal/spec/part2.md 13.4 local default."""
 NO_TEXT_CHARS = 20
 """A page with fewer extractable characters has no usable text layer (1c step 4)."""
 ENCRYPTED_STUB = "Encrypted PDF; no valid password supplied"
@@ -112,7 +112,7 @@ class ScanReport:
 
 
 def classify(pages: Sequence[PageText], popts: PdfOptions) -> ScanReport:
-    """docs/spec/part2.md 1c step 4, applied to every page (cheap with pdfium) instead of a 12-page sample."""
+    """docs/internal/spec/part2.md 1c step 4, applied to every page (cheap with pdfium) instead of a 12-page sample."""
     rep = ScanReport()
     for p in pages:
         unusable = p.chars and p.private_use > 0.05 * p.chars

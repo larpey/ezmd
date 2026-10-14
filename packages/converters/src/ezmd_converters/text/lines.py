@@ -1,4 +1,4 @@
-"""Line joining for plain text, shared by `text.plain` and the email bodies (docs/spec/part2.md section 2 step
+"""Line joining for plain text, shared by `text.plain` and the email bodies (docs/internal/spec/part2.md section 2 step
 22(7) and failure mode 10).
 
 Within one blank-line-separated run, a line continues the previous line (a hard wrap) when the previous line is
@@ -42,21 +42,34 @@ def line_kind(line: str) -> LineKind:
 def join_lines(lines: list[str], *, flowed: bool = False) -> list[Line]:
     """Logical lines of one run. `flowed` text (RFC 3676) is already unwrapped: nothing is joined."""
     out: list[Line] = []
+    parts: list[str] = []  # the logical line being built; joined once, so long runs stay linear
+    kind_now: LineKind = "prose"
+    length = 0  # len(" ".join(parts))
+
+    def close() -> None:
+        if parts:
+            out.append(Line(" ".join(parts), kind_now))
+            parts.clear()
+
     for raw in lines:
         kind = line_kind(raw)
         text = raw.rstrip() if kind == "code" else raw.strip()
         if not text:
             continue
-        prev = out[-1] if out else None
         joins = (
             not flowed
-            and prev is not None
-            and prev.kind == "prose"
+            and bool(parts)
+            and kind_now == "prose"
             and kind == "prose"
-            and (len(prev.text) >= WRAP_MIN_CHARS or text[:1].islower())
+            and (length >= WRAP_MIN_CHARS or text[:1].islower())
         )
-        if joins and prev is not None:
-            out[-1] = Line(f"{prev.text} {text}", "prose")
+        if joins:
+            parts.append(text)
+            length += 1 + len(text)
         else:
-            out.append(Line(text, kind))
+            close()
+            parts.append(text)
+            kind_now = kind
+            length = len(text)
+    close()
     return out

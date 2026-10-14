@@ -1,4 +1,4 @@
-"""The SSRF URL table (docs/spec/part4.md 4.14.5 item 1), shared by the fast and network tiers.
+"""The SSRF URL table (docs/internal/spec/part4.md 4.14.5 item 1), shared by the fast and network tiers.
 
 LITERAL: refused by `netguard.validate_url` alone (IP literals in every notation, blocked names, schemes,
 credentials), so the API answers 422 `url_blocked` at submit time.

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ezmd upgrade (docs/spec/part4.md 4.9.9).
+# ezmd upgrade (docs/internal/spec/part4.md 4.9.9).
 #
 #   deploy/upgrade.sh <version> [--no-pull] [--build] [--no-backup] [--health-timeout S]
 #
@@ -10,7 +10,7 @@
 # 4. `up -d --remove-orphans --wait`, then /readyz through Caddy
 # 5. on any failure after step 2: put the previous EZMD_VERSION back, restore the pre-upgrade
 #    backup when migrations ran (they are forward-only), start the old version, exit 1
-# 6. on success: prune dangling images
+# 6. on success: prune dangling ezmd images (never other images on the host)
 # Pin exact versions (1.4.2); patch releases are safe for Watchtower, minor ones go through this script.
 set -euo pipefail
 
@@ -79,5 +79,6 @@ compose up -d --no-build --remove-orphans --wait --wait-timeout "$HEALTH_S" ||
   rollback "services did not become healthy within ${HEALTH_S}s"
 wait_ready "$HEALTH_S" || rollback "$(stack_url)/readyz did not answer 200"
 
-docker image prune -f >/dev/null 2>&1 || true
+# Only dangling ezmd images (by their OCI source label); other projects' images on the host are left alone.
+docker image prune -f --filter "label=org.opencontainers.image.source=https://github.com/larpey/ezmd" >/dev/null 2>&1 || true
 log "upgraded to $NEW"

@@ -1,4 +1,4 @@
-"""ezmd.render.chunker: rag chunking (docs/spec/part3.md section 17, rules 1-5 and 8).
+"""ezmd.render.chunker: rag chunking (docs/internal/spec/part3.md section 17, rules 1-5 and 8).
 
 1. Split on headings first (any level), then pack units into chunks of at most `chunk_tokens` (o200k).
    Units are never split except prose longer than the budget (sentence boundaries), lists longer than the

@@ -1,6 +1,6 @@
 # P1-T06 (with the EPUB part of P1-T01): ebooks, notebooks, and archives
 
-Decisions in DECISIONS.md style, to be folded into the log at merge (D-0020).
+Decisions in docs/internal/DECISIONS.md style, to be folded into the log at merge (D-0020).
 
 ## Approach note: EPUB (`documents.epub`)
 

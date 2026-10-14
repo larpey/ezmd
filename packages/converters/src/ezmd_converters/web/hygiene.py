@@ -1,4 +1,4 @@
-"""Prompt-injection hygiene pass over the DOM (docs/spec/part2.md 5c step 8, part3.md section 18 phase 1).
+"""Prompt-injection hygiene pass over the DOM (docs/internal/spec/part2.md 5c step 8, part3.md section 18 phase 1).
 
 Runs before any extractor. Removes content a reader of the rendered page cannot see: HTML comments,
 `<noscript>`, `<template>`, elements with the `hidden` attribute or `aria-hidden="true"`, inline-CSS hidden

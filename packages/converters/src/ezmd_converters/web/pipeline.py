@@ -1,4 +1,4 @@
-"""The web/pages conversion pipeline shared by the three web converters (docs/spec/part2.md section 5).
+"""The web/pages conversion pipeline shared by the three web converters (docs/internal/spec/part2.md section 5).
 
 decode (with the byte cap) -> parse -> signals and metadata on the raw tree -> hygiene (hidden elements,
 invisible characters) -> extraction (Trafilatura, Defuddle-style rules, or the full body) -> post-checks

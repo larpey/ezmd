@@ -1,6 +1,6 @@
 """ezmd.builtin: registers the converters shipped in `ezmd-converters`.
 
-Built-in converters live in the separate `ezmd_converters` package (docs/spec/part1.md section 1.3
+Built-in converters live in the separate `ezmd_converters` package (docs/internal/spec/part1.md section 1.3
 layout). They are registered here with source "builtin" rather than through entry points so that
 `ezmd` always resolves them first and a broken third-party plugin cannot shadow them (D-0003).
 """

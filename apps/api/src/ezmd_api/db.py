@@ -1,4 +1,4 @@
-"""ezmd_api.db: SQLAlchemy 2 models for `jobs` and `api_keys` (docs/spec/part1.md section 7.1).
+"""ezmd_api.db: SQLAlchemy 2 models for `jobs` and `api_keys` (docs/internal/spec/part1.md section 7.1).
 
 SQLite by default (`EZMD_DATABASE_URL` unset), Postgres via `postgresql+psycopg://...`. Tables are
 created on startup; `migrations/` holds the Alembic history for deployments that manage schema

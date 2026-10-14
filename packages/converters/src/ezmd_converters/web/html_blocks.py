@@ -18,6 +18,7 @@ from ezmd.ir import (
     Quote,
     Table,
     TableCell,
+    spans_text,
 )
 from ezmd_converters.web.build import MAX_DEPTH, Builder, code_language
 from ezmd_converters.web.dom import BLOCK_TAGS, HtmlElement, collapse, is_element, tag_of
@@ -37,11 +38,15 @@ def is_footnote_section(el: HtmlElement) -> bool:
 
 
 def register_footnotes(root: HtmlElement, b: Builder) -> None:
-    """Map footnote target ids to Footnote block ids before conversion so references can point at them."""
+    """Map footnote target ids to Footnote block ids before conversion so references can point at them.
+    Numbered across all footnote sections: MediaWiki has one list per group (notes, references), each
+    starting at 1."""
+    n = 0
     for sec in root.iter():
         if is_element(sec) and is_footnote_section(sec):
-            for n, li in enumerate(sec.iter("li"), start=1):
-                if li.get("id"):
+            for li in sec.iter("li"):
+                if li.get("id") and li.get("id") not in b.footnote_ids:
+                    n += 1
                     b.footnote_ids[li.get("id")] = f"fn-{n}"
 
 
@@ -96,6 +101,8 @@ def convert_block(el: HtmlElement, b: Builder, depth: int = 0) -> None:
         b.blocks.extend(images)
     elif tag == "p":
         _flush_el(el, b)
+    elif tag in ("ul", "ol", "menu") and is_footnote_section(el):
+        _footnotes(el, b)  # MediaWiki: <ol class="mw-references references">
     elif tag in ("ul", "ol", "menu"):
         _list(el, b)
     elif tag == "pre":
@@ -270,15 +277,19 @@ def _table(el: HtmlElement, b: Builder, depth: int) -> None:
     n_cols = 0
     header_rows = 0
     counting_header = True
-    for r, (tr, in_thead) in enumerate(rows):
+    r = 0
+    for tr, in_thead in rows:
         c = 0
         row_cells = _cells(tr)
+        converted = [inline_spans(cell, b)[0] for cell in row_cells]
+        if _empty_row(row_cells, converted) and not any(rr == r for rr, _ in occupied):
+            continue  # nothing left in it (an image-only infobox row, or a bare <tr>)
         all_th = bool(row_cells) and all(tag_of(x) == "th" for x in row_cells)
         if counting_header and (in_thead or all_th):
             header_rows += 1
         else:
             counting_header = False
-        for cell in row_cells:
+        for cell, spans in zip(row_cells, converted, strict=True):
             while (r, c) in occupied:
                 c += 1
             rs = min(_span(cell, "rowspan"), len(rows) - r)
@@ -286,7 +297,6 @@ def _table(el: HtmlElement, b: Builder, depth: int) -> None:
             for dr in range(rs):
                 for dc in range(cs):
                     occupied.add((r + dr, c + dc))
-            spans, _imgs = inline_spans(cell, b)
             cells.append(
                 TableCell(
                     spans=spans,
@@ -299,20 +309,29 @@ def _table(el: HtmlElement, b: Builder, depth: int) -> None:
             )
             c += cs
         n_cols = max(n_cols, c, *(cc + 1 for rr, cc in occupied if rr == r))
+        r += 1
     if not cells:
         return
+    cells = [cell.model_copy(update={"row_span": min(cell.row_span, r - cell.row)}) for cell in cells]
     caption_el = el.find("caption")
     caption = inline_spans(caption_el, b)[0] if caption_el is not None else None
     b.blocks.append(
         Table(
             cells=cells,
-            n_rows=len(rows),
+            n_rows=r,
             n_cols=n_cols,
             caption=caption or None,
             header_rows=header_rows,
             provenance=b.prov(el),
         )
     )
+
+
+def _empty_row(row_cells: list[HtmlElement], converted: list[list[InlineSpan]]) -> bool:
+    """No text in any cell and no cell reaching into the next rows."""
+    if any(_span(cell, "rowspan") > 1 for cell in row_cells):
+        return False
+    return not any(spans_text(spans).strip() for spans in converted)
 
 
 def _figure(el: HtmlElement, b: Builder, depth: int) -> None:
@@ -380,10 +399,23 @@ def _equation(el: HtmlElement, b: Builder) -> None:
 
 def _footnotes(el: HtmlElement, b: Builder) -> None:
     for n, li in enumerate(el.iter("li"), start=1):
-        for back in list(li.iter("a")):
+        for back in list(li.iter("a", "span")):
+            if back.getparent() is None:
+                continue
             role = (back.get("role") or "").lower()
             classes = (back.get("class") or "").lower()
-            if role == "doc-backlink" or "footnote-back" in classes or "backref" in classes or back.text in ("↩",):
+            rel = (back.get("rel") or "").lower()
+            if tag_of(back) == "span":
+                if "mw-cite-backlink" in classes:  # MediaWiki's "^ a b c" jump links
+                    back.drop_tree()
+                continue
+            if (
+                role == "doc-backlink"
+                or "footnote-back" in classes
+                or "backref" in classes
+                or "referencedby" in rel
+                or back.text in ("↩",)
+            ):
                 back.drop_tree()
         spans = inline_spans(li, b)[0]
         if spans:

@@ -13,7 +13,7 @@ purpose, and they tell you their license the first time they load.
 - Packages under denied licenses may ship only in a named extra, and the converter that needs them
   calls `ezmd.core.licensing.notify_once("<extra>")` on first import. The notice is printed to
   stderr once per machine (a stamp file in the cache directory records it).
-- Changing the allowlist is a policy decision logged in `DECISIONS.md`.
+- Changing the allowlist is a policy decision logged in `docs/internal/DECISIONS.md`.
 - The check runs in CI: `uv run python tools/license_check.py` for the Python tree (from `uv.lock`,
   all platforms) and `pnpm licenses list --json --prod | node tools/license_check.mjs` for the
   JavaScript tree. Per-package decisions live in `tools/license_overrides.toml`, each with a URL to the
@@ -21,8 +21,9 @@ purpose, and they tell you their license the first time they load.
 - One named exception: on Linux, torch (pulled only by the `docs` extra) depends on NVIDIA's CUDA
   runtime wheels, which are under NVIDIA's proprietary license. They are GPU libraries that torch loads at
   runtime, installed by your resolver from PyPI; ezmd does not bundle them, and the published worker image
-  does not include `docs`. They are listed by name in the `[platform_runtime]` section of
-  `tools/license_allowlist.toml`; see `docs/decisions/audit-fix-packaging.md`.
+  does not include `docs`. Installing CPU torch first avoids them entirely (see
+  [Install](install.md#docling-on-linux-cpu-torch)). They are listed by name in the `[platform_runtime]` section of
+  `tools/license_allowlist.toml`; see `docs/internal/decisions/audit-fix-packaging.md`.
 
 ## Allowlist
 
@@ -52,7 +53,7 @@ Optional extras, installed as `pip install 'ezmd[<name>]'` (forwarded to `ezmd-c
 
 | Extra | What it adds | License |
 |---|---|---|
-| `docs` | Docling (`docling-slim`) for PDF layout, with torch and OpenCV | MIT (Docling), BSD-3-Clause (torch), Apache-2.0 (OpenCV); about 1.2 GB. On Linux, PyPI's torch also pulls the NVIDIA CUDA runtime wheels (NVIDIA proprietary, several GB; see Policy) |
+| `docs` | Docling (`docling-slim`) for PDF layout, with torch and OpenCV | MIT (Docling), BSD-3-Clause (torch), Apache-2.0 (OpenCV); about 1.2 GB with CPU torch. On Linux, PyPI's torch also pulls the NVIDIA CUDA runtime wheels (NVIDIA proprietary, about 6 GB installed; see Policy) unless CPU torch is installed first |
 | `data` | pyarrow, for Parquet | Apache-2.0 |
 | `7z` | py7zr, for 7z archives | LGPL-2.1-or-later (dynamically imported, never bundled in images) |
 | `nonfree` | extract-msg, a fallback reader for Outlook `.msg` (the native reader in the default install handles most files) | GPL-3.0; prints a one-time notice when used; never part of `all` |

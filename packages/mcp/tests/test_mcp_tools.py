@@ -1,4 +1,4 @@
-"""Every Phase 1 tool through an in-memory MCP client session (docs/spec/part4.md 4.4.2)."""
+"""Every Phase 1 tool through an in-memory MCP client session (docs/internal/spec/part4.md 4.4.2)."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""code.source_file: one source file as a heading plus one fenced code block (docs/spec/part2.md 8c steps 12-13).
+"""code.source_file: one source file as a heading plus one fenced block (docs/internal/spec/part2.md 8c steps 12-13).
 
 Language comes from the file name, the detected mime (Magika label), or a shebang. Secrets are redacted before
 the text enters the IR. Options (`--opt extra.<key>=...`): `signatures_only` (compressed mode, 8c step 7),

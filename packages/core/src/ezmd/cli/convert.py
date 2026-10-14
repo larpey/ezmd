@@ -24,6 +24,7 @@ from ezmd.cli.output import (
     outcome_from_result,
     print_warnings,
     progress_display,
+    silence_progress_bars,
     write_outcome,
 )
 
@@ -143,6 +144,8 @@ def convert(
 ) -> None:
     """Convert one input to Markdown (stdout, or a file with --out)."""
     cfg = load_config_or_exit(as_json=as_json, quiet=quiet)
+    if quiet or as_json:
+        silence_progress_bars()
     try:
         chosen_fmt = check_format(fmt or cfg.format, "--format")
         if chosen_fmt not in SUPPORTED_FORMATS:
@@ -173,7 +176,7 @@ def convert(
         else:
             err_console().print(f"error: {f.message}", style="red", markup=False, highlight=False)
         raise typer.Exit(f.exit_code) from e
-    code = EXIT_PARTIAL if outcome.status == "partial" else EXIT_OK
+    code = EXIT_ARGS if outcome.needs_extra else EXIT_PARTIAL if outcome.status == "partial" else EXIT_OK
     _report(outcome, target, as_json=as_json, quiet=quiet, exit_code=code)
     raise typer.Exit(code)
 

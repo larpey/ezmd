@@ -1,6 +1,6 @@
 """ezmd.render.assemble: place footnotes and page markers, build the head blocks, apply token budgets.
 
-Body grammar (docs/spec/part3.md section 14): summary blockquote, orientation line, contents, the H1 title,
+Body grammar (docs/internal/spec/part3.md section 14): summary blockquote, orientation line, contents, the H1 title,
 the body, and (compact) the numbered `## Links` list.
 """
 
@@ -108,7 +108,8 @@ def place_page_markers(ctx: RenderContext, units: list[Unit]) -> list[Unit]:
             continue
         if u.page is not None and u.page != current and u.kind not in ("marker", "footnotes"):
             label = f' label="{u.page_label}"' if u.page_label else ""
-            out.append(Unit(text=f"<!-- page {u.page}{label} -->", kind="marker", page=u.page, generated=True))
+            line = ctx.marker(f"page {u.page}{label}", source_text=u.page_label or "")
+            out.append(Unit(text=line, kind="marker", page=u.page, generated=True))
             current = u.page
         out.append(u)
     return out
@@ -284,9 +285,11 @@ def apply_budget(ctx: RenderContext, units: list[Unit], start: int, budget: int 
         original_tokens=original,
     )
     if ctx.profile.name == "agent":
-        note = f'<!-- ezmd: continued; next_cursor="{cursor}" -->'
+        note = ctx.marker(f'ezmd: continued; next_cursor="{cursor}"')
     else:
-        note = f'<!-- ezmd: truncated at max_tokens={budget}; {len(dropped)} blocks omitted; next_cursor="{cursor}" -->'
+        note = ctx.marker(
+            f'ezmd: truncated at max_tokens={budget}; {len(dropped)} blocks omitted; next_cursor="{cursor}"'
+        )
     detail: dict[str, object] = {
         "reason": "max_tokens",
         "limit": budget,

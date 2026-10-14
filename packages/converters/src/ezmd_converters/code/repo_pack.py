@@ -1,4 +1,4 @@
-"""code.repo_pack: a repository archive packed into one Markdown document (docs/spec/part2.md 8c steps 1-10).
+"""code.repo_pack: a repository archive packed into one Markdown document (docs/internal/spec/part2.md 8c steps 1-10).
 
 Inputs: a zip or tar(.gz) of a repository (selected with `--converter code.repo_pack`; the 0.95 score for
 `*.repo.zip` / `*.repo.tar.gz` names loses to `archives.archive`, so local archives need the flag; codeload

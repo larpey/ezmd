@@ -1,4 +1,4 @@
-"""ezmd.render.transcript: TranscriptSegment runs to speaker paragraphs (docs/spec/part3.md section 16).
+"""ezmd.render.transcript: TranscriptSegment runs to speaker paragraphs (docs/internal/spec/part3.md section 16).
 
 Segments merge into paragraphs until the speaker changes or the pause between segments exceeds
 `paragraph_gap_seconds`. Each paragraph starts with the bold speaker label (repeated on every paragraph so

@@ -6,15 +6,15 @@ This document is the complete specification for building ezmd, an open-source, A
 
 ## How to use this document
 
-1. You are operating autonomously. The human will not answer questions during the build. Part 1, section 2 defines exactly when you may stop and ask (spending money, first publish of a package name, store submissions, destructive actions). For everything else, decide, record the decision in `DECISIONS.md`, and continue.
-2. Start at Part 1, section 9 (Phase 0). Create the repo, then follow `ROADMAP.md` (Part 4, section 17) task by task. Keep `STATUS.md` current after every task.
+1. You are operating autonomously. The human will not answer questions during the build. Part 1, section 2 defines exactly when you may stop and ask (spending money, first publish of a package name, store submissions, destructive actions). For everything else, decide, record the decision in `docs/internal/DECISIONS.md`, and continue.
+2. Start at Part 1, section 9 (Phase 0). Create the repo, then follow `docs/internal/ROADMAP.md` (Part 4, section 17) task by task. Keep `docs/internal/STATUS.md` current after every task.
 3. Use the agent council pattern from Part 1 for architectural decisions and for any converter that fails its fixture threshold. Use the Red team pattern before Phase 4 ships.
 4. Parts 2 and 3 are reference material for the converters and the media/output pipeline. Read the relevant section before implementing each task.
 5. When every phase gate in Part 4 passes, write the final completion report described in Part 4, section 17, and stop.
 
 ## Structure
 
-- **Part 1**: Mission, definition of done, operating rules for autonomous Claude Code, `CLAUDE.md` text, the intermediate representation (IR) code, converter interface and registry code, renderer and profile interfaces, job system and REST API contract, security baseline, and Phase 0 foundation tasks.
+- **Part 1**: Mission, definition of done, operating rules for autonomous Claude Code, `.claude/CLAUDE.md` text, the intermediate representation (IR) code, converter interface and registry code, renderer and profile interfaces, job system and REST API contract, security baseline, and Phase 0 foundation tasks.
 - **Part 2**: Every converter family (PDF, Office, Google Workspace, ebooks and text, web pages, sites, social and forums, code, communication, data, notes apps, specialized, cross-cutting) with libraries, fallback chains, build steps, IR output, failure modes, fixtures, thresholds, options, and phase.
 - **Part 3**: Media acquisition (URL classification, captions-first, per-platform fallback chains, the Raspberry Pi residential fetch node, legal policy as code), transcription (ASR engines, diarization, post-processing, browser-side ASR), OCR and screen recordings, and the exact Markdown output specification (frontmatter, body grammar, tables, transcripts, the four profiles, prompt-injection handling, exports, token counting, renderer fixtures).
 - **Part 4**: Interfaces (web UI, CLI, Python library, MCP server, TS SDK, browser extension, iOS Shortcut and Android share target, integrations), deployment files, public instance runbook, abuse prevention, security hardening, legal pages, test strategy, CI workflows, documentation, the phased roadmap with gates, launch checklist, definition of done, and risk register.

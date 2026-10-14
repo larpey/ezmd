@@ -1,6 +1,6 @@
 """ezmd.render.source_types: map IR SourceType onto the frontmatter `source_type` enum (D-0017 item 5).
 
-The frontmatter enum is docs/spec/part3.md section 13, amended with `text`, `markdown` and `archive`
+The frontmatter enum is docs/internal/spec/part3.md section 13, amended with `text`, `markdown` and `archive`
 (P1-core-renderer):
 
     web, pdf, docx, pptx, xlsx, epub, image, audio, video, podcast, post, thread, chat_export, email,

@@ -1,4 +1,4 @@
-"""Retention purge and DELETE (docs/spec/part1.md section 8.4)."""
+"""Retention purge and DELETE (docs/internal/spec/part1.md section 8.4)."""
 
 from __future__ import annotations
 

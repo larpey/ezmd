@@ -1,5 +1,5 @@
 """ezmd_api.jobs: the job store, its state machine, and progress events
-(docs/spec/part1.md sections 7.1 and 7.2).
+(docs/internal/spec/part1.md sections 7.1 and 7.2).
 
 Every state change and progress write goes through `JobStore`, which persists the row and appends
 a numbered event to the per-job buffer (published on `ezmd:job:{id}`), so SSE clients never poll
@@ -91,12 +91,16 @@ class JobStore:
             raise JobGone(job_id)
         return row
 
-    def count_active(self, *, client_ip_hash: str | None = None, api_key_id: str | None = None) -> int:
+    def count_active(
+        self, *, client_ip_hash: str | None = None, api_key_id: str | None = None, anonymous: bool = False
+    ) -> int:
         stmt = select(func.count()).select_from(JobRow).where(JobRow.state.in_(ACTIVE_STATES))
         if api_key_id is not None:
             stmt = stmt.where(JobRow.api_key_id == api_key_id)
         elif client_ip_hash is not None:
             stmt = stmt.where(JobRow.client_ip_hash == client_ip_hash, JobRow.api_key_id.is_(None))
+        elif anonymous:
+            stmt = stmt.where(JobRow.api_key_id.is_(None))
         with self.db.session() as s:
             return int(s.execute(stmt).scalar_one())
 

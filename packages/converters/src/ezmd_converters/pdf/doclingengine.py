@@ -1,6 +1,6 @@
 """documents.docling_pdf: Docling (MIT) layout engine, the default PDF engine when the `docs` extra is installed.
 
-docs/spec/part2.md 1b/1c: `DocumentConverter` with `PdfPipelineOptions` on the default docling-parse backend,
+docs/internal/spec/part2.md 1b/1c: `DocumentConverter` with `PdfPipelineOptions` on the default docling-parse backend,
 run in page batches (`pdf.batch_pages`, default 25) with a deadline check between batches; Docling items are
 mapped to IR blocks with page + bbox provenance; running headers/footers are dropped and counted. A pypdfium2
 pass over the sanitized copy supplies the scan classifier (`pages_without_text`) and heading levels from the
@@ -9,7 +9,8 @@ reliable hierarchy. Docling's own OCR is disabled: OCR goes through the ezmd OCR
 
 Models are never downloaded unless `options.allow_network` is true: `HF_HUB_OFFLINE=1` is set before Docling
 is imported. Pre-fetch them with `docling-tools models download` and point `EZMD_DOCLING_ARTIFACTS` at the
-directory. Any Docling failure raises a retryable ConversionError so the registry falls back to
+directory. When they are not on disk the converter fails before importing Docling (which loads torch), see
+`doclingmodels`. Any Docling failure raises a retryable ConversionError so the registry falls back to
 `documents.pdfium_text` (with `engine_fallback`).
 """
 
@@ -18,6 +19,7 @@ from __future__ import annotations
 import importlib
 import importlib.metadata
 import os
+import sys
 import threading
 from typing import Any
 
@@ -54,6 +56,7 @@ from ezmd_converters.pdf.common import (
     scan_warnings,
 )
 from ezmd_converters.pdf.converter import PDF_LIMITS
+from ezmd_converters.pdf.doclingmodels import DOWNLOAD_HINT, missing_message, models_status
 from ezmd_converters.pdf.layout import norm_text, running_lines
 from ezmd_converters.pdf.ocr import ocr_page
 from ezmd_converters.pdf.textengine import heading_sources, heading_warnings, scan_only
@@ -61,6 +64,15 @@ from ezmd_converters.pdf.textengine import heading_sources, heading_warnings, sc
 _LOCK = threading.Lock()
 _CONVERTERS: dict[tuple[str | None, bool], Any] = {}
 _SKIP_ENGINES = ("pdfium", "pypdf")
+
+
+def _force_offline() -> None:
+    """Docling must not download during a conversion: force `HF_HUB_OFFLINE` even when the environment says
+    otherwise, and flip huggingface_hub's constant too, since it reads the variable once at import."""
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    constants = sys.modules.get("huggingface_hub.constants")
+    if constants is not None:
+        vars(constants)["HF_HUB_OFFLINE"] = True
 
 
 def _mod(name: str) -> Any:
@@ -294,13 +306,19 @@ class DoclingPdfConverter:
         popts = parse_options(options)
         if popts.engine != "docling":
             raise ConversionError(f"pdf.engine={popts.engine} requested; skipping Docling")
-        if not options.allow_network:
-            os.environ.setdefault("HF_HUB_OFFLINE", "1")
         doc = new_document(ref)
         san = open_sanitized(ref, popts, doc)
         if san is None:
             return doc.finalize()
         try:
+            if not options.allow_network:
+                status = models_status()  # before Docling (and torch) is imported
+                if not status.ok:
+                    raise ConversionError(
+                        missing_message(status),
+                        user_message=f"Docling's models are not downloaded. Run: {DOWNLOAD_HINT}.",
+                    )
+                _force_offline()
             apply_metadata(doc, san)
             path = str(san.path)
             layer, rep = scan_only(path, san.info, popts, options)

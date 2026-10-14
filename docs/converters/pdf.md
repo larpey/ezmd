@@ -5,7 +5,7 @@ type is something else, at lower confidence). Chain: `documents.docling_pdf` the
 
 | Converter | Engine | Install | Notes |
 |---|---|---|---|
-| `documents.docling_pdf` | Docling (MIT), docling-parse backend, layout + TableFormer models | `pip install 'ezmd[docs]'` (torch, ~1.2 GB) | Default when installed. Registered `unavailable` otherwise. |
+| `documents.docling_pdf` | Docling (MIT), docling-parse backend, layout + TableFormer models | `pip install 'ezmd[docs]'` (torch, ~1.2 GB with CPU torch; on Linux install CPU torch first, see [Install](../install.md#docling-on-linux-cpu-torch)) | Default when installed. Registered `unavailable` otherwise. |
 | `documents.pdfium_text` | pypdfium2 (BSD-3-Clause / Apache-2.0) text layer + layout heuristics | default | Always available; emits `engine_fallback` when Docling is not installed. |
 
 ## Pipeline (both engines)
@@ -62,8 +62,10 @@ dropped and counted. Pictures are counted in `pdf_pictures` (no image payloads y
 Models are never downloaded during conversion unless `allow_network` is true (`HF_HUB_OFFLINE=1` is set before
 Docling loads). Pre-fetch with `docling-tools models download layout tableformer -o DIR` and set
 `EZMD_DOCLING_ARTIFACTS=DIR` (`docling-tools` is installed with the `docs` extra; see
-[Install](../install.md#docling-models-docs-extra)). Any Docling error is retryable, so the registry falls back to the text-layer
-engine (`engine_fallback`). `EZMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
+[Install](../install.md#docling-models-docs-extra)). If the models are not in that directory (or, without it, in
+the Hugging Face cache), Docling is skipped before it is imported and the text-layer result carries an
+`engine_fallback` warning naming the missing models; `ezmd doctor` reports them too. Any Docling error is
+retryable, so the registry falls back to the text-layer engine (`engine_fallback`). `EZMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
 
 ## Options (`ConvertOptions.extra`, CLI `--opt extra.pdf.<name>=...`)
 

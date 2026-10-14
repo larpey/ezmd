@@ -1,8 +1,8 @@
 # Status
 
-Last updated: 2026-10-08 by agent
+Last updated: 2026-10-14 by agent
 Current phase: 1
-Current task: v0.1.0 release (npm org, Claude Desktop check, final tag); Phase 2 not started
+Current task: v0.1.0 pre-release test pass; rc5 candidate on `fix/rc5` awaiting owner review; Phase 2 not started
 Overall: 32 / 85 tasks done
 
 ## Phases
@@ -19,7 +19,7 @@ Overall: 32 / 85 tasks done
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
 | G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
-| G1 | blocked on owner | 2026-10-09 | Done: 19/19 P1 tasks; 94 fixtures pass; CI + integration green; PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc2 published and verified from a clean install (Windows pipe fix included); `uvx ezmd-mcp==0.1.0rc2` passes an MCP stdio handshake, lists 5 tools, converts a DOCX, refuses paths outside --allowed-dirs; docs site deploys to https://larpey.github.io/ezmd/. ezmd is in the owner's Claude Desktop config (uvx ezmd-mcp==0.1.0rc2, allowed dirs Documents/Downloads/Desktop; original backed up as claude_desktop_config.before-ezmd.json). Owner steps left: restart Claude Desktop and convert a file (record here); create the npm `ezmd` org, publish `@ezmd/sdk` once by hand and add its trusted publisher; then tag v0.1.0 and approve. |
+| G1 | blocked on owner | 2026-10-14 | Done: 19/19 P1 tasks; 94 fixtures pass; CI + integration green. Published pre-releases: PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc4 (rc2, rc3 earlier); `@ezmd/sdk` 0.1.0-rc.3 on npm (npm trusted publisher configured, validated by the first CI publish). Claude Desktop check passed with `uvx ezmd-mcp==0.1.0rc3` (converted a DOCX from Documents). Pre-0.1.0 test pass on rc4: install surfaces (pip/uv/uvx on 3.12/3.13, Windows and Linux), self-hosted stack (bootstrap, smoke, backup/restore, upgrade), a red team (30/30 SSRF variants blocked; findings fixed: anonymous dedup across IPs, admission race, IPv6 /64 identity, Cache-Control/Vary, LibreOffice linked-content fetch), and a competitive baseline (bench branch `task/p4-b01-bench-harness`). Fixes are on `fix/rc5` (D-0044 to D-0071); its stack retest passes. Owner steps left: review and merge the rc5 PR, tag v0.1.0-rc5 and approve; after rc5, bump to 0.1.0 (`--npm`), tag and approve. |
 | G2 | open | | |
 | G3 | open | | |
 | G4 | open | | |
@@ -109,7 +109,7 @@ Overall: 32 / 85 tasks done
 | P5-T06 | Raycast extension and Alfred workflow | pending | |  |
 | P5-T07 | GitHub Action `ezmd-action` | pending | |  |
 | P5-T08 | n8n and Zapier templates | pending | |  |
-| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in DECISIONS.md; code signing deferred until funded | pending | |  |
+| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in docs/internal/DECISIONS.md; code signing deferred until funded | pending | |  |
 | P5-T10 | Channel and playlist batch for marketers via the extension (queue every video on a channel page) and the CLI with the fetch extra | pending | |  |
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | pending | |  |
 

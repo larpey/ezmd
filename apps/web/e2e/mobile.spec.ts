@@ -22,7 +22,7 @@ test("@mobile core flow: paste text, convert, read, download", async ({ page }) 
   expect(md.name).toMatch(/\.md$/);
 });
 
-// Regression (docs/decisions/P1-T15.md finding 4): the Raw tab's scrolling <pre> must be focusable.
+// Regression (docs/internal/decisions/P1-T15.md finding 4): the Raw tab's scrolling <pre> must be focusable.
 test("@mobile raw tab passes axe", async ({ page }) => {
   await openApp(page);
   await page.getByTestId("input-text").fill(uniqueText("Mobile raw axe"));

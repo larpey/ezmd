@@ -1,4 +1,4 @@
-"""data.yaml: YAML (docs/spec/part2.md section 10, YamlConverter).
+"""data.yaml: YAML (docs/internal/spec/part2.md section 10, YamlConverter).
 
 Loads with a `yaml.SafeLoader` subclass only (never `yaml.load` with an unsafe loader). The subclass changes
 three things, none of which can execute code: numbers keep their source spelling (`1.50` stays `1.50`),

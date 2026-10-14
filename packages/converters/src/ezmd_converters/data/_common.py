@@ -117,7 +117,7 @@ def decode_bytes(raw: bytes) -> Decoded:
     best = matches[0] if matches else None
     if best is not None:
         # Short inputs are ambiguous between single-byte code pages; among near-equal candidates prefer the
-        # Western defaults spreadsheet exports use (D: docs/decisions/P1-T05-data.md).
+        # Western defaults spreadsheet exports use (D: docs/internal/decisions/P1-T05-data.md).
         near = [m for m in matches if m.chaos <= best.chaos + NEAR_CHAOS]
         best = next((m for p in PREFERRED_ENCODINGS for m in near if m.encoding == p), best)
     if best is not None and best.encoding:

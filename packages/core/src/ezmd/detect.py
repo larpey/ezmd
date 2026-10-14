@@ -1,6 +1,6 @@
 """ezmd.detect: content-type detection by magic, never by extension alone.
 
-Implemented from docs/spec/part1.md section 5.1. Magika (Apache-2.0) runs on the first 1 MiB plus
+Implemented from docs/internal/spec/part1.md section 5.1. Magika (Apache-2.0) runs on the first 1 MiB plus
 the last 64 KiB; libmagic runs on the same sample; the extension is mapped through a small table.
 
 Resolution order:
@@ -14,11 +14,15 @@ Resolution order:
 
 from __future__ import annotations
 
+import importlib.util
+import json
 import logging
 import mimetypes
+import os
 import re
 import threading
 import warnings
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -33,8 +37,9 @@ OCTET = "application/octet-stream"
 URI_MIME = "text/x-uri"
 EMPTY_MIME = "application/x-empty"
 
-EXECUTABLE_MIMES = frozenset(
+_STATIC_EXECUTABLE_MIMES = frozenset(
     {
+        # libmagic and the IANA/Microsoft names
         "application/x-executable",
         "application/x-dosexec",
         "application/x-mach-binary",
@@ -43,8 +48,58 @@ EXECUTABLE_MIMES = frozenset(
         "application/vnd.microsoft.portable-executable",
         "application/x-msdownload",
         "application/x-elf",
+        # Magika's "executable" group (magika 1.0 content_types_kb), also read from Magika itself below
+        "application/x-executable-elf",
+        "application/x-mach-o",
+        "application/x-coff",
+        "application/x-android-dex",
+        "application/x-android-dey",
+        "application/x-windows-driver",
+        "application/x-bytecode.python",
     }
 )
+
+
+def _magika_executable_mimes() -> frozenset[str]:
+    """Mime types of Magika's "executable" content-type group, read from its knowledge base without importing
+    magika (which loads onnxruntime). Empty when magika is not installed or the file moved."""
+    try:
+        spec = importlib.util.find_spec("magika")
+        if spec is None or spec.origin is None:
+            return frozenset()
+        kb = json.loads((Path(spec.origin).parent / "config" / "content_types_kb.min.json").read_text("utf-8"))
+        return frozenset(
+            str(v["mime_type"])
+            for v in kb.values()
+            if isinstance(v, dict) and v.get("group") == "executable" and v.get("mime_type")
+        )
+    except (OSError, ValueError, ImportError, KeyError):
+        return frozenset()
+
+
+EXECUTABLE_MIMES = (_STATIC_EXECUTABLE_MIMES | _magika_executable_mimes()) - {"application/octet-stream"}
+"""Refused outright (part1 8.2). Magika's executable group also lists `rll` as application/octet-stream,
+which is every unknown binary, so that one is never in the set."""
+
+_ISO_OFFSETS = (0x8001, 0x8801, 0x9001)
+_CONTAINER_SIGNATURES: dict[str, Callable[[bytes], bool]] = {
+    "iso": lambda b: any(b[o : o + 5] == b"CD001" for o in _ISO_OFFSETS),
+    "zip": lambda b: b.startswith(b"PK\x03\x04") or b"PK\x05\x06" in b[-(64 << 10) :],
+    "sevenzip": lambda b: b.startswith(b"7z\xbc\xaf\x27\x1c"),
+    "rar": lambda b: b.startswith(b"Rar!\x1a\x07"),
+    "gzip": lambda b: b.startswith(b"\x1f\x8b"),
+    "bzip": lambda b: b.startswith(b"BZh"),
+    "xz": lambda b: b.startswith(b"\xfd7zXZ\x00"),
+    "zst": lambda b: b.startswith(b"\x28\xb5\x2f\xfd"),
+    "tar": lambda b: b[257:262] == b"ustar",
+    "cab": lambda b: b.startswith(b"MSCF"),
+    "rpm": lambda b: b.startswith(b"\xed\xab\xee\xdb"),
+    "deb": lambda b: b.startswith(b"!<arch>"),
+    "lha": lambda b: b[2:5] == b"-lh",
+    "arj": lambda b: b.startswith(b"\x60\xea"),
+}
+"""Magic bytes for Magika's archive labels. Magika labels 1 MiB of one repeated byte `iso` at 0.9986; when
+libmagic disagrees with a container label, the label stands only if its signature is present."""
 
 # Extension -> mime for types the stdlib table lacks or gets wrong across platforms.
 _EXTENSION_MIMES: dict[str, str] = {
@@ -261,9 +316,7 @@ class _Engines:
             with cls._lock:
                 if cls._magika is None and not cls._magika_failed:
                     try:
-                        from magika import Magika
-
-                        cls._magika = Magika()
+                        cls._magika = _bounded_magika()
                     except Exception as e:
                         log.warning("magika unavailable: %s", e)
                         cls._magika_failed = True
@@ -280,6 +333,38 @@ class _Engines:
             log.warning("libmagic unavailable: %s", e)
             cls._magic_failed = True
             return None
+
+
+def magika_threads() -> int:
+    """ONNX Runtime threads for Magika (intra- and inter-op): `EZMD_MAGIKA_THREADS`, default 1. Magika's
+    session otherwise sizes its pool to the machine and ignores OMP_NUM_THREADS, which trips RLIMIT_NPROC in
+    the API worker; one thread is plenty for one 1 MiB sample."""
+    raw = os.environ.get("EZMD_MAGIKA_THREADS", "").strip()
+    return int(raw) if raw.isdigit() and int(raw) > 0 else 1
+
+
+def _bounded_magika() -> Any:
+    """A Magika whose ONNX session has bounded thread pools. Magika (1.0) exposes no session options, so its
+    `_init_onnx_session` is overridden; if that private API changes, plain Magika() is used."""
+    from magika import Magika
+
+    threads = magika_threads()
+
+    class _Bounded(Magika):
+        def _init_onnx_session(self) -> Any:
+            import onnxruntime as rt  # type: ignore[import-untyped]
+
+            opts = rt.SessionOptions()
+            opts.intra_op_num_threads = threads
+            opts.inter_op_num_threads = threads
+            opts.execution_mode = rt.ExecutionMode.ORT_SEQUENTIAL
+            return rt.InferenceSession(self._model_path, sess_options=opts, providers=["CPUExecutionProvider"])
+
+    try:
+        return _Bounded()
+    except Exception as e:  # a changed private API must not cost the user Magika
+        log.warning("magika session options not applied (%s); using the default session", e)
+        return Magika()
 
 
 def import_magic() -> Any:
@@ -383,6 +468,9 @@ class MagicDetector:
             return Detected(mime=EMPTY_MIME, extension=ext, confidence=1.0, extension_mime=ext_mime)
         label, mg_mime, score = _magika_guess(sample)
         lm = _Engines.libmagic(sample)
+        check = _CONTAINER_SIGNATURES.get(label or "")
+        if check is not None and mg_mime is not None and lm != mg_mime and not check(sample):
+            mg_mime = None  # a container label without the container's signature
         mime: str
         confidence: float
         if mg_mime is not None and score >= MAGIKA_THRESHOLD:
@@ -401,7 +489,7 @@ class MagicDetector:
             mime, confidence = OCTET, 0.0
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
-            # decide (docs/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
+            # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
             mime, confidence = RFC822, max(confidence, 0.9)
         return Detected(
             mime=mime,

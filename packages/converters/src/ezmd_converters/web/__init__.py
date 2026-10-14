@@ -1,4 +1,4 @@
-"""Web family: static HTML pages (docs/spec/part2.md section 5, web/pages). Site crawling (section 6) and JS
+"""Web family: static HTML pages (docs/internal/spec/part2.md section 5, web/pages). Site crawling (section 6) and JS
 rendering are Phase 3."""
 
 from __future__ import annotations

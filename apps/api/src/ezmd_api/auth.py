@@ -1,5 +1,5 @@
 """ezmd_api.auth: callers (client IP hash + optional API key), API keys, Turnstile, fetch-node auth
-(docs/spec/part1.md section 7.4).
+(docs/internal/spec/part1.md section 7.4).
 
 - API keys come from the `api_keys` table or the `keys.json` bootstrap file (`ezmd_api.keys`); both
   store only HMAC-SHA256(pepper, key). A key may restrict the client IP and User-Agent.
@@ -7,7 +7,10 @@
 - Turnstile is implemented but off unless `EZMD_TURNSTILE_SECRET` is set (or public mode demands it).
   A verified token yields a short-lived signed JWT cookie bound to the client IP hash and a nonce;
   it covers `CHALLENGE_MAX_USES` further URL jobs (counted per nonce in the state backend, so a
-  copied cookie cannot be replayed beyond that) until it expires (docs/spec/part4.md 4.13).
+  copied cookie cannot be replayed beyond that) until it expires (docs/internal/spec/part4.md 4.13).
+  Siteverify goes to `EZMD_TURNSTILE_VERIFY_URL`; the compose API has no egress and uses Caddy's
+  fixed-upstream relay (D-0044). An unreachable or misconfigured siteverify is `turnstile_unavailable`
+  (503, logged), never a silent `turnstile_failed`.
 - Fetch nodes need `Authorization: Bearer <EZMD_FETCH_NODE_SECRET>` and a source address inside
   `EZMD_FETCH_NODE_CIDR`; both checks are required.
 """
@@ -34,13 +37,15 @@ from ezmd_api.keys import (
     hash_api_key,
     lookup_api_key,
 )
-from ezmd_api.settings import Settings
+from ezmd_api.settings import TURNSTILE_VERIFY_URL, Settings
 from ezmd_api.util import keyed_hash
 
 __all__ = [
+    "TURNSTILE_VERIFY_URL",
     "Caller",
     "CallerDep",
     "KeyRecord",
+    "TurnstileUnavailable",
     "create_api_key",
     "generate_api_key",
     "get_caller",
@@ -50,11 +55,12 @@ __all__ = [
 
 log = logging.getLogger("ezmd.api.auth")
 
-TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 CHALLENGE_COOKIE = "ezmd_challenge"
 CHALLENGE_HEADER = "x-ezmd-challenge"
 CHALLENGE_MAX_USES = 5
-"""URL jobs one challenge JWT may cover (docs/spec/part4.md: "good for up to 5 convert calls")."""
+SITEVERIFY_CONFIG_ERRORS = frozenset({"missing-input-secret", "invalid-input-secret"})
+"""Siteverify error codes that mean this instance is misconfigured, not that the visitor failed."""
+"""URL jobs one challenge JWT may cover (docs/internal/spec/part4.md: "good for up to 5 convert calls")."""
 _EPHEMERAL_JWT_KEY = secrets.token_bytes(32)
 
 
@@ -119,8 +125,24 @@ def client_ip(request: Request, settings: Settings) -> str:
     return hops[0]
 
 
+def ip_identity(settings: Settings, ip: str) -> str:
+    """The unit one client is counted as: an IPv4 address (IPv4-mapped IPv6 unwrapped), or the IPv6
+    network of EZMD_IPV6_IDENTITY_PREFIX bits (a /64 is one subscriber; hashing full IPv6 addresses gave
+    each a near-unlimited number of identities). Unparsable values are used as they are."""
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return ip
+    if isinstance(addr, ipaddress.IPv6Address) and addr.ipv4_mapped is not None:
+        return str(addr.ipv4_mapped)
+    if isinstance(addr, ipaddress.IPv6Address):
+        return str(ipaddress.ip_network(f"{addr}/{settings.ipv6_identity_prefix}", strict=False))
+    return str(addr)
+
+
 def hash_ip(settings: Settings, ip: str) -> str:
-    return keyed_hash(settings.ip_salt, ip)
+    """Salted hash of the client's identity (`ip_identity`): rate limits, quotas, dedup and challenge binding."""
+    return keyed_hash(settings.ip_salt, ip_identity(settings, ip))
 
 
 def get_caller(request: Request) -> Caller:
@@ -182,21 +204,47 @@ def check_challenge_jwt(settings: Settings, token: str, ip_hash: str) -> bool:
 def _spend_challenge(request: Request, settings: Settings, nonce: str) -> bool:
     """Count one use of the challenge `nonce`; False once it has covered CHALLENGE_MAX_USES jobs."""
     state = request.app.state.services.state
-    uses = int(state.gauge_incr(f"challenge:{nonce}", settings.turnstile_jwt_ttl_s + 5))
-    return uses <= CHALLENGE_MAX_USES
+    key = f"challenge:{nonce}"
+    uses = int(state.gauge_incr(key, settings.turnstile_jwt_ttl_s + 5))
+    if uses <= CHALLENGE_MAX_USES:
+        request.state.challenge_use = key  # given back by ratelimit.refund_hits if no job is created
+        return True
+    return False
+
+
+class TurnstileUnavailable(Exception):
+    """Siteverify could not give an answer about the token (unreachable, bad reply, or our secret rejected)."""
 
 
 def verify_turnstile(settings: Settings, token: str, remote_ip: str) -> bool:
-    """Server-side verification with Cloudflare siteverify. Network or protocol errors fail closed."""
+    """Server-side verification with Cloudflare siteverify. False means Cloudflare rejected the token.
+
+    Raises TurnstileUnavailable (logged at ERROR) when no verdict was possible, so the caller can answer
+    503 instead of blaming the visitor. Fails closed either way: no verdict never admits a request."""
     if not settings.turnstile_enabled or not token or len(token) > 4096:
         return False
+    url = settings.turnstile_verify_url
     data = {"secret": settings.turnstile_secret.get_secret_value(), "response": token, "remoteip": remote_ip}
     try:
-        resp = httpx.post(TURNSTILE_VERIFY_URL, data=data, timeout=10.0)
-        return bool(resp.status_code == 200 and resp.json().get("success") is True)
-    except (httpx.HTTPError, ValueError):
-        log.warning("turnstile verification request failed")
-        return False
+        resp = httpx.post(url, data=data, timeout=10.0)
+    except httpx.HTTPError as e:
+        log.error("turnstile siteverify failed: %s (%s)", type(e).__name__, url)
+        raise TurnstileUnavailable from None
+    try:
+        # Cloudflare answers some verdicts (a bad secret) with HTTP 400 and a JSON body, so read any status.
+        payload = resp.json()
+    except ValueError:
+        payload = None
+    if not isinstance(payload, dict) or not isinstance(payload.get("success"), bool):
+        log.error("turnstile siteverify answered HTTP %s without a verdict (%s)", resp.status_code, url)
+        raise TurnstileUnavailable
+    if payload.get("success") is True:
+        return True
+    codes = [str(c) for c in payload.get("error-codes", []) if isinstance(c, str)][:5]
+    if set(codes) & SITEVERIFY_CONFIG_ERRORS:
+        log.error("turnstile siteverify rejected this instance's secret: %s", ",".join(codes))
+        raise TurnstileUnavailable
+    return False
 
 
 def require_url_challenge(request: Request, caller: Caller, token: str | None) -> str | None:
@@ -211,7 +259,15 @@ def require_url_challenge(request: Request, caller: Caller, token: str | None) -
     if not token:
         raise ApiError("turnstile_required", "URL inputs require a Turnstile token on this instance.")
     verifier = getattr(request.app.state, "turnstile_verifier", verify_turnstile)
-    if not verifier(settings, token, client_ip(request, settings)):
+    try:
+        verified = verifier(settings, token, client_ip(request, settings))
+    except TurnstileUnavailable:
+        raise ApiError(
+            "turnstile_unavailable",
+            "The challenge service cannot be reached right now. Try again shortly.",
+            headers={"Retry-After": "30"},
+        ) from None
+    if not verified:
         raise ApiError("turnstile_failed", "The Turnstile token could not be verified.")
     return issue_challenge_jwt(settings, caller.ip_hash)
 

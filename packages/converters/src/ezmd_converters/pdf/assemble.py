@@ -285,7 +285,7 @@ class Assembler:
         self.blocks.append(ListBlock(ordered=lst.ordered, start=lst.start, items=root, provenance=self._lprov(lines)))
 
     def _append_table(self, table: Table) -> None:
-        """Append a table, or continue the previous page's table (docs/spec/part2.md 1f.9). A continuation needs
+        """Append a table, or continue the previous page's table (spec part2.md 1f.9). A continuation needs
         all of: the previous content block is that table (only page markers between), it is on the previous page
         and ends in the bottom part of it, this table starts in the top part of its page, both have one header
         row, the column counts match, and the header cells are identical. The repeated header is dropped;

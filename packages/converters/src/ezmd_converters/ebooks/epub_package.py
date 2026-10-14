@@ -1,7 +1,7 @@
 """ebooks.epub_package: read an EPUB container safely: zip limits, container.xml, the OPF package, the TOC
 (EPUB3 nav or EPUB2 NCX), the page-list, and DRM markers in encryption.xml/rights.xml.
 
-docs/spec/part2.md section 4c steps 1-3 and 7. All zip reads go through `archives.guard` (part1 8.2 applies to
+docs/internal/spec/part2.md section 4c steps 1-3 and 7. All zip reads go through `archives.guard` (part1 8.2 applies to
 EPUB containers too); all XML is parsed without entity resolution or network access.
 """
 

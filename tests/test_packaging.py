@@ -20,10 +20,12 @@ ROOT = Path(__file__).resolve().parents[1]
 # Every workspace member with dependencies; the first three are published to PyPI (release.yml python-dist).
 MEMBERS = ("packages/core", "packages/converters", "packages/mcp", "apps/api", "apps/fetch-node")
 PUBLISHED = ("packages/core", "packages/converters", "packages/mcp")
-# Direct dependencies with a pre-release of a new major on PyPI (checked against the PyPI JSON API when this
-# list was written). `pip install --pre ezmd` lets those pre-releases satisfy an open `>=` bound, so each
-# declaration must stay below that major. httpx 1.0.devN dropped httpcore, which ezmd.core.netguard imports.
-PRERELEASE_MAJORS = {"httpx": 1, "lxml": 7}
+# Direct dependencies with a pre-release newer than their latest final on PyPI, mapped to the first release
+# series that has one (checked against the PyPI JSON API when this list was written; last on 2026-10-13).
+# `pip install --pre ezmd` lets those pre-releases satisfy an open `>=` bound, so each declaration must stay
+# below that series. httpx 1.0.devN dropped httpcore, which ezmd.core.netguard imports; defusedxml 0.8.0rc2
+# and openpyxl 3.2.0b1 were picked by `--pre` in the rc4 install test.
+PRERELEASE_SERIES = {"httpx": "1.0", "lxml": "7.0", "defusedxml": "0.8", "openpyxl": "3.2"}
 # Modules imported directly that only arrive transitively unless declared (import name, distribution).
 IMPORTED_DIRECTLY = {"httpcore": "httpcore"}
 
@@ -47,14 +49,14 @@ def _names(member: str) -> set[str]:
 
 
 @pytest.mark.parametrize("member", MEMBERS)
-def test_prerelease_majors_are_capped(member: str) -> None:
+def test_prerelease_series_are_capped(member: str) -> None:
     for req in _requirements(member):
-        major = PRERELEASE_MAJORS.get(req.name.lower())
-        if major is None:
+        series = PRERELEASE_SERIES.get(req.name.lower())
+        if series is None:
             continue
-        first_bad = Version(f"{major}.0.dev0")
+        first_bad = Version(f"{series}.dev0")
         assert not req.specifier.contains(first_bad, prereleases=True), (
-            f"{member}: {req} admits {req.name} {major}.x pre-releases under --pre; add an upper bound <{major}"
+            f"{member}: {req} admits {req.name} {series} pre-releases under --pre; add an upper bound <{series}"
         )
 
 
@@ -90,6 +92,11 @@ def test_license_files_declared(member: str) -> None:
     assert _project(member).get("license-files") == ["LICENSE", "NOTICE"]
 
 
+# The only top-level directory each wheel may carry besides its dist-info. `ezmd/testing` stays in the core
+# wheel on purpose: the spec ships `ezmd-score`/`ezmd-golden` with `ezmd`, and `ezmd shadow` imports it (D-0051).
+WHEEL_PACKAGES = {"packages/core": "ezmd", "packages/converters": "ezmd_converters", "packages/mcp": "ezmd_mcp"}
+
+
 def _uv() -> str | None:
     return os.environ.get("UV") or shutil.which("uv")
 
@@ -110,9 +117,27 @@ def test_built_dists_carry_license_and_notice(member: str, tmp_path: Path) -> No
     with zipfile.ZipFile(wheel) as zf:
         names = set(zf.namelist())
     dist_info = next(n.split("/", 1)[0] for n in names if n.split("/", 1)[0].endswith(".dist-info"))
+    package = WHEEL_PACKAGES[member]
+    stray = sorted(n for n in names if n.split("/", 1)[0] not in (package, dist_info) or "__pycache__" in n)
+    assert not stray, f"{wheel.name} ships files outside {package}/ (tests, tools, caches): {stray[:10]}"
     for f in ("LICENSE", "NOTICE"):
         assert f"{dist_info}/licenses/{f}" in names, f"{wheel.name} lacks {dist_info}/licenses/{f}"
     (sdist,) = tmp_path.glob("*.tar.gz")
     with tarfile.open(sdist) as tf:
         members = {m.name.split("/", 1)[1] for m in tf.getmembers() if "/" in m.name}
     assert {"LICENSE", "NOTICE"} <= members, f"{sdist.name} lacks LICENSE/NOTICE"
+
+
+def test_sdk_subpaths_have_types_for_node10_resolution() -> None:
+    """TypeScript's `moduleResolution: node10` (the `node` default for many projects) ignores `exports`, so
+    `import ... from "@ezmd/sdk/node"` finds no types unless `typesVersions` maps the subpath."""
+    import json
+
+    pkg = json.loads((ROOT / "packages/sdk-ts/package.json").read_text(encoding="utf-8"))
+    mapping = pkg.get("typesVersions", {}).get("*", {})
+    for subpath, conditions in pkg["exports"].items():
+        types = conditions["import"]["types"]
+        if subpath == ".":
+            assert pkg["types"] == types
+            continue
+        assert mapping.get(subpath.removeprefix("./")) == [types], (subpath, mapping)

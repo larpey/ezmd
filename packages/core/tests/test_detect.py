@@ -162,3 +162,65 @@ def test_mbox_extension_is_platform_independent_and_not_misnamed() -> None:
     # Magika labels an mbox "eml": the same family, so no misnamed_file warning.
     assert same_family("application/mbox", "message/rfc822")
     assert not same_family("application/mbox", "application/pdf")
+
+
+# -- red-team detection findings (D-0058) -----------------------------------------------------------
+
+
+def _elf_binary() -> bytes:
+    """An x86-64 ELF with a program header, code-like bytes and a string table: Magika says `elf`
+    (application/x-executable-elf) at full confidence, libmagic application/x-sharedlib."""
+    import random
+    import struct
+
+    header = b"\x7fELF" + bytes([2, 1, 1, 0]) + b"\x00" * 8
+    header += struct.pack("<HHIQQQIHHHHHH", 3, 0x3E, 1, 0x1040, 64, 0, 0, 64, 56, 1, 64, 0, 0)
+    phdr = struct.pack("<IIQQQQQQ", 1, 5, 0, 0, 0, 4096, 4096, 4096)
+    rng = random.Random(1)
+    ops = [0x48, 0x89, 0xE5, 0x8B, 0x45, 0xFC, 0x83, 0xC0, 0x01, 0x5D, 0xC3, 0xE8, 0x00, 0x31, 0xC0, 0x0F, 0x05]
+    code = bytes(rng.choice(ops) for _ in range(8000))
+    names = [b".text", b".data", b".bss", b".shstrtab", b"libc.so.6", b"printf", b"GLIBC_2.2.5", b"__libc_start_main"]
+    return header + phdr + code + b"\x00".join(names) * 20
+
+
+def test_magika_executable_group_is_refused() -> None:
+    from ezmd.detect import EXECUTABLE_MIMES, is_executable
+
+    for mime in (
+        "application/x-executable-elf",
+        "application/x-mach-o",
+        "application/x-coff",
+        "application/x-android-dex",
+        "application/x-windows-driver",
+        "application/x-bytecode.python",
+        "application/x-dosexec",
+    ):
+        assert is_executable(mime), mime
+    assert "application/octet-stream" not in EXECUTABLE_MIMES
+    ref = InputRef.from_bytes(_elf_binary(), filename="tool")
+    d = detect(ref)
+    assert is_executable(d.mime), d
+
+
+def test_iso_label_needs_the_iso_signature() -> None:
+    """Magika calls 1 MiB of one repeated byte an ISO 9660 image at 0.9986; libmagic says text/plain and there
+    is no CD001 at 0x8001, so the container label is not trusted."""
+    d = detect(InputRef.from_bytes(b"a" * (1 << 20), filename="blob"))
+    assert d.magika_label == "iso" and d.mime == "text/plain", d
+    iso = bytearray(64 * 1024)
+    iso[0x8001:0x8006] = b"CD001"
+    assert detect(InputRef.from_bytes(bytes(iso), filename="disk.iso")).mime != "text/plain"
+
+
+def test_magika_session_threads_are_bounded(monkeypatch: pytest.MonkeyPatch) -> None:
+    from ezmd.detect import _Engines, magika_threads
+
+    monkeypatch.delenv("EZMD_MAGIKA_THREADS", raising=False)
+    assert magika_threads() == 1
+    monkeypatch.setenv("EZMD_MAGIKA_THREADS", "3")
+    assert magika_threads() == 3
+    monkeypatch.setenv("EZMD_MAGIKA_THREADS", "zero")
+    assert magika_threads() == 1
+    m = _Engines.magika()
+    opts = m._onnx_session.get_session_options()
+    assert (opts.intra_op_num_threads, opts.inter_op_num_threads) == (1, 1)

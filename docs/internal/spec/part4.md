@@ -14,8 +14,8 @@ Rules that apply to every section here:
 2. Every interface reports warnings from `Result.warnings` verbatim to the user. Silent loss is the failure mode this project exists to eliminate. A UI that hides a warning is a bug.
 3. Every interface defaults to the `compact` profile for interactive use and `full` for file output, unless the user picks one. The MCP server defaults to `agent`.
 4. Every interface sends `User-Agent: ezmd-<interface>/<version>` so the public instance can see which surfaces carry traffic.
-5. Phases referenced below map to ROADMAP.md in section 4.17. Do not build a Phase 3 interface before the Phase 2 gate passes.
-6. After every task ID in this part is finished, update `STATUS.md` (format in 4.17.8) before starting the next task.
+5. Phases referenced below map to docs/internal/ROADMAP.md in section 4.17. Do not build a Phase 3 interface before the Phase 2 gate passes.
+6. After every task ID in this part is finished, update `docs/internal/STATUS.md` (format in 4.17.8) before starting the next task.
 
 ---
 
@@ -331,7 +331,7 @@ The extension exists for one reason the research made unambiguous: YouTube, TikT
 
 #### 4.6.2 Architecture
 
-Manifest V3, one codebase, built with Vite and `@crxjs/vite-plugin` (or WXT; pick one and record in DECISIONS.md), producing Chrome and Firefox bundles. Firefox needs `browser_specific_settings.gecko.id` and uses `background.scripts` instead of a service worker (handled by the build target).
+Manifest V3, one codebase, built with Vite and `@crxjs/vite-plugin` (or WXT; pick one and record in docs/internal/DECISIONS.md), producing Chrome and Firefox bundles. Firefox needs `browser_specific_settings.gecko.id` and uses `background.scripts` instead of a service worker (handled by the build target).
 
 Permissions (minimal):
 
@@ -1330,7 +1330,7 @@ Image build (agent writes `deploy/pi/build.sh` and `deploy/pi/cloud-init.yaml`):
 2. `firstrun.sh` installs Docker (`get.docker.com`), Tailscale, `unattended-upgrades`, enables `fail2ban` (SSH only), sets `dtoverlay=disable-wifi,disable-bt` in `/boot/firmware/config.txt`, mounts `/tmp` as tmpfs 1.5 GB, configures `journald` with `SystemMaxUse=200M`, and writes `/opt/ezmd-fetch/docker-compose.yml` (the pi compose from 4.9.5) and an empty `.env.pi` with mode 600.
 3. Nothing secret is in the image. On first boot the owner SSHes in (over LAN), runs `sudo tailscale up --advertise-tags=tag:ezmd-pi --ssh`, authenticates in the browser, then fills `.env.pi` with `EZMD_FETCH_NODE_TOKEN` (generated on the VPS with `docker compose exec api ezmd fetch-node token --node-id pi-home`, which also appends it to `EZMD_FETCH_NODE_TOKENS` on the VPS) and `EZMD_FETCH_NODE_INSTANCE=http://ezmd-vps:8080` (Tailscale MagicDNS name; the API's internal port is reachable via Tailscale because `tailscaled` on the VPS exposes it through `tailscale serve --bg --tcp 8080 tcp://127.0.0.1:8080`, which is itself allowed only by ACL from `tag:ezmd-pi`). Note: the API container publishes 8080 only to `127.0.0.1` on the VPS for this purpose; add `ports: ["127.0.0.1:8080:8080"]` to the `api` service in `docker-compose.public.yml`.
 4. `docker compose up -d` on the Pi. Verify with `docker compose logs -f fetch-node` that it reports "claimed 0 jobs, polling" and that the VPS `/admin/fetch-nodes` (admin token) lists `pi-home` as online.
-5. Optional cookies: if the owner wants to supply a YouTube cookies file for the Pi (self-host rule applies here too, since the public instance's own fetch policy still forbids YouTube unless a fetch node is online and the owner has accepted the risk in `DECISIONS.md`), place it at `/opt/ezmd-fetch/cookies.txt` mode 600. Default: no cookies; captions and public audio only.
+5. Optional cookies: if the owner wants to supply a YouTube cookies file for the Pi (self-host rule applies here too, since the public instance's own fetch policy still forbids YouTube unless a fetch node is online and the owner has accepted the risk in `docs/internal/DECISIONS.md`), place it at `/opt/ezmd-fetch/cookies.txt` mode 600. Default: no cookies; captions and public audio only.
 6. Power: a UPS HAT is optional; the node is best-effort. When it is offline the instance's capabilities report `fetch_node: offline` and URL fetches for the disabled sources return `fetch_blocked_by_platform` with the extension suggestion, which is the designed degraded mode.
 
 #### 4.10.4 Tailscale ACLs
@@ -1400,7 +1400,7 @@ Capacity on the 8-core box with the compose limits above (api 1 core, worker-def
 - Media: at 4x realtime and concurrency 1, the media worker clears 4 audio hours per wall hour, i.e. 16 fifteen-minute clips per hour. A queue of 20 clips means an hour's wait, which is the `MediaQueueWait` alert threshold rationale.
 - When to add Groq: the trigger is p95 media queue wait above 10 minutes for three days in a week, or more than 60 media jobs per day. At that point set `EZMD_GROQ_API_KEY` and `EZMD_GROQ_OFFLOAD_MIN_S=300`: clips over 5 minutes go to Groq, short clips stay local. Cost at 100 fifteen-minute clips a day is 25 audio hours, i.e. $1 per day, $30 per month, far cheaper than a GPU box. Groq is a sub-processor, so enabling it requires updating the Privacy page (the draft includes the clause, commented out) and the capabilities response (`asr_offload: groq`), and the UI shows "Transcribed with a hosted provider" in the warnings panel as an info-level notice for those jobs. Diarization is not available via Groq; such jobs lose speaker labels, reported as `warning: diarization_unavailable_offload`.
 - Cost tracking: `ezmd admin report` sums Groq seconds billed (from the job table) and multiplies by the configured rate, adds the fixed monthly server cost from `EZMD_COST_SERVER_MONTHLY`, and prints cost per 1,000 jobs. The weekly Discord digest includes it. Hetzner bandwidth is 20 TB included; expected egress is text, under 50 GB per month; an alert fires at 5 TB per month measured by `node_network_transmit_bytes_total`.
-- Sponsor application: once the instance shows 30 days of data (jobs per day, unique daily IPs, bandwidth, CPU hours), the owner applies to Hetzner's open source program, Cloudflare's Project Alexandria or OSS sponsorship, and GitHub Sponsors (organization tier). The `docs/ops/sponsor-pack.md` template is generated by `ezmd admin report --sponsor-pack` with the numbers filled in. Until a sponsor exists, the footer shows the "Support" link to GitHub Sponsors with the text "Nothing is gated; this keeps the public instance running." Donations alone are not expected to cover the box; the budget ceiling at which the owner downgrades the public instance to documents-and-web-only (media profile off) is written in `DECISIONS.md` and defaults to $80 per month of unsponsored spend.
+- Sponsor application: once the instance shows 30 days of data (jobs per day, unique daily IPs, bandwidth, CPU hours), the owner applies to Hetzner's open source program, Cloudflare's Project Alexandria or OSS sponsorship, and GitHub Sponsors (organization tier). The `docs/ops/sponsor-pack.md` template is generated by `ezmd admin report --sponsor-pack` with the numbers filled in. Until a sponsor exists, the footer shows the "Support" link to GitHub Sponsors with the text "Nothing is gated; this keeps the public instance running." Donations alone are not expected to cover the box; the budget ceiling at which the owner downgrades the public instance to documents-and-web-only (media profile off) is written in `docs/internal/DECISIONS.md` and defaults to $80 per month of unsponsored spend.
 
 ### 4.11 Abuse prevention
 
@@ -2303,7 +2303,7 @@ In this order, nothing else above the fold:
 10. Output profiles: four bullets.
 11. Why ezmd: five bullets mirroring the differentiators (no silent loss, permissive license, one box, output profiles, client-side fetch).
 12. Browser extension and mobile: two lines with links.
-13. Project status: link to STATUS.md and ROADMAP.md.
+13. Project status: link to docs/internal/STATUS.md and docs/internal/ROADMAP.md.
 14. License (Apache-2.0), with the note that optional `nonfree` extras and some model weights carry their own licenses, listed in `docs/licenses.md`.
 
 #### 4.16.2 Docs site structure (`docs/mkdocs.yml` nav)
@@ -2329,17 +2329,17 @@ In this order, nothing else above the fold:
 - `CONTRIBUTING.md`: setup (`uv sync --all-packages --all-extras`, `pnpm install`, `pre-commit install`), branch and PR conventions (conventional commits, one change per PR, CHANGELOG line, tests), the converter contract, and two processes that are specific to this project:
   - The council process: a converter or engine change that could alter output for existing fixtures requires a "council" review, which is a PR template section where the author pastes the fixture scorecard diff, the engine license check output, and answers four questions (what is preserved that was not before, what could be lost, which warnings change, what the token cost impact is). Two approvals are needed for engine swaps, one for converter fixes. The name comes from the practice of asking three reviewers with different persona hats (developer, legal or finance provenance, media) to each check one aspect; the template lists the hats.
   - The fixture process: how to add a fixture (provenance rules, manifest entry, expected outputs generated with `--update`, threshold choice with rationale), how to update expected outputs (label `fixture-update`, diff in PR, CHANGELOG line), how the nightly scorecard works, and the rule that a bug report about silent loss should become a fixture before it becomes a fix.
-- `DECISIONS.md`: append-only ADR log; Part 1 starts it; this part adds entries for the extension tooling choice, Turnstile versus ALTCHA default, Origin CA versus ACME, the unsponsored budget ceiling, and the Groq offload trigger.
-- `STATUS.md`: format in 4.17.8.
-- `ROADMAP.md`: content in 4.17.
+- `docs/internal/DECISIONS.md`: append-only ADR log; Part 1 starts it; this part adds entries for the extension tooling choice, Turnstile versus ALTCHA default, Origin CA versus ACME, the unsponsored budget ceiling, and the Groq offload trigger.
+- `docs/internal/STATUS.md`: format in 4.17.8.
+- `docs/internal/ROADMAP.md`: content in 4.17.
 
 ---
 
 ## D. Roadmap with phases and gates
 
-### 4.17 ROADMAP.md
+### 4.17 docs/internal/ROADMAP.md
 
-Write the following as `ROADMAP.md` at the repository root, verbatim in structure (the agent may add tasks but may not remove or reorder gates). Task IDs are `P<phase>-T<nn>`. Each task lists dependencies (`deps`), the acceptance criterion (`done when`), and where in the spec it is defined. Phase 0 is defined in Part 1 and repeated here only as IDs so later phases can depend on them.
+Write the following as `docs/internal/ROADMAP.md` at the repository root, verbatim in structure (the agent may add tasks but may not remove or reorder gates). Task IDs are `P<phase>-T<nn>`. Each task lists dependencies (`deps`), the acceptance criterion (`done when`), and where in the spec it is defined. Phase 0 is defined in Part 1 and repeated here only as IDs so later phases can depend on them.
 
 #### 4.17.1 Phase 0: Foundation (Part 1)
 
@@ -2347,7 +2347,7 @@ Goal: a repo that builds, tests, and ships nothing user-visible yet.
 
 | ID | Task | deps | done when |
 |---|---|---|---|
-| P0-T01 | Monorepo scaffold: `packages/core`, `packages/converters/*`, `packages/mcp`, `packages/sdk-ts`, `apps/*`, `deploy/`, `fixtures/`, `docs/`; uv workspace; pnpm workspace; root `CLAUDE.md`, `DECISIONS.md`, `ROADMAP.md`, `STATUS.md` | none | `uv sync --all-packages` and `pnpm install` succeed on Linux, macOS, Windows |
+| P0-T01 | Monorepo scaffold: `packages/core`, `packages/converters/*`, `packages/mcp`, `packages/sdk-ts`, `apps/*`, `deploy/`, `fixtures/`, `docs/`; uv workspace; pnpm workspace; root `.claude/CLAUDE.md`, `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md`, `docs/internal/STATUS.md` | none | `uv sync --all-packages` and `pnpm install` succeed on Linux, macOS, Windows |
 | P0-T02 | Core types: `Result`, `Warning`, `Provenance`, `Profile`, `Options`, `Progress`; frontmatter schema; sidecar schema; warning code registry with suggested actions | P0-T01 | schema round-trip tests pass; registry has at least the codes named in Parts 1 to 4 |
 | P0-T03 | Converter registry and MIME routing with Magika plus libmagic; engine tiers; subprocess runner with rlimits | P0-T02 | a stub converter routes by MIME in tests; subprocess limits verified |
 | P0-T04 | Profile renderers `full`, `compact`, `rag`, `agent` over the intermediate representation; chunker; token estimator | P0-T02 | property tests pass; `render` idempotence test passes |
@@ -2356,7 +2356,7 @@ Goal: a repo that builds, tests, and ships nothing user-visible yet.
 | P0-T07 | Fixture framework: manifest, runner, thresholds, provenance check; first 10 synthetic fixtures | P0-T04 | `ezmd fixtures run --tier fast` passes |
 | P0-T08 | SSRF guard and fetch client with IP pinning | P0-T02 | 4.14.5 item 1 fast tier passes |
 
-Gate G0: all P0 tasks done; CI green on all four OS targets; coverage at or above 80% on core; `STATUS.md` updated.
+Gate G0: all P0 tasks done; CI green on all four OS targets; coverage at or above 80% on core; `docs/internal/STATUS.md` updated.
 
 #### 4.17.2 Phase 1: Permissive core, CLI, library, MCP, UI v1, compose
 
@@ -2384,7 +2384,7 @@ Goal: `pip install ezmd` converts documents, web, code, email, data, and noteboo
 | P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | P1-T01 | runs on the fixture corpus and prints a table |
 | P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | P1-T01..T07 | provenance check passes; nightly scorecard produced |
 
-Gate G1: all P1 tasks done; `v0.1.0` released to PyPI, npm, GHCR; fixture pass rate 100% on `exact` fixtures and at or above 95% on threshold fixtures; integration and Playwright green; `uvx ezmd-mcp` works in Claude Desktop (manual check recorded in STATUS.md); docs site live; STATUS.md updated.
+Gate G1: all P1 tasks done; `v0.1.0` released to PyPI, npm, GHCR; fixture pass rate 100% on `exact` fixtures and at or above 95% on threshold fixtures; integration and Playwright green; `uvx ezmd-mcp` works in Claude Desktop (manual check recorded in docs/internal/STATUS.md); docs site live; docs/internal/STATUS.md updated.
 
 #### 4.17.3 Phase 2: Media (ASR, OCR, diarization, in-browser Whisper)
 
@@ -2406,7 +2406,7 @@ Goal: audio, video files, images, and screen recordings convert locally with spe
 | P2-T12 | Capacity measurement: `ezmd fixtures run --timings` on an 8-core runner; write `docs/ops/capacity.md` with measured seconds per page and realtime factors | P2-T08 | numbers in docs match the nightly timings within 25% |
 | P2-T13 | Load test script and thresholds; run against the compose stack in integration | P1-T15, P2-T08 | k6 thresholds pass on the CI runner at reduced rates |
 
-Gate G2: all P2 tasks done; `v0.2.0` released; media fixtures at or above 90% pass; `ezmd doctor` reports GPU correctly on a CUDA runner (or documented manual check); capacity doc written; STATUS.md updated.
+Gate G2: all P2 tasks done; `v0.2.0` released; media fixtures at or above 90% pass; `ezmd doctor` reports GPU correctly on a CUDA runner (or documented manual check); capacity doc written; docs/internal/STATUS.md updated.
 
 #### 4.17.4 Phase 3: Social, chat, URL fetch chains, fetch node, extension, share sheet
 
@@ -2423,12 +2423,12 @@ Goal: the inputs no competitor handles (chat exports, social threads) and the cl
 | P3-T07 | `apps/fetch-node` loop, `ezmd fetch-node run/token/doctor/ping`, `fetch-node` image (amd64 and arm64), `docker-compose.pi.yml`, Pi build script and firstrun, Tailscale policy file | P3-T06 | arm64 image runs on a Pi 4 (manual, recorded) and completes a caption job against a staging instance |
 | P3-T08 | Browser extension (4.6): plain URL path, YouTube captions and audio, generic video blob, MediaRecorder fallback, settings, Firefox build, privacy doc, store assets | P1-T12, P3-T06 | 4.6.4 criteria |
 | P3-T09 | PWA manifest with share target, service worker shell cache, `/share` handling, install hint (4.7.2) | P1-T13 | share-target Playwright test passes |
-| P3-T10 | iOS Shortcuts A and B, exported `.shortcut` files, docs with exact steps, `client: ios-shortcut` allowance in the API | P1-T10 | manual run on an iPhone recorded in STATUS.md; API allowance tests pass |
+| P3-T10 | iOS Shortcuts A and B, exported `.shortcut` files, docs with exact steps, `client: ios-shortcut` allowance in the API | P1-T10 | manual run on an iPhone recorded in docs/internal/STATUS.md; API allowance tests pass |
 | P3-T11 | Notes-app converters: Evernote ENEX, Notion export zip, Google Keep Takeout, Apple Notes via ENEX | G2 | fixtures exact-match |
 | P3-T12 | Specialized converters: ICS, HL7 v2, MusicXML, fonts via fontTools, 3D mesh metadata, USPTO and JATS via Docling, Google Workspace via Drive export (user token) | G2 | fixtures pass; each marked Beta in the matrix |
 | P3-T13 | Warnings and suggestions for every fetch failure mode wired into UI, CLI, MCP, SDK errors | P3-T03 | the warning coverage test (4.1.3) still passes with new codes |
 
-Gate G3: all P3 tasks done; `v0.3.0` released; extension passes `web-ext lint` and Chrome validation and is submitted to both stores (approval pending is acceptable); a fetch node completed a real captions job against staging from the Pi with the VPS making no platform request (verified from Squid logs); STATUS.md updated.
+Gate G3: all P3 tasks done; `v0.3.0` released; extension passes `web-ext lint` and Chrome validation and is submitted to both stores (approval pending is acceptable); a fetch node completed a real captions job against staging from the Pi with the VPS making no platform request (verified from Squid logs); docs/internal/STATUS.md updated.
 
 #### 4.17.5 Phase 4: Public instance launch
 
@@ -2441,7 +2441,7 @@ Goal: the free instance is live, protected, lawful, observable, and cheap.
 | P4-T03 | Abuse controls complete (4.11): per-IP daily budgets, sub-queues, blocklist hot reload, admin commands `top`, `block`, `keys`, `jobs kill`, `reap`, `report`, `support-bundle` | P4-T02 | security tests item 5 pass; admin command tests pass |
 | P4-T04 | Monitoring stack: metrics, compose monitoring overlay, Grafana dashboard JSON, alert rules, Discord and email receivers, weekly digest timer | P2-T12 | alerts fire in a test by injecting metrics; dashboard imports cleanly |
 | P4-T05 | Log redaction verified end to end; job table retention; privacy page matches behavior (test reads the page and asserts the stated fields are the only ones logged) | P4-T03 | redaction tests pass |
-| P4-T06 | Legal pages in the web app with `.env` substitution; DMCA mailbox config; takedown doc; platform stance doc | P1-T13 | pages render; links in footer; owner sign-off recorded in DECISIONS.md |
+| P4-T06 | Legal pages in the web app with `.env` substitution; DMCA mailbox config; takedown doc; platform stance doc | P1-T13 | pages render; links in footer; owner sign-off recorded in docs/internal/DECISIONS.md |
 | P4-T07 | Runbook (4.10) complete with Hetzner, Cloudflare (rules as copyable expressions), Tailscale policy, Pi first boot, monitoring, cost, sponsor pack generator | P4-T04 | a second person can follow it on a fresh account (owner dry run recorded) |
 | P4-T08 | Staging instance on a small Hetzner box using the full public overlay; k6 load run at target rates; 72-hour soak with synthetic traffic | P4-T01..T05 | thresholds pass; no alert false positives during soak; memory stable |
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | P4-T08 | report in `docs/ops/redteam-<date>.md`; no open high findings |
@@ -2449,7 +2449,7 @@ Goal: the free instance is live, protected, lawful, observable, and cheap.
 | P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run benchmark story, Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | P4-T10 | drafts in `docs/launch/` reviewed by the owner |
 | P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | P4-T04 | `ezmd admin report --sponsor-pack` produces the document |
 
-Launch checklist (every line must be checked and dated in STATUS.md before DNS cutover):
+Launch checklist (every line must be checked and dated in docs/internal/STATUS.md before DNS cutover):
 
 1. `audit-host.sh` passes on the production box.
 2. Every container non-root, read-only, caps dropped, seccomp on workers (`docker inspect` check).
@@ -2467,10 +2467,10 @@ Launch checklist (every line must be checked and dated in STATUS.md before DNS c
 14. `EZMD_SPONSOR_NAME` set or the "Support" link present; nothing gated.
 15. Cloudflare: proxied records only, Full strict TLS, WAF rules, rate rule, cache rules, Rocket Loader off.
 16. Hetzner firewall: 80/443 from Cloudflare ranges only; 22 closed or Tailscale-only.
-17. Budget ceiling and downgrade plan written in DECISIONS.md.
+17. Budget ceiling and downgrade plan written in docs/internal/DECISIONS.md.
 18. CHANGELOG has the release entry; `v1.0.0` tagged after one week of stable operation.
 
-Gate G4: launch checklist complete; 7 days of operation with no critical alert; `v1.0.0` released; STATUS.md updated.
+Gate G4: launch checklist complete; 7 days of operation with no critical alert; `v1.0.0` released; docs/internal/STATUS.md updated.
 
 #### 4.17.6 Phase 5: Persona verticals and integrations
 
@@ -2486,7 +2486,7 @@ Goal: the features that make specific professions choose ezmd. Each is independe
 | P5-T06 | Raycast extension and Alfred workflow | G4 | published |
 | P5-T07 | GitHub Action `ezmd-action` | G4 | marketplace listing live; used by this repo's docs build |
 | P5-T08 | n8n and Zapier templates | G4 | templates in docs; one n8n template verified |
-| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in DECISIONS.md; code signing deferred until funded | G4 | binaries attached to the release; smoke test on each OS |
+| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in docs/internal/DECISIONS.md; code signing deferred until funded | G4 | binaries attached to the release; smoke test on each OS |
 | P5-T10 | Channel and playlist batch for marketers via the extension (queue every video on a channel page) and the CLI with the fetch extra | P3-T08 | extension batch test passes |
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | P3-T08 | decision recorded |
 
@@ -2496,7 +2496,7 @@ Gate G5: not a hard gate; each task releases in a minor version with its own fix
 
 The project is done for the purposes of the autonomous build when all of the following hold:
 
-1. Gates G0 through G4 passed and are recorded with dates in STATUS.md.
+1. Gates G0 through G4 passed and are recorded with dates in docs/internal/STATUS.md.
 2. `v1.0.0` is on PyPI (`ezmd`, `ezmd-mcp`), npm (`@ezmd/sdk`), GHCR (five image targets, signed, with SBOMs), the MCP Registry, and GitHub Releases with extension zips.
 3. The public instance is live behind Cloudflare, with the Pi fetch node connected, monitoring and alerting active, backups verified, and legal pages published.
 4. The fixture corpus has at least 150 fixtures with provenance; the nightly scorecard shows 100% on exact fixtures and at or above 95% on threshold fixtures; no fixture triggers silent loss (every known loss has a warning code).
@@ -2505,9 +2505,9 @@ The project is done for the purposes of the autonomous build when all of the fol
 7. Documentation covers every interface, every env var, every warning code, and every runbook step; every command in the README runs as written.
 8. The final completion report (4.17.9) is written.
 
-#### 4.17.8 STATUS.md protocol
+#### 4.17.8 docs/internal/STATUS.md protocol
 
-The agent updates `STATUS.md` after every task, before starting the next. Format:
+The agent updates `docs/internal/STATUS.md` after every task, before starting the next. Format:
 
 ```markdown
 # Status
@@ -2542,15 +2542,15 @@ exact: 61/61, threshold: 52/54 (96.3%), media: 12/13, ocr: 7/9
 - Old scans under 150 dpi produce `ocr_confidence_low` on most pages
 ```
 
-Rules: one commit per task that touches STATUS.md with message `status: P2-T05 done`; never mark a task done with failing tests; if blocked, write the blocker and move to the next unblocked task in the same phase; never skip a gate; if a gate cannot pass, write why under Blockers and stop for the human.
+Rules: one commit per task that touches docs/internal/STATUS.md with message `status: P2-T05 done`; never mark a task done with failing tests; if blocked, write the blocker and move to the next unblocked task in the same phase; never skip a gate; if a gate cannot pass, write why under Blockers and stop for the human.
 
 #### 4.17.9 Final completion report
 
-When G4 passes (or when the agent must stop because a gate cannot pass), write `docs/reports/completion-<date>.md` and link it from STATUS.md, with these sections:
+When G4 passes (or when the agent must stop because a gate cannot pass), write `docs/reports/completion-<date>.md` and link it from docs/internal/STATUS.md, with these sections:
 
 1. What shipped: versions, packages, images, interfaces, with links.
 2. Fixture scores: the latest scorecard table by family, with the ten lowest-scoring fixtures and why.
-3. Known limitations: the running list from STATUS.md, grouped by family, each with the warning code users will see and the planned fix or "no fix planned".
+3. Known limitations: the running list from docs/internal/STATUS.md, grouped by family, each with the warning code users will see and the planned fix or "no fix planned".
 4. Security: red-team summary, open exceptions with expiry, threat model deltas.
 5. Public instance: capacity measured, limits in force, current sponsor status, 30-day traffic if available.
 6. Cost estimate: monthly server, Cloudflare, domain, Groq at observed volume, Pi power; projected at 10x traffic; the budget ceiling and the downgrade plan.
@@ -2559,7 +2559,7 @@ When G4 passes (or when the agent must stop because a gate cannot pass), write `
 
 ### 4.18 Risk register
 
-Each risk has an owner (agent or human), a mitigation built into the plan, and an escalation trigger: the condition under which the agent stops acting on its own and writes the issue to STATUS.md under "Blockers and human decisions needed" for the human.
+Each risk has an owner (agent or human), a mitigation built into the plan, and an escalation trigger: the condition under which the agent stops acting on its own and writes the issue to docs/internal/STATUS.md under "Blockers and human decisions needed" for the human.
 
 | # | Risk | Likelihood | Impact | Mitigation | Escalation trigger |
 |---|---|---|---|---|---|
@@ -2576,4 +2576,4 @@ Each risk has an owner (agent or human), a mitigation built into the plan, and a
 | 11 | Scope creep (60-plus input types, five interfaces, verticals) | High | Medium | Phases with hard gates; Phase 5 is demand-ranked by the weekly digest; converter matrix marks Experimental honestly; "stub plus warning" is an acceptable v1 for long-tail types; the agent must not start a Phase N+1 task before gate N | The agent finds itself more than 30% over the phase's task count or a gate is 2 weeks late |
 | 12 | Maintainer burnout (one owner, free public instance, platform churn, support load) | High over 12 months | High | Automation: Renovate auto-merge, nightly canaries, alerts only for actionable conditions, weekly digest instead of dashboards, documented runbook so a second maintainer can step in, budget ceiling and downgrade plan so the box can shrink without shame, "Support" link and sponsor applications, issue templates that route platform-blocking complaints to the FAQ | The weekly digest shows more than 5 hours of operator time in a week for 3 weeks, or the owner says so |
 
-Every escalation trigger that fires during the autonomous build is written to STATUS.md immediately, with the risk number, what was observed, what the agent did within its authority, and the decision needed. The agent continues with unblocked work in the same phase; it does not pass a gate while a trigger is open.
+Every escalation trigger that fires during the autonomous build is written to docs/internal/STATUS.md immediately, with the risk number, what was observed, what the agent did within its authority, and the decision needed. The agent continues with unblocked work in the same phase; it does not pass a gate while a trigger is open.

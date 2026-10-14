@@ -1,5 +1,5 @@
 """Read document-level facts from an open pikepdf.Pdf: Info/XMP metadata, outline, structure-tree headings,
-URI links, and AcroForm fields (docs/spec/part2.md 1c steps 2, 5, 9). Every walk is bounded."""
+URI links, and AcroForm fields (docs/internal/spec/part2.md 1c steps 2, 5, 9). Every walk is bounded."""
 
 from __future__ import annotations
 

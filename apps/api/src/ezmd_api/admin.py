@@ -1,4 +1,4 @@
-"""ezmd_api.admin: the host-only `ezmd-admin` CLI (docs/spec/part1.md 7.4, docs/spec/part4.md 4.11.6).
+"""ezmd_api.admin: the host-only `ezmd-admin` CLI (docs/internal/spec/part1.md 7.4, docs/internal/spec/part4.md 4.11.6).
 
 There are no admin HTTP endpoints. Run these on the host (or `docker compose exec api ezmd-admin ...`);
 they read the same EZMD_* environment as the API.
@@ -371,19 +371,20 @@ def reap(
     now: Annotated[bool, typer.Option("--now", help="Fail stale jobs at their wall time, without the grace")] = False,
     temp_age_s: Annotated[int | None, typer.Option(min=60, help="Remove temp dirs older than this")] = None,
 ) -> None:
-    """One reaper pass: residential claims, stale jobs, expired jobs and blobs, orphaned temp dirs."""
-    from ezmd_api.purge import clean_temp, purge_expired, reap_residential, reap_stale
+    """One reaper pass: residential claims, jobs RQ lost, stale jobs, expired jobs and blobs, orphaned temp dirs."""
+    from ezmd_api.purge import clean_temp, purge_expired, reap_residential, reap_stale, reconcile_queue
 
     services = _services()
     try:
         claims = reap_residential(services)
+        lost = reconcile_queue(services)
         stale = reap_stale(services, now_grace=now)
         purged = purge_expired(services)
         age = temp_age_s if temp_age_s is not None else services.settings.job_timeout_s + 600
         temp = clean_temp(age)
     finally:
         services.close()
-    typer.echo(f"claims={claims} stale={stale} purged={purged} temp_dirs={temp}")
+    typer.echo(f"claims={claims} lost={lost} stale={stale} purged={purged} temp_dirs={temp}")
 
 
 def main() -> None:  # pragma: no cover - console entry

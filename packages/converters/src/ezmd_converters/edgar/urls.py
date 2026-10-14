@@ -1,4 +1,4 @@
-"""EDGAR input recognition (docs/spec/part2.md 12a): Archives filing and index URLs, the inline XBRL viewer,
+"""EDGAR input recognition (docs/internal/spec/part2.md 12a): Archives filing and index URLs, the inline XBRL viewer,
 `browse-edgar` company pages, full-text search, and bare accession numbers.
 
 Pure string work, no I/O, so `can_handle` stays cheap.

@@ -1,5 +1,5 @@
 """POST /v1/convert: create a job from a multipart upload or a JSON URL request
-(docs/spec/part1.md sections 7.1, 7.3, 8.2)."""
+(docs/internal/spec/part1.md sections 7.1, 7.3, 8.2)."""
 
 from __future__ import annotations
 
@@ -22,7 +22,14 @@ from ezmd_api.errors import ApiError, error_response
 from ezmd_api.fetching import input_key, route_residential
 from ezmd_api.fetchpolicy import DISABLED, policy_state, wants_residential
 from ezmd_api.jobs import DONE, FAILED, NEEDS_USER_ACTION, QUEUED
-from ezmd_api.ratelimit import admit_job, limit_job_creation
+from ezmd_api.ratelimit import (
+    REFUNDED_CODES,
+    admit_job,
+    limit_job_creation,
+    refund_hits,
+    release_upload_slot,
+    take_upload_slot,
+)
 from ezmd_api.rendering import FORMATS, RenderUnavailable, render_cached
 from ezmd_api.routes.common import (
     enqueue_or_fail,
@@ -93,6 +100,8 @@ _CREATE_RESPONSES: dict[int | str, dict[str, Any]] = {
         "forbidden",
         "input_too_large",
         "unsupported_media_type",
+        "extra_required",
+        "sandbox_unavailable",
         "url_blocked",
         "platform_disabled",
         "rate_limited",
@@ -100,6 +109,7 @@ _CREATE_RESPONSES: dict[int | str, dict[str, Any]] = {
         "not_implemented",
         "fetch_failed",
         "queue_unavailable",
+        "turnstile_unavailable",
         "timeout",
     ),
 }
@@ -115,8 +125,9 @@ def _idempotency(request: Request, caller: Caller, services: Services) -> str | 
 
 
 def _dedup_scope_ip(caller: Caller, services: Services) -> str | None:
-    """Public mode never dedups anonymous requests across different client IP hashes."""
-    if caller.api_key is None and services.settings.public_mode:
+    """Anonymous dedup never crosses client IP hashes, public mode or not: the job id is the capability, so
+    handing one caller another's job id would hand over the job (D-0061). Keyed dedup is scoped by key."""
+    if caller.api_key is None:
         return caller.ip_hash
     return None
 
@@ -243,16 +254,35 @@ async def create_job(
 ) -> Response:
     services = services_of(request)
     _check_format(format)
-    limit_job_creation(request, caller)
-    ctype = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
-    if ctype == "multipart/form-data":
-        return await _create_from_upload(request, services, caller, wait, format)
-    if ctype == "application/json":
-        return await _create_from_url(request, services, caller, wait, format)
-    raise ApiError("invalid_request", "Send multipart/form-data with a `file` part, or JSON with a `url`.")
+    try:
+        limit_job_creation(request, caller)
+        ctype = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
+        if ctype == "multipart/form-data":
+            return await _create_from_upload(request, services, caller, wait, format)
+        if ctype == "application/json":
+            return await _create_from_url(request, services, caller, wait, format)
+        raise ApiError("invalid_request", "Send multipart/form-data with a `file` part, or JSON with a `url`.")
+    except ApiError as e:
+        if e.code in REFUNDED_CODES:
+            refund_hits(request)
+        raise
 
 
 async def _create_from_upload(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:
+    admit_job(request, caller)  # refuse before reading a body that could not become a job
+    slot = take_upload_slot(request, caller)
+    try:
+        row, deduplicated = await _store_upload(request, services, caller)
+    finally:
+        release_upload_slot(request, slot)
+    if not deduplicated:
+        enqueue_or_fail(services, row.id, row.queue)
+    return await _respond(request, services, row, deduplicated=deduplicated, wait=wait, fmt=fmt, profile=row.profile)
+
+
+async def _store_upload(request: Request, services: Services, caller: Caller) -> tuple[JobRow, bool]:
+    """Parse, detect, dedup, admit and store one upload: (existing job, True) or (new row with its input
+    stored, False)."""
     form = await parse_multipart(request, max_file_bytes=max_upload_for(caller, services))
     try:
         upload = form.files.get("file")
@@ -266,10 +296,8 @@ async def _create_from_upload(request: Request, services: Services, caller: Call
         idem = _idempotency(request, caller, services)
         existing = _find_existing(services, caller, upload.sha256, options_json, profile, idem)
         if existing is not None:
-            return await _respond(request, services, existing, deduplicated=True, wait=wait, fmt=fmt, profile=profile)
-        admit_job(request, caller)
+            return existing, True
         job_id = new_job_id()
-        services.blobs.put_file(input_key(job_id), upload.path)
         queue = q.queue_for_mime(mime)
         row = _new_row(
             caller,
@@ -287,22 +315,39 @@ async def _create_from_upload(request: Request, services: Services, caller: Call
             queue=queue,
             blob_input=input_key(job_id),
         )
+        _create_admitted(request, services, caller, row)
+        try:
+            services.blobs.put_file(input_key(job_id), upload.path)
+        except BaseException:
+            services.jobs.delete(job_id)
+            services.blobs.delete_prefix(f"jobs/{job_id}/")
+            raise
+        return row, False
     finally:
         form.cleanup()
+
+
+def _create_admitted(request: Request, services: Services, caller: Caller, row: JobRow) -> None:
+    """Insert the row, then re-run admission with it counted; remove it again when that refuses (D-0062)."""
     services.jobs.create(row)
-    enqueue_or_fail(services, job_id, queue)
-    return await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    try:
+        admit_job(request, caller, created=True)
+    except ApiError:
+        services.jobs.delete(row.id)
+        raise
 
 
 def _detect_upload(upload: UploadedFile) -> str:
-    from ezmd.detect import detect, is_executable
-    from ezmd.inputs import InputRef
+    """Detect an upload that parse_multipart already held to the caller's cap; 415 when nothing can convert it."""
+    from ezmd.inputs import InputTooLarge
+    from ezmd_api.detection import Unsupported, detect_supported
 
-    ref = InputRef(kind="bytes", display=upload.filename, local_path=upload.path, declared_mime=upload.content_type)
-    mime = detect(ref).mime
-    if is_executable(mime):
-        raise ApiError("unsupported_media_type", "Executable files are not accepted.", detail={"mime": mime})
-    return mime
+    try:
+        return detect_supported(upload.path, display=upload.filename, declared_mime=upload.content_type)
+    except InputTooLarge:
+        raise ApiError("input_too_large", "The upload is too large.", detail={"received_bytes": upload.size}) from None
+    except Unsupported as e:
+        raise ApiError("unsupported_media_type", e.message, detail={"mime": e.mime, "reason": e.reason}) from None
 
 
 async def _create_from_url(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:
@@ -359,13 +404,17 @@ async def _create_from_url(request: Request, services: Services, caller: Caller,
         options_json=options_json,
         queue=queue,
     )
-    services.jobs.create(row)
+    _create_admitted(request, services, caller, row)
     if queue == q.FETCH_RESIDENTIAL:
         route_residential(services, row.id)
         row = services.jobs.require(row.id)
     else:
         enqueue_or_fail(services, row.id, queue)
-    response = await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    try:
+        response = await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    except ApiError as e:
+        # The job exists and the challenge was solved: the error response still carries the fresh cookie.
+        response = error_response(request, e)
     if challenge_jwt:
         response.set_cookie(
             CHALLENGE_COOKIE,

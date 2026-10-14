@@ -1,6 +1,6 @@
 # Code converters
 
-Family `code` (docs/spec/part2.md section 8). Phase 1 ships two converters; PRs, issues, diffs, OpenAPI,
+Family `code` (docs/internal/spec/part2.md section 8). Phase 1 ships two converters; PRs, issues, diffs, OpenAPI,
 Postman, SQL schemas, config files, logs, and stack traces are later Phase 1 tasks.
 
 | Converter | Inputs | Status |
@@ -32,7 +32,7 @@ binaries (by extension or NUL bytes; UTF-16 with a BOM is text), files over `max
 `*.min.css`, `*.map`. Lockfiles are kept but cut to 50 lines. A file with any line over 2,000 characters is
 treated as minified and only its first 2,000 characters are kept.
 
-Archive safety (docs/spec/part1.md 8.2): members are read into memory, never extracted; at most 10,000 entries;
+Archive safety (docs/internal/spec/part1.md 8.2): members are read into memory, never extracted; at most 10,000 entries;
 total uncompressed size `EZMD_ARCHIVE_MAX_BYTES` (500 MB); a zip entry or a gzip stream expanding more than
 100:1 aborts the conversion; symlinks, hard links, devices, absolute paths, drive letters, and `..` components
 are skipped; encrypted zip entries are skipped; nested archives are treated as binary and never opened.

@@ -1,4 +1,4 @@
-# GPU override (docs/spec/part4.md 4.9.3). Phase 2 fills in the worker-media image and queues.
+# GPU override (docs/internal/spec/part4.md 4.9.3). Phase 2 fills in the worker-media image and queues.
 # Usage: docker compose -f docker-compose.yml -f docker-compose.gpu.yml --profile media up -d
 # Requires the NVIDIA Container Toolkit on the host. Without `--profile media` nothing changes.
 services:

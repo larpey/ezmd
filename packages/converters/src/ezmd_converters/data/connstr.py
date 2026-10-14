@@ -1,4 +1,4 @@
-"""data.connection_string: database connection strings are refused (docs/spec/part2.md 10c step 14).
+"""data.connection_string: database connection strings are refused (docs/internal/spec/part2.md 10c step 14).
 
 Matches URL inputs with a database scheme (`postgres://`, `mysql://`, `mongodb+srv://`, `jdbc:...`, ...) and
 tiny text bodies that consist of one connection string (including ADO.NET `Server=...;Database=...`). The

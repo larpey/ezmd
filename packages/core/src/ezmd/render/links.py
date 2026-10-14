@@ -1,4 +1,4 @@
-"""ezmd.render.links: link normalization (docs/spec/part3.md section 14, "Links").
+"""ezmd.render.links: link normalization (docs/internal/spec/part3.md section 14, "Links").
 
 URLs are resolved against the source URL, tracking parameters are stripped, `mailto:` links become text,
 and anchor-only links are rewritten to derived heading anchors when the target can be identified.
@@ -27,13 +27,36 @@ def strip_tracking(url: str) -> str:
     return urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
 
 
+_URL_JUNK = re.compile(r"[\x00-\x20\x7f]")
+"""Whitespace and control characters, which browsers drop inside a URL (`java<TAB>script:` is `javascript:`)."""
+_SCHEME = re.compile(r"^([a-z][a-z0-9+.-]*):", re.I)
+EMITTED_SCHEMES = frozenset({"http", "https"})
+"""Schemes the renderer emits as links. Everything else (javascript, vbscript, data, file, ...) is plain
+text; relative links and fragments carry no scheme. An allowlist, not a denylist (D-0059)."""
+LINK_SCHEMES = EMITTED_SCHEMES | {"mailto", "tel"}
+"""Schemes a converter may keep on a span; the renderer still shows mailto/tel as plain text."""
+
+
+def link_scheme(href: str) -> str | None:
+    """The scheme a browser would see in `href` (lowercase), after dropping whitespace and control
+    characters; None for a relative link or a fragment."""
+    m = _SCHEME.match(_URL_JUNK.sub("", href))
+    return m.group(1).lower() if m else None
+
+
+def safe_link(href: str) -> bool:
+    """True when `href` is relative, a fragment, or uses one of `LINK_SCHEMES`."""
+    scheme = link_scheme(href)
+    return scheme is None or scheme in LINK_SCHEMES
+
+
 def clean_url(href: str, base: str | None, resolve_anchor: Callable[[str], str | None]) -> str | None:
     """Return the URL to emit, or None when the link must be rendered as plain text."""
     href = href.strip()
     if not href:
         return None
-    lowered = href.lower()
-    if lowered.startswith(("mailto:", "javascript:", "data:", "tel:")):
+    scheme = link_scheme(href)
+    if scheme is not None and scheme not in EMITTED_SCHEMES:
         return None
     if href.startswith("#"):
         anchor = resolve_anchor(href[1:])

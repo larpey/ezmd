@@ -160,9 +160,12 @@ def extract(root: HtmlElement, url: str | None, base: str | None) -> PageMeta:
     title_el = root.find(".//title")
     title_tag = _clean(title_el.text_content()) if title_el is not None else None
     traf = _trafilatura_meta(root, url)
+    h1 = _h1(root)
+    site = _first(metas.get("og:site_name"))
+    social = [_strip_site(t, h1, site) for t in (_clean(metas.get("og:title")), _clean(metas.get("twitter:title")))]
     pm.title = _first(
-        article.get("headline"), metas.get("citation_title"), metas.get("og:title"), metas.get("twitter:title"),
-        _page_title(title_tag, _h1(root), traf.get("title")),
+        _jsonld_title(article, [*social, title_tag, h1]), metas.get("citation_title"), *social,
+        _page_title(title_tag, h1, traf.get("title")),
     )  # fmt: skip
     authors = _names(article.get("author")) if article.get("author") else []
     if not authors:
@@ -218,6 +221,37 @@ def extract(root: HtmlElement, url: str | None, base: str | None) -> PageMeta:
     if nxt is not None and (nxt.get("href") or "").strip():
         pm.next_page = absolute(str(nxt.get("href")), base)
     return pm
+
+
+_SITE_SEP = re.compile(r"\s+[-|\u2013\u2014\u00b7:]{1,2}\s+")
+
+
+def _jsonld_title(article: dict[str, Any], others: list[str | None]) -> str | None:
+    """JSON-LD `headline` first (docs/internal/spec/part2.md 5b item 6), but only when it agrees with another title
+    signal on the page or there is none: Wikipedia's `headline` is the article's short description
+    ("German-born theoretical physicist") while og:title, <title>, h1 and JSON-LD `name` give the title."""
+    known = [o.casefold() for o in others if o]
+    for value in (article.get("headline"), article.get("name")):
+        cand = _clean(value)
+        if cand and (not known or any(cand.casefold() in o or o in cand.casefold() for o in known)):
+            return cand
+    return None
+
+
+def _strip_site(title: str | None, h1: str | None, site: str | None) -> str | None:
+    """og:title / twitter:title without a trailing site name ("Albert Einstein - Wikipedia"): cut at the last
+    separator when what follows is the og:site_name, or when what precedes it is the page's h1."""
+    if not title:
+        return title
+    seps = list(_SITE_SEP.finditer(title))
+    if not seps:
+        return title
+    head, tail = title[: seps[-1].start()], title[seps[-1].end() :]
+    if site and tail.casefold() == site.casefold():
+        return head
+    if h1 and head.casefold() == h1.casefold():
+        return head
+    return title
 
 
 def _page_title(title_tag: str | None, h1: str | None, traf: str | None) -> str | None:

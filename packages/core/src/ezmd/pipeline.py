@@ -1,7 +1,7 @@
 """ezmd.pipeline: the one conversion path every interface uses (detect -> validate -> route -> convert).
 
 The CLI, the API worker, the MCP server, and the library all call `convert_ref`; none of them may
-contain conversion logic of their own (docs/spec/part4.md section 4.0 rule 1).
+contain conversion logic of their own (docs/internal/spec/part4.md section 4.0 rule 1).
 """
 
 from __future__ import annotations
@@ -9,7 +9,7 @@ from __future__ import annotations
 from ezmd.detect import EMPTY_MIME, detect, is_executable, is_textual, normalize_mime, same_family
 from ezmd.inputs import InputRef
 from ezmd.ir import ConversionResult, Warning, WarningKind
-from ezmd.registry import ConversionError, ConverterRegistry, ConvertOptions, default_registry
+from ezmd.registry import UNSUPPORTED_MEDIA_TYPE, ConversionError, ConverterRegistry, ConvertOptions, default_registry
 
 
 class UnsupportedMediaType(ConversionError):
@@ -20,6 +20,7 @@ class UnsupportedMediaType(ConversionError):
             f"refusing executable input ({mime})",
             user_message="Executable files are not accepted.",
             retryable_with_fallback=False,
+            code=UNSUPPORTED_MEDIA_TYPE,
         )
         self.mime = mime
 

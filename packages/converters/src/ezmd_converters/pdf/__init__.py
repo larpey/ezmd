@@ -1,5 +1,5 @@
 """PDF converters (family "documents"): Docling layout engine (`docs` extra) and the default pypdfium2
-text-layer engine. Every input is sanitized with pikepdf first (docs/spec/part1.md 8.2)."""
+text-layer engine. Every input is sanitized with pikepdf first (docs/internal/spec/part1.md 8.2)."""
 
 from __future__ import annotations
 

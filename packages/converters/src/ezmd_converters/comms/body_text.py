@@ -1,4 +1,4 @@
-"""Plain-text email bodies to IR blocks (docs/spec/part2.md 9c steps 2 and 3).
+"""Plain-text email bodies to IR blocks (docs/internal/spec/part2.md 9c steps 2 and 3).
 
 format=flowed is unwrapped (RFC 3676), hard-wrapped lines join into paragraphs, `>` runs become Quote blocks
 with their depth, an `On ... wrote:` / Outlook header line marks the quotes after it as reply history, and the

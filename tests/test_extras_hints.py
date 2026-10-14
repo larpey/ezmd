@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HINT = re.compile(r"ezmd\[([a-z0-9_,-]+)\]")
 
-# Extras the spec names (docs/spec/part4.md 4.3.3) that later phases add. A hint for one of these is allowed
+# Extras the spec names (docs/internal/spec/part4.md 4.3.3) that later phases add. A hint for one of these is allowed
 # until its phase lands; remove the entry when the extra is declared.
 PENDING = {
     "server": "needs ezmd-api published (Phase 1 release, owner gate)",

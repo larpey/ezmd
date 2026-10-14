@@ -1,4 +1,4 @@
-"""Independent leak check over the committed code goldens (docs/spec/part2.md 8e item 1): every planted fake
+"""Independent leak check over the committed code goldens (docs/internal/spec/part2.md 8e item 1): every planted fake
 secret from fixtures/code/_generate.py must be absent from expected outputs, and the redaction markers present."""
 
 from __future__ import annotations

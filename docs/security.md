@@ -4,7 +4,7 @@ ezmd treats every input as hostile. The public instance and self-hosted instance
 defaults; self-hosters may loosen limits through environment variables, never the sandbox. To report
 a vulnerability, follow `SECURITY.md` in the repository root.
 
-This page adapts [Part 1, section 8](spec/part1.md#8-security-baseline) of the specification for
+This page adapts [Part 1, section 8](https://github.com/larpey/ezmd/blob/main/docs/internal/spec/part1.md#8-security-baseline) of the specification for
 operators and users. Items marked Planned are specified but not built yet.
 
 ## Sandboxed workers
@@ -89,7 +89,7 @@ is on a trusted network.
 | Denial of service through slow or huge inputs | Instance availability | Long audio, huge PDFs, slow uploads, held SSE connections | Byte, page, and duration caps; per-IP and global concurrency caps; streaming upload limits; SSE keepalive and connection caps | Distributed abuse beyond the challenge; tighten caps |
 | SSRF to internal services or cloud metadata | Host, Redis, private network | URL input, redirects, DNS rebinding | netguard with resolve-once pinning, scheme allowlist, private and CGNAT range block, re-checked redirects; converters run without network | A new private range or IPv6 transition trick; the block list is tested |
 | Forged fetch node | Job content, residential egress | Stolen secret, spoofed claim | Shared secret plus source CIDR check; per-job claim tokens; upload bound to the claim | A leaked secret on the node; rotate it |
-| Job result disclosure | User documents | Job id guessing, log leakage, shared cache | 128-bit job ids; no enumeration; key-bound access for keyed jobs; no cross-client dedup in public mode; content never logged; retention purge | Users sharing result links |
+| Job result disclosure | User documents | Job id guessing, log leakage, shared cache | 128-bit job ids; no enumeration; key-bound access for keyed jobs; no dedup across API keys or anonymous client IPs; content never logged; retention purge | Users sharing result links |
 | Prompt injection through converted content | Downstream agents | Hidden text, HTML comments, bidi tricks, instructions in documents | Hidden character removal with counts; injection scanner; fence in the `agent` profile; text never altered | The scanner misses novel patterns; risk level is advisory |
 | Supply chain | Everything | Compromised dependency, model weights, base image | Lockfiles; `pip-audit` and `pnpm audit`; license allowlist as inventory; pinned weights and base images (Planned with media) | Upstream compromise within a pinned version |
 | Abuse of the public instance | Operator liability | Fetching platform-blocked or infringing content | Platform policy file; text out only; 24 h retention | Complaints still arrive; services can be disabled |

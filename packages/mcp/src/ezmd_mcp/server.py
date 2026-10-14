@@ -1,4 +1,4 @@
-"""ezmd_mcp.server: the MCP tools, resources and prompt (docs/spec/part4.md section 4.4.2).
+"""ezmd_mcp.server: the MCP tools, resources and prompt (docs/internal/spec/part4.md section 4.4.2).
 
 Tools: convert_url, convert_file, convert_text, get_job, list_capabilities. (`search_result` is Phase 2,
 task P2-T11, and is not registered.) Every tool returns a structured object plus a text block. Partial

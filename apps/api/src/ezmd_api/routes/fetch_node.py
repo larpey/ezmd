@@ -1,4 +1,4 @@
-"""Fetch-node routes: claim, heartbeat, upload, fail (docs/spec/part1.md 7.2-7.4).
+"""Fetch-node routes: claim, heartbeat, upload, fail (docs/internal/spec/part1.md 7.2-7.4).
 
 Mounted only when EZMD_FETCH_NODE_SECRET is set. Every route requires the bearer secret AND a
 source address inside EZMD_FETCH_NODE_CIDR. Claims are bound to a per-job claim token (stored

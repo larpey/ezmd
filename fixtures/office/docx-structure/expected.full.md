@@ -18,8 +18,8 @@ tokens: {o200k_base: 481, cl100k_base: 488, claude_approx: 519}
 content_hash: "sha256:69b90ee91fd6f791d8f20dec28fcb819150212e7b380e5ec64cfc2d4a100ec13"
 source_hash: "sha256:4ae6a392864462c71f31659c89da4578da666ca5b74e8500fa97582806df3ec7"
 truncated: false
-warnings: [removed_hidden_elements, textbox_content_relocated, heading_inferred_from_formatting]
-injection_risk: none
+warnings: [removed_hidden_elements, textbox_content_relocated, heading_inferred_from_formatting, injection_suspected]
+injection_risk: high
 extra: {revision: "3"}
 ---
 > Sections: 1 Introduction, 2 Habitats. 1 table.

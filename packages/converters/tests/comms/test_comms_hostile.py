@@ -1,4 +1,4 @@
-"""Hostile inputs (docs/spec/part1.md 8.2): huge headers, deep MIME nesting, part floods, deadlines."""
+"""Hostile inputs (docs/internal/spec/part1.md 8.2): huge headers, deep MIME nesting, part floods, deadlines."""
 
 from __future__ import annotations
 

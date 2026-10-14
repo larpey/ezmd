@@ -1,4 +1,4 @@
-"""Email option parsing (docs/spec/part2.md 9h). Options arrive as `options.extra["comms.<name>"]`."""
+"""Email option parsing (docs/internal/spec/part2.md 9h). Options arrive as `options.extra["comms.<name>"]`."""
 
 from __future__ import annotations
 

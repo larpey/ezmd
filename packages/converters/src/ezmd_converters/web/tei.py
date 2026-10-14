@@ -124,6 +124,27 @@ class DomIndex:
                     best = el
         return best
 
+    def find_table(self, node: Any, after: int) -> HtmlElement | None:
+        """The DOM table for an XML table whose text no longer matches: Trafilatura drops cells it cannot
+        read (a list inside a div, an inline-block div), so the table's text is neither equal to nor inside
+        the DOM table's. The first unused DOM table at or after `after` that contains at least
+        TABLE_CELL_MATCH of the XML table's non-empty cell texts (and at least 4 of them) is it."""
+        cells = [match_key("".join(c.itertext())) for c in node.iter("cell")]
+        cells = [c for c in cells if c]
+        if len(cells) < 4:
+            return None
+        best: HtmlElement | None = None
+        for (tag, key), els in self.by_key.items():
+            if tag != "table":
+                continue
+            if sum(c in key for c in cells) < TABLE_CELL_MATCH * len(cells):
+                continue
+            for el in els:
+                pos = self.order.get(el, 0)
+                if el not in self.used and pos >= after and (best is None or pos < self.order.get(best, 0)):
+                    best = el
+        return best
+
     def seen(self, xml_tag: str, key: str) -> bool:
         """True when an element with this text was already converted (as part of a container)."""
         return any(el in self.used for t in _DOM_FOR.get(xml_tag, ()) for el in self.by_key.get((t, key), []))
@@ -131,6 +152,9 @@ class DomIndex:
     def mark(self, el: HtmlElement) -> None:
         for d in el.iter():
             self.used.add(d)
+
+
+TABLE_CELL_MATCH = 0.8
 
 
 def _dom_text(el: HtmlElement, depth: int = 0) -> str:
@@ -211,6 +235,10 @@ def tei_to_blocks(main: Any, body: HtmlElement, b: Builder) -> None:
             dom = index.find(tag, key, after)
             if dom is None:
                 dom = index.find(tag, key, 0)
+            if dom is None and tag == "table":
+                dom = index.find_table(node, after)
+                if dom is None:  # lxml elements are falsy when childless: never `or` them
+                    dom = index.find_table(node, 0)
             if dom is None and index.seen(tag, key):
                 continue
         if dom is None or from_layout:

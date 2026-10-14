@@ -1,4 +1,4 @@
-"""comms.eml: one RFC 5322 message (.eml, message/rfc822) to a Document (docs/spec/part2.md 9c steps 1-6)."""
+"""comms.eml: one RFC 5322 message (.eml, message/rfc822) to a Document (docs/internal/spec/part2.md 9c steps 1-6)."""
 
 from __future__ import annotations
 

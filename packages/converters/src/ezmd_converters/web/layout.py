@@ -1,4 +1,4 @@
-"""Layout-table pages on the Trafilatura path (docs/spec/part2.md 5e item 11).
+"""Layout-table pages on the Trafilatura path (docs/internal/spec/part2.md 5e item 11).
 
 Trafilatura flattens 2005-era pages built from nested presentation tables into a run of `<table>` elements in
 whatever order its own tree walk produces (footers first is common) and keeps the chrome cells: the header

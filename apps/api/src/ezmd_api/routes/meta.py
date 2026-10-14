@@ -1,4 +1,4 @@
-"""Meta routes: /v1/capabilities, /v1/warnings, /healthz, /readyz (docs/spec/part1.md section 7.3)."""
+"""Meta routes: /v1/capabilities, /v1/warnings, /healthz, /readyz (docs/internal/spec/part1.md section 7.3)."""
 
 from __future__ import annotations
 
@@ -134,7 +134,10 @@ def healthz() -> dict[str, str]:
     response_model=ReadyOut,
     operation_id="readyz",
     summary="Readiness: database, Redis, and a live worker",
-    description="200 when the database and state backend answer and a worker heartbeated in the last 60 s; else 503.",
+    description=(
+        "200 when the database and state backend answer and a worker heartbeated in the last 60 s "
+        "(ezmd workers beat every 30 s, idle or busy); else 503."
+    ),
     responses={**errors(), 503: {"model": ReadyOut, "description": "A dependency is down; `checks` says which."}},
     openapi_extra=_PUBLIC,
 )

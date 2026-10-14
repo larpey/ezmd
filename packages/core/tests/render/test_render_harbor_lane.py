@@ -1,5 +1,5 @@
 """The Part 3 section 17 worked example (Harbor Lane), rendered in all four profiles and compared with the
-expected outputs taken verbatim from docs/spec/part3.md. Placeholder lines (hashes, token counts, word counts,
+expected outputs taken verbatim from docs/internal/spec/part3.md. Placeholder lines (hashes, token counts, word counts,
 the ezmd version, the fence id and chunk doc ids) are normalized on both sides, as the spec prescribes."""
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from render_builders import CONVERTED_AT, harbor_lane
 
 from ezmd.render import render
 
-SPEC = Path(__file__).resolve().parents[4] / "docs" / "spec" / "part3.md"
+SPEC = Path(__file__).resolve().parents[4] / "docs" / "internal" / "spec" / "part3.md"
 SIDECAR = "harbor-lane-depot-report.ezmd.json"
 
 _NORMALIZE = [

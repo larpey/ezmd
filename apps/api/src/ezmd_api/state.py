@@ -1,5 +1,5 @@
 """ezmd_api.state: ephemeral shared state: sliding-window rate limits, gauges, fetch-node
-heartbeats, the per-job event buffer with pub/sub (docs/spec/part1.md sections 7.2, 7.3, 7.6), and
+heartbeats, the per-job event buffer with pub/sub (docs/internal/spec/part1.md sections 7.2, 7.3, 7.6), and
 the cumulative metric counters behind GET /metrics (shared by the API and every worker process).
 
 `RedisState` is used with `EZMD_QUEUE=rq` (and with fakeredis in tests). `MemoryState` serves the
@@ -9,6 +9,7 @@ single-process inline mode where no Redis exists.
 from __future__ import annotations
 
 import json
+import math
 import secrets
 import threading
 import time
@@ -43,10 +44,16 @@ class RateResult:
     limit: int
     remaining: int
     reset_epoch: int
+    reset_at: float = 0.0
+    """When the oldest hit leaves the window (exact; `reset_epoch` is its ceiling)."""
+    key: str = ""
+    member: str = ""
+    """The recorded hit, for `StateBackend.rate_refund` (empty when the hit was denied)."""
 
     @property
     def retry_after(self) -> int:
-        return max(1, self.reset_epoch - int(time.time()))
+        reset = self.reset_at or float(self.reset_epoch)
+        return max(1, math.ceil(reset - time.time()))
 
 
 class Subscription(Protocol):
@@ -57,6 +64,10 @@ class Subscription(Protocol):
 class StateBackend(Protocol):
     def ping(self) -> bool: ...
     def rate_hit(self, key: str, limit: int, window_s: int) -> RateResult: ...
+    def rate_refund(self, key: str, member: str) -> None:
+        """Remove one recorded hit (a request that was rejected after its limits were checked)."""
+        ...
+
     def gauge_incr(self, key: str, ttl_s: int) -> int: ...
     def gauge_decr(self, key: str) -> None: ...
     def node_heartbeat(self, node_id: str, info: dict[str, Any]) -> None: ...
@@ -99,6 +110,7 @@ class MemoryState:
         self._cond = threading.Condition(self._lock)
         self._windows: dict[str, list[float]] = defaultdict(list)
         self._gauges: dict[str, int] = defaultdict(int)
+        self._gauge_expiry: dict[str, float] = {}
         self._nodes: dict[str, float] = {}
         self._events: dict[str, list[Event]] = defaultdict(list)
         self._seq: dict[str, int] = defaultdict(int)
@@ -124,16 +136,31 @@ class MemoryState:
             if allowed:
                 hits.append(now)
             self._windows[key] = hits
-            reset = int((hits[0] if hits else now) + window_s) + 1
-            return RateResult(allowed, limit, max(0, limit - len(hits)), reset)
+            reset_at = (hits[0] if hits else now) + window_s
+            member = repr(now) if allowed else ""
+            remaining = max(0, limit - len(hits))
+            return RateResult(allowed, limit, remaining, math.ceil(reset_at), reset_at, key, member)
+
+    def rate_refund(self, key: str, member: str) -> None:
+        with self._lock:
+            hits = self._windows.get(key, [])
+            if member and float(member) in hits:
+                hits.remove(float(member))
 
     def gauge_incr(self, key: str, ttl_s: int) -> int:
+        """Like the Redis backend: INCR then EXPIRE, so a gauge untouched for `ttl_s` starts again from 0."""
+        now = time.time()
         with self._lock:
+            if self._gauge_expiry.get(key, now + 1) <= now:
+                self._gauges[key] = 0
             self._gauges[key] += 1
+            self._gauge_expiry[key] = now + ttl_s
             return self._gauges[key]
 
     def gauge_decr(self, key: str) -> None:
         with self._lock:
+            if self._gauge_expiry.get(key, time.time() + 1) <= time.time():
+                self._gauges[key] = 0
             self._gauges[key] = max(0, self._gauges[key] - 1)
 
     def node_heartbeat(self, node_id: str, info: dict[str, Any]) -> None:
@@ -244,9 +271,14 @@ class RedisState:
         allowed = int(count) <= limit
         if not allowed:
             self.redis.zrem(rkey, member)
-        oldest_ts = float(oldest[0][1]) if oldest else now
+        reset_at = (float(oldest[0][1]) if oldest else now) + window_s
         used = min(int(count), limit)
-        return RateResult(allowed, limit, max(0, limit - used), int(oldest_ts + window_s) + 1)
+        recorded = member if allowed else ""
+        return RateResult(allowed, limit, max(0, limit - used), math.ceil(reset_at), reset_at, key, recorded)
+
+    def rate_refund(self, key: str, member: str) -> None:
+        if member:
+            self.redis.zrem(f"ezmd:rl:{key}", member)
 
     def gauge_incr(self, key: str, ttl_s: int) -> int:
         rkey = f"ezmd:gauge:{key}"

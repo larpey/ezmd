@@ -1,4 +1,4 @@
-"""ezmd.render.sidecar: the `<name>.ezmd.json` sidecar (docs/spec/part3.md section 13).
+"""ezmd.render.sidecar: the `<name>.ezmd.json` sidecar (docs/internal/spec/part3.md section 13).
 
 Mirrors the frontmatter and adds sections, tables, figures, links, speakers, segments, slides, footnotes,
 warnings with detail, per-block provenance, injection findings, render counters, chunks (rag), and the IR

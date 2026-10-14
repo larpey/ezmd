@@ -1,4 +1,4 @@
-"""Fast tier of the SSRF table (docs/spec/part4.md 4.14.5 item 1): no network, a fake resolver.
+"""Fast tier of the SSRF table (docs/internal/spec/part4.md 4.14.5 item 1): no network, a fake resolver.
 
 The redirect-to-private case runs against a loopback server in test_netguard.py
 (test_redirect_to_private_rechecked); the network tier repeats this table against the compose stack.

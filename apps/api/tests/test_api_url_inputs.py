@@ -121,7 +121,7 @@ async def test_turnstile_required_in_public_mode(
 async def test_challenge_jwt_covers_five_jobs_then_needs_a_new_token(
     monkeypatch: pytest.MonkeyPatch, settings_factory: Callable[..., Settings]
 ) -> None:
-    """docs/spec/part4.md 4.11.2: one JWT is good for up to 5 convert calls, then it is spent (no replay)."""
+    """docs/internal/spec/part4.md 4.11.2: one JWT is good for up to 5 convert calls, then it is spent (no replay)."""
     from ezmd.core import netguard
     from ezmd_api.auth import CHALLENGE_MAX_USES
 

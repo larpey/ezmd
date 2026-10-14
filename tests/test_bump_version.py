@@ -18,6 +18,7 @@ FILES = [
 ] + [
     "packages/core/src/ezmd/__init__.py",
     "packages/mcp/server.json",
+    "docs/api/openapi.json",
     "packages/sdk-ts/package.json",
     "packages/sdk-ts/src/version.ts",
 ]
@@ -52,6 +53,8 @@ def test_rc_bump_satisfies_release_check(tree: Path) -> None:
     server = json.loads((tree / "packages/mcp/server.json").read_text(encoding="utf-8"))
     assert server["version"] == "0.9.0rc2" and all(p["version"] == "0.9.0rc2" for p in server["packages"])
     assert '__version__ = "0.9.0rc2"' in (tree / "packages/core/src/ezmd/__init__.py").read_text(encoding="utf-8")
+    openapi = json.loads((tree / "docs/api/openapi.json").read_text(encoding="utf-8"))
+    assert openapi["info"]["version"] == "0.9.0rc2"
 
 
 def test_final_bump_with_npm(tree: Path) -> None:

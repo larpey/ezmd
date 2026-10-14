@@ -1,4 +1,4 @@
-"""ezmd.testing.score: golden-fixture scorer (docs/spec/part1.md section 2.4).
+"""ezmd.testing.score: golden-fixture scorer (docs/internal/spec/part1.md section 2.4).
 
 Compares an actual rendered Markdown document against the expected golden, both in the `full`
 profile, and returns sub-scores in [0, 1]:

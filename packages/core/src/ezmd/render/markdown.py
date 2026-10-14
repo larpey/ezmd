@@ -1,4 +1,4 @@
-"""ezmd.render.markdown: the Markdown renderer (docs/spec/part3.md section D).
+"""ezmd.render.markdown: the Markdown renderer (docs/internal/spec/part3.md section D).
 
 Pipeline: title and heading plan -> units per block -> footnote and page-marker placement -> cursor and token
 budget -> head blocks and H1 -> (rag) chunking -> injection scan -> (agent) untrusted fence -> frontmatter
@@ -169,6 +169,10 @@ def _build_body(ctx: RenderContext, title: str, options: RenderOptions) -> _Body
             min_chunk_tokens=rules.min_chunk_tokens,
             overlap_tokens=rules.overlap_tokens,
         )
+        for piece in pieces:  # each piece is `<!-- chunk ... -->`, the text, `<!-- /chunk -->`
+            first, _, rest = piece.partition("\n")
+            ctx.generated_markers.setdefault(first, "")
+            ctx.generated_markers.setdefault(rest.rsplit("\n", 1)[-1], "")
         inner = "\n\n".join([*(u.text for u in head), *pieces])
     else:
         inner = "\n\n".join(u.text for u in [*head, *units, *tail] if u.text)
@@ -193,6 +197,7 @@ def render_markdown(
         hidden_text(result),
         bidi_or_tags=ctx.stats.bidi_or_tags,
         chat=meta.source_type == SourceType.CHAT,
+        generated=ctx.generated_markers,
     )
     if report.warning:
         families = sorted({f.family for f in report.findings})

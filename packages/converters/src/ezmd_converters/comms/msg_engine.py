@@ -1,6 +1,6 @@
 """extract-msg adapter (GPL-3.0; only in the `nonfree` extra). Importing this module shows the license notice.
 
-The optional second engine for Outlook .msg (docs/spec/part2.md 9b step 2): used when the native olefile
+The optional second engine for Outlook .msg (docs/internal/spec/part2.md 9b step 2): used when the native olefile
 reader (`comms.msg_native`) fails and the extra is installed. It fills the same `MapiMessage` as the native
 reader. Embedded messages become nested ParsedMessages up to the attachment depth.
 """

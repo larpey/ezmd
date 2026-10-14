@@ -1,4 +1,4 @@
-"""Attachment handling (docs/spec/part2.md 9b step 8 and 9c step 4).
+"""Attachment handling (docs/internal/spec/part2.md 9b step 8 and 9c step 4).
 
 Every attachment is listed in an attachments Table (name, type, size, status). Convertible attachments,
 including forwarded `message/rfc822` parts, go through the registry with `options.ctx.convert_child`, which

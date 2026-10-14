@@ -1,5 +1,5 @@
 """Static checks on the operator scripts in deploy/ (P1-T14). The end-to-end run (bootstrap, backup,
-wipe, restore, upgrade with rollback) needs Docker and is recorded in docs/decisions/P1-T14-T16.md."""
+wipe, restore, upgrade with rollback) needs Docker and is recorded in docs/internal/decisions/P1-T14-T16.md."""
 
 from __future__ import annotations
 
@@ -124,3 +124,33 @@ def test_compose_core_profile_shape() -> None:
         assert svc["environment"]["EZMD_WEB_DIST"] == "${EZMD_WEB_DIST:-/app/apps/web/dist}", name
         assert svc["env_file"][0]["path"] == "${EZMD_ENV_FILE:-.env}", name
         assert "egress" not in svc["networks"] or name == "worker-fetch", f"{name} must not have egress"
+
+
+def test_curl_never_writes_to_dev_null() -> None:
+    """S5: lib.sh exports MSYS_NO_PATHCONV=1, so under Git Bash native curl gets `-o /dev/null` verbatim and
+    fails with (23). Status probes go through lib.sh `curl_w`, which discards the body itself."""
+    for name in [*BASH_SCRIPTS, "lib.sh"]:
+        for n, line in enumerate((DEPLOY / name).read_text(encoding="utf-8").splitlines(), 1):
+            if "curl" in line or "CURL" in line:
+                assert "-o /dev/null" not in line, f"{name}:{n}"
+    assert "curl_w()" in (DEPLOY / "lib.sh").read_text(encoding="utf-8")
+
+
+def test_plain_http_port_binds_loopback_by_default() -> None:
+    """N7: the plain-HTTP port was published on every interface even with TLS on."""
+    services = yaml.safe_load((DEPLOY / "docker-compose.yml").read_text(encoding="utf-8"))["services"]
+    plain = [str(p) for p in services["caddy"]["ports"] if str(p).endswith(":8080")]
+    assert plain == ["${EZMD_PLAIN_BIND:-127.0.0.1}:${EZMD_PLAIN_PORT:-8080}:8080"]
+    assert "\nEZMD_PLAIN_BIND=" in (DEPLOY / "env.example").read_text(encoding="utf-8")
+
+
+def test_upgrade_prunes_only_ezmd_images() -> None:
+    """N7: `docker image prune -f` removed every dangling image on the host, not just ezmd's."""
+    text = (DEPLOY / "upgrade.sh").read_text(encoding="utf-8")
+    prunes = [line for line in text.splitlines() if "image prune" in line and not line.lstrip().startswith("#")]
+    assert prunes, "upgrade.sh still cleans up after itself"
+    for line in prunes:
+        assert '--filter "label=org.opencontainers.image.source=https://github.com/larpey/ezmd"' in line, line
+    assert 'org.opencontainers.image.source="https://github.com/larpey/ezmd"' in (DEPLOY / "Dockerfile").read_text(
+        encoding="utf-8"
+    )

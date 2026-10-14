@@ -1,6 +1,6 @@
 """ezmd.profiles: output profile configuration objects.
 
-Implements docs/spec/part1.md section 6, extended with the Part 3 section 17 options (Part 3 is
+Implements docs/internal/spec/part1.md section 6, extended with the Part 3 section 17 options (Part 3 is
 authoritative for the output format). Profiles are frozen dataclasses; `get_profile` applies scalar and
 dotted overrides (API query params and CLI flags map here), coercing string values to the field type.
 """

@@ -1,4 +1,4 @@
-"""Shared thread model for social and forum sources (docs/spec/part2.md 7c step 1).
+"""Shared thread model for social and forum sources (docs/internal/spec/part2.md 7c step 1).
 
 Every adapter produces a root post plus a tree of `ThreadNode`s; the shared renderer turns that into IR. The
 spec names the module `ezmd_social.model`; in this repository it lives in the converters package.

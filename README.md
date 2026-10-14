@@ -10,10 +10,10 @@ ezmd turns an input into an intermediate representation and renders it as Markdo
 frontmatter under one of four output profiles, plus a JSON sidecar with block provenance and an explicit
 list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
 
-> **Status: release candidate.** `0.1.0rc2` is on PyPI as a pre-release (`ezmd`, `ezmd-converters`,
-> `ezmd-mcp`), and signed images tagged `0.1.0-rc2` are on GHCR. Until `0.1.0` is final, install the exact
-> version shown below. The npm SDK (`@ezmd/sdk`) and the public instance come with the final release. See
-> [STATUS.md](STATUS.md) and [ROADMAP.md](ROADMAP.md).
+> **Status: release candidate.** Release candidates of `0.1.0` are on PyPI (`ezmd`, `ezmd-converters`,
+> `ezmd-mcp`) and signed images are on GHCR. Until `0.1.0` is final, the commands below install the newest
+> candidate. The npm SDK (`@ezmd/sdk`) and the public instance come with the final release. See the
+> [roadmap](docs/roadmap.md).
 
 ## Install
 
@@ -21,14 +21,16 @@ From PyPI (Python 3.12 or newer):
 
 <!-- readme: skip (installs from the network) -->
 ```sh
-pip install ezmd==0.1.0rc2                 # or: uv tool install ezmd==0.1.0rc2
-pip install "ezmd[docs]==0.1.0rc2"         # optional: Docling for PDF layout (large, pulls torch)
-uvx ezmd==0.1.0rc2 convert https://example.com
-uvx ezmd-mcp==0.1.0rc2                     # the MCP server
+pip install ezmd                           # or: uv tool install ezmd
+pip install "ezmd[docs]"                   # optional: Docling for PDF layout (large, pulls torch)
+uvx ezmd convert https://example.com
+uvx ezmd-mcp                               # the MCP server
 ```
 
-Once `0.1.0` is final, plain `pip install ezmd`, `uvx ezmd` and `uvx ezmd-mcp` work without a version.
-The Docling extra also needs its models downloaded once; see [docs/install.md](docs/install.md#extras).
+pip and uv take a release candidate when a package has no final release, so these work before `0.1.0`
+too; do not add `--pre`, which also takes pre-releases of every dependency. On Linux, install CPU torch
+first or `ezmd[docs]` pulls about 6 GB of CUDA wheels, and the Docling extra needs its models downloaded
+once; see [docs/install.md](docs/install.md#extras).
 
 From source (needs [uv](https://docs.astral.sh/uv/)):
 
@@ -107,7 +109,7 @@ From a source checkout, point your MCP client at `uv run ezmd-mcp`. Claude Code:
 
 <!-- readme: skip (needs the Claude Code CLI) -->
 ```sh
-claude mcp add ezmd -- uvx ezmd-mcp==0.1.0rc2
+claude mcp add ezmd -- uvx ezmd-mcp
 claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp   # from a source checkout
 ```
 
@@ -118,14 +120,14 @@ Claude Desktop (`claude_desktop_config.json`), using the published package:
   "mcpServers": {
     "ezmd": {
       "command": "uvx",
-      "args": ["ezmd-mcp==0.1.0rc2", "--allowed-dirs", "/Users/you/Documents"]
+      "args": ["ezmd-mcp", "--allowed-dirs", "/Users/you/Documents"]
     }
   }
 }
 ```
 
 From a source checkout, use `"command": "uv"` with `"args": ["--directory", "/path/to/ezmd", "run",
-"ezmd-mcp", ...]`. After `0.1.0` the version pin can go. Other clients, tools, and the HTTP transport:
+"ezmd-mcp", ...]`. Other clients, tools, and the HTTP transport:
 [docs/mcp.md](docs/mcp.md).
 
 ### REST API and web UI
@@ -181,7 +183,7 @@ Then open http://localhost:8080. Signed images for each release are on GHCR (`gh
 The full list, with engines, extras, status, fixture counts, and thresholds, is the generated
 [converter matrix](docs/converters/README.md). Local directories are not an input yet (zip the folder, or
 use `ezmd batch` to convert the files in it one by one). Audio, video, OCR, chat exports, and social
-platforms are on the [roadmap](ROADMAP.md).
+platforms are on the [roadmap](docs/roadmap.md).
 
 ## Output profiles
 

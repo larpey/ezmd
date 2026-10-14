@@ -1,4 +1,4 @@
-"""GitHub repository URL parsing (docs/spec/part2.md 8a, 8c step 1).
+"""GitHub repository URL parsing (docs/internal/spec/part2.md 8a, 8c step 1).
 
 `https://github.com/<o>/<r>` and `https://github.com/<o>/<r>/tree/<ref>[/<path>]` map to the codeload tarball
 `https://codeload.github.com/<o>/<r>/tar.gz/<ref>` (ref `HEAD` when absent). The converter never fetches: it raises

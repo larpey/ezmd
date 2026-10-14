@@ -8,6 +8,7 @@ Coordinates are converted to the displayed page (honoring `/Rotate`) with the or
 from __future__ import annotations
 
 import ctypes
+import math
 import unicodedata
 from dataclasses import dataclass, field
 
@@ -20,8 +21,14 @@ Rect = tuple[float, float, float, float]
 
 GAP_EM = 1.2
 """A horizontal gap wider than this many ems splits a baseline into separate lines (columns, table cells)."""
+BASELINE_EM = 0.5
+"""Glyphs whose baselines differ by more than this many ems are on different lines; a raised footnote
+marker (about 0.35 em) stays on its line."""
+OVERLAP_SAME_LINE = 0.6
+"""Glyphs whose boxes overlap vertically by at least this fraction of the shorter one share a line even when
+their reported origins disagree (some Type 3 and broken fonts)."""
 PRIVATE_USE_SCANNED = 0.05
-"""docs/spec/part2.md 1e.8: more than 5 percent private-use glyphs on a page means the text layer is unusable."""
+"""docs/internal/spec/part2.md 1e.8: over 5 percent private-use glyphs on a page means the text layer is unusable."""
 
 
 @dataclass(slots=True)
@@ -62,7 +69,7 @@ class PageText:
 
 
 _LIGATURE_LO, _LIGATURE_HI = chr(0xFB00), chr(0xFB06)
-"""Latin ligatures (ff, fi, fl, ffi, ffl, long st, st) are NFKC-expanded (docs/spec/part2.md 1e.8)."""
+"""Latin ligatures (ff, fi, fl, ffi, ffl, long st, st) are NFKC-expanded (docs/internal/spec/part2.md 1e.8)."""
 
 
 @dataclass(slots=True)
@@ -73,9 +80,19 @@ class _Glyph:
     x1: float
     y1: float
     size: float
+    """Effective em size in page units: the Tf size scaled by the text matrix and CTM."""
     bold: bool
     mcid: int
     href: str | None
+    turn: int = 0
+    """Reading direction on the displayed page in counter-clockwise quarter turns (1: text runs up the page,
+    as in a rotated table on an upright page)."""
+    along: tuple[float, float] = (0.0, 0.0)
+    """Extent along the reading direction."""
+    across: tuple[float, float] = (0.0, 0.0)
+    """Extent across it, increasing towards the next line."""
+    base: float = 0.0
+    """Baseline (the glyph origin) on the `across` axis."""
 
 
 _HYPHEN_CODES = frozenset({0x02, 0xAD})
@@ -95,12 +112,12 @@ class _Transform:
         return (self.h, self.w) if self.rot in (90, 270) else (self.w, self.h)
 
     def box(self, left: float, bottom: float, right: float, top: float) -> Rect:
-        pts = [self._pt(left, bottom), self._pt(right, top)]
+        pts = [self.point(left, bottom), self.point(right, top)]
         xs = [p[0] for p in pts]
         ys = [p[1] for p in pts]
         return min(xs), min(ys), max(xs), max(ys)
 
-    def _pt(self, x: float, y: float) -> tuple[float, float]:
+    def point(self, x: float, y: float) -> tuple[float, float]:
         x, y = x - self.dx, y - self.dy
         if self.rot == 90:
             return y, x
@@ -127,6 +144,55 @@ def _font_flags(textpage: pdfium.PdfTextPage, index: int, cache: dict[int, tuple
     mcid = pdfium_c.FPDFPageObj_GetMarkedContentID(obj) if obj else -1
     cache[key] = (bold, int(mcid))
     return cache[key]
+
+
+def _frame_point(turn: int, x: float, y: float) -> tuple[float, float]:
+    """(along, across) of a displayed-page point for text turned `turn` quarter turns counter-clockwise."""
+    if turn == 1:
+        return -y, x
+    if turn == 2:
+        return -x, -y
+    if turn == 3:
+        return y, -x
+    return x, y
+
+
+def _placed(glyph: _Glyph, turn: int, origin: tuple[float, float]) -> _Glyph:
+    """Fill the reading-direction frame of `glyph` from its displayed box and origin."""
+    a0, c0 = _frame_point(turn, glyph.x0, glyph.y0)
+    a1, c1 = _frame_point(turn, glyph.x1, glyph.y1)
+    glyph.turn = turn
+    glyph.along = (min(a0, a1), max(a0, a1))
+    glyph.across = (min(c0, c1), max(c0, c1))
+    glyph.base = _frame_point(turn, *origin)[1]
+    return glyph
+
+
+def _size_and_frame(
+    textpage: pdfium.PdfTextPage, index: int, tf: _Transform, box: Rect
+) -> tuple[float, int, tuple[float, float]]:
+    """(em size, reading-direction turn, displayed origin) of character `index`.
+
+    The em size is what a reader sees. `FPDFText_GetFontSize` is the nominal Tf operand, which is 1.0 when
+    the producer puts the scale in the text matrix (`/F1 1 Tf 10.5 0 0 10.5 x y Tm`) or the CTM, so it is
+    multiplied by the vertical scale of the character's full matrix; it falls back to the box height."""
+    x0, y0, _x1, y1 = box
+    nominal = abs(float(pdfium_c.FPDFText_GetFontSize(textpage.raw, index)))  # negative with a mirrored Tm
+    ox, oy = ctypes.c_double(0.0), ctypes.c_double(0.0)
+    has_origin = bool(pdfium_c.FPDFText_GetCharOrigin(textpage.raw, index, ctypes.byref(ox), ctypes.byref(oy)))
+    origin = tf.point(ox.value, oy.value) if has_origin else (x0, y1)
+    m = pdfium_c.FS_MATRIX()
+    turn = 0
+    if pdfium_c.FPDFText_GetMatrix(textpage.raw, index, ctypes.byref(m)):
+        scale = math.hypot(m.c, m.d)
+        if scale > 0:
+            nominal *= scale
+        if has_origin:
+            ex, ey = tf.point(ox.value + m.a, oy.value + m.b)
+            dx, dy = ex - origin[0], ey - origin[1]
+            if dx or dy:
+                turn = round(-math.atan2(dy, dx) / (math.pi / 2)) % 4  # displayed y grows downwards
+    return nominal or (y1 - y0) or 10.0, turn, origin
 
 
 def _href_at(links: list[tuple[Rect, str]], cx: float, cy: float) -> str | None:
@@ -206,12 +272,12 @@ def _glyphs(
             out.append(_SPACE)
             continue
         left, bottom, right, top = textpage.get_charbox(i, loose=False)
-        size = float(pdfium_c.FPDFText_GetFontSize(textpage.raw, i)) or (top - bottom) or 10.0
         bold, mcid = _font_flags(textpage, i, cache)
-        x0, y0, x1, y1 = tf.box(left, bottom, right, top)
+        box = tf.box(left, bottom, right, top)
+        size, turn, origin = _size_and_frame(textpage, i, tf, box)
         href = _href_at(links, (left + right) / 2, (bottom + top) / 2) if links else None
         for c in unicodedata.normalize("NFKC", ch) if _LIGATURE_LO <= ch <= _LIGATURE_HI else ch:
-            out.append(_Glyph(c, x0, y0, x1, y1, size, bold, mcid, href))
+            out.append(_placed(_Glyph(c, *box, size, bold, mcid, href), turn, origin))
     return out, private
 
 
@@ -266,14 +332,24 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
             continue
         if last is not None:
             em = max(last.size, g.size, 1.0)
-            base_shift = abs(g.y1 - last.y1)
-            gap = g.x0 - last.x1
-            if base_shift > 0.5 * em or gap > GAP_EM * em or g.x1 < last.x0 - 0.5 * em:
+            gap = g.along[0] - last.along[1]
+            backwards = g.along[1] < last.along[0] - 0.5 * em
+            if g.turn != last.turn or not _same_line(last, g, em) or gap > GAP_EM * em or backwards:
                 flush()
         cur.append(g)
         last = g
     flush()
     return lines
+
+
+def _same_line(a: _Glyph, b: _Glyph, em: float) -> bool:
+    """Same baseline (within `BASELINE_EM`), or boxes that mostly overlap across the reading direction.
+    Glyph tops and bottoms alone differ at every ascender and descender, so they are never compared."""
+    if abs(a.base - b.base) <= BASELINE_EM * em:
+        return True
+    overlap = min(a.across[1], b.across[1]) - max(a.across[0], b.across[0])
+    shorter = min(a.across[1] - a.across[0], b.across[1] - b.across[0])
+    return shorter > 0 and overlap >= OVERLAP_SAME_LINE * shorter
 
 
 def _collapse_spaces(runs: list[tuple[str, str | None]]) -> list[tuple[str, str | None]]:

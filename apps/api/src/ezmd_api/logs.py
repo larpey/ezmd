@@ -1,5 +1,5 @@
 """ezmd_api.logs: process logging with the ezmd redaction filter on every handler
-(docs/spec/part1.md section 8.4). Logs never contain document content or raw client IPs."""
+(docs/internal/spec/part1.md section 8.4). Logs never contain document content or raw client IPs."""
 
 from __future__ import annotations
 

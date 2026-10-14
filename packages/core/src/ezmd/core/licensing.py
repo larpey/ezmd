@@ -1,6 +1,6 @@
 """ezmd.core.licensing: one-time license notices for engines installed through non-permissive extras.
 
-docs/spec/part1.md section 2.6: a converter module for a forbidden-license extra calls
+docs/internal/spec/part1.md section 2.6: a converter module for a forbidden-license extra calls
 `notify_once("<extra>")` on first import. The notice goes to stderr once per machine; a stamp file
 in the cache directory records that it was shown.
 """

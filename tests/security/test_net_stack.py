@@ -1,4 +1,4 @@
-"""Network tier against the compose stack (docs/spec/part4.md 4.14.5 items 1 and 7).
+"""Network tier against the compose stack (docs/internal/spec/part4.md 4.14.5 items 1 and 7).
 
 Runs in .github/workflows/integration.yml after `tests/integration/stack.sh up`, while the stack still
 has EZMD_ALLOW_PRIVATE_NETWORKS=false. Uses the owner key (EZMD_API_KEY or EZMD_API_KEY_FILE)

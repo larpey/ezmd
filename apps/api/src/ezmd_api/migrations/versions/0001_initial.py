@@ -1,4 +1,4 @@
-"""Initial schema: jobs and api_keys (docs/spec/part1.md section 7.1).
+"""Initial schema: jobs and api_keys (docs/internal/spec/part1.md section 7.1).
 
 Revision ID: 0001_initial
 Revises:

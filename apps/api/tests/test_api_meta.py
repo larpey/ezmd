@@ -122,3 +122,47 @@ def test_env_example_has_no_inline_comments() -> None:
         if line[:1].isupper() and "=" in line and "#" in line.split("=", 1)[1]
     ]
     assert bad == [], f"put comments on their own line: {bad}"
+
+
+async def test_api_reports_its_package_version(client: httpx.AsyncClient) -> None:
+    """S7: the API said 0.0.1 while the package was 0.1.0rcN; the version comes from package metadata."""
+    import importlib.metadata
+    import tomllib
+
+    from ezmd_api import __version__
+
+    pyproject = tomllib.loads((REPO / "apps" / "api" / "pyproject.toml").read_text(encoding="utf-8"))
+    assert __version__ == importlib.metadata.version("ezmd-api") == pyproject["project"]["version"]
+    assert (await client.get("/v1/capabilities")).json()["version"] == __version__
+    assert (await client.get("/openapi.json")).json()["info"]["version"] == __version__
+
+
+async def test_static_404s_are_not_cacheable(tmp_path: Path, settings_factory: Callable[..., Settings]) -> None:
+    """N2: Caddy stamped `immutable` on every /assets/* response, so a 404 was cached for a year."""
+    dist = tmp_path / "dist"
+    (dist / "assets").mkdir(parents=True)
+    (dist / "index.html").write_text("<!doctype html><title>ezmd</title>", encoding="utf-8")
+    async with api_client(settings_factory(web_dist=dist)) as (client, _):
+        miss = await client.get("/assets/missing-abc.js")
+    assert miss.status_code == 404
+    assert miss.headers["cache-control"] == "no-store"
+    caddy = (REPO / "deploy" / "Caddyfile").read_text(encoding="utf-8")
+    static_block = caddy.split("handle @static {", 1)[1].split("\n\t}\n", 1)[0]
+    assert "Cache-Control" not in static_block, "the API owns cache headers (one header, never on errors)"
+
+
+async def test_wrong_method_on_a_real_route_is_405(tmp_path: Path, settings_factory: Callable[..., Settings]) -> None:
+    """N3: with the SPA catch-all mounted, PUT /v1/convert answered 404 instead of 405."""
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<!doctype html><title>ezmd</title>", encoding="utf-8")
+    async with api_client(settings_factory(web_dist=dist)) as (client, _):
+        put = await client.put("/v1/convert", content=b"{}")
+        assert put.status_code == 405, put.text
+        assert put.json()["error"]["code"] == "method_not_allowed"
+        assert "POST" in put.headers["allow"]
+        patch = await client.patch("/v1/jobs/job_0000000000000000000000")
+        assert patch.status_code == 405
+        assert set(patch.headers["allow"].replace(" ", "").split(",")) >= {"GET", "DELETE"}
+        assert (await client.put("/v1/nope")).status_code == 404
+        assert (await client.post("/some/spa/page")).status_code == 404

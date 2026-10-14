@@ -1,5 +1,5 @@
 # License policy for the default (non-dev) dependency tree. Format: Part 4 section 4.15.2.
-# Checked by tools/license_check.py. Changing this file is a policy decision: log it in DECISIONS.md.
+# Checked by tools/license_check.py. Changing this file is a policy decision: log it in docs/internal/DECISIONS.md.
 
 # SPDX ids accepted in the default dependency tree (core and all extras except nonfree)
 [allow]
@@ -22,7 +22,7 @@ packages = ["pymupdf", "pymupdf4llm", "extract-msg"]
 # olefile (BSD-2-Clause) left this list in P1-T04: it is the spec's default MSG reader (part2 9b step 2);
 # it was here only because extract-msg depends on it.
 
-# Explicit exception class: proprietary GPU runtime libraries (docs/decisions/audit-fix-packaging.md).
+# Explicit exception class: proprietary GPU runtime libraries (docs/internal/decisions/audit-fix-packaging.md).
 # torch, pulled only by the optional `docs` extra, depends on NVIDIA's CUDA wheels on Linux (x86_64 and
 # aarch64; PyPI metadata cannot point pip at the CPU-only torch index). They are shared libraries torch loads
 # at runtime, installed by the user's resolver from PyPI under NVIDIA's own license; ezmd does not bundle or

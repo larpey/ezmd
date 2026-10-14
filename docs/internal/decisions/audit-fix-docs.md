@@ -2,7 +2,7 @@
 Date: 2026-10-09
 Task: audit (fix-docs)
 Status: accepted
-Context: docs/spec/part4.md 4.4.5 asks for a `remotes` entry for the public instance's `/mcp` URL in
+Context: docs/internal/spec/part4.md 4.4.5 asks for a `remotes` entry for the public instance's `/mcp` URL in
 `packages/mcp/server.json`. D-0024 left mounting `/mcp` on the API pending, so the entry pointed registry users
 at a URL that 404s. Separately, `ezmd doctor` hardcoded extras from the spec (`media`, `ocr`, `web`, `fetch`,
 `server`) that are not published and told users to `pip install` them, and never reported `data` or `7z`.

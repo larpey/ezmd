@@ -1,9 +1,9 @@
 """ezmd_api.isolation: run one conversion in a `multiprocessing` spawn child
-(docs/spec/part1.md section 8.1).
+(docs/internal/spec/part1.md section 8.1).
 
-The child applies POSIX resource limits (address space, CPU, process count, file size) before it
-imports any engine, builds `ezmd.library.Options` from the stored options, converts through
-`ezmd.pipeline.convert_ref`, and writes the IR as JSON
+The child applies POSIX resource limits (address space, CPU, process count, file size) and caps the
+math libraries' thread pools before it imports any engine, builds `ezmd.library.Options` from the
+stored options, converts through `ezmd.pipeline.convert_ref`, and writes the IR as JSON
 (never pickle) plus a small status file. The parent enforces the wall-clock limit with SIGKILL
 (TerminateProcess on Windows) after `max_seconds + 30`, so a hung or crashing engine only takes
 down the child.
@@ -16,19 +16,25 @@ import logging
 import multiprocessing
 import sys
 import time
-from collections.abc import Callable
+from collections.abc import Callable, MutableMapping
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
+from ezmd.core.sandbox import nproc_limit
+
 KILL_GRACE_SECONDS = 30
 TICK_SECONDS = 5.0
 FSIZE_LIMIT_BYTES = 2 * 1024 * 1024 * 1024
-NPROC_LIMIT = 64
+THREAD_POOL_ENV = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
+CHILD_THREADS = 4
+"""Default size of the OpenMP/BLAS pools in the child (they otherwise start a thread per host core)."""
 DEFAULT_MAX_RESULT_BYTES = 256 * 1024 * 1024
 MAX_STATUS_BYTES = 64 * 1024
 # ConversionError codes the child may report as-is; anything else becomes conversion_failed.
-PASSTHROUGH_CONVERSION_CODES = frozenset({"experimental_disabled"})
+PASSTHROUGH_CONVERSION_CODES = frozenset(
+    {"experimental_disabled", "unsupported_media_type", "extra_required", "sandbox_unavailable"}
+)
 
 
 @dataclass(slots=True)
@@ -60,7 +66,16 @@ class ChildOutcome:
     extra: dict[str, Any] = field(default_factory=dict)
 
 
-def _apply_limits(req: ChildRequest) -> None:  # pragma: no cover - POSIX only, runs in the child
+def cap_thread_pools(env: MutableMapping[str, str]) -> None:
+    """Default the OpenMP/BLAS pool sizes to CHILD_THREADS; values already set (by the operator) win."""
+    for name in THREAD_POOL_ENV:
+        env.setdefault(name, str(CHILD_THREADS))
+
+
+def _apply_limits(req: ChildRequest) -> None:  # pragma: no cover - runs in the child
+    import os
+
+    cap_thread_pools(os.environ)
     if sys.platform == "win32":
         return
     import resource
@@ -75,7 +90,9 @@ def _apply_limits(req: ChildRequest) -> None:  # pragma: no cover - POSIX only, 
 
     setlim(resource.RLIMIT_AS, req.mem_mb * 1024 * 1024)
     setlim(resource.RLIMIT_CPU, int(req.max_seconds) + 5)
-    setlim(resource.RLIMIT_NPROC, NPROC_LIMIT)
+    nproc = nproc_limit()
+    if nproc is not None:
+        setlim(resource.RLIMIT_NPROC, nproc)
     setlim(resource.RLIMIT_FSIZE, FSIZE_LIMIT_BYTES)
 
 

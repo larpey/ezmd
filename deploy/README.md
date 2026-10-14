@@ -28,7 +28,7 @@ deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 
 
 By hand: `cp deploy/env.example deploy/.env`, fill in the secrets, `docker compose -f deploy/docker-compose.yml up -d --build --wait`, `bash deploy/smoke.sh --no-build`.
 
-- `EZMD_DOMAIN` empty: plain HTTP on `:8080` (host port `EZMD_PLAIN_PORT`).
+- `EZMD_DOMAIN` empty: plain HTTP on `:8080` (host port `EZMD_PLAIN_PORT`), bound to `EZMD_PLAIN_BIND` (default `127.0.0.1`).
 - `EZMD_DOMAIN=localhost`: HTTPS with Caddy's internal CA.
 - `EZMD_DOMAIN=ezmd.example.com`: Let's Encrypt; set `EZMD_ACME_EMAIL` for the contact.
 - `EZMD_REDIS_PASSWORD` should be hex (it is embedded in the Redis URL). Compose builds `EZMD_REDIS_URL` from it and overrides any value in `.env`.
@@ -66,12 +66,12 @@ The `purge` sidecar runs `python -m ezmd_api.purge --loop` (retention purge ever
 
 ## Image sizes (local build, uncompressed)
 
-Recorded by CI in the job summary (`images` job) and enforced against budgets: api 600 MB, worker 1200 MB, fetch-node 400 MB (docs/decisions/P1-T14-T16.md). See STATUS.md for the latest numbers.
+Recorded by CI in the job summary (`images` job) and enforced against budgets: api 600 MB, worker 1200 MB, fetch-node 400 MB (docs/internal/decisions/P1-T14-T16.md). The latest numbers are in the job summary of the most recent release run.
 
-## TODO (later phases)
+## Not yet supported
 
-- `docker-compose.public.yml` (Phase 4): public-instance env, `egress-proxy` (squid, `squid.conf` from Part 4 4.12.1), metrics. Compose overlays cannot remove networks, so in public mode the bootstrap script must write a `compose.override.yml` that sets `networks: [internal, egressproxy]` for the workers.
+- `docker-compose.public.yml` (Phase 4): public-instance env, `egress-proxy` (squid), metrics. Compose overlays cannot remove networks, so in public mode the bootstrap script must write a `compose.override.yml` that sets `networks: [internal, egressproxy]` for the workers.
 - `docker-compose.pi.yml` (Phase 3): the Raspberry Pi fetch node (`network_mode: host`, Tailscale, watchtower) once `ezmd fetch-node run` exists.
 - `worker-media` target and service (Phase 2): ffmpeg, `[media]` extra, model volume, `model-init`.
-- Host provisioning in `bootstrap.sh` (Docker install, ufw, fail2ban, sshd, systemd units; Part 4 4.9.8) with the public-instance runbook (Phase 4).
-- Postgres and MinIO profiles (Part 4 4.9.2) once the API supports them.
+- Host provisioning in `bootstrap.sh` (Docker install, ufw, fail2ban, sshd, systemd units) with the public-instance runbook (Phase 4).
+- Postgres and MinIO profiles once the API supports them.
