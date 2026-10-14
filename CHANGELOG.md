@@ -59,8 +59,8 @@ benchmark (D-0044 to D-0071).
 - Linux `ezmd[docs]` documents the CPU-only torch install (about 6 GB of CUDA torch and NVIDIA wheels
   otherwise, D-0051); install docs no longer pin a release candidate; the self-hosting guide covers the
   Turnstile relay, 413/415 and dedup rules, readiness, key restrictions, LibreOffice sandboxing and Git Bash.
-- The build specification, decision log, status and roadmap trackers and agent instructions moved to
-  `docs/internal/` and `.claude/CLAUDE.md` and are no longer published on the docs site, which gets a short
+- The build specification, decision log, status and roadmap trackers and agent instructions (now
+  `AGENTS.md`) moved to `docs/internal/` and are no longer published on the docs site, which gets a short
   public roadmap instead. `ezmd` and `ezmd-converters` have real PyPI descriptions. Security reports go
   through GitHub private vulnerability reporting; the placeholder email addresses are gone.
 

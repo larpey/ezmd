@@ -2,7 +2,7 @@
 
 ## Part 1: Mission, operating rules, foundation
 
-This document is written for Claude Code. You are the sole engineer on this project. You will build it end to end without a human in the loop. Read all four parts before writing code. Part 1 (this file) defines the mission, how you operate, the core domain model, the converter and renderer interfaces, the job system and API contract, the security baseline, and Phase 0. Part 2 covers converter families. Part 3 covers the exact Markdown output format and profiles. Part 4 covers the fetch node, extension, MCP server, deployment, and the public instance.
+This document is written for an autonomous coding agent. You are the sole engineer on this project. You will build it end to end without a human in the loop. Read all four parts before writing code. Part 1 (this file) defines the mission, how you operate, the core domain model, the converter and renderer interfaces, the job system and API contract, the security baseline, and Phase 0. Part 2 covers converter families. Part 3 covers the exact Markdown output format and profiles. Part 4 covers the fetch node, extension, MCP server, deployment, and the public instance.
 
 Fixed decisions that all parts share are restated in section 1.3. Do not relitigate them.
 
@@ -49,7 +49,7 @@ ezmd/
   deploy/               # docker compose files, Caddy config, Tailscale notes, Pi image script
   fixtures/             # test corpus + golden outputs
   docs/
-  docs/internal/DECISIONS.md, docs/internal/ROADMAP.md, docs/internal/STATUS.md, .claude/CLAUDE.md
+  docs/internal/DECISIONS.md, docs/internal/ROADMAP.md, docs/internal/STATUS.md, docs/internal/AGENTS.md
 ```
 
 - Architecture: the public VPS (Hetzner Ashburn) runs API, UI, queue, and converters. A Raspberry Pi at the owner's home runs `apps/fetch-node`, connects outbound-only to the VPS over Tailscale, polls the `fetch_residential` queue for jobs that need a residential IP (TikTok, YouTube, Instagram, etc.), downloads, extracts audio with ffmpeg, and uploads the audio back. The VPS never exposes the Pi. Fallback chain when no fetch node is online: platform captions endpoints, then mirror/embed endpoints, then yt-dlp with a PO-token sidecar, then `needs_user_action` asking the user to upload the file or use the extension.
@@ -58,7 +58,7 @@ ezmd/
 
 ---
 
-## 2. Operating rules for Claude Code (autonomous mode)
+## 2. Operating rules for the coding agent (autonomous mode)
 
 ### 2.1 The loop
 
@@ -268,7 +268,7 @@ When the definition of done is met, replace the top of docs/internal/STATUS.md w
 
 ---
 
-## 3. .claude/CLAUDE.md
+## 3. docs/internal/AGENTS.md
 
 Place this file at the repo root verbatim (update the commands if the tooling changes, and log that change).
 
@@ -2253,7 +2253,7 @@ Each task below lists acceptance criteria. Mark tasks `done` in docs/internal/ST
 
 ### P0-T02 Repository scaffold
 
-1. Create the monorepo layout from 1.3. Root files: `pyproject.toml` (uv workspace with members `packages/*`, `apps/api`, `apps/fetch-node`, `packages/mcp`), `uv.lock`, `package.json` (pnpm workspace: `apps/web`, `apps/extension`, `packages/sdk-ts`), `pnpm-workspace.yaml`, `Makefile` (`gates`, `test`, `lint`, `fmt`, `golden`, `up`, `smoke`), `ruff.toml` (line length 120, rules `E,F,W,I,N,UP,B,S,C4,SIM,RUF`, bandit S rules enabled), `mypy.ini` (strict for `packages/core`), `.editorconfig`, `.gitignore`, `.env.example`, `LICENSE` (Apache-2.0), `NOTICE`, `README.md` (one screen: what it is, quickstart with `uvx ezmd convert`, compose one-liner, link to docs), `.claude/CLAUDE.md` (section 3), `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md` (all phases and tasks from all four parts, with ids and blocked_by), `docs/internal/STATUS.md` (section 2.8 format, all tasks `pending`), `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` (disclosure address placeholder, supported versions), `CODE_OF_CONDUCT.md`.
+1. Create the monorepo layout from 1.3. Root files: `pyproject.toml` (uv workspace with members `packages/*`, `apps/api`, `apps/fetch-node`, `packages/mcp`), `uv.lock`, `package.json` (pnpm workspace: `apps/web`, `apps/extension`, `packages/sdk-ts`), `pnpm-workspace.yaml`, `Makefile` (`gates`, `test`, `lint`, `fmt`, `golden`, `up`, `smoke`), `ruff.toml` (line length 120, rules `E,F,W,I,N,UP,B,S,C4,SIM,RUF`, bandit S rules enabled), `mypy.ini` (strict for `packages/core`), `.editorconfig`, `.gitignore`, `.env.example`, `LICENSE` (Apache-2.0), `NOTICE`, `README.md` (one screen: what it is, quickstart with `uvx ezmd convert`, compose one-liner, link to docs), `docs/internal/AGENTS.md` (section 3), `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md` (all phases and tasks from all four parts, with ids and blocked_by), `docs/internal/STATUS.md` (section 2.8 format, all tasks `pending`), `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` (disclosure address placeholder, supported versions), `CODE_OF_CONDUCT.md`.
 2. Copy the four spec parts into `docs/internal/spec/`.
 3. `packages/core/pyproject.toml`: package `ezmd`, Python `>=3.12`, deps: `pydantic>=2`, `pyyaml`, `tiktoken`, `magika`, `python-magic`, `rapidfuzz`, `typer`, `rich`, `httpx`. Entry points: `ezmd = ezmd.cli:app`, `ezmd-score = ezmd.testing.cli:score`, `ezmd-golden = ezmd.testing.cli:golden`.
 4. Acceptance: `uv sync --all-packages --dev` succeeds; `pnpm install` succeeds; `make gates` runs (it may fail on empty packages at this point, but each gate command executes); git initialized with `main`, first commit `chore: scaffold monorepo`.
