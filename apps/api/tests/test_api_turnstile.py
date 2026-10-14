@@ -134,3 +134,53 @@ def test_required_challenge_needs_a_secret(flag: str, settings_factory: Callable
     """Red team MED-6: public mode without a Turnstile secret refused every anonymous URL job with 403."""
     with pytest.raises(ValueError, match="EZMD_TURNSTILE_SECRET"):
         settings_factory(**{flag: True}, jwt_secret=SECRET, key_pepper=SECRET)
+
+
+async def test_refused_creation_does_not_spend_a_challenge_use(settings_factory: Callable[..., Settings]) -> None:
+    """Red team LOW: a concurrency 429 burned one of the challenge JWT's 5 uses."""
+    import fakeredis
+    import jwt as pyjwt
+
+    settings = _public(settings_factory, queue="rq", anon_concurrency=1)
+    async with api_client(settings, redis_client=fakeredis.FakeRedis()) as (client, app):
+        app.state.turnstile_verifier = lambda s, token, ip: token == "good"
+        first = await client.post("/v1/convert", json={"url": "https://example.com/0.txt", "turnstile_token": "good"})
+        assert first.status_code == 202
+        cookie = client.cookies.get(auth.CHALLENGE_COOKIE)
+        nonce = pyjwt.decode(cookie, SECRET, algorithms=["HS256"])["nonce"]
+        for i in range(3):
+            busy = await client.post("/v1/convert", json={"url": f"https://example.com/{i + 1}.txt"})
+            assert busy.status_code == 429
+        state = app.state.services.state
+        spent = state.gauge_incr(f"challenge:{nonce}", 60) - 1
+        assert spent == 0, "refused requests must give their challenge use back"
+
+
+async def test_challenge_cookie_survives_an_error_from_the_wait_path(
+    monkeypatch: pytest.MonkeyPatch, settings_factory: Callable[..., Settings]
+) -> None:
+    """Red team LOW: the fresh challenge cookie was dropped when the wait response raised (format=docx)."""
+    from ezmd.core import netguard
+    from ezmd.core.netguard import FetchResult
+
+    def fetch(url: str, **kwargs: Any) -> FetchResult:
+        return FetchResult(
+            url=url,
+            status=200,
+            headers={"content-type": "text/plain"},
+            body=b"hi\n",
+            resolved_ip="93.184.216.34",
+            redirects=[],
+            duration_seconds=0.01,
+        )
+
+    monkeypatch.setattr(netguard, "fetch", fetch)
+    async with api_client(_public(settings_factory)) as (client, app):
+        app.state.turnstile_verifier = lambda s, token, ip: token == "good"
+        r = await client.post(
+            "/v1/convert",
+            params={"wait": 20, "format": "docx"},
+            json={"url": "https://example.com/a.txt", "turnstile_token": "good"},
+        )
+    assert r.status_code == 501, r.text
+    assert auth.CHALLENGE_COOKIE in r.headers.get("set-cookie", "")

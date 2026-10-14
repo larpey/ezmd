@@ -9,6 +9,7 @@ kept for display only.
 from __future__ import annotations
 
 import hashlib
+import logging
 import shutil
 import tempfile
 from dataclasses import dataclass, field
@@ -20,6 +21,8 @@ from python_multipart.multipart import MultipartParser, parse_options_header
 
 from ezmd_api.errors import ApiError
 from ezmd_api.util import sanitize_filename
+
+log = logging.getLogger("ezmd.api.uploads")
 
 MAX_FIELD_BYTES = 64 * 1024
 FORM_OVERHEAD_BYTES = 1024 * 1024
@@ -180,8 +183,19 @@ async def parse_multipart(
         collector.close()
         form.cleanup()
         raise
+    except OSError as e:
+        collector.close()
+        form.cleanup()
+        # Our disk (ENOSPC, EIO, ...), not the client's body: a logged server error, never a 400.
+        log.error("could not spool an upload: %s", e.strerror or type(e).__name__)
+        raise ApiError("internal_error", "The server could not store the upload. Try again later.") from None
     except Exception as e:
         collector.close()
         form.cleanup()
         raise ApiError("invalid_request", "Malformed multipart body.") from e
+    except BaseException:
+        # CancelledError (client went away) and friends: still remove the spooled file.
+        collector.close()
+        form.cleanup()
+        raise
     return form

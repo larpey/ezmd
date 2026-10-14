@@ -1189,7 +1189,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115" },
     { name = "pydantic-settings", specifier = ">=2.6" },
     { name = "pyjwt", specifier = ">=2.10" },
-    { name = "python-multipart", specifier = ">=0.0.18" },
+    { name = "python-multipart", specifier = ">=0.0.32" },
     { name = "redis", specifier = ">=5.2" },
     { name = "rq", specifier = ">=2.0" },
     { name = "sqlalchemy", specifier = ">=2.0.36" },

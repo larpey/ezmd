@@ -74,11 +74,15 @@ def limit_job_creation(request: Request, caller: Caller) -> None:
 
 
 def refund_hits(request: Request) -> None:
-    """Give back every window hit this request recorded (see REFUNDED_CODES)."""
+    """Give back every window hit, and the challenge-JWT use, this request recorded (see REFUNDED_CODES)."""
     state = _services(request).state
     for hit in getattr(request.state, "rate_hits", []):
         state.rate_refund(hit.key, hit.member)
     request.state.rate_hits = []
+    challenge = getattr(request.state, "challenge_use", None)
+    if challenge:
+        state.gauge_decr(challenge)
+        request.state.challenge_use = None
 
 
 def admit_job(request: Request, caller: Caller, *, created: bool = False) -> None:

@@ -408,7 +408,11 @@ async def _create_from_url(request: Request, services: Services, caller: Caller,
         row = services.jobs.require(row.id)
     else:
         enqueue_or_fail(services, row.id, queue)
-    response = await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    try:
+        response = await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    except ApiError as e:
+        # The job exists and the challenge was solved: the error response still carries the fresh cookie.
+        response = error_response(request, e)
     if challenge_jwt:
         response.set_cookie(
             CHALLENGE_COOKIE,

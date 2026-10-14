@@ -204,8 +204,12 @@ def check_challenge_jwt(settings: Settings, token: str, ip_hash: str) -> bool:
 def _spend_challenge(request: Request, settings: Settings, nonce: str) -> bool:
     """Count one use of the challenge `nonce`; False once it has covered CHALLENGE_MAX_USES jobs."""
     state = request.app.state.services.state
-    uses = int(state.gauge_incr(f"challenge:{nonce}", settings.turnstile_jwt_ttl_s + 5))
-    return uses <= CHALLENGE_MAX_USES
+    key = f"challenge:{nonce}"
+    uses = int(state.gauge_incr(key, settings.turnstile_jwt_ttl_s + 5))
+    if uses <= CHALLENGE_MAX_USES:
+        request.state.challenge_use = key  # given back by ratelimit.refund_hits if no job is created
+        return True
+    return False
 
 
 class TurnstileUnavailable(Exception):

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -165,3 +166,56 @@ async def test_413_and_429_do_not_spend_creation_tokens(settings_factory: Callab
         limited = await upload(client, b"fourth\n", "d.txt")
         assert limited.status_code == 429
         assert limited.json()["error"]["detail"]["window_seconds"] == 60
+
+
+class _StubRequest:
+    def __init__(self, chunks: list[bytes], fail: BaseException) -> None:
+        self.headers = {"content-type": "multipart/form-data; boundary=x"}
+        self._chunks = chunks
+        self._fail = fail
+
+    async def stream(self) -> Any:
+        for chunk in self._chunks:
+            yield chunk
+        raise self._fail
+
+
+BODY_START = b'--x\r\nContent-Disposition: form-data; name="file"; filename="a.txt"\r\n\r\nhello'
+
+
+async def test_cancelled_upload_removes_its_temp_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """Red team LOW: a client disconnect (CancelledError) left the spooled upload on /tmp."""
+    import asyncio
+    import tempfile
+
+    from ezmd_api.uploads import parse_multipart
+
+    made: list[str] = []
+    real = tempfile.mkdtemp
+
+    def mkdtemp(**kw: Any) -> str:
+        made.append(real(dir=tmp_path, **kw))
+        return made[-1]
+
+    monkeypatch.setattr(tempfile, "mkdtemp", mkdtemp)
+    with pytest.raises(asyncio.CancelledError):
+        await parse_multipart(_StubRequest([BODY_START], asyncio.CancelledError()), max_file_bytes=1024)  # type: ignore[arg-type]
+    assert made and not Path(made[0]).exists()
+
+
+async def test_disk_full_is_a_logged_5xx(monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture) -> None:
+    """Red team LOW: ENOSPC while spooling answered 400 "Malformed multipart body"."""
+    import errno
+
+    from ezmd_api import uploads
+    from ezmd_api.errors import ApiError
+
+    def full(self: Any, data: bytes, start: int, end: int) -> None:
+        raise OSError(errno.ENOSPC, "No space left on device")
+
+    monkeypatch.setattr(uploads._Collector, "on_part_data", full)
+    with pytest.raises(ApiError) as info:
+        await uploads.parse_multipart(_StubRequest([BODY_START], StopAsyncIteration()), max_file_bytes=1024)  # type: ignore[arg-type]
+    assert info.value.status >= 500
+    assert info.value.code == "internal_error"
+    assert any(r.levelname == "ERROR" for r in caplog.records)
