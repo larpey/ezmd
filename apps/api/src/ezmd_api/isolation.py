@@ -21,13 +21,11 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
+from ezmd.core.sandbox import nproc_limit
+
 KILL_GRACE_SECONDS = 30
 TICK_SECONDS = 5.0
 FSIZE_LIMIT_BYTES = 2 * 1024 * 1024 * 1024
-NPROC_FALLBACK = 4096
-"""RLIMIT_NPROC when no cgroup pids limit applies. RLIMIT_NPROC counts every thread of the uid on the whole
-kernel (all containers running as 10001), so it is only a backstop; 64 broke Magika's numpy import (D-0047)."""
-CGROUP_PIDS_MAX = (Path("/sys/fs/cgroup/pids.max"), Path("/sys/fs/cgroup/pids/pids.max"))
 THREAD_POOL_ENV = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
 CHILD_THREADS = 4
 """Default size of the OpenMP/BLAS pools in the child (they otherwise start a thread per host core)."""
@@ -66,17 +64,6 @@ class ChildOutcome:
     """What the child claimed. Advisory only: the parent never routes on it (D-0017 item 4)."""
     fetch_depth: int = 0
     extra: dict[str, Any] = field(default_factory=dict)
-
-
-def nproc_limit(cgroup_files: tuple[Path, ...] | list[Path] = CGROUP_PIDS_MAX) -> int | None:
-    """None when a cgroup pids limit already caps this container (compose sets `pids`), else NPROC_FALLBACK."""
-    for path in cgroup_files:
-        try:
-            if path.read_text(encoding="ascii").strip().isdigit():
-                return None
-        except OSError:
-            pass  # not this cgroup version, or no pids controller
-    return NPROC_FALLBACK
 
 
 def cap_thread_pools(env: MutableMapping[str, str]) -> None:

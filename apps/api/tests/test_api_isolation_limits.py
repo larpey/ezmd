@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from ezmd.core import sandbox
 from ezmd_api import isolation
 
 
@@ -24,10 +25,10 @@ def test_cgroup_v1_path_is_read_too(tmp_path: Path) -> None:
 def test_unlimited_or_absent_cgroup_falls_back_to_a_backstop(tmp_path: Path) -> None:
     unlimited = tmp_path / "pids.max"
     unlimited.write_text("max\n", encoding="utf-8")
-    assert isolation.nproc_limit([unlimited]) == isolation.NPROC_FALLBACK
-    assert isolation.nproc_limit([tmp_path / "nope"]) == isolation.NPROC_FALLBACK
+    assert isolation.nproc_limit([unlimited]) == sandbox.NPROC_FALLBACK
+    assert isolation.nproc_limit([tmp_path / "nope"]) == sandbox.NPROC_FALLBACK
     # Magika's numpy/OpenBLAS and ONNX Runtime start a thread per core; 64 failed on a 24-core host.
-    assert isolation.NPROC_FALLBACK >= 1024
+    assert sandbox.NPROC_FALLBACK >= 1024
 
 
 def test_child_caps_math_library_thread_pools() -> None:

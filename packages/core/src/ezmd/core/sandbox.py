@@ -22,7 +22,7 @@ import sys
 import threading
 import time
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import IO
 
@@ -41,6 +41,24 @@ class SandboxTimeout(SandboxError):
         self.result = result
 
 
+NPROC_FALLBACK = 4096
+"""RLIMIT_NPROC when no cgroup pids limit applies. RLIMIT_NPROC counts every thread of the uid on the whole
+kernel (every container running as the same uid, or a desktop session's browser), so it is only a backstop;
+64 stopped soffice, bwrap and pandoc from starting threads (D-0047)."""
+CGROUP_PIDS_MAX = (Path("/sys/fs/cgroup/pids.max"), Path("/sys/fs/cgroup/pids/pids.max"))
+
+
+def nproc_limit(cgroup_files: Sequence[Path] = CGROUP_PIDS_MAX) -> int | None:
+    """None when a cgroup pids limit already caps this container (compose sets `pids`), else NPROC_FALLBACK."""
+    for path in cgroup_files:
+        try:
+            if path.read_text(encoding="ascii").strip().isdigit():
+                return None
+        except OSError:
+            pass  # not this cgroup version, or no pids controller
+    return NPROC_FALLBACK
+
+
 @dataclass(slots=True, frozen=True)
 class Limits:
     """Per-process POSIX resource limits. None leaves the inherited limit in place."""
@@ -48,7 +66,7 @@ class Limits:
     mem_mb: int | None = 4096
     cpu_seconds: int | None = None
     fsize_mb: int | None = 2048
-    nproc: int | None = 64
+    nproc: int | None = field(default_factory=nproc_limit)
 
 
 @dataclass(slots=True)

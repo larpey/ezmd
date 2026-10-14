@@ -72,3 +72,20 @@ def test_ffmpeg_flag_injection() -> None:
 def test_bwrap_wraps() -> None:
     r = run(["/bin/true"], timeout=10)
     assert r.sandboxed_with == "bwrap"
+
+
+def test_default_process_limit_defers_to_a_cgroup_pids_limit(tmp_path: Path) -> None:
+    """RLIMIT_NPROC counts every thread of the uid on the whole kernel, so 64 broke soffice, bwrap and
+    pandoc in the worker (all containers run as uid 10001) and on any Linux desktop with a browser open."""
+    from ezmd.core import sandbox
+
+    capped = tmp_path / "pids.max"
+    capped.write_text("256\n", encoding="ascii")
+    unlimited = tmp_path / "pids.max.unlimited"
+    unlimited.write_text("max\n", encoding="ascii")
+    assert sandbox.nproc_limit([capped]) is None
+    assert sandbox.nproc_limit([tmp_path / "missing", capped]) is None
+    assert sandbox.nproc_limit([unlimited]) == sandbox.NPROC_FALLBACK
+    assert sandbox.nproc_limit([tmp_path / "missing"]) == sandbox.NPROC_FALLBACK
+    assert sandbox.NPROC_FALLBACK >= 1024
+    assert sandbox.Limits().nproc in (None, sandbox.NPROC_FALLBACK)
