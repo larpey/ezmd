@@ -27,6 +27,10 @@ _SUGGESTIONS: dict[str, str] = {
     ),
     "conversion_failed": "The file may be damaged or in an unsupported variant. Try another copy or format.",
     "experimental_disabled": "Only an experimental converter handles this input; enable experimental converters.",
+    "sandbox_unavailable": (
+        "This server requires a sandbox for LibreOffice and bubblewrap is not available; convert the file to "
+        "DOCX, XLSX or PPTX first, or ask the operator to install bubblewrap."
+    ),
     "timeout": "The conversion took too long. Try a smaller input or raise max_seconds.",
     "not_found": "The job is unknown or expired. Convert the source again.",
     "job_not_found": "The job is unknown or expired. Convert the source again.",

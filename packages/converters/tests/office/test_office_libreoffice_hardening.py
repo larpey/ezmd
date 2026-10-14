@@ -79,6 +79,9 @@ def test_required_sandbox_without_bwrap_refuses(monkeypatch: pytest.MonkeyPatch,
     with pytest.raises(ConversionError) as e:
         LibreOfficeConverter().convert(_ref(), opts)
     assert calls == [] and "sandbox" in e.value.user_message and "bubblewrap" in e.value.user_message
+    # a configuration problem, not a transient one: a stable code, and no retry or fallback
+    assert e.value.code == "sandbox_unavailable" and not e.value.retryable_with_fallback
+    assert "EZMD_REQUIRE_SANDBOX" in e.value.user_message
 
 
 def test_required_sandbox_defaults_on_for_servers(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

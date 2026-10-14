@@ -20,6 +20,8 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="unsupported_media_type"></a>`unsupported_media_type` | 415 | The detected type is not supported, or it is an executable. |
 | <a id="url_blocked"></a>`url_blocked` | 422 | The URL failed the SSRF guard: disallowed scheme, userinfo, or a private, loopback, link-local, or metadata address. |
 | <a id="platform_disabled"></a>`platform_disabled` | 422 | The host is disabled by this instance's platform policy. |
+| <a id="extra_required"></a>`extra_required` | 422 | Every converter for this type needs an optional extra this instance does not have installed (for example `ezmd[data]` for Parquet). |
+| <a id="sandbox_unavailable"></a>`sandbox_unavailable` | 422 | The converter must run sandboxed on this instance (`EZMD_REQUIRE_SANDBOX`) and bubblewrap is not available. Not retried. |
 | <a id="experimental_disabled"></a>`experimental_disabled` | 422 | Only an experimental converter handles this input, and experimental converters are turned off on this instance. |
 | <a id="fetch_depth_exceeded"></a>`fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than allowed. |
 | <a id="result_too_large"></a>`result_too_large` | 422 | The conversion result exceeded `EZMD_MAX_RESULT_BYTES`. |
@@ -28,6 +30,7 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="internal_error"></a>`internal_error` | 500 | An unexpected server error; quote the `request_id` when reporting it. |
 | <a id="not_implemented"></a>`not_implemented` | 501 | The feature exists in the contract but is not built yet (for example `format=docx`). |
 | <a id="fetch_failed"></a>`fetch_failed` | 502 | The URL could not be fetched. |
+| <a id="turnstile_unavailable"></a>`turnstile_unavailable` | 503 | Turnstile verification is required but Cloudflare could not be reached; retry later. |
 | <a id="queue_unavailable"></a>`queue_unavailable` | 503 | The queue is down or the global active-job cap is reached; retry after `Retry-After` seconds. |
 | <a id="timeout"></a>`timeout` | 504 | The conversion exceeded its time limit. |
 

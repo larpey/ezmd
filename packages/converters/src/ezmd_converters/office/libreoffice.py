@@ -25,7 +25,7 @@ from ezmd.context import Limits
 from ezmd.core import sandbox
 from ezmd.inputs import InputRef
 from ezmd.ir import Document, Metadata, SourceType, Warning, WarningKind
-from ezmd.registry import ConversionError, ConvertOptions
+from ezmd.registry import SANDBOX_UNAVAILABLE, ConversionError, ConvertOptions
 from ezmd_converters.office._common import (
     FAMILY,
     LEGACY_EXTS,
@@ -120,9 +120,12 @@ def _check_sandbox(options: ConvertOptions) -> None:
         raise ConversionError(
             "LibreOffice needs a sandbox (office.require_sandbox) and bubblewrap cannot run here",
             user_message=(
-                "LibreOffice conversion needs a sandbox on this server, and bubblewrap (bwrap) is not available. "
-                "Install bubblewrap, or set office.require_sandbox=false for trusted input."
+                "LibreOffice conversion needs a sandbox on this server (EZMD_REQUIRE_SANDBOX or "
+                "office.require_sandbox), and bubblewrap (bwrap) cannot run here. Install bubblewrap, or unset "
+                "EZMD_REQUIRE_SANDBOX / set office.require_sandbox=false for trusted input."
             ),
+            retryable_with_fallback=False,
+            code=SANDBOX_UNAVAILABLE,
         )
     if not _warned:
         _warned = True

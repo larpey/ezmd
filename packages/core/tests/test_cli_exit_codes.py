@@ -121,3 +121,11 @@ def test_library_and_netguard_raise_scheme_not_allowed() -> None:
     assert isinstance(e.value, UrlBlocked) and str(e.value).startswith("scheme 'ftp'")
     with pytest.raises(SchemeNotAllowed):
         validate_url("gopher://example.com/")
+
+
+def test_sandbox_unavailable_maps_to_exit_2() -> None:
+    from ezmd.cli.exitcodes import EXIT_ARGS, classify
+    from ezmd.registry import SANDBOX_UNAVAILABLE, ConversionError
+
+    f = classify(ConversionError("x", user_message="Install bubblewrap.", code=SANDBOX_UNAVAILABLE))
+    assert (f.exit_code, f.code) == (EXIT_ARGS, "sandbox_unavailable")

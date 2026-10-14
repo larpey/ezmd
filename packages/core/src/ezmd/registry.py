@@ -32,6 +32,9 @@ UNSUPPORTED_MEDIA_TYPE = "unsupported_media_type"
 """No converter handles the detected type, or the type is refused (executables)."""
 EXTRA_REQUIRED = "extra_required"
 """Every converter that could handle the input needs an optional extra that is not installed."""
+SANDBOX_UNAVAILABLE = "sandbox_unavailable"
+"""The converter must run an external program sandboxed (office.require_sandbox) and bubblewrap cannot run:
+a configuration problem, never retried (D-0056)."""
 
 
 class ConversionError(Exception):

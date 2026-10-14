@@ -8,7 +8,8 @@ All notable changes are generated from Conventional Commits. This project uses s
 - LibreOffice's profile now disables active content (OLE, DDE) and Python, blocks untrusted links, never
   updates links, fields or charts, and never recalculates on load, so linked files and URLs and
   `WEBSERVICE()` are not fetched. `office.require_sandbox` (default on with `EZMD_REQUIRE_SANDBOX=1` or
-  `EZMD_SERVER=1`) refuses to run LibreOffice without bubblewrap; local runs without it log a warning (D-0056).
+  `EZMD_SERVER=1`) refuses to run LibreOffice without bubblewrap with the error code `sandbox_unavailable`
+  (not retried); local runs without it log a warning (D-0056).
 - Archive and package limits now count every decompressed byte (skipped tar members, 7z entries in a solid
   block that are not kept, documents inside archives), refuse oversized zip directories before parsing
   them, DOCTYPE-check every XML-looking package part, and keep Docling offline even when `HF_HUB_OFFLINE=0`
@@ -45,7 +46,7 @@ All notable changes are generated from Conventional Commits. This project uses s
   a trailing site name; MediaWiki references become footnotes (`[^n]`) instead of digits glued to the text;
   unresolved references keep their brackets; empty table rows (image-only infobox rows) are dropped (D-0053).
 - Web tables whose cells Trafilatura cannot read (lists in divs, inline-block divs, as in Wikipedia
-  infoboxes) are converted from the page's own table instead of coming out with empty cells (D-0060).
+  infoboxes) are converted from the page's own table instead of coming out with empty cells (D-0070).
 - A missing optional extra exits 2 (`extra_required`) for every input type; Parquet exited 1 and 7z 3.
   Unsupported types carry the stable code `unsupported_media_type` (exit 6) instead of being recognized by
   their message (D-0054).

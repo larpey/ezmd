@@ -37,6 +37,7 @@ API_EXIT_CODES: dict[str, int] = {
     "unsupported_media_type": EXIT_UNSUPPORTED,
     "experimental_disabled": EXIT_UNSUPPORTED,
     "extra_required": EXIT_ARGS,
+    "sandbox_unavailable": EXIT_ARGS,
 }
 """REST error codes (docs/errors.md) to CLI exit codes; anything else is a generic failure (1)."""
 
@@ -66,7 +67,13 @@ def classify(e: BaseException) -> Failure:
     from ezmd.core.netguard import NetguardError, PlatformDisabled, ResidentialOnly, ResponseTooLarge, SchemeNotAllowed
     from ezmd.inputs import FetchRequired, InputTooLarge
     from ezmd.pipeline import UnsupportedMediaType
-    from ezmd.registry import EXPERIMENTAL_DISABLED, EXTRA_REQUIRED, UNSUPPORTED_MEDIA_TYPE, ConversionError
+    from ezmd.registry import (
+        EXPERIMENTAL_DISABLED,
+        EXTRA_REQUIRED,
+        SANDBOX_UNAVAILABLE,
+        UNSUPPORTED_MEDIA_TYPE,
+        ConversionError,
+    )
 
     if isinstance(e, RemoteError):
         code = API_EXIT_CODES.get(e.code, EXIT_FAIL)
@@ -79,6 +86,8 @@ def classify(e: BaseException) -> Failure:
             return Failure(EXIT_UNSUPPORTED, e.code, e.user_message)
         if e.code == EXTRA_REQUIRED:
             return Failure(EXIT_ARGS, e.code, e.user_message, "extra_required")
+        if e.code == SANDBOX_UNAVAILABLE:  # a missing dependency of this deployment
+            return Failure(EXIT_ARGS, e.code, e.user_message, "other")
         return Failure(EXIT_FAIL, e.code, e.user_message)
     if isinstance(e, (InputTooLarge, ResponseTooLarge)):
         return Failure(EXIT_TOO_LARGE, "input_too_large", str(e) or "Input too large.", "size_cap")
