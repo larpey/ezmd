@@ -662,3 +662,13 @@ Context: on en.wikipedia.org/wiki/Markdown (default engine, compact profile) the
 Decision: when an XML table matches nothing, `DomIndex.find_table` picks the first unused DOM table (at or after the current position, then anywhere) that contains at least 80 percent (`TABLE_CELL_MATCH`) of the XML table's non-empty cell texts, with at least 4 cells; the DOM table is then converted as usual (cells keep their lists and inline-block content, D-0053 drops the empty image row, references resolve).
 Evidence: the saved page from install-tests now renders the infobox like the rule-based engine does; a self-written infobox fixture covers both engines.
 Council: not convened (bug fix).
+
+## D-0071: Plain text and Markdown truncate at 50 MB
+Date: 2026-10-14
+Task: pre-0.1.0 test pass (rc5 stack retest, B3 follow-up)
+Status: accepted
+Context: the rc5 stack retest accepted anonymous text uploads up to the 200 MB tier cap, then worker-default was OOM-killed on 150 MB and larger (99 MB took 129 s). The raw bytes, the decoded string, the cleaned copy and the block tree are all in memory at once, which exceeds the 3 GB conversion budget. docs/spec/part2.md 13.4 already caps plain text, Markdown and LaTeX at 50 MB locally (10 MB public) with "truncate with marker"; the converters did not apply it.
+Decision: `text.plain` and `text.markdown_passthrough` read at most `extra.text.max_bytes` (default 50 MiB), cut at the last line break inside the cap, set `Document.truncated`, and add one `size_cap` warning naming the cap. The public 10 MB value waits for the limits profile.
+Alternatives: lowering the API's anonymous upload cap would also refuse large PDFs and archives, whose converters stream; raising worker memory only moves the cliff.
+Consequences: a 199 MB text upload converts its first 50 MB instead of failing. Converters that fall back to `text.plain` (source files, unknown `text/*`) get the same cap.
+Council: not convened (spec conformance fix).

@@ -32,6 +32,7 @@ from ezmd.ir import (
     WarningKind,
 )
 from ezmd.registry import ConversionError, ConvertOptions
+from ezmd_converters.text.common import mark_truncated, read_capped
 from ezmd_converters.text.lines import LINE_BREAKS_ATTR, LINE_BREAKS_HARD, join_lines
 
 _UNDERLINE = re.compile(r"^(=+|-+)\s*$")
@@ -172,10 +173,12 @@ class PlainTextConverter:
         return 0.0
 
     def convert(self, ref: InputRef, options: ConvertOptions) -> Document:
-        raw = ref.read()
+        raw, cap = read_capped(ref, options)
         source = ref.display
         meta = Metadata(source=source, source_type=SourceType.TEXT, mime=ref.detected.mime if ref.detected else None)
         doc = Document(metadata=meta)
+        if cap is not None:
+            mark_truncated(doc, cap)
         if not raw.strip():
             doc.warnings.append(
                 Warning(kind=WarningKind.EXTRACTION_EMPTY, severity="error", message="The file contains no text.")

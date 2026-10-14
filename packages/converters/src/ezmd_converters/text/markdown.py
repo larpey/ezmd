@@ -42,6 +42,7 @@ from ezmd.ir import (
     WarningKind,
 )
 from ezmd.registry import ConvertOptions
+from ezmd_converters.text.common import mark_truncated, read_capped
 from ezmd_converters.text.plain import decode_text_detailed
 
 
@@ -393,9 +394,11 @@ class MarkdownPassthroughConverter:
         return 0.0
 
     def convert(self, ref: InputRef, options: ConvertOptions) -> Document:
-        raw = ref.read()
+        raw, cap = read_capped(ref, options)
         meta = Metadata(source=ref.display, source_type=SourceType.MARKUP, mime="text/markdown")
         doc = Document(metadata=meta)
+        if cap is not None:
+            mark_truncated(doc, cap)
         if not raw.strip():
             doc.warnings.append(
                 Warning(kind=WarningKind.EXTRACTION_EMPTY, severity="error", message="The file contains no text.")

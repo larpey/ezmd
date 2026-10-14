@@ -14,6 +14,12 @@ plugin](../plugins.md).
 Fallback chains: `text/plain` uses `text.plain`; `text/markdown` tries `text.markdown_passthrough`, then
 `text.plain`.
 
+## Options (`ConvertOptions.extra`, CLI `--opt extra.text.<name>=...`)
+
+| Option | Default | Meaning |
+|---|---|---|
+| `max_bytes` | 52428800 (50 MB) | Larger files are cut at the last line break before this many bytes; the result is marked `truncated` with a `size_cap` warning. |
+
 ## Fixtures
 
 `fixtures/text/`: `markdown-kitchen-sink`, `plain-latin1`, `plain-utf8`, `plain-utf8-bom`. Thresholds are
