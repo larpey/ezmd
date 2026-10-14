@@ -62,6 +62,14 @@ class Settings(BaseSettings):
     worker_default_concurrency: int = Field(default=2, ge=1)
     worker_media_concurrency: int = Field(default=1, ge=1)
     max_active_jobs: int | None = None
+    max_active_anon_jobs: int | None = Field(
+        default=None,
+        ge=1,
+        description=(
+            "Active anonymous jobs allowed at once, so anonymous traffic cannot fill the whole active-job cap. "
+            "Unset: the cap minus a third of it (at least one slot stays free for API keys)."
+        ),
+    )
     residential_wait_seconds: int = Field(default=180, ge=0)
     max_result_bytes: int = Field(default=256 * MIB, ge=1024)
     """Cap on the IR JSON a conversion child may hand back (D-0017 item 6)."""
@@ -183,6 +191,13 @@ class Settings(BaseSettings):
         if self.max_active_jobs is not None:
             return self.max_active_jobs
         return 2 * (self.worker_default_concurrency + self.worker_media_concurrency)
+
+    @property
+    def anon_active_job_cap(self) -> int:
+        if self.max_active_anon_jobs is not None:
+            return min(self.max_active_anon_jobs, self.active_job_cap)
+        cap = self.active_job_cap
+        return max(1, cap - max(1, cap // 3))
 
     @property
     def retention_seconds(self) -> int:

@@ -298,6 +298,7 @@ Field `foo_bar` is read from `EZMD_FOO_BAR`. Comma lists are plain comma-separat
 | `EZMD_WORKER_DEFAULT_CONCURRENCY` | int | `2` | Default-queue worker slots. Used to size the global active-job cap. |
 | `EZMD_WORKER_MEDIA_CONCURRENCY` | int | `1` | Media-queue worker slots. Used to size the global active-job cap. |
 | `EZMD_MAX_ACTIVE_JOBS` | int | unset | Global cap on queued and running jobs; beyond it the API answers `queue_unavailable`. Unset: 2 x (default + media worker slots). |
+| `EZMD_MAX_ACTIVE_ANON_JOBS` | int | unset | Active anonymous jobs allowed at once, so anonymous traffic cannot fill the whole active-job cap. Unset: the cap minus a third of it (at least one slot stays free for API keys). |
 | `EZMD_RESIDENTIAL_WAIT_SECONDS` | int | `180` | How long a residential-only fetch job waits while no fetch node is online before it asks the user to upload the file instead (`needs_user_action`). |
 | `EZMD_MAX_RESULT_BYTES` | int | `268435456` | Largest IR JSON a conversion child process may hand back, in bytes; larger results fail with `result_too_large`. |
 

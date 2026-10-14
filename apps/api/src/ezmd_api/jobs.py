@@ -91,12 +91,16 @@ class JobStore:
             raise JobGone(job_id)
         return row
 
-    def count_active(self, *, client_ip_hash: str | None = None, api_key_id: str | None = None) -> int:
+    def count_active(
+        self, *, client_ip_hash: str | None = None, api_key_id: str | None = None, anonymous: bool = False
+    ) -> int:
         stmt = select(func.count()).select_from(JobRow).where(JobRow.state.in_(ACTIVE_STATES))
         if api_key_id is not None:
             stmt = stmt.where(JobRow.api_key_id == api_key_id)
         elif client_ip_hash is not None:
             stmt = stmt.where(JobRow.client_ip_hash == client_ip_hash, JobRow.api_key_id.is_(None))
+        elif anonymous:
+            stmt = stmt.where(JobRow.api_key_id.is_(None))
         with self.db.session() as s:
             return int(s.execute(stmt).scalar_one())
 

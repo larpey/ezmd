@@ -53,7 +53,7 @@ def enforce(request: Request, bucket: str, identity: str, limit: int, window_s: 
         raise ApiError(
             "rate_limited",
             "Too many requests. Try again later.",
-            detail={"limit": limit, "window_seconds": window_s},
+            detail={"reason": "rate", "limit": limit, "window_seconds": window_s},
             headers=headers,
         )
     return result
@@ -81,10 +81,19 @@ def refund_hits(request: Request) -> None:
     request.state.rate_hits = []
 
 
-def admit_job(request: Request, caller: Caller) -> None:
-    """Concurrency admission before enqueue: per caller, then the global active-job cap."""
+def admit_job(request: Request, caller: Caller, *, created: bool = False) -> None:
+    """Concurrency admission: per caller, the anonymous share of the global cap, then the global cap.
+
+    Called twice per job (D-0051): before the row exists (`created=False`, a cheap early refusal) and
+    right after it was inserted (`created=True`, the counts include it). Two parallel requests can both
+    pass the first check, but whichever counts second sees both rows and is refused, so a burst never
+    admits more than the limit. The caller deletes its row when the second check raises."""
     services = _services(request)
     s = services.settings
+
+    def over(active: int, limit: int) -> bool:
+        return active > limit if created else active >= limit
+
     if not caller.unlimited:
         if caller.api_key is not None:
             limit = caller.api_key.concurrency
@@ -92,21 +101,56 @@ def admit_job(request: Request, caller: Caller) -> None:
         else:
             limit = s.anon_concurrency
             active = services.jobs.count_active(client_ip_hash=caller.ip_hash)
-        if active >= limit:
+        if over(active, limit):
             record_rate_limited(services.state, "concurrency")
             raise ApiError(
                 "rate_limited",
                 "Your previous conversion is still running. Try again when it finishes.",
-                detail={"concurrent_limit": limit, "active": active},
+                detail={"reason": "concurrency", "concurrent_limit": limit, "active": active},
                 headers={"Retry-After": "5"},
             )
-    if services.jobs.count_active() >= s.active_job_cap:
+    anon_full = caller.api_key is None and over(services.jobs.count_active(anonymous=True), s.anon_active_job_cap)
+    if anon_full or over(services.jobs.count_active(), s.active_job_cap):
         record_rate_limited(services.state, "active_job_cap")
         raise ApiError(
             "queue_unavailable",
             "The server is busy. Try again shortly.",
             headers={"Retry-After": str(QUEUE_RETRY_AFTER_SECONDS)},
         )
+
+
+UPLOAD_SLOT_TTL_S = 3600
+"""Upper bound on how long a crashed process can hold an upload slot (a slot is released in `finally`)."""
+
+
+def upload_slot_key(identity: str) -> str:
+    return f"upload:{identity}"
+
+
+def take_upload_slot(request: Request, caller: Caller) -> str | None:
+    """Reserve one in-flight upload for this caller before its body is read, so a caller cannot stream
+    many large bodies to disk at once: at most its concurrency limit at a time (D-0051). Returns the slot
+    key for `release_upload_slot`, or None for unlimited keys."""
+    if caller.unlimited:
+        return None
+    services = _services(request)
+    limit = caller.api_key.concurrency if caller.api_key is not None else services.settings.anon_concurrency
+    key = upload_slot_key(caller.identity)
+    if services.state.gauge_incr(key, UPLOAD_SLOT_TTL_S) > limit:
+        services.state.gauge_decr(key)
+        record_rate_limited(services.state, "upload_slot")
+        raise ApiError(
+            "rate_limited",
+            "Another upload from you is still in progress. Try again when it finishes.",
+            detail={"reason": "upload_in_progress", "concurrent_limit": limit},
+            headers={"Retry-After": "5"},
+        )
+    return key
+
+
+def release_upload_slot(request: Request, key: str | None) -> None:
+    if key is not None:
+        _services(request).state.gauge_decr(key)
 
 
 def limit_result_fetch(request: Request, caller: Caller) -> None:

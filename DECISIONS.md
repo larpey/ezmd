@@ -497,3 +497,13 @@ Decision: anonymous dedup always adds `client_ip_hash` to the lookup; keyed dedu
 Alternatives: return a fresh job that reuses the cached IR (saves the conversion but needs a copy path for blobs; possible later); bind anonymous jobs to their IP for reads and deletes (breaks result links shared on purpose, which the threat model accepts).
 Consequences: two anonymous users of a private instance who convert the same file each pay for the conversion.
 Council: not convened (audit fix).
+
+## D-0051: Admission is re-checked after the job row exists; anonymous jobs get a share of the cap; one upload slot per caller
+Date: 2026-10-13
+Task: audit (rc5 red team, uploads and rate limits)
+Status: accepted
+Context: `admit_job` counted active rows and the row was inserted later (after a multi-second blob write for large uploads), so a burst of parallel uploads from one IP was admitted as 2 jobs at `anon_concurrency=1` (confirmed live at N=8 and N=25); the same window existed for URL jobs and the global cap. Anonymous traffic alone could fill the global cap (default 6), so API keys got 503. Admission ran only after the whole body was parsed, so one caller could stream many large bodies at once.
+Decision: (1) The row is inserted first, then `admit_job(created=True)` counts again with it included and the row is deleted when that refuses; two racing requests can both be refused, never both admitted. For uploads the input blob is written after admission and the row is removed if the write fails. A cheap pre-check still runs before the body is read. (2) Anonymous active jobs are capped at `EZMD_MAX_ACTIVE_ANON_JOBS` (default: the cap minus a third, at least one slot left for keys), 503 `queue_unavailable` beyond it. (3) Before the body is read a caller takes an upload slot (`gauge_incr` on `upload:<identity>`, at most its concurrency limit, released in `finally`, TTL 1 h as a crash bound); a second parallel upload is 429 without reading its body. 429 bodies carry `detail.reason`: `rate`, `concurrency` or `upload_in_progress`. The error code stays `rate_limited`: part1 7.5 lists the codes, and clients branch on `reason`.
+Alternatives: a Redis slot released on every terminal transition (every state change in the API, workers, reaper and admin would have to release it exactly once; the row count is already the truth); a new `concurrency_limited` code (a contract change for a distinction `detail.reason` already makes).
+Deferred: spooling uploads to a disk-backed volume and a global in-flight-bytes cap (the red team's OOM run did not reproduce: five 160 MB uploads peaked at 262 MiB of the api's 1 GiB).
+Council: not convened (audit fix).

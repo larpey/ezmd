@@ -22,7 +22,14 @@ from ezmd_api.errors import ApiError, error_response
 from ezmd_api.fetching import input_key, route_residential
 from ezmd_api.fetchpolicy import DISABLED, policy_state, wants_residential
 from ezmd_api.jobs import DONE, FAILED, NEEDS_USER_ACTION, QUEUED
-from ezmd_api.ratelimit import REFUNDED_CODES, admit_job, limit_job_creation, refund_hits
+from ezmd_api.ratelimit import (
+    REFUNDED_CODES,
+    admit_job,
+    limit_job_creation,
+    refund_hits,
+    release_upload_slot,
+    take_upload_slot,
+)
 from ezmd_api.rendering import FORMATS, RenderUnavailable, render_cached
 from ezmd_api.routes.common import (
     enqueue_or_fail,
@@ -260,6 +267,20 @@ async def create_job(
 
 
 async def _create_from_upload(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:
+    admit_job(request, caller)  # refuse before reading a body that could not become a job
+    slot = take_upload_slot(request, caller)
+    try:
+        row, deduplicated = await _store_upload(request, services, caller)
+    finally:
+        release_upload_slot(request, slot)
+    if not deduplicated:
+        enqueue_or_fail(services, row.id, row.queue)
+    return await _respond(request, services, row, deduplicated=deduplicated, wait=wait, fmt=fmt, profile=row.profile)
+
+
+async def _store_upload(request: Request, services: Services, caller: Caller) -> tuple[JobRow, bool]:
+    """Parse, detect, dedup, admit and store one upload: (existing job, True) or (new row with its input
+    stored, False)."""
     form = await parse_multipart(request, max_file_bytes=max_upload_for(caller, services))
     try:
         upload = form.files.get("file")
@@ -273,10 +294,8 @@ async def _create_from_upload(request: Request, services: Services, caller: Call
         idem = _idempotency(request, caller, services)
         existing = _find_existing(services, caller, upload.sha256, options_json, profile, idem)
         if existing is not None:
-            return await _respond(request, services, existing, deduplicated=True, wait=wait, fmt=fmt, profile=profile)
-        admit_job(request, caller)
+            return existing, True
         job_id = new_job_id()
-        services.blobs.put_file(input_key(job_id), upload.path)
         queue = q.queue_for_mime(mime)
         row = _new_row(
             caller,
@@ -294,11 +313,26 @@ async def _create_from_upload(request: Request, services: Services, caller: Call
             queue=queue,
             blob_input=input_key(job_id),
         )
+        _create_admitted(request, services, caller, row)
+        try:
+            services.blobs.put_file(input_key(job_id), upload.path)
+        except BaseException:
+            services.jobs.delete(job_id)
+            services.blobs.delete_prefix(f"jobs/{job_id}/")
+            raise
+        return row, False
     finally:
         form.cleanup()
+
+
+def _create_admitted(request: Request, services: Services, caller: Caller, row: JobRow) -> None:
+    """Insert the row, then re-run admission with it counted; remove it again when that refuses (D-0051)."""
     services.jobs.create(row)
-    enqueue_or_fail(services, job_id, queue)
-    return await _respond(request, services, row, deduplicated=False, wait=wait, fmt=fmt, profile=profile)
+    try:
+        admit_job(request, caller, created=True)
+    except ApiError:
+        services.jobs.delete(row.id)
+        raise
 
 
 def _detect_upload(upload: UploadedFile) -> str:
@@ -368,7 +402,7 @@ async def _create_from_url(request: Request, services: Services, caller: Caller,
         options_json=options_json,
         queue=queue,
     )
-    services.jobs.create(row)
+    _create_admitted(request, services, caller, row)
     if queue == q.FETCH_RESIDENTIAL:
         route_residential(services, row.id)
         row = services.jobs.require(row.id)
