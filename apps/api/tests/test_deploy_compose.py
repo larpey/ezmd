@@ -113,3 +113,16 @@ def test_caddy_sets_x_real_ip_on_every_api_proxy() -> None:
                 break
             block.append(line.strip())
         assert "header_up X-Real-IP {client_ip}" in block, f"line {i + 1}"
+
+
+def test_caddy_access_log_never_records_job_ids() -> None:
+    """F3: a job id grants access to the job; the access log keeps the path shape, never the id."""
+    import re
+
+    text = (COMPOSE.parent / "Caddyfile").read_text(encoding="utf-8")
+    line = next(ln.strip() for ln in text.splitlines() if ln.strip().startswith("request>uri regexp"))
+    pattern, repl = re.findall(r'"([^"]*)"', line)
+    sub = re.sub(
+        pattern, repl.replace("${1}", r"\1").replace("${2}", r"\2"), "/v1/jobs/job_abc/result?format=md&token=t"
+    )
+    assert sub == "/v1/jobs/REDACTED/result?format=md&token=REDACTED"

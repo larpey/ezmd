@@ -139,10 +139,9 @@ http://:9180 {
 					ipv4 24
 					ipv6 48
 				}
-				request>uri query {
-					delete token
-					delete key
-				}
+				# A job id is the capability for its job, so it never reaches the log (red-team F3); nor do
+				# token/key query values. One regexp does both (this Caddy has no `multiple` filter).
+				request>uri regexp "(/v1/jobs/)[^/?&]+|([?&](?:token|key)=)[^&]*" "${1}${2}REDACTED"
 			}
 		}
 	}
