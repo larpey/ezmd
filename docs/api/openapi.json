@@ -1190,7 +1190,7 @@
       "name": "Apache-2.0"
     },
     "title": "ezmd API",
-    "version": "0.0.1"
+    "version": "0.1.0rc4"
   },
   "openapi": "3.1.0",
   "paths": {

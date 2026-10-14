@@ -122,3 +122,16 @@ def test_env_example_has_no_inline_comments() -> None:
         if line[:1].isupper() and "=" in line and "#" in line.split("=", 1)[1]
     ]
     assert bad == [], f"put comments on their own line: {bad}"
+
+
+async def test_api_reports_its_package_version(client: httpx.AsyncClient) -> None:
+    """S7: the API said 0.0.1 while the package was 0.1.0rcN; the version comes from package metadata."""
+    import importlib.metadata
+    import tomllib
+
+    from ezmd_api import __version__
+
+    pyproject = tomllib.loads((REPO / "apps" / "api" / "pyproject.toml").read_text(encoding="utf-8"))
+    assert __version__ == importlib.metadata.version("ezmd-api") == pyproject["project"]["version"]
+    assert (await client.get("/v1/capabilities")).json()["version"] == __version__
+    assert (await client.get("/openapi.json")).json()["info"]["version"] == __version__
