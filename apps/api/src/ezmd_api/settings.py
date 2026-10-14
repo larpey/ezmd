@@ -120,6 +120,15 @@ class Settings(BaseSettings):
     cors_origins: CommaList = Field(default_factory=list)
     trust_proxy_header: str = ""
     trusted_proxies: CommaList = Field(default_factory=list)
+    ipv6_identity_prefix: int = Field(
+        default=64,
+        ge=32,
+        le=128,
+        description=(
+            "IPv6 clients are counted per network of this many bits for rate limits, quotas, dedup and the "
+            "challenge (a /64 is usually one subscriber). 128 counts single addresses."
+        ),
+    )
 
     # ---- Observability ----
     log_level: Literal["debug", "info", "warning", "error"] = "info"

@@ -507,3 +507,13 @@ Decision: (1) The row is inserted first, then `admit_job(created=True)` counts a
 Alternatives: a Redis slot released on every terminal transition (every state change in the API, workers, reaper and admin would have to release it exactly once; the row count is already the truth); a new `concurrency_limited` code (a contract change for a distinction `detail.reason` already makes).
 Deferred: spooling uploads to a disk-backed volume and a global in-flight-bytes cap (the red team's OOM run did not reproduce: five 160 MB uploads peaked at 262 MiB of the api's 1 GiB).
 Council: not convened (audit fix).
+
+## D-0052: Anonymous identity is the IPv4 address or the IPv6 /64
+Date: 2026-10-13
+Task: audit (rc5 red team, uploads and rate limits)
+Status: accepted
+Context: `client_ip_hash` hashed the full address. A client with an IPv6 /64 (the usual single-subscriber assignment) could rotate through 2^64 identities and bypass every per-IP limit, quota, dedup scope and the challenge binding. IPv4-mapped IPv6 and plain IPv4 also hashed differently.
+Decision: `auth.ip_identity` unwraps IPv4-mapped addresses and reduces IPv6 to its network of `EZMD_IPV6_IDENTITY_PREFIX` bits (default 64, range 32-128) before hashing. API-key IP restrictions and the fetch-node CIDR check still use the exact address.
+Alternatives: /56 or /48 by default (some ISPs hand those to one customer, but many mobile and hosting networks give /64s to different users, so a wider default would merge strangers).
+Consequences: users behind one IPv6 /64 share anonymous limits, as users behind one IPv4 NAT already do. Existing salted hashes of IPv6 callers change once.
+Council: not convened (audit fix).

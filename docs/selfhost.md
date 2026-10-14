@@ -354,6 +354,7 @@ Field `foo_bar` is read from `EZMD_FOO_BAR`. Comma lists are plain comma-separat
 | `EZMD_CORS_ORIGINS` | comma list | empty | Comma-separated origins allowed by CORS. Empty: same-origin only. |
 | `EZMD_TRUST_PROXY_HEADER` | str | empty | Header carrying the client IP, honored only when the TCP peer is in `EZMD_TRUSTED_PROXIES`. Compose sets `X-Real-IP` (Caddy overwrites it, Cloudflare-aware). Empty: the TCP peer address. See Client IP above. |
 | `EZMD_TRUSTED_PROXIES` | comma list | empty | Comma-separated CIDRs of the reverse proxies allowed to set that header. Compose sets the private ranges (only containers on `internal` reach the API). |
+| `EZMD_IPV6_IDENTITY_PREFIX` | int | `64` | IPv6 clients are counted per network of this many bits for rate limits, quotas, dedup and the challenge (a /64 is usually one subscriber). 128 counts single addresses. |
 
 ### Observability
 

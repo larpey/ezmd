@@ -125,8 +125,24 @@ def client_ip(request: Request, settings: Settings) -> str:
     return hops[0]
 
 
+def ip_identity(settings: Settings, ip: str) -> str:
+    """The unit one client is counted as: an IPv4 address (IPv4-mapped IPv6 unwrapped), or the IPv6
+    network of EZMD_IPV6_IDENTITY_PREFIX bits (a /64 is one subscriber; hashing full IPv6 addresses gave
+    each a near-unlimited number of identities). Unparsable values are used as they are."""
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return ip
+    if isinstance(addr, ipaddress.IPv6Address) and addr.ipv4_mapped is not None:
+        return str(addr.ipv4_mapped)
+    if isinstance(addr, ipaddress.IPv6Address):
+        return str(ipaddress.ip_network(f"{addr}/{settings.ipv6_identity_prefix}", strict=False))
+    return str(addr)
+
+
 def hash_ip(settings: Settings, ip: str) -> str:
-    return keyed_hash(settings.ip_salt, ip)
+    """Salted hash of the client's identity (`ip_identity`): rate limits, quotas, dedup and challenge binding."""
+    return keyed_hash(settings.ip_salt, ip_identity(settings, ip))
 
 
 def get_caller(request: Request) -> Caller:

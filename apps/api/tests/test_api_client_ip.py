@@ -104,3 +104,30 @@ def test_fetch_node_cidr_judged_on_proxy_reported_ip(settings_factory: Callable[
         require_fetch_node(_fetch_node_request(settings, CADDY_PEER, "203.0.113.9"))
     with pytest.raises(ApiError):  # an untrusted peer cannot claim a Tailscale address
         require_fetch_node(_fetch_node_request(settings, "203.0.113.9", "100.64.1.2"))
+
+
+@pytest.mark.parametrize(
+    ("a", "b", "same"),
+    [
+        ("2001:db8:1:2::1", "2001:db8:1:2:ffff:ffff:ffff:ffff", True),  # one /64: one identity
+        ("2001:db8:1:2::1", "2001:db8:1:3::1", False),
+        ("::ffff:203.0.113.7", "203.0.113.7", True),  # IPv4-mapped is the IPv4 address
+        ("203.0.113.7", "203.0.113.8", False),
+    ],
+)
+def test_ip_identity_groups_ipv6_by_prefix(
+    a: str, b: str, same: bool, settings_factory: Callable[..., Settings]
+) -> None:
+    """Red team: hashing the full IPv6 address gave a /64 holder 2^64 identities, past every per-IP limit."""
+    from ezmd_api.auth import hash_ip
+
+    settings = settings_factory()
+    assert (hash_ip(settings, a) == hash_ip(settings, b)) is same
+
+
+def test_ipv6_identity_prefix_is_configurable(settings_factory: Callable[..., Settings]) -> None:
+    from ezmd_api.auth import hash_ip
+
+    wide = settings_factory(ipv6_identity_prefix=48)
+    assert hash_ip(wide, "2001:db8:1:2::1") == hash_ip(wide, "2001:db8:1:ffff::1")
+    assert hash_ip(wide, "2001:db8:1::1") != hash_ip(wide, "2001:db8:2::1")
