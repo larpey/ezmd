@@ -165,7 +165,7 @@ CMD ["uvicorn", "ezmd_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--n
 # tools can be sandboxed wherever the container may create user namespaces. Under compose's
 # seccomp-worker.json it cannot (unshare, namespace clone flags and mount are denied), and
 # ezmd.core.sandbox.bwrap_available() probes that once and runs tools without it; LibreOffice is
-# then refused because compose sets EZMD_REQUIRE_SANDBOX=1 (D-0053).
+# then refused because compose sets EZMD_REQUIRE_SANDBOX=1 (D-0064).
 # EZMD_WORKER_APT_PACKAGES adds Debian packages, e.g. "libreoffice-core-nogui libreoffice-writer-nogui
 # libreoffice-calc-nogui libreoffice-impress-nogui" for legacy .doc/.ppt/.xls (about +500 MB).
 # ---------------------------------------------------------------------------------------------

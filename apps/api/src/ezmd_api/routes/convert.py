@@ -125,7 +125,7 @@ def _idempotency(request: Request, caller: Caller, services: Services) -> str | 
 
 def _dedup_scope_ip(caller: Caller, services: Services) -> str | None:
     """Anonymous dedup never crosses client IP hashes, public mode or not: the job id is the capability, so
-    handing one caller another's job id would hand over the job (D-0050). Keyed dedup is scoped by key."""
+    handing one caller another's job id would hand over the job (D-0061). Keyed dedup is scoped by key."""
     if caller.api_key is None:
         return caller.ip_hash
     return None
@@ -327,7 +327,7 @@ async def _store_upload(request: Request, services: Services, caller: Caller) ->
 
 
 def _create_admitted(request: Request, services: Services, caller: Caller, row: JobRow) -> None:
-    """Insert the row, then re-run admission with it counted; remove it again when that refuses (D-0051)."""
+    """Insert the row, then re-run admission with it counted; remove it again when that refuses (D-0062)."""
     services.jobs.create(row)
     try:
         admit_job(request, caller, created=True)

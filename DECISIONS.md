@@ -488,7 +488,9 @@ Alternatives: check limits after reading the body (an anonymous client could the
 Consequences: the memory backend's member is the hit's timestamp; two hits in the same `time.time()` tick refund either one, which is equivalent.
 Council: not convened (audit fix).
 
-## D-0050: Anonymous deduplication is scoped to the client IP hash in every mode
+<!-- D-0050 to D-0060 belong to fix/rc5-core (D-0050-D-0058) and the bench branch (D-0060); they are merged separately. -->
+
+## D-0061: Anonymous deduplication is scoped to the client IP hash in every mode
 Date: 2026-10-13
 Task: audit (rc5 red team, F2)
 Status: accepted
@@ -498,7 +500,7 @@ Alternatives: return a fresh job that reuses the cached IR (saves the conversion
 Consequences: two anonymous users of a private instance who convert the same file each pay for the conversion.
 Council: not convened (audit fix).
 
-## D-0051: Admission is re-checked after the job row exists; anonymous jobs get a share of the cap; one upload slot per caller
+## D-0062: Admission is re-checked after the job row exists; anonymous jobs get a share of the cap; one upload slot per caller
 Date: 2026-10-13
 Task: audit (rc5 red team, uploads and rate limits)
 Status: accepted
@@ -508,7 +510,7 @@ Alternatives: a Redis slot released on every terminal transition (every state ch
 Deferred: spooling uploads to a disk-backed volume and a global in-flight-bytes cap (the red team's OOM run did not reproduce: five 160 MB uploads peaked at 262 MiB of the api's 1 GiB).
 Council: not convened (audit fix).
 
-## D-0052: Anonymous identity is the IPv4 address or the IPv6 /64
+## D-0063: Anonymous identity is the IPv4 address or the IPv6 /64
 Date: 2026-10-13
 Task: audit (rc5 red team, uploads and rate limits)
 Status: accepted
@@ -518,7 +520,7 @@ Alternatives: /56 or /48 by default (some ISPs hand those to one customer, but m
 Consequences: users behind one IPv6 /64 share anonymous limits, as users behind one IPv4 NAT already do. Existing salted hashes of IPv6 callers change once.
 Council: not convened (audit fix).
 
-## D-0053: Workers ship bubblewrap and require it for LibreOffice; the seccomp profile is not loosened
+## D-0064: Workers ship bubblewrap and require it for LibreOffice; the seccomp profile is not loosened
 Date: 2026-10-13
 Task: audit (rc5 red team, LibreOffice)
 Status: accepted

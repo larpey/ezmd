@@ -64,7 +64,7 @@ async def test_public_mode_no_dedup_across_ips(settings_factory: Callable[..., S
 
 
 async def test_self_host_never_dedups_anonymous_callers_across_ips(settings_factory: Callable[..., Settings]) -> None:
-    """F2 (D-0050): with public mode off, anonymous B got anonymous A's job id and filename back, and the id
+    """F2 (D-0061): with public mode off, anonymous B got anonymous A's job id and filename back, and the id
     is the capability (B could read or DELETE A's job). Anonymous dedup is scoped to the client IP hash."""
     settings = settings_factory()
     async with api_client(settings, client_addr=("198.51.100.1", 1)) as (a, _):

@@ -130,7 +130,7 @@ def test_caddy_access_log_never_records_job_ids() -> None:
 
 def test_workers_ship_bubblewrap_and_require_the_office_sandbox() -> None:
     """LibreOffice is opt-in (EZMD_WORKER_APT_PACKAGES); when present it must run under bwrap or be refused
-    (office.require_sandbox via EZMD_REQUIRE_SANDBOX), never unsandboxed (D-0053)."""
+    (office.require_sandbox via EZMD_REQUIRE_SANDBOX), never unsandboxed (D-0064)."""
     services = _services()
     for name in ("worker-default", "worker-fetch"):
         assert services[name]["environment"]["EZMD_REQUIRE_SANDBOX"] == "${EZMD_REQUIRE_SANDBOX:-1}", name

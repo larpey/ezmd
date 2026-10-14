@@ -88,7 +88,7 @@ def refund_hits(request: Request) -> None:
 def admit_job(request: Request, caller: Caller, *, created: bool = False) -> None:
     """Concurrency admission: per caller, the anonymous share of the global cap, then the global cap.
 
-    Called twice per job (D-0051): before the row exists (`created=False`, a cheap early refusal) and
+    Called twice per job (D-0062): before the row exists (`created=False`, a cheap early refusal) and
     right after it was inserted (`created=True`, the counts include it). Two parallel requests can both
     pass the first check, but whichever counts second sees both rows and is refused, so a burst never
     admits more than the limit. The caller deletes its row when the second check raises."""
@@ -133,7 +133,7 @@ def upload_slot_key(identity: str) -> str:
 
 def take_upload_slot(request: Request, caller: Caller) -> str | None:
     """Reserve one in-flight upload for this caller before its body is read, so a caller cannot stream
-    many large bodies to disk at once: at most its concurrency limit at a time (D-0051). Returns the slot
+    many large bodies to disk at once: at most its concurrency limit at a time (D-0062). Returns the slot
     key for `release_upload_slot`, or None for unlimited keys."""
     if caller.unlimited:
         return None

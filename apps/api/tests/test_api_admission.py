@@ -1,5 +1,5 @@
 """Admission: the concurrency race, keyed headroom under the global cap, and the per-caller upload slot
-(red-team uploads/ratelimit findings, D-0051)."""
+(red-team uploads/ratelimit findings, D-0062)."""
 
 from __future__ import annotations
 
