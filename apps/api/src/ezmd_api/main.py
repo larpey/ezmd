@@ -72,6 +72,10 @@ EXPOSED_HEADERS = [
     "X-Ezmd-Injection-Risk",
     "X-Ezmd-Job",
 ]
+# Job envelopes, status, events, results and attachments are per-caller documents: no browser, proxy or
+# CDN may store them (docs/spec/part4.md 4.12 Cloudflare rules: "Part 3 sets private, no-store on /v1/*").
+PRIVATE_PATH_PREFIXES = ("/v1/jobs", "/v1/convert", "/v1/fetch-node")
+PRIVATE_CACHE_CONTROL = "no-store, private"
 _CLIENT_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{8,64}$")
 
 
@@ -101,9 +105,13 @@ class EdgeMiddleware:
             if message["type"] == "http.response.start":
                 status_holder["started"] = True
                 status_holder["status"] = message["status"]
-                headers = [(k, v) for k, v in message.get("headers", []) if k.lower() != b"x-request-id"]
+                private = str(scope.get("path", "")).startswith(PRIVATE_PATH_PREFIXES)
+                dropped = {b"x-request-id", b"cache-control"} if private else {b"x-request-id"}
+                headers = [(k, v) for k, v in message.get("headers", []) if k.lower() not in dropped]
                 present = {k.lower() for k, _ in headers}
                 extra: dict[str, str] = {"X-Request-Id": request_id, **SECURITY_HEADERS}
+                if private:
+                    extra["Cache-Control"] = PRIVATE_CACHE_CONTROL
                 rl = state.get("ratelimit")
                 if rl is not None:
                     extra.update(rate_headers(rl))

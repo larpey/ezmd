@@ -216,3 +216,22 @@ async def test_invalid_options_rejected(client: httpx.AsyncClient) -> None:
     assert r.status_code == 400
     r = await client.post("/v1/convert", content=b"hello", headers={"content-type": "text/plain"})
     assert r.status_code == 400
+
+
+async def test_job_responses_are_never_cached(client: httpx.AsyncClient) -> None:
+    """S10: results, job status, events and attachments carry Cache-Control: no-store, private."""
+    r = await upload(client, b"# Cache\n\nbody\n", "c.md", content_type="text/markdown")
+    assert r.headers["cache-control"] == "no-store, private"
+    job_id = r.json()["job"]["id"]
+    await wait_for_state(client, job_id)
+    for path in (
+        f"/v1/jobs/{job_id}",
+        f"/v1/jobs/{job_id}/result",
+        f"/v1/jobs/{job_id}/result?format=json",
+        f"/v1/jobs/{job_id}/events",
+        f"/v1/jobs/{job_id}/attachments/missing.png",
+        "/v1/jobs/job_0000000000000000000000",
+    ):
+        resp = await client.get(path)
+        assert resp.headers.get("cache-control") == "no-store, private", path
+    assert (await client.get("/v1/warnings")).headers["cache-control"] == "public, max-age=3600"
