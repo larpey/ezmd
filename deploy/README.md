@@ -28,7 +28,7 @@ deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 
 
 By hand: `cp deploy/env.example deploy/.env`, fill in the secrets, `docker compose -f deploy/docker-compose.yml up -d --build --wait`, `bash deploy/smoke.sh --no-build`.
 
-- `EZMD_DOMAIN` empty: plain HTTP on `:8080` (host port `EZMD_PLAIN_PORT`).
+- `EZMD_DOMAIN` empty: plain HTTP on `:8080` (host port `EZMD_PLAIN_PORT`), bound to `EZMD_PLAIN_BIND` (default `127.0.0.1`).
 - `EZMD_DOMAIN=localhost`: HTTPS with Caddy's internal CA.
 - `EZMD_DOMAIN=ezmd.example.com`: Let's Encrypt; set `EZMD_ACME_EMAIL` for the contact.
 - `EZMD_REDIS_PASSWORD` should be hex (it is embedded in the Redis URL). Compose builds `EZMD_REDIS_URL` from it and overrides any value in `.env`.

@@ -134,3 +134,23 @@ def test_curl_never_writes_to_dev_null() -> None:
             if "curl" in line or "CURL" in line:
                 assert "-o /dev/null" not in line, f"{name}:{n}"
     assert "curl_w()" in (DEPLOY / "lib.sh").read_text(encoding="utf-8")
+
+
+def test_plain_http_port_binds_loopback_by_default() -> None:
+    """N7: the plain-HTTP port was published on every interface even with TLS on."""
+    services = yaml.safe_load((DEPLOY / "docker-compose.yml").read_text(encoding="utf-8"))["services"]
+    plain = [str(p) for p in services["caddy"]["ports"] if str(p).endswith(":8080")]
+    assert plain == ["${EZMD_PLAIN_BIND:-127.0.0.1}:${EZMD_PLAIN_PORT:-8080}:8080"]
+    assert "\nEZMD_PLAIN_BIND=" in (DEPLOY / "env.example").read_text(encoding="utf-8")
+
+
+def test_upgrade_prunes_only_ezmd_images() -> None:
+    """N7: `docker image prune -f` removed every dangling image on the host, not just ezmd's."""
+    text = (DEPLOY / "upgrade.sh").read_text(encoding="utf-8")
+    prunes = [line for line in text.splitlines() if "image prune" in line and not line.lstrip().startswith("#")]
+    assert prunes, "upgrade.sh still cleans up after itself"
+    for line in prunes:
+        assert '--filter "label=org.opencontainers.image.source=https://github.com/larpey/ezmd"' in line, line
+    assert 'org.opencontainers.image.source="https://github.com/larpey/ezmd"' in (DEPLOY / "Dockerfile").read_text(
+        encoding="utf-8"
+    )

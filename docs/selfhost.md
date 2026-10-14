@@ -28,7 +28,7 @@ Options: `--domain localhost` (HTTPS with Caddy's internal CA), `--plain-http` (
 
 By hand: `cp deploy/env.example deploy/.env`, fill in the secrets, `docker compose -f deploy/docker-compose.yml up -d --build --wait`, then `bash deploy/smoke.sh --no-build`.
 
-- `EZMD_DOMAIN` empty: plain HTTP on port 8080 (host port `EZMD_PLAIN_PORT`). Open http://localhost:8080.
+- `EZMD_DOMAIN` empty: plain HTTP on port 8080 (host port `EZMD_PLAIN_PORT`), on loopback only unless `EZMD_PLAIN_BIND=0.0.0.0`. Open http://localhost:8080.
 - `EZMD_DOMAIN=localhost`: HTTPS with Caddy's internal CA.
 - `EZMD_DOMAIN=ezmd.example.com`: a Let's Encrypt certificate; set `EZMD_ACME_EMAIL`.
 
@@ -153,6 +153,7 @@ These are read by `deploy/docker-compose.yml` and Caddy, not by the API:
 | `EZMD_REDIS_PASSWORD` | empty | Redis `requirepass`; compose builds `EZMD_REDIS_URL` from it. Use hex. |
 | `EZMD_VERSION` | `latest` | Image tag when not building locally. |
 | `EZMD_PLAIN_PORT`, `EZMD_HTTP_PORT`, `EZMD_HTTPS_PORT` | `8080`, `80`, `443` | Host ports. |
+| `EZMD_PLAIN_BIND` | `127.0.0.1` | Host address the plain-HTTP port listens on. `0.0.0.0` serves other machines (a LAN, or a TLS proxy on another host). |
 | `EZMD_CADDY_MAX_BODY` | `512MB` | Edge request body cap. |
 | `EZMD_TMPFS_SIZE` | `2g` | Size of each container's `/tmp`. |
 | `EZMD_API_WORKERS` | `2` | Uvicorn worker processes. |

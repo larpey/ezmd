@@ -59,7 +59,7 @@ if [ ! -f "$ENV_FILE" ]; then
   mkdir -p "$(dirname "$ENV_FILE")"
   (umask 077 && cp "$DEPLOY_DIR/env.example" "$ENV_FILE")
   # The template's example site address must not reach Let's Encrypt by accident.
-  [ "$DOMAIN_SET" = 1 ] || { DOMAIN=""; DOMAIN_SET=1; warn "no --domain given: serving plain HTTP on :$(cfg EZMD_PLAIN_PORT 8080)"; }
+  [ "$DOMAIN_SET" = 1 ] || { DOMAIN=""; DOMAIN_SET=1; warn "no --domain given: serving plain HTTP on $(cfg EZMD_PLAIN_BIND 127.0.0.1):$(cfg EZMD_PLAIN_PORT 8080) (EZMD_PLAIN_BIND=0.0.0.0 to expose it)"; }
   [ "$EMAIL_SET" = 1 ] || { EMAIL=""; EMAIL_SET=1; }
 fi
 chmod 600 "$ENV_FILE" 2>/dev/null || true
