@@ -3,7 +3,9 @@
 Each row is OK, WARN, or MISSING. A row may be `required_by` an extra (or `core`, or `configured` for
 services the user configured); the command exits 2 only when a MISSING row is required by core, by an
 installed extra, or by configuration, so a machine without ffmpeg exits 0 unless the `media` extra is
-installed.
+installed. A program needed only by an extra that is not released yet is WARN, not MISSING: nothing the user
+can install needs it. `--quiet` prints only problems: OK rows and the rows listing extras that are not
+installed or not released are left out.
 """
 
 from __future__ import annotations
@@ -182,8 +184,12 @@ def _binaries() -> list[Check]:
     rows = []
     for label, names, extra, fix in _BINARIES:
         path = next((p for p in (_which(n) for n in names) if p), None)
-        if path is None:
-            rows.append(Check(label, MISSING if extra else WARN, "not on PATH", fix, extra))
+        if path is None and extra in PLANNED_EXTRAS:
+            detail = f"not on PATH; optional: only the {extra} extra needs it, and it is not released yet"
+            rows.append(Check(label, WARN, detail, fix, extra))
+        elif path is None:
+            detail = f"not on PATH; needed by the {extra} extra" if extra else "not on PATH"
+            rows.append(Check(label, MISSING if extra else WARN, detail, fix, extra))
         else:
             version = _binary_version(path) if label in ("ffmpeg", "ffprobe", "pandoc") else ""
             rows.append(Check(label, OK, version or path, required_by=extra))
@@ -283,14 +289,38 @@ def _docling(installed: set[str]) -> Check | None:
     )
 
 
+def _docling_models(installed: set[str]) -> Check | None:
+    """Docling runs offline, so the `docs` extra is useless without its models on disk (every PDF falls back
+    to the text layer). Checked without importing Docling or torch."""
+    if "docs" not in installed:
+        return None
+    try:
+        models = importlib.import_module("ezmd_converters.pdf.doclingmodels")
+    except ImportError as e:
+        return Check("docling models", WARN, f"cannot check ({type(e).__name__})", required_by="docs")
+    status = models.models_status()
+    if status.ok:
+        return Check("docling models", OK, f"layout and tableformer in {status.location}", required_by="docs")
+    return Check("docling models", MISSING, models.missing_message(status), models.DOWNLOAD_HINT, "docs")
+
+
 def run_checks(extra_checks: list[Callable[[], Check | None]] | None = None) -> tuple[list[Check], set[str]]:
     installed = installed_extras()
     rows: list[Check] = [_python(), Check("ezmd", OK, __version__), *_extras(installed), *_binaries()]
     rows += [_libmagic(), _magika(), *_dirs()]
-    for maybe in (_redis(), _docling(installed), *(f() for f in extra_checks or [])):
+    for maybe in (_redis(), _docling(installed), _docling_models(installed), *(f() for f in extra_checks or [])):
         if maybe is not None:
             rows.append(maybe)
     return rows, installed
+
+
+def _is_problem(row: Check) -> bool:
+    """Rows `--quiet` keeps: not OK, and not the informational listing of extras the user has not installed."""
+    return row.status != OK and not (row.status == WARN and row.name.startswith("extra: "))
+
+
+def _quiet_hidden(row: Check) -> bool:
+    return not _is_problem(row) or (row.status == WARN and row.required_by in PLANNED_EXTRAS)
 
 
 def is_fatal(row: Check, installed: set[str]) -> bool:
@@ -324,11 +354,13 @@ def doctor(
 
     t = Table("check", "status", "detail", "fix", title=f"ezmd doctor ({__version__})")
     style = {OK: "green", WARN: "yellow", MISSING: "red"}
-    for r in rows:
-        if quiet and r.status == OK:
-            continue
+    shown = [r for r in rows if not (quiet and _quiet_hidden(r))]
+    for r in shown:
         t.add_row(escape(r.name), f"[{style[r.status]}]{r.status}[/]", escape(r.detail), escape(r.fix))
-    Console(soft_wrap=False).print(t)
+    if shown:
+        Console(soft_wrap=False).print(t)
+    else:
+        sys.stdout.write(f"ezmd doctor ({__version__}): no problems found\n")
     if fatal:
         names = ", ".join(r.name for r in fatal)
         Console(stderr=True).print(f"[red]missing required: {names}[/]")

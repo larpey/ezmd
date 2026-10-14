@@ -9,7 +9,8 @@ reliable hierarchy. Docling's own OCR is disabled: OCR goes through the ezmd OCR
 
 Models are never downloaded unless `options.allow_network` is true: `HF_HUB_OFFLINE=1` is set before Docling
 is imported. Pre-fetch them with `docling-tools models download` and point `EZMD_DOCLING_ARTIFACTS` at the
-directory. Any Docling failure raises a retryable ConversionError so the registry falls back to
+directory. When they are not on disk the converter fails before importing Docling (which loads torch), see
+`doclingmodels`. Any Docling failure raises a retryable ConversionError so the registry falls back to
 `documents.pdfium_text` (with `engine_fallback`).
 """
 
@@ -54,6 +55,7 @@ from ezmd_converters.pdf.common import (
     scan_warnings,
 )
 from ezmd_converters.pdf.converter import PDF_LIMITS
+from ezmd_converters.pdf.doclingmodels import DOWNLOAD_HINT, missing_message, models_status
 from ezmd_converters.pdf.layout import norm_text, running_lines
 from ezmd_converters.pdf.ocr import ocr_page
 from ezmd_converters.pdf.textengine import heading_sources, heading_warnings, scan_only
@@ -294,13 +296,19 @@ class DoclingPdfConverter:
         popts = parse_options(options)
         if popts.engine != "docling":
             raise ConversionError(f"pdf.engine={popts.engine} requested; skipping Docling")
-        if not options.allow_network:
-            os.environ.setdefault("HF_HUB_OFFLINE", "1")
         doc = new_document(ref)
         san = open_sanitized(ref, popts, doc)
         if san is None:
             return doc.finalize()
         try:
+            if not options.allow_network:
+                status = models_status()  # before Docling (and torch) is imported
+                if not status.ok:
+                    raise ConversionError(
+                        missing_message(status),
+                        user_message=f"Docling's models are not downloaded. Run: {DOWNLOAD_HINT}.",
+                    )
+                os.environ.setdefault("HF_HUB_OFFLINE", "1")
             apply_metadata(doc, san)
             path = str(san.path)
             layer, rep = scan_only(path, san.info, popts, options)

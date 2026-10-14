@@ -15,6 +15,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   rotated tables on upright pages keep whole lines too (D-0050).
 - `pip install --pre ezmd` no longer resolves defusedxml 0.8.0rc2 or openpyxl 3.2.0b1: both are capped
   below the pre-released series, like httpx and lxml (D-0039).
+- With the `docs` extra but no Docling models, PDFs no longer spend about 20 s importing torch before
+  falling back: Docling is skipped up front and the result carries an `engine_fallback` warning naming the
+  missing models and the download command. `ezmd doctor` checks the models (D-0052).
+- `ezmd doctor` no longer shows ffmpeg as MISSING while the `media` extra is unreleased, and `--quiet`
+  prints only problems.
 
 ## [0.1.0-rc4] - 2026-10-13
 

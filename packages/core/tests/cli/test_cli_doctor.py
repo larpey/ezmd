@@ -25,8 +25,13 @@ def _row(payload: dict[str, object], name: str) -> dict[str, object]:
     return next(c for c in checks if c["name"] == name)
 
 
+def _media_released(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(doctor, "PLANNED_EXTRAS", {k: v for k, v in doctor.PLANNED_EXTRAS.items() if k != "media"})
+
+
 def test_missing_ffmpeg_without_media_exits_0(monkeypatch: pytest.MonkeyPatch) -> None:
     _no_ffmpeg(monkeypatch, set())
+    _media_released(monkeypatch)
     res = runner.invoke(app, ["doctor", "--json"])
     payload = json.loads(res.stdout)
     row = _row(payload, "ffmpeg")
@@ -36,6 +41,7 @@ def test_missing_ffmpeg_without_media_exits_0(monkeypatch: pytest.MonkeyPatch) -
 
 def test_missing_ffmpeg_with_media_exits_2(monkeypatch: pytest.MonkeyPatch) -> None:
     _no_ffmpeg(monkeypatch, {"media"})
+    _media_released(monkeypatch)
     res = runner.invoke(app, ["doctor", "--json"])
     assert res.exit_code == 2
     assert _row(json.loads(res.stdout), "ffmpeg")["fatal"] is True
@@ -119,3 +125,51 @@ def _no_redis(real: object) -> object:
         return real(name)  # type: ignore[operator]
 
     return fake
+
+
+def _models(monkeypatch: pytest.MonkeyPatch, missing: tuple[str, ...]) -> None:
+    from ezmd_converters.pdf import doclingmodels
+
+    status = doclingmodels.ModelsStatus("EZMD_DOCLING_ARTIFACTS=/models", missing)
+    monkeypatch.setattr(doclingmodels, "models_status", lambda env=None: status)
+
+
+def test_docs_extra_without_docling_models_is_missing_and_fatal(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(doctor, "installed_extras", lambda: {"docs"})
+    _models(monkeypatch, ("layout", "tableformer"))
+    payload = json.loads(runner.invoke(app, ["doctor", "--json"]).stdout)
+    row = _row(payload, "docling models")
+    assert row["status"] == "MISSING" and row["fatal"] is True and row["required_by"] == "docs"
+    assert "layout and tableformer" in str(row["detail"]) and "docling-tools models download" in str(row["fix"])
+    assert payload["exit_code"] == 2
+
+
+def test_docling_models_present_is_ok(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(doctor, "installed_extras", lambda: {"docs"})
+    _models(monkeypatch, ())
+    row = _row(json.loads(runner.invoke(app, ["doctor", "--json"]).stdout), "docling models")
+    assert row["status"] == "OK" and "/models" in str(row["detail"])
+
+
+def test_no_docling_models_row_without_docs_extra(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(doctor, "installed_extras", lambda: set())
+    payload = json.loads(runner.invoke(app, ["doctor", "--json"]).stdout)
+    assert "docling models" not in {c["name"] for c in payload["checks"]}
+
+
+def test_binaries_for_an_unreleased_extra_are_only_a_warning(monkeypatch: pytest.MonkeyPatch) -> None:
+    """ffmpeg is needed only by `media`, which is not published yet: nothing installable needs it, so it is not
+    MISSING (part4 4.2.2 shows MISSING for an extra the user could install)."""
+    _no_ffmpeg(monkeypatch, set())
+    monkeypatch.setattr(doctor, "PLANNED_EXTRAS", {**doctor.PLANNED_EXTRAS, "media": "audio and video"})
+    row = _row(json.loads(runner.invoke(app, ["doctor", "--json"]).stdout), "ffmpeg")
+    assert row["status"] == "WARN" and "media" in str(row["detail"]) and "not released" in str(row["detail"])
+
+
+def test_quiet_prints_only_problems(monkeypatch: pytest.MonkeyPatch) -> None:
+    """`-q` leaves out OK rows and the informational rows for extras that are not installed or not released."""
+    monkeypatch.setattr(doctor, "installed_extras", lambda: set())
+    res = runner.invoke(app, ["doctor", "--quiet"], env={"COLUMNS": "200"})
+    assert "extra:" not in res.stdout and "not released yet" not in res.stdout
+    assert "ffmpeg" not in res.stdout  # optional for an unreleased extra
+    assert res.stdout.strip()

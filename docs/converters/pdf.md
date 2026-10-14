@@ -62,8 +62,10 @@ dropped and counted. Pictures are counted in `pdf_pictures` (no image payloads y
 Models are never downloaded during conversion unless `allow_network` is true (`HF_HUB_OFFLINE=1` is set before
 Docling loads). Pre-fetch with `docling-tools models download layout tableformer -o DIR` and set
 `EZMD_DOCLING_ARTIFACTS=DIR` (`docling-tools` is installed with the `docs` extra; see
-[Install](../install.md#docling-models-docs-extra)). Any Docling error is retryable, so the registry falls back to the text-layer
-engine (`engine_fallback`). `EZMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
+[Install](../install.md#docling-models-docs-extra)). If the models are not in that directory (or, without it, in
+the Hugging Face cache), Docling is skipped before it is imported and the text-layer result carries an
+`engine_fallback` warning naming the missing models; `ezmd doctor` reports them too. Any Docling error is
+retryable, so the registry falls back to the text-layer engine (`engine_fallback`). `EZMD_PDF_ENGINE=pdfium` (or `pypdf`) or `pdf.engine=pdfium` skips Docling.
 
 ## Options (`ConvertOptions.extra`, CLI `--opt extra.pdf.<name>=...`)
 

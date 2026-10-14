@@ -358,7 +358,9 @@ class ConverterRegistry:
         if not doc.finalized:
             doc.finalize()
         pipeline_warnings: list[Warning] = []
-        if index > 0:
+        # A converter that explains its own fallback (pdfium_text when Docling's models are missing) is not
+        # repeated with the generic note.
+        if index > 0 and not any(w.kind == WarningKind.ENGINE_FALLBACK for w in doc.warnings):
             pipeline_warnings.append(
                 Warning(
                     kind=WarningKind.ENGINE_FALLBACK,

@@ -88,8 +88,10 @@ docling-tools models download layout tableformer -o ~/.cache/ezmd/docling
 export EZMD_DOCLING_ARTIFACTS=~/.cache/ezmd/docling     # Windows: set EZMD_DOCLING_ARTIFACTS=...
 ```
 
-Without the models, Docling fails and PDFs fall back to the text-layer engine with an `engine_fallback`
-warning. Details: [PDF converters](converters/pdf.md).
+Without the models, ezmd skips Docling before loading it (so no time is lost importing torch), converts
+with the text-layer engine, and adds an `engine_fallback` warning that names the missing models and this
+command. `ezmd doctor` shows a `docling models` row and exits 2 when the `docs` extra is installed without
+them. Details: [PDF converters](converters/pdf.md).
 
 ## System programs
 
