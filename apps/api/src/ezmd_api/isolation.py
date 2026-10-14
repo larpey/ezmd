@@ -34,7 +34,7 @@ CHILD_THREADS = 4
 DEFAULT_MAX_RESULT_BYTES = 256 * 1024 * 1024
 MAX_STATUS_BYTES = 64 * 1024
 # ConversionError codes the child may report as-is; anything else becomes conversion_failed.
-PASSTHROUGH_CONVERSION_CODES = frozenset({"experimental_disabled"})
+PASSTHROUGH_CONVERSION_CODES = frozenset({"experimental_disabled", "unsupported_media_type", "extra_required"})
 
 
 @dataclass(slots=True)

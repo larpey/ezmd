@@ -62,7 +62,7 @@ x-worker: &worker
     # LibreOffice (opt-in through EZMD_WORKER_APT_PACKAGES) runs only inside bubblewrap; where bwrap
     # cannot create its namespaces (this seccomp profile denies them) the converter refuses instead of
     # running soffice unsandboxed (office.require_sandbox, D-0053).
-    EZMD_REQUIRE_SANDBOX: "1"
+    EZMD_REQUIRE_SANDBOX: ${EZMD_REQUIRE_SANDBOX:-1}
   volumes:
     - state:/var/lib/ezmd
     - blobs:/var/lib/ezmd-blobs

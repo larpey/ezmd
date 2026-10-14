@@ -133,7 +133,7 @@ def test_workers_ship_bubblewrap_and_require_the_office_sandbox() -> None:
     (office.require_sandbox via EZMD_REQUIRE_SANDBOX), never unsandboxed (D-0053)."""
     services = _services()
     for name in ("worker-default", "worker-fetch"):
-        assert services[name]["environment"]["EZMD_REQUIRE_SANDBOX"] == "1", name
+        assert services[name]["environment"]["EZMD_REQUIRE_SANDBOX"] == "${EZMD_REQUIRE_SANDBOX:-1}", name
     dockerfile = (COMPOSE.parent / "Dockerfile").read_text(encoding="utf-8")
     worker = dockerfile.split("FROM runtime-common AS worker", 1)[1].split("\nFROM ", 1)[0]
     assert "bubblewrap" in worker.split("apt-get install", 1)[1].split("\n", 1)[0]

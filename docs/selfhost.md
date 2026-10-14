@@ -175,7 +175,7 @@ other converters are unaffected. You have two choices, and both are yours to mak
   `unshare`, `clone` with namespace flags, `mount`, `umount2`, `pivot_root` and `setns` (tested: bwrap
   then works as uid 10001 with every capability dropped). This exposes more kernel surface to the
   worker; or
-- set `EZMD_REQUIRE_SANDBOX=0` on the workers and run LibreOffice without bubblewrap, for trusted
+- set `EZMD_REQUIRE_SANDBOX=0` in the env file and run LibreOffice without bubblewrap, for trusted
   input only.
 `deploy/docker-compose.gpu.yml` adds a `worker-media` service for the Phase 2 image.
 
@@ -272,7 +272,7 @@ These are read by `deploy/docker-compose.yml` and Caddy, not by the API:
 | `EZMD_BACKUP_DIR` | `deploy/backups` | Where `backup.sh` writes tarballs. |
 | `EZMD_BACKUP_KEEP` | `14` | How many backups `backup.sh` keeps. |
 | `EZMD_ENV_FILE` | `deploy/.env` | Shell variable only: the env file the scripts and containers use. |
-| `EZMD_REQUIRE_SANDBOX` | `1` on the workers | Set by compose, read by the LibreOffice converter: refuse to run `soffice` when bubblewrap cannot sandbox it. |
+| `EZMD_REQUIRE_SANDBOX` | `1` | Passed to the workers and read by the LibreOffice converter: refuse to run `soffice` when bubblewrap cannot sandbox it. `0` runs it unsandboxed (trusted input only). |
 
 ## API environment variables
 

@@ -21,6 +21,7 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="url_blocked"></a>`url_blocked` | 422 | The URL failed the SSRF guard: disallowed scheme, userinfo, or a private, loopback, link-local, or metadata address. |
 | <a id="platform_disabled"></a>`platform_disabled` | 422 | The host is disabled by this instance's platform policy. |
 | <a id="experimental_disabled"></a>`experimental_disabled` | 422 | Only an experimental converter handles this input, and experimental converters are turned off on this instance. |
+| <a id="extra_required"></a>`extra_required` | 422 | The converter for this input needs an optional extra (for example `ezmd[data]` for Parquet) that this instance does not have; `message` names it. |
 | <a id="fetch_depth_exceeded"></a>`fetch_depth_exceeded` | 422 | A converter asked for more nested fetches than allowed. |
 | <a id="result_too_large"></a>`result_too_large` | 422 | The conversion result exceeded `EZMD_MAX_RESULT_BYTES`. |
 | <a id="rate_limited"></a>`rate_limited` | 429 | A rate limit was hit; retry after `Retry-After` seconds. |

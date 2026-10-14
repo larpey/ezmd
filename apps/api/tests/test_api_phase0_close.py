@@ -354,3 +354,22 @@ def test_openapi_lists_new_error_codes() -> None:
     description = json.loads(openapi_document())["info"]["description"]
     for code in ("experimental_disabled", "fetch_depth_exceeded", "result_too_large"):
         assert f"`{code}`" in description
+
+
+@pytest.mark.parametrize(("code", "status"), [("unsupported_media_type", 415), ("extra_required", 422)])
+async def test_core_stable_codes_pass_through(
+    code: str, status: int, monkeypatch: pytest.MonkeyPatch, client: Any
+) -> None:
+    """Core raises these stable codes (fix/rc5-core D-0054); they were reported as conversion_failed (500)."""
+    import ezmd.pipeline
+    from ezmd.registry import ConversionError
+
+    def refuse(*args: Any, **kwargs: Any) -> Any:
+        raise ConversionError(code, user_message="Install ezmd[data] to convert this file.", code=code)
+
+    monkeypatch.setattr(ezmd.pipeline, "convert_ref", refuse)
+    r = await upload(client, b"x\n", "a.txt")
+    body = await wait_for_state(client, r.json()["job"]["id"])
+    assert body["error"]["code"] == code
+    assert body["error"]["status"] == status
+    assert body["error"]["message"] == "Install ezmd[data] to convert this file."

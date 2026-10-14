@@ -100,6 +100,7 @@ _CREATE_RESPONSES: dict[int | str, dict[str, Any]] = {
         "forbidden",
         "input_too_large",
         "unsupported_media_type",
+        "extra_required",
         "url_blocked",
         "platform_disabled",
         "rate_limited",
