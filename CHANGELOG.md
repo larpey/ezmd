@@ -30,6 +30,8 @@ All notable changes are generated from Conventional Commits. This project uses s
   and shows how many were cancelled; `-q` also silences Docling's "Loading weights" progress bars;
   `ftp://` and other non-http URLs fail with an unsupported-scheme message (exit 2) instead of "no such
   file"; `-f zip` explains that zip is the API's bundle and what `--out` writes instead (D-0055).
+- `@ezmd/sdk`: `@ezmd/sdk/node` has types under TypeScript's `moduleResolution: node10` (`typesVersions`);
+  the package version is unchanged.
 
 ## [0.1.0-rc4] - 2026-10-13
 

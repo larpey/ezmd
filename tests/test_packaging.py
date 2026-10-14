@@ -126,3 +126,18 @@ def test_built_dists_carry_license_and_notice(member: str, tmp_path: Path) -> No
     with tarfile.open(sdist) as tf:
         members = {m.name.split("/", 1)[1] for m in tf.getmembers() if "/" in m.name}
     assert {"LICENSE", "NOTICE"} <= members, f"{sdist.name} lacks LICENSE/NOTICE"
+
+
+def test_sdk_subpaths_have_types_for_node10_resolution() -> None:
+    """TypeScript's `moduleResolution: node10` (the `node` default for many projects) ignores `exports`, so
+    `import ... from "@ezmd/sdk/node"` finds no types unless `typesVersions` maps the subpath."""
+    import json
+
+    pkg = json.loads((ROOT / "packages/sdk-ts/package.json").read_text(encoding="utf-8"))
+    mapping = pkg.get("typesVersions", {}).get("*", {})
+    for subpath, conditions in pkg["exports"].items():
+        types = conditions["import"]["types"]
+        if subpath == ".":
+            assert pkg["types"] == types
+            continue
+        assert mapping.get(subpath.removeprefix("./")) == [types], (subpath, mapping)
