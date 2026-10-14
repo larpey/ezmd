@@ -356,7 +356,9 @@ def test_openapi_lists_new_error_codes() -> None:
         assert f"`{code}`" in description
 
 
-@pytest.mark.parametrize(("code", "status"), [("unsupported_media_type", 415), ("extra_required", 422)])
+@pytest.mark.parametrize(
+    ("code", "status"), [("unsupported_media_type", 415), ("extra_required", 422), ("sandbox_unavailable", 422)]
+)
 async def test_core_stable_codes_pass_through(
     code: str, status: int, monkeypatch: pytest.MonkeyPatch, client: Any
 ) -> None:

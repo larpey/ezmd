@@ -529,3 +529,13 @@ Decision: the worker image always installs bubblewrap; compose sets `EZMD_REQUIR
 Alternatives: ship the userns-permitting profile (owner decision; tested and documented, not enabled); install bubblewrap only with the LibreOffice packages (it is about 100 KB, and the probe makes it harmless).
 Consequences: `EZMD_REQUIRE_SANDBOX` does nothing until fix/rc5-core is merged; until then an opted-in soffice still runs unsandboxed, as in rc4.
 Council: not convened (audit fix); the profile choice is for the owner.
+
+## D-0065: Core's extra_required and sandbox_unavailable reach API clients as 422
+Date: 2026-10-13
+Task: audit (rc5, core error codes)
+Status: accepted
+Context: fix/rc5-core raises stable `ConversionError.code`s: `unsupported_media_type`, `extra_required` (D-0054 there) and, for the LibreOffice sandbox requirement, `sandbox_unavailable`. The conversion child passed only `experimental_disabled` through; everything else became 500 `conversion_failed`.
+Decision: `PASSTHROUGH_CONVERSION_CODES` adds all three. `unsupported_media_type` keeps 415. `extra_required` and `sandbox_unavailable` are new API codes with 422, like `experimental_disabled`: the request is valid, but this instance is not set up to convert that input, and retrying will not help (so not 503). The converter's `user_message` is passed through as the message. They are added to the error table, docs/errors.md and the OpenAPI document.
+Alternatives: 501 `not_implemented` (that code means the contract has the feature but ezmd does not build it yet); 503 (implies a retry can succeed).
+Consequences: until fix/rc5-core is merged these codes are never raised. The TypeScript SDK's error-code union does not list them yet.
+Council: not convened (audit fix).
