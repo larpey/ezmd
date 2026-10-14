@@ -236,3 +236,12 @@ def test_docling_without_the_extra_names_the_extra(args: list[str]) -> None:
     res = runner.invoke(app, ["convert", str(PDF), *args])
     assert res.exit_code != 0
     assert "ezmd[docs]" in res.output and "Unknown converter" not in res.output, res.output
+
+
+def test_zip_format_explains_itself(tmp_path: Path) -> None:
+    """`zip` is the API's download bundle, not a CLI format (part4 4.2.2 lists md|txt|json|docx|srt)."""
+    res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "-f", "zip"])
+    assert res.exit_code == 2
+    assert "API" in res.stderr and "--out" in res.stderr and "sidecar" in res.stderr
+    bad = runner.invoke(app, ["convert", str(_txt(tmp_path)), "-f", "bogus"])
+    assert bad.exit_code == 2 and "expected one of md, txt, json (docx, srt come in a later release)" in bad.stderr

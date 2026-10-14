@@ -26,6 +26,10 @@ All notable changes are generated from Conventional Commits. This project uses s
 - A missing optional extra exits 2 (`extra_required`) for every input type; Parquet exited 1 and 7z 3.
   Unsupported types carry the stable code `unsupported_media_type` (exit 6) instead of being recognized by
   their message (D-0054).
+- `ezmd batch` stops starting new files at the first failure (before, up to workers + 1 more converted)
+  and shows how many were cancelled; `-q` also silences Docling's "Loading weights" progress bars;
+  `ftp://` and other non-http URLs fail with an unsupported-scheme message (exit 2) instead of "no such
+  file"; `-f zip` explains that zip is the API's bundle and what `--out` writes instead (D-0055).
 
 ## [0.1.0-rc4] - 2026-10-13
 
