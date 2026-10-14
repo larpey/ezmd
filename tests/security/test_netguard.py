@@ -9,6 +9,7 @@ import time
 from collections.abc import Iterator
 from pathlib import Path
 
+import httpcore
 import pytest
 
 from ezmd.core import netguard
@@ -415,3 +416,32 @@ def test_resolver_unicode_error_becomes_url_blocked() -> None:
 
     with pytest.raises(UrlBlocked):
         resolve_checked(validate_url("http://example.com/"), resolver=boom)
+
+
+@pytest.mark.parametrize("pinned, asked", [("example.com", "example.com."), ("example.com.", "EXAMPLE.com")])
+def test_pinned_backend_treats_a_trailing_dot_as_the_same_host(
+    pinned: str, asked: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """https://httpbin.org./html passed validation but httpcore asked for "httpbin.org." and the pin refused it."""
+    backend = netguard._PinnedBackend(pinned, "93.184.216.34")
+    calls: list[tuple[str, int]] = []
+    monkeypatch.setattr(backend._inner, "connect_tcp", lambda host, port, *a, **k: calls.append((host, port)))
+    backend.connect_tcp(asked, 443)
+    assert calls == [("93.184.216.34", 443)]
+    with pytest.raises(httpcore.ConnectError):
+        backend.connect_tcp("other.example", 443)
+
+
+@pytest.mark.parametrize(
+    "url, fetched",
+    [
+        ("https://example.com./html", "https://example.com/html"),
+        ("https://Example.COM.:8443/a?b=1#c", "https://example.com:8443/a?b=1#c"),
+        ("https://example.com/", "https://example.com/"),
+    ],
+)
+def test_trailing_dot_is_dropped_from_the_fetched_url(url: str, fetched: str) -> None:
+    """The TLS certificate check rejects "example.com." against a cert for "example.com"."""
+    v = netguard.validate_url(url)
+    assert v.url == fetched
+    assert v.host == "example.com"

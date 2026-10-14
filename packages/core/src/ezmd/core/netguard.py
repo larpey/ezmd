@@ -326,9 +326,14 @@ def validate_url(url: str, *, allow_private: bool = False) -> ValidatedUrl:
     host = parts.hostname
     if not host:
         raise UrlBlocked("URL has no host", url=url)
-    host = host.rstrip(".")  # "example.com." is the same host as "example.com"
-    if not host:
-        raise UrlBlocked("URL has no host", url=url)
+    if host.endswith("."):
+        # "example.com." is the same host as "example.com"; drop the dot from the URL too, since the
+        # pinned connection and the TLS certificate check both compare the bare name.
+        host = host.rstrip(".")
+        if not host:
+            raise UrlBlocked("URL has no host", url=url)
+        netloc = host if port is None else f"{host}:{port}"
+        url = urlunsplit((parts.scheme, netloc, parts.path, parts.query, parts.fragment))
     try:
         host_idna = host.encode("idna").decode("ascii") if not host.isascii() else host
     except UnicodeError as e:
@@ -401,11 +406,16 @@ def resolve_checked(
 # ---------------------------------------------------------------------------
 
 
+def _pin_name(host: str) -> str:
+    """The form both sides of the pin compare: lower case, no IPv6 brackets, no trailing root dot."""
+    return host.lower().strip("[]").rstrip(".")
+
+
 class _PinnedBackend(httpcore.NetworkBackend):
     """Connects to the pinned address for the one hostname this client may reach."""
 
     def __init__(self, host: str, ip: str) -> None:
-        self._host = host
+        self._host = _pin_name(host)
         self._ip = ip
         self._inner = httpcore.SyncBackend()
 
@@ -417,7 +427,7 @@ class _PinnedBackend(httpcore.NetworkBackend):
         local_address: str | None = None,
         socket_options: Iterable[Any] | None = None,
     ) -> httpcore.NetworkStream:
-        if host.lower().strip("[]") not in (self._host, self._ip):
+        if _pin_name(host) not in (self._host, self._ip):
             raise httpcore.ConnectError(f"connection to unpinned host {host!r} refused")
         return self._inner.connect_tcp(self._ip, port, timeout, local_address, socket_options)
 
@@ -432,7 +442,7 @@ class _PinnedBackend(httpcore.NetworkBackend):
 
 class _AsyncPinnedBackend(httpcore.AsyncNetworkBackend):
     def __init__(self, host: str, ip: str) -> None:
-        self._host = host
+        self._host = _pin_name(host)
         self._ip = ip
         self._inner = httpcore.AnyIOBackend()
 
@@ -444,7 +454,7 @@ class _AsyncPinnedBackend(httpcore.AsyncNetworkBackend):
         local_address: str | None = None,
         socket_options: Iterable[Any] | None = None,
     ) -> httpcore.AsyncNetworkStream:
-        if host.lower().strip("[]") not in (self._host, self._ip):
+        if _pin_name(host) not in (self._host, self._ip):
             raise httpcore.ConnectError(f"connection to unpinned host {host!r} refused")
         return await self._inner.connect_tcp(self._ip, port, timeout, local_address, socket_options)
 
