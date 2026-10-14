@@ -23,6 +23,12 @@ FETCH_RESIDENTIAL = "fetch_residential"
 RQ_QUEUES = (DEFAULT, MEDIA, FETCH)
 ALL_QUEUES = (DEFAULT, MEDIA, FETCH, FETCH_RESIDENTIAL)
 WORKER_ENTRY = "ezmd_api.worker.rq_entry"
+HEARTBEAT_MAX_AGE_S = 60
+"""/readyz needs a worker heartbeat at most this old (docs/spec/part1.md section 7.3)."""
+WORKER_TTL_S = 45
+"""RQ `worker_ttl` for ezmd workers. An idle RQ worker beats once per dequeue timeout (worker_ttl - 15 s)
+and a busy one every `job_monitoring_interval` (30 s), so both beat twice per readiness window. RQ's
+default of 420 s left an idle worker silent for 405 s and /readyz answered 503 (D-0045)."""
 
 
 def queue_for_mime(mime: str | None) -> str:
@@ -152,7 +158,7 @@ class RQQueue:
             log.warning("could not cancel RQ job", extra={"job_id": job_id})
 
     def workers_alive(self) -> bool:
-        """At least one RQ worker heartbeated in the last 60 s (readiness)."""
+        """At least one RQ worker heartbeated in the last HEARTBEAT_MAX_AGE_S (readiness)."""
         from datetime import UTC, datetime
 
         from rq import Worker
@@ -167,7 +173,7 @@ class RQQueue:
             if hb is None:
                 continue
             hb = hb if hb.tzinfo else hb.replace(tzinfo=UTC)
-            if (now - hb).total_seconds() <= 60:
+            if (now - hb).total_seconds() <= HEARTBEAT_MAX_AGE_S:
                 return True
         return False
 

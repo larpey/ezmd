@@ -437,3 +437,13 @@ Decision: Caddy, which already has egress, serves an internal-only site `http://
 Alternatives: route siteverify through worker-fetch as an RQ job (the API would block on the fetch queue behind URL fetches of up to 120 s, and Redis plus a worker become hard dependencies of the challenge); give the API an iptables egress allow-list (the API would need root and CAP_NET_ADMIN at start and a route to the internet, which is more privilege on the public-facing container); the spec's Squid `egress-proxy` (one more service and image for one hostname; it can still be added for the public overlay, and the setting works with it).
 Consequences: a self-host behind its own egress control must let Caddy reach challenges.cloudflare.com:443. The relay is reachable by every container on the compose networks, which only lets them ask Cloudflare to verify tokens. The TypeScript SDK's error-code union does not list `turnstile_unavailable` yet (packages/sdk-ts).
 Council: not convened (audit fix).
+
+## D-0045: ezmd RQ workers run with worker_ttl 45 s so /readyz's 60 s window holds when idle
+Date: 2026-10-13
+Task: audit (rc5 pre-release testing)
+Status: accepted
+Context: `/readyz` needs a worker heartbeat within 60 s (part1 7.3), but RQ's default `worker_ttl` is 420 s and an idle worker only beats when its blocking dequeue times out (`worker_ttl - 15` = 405 s). An idle, healthy stack answered 503 most of the time.
+Decision: `ezmd_api.worker.build_worker` creates every worker with `worker_ttl=queue.WORKER_TTL_S` (45 s): idle workers beat every 30 s (dequeue timeout) and busy ones every 30 s (`job_monitoring_interval`), twice per window. The window stays the spec's 60 s (`queue.HEARTBEAT_MAX_AGE_S`). A test pins both cadences below the window and the worker key's expiry above it.
+Alternatives: widen the readiness window to ~420 s (a dead worker would look ready for 7 minutes, and the spec says 60 s); a separate heartbeat thread (duplicates what RQ already does).
+Consequences: each idle worker makes one BLPOP round trip to Redis every 30 s instead of every 405 s.
+Council: not convened (audit fix).

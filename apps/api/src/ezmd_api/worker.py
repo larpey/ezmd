@@ -239,16 +239,21 @@ def rq_entry(job_id: str) -> None:
     process_job(_services(), job_id)
 
 
+def build_worker(queue_names: list[str], connection: Any) -> Any:
+    """The RQ worker for `queue_names`, with the heartbeat cadence /readyz relies on (queue.WORKER_TTL_S)."""
+    from rq import Queue, Worker
+
+    queues = [Queue(name, connection=connection) for name in queue_names]
+    return Worker(queues, connection=connection, worker_ttl=q.WORKER_TTL_S)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="ezmd-worker", description="Run an ezmd RQ worker.")
     parser.add_argument("--queues", nargs="+", default=[q.DEFAULT], choices=list(q.RQ_QUEUES))
     parser.add_argument("--burst", action="store_true", help="exit when the queues are empty")
     args = parser.parse_args(argv)
-    from rq import Queue, Worker
-
     services = _services()
-    queues = [Queue(name, connection=services.redis) for name in args.queues]
-    Worker(queues, connection=services.redis).work(burst=args.burst, with_scheduler=False)
+    build_worker(args.queues, services.redis).work(burst=args.burst, with_scheduler=False)
 
 
 if __name__ == "__main__":

@@ -1239,7 +1239,7 @@
     },
     "/readyz": {
       "get": {
-        "description": "200 when the database and state backend answer and a worker heartbeated in the last 60 s; else 503.",
+        "description": "200 when the database and state backend answer and a worker heartbeated in the last 60 s (ezmd workers beat every 30 s, idle or busy); else 503.",
         "operationId": "readyz",
         "responses": {
           "200": {
