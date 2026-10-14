@@ -20,6 +20,8 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="unsupported_media_type"></a>`unsupported_media_type` | 415 | The detected type is an executable (`detail.reason` `executable`) or no converter on this instance handles it (`no_converter`); `detail.mime` is the detected type. Uploads get this before a job is created; a fetched URL body fails its job with it. |
 | <a id="url_blocked"></a>`url_blocked` | 422 | The URL failed the SSRF guard: disallowed scheme, userinfo, or a private, loopback, link-local, or metadata address. |
 | <a id="platform_disabled"></a>`platform_disabled` | 422 | The host is disabled by this instance's platform policy. |
+| <a id="extra_required"></a>`extra_required` | 422 | Every converter for this type needs an optional extra this instance does not have installed (for example `ezmd[data]` for Parquet). |
+| <a id="sandbox_unavailable"></a>`sandbox_unavailable` | 422 | The converter must run sandboxed on this instance (`EZMD_REQUIRE_SANDBOX`) and bubblewrap is not available. Not retried. |
 | <a id="experimental_disabled"></a>`experimental_disabled` | 422 | Only an experimental converter handles this input, and experimental converters are turned off on this instance. |
 | <a id="extra_required"></a>`extra_required` | 422 | The converter for this input needs an optional extra (for example `ezmd[data]` for Parquet) that this instance does not have; `message` names it. |
 | <a id="sandbox_unavailable"></a>`sandbox_unavailable` | 422 | The converter for this input must run in a sandbox on this instance (LibreOffice under bubblewrap, `EZMD_REQUIRE_SANDBOX=1`) and the sandbox cannot run here; see [Self-hosting](selfhost.md). |
@@ -30,6 +32,7 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="internal_error"></a>`internal_error` | 500 | An unexpected server error; quote the `request_id` when reporting it. |
 | <a id="not_implemented"></a>`not_implemented` | 501 | The feature exists in the contract but is not built yet (for example `format=docx`). |
 | <a id="fetch_failed"></a>`fetch_failed` | 502 | The URL could not be fetched. |
+| <a id="turnstile_unavailable"></a>`turnstile_unavailable` | 503 | Turnstile verification is required but Cloudflare could not be reached; retry later. |
 | <a id="queue_unavailable"></a>`queue_unavailable` | 503 | The queue is down or the global active-job cap is reached; retry after `Retry-After` seconds. |
 | <a id="turnstile_unavailable"></a>`turnstile_unavailable` | 503 | The instance could not get a verdict from Turnstile siteverify (unreachable, or its secret was rejected). Not the visitor's fault; retry after `Retry-After` seconds. The operator sees the cause in the API log. |
 | <a id="timeout"></a>`timeout` | 504 | The conversion exceeded its time limit. |
@@ -40,10 +43,11 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 |---|---|
 | 0 | Success. |
 | 1 | Generic failure. |
-| 2 | Bad arguments, missing file or dependency, or a result with an error-severity warning (the output is still written). |
+| 2 | Bad arguments, missing file, or missing dependency: an optional extra the input needs (`extra_required`), whether no converter is available or the converter wrote a stub saying so. |
+| 3 | Partial success: a usable result with an error-severity warning (the output is still written), or batch failures with `--continue-on-error`. |
 | 4 | Fetch blocked by platform policy. |
 | 5 | Input too large. |
-| 6 | Unsupported type. |
+| 6 | Unsupported type (`unsupported_media_type`). |
 | 130 | Interrupted. |
 
 ## Warnings

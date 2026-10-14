@@ -221,3 +221,19 @@ def test_list_start_values(run: Run, fixture_bytes: Callable[[str], bytes]) -> N
     assert [(lb.ordered, lb.start) for lb in lists] == [(True, 1), (True, 1), (True, 5), (False, 1)]
     assert [i.spans[0].text for i in lists[2].items] == ["Call the duty manager", "Clear the yard"]
     assert lists[0].items[1].children_ordered and len(lists[0].items[1].children) == 2
+
+
+def test_hidden_text_is_scanned_and_kept_out_of_frontmatter(fixture_bytes: Callable[[str], bytes]) -> None:
+    """Red team: hidden runs were not in the warning detail, so the injection scanner never saw them, and with
+    keep_hidden the full profile wrote them into frontmatter `extra` unscanned (D-0059)."""
+    from ezmd.library import convert
+
+    for keep in (False, True):
+        options = {"extra": {"office.keep_hidden": keep, "office.infer_headings": False}}
+        out = convert(fixture_bytes("docx-structure"), filename="s.docx", options=options)
+        w = next(w for w in out.conversion.document.warnings if w.kind == WarningKind.REMOVED_HIDDEN_ELEMENTS)
+        assert "IGNORE PREVIOUS INSTRUCTIONS" in str(w.detail.get("hidden_text")), w.detail
+        extra = out.frontmatter.get("extra") or {}
+        assert "hidden_text" not in extra  # type: ignore[operator]
+        assert "IGNORE PREVIOUS INSTRUCTIONS" not in out.markdown
+        assert out.frontmatter.get("injection_risk") != "none"

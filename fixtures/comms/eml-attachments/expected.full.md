@@ -17,8 +17,15 @@ tokens: {o200k_base: 1037, cl100k_base: 1044, claude_approx: 1120}
 content_hash: "sha256:6f85b5e85f3d763b7e82873ea2d303afec16b260a5216ee90fefb189bbca0cd9"
 source_hash: "sha256:b8b344c56e820cc1f28d18f4208485e9a113977db08f00fd0fe9b6ce781f0747"
 truncated: false
-warnings: [attachment_unconverted, tnef_unparsed, engine_fallback, removed_hidden_elements, textbox_content_relocated, heading_inferred_from_formatting]
-injection_risk: none
+warnings:
+  - attachment_unconverted
+  - tnef_unparsed
+  - engine_fallback
+  - removed_hidden_elements
+  - textbox_content_relocated
+  - heading_inferred_from_formatting
+  - injection_suspected
+injection_risk: high
 extra: {attachments: 5, body_alternatives: false, body_source: text, encoding: utf-8, message_id: "<att-1@example.org>"}
 ---
 > Sections: 1 Attachments, 2 attachments/report.pdf: Quarterly cargo throughput, 3 attachments/method.docx: Field Guide to Ponds, 4 attachments/tally.csv. 5 tables.

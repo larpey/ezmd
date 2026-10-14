@@ -340,3 +340,92 @@ def test_trafilatura_layout_page_source_order_without_chrome() -> None:
     )
     assert table_at < thanks_at
     assert isinstance(doc.blocks[table_at], Table)
+
+
+WIKI_HEAD = """<html lang="en"><head><title>Albert Einstein - Wikipedia</title>
+<meta property="og:title" content="Albert Einstein - Wikipedia">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "name": "Albert Einstein",
+"headline": "German-born theoretical physicist (1879-1955)", "author": {"@type": "Organization",
+"name": "Contributors to Wikimedia projects"}}</script></head>"""
+
+
+def test_jsonld_headline_that_disagrees_with_every_title_is_not_the_title() -> None:
+    """Wikipedia's JSON-LD `headline` is the short description; og:title, <title> and h1 all name the
+    article, so the title is the h1 (og:title minus the site suffix)."""
+    pm = extract_meta(parse_html(WIKI_HEAD + "<body><h1>Albert Einstein</h1></body></html>"), None, None)
+    assert pm.title == "Albert Einstein"
+    pm = extract_meta(parse_html(WIKI_HEAD + "<body></body></html>"), None, None)
+    assert pm.title == "Albert Einstein"  # JSON-LD name agrees with og:title
+
+
+def test_og_title_site_suffix_is_dropped() -> None:
+    head = '<html><head><meta property="og:title" content="The port log | Harbor Weekly">'
+    pm = extract_meta(parse_html(head + "</head><body><h1>The port log</h1></body></html>"), None, None)
+    assert pm.title == "The port log"
+    head = '<html><head><meta property="og:title" content="Tides: why the port floods">'
+    pm = extract_meta(parse_html(head + "</head><body><h1>Tides</h1></body></html>"), None, None)
+    assert pm.title == "Tides: why the port floods"  # a subtitle is not a site suffix
+
+
+def test_jsonld_headline_still_wins_when_it_agrees() -> None:
+    pm = extract_meta(parse_html(ARTICLE), None, None)
+    assert pm.title == "Port log, the full story"
+
+
+@pytest.mark.parametrize("conv", [TrafilaturaConverter(), RulesConverter()])
+def test_mediawiki_references_render_as_footnotes(conv: object) -> None:
+    ref = (
+        '<sup class="mw-ref reference" id="cite_ref-p_1-0"><a href="#cite_note-p-1"><span class="mw-reflink-text">'
+        '<span class="cite-bracket">[</span>1<span class="cite-bracket">]</span></span></a></sup>'
+    )
+    html = (
+        f"{WIKI_HEAD}<body><main><h1>Albert Einstein</h1><p>He published four papers.{ref} {LONG}</p>"
+        f'<p>{LONG}</p><h2>References</h2><div class="reflist"><ol class="mw-references references">'
+        '<li id="cite_note-p-1"><span class="mw-cite-backlink"><a href="#cite_ref-p_1-0">^</a></span>'
+        '<span class="reference-text">Whittaker, E. (1955). Albert Einstein.</span></li></ol></div>'
+        "</main></body></html>"
+    )
+    result = convert_ref(_ref(html), ConvertOptions(), converter_id=conv.id)  # type: ignore[attr-defined]
+    md = render(result, "full", "md").markdown
+    doc = result.document
+    assert "four papers.[^1]" in md, md[:2000]
+    assert "[^1]: Whittaker, E. (1955). Albert Einstein." in md
+    assert doc.metadata.title == "Albert Einstein"
+
+
+INFOBOX_PAGE = f"""<html lang="en"><head><title>Harbor Format - Wiki</title></head><body><main>
+<h1>Harbor Format</h1>
+<table class="infobox"><tbody>
+<tr><th colspan="2">Harbor Format</th></tr>
+<tr><td colspan="2"><img src="/logo.svg" alt=""></td></tr>
+<tr><th>Filename extension</th><td><code>.hbr</code></td></tr>
+<tr><th>Magic number</th><td>None</td></tr>
+<tr><th>Developed by</th><td><span class="mw-empty-elt"></span><div class="plainlist"><ul>
+<li><a href="/wiki/Ada_Quay">Ada Quay</a></li><li><a href="/wiki/Ben_Dock">Ben Dock</a></li></ul></div></td></tr>
+<tr><th>Initial release</th><td>May 1, 2019</td></tr>
+<tr><th>Latest release</th><td><div style="display: inline-block; line-height: 1.2em;">2.4.1<br>June 3, 2024
+<span style="display:none">(<span class="bday">2024-06-03</span>)</span></div></td></tr>
+<tr><th>Type of format</th><td>Open file format</td></tr>
+<tr><th>Website</th><td>harbor.example/format</td></tr>
+</tbody></table>
+<p>{LONG}</p><p>{LONG}</p><p>{LONG}</p></main></body></html>"""
+
+
+@pytest.mark.parametrize("conv", [TrafilaturaConverter(), RulesConverter()])
+def test_infobox_cells_with_block_content_are_kept(conv: object) -> None:
+    """install-tests repro (Wikipedia "Markdown"): Trafilatura drops cells whose content is a list in a div or
+    an inline-block div, so its table no longer matched the DOM table and was rebuilt from its XML with those
+    cells empty. The DOM table is found by its cells instead."""
+    from ezmd.ir import Table
+
+    doc = _convert(INFOBOX_PAGE, None, conv)
+    table = next(b for b in doc.blocks if isinstance(b, Table))
+    rows = {
+        spans_text([s for c in table.cells if c.row == r and c.col == 0 for s in c.spans]): " ".join(
+            spans_text(c.spans) for c in table.cells if c.row == r and c.col > 0
+        )
+        for r in range(table.n_rows)
+    }
+    assert "Ada Quay" in rows["Developed by"] and "Ben Dock" in rows["Developed by"], rows
+    assert "2.4.1" in rows["Latest release"] and "2024-06-03" not in rows["Latest release"], rows
+    assert all(k or v for k, v in rows.items()), rows  # no empty row

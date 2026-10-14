@@ -120,6 +120,10 @@ _ALWAYS_QUOTE = {
     "exports",
     "sheets",
 }
+_NEVER_RENDERED = frozenset({"hidden_text"})
+"""Metadata kept for library users only: text a converter removed as hidden (`office.keep_hidden`) is in the
+IR and the injection scan, never in the rendered frontmatter (D-0059)."""
+
 _EXTRA_SLOTS = {
     "source_url",
     "platform",
@@ -263,7 +267,12 @@ def build_frontmatter(
         "chunk_tokens": inp.chunk_tokens,
         "sidecar": inp.sidecar_path,
         "exports": inp.exports or None,
-        "extra": {k: v for k, v in sorted(extra.items()) if k not in _EXTRA_SLOTS and v is not None} or None,
+        "extra": {
+            k: v
+            for k, v in sorted(extra.items())
+            if k not in _EXTRA_SLOTS and k not in _NEVER_RENDERED and v is not None
+        }
+        or None,
     }
     if not include_extra:
         values["extra"] = None

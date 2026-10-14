@@ -3,8 +3,8 @@
 The library is the product: the CLI, the API workers, and the MCP server all call it, so there is exactly one
 conversion path. `import ezmd` is light; engines load on first use.
 
-Install with `pip install ezmd==0.1.0rc2` (the release candidate; plain `pip install ezmd` once `0.1.0` is
-final), or from a source checkout run your code with `uv run python ...` (see [Install](install.md)).
+Install with `pip install ezmd` (until `0.1.0` is final this installs the newest release candidate), or from
+a source checkout run your code with `uv run python ...` (see [Install](install.md)).
 
 ## Convert
 
@@ -37,13 +37,14 @@ converting again.
 | `warnings` | A list of `ezmd.ir.Warning` (`kind`, `severity`, `message`, `page`, `block_id`, `count`, `detail`) |
 | `ok` | `False` when any warning has severity `error` (the output may still be usable) |
 | `tokens`, `truncated` | Token count and whether a token budget cut the output |
-| `render(profile, format, **overrides)` | Render another profile (`full`, `compact`, `rag`, `agent`) or format (`md`, `json`, `txt`) |
+| `render(profile, format, **overrides)` | Render another profile (`full`, `compact`, `rag`, `agent`) or format (`md`, `json`, `txt`). Returns an `ezmd.render.RenderedOutput` (not a `Result`): `markdown`, `body`, `frontmatter`, `sidecar`, `chunks`, `tokens`, `truncated`, `warnings`, `injection_risk`, `attachments` |
 | `chunks(chunk_tokens=400, overlap=0)` | RAG chunks (`ezmd.render.Chunk`: `id`, `text`, `breadcrumb`, `tokens`, pages, `block_ids`) |
 | `save(path, sidecar=True)` | Write the Markdown to a file, or `<stem>.md` into an existing directory, plus `<stem>.ezmd.json` when the profile has a sidecar |
 | `document` | The IR `Document` (see [Output format](output-format.md)) |
 
 ```python
-rag = result.render("rag")
+rag = result.render("rag")  # ezmd.render.RenderedOutput
+print(rag.tokens, rag.markdown[:200])
 for chunk in result.chunks(chunk_tokens=300):
     print(chunk.id, chunk.tokens, chunk.breadcrumb)
 result.save("out/report.md")  # or an existing directory: writes <stem>.md there
@@ -98,7 +99,11 @@ result = await ezmd.convert_async("report.pdf")  # runs on a worker thread; neve
 - `ezmd.registry.ConversionError` when no converter could produce a document (`.code` is a stable
   reason, `.user_message` is safe to show);
 - `ezmd.inputs.InputTooLarge` when the input exceeds `max_bytes`;
-- `ezmd.core.netguard.NetguardError` when a URL is blocked by the SSRF guard;
+- a subclass of `ezmd.core.netguard.NetguardError` for URLs (catch the base class for all of them):
+  `UrlBlocked` when the SSRF guard refuses the URL (a private or reserved address, a blocked host, or
+  `SchemeNotAllowed` for a scheme other than http and https), `FetchFailed` when it cannot be fetched,
+  `ResponseTooLarge` when the body is over `max_bytes`, and `PlatformDisabled` / `ResidentialOnly` for
+  sites disabled by policy or reachable only through a residential fetch node;
 - `FileNotFoundError` for a missing path.
 
 Losses that do not stop the conversion are warnings on the result, never exceptions. The codes are listed

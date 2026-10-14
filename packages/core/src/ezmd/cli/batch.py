@@ -25,7 +25,14 @@ import typer
 from ezmd.cli.config import SUPPORTED_FORMATS, ConfigError, check_format, check_profile
 from ezmd.cli.convert import build_options, emit_json, fail, load_config_or_exit
 from ezmd.cli.exitcodes import EXIT_FAIL, EXIT_INTERRUPTED, EXIT_OK, EXIT_PARTIAL, classify
-from ezmd.cli.output import EXTENSIONS, err_console, outcome_from_result, sidecar_path, write_outcome
+from ezmd.cli.output import (
+    EXTENSIONS,
+    err_console,
+    outcome_from_result,
+    sidecar_path,
+    silence_progress_bars,
+    write_outcome,
+)
 
 __all__ = ["Job", "batch", "convert_job", "default_workers", "plan"]
 
@@ -250,24 +257,34 @@ def _execute(jobs: list[Job], workers: int, keep_going: bool, run: _Run) -> bool
                     run.add(_cancelled(rest), advance=False)
                 return False
         return True
-    # spawn, not fork: forking a process that already runs threads (Magika, tokenizers) can deadlock
+    # spawn, not fork: forking a process that already runs threads (Magika, tokenizers) can deadlock.
+    # At most `workers` jobs are in flight: a job handed to the pool cannot be taken back once a worker (or
+    # the pool's call queue) has it, so submitting everything up front kept converting after a failure.
+    queue = iter(jobs)
+    stopped = False
     with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("spawn")) as pool:
-        pending: dict[Future[dict[str, Any]], Job] = {pool.submit(convert_job, j): j for j in jobs}
-        stopped = False
+        pending: dict[Future[dict[str, Any]], Job] = {}
+
+        def fill() -> None:
+            while not stopped and len(pending) < workers:
+                job = next(queue, None)
+                if job is None:
+                    return
+                pending[pool.submit(convert_job, job)] = job
+
+        fill()
         while pending:
             done, _ = wait(pending, return_when=FIRST_COMPLETED)
             for fut in done:
-                job = pending.pop(fut)
-                if fut.cancelled():
-                    run.add(_cancelled(job), advance=False)
-                    continue
                 rec = fut.result()
+                del pending[fut]
                 run.add(rec)
-                if rec["status"] == "failed" and not keep_going and not stopped:
+                if rec["status"] == "failed" and not keep_going:
                     stopped = True
-                    for other in pending:
-                        other.cancel()
-        return not stopped
+            fill()
+    for rest in queue:
+        run.add(_cancelled(rest), advance=False)
+    return not stopped
 
 
 def _cancelled(job: Job) -> dict[str, Any]:
@@ -292,9 +309,17 @@ def _print_table(summary: dict[str, int], records: list[dict[str, Any]], manifes
     for r in records:
         if r["status"] == "failed":
             con.print(f"FAIL {r['path']}: {r['error']['message']}", markup=False, highlight=False)
-    t = Table("converted", "skipped", "failed", "total tokens", title="ezmd batch")
-    t.add_row(*(str(summary[k]) for k in ("converted", "skipped", "failed", "total_tokens")))
+    cols = ["converted", "skipped", "failed", *(["cancelled"] if summary.get("cancelled") else [])]
+    t = Table(*cols, "total tokens", title="ezmd batch")
+    t.add_row(*(str(summary[k]) for k in [*cols, "total_tokens"]))
     con.print(t)
+    if summary.get("cancelled"):
+        con.print(
+            f"stopped after the first failure; {summary['cancelled']} not converted "
+            "(pass --continue-on-error to convert the rest)",
+            markup=False,
+            highlight=False,
+        )
     con.print(f"manifest: {manifest}", markup=False, highlight=False)
 
 
@@ -314,6 +339,8 @@ def batch(
 ) -> None:
     """Convert many files; unchanged inputs are skipped on re-runs."""
     cfg = load_config_or_exit(as_json=as_json, quiet=quiet)
+    if quiet or as_json:
+        silence_progress_bars()  # inherited by the spawned workers
     try:
         chosen_fmt = check_format(fmt or cfg.format, "--format")
         if chosen_fmt not in SUPPORTED_FORMATS:

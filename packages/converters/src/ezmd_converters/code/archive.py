@@ -17,6 +17,8 @@ from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
 from ezmd.registry import ConversionError
+from ezmd_converters.archives.backends import zip_directory_problem
+from ezmd_converters.archives.guard import LISTING_HARD_CAP_FACTOR
 
 __all__ = ["ArchiveLimits", "Member", "ReadResult", "read_archive"]
 
@@ -89,13 +91,17 @@ def read_archive(path: Path, limits: ArchiveLimits) -> ReadResult:
 def _read_zip(path: Path, limits: ArchiveLimits) -> ReadResult:
     out = ReadResult()
     total = 0
+    with path.open("rb") as fh:
+        problem = zip_directory_problem(fh, limits.max_entries * LISTING_HARD_CAP_FACTOR)
+    if problem is not None:
+        raise _bomb(f"zip directory too large: {problem}")
     try:
         zf = zipfile.ZipFile(path)
     except (zipfile.BadZipFile, OSError) as e:
         raise ConversionError(f"bad zip: {e}", user_message="The archive could not be read.") from e
     with zf:
         infos = zf.infolist()
-        if len(infos) > limits.max_entries:
+        if len(infos) > limits.max_entries:  # within the hard cap checked before the directory was parsed
             out.truncated = True
             infos = infos[: limits.max_entries]
         for info in infos:
@@ -143,6 +149,12 @@ def _read_tar(path: Path, limits: ArchiveLimits) -> ReadResult:
     with tf:
         try:
             for info in tf:
+                # `tf.offset` is the position in the decompressed stream: it also counts the data tarfile read
+                # past for members skipped below (links, devices, unknown types), which `total` never sees.
+                if tf.offset > limits.max_total_bytes:
+                    raise _bomb("tar expands beyond the archive byte limit")
+                if tf.offset > MAX_RATIO * compressed and tf.offset > 1024 * 1024:
+                    raise _bomb(f"tar stream ratio exceeds {MAX_RATIO}:1")
                 count += 1
                 if count > limits.max_entries:
                     out.truncated = True
@@ -168,6 +180,8 @@ def _read_tar(path: Path, limits: ArchiveLimits) -> ReadResult:
                     f = tf.extractfile(info)
                     data = f.read(limits.max_member_bytes + 1) if f is not None else None
                 out.members.append(Member(path=rel, size=info.size, data=data))
+            if tf.offset > limits.max_total_bytes:  # data skipped after the last member
+                raise _bomb("tar expands beyond the archive byte limit")
         except (tarfile.TarError, OSError, EOFError) as e:
             if not out.members:
                 raise ConversionError(f"bad tar: {e}", user_message="The archive could not be read.") from e

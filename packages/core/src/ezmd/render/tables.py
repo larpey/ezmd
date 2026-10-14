@@ -219,7 +219,7 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
     head = [line]
     if grid.synthesized:
         ctx.header_synthesized += 1
-        head.append("<!-- ezmd: header synthesized -->")
+        head.append(ctx.marker("ezmd: header synthesized"))
     if rep in ("kv", "sampled") or table.n_cols > 4:
         head.append("Columns: " + ", ".join(grid.headers))
     head_text = "\n".join(head)
@@ -242,7 +242,7 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
         note = (
             f"({omitted:,} rows omitted; full data in {path})"
             if ctx.profile.name == "compact"
-            else f"<!-- ezmd: {omitted:,} rows omitted; full data in {path} -->"
+            else ctx.marker(f"ezmd: {omitted:,} rows omitted; full data in {path}")
         )
         rows = None
         lines = [*(_kv_line(grid, r) for r in data[:h]), note, *(_kv_line(grid, r) for r in data[-t:])]

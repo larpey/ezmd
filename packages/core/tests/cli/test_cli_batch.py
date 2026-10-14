@@ -6,6 +6,7 @@ import json
 import time
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 from ezmd.cli import app
@@ -138,3 +139,60 @@ def test_bad_arguments(tmp_path: Path) -> None:
 
 def test_default_workers_bounds() -> None:
     assert 1 <= default_workers() <= 8
+
+
+def test_parallel_batch_stops_dispatching_at_the_first_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Without --continue-on-error, a failure stops new work: only jobs already running finish. Before, every
+    job was submitted to the pool up front and the ones a worker had already taken could not be cancelled."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+
+    from ezmd.cli import batch as batch_mod
+
+    mp = monkeypatch
+    started: list[str] = []
+    release = threading.Event()
+
+    def fake_job(job: batch_mod.Job) -> dict[str, object]:
+        started.append(Path(job.src).name)
+        if Path(job.src).name.startswith("a_bad"):
+            return {"path": job.src, "status": "failed", "out": None, "warnings": [], "tokens": 0,
+                    "error": {"code": "conversion_failed", "message": "boom", "exit_code": 1}}  # fmt: skip
+        release.wait(5)
+        return {"path": job.src, "status": "converted", "out": job.out, "warnings": [], "tokens": 1}
+
+    # a pool that starts everything it is given at once, like a process pool whose workers already took them
+    mp.setattr(batch_mod, "ProcessPoolExecutor", lambda max_workers, mp_context: ThreadPoolExecutor(max_workers=32))
+    mp.setattr(batch_mod, "convert_job", fake_job)
+    src, out = _tree(tmp_path, n=6), tmp_path / "out"
+    (src / "a_bad.pdf").write_bytes(ELF)
+    timer = threading.Timer(0.5, release.set)
+    timer.start()
+    res = runner.invoke(app, ["batch", str(src), "--out", str(out), "-w", "2", "--json"])
+    timer.cancel()
+    release.set()
+    summary = json.loads(res.stdout)
+    assert res.exit_code == 1
+    assert len(started) == 2, started  # the failing job and the one running beside it
+    assert summary["failed"] == 1 and summary["converted"] == 1 and summary["cancelled"] == 5
+
+
+def test_stopped_batch_says_so_in_the_table(tmp_path: Path) -> None:
+    src, out = _tree(tmp_path, n=2), tmp_path / "out"
+    (src / "a_bad.pdf").write_bytes(ELF)
+    res = runner.invoke(app, ["batch", str(src), "--out", str(out), "-w", "1"], env={"COLUMNS": "200"})
+    assert res.exit_code == 1
+    assert "cancelled" in res.stderr and "--continue-on-error" in res.stderr
+
+
+def test_quiet_silences_third_party_progress_bars(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Docling's model load prints tqdm "Loading weights" bars; -q turns them off for convert and batch."""
+    import os
+
+    mp = monkeypatch
+    for cmd in (["convert", str(_tree(tmp_path / "c", 1) / "note0.txt"), "-q"],
+                ["batch", str(_tree(tmp_path / "b", 1)), "--out", str(tmp_path / "o"), "-w", "1", "-q"]):  # fmt: skip
+        mp.delenv("TQDM_DISABLE", raising=False)
+        mp.delenv("HF_HUB_DISABLE_PROGRESS_BARS", raising=False)
+        assert runner.invoke(app, cmd).exit_code == 0
+        assert os.environ.get("TQDM_DISABLE") == "1" and os.environ.get("HF_HUB_DISABLE_PROGRESS_BARS") == "1"

@@ -194,7 +194,7 @@ def test_profile_reads_the_structure_the_score_ignored() -> None:
     assert p.blocks["blockquotes"] == 2
     assert p.table_spans == [((1, 1),) * 3 + ((2, 1), (1, 1), (1, 1), (1, 1), (1, 1), (1, 2), (1, 1))]
     assert p.links["https://example.org/ponds"] == 1
-    assert p.frontmatter["injection_risk"] == "none"
+    assert p.frontmatter["injection_risk"] == "high"  # the hidden "IGNORE PREVIOUS INSTRUCTIONS" run (D-0059)
     assert (2, True) in p.lists and (3, False) in p.lists
 
 
@@ -252,3 +252,17 @@ def test_bad_invariant_settings_are_fixture_errors(tmp_path: Path, family: str, 
     (fx.path / "expected.full.md").write_text("# T" + NL)
     with pytest.raises(FixtureError):
         evaluate(fx, root, "# T" + NL)
+
+
+def test_frontmatter_fields_reads_block_style_warning_lists() -> None:
+    """Seven or more warning codes no longer fit one line and render as a YAML block list; the invariant
+    must still see them (it read an empty set before)."""
+    from ezmd.testing.invariants import frontmatter_fields
+
+    md = (
+        "---\ntitle: x\nwarnings:\n  - attachment_unconverted\n  - injection_suspected\n"
+        "injection_risk: high\n---\nbody\n"
+    )
+    fields = frontmatter_fields(md)
+    assert fields["warnings"] == frozenset({"attachment_unconverted", "injection_suspected"})
+    assert fields["injection_risk"] == "high"

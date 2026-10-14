@@ -86,6 +86,14 @@ class Unit:
     """True for renderer-generated marker comments (excluded from the injection scan)."""
 
 
+def comment_safe(text: str) -> str:
+    """Text that can sit inside an HTML comment: one line, no `--` (which `-->` needs) and no `>`."""
+    text = " ".join(text.split())
+    while "--" in text:
+        text = text.replace("--", "- -")
+    return text.replace(">", "&gt;")
+
+
 @dataclass(slots=True)
 class RenderContext:
     profile: Profile
@@ -120,6 +128,17 @@ class RenderContext:
     """(slide block id, heading level) of the slide being rendered, for its Notes heading."""
     notes_for: str | None = None
     """Slide whose Notes heading was already emitted."""
+    generated_markers: dict[str, str] = field(default_factory=dict)
+    """Every marker comment line this render emitted, mapped to the source text inside it (a sheet name, an
+    image ref, a page label). The injection scanner drops exactly these lines and scans their source text
+    in their place; a line that only looks like a marker is scanned like any other (D-0059)."""
+
+    def marker(self, content: str, source_text: str = "") -> str:
+        """`<!-- content -->`, registered as generated. `content` is neutralized so it cannot end the comment."""
+        line = f"<!-- {comment_safe(content)} -->"
+        previous = self.generated_markers.get(line)
+        self.generated_markers[line] = source_text if not previous else f"{previous}\n{source_text}"
+        return line
 
     @property
     def doc(self) -> Document:

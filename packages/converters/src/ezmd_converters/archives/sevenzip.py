@@ -38,7 +38,10 @@ class _Counter:
             raise BombError("ratio", f"the archive expands more than {self.budget.limits.max_ratio}:1")
 
 
-def _factory(counter: _Counter, max_entry: int) -> Any:
+def _factory(counter: _Counter, max_entry: int, keep: set[str]) -> Any:
+    """Writers for every file entry. Entries in `keep` are buffered (up to `max_entry`); the rest (too large,
+    unsafe path) are counted and discarded: py7zr decompresses them anyway when they share a solid block, so
+    their bytes are charged to the budget too."""
     from py7zr.io import Py7zIO, WriterFactory  # type: ignore[import-not-found,unused-ignore]
 
     class Writer(Py7zIO):  # type: ignore[misc,unused-ignore]
@@ -69,9 +72,19 @@ def _factory(counter: _Counter, max_entry: int) -> Any:
             self.products: dict[str, Writer] = {}
 
         def create(self, filename: str) -> Py7zIO:
+            if filename not in keep:
+                return Discard()
             w = Writer()
             self.products[filename] = w
             return w
+
+    class Discard(Writer):  # type: ignore[misc,unused-ignore]
+        def write(self, s: bytes | bytearray) -> int:
+            counter.add(len(s))
+            return len(s)
+
+        def size(self) -> int:
+            return 0
 
     return Factory()
 
@@ -97,6 +110,7 @@ def sevenzip_entries(
         infos = archive.list()
         entries: list[Entry] = []
         targets: list[str] = []
+        files: list[str] = []
         declared_total = 0
         for info in infos:
             kind: EntryKind = (
@@ -115,18 +129,20 @@ def sevenzip_entries(
             )
             path, _reason = safe_member_path(info.filename)
             size = int(info.uncompressed or 0)
-            if kind == "file" and path is not None and not encrypted and size <= budget.limits.max_entry:
-                targets.append(info.filename)
+            if kind == "file" and not encrypted:
+                files.append(info.filename)
                 declared_total += size
+                if path is not None and size <= budget.limits.max_entry:
+                    targets.append(info.filename)
         if encrypted or not targets:
             return entries, encrypted, None
         if declared_total > budget.remaining:
             budget.bombed = budget.bombed or "max_total"
             return entries, encrypted, "max_total"
         counter = _Counter(budget, archive_size)
-        factory = _factory(counter, budget.limits.max_entry)
+        factory = _factory(counter, budget.limits.max_entry, set(targets))
         try:
-            archive.extract(targets=targets, factory=factory)
+            archive.extract(targets=files, factory=factory)
         except BombError as e:
             return entries, encrypted, e.reason
         except EntryTooLarge:

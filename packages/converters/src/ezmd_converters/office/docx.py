@@ -128,14 +128,16 @@ def _warnings(walker: DocxWalker, opts: OfficeOptions, meta: Metadata) -> list[W
     out: list[Warning] = []
     c, s = walker.counters, walker.stats
     if c.hidden_runs:
+        hidden = " ".join(t.strip() for t in c.hidden_text if t.strip())
         if opts.keep_hidden:
-            meta.extra["hidden_text"] = " ".join(t.strip() for t in c.hidden_text if t.strip())[:20_000]
+            meta.extra["hidden_text"] = hidden[:20_000]
         out.append(
             Warning(
                 kind=WarningKind.REMOVED_HIDDEN_ELEMENTS,
                 message=f"Excluded {c.hidden_runs} hidden or white-on-white text runs from the body.",
                 count=c.hidden_runs,
-                detail={"hidden_runs": c.hidden_runs},
+                # the injection scanner reads detail["hidden_text"] (render/markdown.py hidden_text)
+                detail={"hidden_runs": c.hidden_runs, "hidden_text": hidden[:10_240]},
             )
         )
     cw = clean_warning(walker.clean)

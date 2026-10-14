@@ -58,7 +58,7 @@ def test_unavailable_named_by_chain_lists_extra() -> None:
     with pytest.raises(ConversionError) as info:
         reg.convert(_ref(DOC), ConvertOptions())
     err = info.value
-    assert err.code == "conversion_failed"
+    assert err.code == "extra_required"
     assert err.user_message.startswith("Docling is not installed")
     assert "ezmd[docs]" in err.user_message
 
