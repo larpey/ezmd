@@ -222,6 +222,7 @@ async def test_job_responses_are_never_cached(client: httpx.AsyncClient) -> None
     """S10: results, job status, events and attachments carry Cache-Control: no-store, private."""
     r = await upload(client, b"# Cache\n\nbody\n", "c.md", content_type="text/markdown")
     assert r.headers["cache-control"] == "no-store, private"
+    assert "x-api-key" in r.headers["vary"].lower()
     job_id = r.json()["job"]["id"]
     await wait_for_state(client, job_id)
     for path in (
@@ -234,4 +235,5 @@ async def test_job_responses_are_never_cached(client: httpx.AsyncClient) -> None
     ):
         resp = await client.get(path)
         assert resp.headers.get("cache-control") == "no-store, private", path
+        assert "x-api-key" in resp.headers.get("vary", "").lower(), path
     assert (await client.get("/v1/warnings")).headers["cache-control"] == "public, max-age=3600"
