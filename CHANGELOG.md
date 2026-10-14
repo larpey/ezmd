@@ -2,6 +2,13 @@
 
 All notable changes are generated from Conventional Commits. This project uses semantic versioning.
 
+## [Unreleased]
+
+### Fixed
+- PDF text layers whose font size is carried by the text matrix (`1 Tf` with a scaled `Tm` or CTM) no
+  longer split every word at ascenders and descenders into one-glyph lines and spurious N-column tables;
+  rotated tables on upright pages keep whole lines too (D-0050).
+
 ## [0.1.0-rc4] - 2026-10-13
 
 Release candidate for the pre-0.1.0 test pass. The npm SDK stays at 0.1.0-rc.3 (unchanged).
