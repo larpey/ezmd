@@ -517,3 +517,13 @@ Decision: `auth.ip_identity` unwraps IPv4-mapped addresses and reduces IPv6 to i
 Alternatives: /56 or /48 by default (some ISPs hand those to one customer, but many mobile and hosting networks give /64s to different users, so a wider default would merge strangers).
 Consequences: users behind one IPv6 /64 share anonymous limits, as users behind one IPv4 NAT already do. Existing salted hashes of IPv6 callers change once.
 Council: not convened (audit fix).
+
+## D-0053: Workers ship bubblewrap and require it for LibreOffice; the seccomp profile is not loosened
+Date: 2026-10-13
+Task: audit (rc5 red team, LibreOffice)
+Status: accepted
+Context: the worker image had no bubblewrap, so an operator who added LibreOffice (EZMD_WORKER_APT_PACKAGES) ran `soffice` unsandboxed; the red team showed an ODT with a linked image making soffice request the linked URL. rc5-core adds `office.require_sandbox` (on when `EZMD_REQUIRE_SANDBOX` or `EZMD_SERVER` is set) and turns linked-content updates off (fix/rc5-core b02240c).
+Decision: the worker image always installs bubblewrap; compose sets `EZMD_REQUIRE_SANDBOX=1` on both workers. Tested in the rc4 worker image with bubblewrap added, as uid 10001 with `cap_drop: ALL`, `no-new-privileges`, read-only root and `--network none`: under `seccomp-worker.json` and under Docker's default profile bwrap cannot create a user namespace; with `seccomp=unconfined`, or with the profile changed to allow `unshare`, namespace `clone` flags, `mount`, `umount2`, `pivot_root` and `setns`, it works. The profile is left as it is: allowing unprivileged user namespaces in the worker opens kernel surface that has a long record of privilege escalations, and the worker is already confined to the internal network. So in the default stack LibreOffice conversions are refused with a clear message, the other converters are unaffected (`bwrap_available()` probes once and runs tools without it), and the selfhost docs give the operator the two explicit choices (their own userns-permitting seccomp profile, or `EZMD_REQUIRE_SANDBOX=0` for trusted input).
+Alternatives: ship the userns-permitting profile (owner decision; tested and documented, not enabled); install bubblewrap only with the LibreOffice packages (it is about 100 KB, and the probe makes it harmless).
+Consequences: `EZMD_REQUIRE_SANDBOX` does nothing until fix/rc5-core is merged; until then an opted-in soffice still runs unsandboxed, as in rc4.
+Council: not convened (audit fix); the profile choice is for the owner.

@@ -126,3 +126,14 @@ def test_caddy_access_log_never_records_job_ids() -> None:
         pattern, repl.replace("${1}", r"\1").replace("${2}", r"\2"), "/v1/jobs/job_abc/result?format=md&token=t"
     )
     assert sub == "/v1/jobs/REDACTED/result?format=md&token=REDACTED"
+
+
+def test_workers_ship_bubblewrap_and_require_the_office_sandbox() -> None:
+    """LibreOffice is opt-in (EZMD_WORKER_APT_PACKAGES); when present it must run under bwrap or be refused
+    (office.require_sandbox via EZMD_REQUIRE_SANDBOX), never unsandboxed (D-0053)."""
+    services = _services()
+    for name in ("worker-default", "worker-fetch"):
+        assert services[name]["environment"]["EZMD_REQUIRE_SANDBOX"] == "1", name
+    dockerfile = (COMPOSE.parent / "Dockerfile").read_text(encoding="utf-8")
+    worker = dockerfile.split("FROM runtime-common AS worker", 1)[1].split("\nFROM ", 1)[0]
+    assert "bubblewrap" in worker.split("apt-get install", 1)[1].split("\n", 1)[0]

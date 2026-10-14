@@ -161,6 +161,22 @@ The worker image includes the `data` extra (pyarrow, for Parquet). Build argumen
 Linux), and `EZMD_WORKER_APT_PACKAGES="libreoffice-core-nogui libreoffice-writer-nogui
 libreoffice-calc-nogui libreoffice-impress-nogui"` adds LibreOffice for legacy `.doc`/`.xls`/`.ppt`.
 `nonfree` and `7z` are refused in the image.
+
+LibreOffice security note. A document can link remote images and other content, and LibreOffice
+fetches linked content while it converts: with LibreOffice layered on, an ODT with a linked image made
+`soffice --convert-to` send requests to the linked URL. The converter now turns linked-content updates
+off, and `worker-default` sits only on the `internal` network (it can reach `api` and `redis`, not the
+internet); keep it that way. The workers also set `EZMD_REQUIRE_SANDBOX=1`, so LibreOffice runs only
+inside bubblewrap (installed in the worker image). With the stack's `seccomp-worker.json`, bubblewrap
+cannot create its namespaces, so LibreOffice conversions are refused with a message that says so; the
+other converters are unaffected. You have two choices, and both are yours to make:
+
+- allow unprivileged user namespaces for the workers with a seccomp profile of your own that permits
+  `unshare`, `clone` with namespace flags, `mount`, `umount2`, `pivot_root` and `setns` (tested: bwrap
+  then works as uid 10001 with every capability dropped). This exposes more kernel surface to the
+  worker; or
+- set `EZMD_REQUIRE_SANDBOX=0` on the workers and run LibreOffice without bubblewrap, for trusted
+  input only.
 `deploy/docker-compose.gpu.yml` adds a `worker-media` service for the Phase 2 image.
 
 ## Backups
@@ -256,6 +272,7 @@ These are read by `deploy/docker-compose.yml` and Caddy, not by the API:
 | `EZMD_BACKUP_DIR` | `deploy/backups` | Where `backup.sh` writes tarballs. |
 | `EZMD_BACKUP_KEEP` | `14` | How many backups `backup.sh` keeps. |
 | `EZMD_ENV_FILE` | `deploy/.env` | Shell variable only: the env file the scripts and containers use. |
+| `EZMD_REQUIRE_SANDBOX` | `1` on the workers | Set by compose, read by the LibreOffice converter: refuse to run `soffice` when bubblewrap cannot sandbox it. |
 
 ## API environment variables
 

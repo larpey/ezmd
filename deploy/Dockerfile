@@ -161,9 +161,11 @@ CMD ["uvicorn", "ezmd_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--n
 # ---------------------------------------------------------------------------------------------
 # worker: RQ worker for the default and fetch queues. Adds pandoc (separate GPL executable, not
 # linked; see docs/licenses.md) and iptables for the optional egress allowlist. ffmpeg arrives
-# with the worker-media target (Phase 2). bubblewrap is deliberately NOT installed: inside this
-# container (no caps, seccomp denies mount) it cannot create namespaces, and
-# ezmd.core.sandbox would pick it up from PATH and fail every external command.
+# with the worker-media target (Phase 2). bubblewrap is always installed (about 100 KB) so external
+# tools can be sandboxed wherever the container may create user namespaces. Under compose's
+# seccomp-worker.json it cannot (unshare, namespace clone flags and mount are denied), and
+# ezmd.core.sandbox.bwrap_available() probes that once and runs tools without it; LibreOffice is
+# then refused because compose sets EZMD_REQUIRE_SANDBOX=1 (D-0053).
 # EZMD_WORKER_APT_PACKAGES adds Debian packages, e.g. "libreoffice-core-nogui libreoffice-writer-nogui
 # libreoffice-calc-nogui libreoffice-impress-nogui" for legacy .doc/.ppt/.xls (about +500 MB).
 # ---------------------------------------------------------------------------------------------
@@ -172,7 +174,7 @@ ARG EZMD_WORKER_APT_PACKAGES=""
 LABEL org.opencontainers.image.title="ezmd-worker" \
       org.opencontainers.image.description="ezmd sandboxed conversion worker"
 RUN apt-get update \
- && apt-get install -y --no-install-recommends pandoc-data pandoc iptables tini ${EZMD_WORKER_APT_PACKAGES} \
+ && apt-get install -y --no-install-recommends pandoc-data pandoc iptables tini bubblewrap ${EZMD_WORKER_APT_PACKAGES} \
  && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/man/*
 COPY --from=py-build-worker --chown=0:0 /app/.venv /app/.venv
 COPY --chown=0:0 --chmod=0755 deploy/egress-allowlist.sh /usr/local/bin/egress-allowlist.sh
