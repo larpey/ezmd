@@ -1,4 +1,4 @@
-"""Check that every golden fixture has valid provenance (docs/internal/spec/part4.md 4.14.7, CLAUDE.md "Fixtures").
+"""Check that every golden fixture has valid provenance (docs/internal/spec/part4.md 4.14.7, AGENTS.md "Fixtures").
 
 Rules, per `fixtures/<family>/<name>/meta.toml`:
 - a `[provenance]` table with `origin` in ORIGIN_LICENSES and a `license` allowed for that origin;

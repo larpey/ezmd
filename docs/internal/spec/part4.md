@@ -2347,7 +2347,7 @@ Goal: a repo that builds, tests, and ships nothing user-visible yet.
 
 | ID | Task | deps | done when |
 |---|---|---|---|
-| P0-T01 | Monorepo scaffold: `packages/core`, `packages/converters/*`, `packages/mcp`, `packages/sdk-ts`, `apps/*`, `deploy/`, `fixtures/`, `docs/`; uv workspace; pnpm workspace; root `.claude/CLAUDE.md`, `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md`, `docs/internal/STATUS.md` | none | `uv sync --all-packages` and `pnpm install` succeed on Linux, macOS, Windows |
+| P0-T01 | Monorepo scaffold: `packages/core`, `packages/converters/*`, `packages/mcp`, `packages/sdk-ts`, `apps/*`, `deploy/`, `fixtures/`, `docs/`; uv workspace; pnpm workspace; root `docs/internal/AGENTS.md`, `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md`, `docs/internal/STATUS.md` | none | `uv sync --all-packages` and `pnpm install` succeed on Linux, macOS, Windows |
 | P0-T02 | Core types: `Result`, `Warning`, `Provenance`, `Profile`, `Options`, `Progress`; frontmatter schema; sidecar schema; warning code registry with suggested actions | P0-T01 | schema round-trip tests pass; registry has at least the codes named in Parts 1 to 4 |
 | P0-T03 | Converter registry and MIME routing with Magika plus libmagic; engine tiers; subprocess runner with rlimits | P0-T02 | a stub converter routes by MIME in tests; subprocess limits verified |
 | P0-T04 | Profile renderers `full`, `compact`, `rag`, `agent` over the intermediate representation; chunker; token estimator | P0-T02 | property tests pass; `render` idempotence test passes |

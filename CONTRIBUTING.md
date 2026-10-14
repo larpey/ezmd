@@ -8,7 +8,7 @@ reviewing and approving releases. The working files from that process are kept i
 on the docs site: the specification (`docs/internal/spec/`), the decision log
 (`docs/internal/DECISIONS.md`), the status and roadmap trackers (`docs/internal/STATUS.md`,
 `docs/internal/ROADMAP.md`), per-task notes (`docs/internal/decisions/`) and the agent instructions
-(`.claude/CLAUDE.md`, which also lists the layout and commands). Early entries use the project's first
+(`docs/internal/AGENTS.md`, which also lists the layout and commands). Early entries use the project's first
 name, intomd. The "council" below is the review step: one or more reviewers, human or agent, sign off
 on a change before it lands.
 

@@ -20,3 +20,6 @@ site/
 .DS_Store
 playwright-report/
 test-results/
+
+# Local pointer to the shared agent instructions in docs/internal/AGENTS.md.
+/CLAUDE.md

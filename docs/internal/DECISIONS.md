@@ -23,13 +23,13 @@ Decision:
 - Phase 0 task list: Part 1 section 9 (P0-T01..T13) is authoritative; Part 4's eight P0 tasks are mapped onto it in docs/internal/ROADMAP.md. Gate G0 (Part 4) applies.
 - Source layout: Part 4's src layout (`packages/core/src/intomd/`) instead of Part 1's flat `packages/core/anymd/`. Core security utilities live in `intomd.core.*` (sandbox, netguard, licensing, logging, textclean) as Part 1's prose names them.
 - Deploy file names: Part 4 section 4.9 (`deploy/docker-compose.yml`, single multi-stage `deploy/Dockerfile`), not Part 1's `deploy/compose.yml` and per-service Dockerfiles.
-- License tooling paths: Part 1's `tools/` (matches .claude/CLAUDE.md commands), with Part 4 4.15.2 content.
+- License tooling paths: Part 1's `tools/` (matches docs/internal/AGENTS.md commands), with Part 4 4.15.2 content.
 - docs/internal/STATUS.md: Part 4 4.17.8 format plus Part 1's phase table and red-team/experimental tables.
 - Warning model: one registry, `intomd.warnings.codes` (Part 2 13.6 names this path), containing the union of Part 1's WarningKind, Part 2's taxonomy (canonical severities), Part 3's vocabulary, and Part 4's fetch codes: 194 codes. `Warning.kind` keeps Part 1's field name; when severity is omitted it defaults from the registry. Near-duplicate spellings used by different parts are kept for now and will be merged when converters settle on one (tracked as debt).
 - Input kinds: `transcript_segments`, `captions_json3`, `media_upload` added to `InputRefInfo.kind`/`InputRef.kind` per the README reconciliation note.
 Alternatives: follow Part 1 everywhere (loses Part 4's concrete deploy and CI content); follow Part 4 everywhere (Part 4 explicitly defers the core model to Parts 1 to 3).
 Rationale: each part is most detailed in its own area; take each area from the part that specifies it concretely.
-Consequences: .claude/CLAUDE.md layout and command lines are updated accordingly.
+Consequences: docs/internal/AGENTS.md layout and command lines are updated accordingly.
 Council: to be reviewed by the Phase 0 close council (P0-T13).
 
 ## D-0003: Package boundaries between intomd and intomd-converters
