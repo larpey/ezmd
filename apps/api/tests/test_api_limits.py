@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from pathlib import Path
+
+import pytest
 
 from ezmd_api.settings import Settings
 from ezmd_api.testing import api_client, upload, wait_for_state
@@ -88,3 +91,43 @@ async def test_global_cap_returns_queue_unavailable(settings_factory: Callable[.
         assert busy.status_code == 503
         assert busy.json()["error"]["code"] == "queue_unavailable"
         assert busy.headers["retry-after"] == "30"
+
+
+async def test_upload_over_the_core_default_but_under_the_anon_cap_is_accepted(
+    settings_factory: Callable[..., Settings], tmp_path: Path
+) -> None:
+    """Regression: 100-200 MB anonymous uploads hit ezmd.inputs' 100 MiB default during detection (500)."""
+    import fakeredis
+
+    from ezmd.inputs import DEFAULT_MAX_BYTES
+
+    big = tmp_path / "big.txt"
+    line = b"plain text line for the size regression\n"
+    with big.open("wb") as fh:
+        for _ in range(DEFAULT_MAX_BYTES // len(line) + 1024):
+            fh.write(line)
+    assert big.stat().st_size > DEFAULT_MAX_BYTES
+    settings = settings_factory(queue="rq", anon_max_upload_mb=200)
+    async with api_client(settings, redis_client=fakeredis.FakeRedis()) as (client, _):
+        with big.open("rb") as fh:
+            r = await client.post("/v1/convert", files={"file": ("big.txt", fh, "text/plain")})
+    assert r.status_code == 202, r.text
+
+
+def test_detection_input_too_large_is_a_413(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    import ezmd.detect
+    from ezmd.inputs import InputTooLarge
+    from ezmd_api.errors import ApiError
+    from ezmd_api.routes.convert import _detect_upload
+    from ezmd_api.uploads import UploadedFile
+
+    def too_big(ref: object) -> object:
+        raise InputTooLarge("1 bytes exceeds cap 0")
+
+    monkeypatch.setattr(ezmd.detect, "detect", too_big)
+    path = tmp_path / "f.txt"
+    path.write_bytes(b"x")
+    with pytest.raises(ApiError) as info:
+        _detect_upload(UploadedFile(path=path, filename="f.txt", content_type=None, size=1, sha256="0" * 64))
+    assert info.value.code == "input_too_large"
+    assert info.value.status == 413
