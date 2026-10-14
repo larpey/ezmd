@@ -110,6 +110,7 @@ class MemoryState:
         self._cond = threading.Condition(self._lock)
         self._windows: dict[str, list[float]] = defaultdict(list)
         self._gauges: dict[str, int] = defaultdict(int)
+        self._gauge_expiry: dict[str, float] = {}
         self._nodes: dict[str, float] = {}
         self._events: dict[str, list[Event]] = defaultdict(list)
         self._seq: dict[str, int] = defaultdict(int)
@@ -147,12 +148,19 @@ class MemoryState:
                 hits.remove(float(member))
 
     def gauge_incr(self, key: str, ttl_s: int) -> int:
+        """Like the Redis backend: INCR then EXPIRE, so a gauge untouched for `ttl_s` starts again from 0."""
+        now = time.time()
         with self._lock:
+            if self._gauge_expiry.get(key, now + 1) <= now:
+                self._gauges[key] = 0
             self._gauges[key] += 1
+            self._gauge_expiry[key] = now + ttl_s
             return self._gauges[key]
 
     def gauge_decr(self, key: str) -> None:
         with self._lock:
+            if self._gauge_expiry.get(key, time.time() + 1) <= time.time():
+                self._gauges[key] = 0
             self._gauges[key] = max(0, self._gauges[key] - 1)
 
     def node_heartbeat(self, node_id: str, info: dict[str, Any]) -> None:

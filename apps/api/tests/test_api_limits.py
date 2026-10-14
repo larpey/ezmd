@@ -219,3 +219,20 @@ async def test_disk_full_is_a_logged_5xx(monkeypatch: pytest.MonkeyPatch, caplog
     assert info.value.status >= 500
     assert info.value.code == "internal_error"
     assert any(r.levelname == "ERROR" for r in caplog.records)
+
+
+def test_memory_gauges_expire_like_redis(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Red team LOW: the memory backend ignored gauge TTLs, so a challenge nonce or a leaked slot never reset."""
+    import time
+
+    from ezmd_api.state import MemoryState
+
+    state = MemoryState()
+    now = [1000.0]
+    monkeypatch.setattr(time, "time", lambda: now[0])
+    assert state.gauge_incr("g", 10) == 1
+    assert state.gauge_incr("g", 10) == 2  # each incr renews the TTL, as Redis EXPIRE does
+    now[0] += 9
+    assert state.gauge_incr("g", 10) == 3
+    now[0] += 11
+    assert state.gauge_incr("g", 10) == 1
