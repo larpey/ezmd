@@ -2,14 +2,20 @@
 
 `.doc`, `.dot`, `.wpd`, `.rtf` go to DOCX; `.xls`, `.xlsb` to XLSX; `.ppt`, `.pps` to PPTX; ODF is a fallback
 behind the native ODF parser. `soffice` (MPL-2.0) is never linked: it runs through `ezmd.core.sandbox.run`
-with a throwaway profile whose `registrymodifications.xcu` disables macros, `HOME` pointed at the temp dir,
-and a per-file timeout. The OOXML it writes goes through the same package sanitizer and native converters.
+(bubblewrap with no network when available) with a throwaway profile whose `registrymodifications.xcu`
+disables macros, Python and active content (OLE, DDE), blocks links from untrusted documents, never updates
+links, fields or charts, and never recalculates on load (so WEBSERVICE() and other external-data formulas do
+not run), with `HOME` pointed at the temp dir and a per-file timeout. When `office.require_sandbox` is true
+(the default when `EZMD_REQUIRE_SANDBOX` or `EZMD_SERVER` is set) and bubblewrap cannot run, the converter
+refuses; otherwise it warns once and runs unsandboxed (D-0056). The OOXML it writes goes through the same
+package sanitizer and native converters.
 Without `soffice` the converter returns an empty document carrying `libreoffice_missing`, so the registry falls
 through to the next converter (striprtf for RTF) or reports why nothing came out.
 """
 
 from __future__ import annotations
 
+import logging
 import os
 import shutil
 import tempfile
@@ -60,19 +66,71 @@ _TARGET_BY_MIME = {
 }
 _SOURCE_TYPE = {"docx": SourceType.DOCX, "xlsx": SourceType.XLSX, "pptx": SourceType.PPTX}
 
-# Macro security "very high" and macro execution disabled for the throwaway profile.
+log = logging.getLogger(__name__)
+
+_SETTINGS: tuple[tuple[str, str, str], ...] = (
+    # Macros: security "very high", and no macro or Python execution at all.
+    ("/org.openoffice.Office.Common/Security/Scripting", "MacroSecurityLevel", "3"),
+    ("/org.openoffice.Office.Common/Security/Scripting", "DisableMacrosExecution", "true"),
+    ("/org.openoffice.Office.Common/Security/Scripting", "DisablePythonRuntime", "true"),
+    # OLE and DDE ("active content"); links from documents outside trusted locations (all of them here).
+    ("/org.openoffice.Office.Common/Security/Scripting", "DisableActiveContent", "true"),
+    ("/org.openoffice.Office.Common/Security/Scripting", "BlockUntrustedRefererLinks", "true"),
+    # Link updates on load. The two enumerations differ (officecfg Calc.xcs / Writer.xcs):
+    # Calc 0 always, 1 never, 2 on request; Writer 0 always, 1 on request, 2 never.
+    ("/org.openoffice.Office.Calc/Content/Update", "Link", "1"),
+    ("/org.openoffice.Office.Writer/Content/Update", "Link", "2"),
+    ("/org.openoffice.Office.Writer/Content/Update", "Field", "false"),
+    ("/org.openoffice.Office.Writer/Content/Update", "Chart", "false"),
+    # No recalculation on load (1 = never): WEBSERVICE(), FILTERXML() and external references only run then.
+    ("/org.openoffice.Office.Calc/Formula/Load", "OOXMLRecalcMode", "1"),
+    ("/org.openoffice.Office.Calc/Formula/Load", "ODFRecalcMode", "1"),
+    ("/org.openoffice.Office.Common/Misc", "FirstRun", "false"),
+)
 _XCU = (
     '<?xml version="1.0" encoding="UTF-8"?>\n'
     '<oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" '
     'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\n'
-    '<item oor:path="/org.openoffice.Office.Common/Security/Scripting">'
-    '<prop oor:name="MacroSecurityLevel" oor:op="fuse"><value>3</value></prop></item>\n'
-    '<item oor:path="/org.openoffice.Office.Common/Security/Scripting">'
-    '<prop oor:name="DisableMacrosExecution" oor:op="fuse"><value>true</value></prop></item>\n'
-    '<item oor:path="/org.openoffice.Office.Common/Misc">'
-    '<prop oor:name="FirstRun" oor:op="fuse"><value>false</value></prop></item>\n'
-    "</oor:items>\n"
+    + "".join(
+        f'<item oor:path="{path}"><prop oor:name="{name}" oor:op="fuse"><value>{value}</value></prop></item>\n'
+        for path, name, value in _SETTINGS
+    )
+    + "</oor:items>\n"
 )
+_TRUE = ("1", "true", "yes", "on")
+_warned = False
+
+
+def _sandbox_required(options: ConvertOptions) -> bool:
+    """`office.require_sandbox`, defaulting to on for servers: `EZMD_REQUIRE_SANDBOX` or `EZMD_SERVER` set."""
+    value = options.extra.get("office.require_sandbox")
+    if value is None:
+        env = (os.environ.get("EZMD_REQUIRE_SANDBOX") or os.environ.get("EZMD_SERVER") or "").strip().lower()
+        return env in _TRUE
+    if isinstance(value, str):
+        return value.strip().lower() in _TRUE
+    return bool(value)
+
+
+def _check_sandbox(options: ConvertOptions) -> None:
+    global _warned
+    if sandbox.bwrap_available():
+        return
+    if _sandbox_required(options):
+        raise ConversionError(
+            "LibreOffice needs a sandbox (office.require_sandbox) and bubblewrap cannot run here",
+            user_message=(
+                "LibreOffice conversion needs a sandbox on this server, and bubblewrap (bwrap) is not available. "
+                "Install bubblewrap, or set office.require_sandbox=false for trusted input."
+            ),
+        )
+    if not _warned:
+        _warned = True
+        log.warning(
+            "LibreOffice runs without a sandbox (bubblewrap is not available on this platform); its profile "
+            "disables macros, active content and link updates, but convert only documents you trust, or set "
+            "EZMD_REQUIRE_SANDBOX=1 to refuse"
+        )
 
 
 def find_soffice() -> str | None:
@@ -130,6 +188,7 @@ class LibreOfficeConverter:
                 user_message=f"This file is larger than the {opts.libreoffice_max_bytes // MB} MB LibreOffice limit.",
                 retryable_with_fallback=False,
             )
+        _check_sandbox(options)
         options.ctx.check_deadline()
         options.ctx.progress("libreoffice", None, f"Converting to {target} with LibreOffice")
         out = _run(soffice, ref, target, opts.libreoffice_timeout_s)

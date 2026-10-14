@@ -33,8 +33,14 @@ Every package is checked before any parser sees it:
   DOCTYPE is refused. openpyxl runs on a rewritten copy of the package, using defusedxml.
 - Hidden text (`w:vanish`, white-on-white runs, ODF hidden text) is left out of the body and counted in
   `removed_hidden_elements`. `office.keep_hidden=true` stores it in `metadata.extra.hidden_text`.
-- LibreOffice runs through the sandbox with a throwaway profile that disables macros. Its OOXML output goes
-  through the same checks.
+- LibreOffice runs through the sandbox (bubblewrap with no network, on Linux when it can run) with a
+  throwaway profile that disables macros, Python and active content (OLE, DDE), blocks links from untrusted
+  documents, never updates links, fields or charts, and never recalculates on load, so linked files, linked
+  images and `WEBSERVICE()` formulas are not fetched. Legacy `.xls` has no recalculation setting; the sandbox's
+  missing network is what stops it there. `office.require_sandbox=true` (the default when
+  `EZMD_REQUIRE_SANDBOX=1` or `EZMD_SERVER=1`) refuses to run LibreOffice without bubblewrap; otherwise ezmd
+  logs a warning once and runs it unsandboxed, which is the normal case on Windows and macOS. Its OOXML output
+  goes through the same checks.
 - Size caps: 200 MB for DOCX, PPTX, and XLSX (refused above that), 50 MB for RTF, and 100 MB per file for
   LibreOffice.
 

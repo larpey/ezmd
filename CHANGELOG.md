@@ -4,6 +4,12 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Security
+- LibreOffice's profile now disables active content (OLE, DDE) and Python, blocks untrusted links, never
+  updates links, fields or charts, and never recalculates on load, so linked files and URLs and
+  `WEBSERVICE()` are not fetched. `office.require_sandbox` (default on with `EZMD_REQUIRE_SANDBOX=1` or
+  `EZMD_SERVER=1`) refuses to run LibreOffice without bubblewrap; local runs without it log a warning (D-0056).
+
 ### Documentation
 - Install docs no longer pin `0.1.0rc2`: pip and uv take the newest release candidate while no final exists.
 - Linux: `ezmd[docs]` pulls about 6 GB of CUDA torch and NVIDIA wheels from PyPI, not 1.2 GB; the install

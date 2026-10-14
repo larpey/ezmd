@@ -490,3 +490,14 @@ Evidence: with the bench's Docling venv and models, `ezmd convert simple-table.p
 Alternatives: implement `-f zip` in the CLI (output writing, stdout refusal and batch idempotency, which reads the sidecar beside each output, would all change; deferred); cancel futures after a failure (cannot stop work a process already took).
 Consequences: a batch run uses the pool slightly less eagerly (a new job starts only when one finishes, which is how a pool of N works anyway).
 Council: not convened (bug fixes).
+
+## D-0056: LibreOffice's profile never fetches linked content; servers can require bubblewrap
+Date: 2026-10-13
+Task: pre-0.1.0 red team (rc5 core)
+Status: accepted
+Context: the red team found LibreOffice's throwaway profile only disabled macros, and `sandbox.run` falls back to no sandbox when bubblewrap cannot run. A crafted document with OLE/DDE links, linked images or sections, external references or `WEBSERVICE()` could make soffice fetch internal URLs or pull local files into the converted output.
+Decision: the generated `registrymodifications.xcu` sets, from officecfg's Common/Calc/Writer schemas (checked against LibreOffice core master on 2026-10-13): `MacroSecurityLevel=3`, `DisableMacrosExecution`, `DisablePythonRuntime`, `DisableActiveContent` (OLE and DDE), `BlockUntrustedRefererLinks`; Calc `Content/Update/Link=1` and Writer `Content/Update/Link=2` (both "never"; the enumerations differ), Writer `Update/Field=false` and `Update/Chart=false`; Calc `Formula/Load/OOXMLRecalcMode=1` and `ODFRecalcMode=1` (never recalculate, so WEBSERVICE/FILTERXML/external references do not run; there is no separate WEBSERVICE switch). `office.require_sandbox` (default true when `EZMD_REQUIRE_SANDBOX` or `EZMD_SERVER` is truthy) makes the converter raise a retryable `ConversionError` before starting soffice when `bwrap_available()` is false, so RTF still falls back to striprtf; otherwise one warning is logged per process and soffice runs unsandboxed (local CLI use on Windows and macOS has no bubblewrap). Under bubblewrap, `--unshare-all` already removes the network.
+Evidence: unit tests pin every setting and the refuse/warn behavior. A canary test converts an ODT with a section linked to a local file and an image linked to a local HTTP server and asserts no request and no canary text in the output; it needs LibreOffice and was skipped here (not installed, and CI does not install it), so it has not run yet.
+Alternatives: refuse LibreOffice whenever bubblewrap is missing (breaks every Windows and macOS user of legacy formats); strip links from the input before LibreOffice sees it (legacy binary formats cannot be rewritten safely).
+Consequences: the worker image must install bubblewrap and set `EZMD_REQUIRE_SANDBOX=1` (rc5-api owns deploy/ and env.example). Legacy `.xls` has no recalc setting, so unsandboxed local runs rely on the cached formula values LibreOffice keeps by default.
+Council: not convened (security hardening).
