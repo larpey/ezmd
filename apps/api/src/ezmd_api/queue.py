@@ -1,4 +1,4 @@
-"""ezmd_api.queue: queue routing and enqueue helpers (docs/spec/part1.md section 7.2).
+"""ezmd_api.queue: queue routing and enqueue helpers (docs/internal/spec/part1.md section 7.2).
 
 The RQ payload is the job id only; workers load everything else from the job store. With
 `EZMD_QUEUE=inline` jobs run on a small thread pool inside the API process (for `ezmd serve`
@@ -24,7 +24,7 @@ RQ_QUEUES = (DEFAULT, MEDIA, FETCH)
 ALL_QUEUES = (DEFAULT, MEDIA, FETCH, FETCH_RESIDENTIAL)
 WORKER_ENTRY = "ezmd_api.worker.rq_entry"
 HEARTBEAT_MAX_AGE_S = 60
-"""/readyz needs a worker heartbeat at most this old (docs/spec/part1.md section 7.3)."""
+"""/readyz needs a worker heartbeat at most this old (docs/internal/spec/part1.md section 7.3)."""
 WORKER_TTL_S = 45
 """RQ `worker_ttl` for ezmd workers. An idle RQ worker beats once per dequeue timeout (worker_ttl - 15 s)
 and a busy one every `job_monitoring_interval` (30 s), so both beat twice per readiness window. RQ's

@@ -1,7 +1,7 @@
 # Web pages (`web` family)
 
-Converts static HTML pages (`text/html`, `application/xhtml+xml`) to the IR. Spec: `docs/spec/part2.md`
-section 5 (web/pages) and `docs/spec/part3.md` section 18 (prompt-injection handling). Site crawling
+Converts static HTML pages (`text/html`, `application/xhtml+xml`) to the IR. Spec: `docs/internal/spec/part2.md`
+section 5 (web/pages) and `docs/internal/spec/part3.md` section 18 (prompt-injection handling). Site crawling
 (section 6) and JavaScript rendering (Crawl4AI) are Phase 3 and not part of this family yet.
 
 The converters never fetch anything. They read the body they are given; `ref.url` (the final URL after

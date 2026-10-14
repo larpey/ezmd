@@ -1,4 +1,4 @@
-"""ezmd_mcp.remote: backend that forwards to an ezmd REST instance (docs/spec/part3 REST contract).
+"""ezmd_mcp.remote: backend that forwards to an ezmd REST instance (docs/internal/spec/part3 REST contract).
 
 Every request carries `User-Agent: ezmd-mcp/<version>` and, when configured, `X-API-Key`. Conversion
 happens on the server; this module only creates jobs, polls them, and fetches rendered pages

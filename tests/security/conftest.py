@@ -1,4 +1,4 @@
-"""Security test tiers (docs/spec/part4.md 4.14.5).
+"""Security test tiers (docs/internal/spec/part4.md 4.14.5).
 
 fast     every test here not marked `network`. Runs on every PR (`pytest tests/security -m fast`, or as
          part of the plain `pytest tests` run). A guard refuses any socket connect outside loopback, so

@@ -1,4 +1,4 @@
-"""documents.ipynb: Jupyter notebooks to the IR (docs/spec/part2.md section 4c steps 14-17).
+"""documents.ipynb: Jupyter notebooks to the IR (docs/internal/spec/part2.md section 4c steps 14-17).
 
 A stdlib JSON walker (no nbconvert). Markdown cells go through `text.markdown.parse_markdown`; code cells
 become CodeBlocks in the kernel language; outputs follow as CodeBlocks fenced `output` (streams, text

@@ -1,4 +1,4 @@
-"""data.csv: CSV and TSV (docs/spec/part2.md section 2c steps 35 to 37; caps from 13.4).
+"""data.csv: CSV and TSV (docs/internal/spec/part2.md section 2c steps 35 to 37; caps from 13.4).
 
 Decoding: BOM first (and stripped), strict UTF-8, then charset-normalizer on the first 1 MB. Dialect:
 `csv.Sniffer` on the first 64 KB over `, ; \\t |`, validated by field-count consistency, falling back to

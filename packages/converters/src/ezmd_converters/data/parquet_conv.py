@@ -1,4 +1,4 @@
-"""data.parquet: Apache Parquet metadata and samples via pyarrow (docs/spec/part2.md section 10, ColumnarConverter).
+"""data.parquet: Apache Parquet metadata and samples via pyarrow (docs/internal/spec/part2.md 10, ColumnarConverter).
 
 Needs the `data` extra (`pip install 'ezmd[data]'`, pyarrow, Apache-2.0); without it the converter is
 listed as unavailable. Reads metadata through `pyarrow.parquet.ParquetFile` and never loads the whole table:

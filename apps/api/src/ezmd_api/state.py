@@ -1,5 +1,5 @@
 """ezmd_api.state: ephemeral shared state: sliding-window rate limits, gauges, fetch-node
-heartbeats, the per-job event buffer with pub/sub (docs/spec/part1.md sections 7.2, 7.3, 7.6), and
+heartbeats, the per-job event buffer with pub/sub (docs/internal/spec/part1.md sections 7.2, 7.3, 7.6), and
 the cumulative metric counters behind GET /metrics (shared by the API and every worker process).
 
 `RedisState` is used with `EZMD_QUEUE=rq` (and with fakeredis in tests). `MemoryState` serves the

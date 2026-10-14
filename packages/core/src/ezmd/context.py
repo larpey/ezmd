@@ -1,7 +1,7 @@
 """ezmd.context: the per-conversion context every converter reaches as `options.ctx` (D-0017).
 
 A ConvertContext carries what a long-running converter needs beyond its input: a progress callback,
-the cooperative deadline (docs/spec/part2.md 13.5), child conversion for attachments and archive members
+the cooperative deadline (docs/internal/spec/part2.md 13.5), child conversion for attachments and archive members
 (sharing the parent's deadline and attachment depth), the converter's `Limits` (13.4), and a slot for the
 latest partial Document so the registry can return it with `timeout_partial` when the deadline hits.
 
@@ -39,7 +39,7 @@ CHILD_RESERVE = 0.10
 
 @dataclass(frozen=True, slots=True)
 class Limits:
-    """Caps a converter declares (docs/spec/part2.md 13.4). None means "no converter-specific cap"; the
+    """Caps a converter declares (docs/internal/spec/part2.md 13.4). None means "no converter-specific cap"; the
     ConvertOptions values (max_pages, max_duration_seconds, max_seconds) still apply."""
 
     max_bytes: int | None = None

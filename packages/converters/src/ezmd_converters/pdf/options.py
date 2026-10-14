@@ -1,4 +1,4 @@
-"""PDF family options (docs/spec/part2.md 1h), read from `ConvertOptions.extra` keys `pdf.<name>`.
+"""PDF family options (docs/internal/spec/part2.md 1h), read from `ConvertOptions.extra` keys `pdf.<name>`.
 
 The CLI exposes them as `--pdf.<name>=value`; the API passes them through `extra`. Unknown values fall back
 to the default with a ValueError naming the option, so a typo fails fast instead of being ignored.
@@ -20,7 +20,7 @@ StructMode = Literal["prefer", "ignore", "only"]
 DEFAULT_MAX_PAGES = 2000
 DEFAULT_BATCH_PAGES = 25
 MAX_PASSWORD_TRIES = 50
-"""docs/spec/part2.md 1c step 3: never try more than 50 passwords."""
+"""docs/internal/spec/part2.md 1c step 3: never try more than 50 passwords."""
 ENGINES = ("docling", "pdfium", "pypdf")
 """`pypdf` is accepted as an alias of the text-layer engine (the spec's name for it; DECISIONS P1-T01-pdf)."""
 

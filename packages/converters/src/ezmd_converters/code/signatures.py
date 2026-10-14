@@ -1,9 +1,9 @@
-"""Signatures-only (compressed) mode and symbol outlines (docs/spec/part2.md 8c steps 7 and 13).
+"""Signatures-only (compressed) mode and symbol outlines (docs/internal/spec/part2.md 8c steps 7 and 13).
 
 Python goes through the stdlib `ast`: imports, the leading comment block, the module docstring, module-level
 constants and type aliases, class and function signatures with decorators and docstrings; bodies become `...`.
 Other languages use the spec's regex heuristic: lines starting with a declaration keyword plus the two lines
-that follow. (Tree-sitter grammars are the Phase 2 upgrade; see docs/decisions/P1-T03-code.md.)
+that follow. (Tree-sitter grammars are the Phase 2 upgrade; see docs/internal/decisions/P1-T03-code.md.)
 """
 
 from __future__ import annotations

@@ -227,7 +227,7 @@ _SITE_SEP = re.compile(r"\s+[-|\u2013\u2014\u00b7:]{1,2}\s+")
 
 
 def _jsonld_title(article: dict[str, Any], others: list[str | None]) -> str | None:
-    """JSON-LD `headline` first (docs/spec/part2.md 5b item 6), but only when it agrees with another title
+    """JSON-LD `headline` first (docs/internal/spec/part2.md 5b item 6), but only when it agrees with another title
     signal on the page or there is none: Wikipedia's `headline` is the article's short description
     ("German-born theoretical physicist") while og:title, <title>, h1 and JSON-LD `name` give the title."""
     known = [o.casefold() for o in others if o]

@@ -1,4 +1,4 @@
-"""data.xml: generic XML through defusedxml (docs/spec/part2.md section 10, XmlConverter; part1 8.2).
+"""data.xml: generic XML through defusedxml (docs/internal/spec/part2.md section 10, XmlConverter; part1 8.2).
 
 Parsing uses `defusedxml.ElementTree` with entities and external references forbidden, so nothing is ever
 expanded or fetched. A document that declares entities or a DTD is re-parsed with the DOCTYPE removed and

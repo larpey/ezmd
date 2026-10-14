@@ -1,4 +1,4 @@
-"""ezmd_api.main: the FastAPI app factory (docs/spec/part1.md sections 7 and 8.4).
+"""ezmd_api.main: the FastAPI app factory (docs/internal/spec/part1.md sections 7 and 8.4).
 
 Run with `uvicorn ezmd_api.main:app` (uses env settings) or call `serve(host, port)`, which is
 what `ezmd serve` uses; it defaults to the inline queue when EZMD_QUEUE is unset.
@@ -73,7 +73,7 @@ EXPOSED_HEADERS = [
     "X-Ezmd-Job",
 ]
 # Job envelopes, status, events, results and attachments are per-caller documents: no browser, proxy or
-# CDN may store them (docs/spec/part4.md 4.12 Cloudflare rules: "Part 3 sets private, no-store on /v1/*").
+# CDN may store them (docs/internal/spec/part4.md 4.12 Cloudflare rules: "Part 3 sets private, no-store on /v1/*").
 PRIVATE_PATH_PREFIXES = ("/v1/jobs", "/v1/convert", "/v1/fetch-node")
 PRIVATE_CACHE_CONTROL = "no-store, private"
 _CLIENT_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{8,64}$")

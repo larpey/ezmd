@@ -109,7 +109,7 @@ Overall: 32 / 85 tasks done
 | P5-T06 | Raycast extension and Alfred workflow | pending | |  |
 | P5-T07 | GitHub Action `ezmd-action` | pending | |  |
 | P5-T08 | n8n and Zapier templates | pending | |  |
-| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in DECISIONS.md; code signing deferred until funded | pending | |  |
+| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in docs/internal/DECISIONS.md; code signing deferred until funded | pending | |  |
 | P5-T10 | Channel and playlist batch for marketers via the extension (queue every video on a channel page) and the CLI with the fetch extra | pending | |  |
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | pending | |  |
 

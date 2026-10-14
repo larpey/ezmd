@@ -1,6 +1,6 @@
 """ezmd_api.settings: every EZMD_* variable the API and its workers read.
 
-Implemented from docs/spec/part1.md sections 7 and 8 and docs/spec/part4.md 4.9.6 / 4.11.1.
+Implemented from docs/internal/spec/part1.md sections 7 and 8 and docs/internal/spec/part4.md 4.9.6 / 4.11.1.
 `deploy/env.example` documents exactly these fields; `tests/test_env_example.py` fails on drift.
 """
 
@@ -16,7 +16,7 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 MIB = 1024 * 1024
 MIN_SECRET_BYTES = 32
 
-# Per-queue RQ worker timeouts (docs/spec/part1.md section 7.2). EZMD_JOB_TIMEOUT_S caps all of them.
+# Per-queue RQ worker timeouts (docs/internal/spec/part1.md section 7.2). EZMD_JOB_TIMEOUT_S caps all of them.
 QUEUE_TIMEOUTS: dict[str, int] = {"default": 600, "media": 3600, "fetch": 120, "fetch_residential": 3600}
 
 CommaList = Annotated[list[str], NoDecode]

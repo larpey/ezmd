@@ -20,7 +20,7 @@ test("converts an uploaded Markdown file and shows the rendered result", async (
   await expect(card.getByRole("tabpanel")).toContainText('"blocks"');
 });
 
-// Regression (docs/decisions/P1-T15.md finding 2): files picked right after a profile click were dropped.
+// Regression (docs/internal/decisions/P1-T15.md finding 2): files picked right after a profile click were dropped.
 test("files chosen right after a profile change are kept", async ({ page }) => {
   await openApp(page);
   await page.getByTestId("profile-full").check();
@@ -28,7 +28,7 @@ test("files chosen right after a profile change are kept", async ({ page }) => {
   await expect(page.getByTestId("input-chip")).toContainText("1 file", { timeout: 3_000 });
 });
 
-// Regression (docs/decisions/P1-T15.md finding 3): frontmatter `tokens` is an object per tokenizer.
+// Regression (docs/internal/decisions/P1-T15.md finding 3): frontmatter `tokens` is an object per tokenizer.
 test("result shows the o200k token count badge", async ({ page }) => {
   await openApp(page);
   await page.getByTestId("input-text").fill(uniqueText("Token badge"));

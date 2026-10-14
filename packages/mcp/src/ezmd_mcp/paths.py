@@ -22,7 +22,7 @@ from ezmd_mcp.errors import ToolFailure
 __all__ = ["MAX_DATA_URL_BYTES", "AllowedRoots", "InlineFile", "decode_data_url", "filename_for_hint"]
 
 MAX_DATA_URL_BYTES = 1024 * 1024
-"""Inline `data_url` inputs are for small files only (docs/spec/part4.md 4.4.2)."""
+"""Inline `data_url` inputs are for small files only (docs/internal/spec/part4.md 4.4.2)."""
 
 _DENIED_POSIX = ("/etc", "/proc", "/sys", "/dev", "/boot", "/root", "/var/run", "/run")
 _DATA_URL = re.compile(r"^data:(?P<mime>[\w.+-]+/[\w.+-]+)?(?P<params>(?:;[\w-]+=[^;,]*)*)(?P<b64>;base64)?,", re.I)

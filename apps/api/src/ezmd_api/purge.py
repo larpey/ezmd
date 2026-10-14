@@ -1,11 +1,11 @@
-"""ezmd_api.purge: retention purge and the residential-fetch reaper (docs/spec/part1.md 7.1, 7.2, 8.4).
+"""ezmd_api.purge: retention purge and the residential-fetch reaper (docs/internal/spec/part1.md 7.1, 7.2, 8.4).
 
 `purge_expired()` deletes the blobs (prefix `jobs/{id}/`) and rows of jobs past `expires_at`.
 `reap_residential()` returns expired fetch-node claims to the queue once and moves jobs that cannot
 be fetched to `needs_user_action`. `reconcile_queue()` compares active rows with RQ: a queued job RQ
 lost (Redis restarted) is enqueued again, and a started job whose worker stopped heartbeating, or
 that RQ no longer holds, fails within about a minute (D-0046). `reap_stale()` fails jobs whose worker
-stopped updating them for longer than the queue's wall time (docs/spec/part4.md 4.11.3), and
+stopped updating them for longer than the queue's wall time (docs/internal/spec/part4.md 4.11.3), and
 `clean_temp()` removes orphaned job and upload temp directories. `Scheduler` runs all but the last
 on a background thread; run
 `python -m ezmd_api.purge` for one pass (or `--loop`) as its own process, or `ezmd-admin reap`.

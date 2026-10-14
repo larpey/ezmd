@@ -1,4 +1,4 @@
-"""Language identification for code fences (docs/spec/part2.md 8b step 8).
+"""Language identification for code fences (docs/internal/spec/part2.md 8b step 8).
 
 An extension map in the spirit of `identify` (MIT) plus Magika's label (through the detected mime) and
 shebang sniffing for extensionless scripts. Only names used as Markdown fence info strings live here.

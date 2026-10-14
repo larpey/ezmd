@@ -1,30 +1,30 @@
 # ezmd roadmap
 
-Ordered phases with gates. Generated from docs/spec/part4.md section 4.17 and docs/spec/part1.md section 9. Tasks may be added; gates may not be removed or reordered. Spec references use the section numbers in docs/spec/.
+Ordered phases with gates. Generated from docs/internal/spec/part4.md section 4.17 and docs/internal/spec/part1.md section 9. Tasks may be added; gates may not be removed or reordered. Spec references use the section numbers in docs/internal/spec/.
 
 ## 4.17.1 Phase 0: Foundation (Part 1)
 
-Goal: a repo that builds, tests, and ships nothing user-visible yet. Task list from docs/spec/part1.md section 9.
+Goal: a repo that builds, tests, and ships nothing user-visible yet. Task list from docs/internal/spec/part1.md section 9.
 
 | ID | Task | deps | done when |
 |---|---|---|---|
-| P0-T01 | Name availability check | none | acceptance criteria in docs/spec/part1.md section 9, P0-T01 |
-| P0-T02 | Repository scaffold | P0-T01 | acceptance criteria in docs/spec/part1.md section 9, P0-T02 |
-| P0-T03 | Core IR | P0-T02 | acceptance criteria in docs/spec/part1.md section 9, P0-T03 |
-| P0-T04 | Detection | P0-T03 | acceptance criteria in docs/spec/part1.md section 9, P0-T04 |
-| P0-T05 | Inputs, registry, chains, sandbox, netguard | P0-T03, P0-T04 | acceptance criteria in docs/spec/part1.md section 9, P0-T05 |
-| P0-T06 | Plain text and Markdown passthrough converters | P0-T05 | acceptance criteria in docs/spec/part1.md section 9, P0-T06 |
-| P0-T07 | Profiles, renderer skeleton, scoring | P0-T05 | acceptance criteria in docs/spec/part1.md section 9, P0-T07 |
-| P0-T08 | CLI | P0-T06, P0-T07 | acceptance criteria in docs/spec/part1.md section 9, P0-T08 |
-| P0-T09 | API | P0-T07 | acceptance criteria in docs/spec/part1.md section 9, P0-T09 |
-| P0-T10 | Web UI | P0-T09 | acceptance criteria in docs/spec/part1.md section 9, P0-T10 |
-| P0-T11 | Docker and Compose | P0-T09, P0-T10 | acceptance criteria in docs/spec/part1.md section 9, P0-T11 |
-| P0-T12 | CI and release workflow | P0-T11 | acceptance criteria in docs/spec/part1.md section 9, P0-T12 |
-| P0-T13 | Docs skeleton and Phase 0 close | P0-T01..P0-T12 | acceptance criteria in docs/spec/part1.md section 9, P0-T13 |
+| P0-T01 | Name availability check | none | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T01 |
+| P0-T02 | Repository scaffold | P0-T01 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T02 |
+| P0-T03 | Core IR | P0-T02 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T03 |
+| P0-T04 | Detection | P0-T03 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T04 |
+| P0-T05 | Inputs, registry, chains, sandbox, netguard | P0-T03, P0-T04 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T05 |
+| P0-T06 | Plain text and Markdown passthrough converters | P0-T05 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T06 |
+| P0-T07 | Profiles, renderer skeleton, scoring | P0-T05 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T07 |
+| P0-T08 | CLI | P0-T06, P0-T07 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T08 |
+| P0-T09 | API | P0-T07 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T09 |
+| P0-T10 | Web UI | P0-T09 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T10 |
+| P0-T11 | Docker and Compose | P0-T09, P0-T10 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T11 |
+| P0-T12 | CI and release workflow | P0-T11 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T12 |
+| P0-T13 | Docs skeleton and Phase 0 close | P0-T01..P0-T12 | acceptance criteria in docs/internal/spec/part1.md section 9, P0-T13 |
 
 Part 4 lists a shorter Phase 0 (P0-T01..P0-T08) whose content is covered by the Part 1 tasks; mapping: P4 T01 scaffold -> P1 T02; P4 T02 core types and warning registry -> P1 T03; P4 T03 registry, MIME routing, subprocess runner -> P1 T04, T05; P4 T04 profile renderers, chunker, token estimator -> P1 T07; P4 T05 settings and .env drift test -> P1 T09; P4 T06 CI -> P1 T12; P4 T07 fixture framework -> P1 T06, T07; P4 T08 SSRF guard -> P1 T05. Gate G0 applies to the Part 1 task list (D-0002).
 
-Gate G0: all P0 tasks done; CI green on all four OS targets; coverage at or above 80% on core; `STATUS.md` updated.
+Gate G0: all P0 tasks done; CI green on all four OS targets; coverage at or above 80% on core; `docs/internal/STATUS.md` updated.
 
 ## 4.17.2 Phase 1: Permissive core, CLI, library, MCP, UI v1, compose
 
@@ -52,7 +52,7 @@ Goal: `pip install ezmd` converts documents, web, code, email, data, and noteboo
 | P1-T18 | `shadow-run` command: convert a user's documents with each available engine and score structure and text similarity against each other, print a table | P1-T01 | runs on the fixture corpus and prints a table |
 | P1-T19 | Fixture corpus to at least 80 fixtures across families, with thresholds and CREDITS | P1-T01..T07 | provenance check passes; nightly scorecard produced |
 
-Gate G1: all P1 tasks done; `v0.1.0` released to PyPI, npm, GHCR; fixture pass rate 100% on `exact` fixtures and at or above 95% on threshold fixtures; integration and Playwright green; `uvx ezmd-mcp` works in Claude Desktop (manual check recorded in STATUS.md); docs site live; STATUS.md updated.
+Gate G1: all P1 tasks done; `v0.1.0` released to PyPI, npm, GHCR; fixture pass rate 100% on `exact` fixtures and at or above 95% on threshold fixtures; integration and Playwright green; `uvx ezmd-mcp` works in Claude Desktop (manual check recorded in docs/internal/STATUS.md); docs site live; docs/internal/STATUS.md updated.
 
 ## 4.17.3 Phase 2: Media (ASR, OCR, diarization, in-browser Whisper)
 
@@ -74,7 +74,7 @@ Goal: audio, video files, images, and screen recordings convert locally with spe
 | P2-T12 | Capacity measurement: `ezmd fixtures run --timings` on an 8-core runner; write `docs/ops/capacity.md` with measured seconds per page and realtime factors | P2-T08 | numbers in docs match the nightly timings within 25% |
 | P2-T13 | Load test script and thresholds; run against the compose stack in integration | P1-T15, P2-T08 | k6 thresholds pass on the CI runner at reduced rates |
 
-Gate G2: all P2 tasks done; `v0.2.0` released; media fixtures at or above 90% pass; `ezmd doctor` reports GPU correctly on a CUDA runner (or documented manual check); capacity doc written; STATUS.md updated.
+Gate G2: all P2 tasks done; `v0.2.0` released; media fixtures at or above 90% pass; `ezmd doctor` reports GPU correctly on a CUDA runner (or documented manual check); capacity doc written; docs/internal/STATUS.md updated.
 
 ## 4.17.4 Phase 3: Social, chat, URL fetch chains, fetch node, extension, share sheet
 
@@ -91,12 +91,12 @@ Goal: the inputs no competitor handles (chat exports, social threads) and the cl
 | P3-T07 | `apps/fetch-node` loop, `ezmd fetch-node run/token/doctor/ping`, `fetch-node` image (amd64 and arm64), `docker-compose.pi.yml`, Pi build script and firstrun, Tailscale policy file | P3-T06 | arm64 image runs on a Pi 4 (manual, recorded) and completes a caption job against a staging instance |
 | P3-T08 | Browser extension (4.6): plain URL path, YouTube captions and audio, generic video blob, MediaRecorder fallback, settings, Firefox build, privacy doc, store assets | P1-T12, P3-T06 | 4.6.4 criteria |
 | P3-T09 | PWA manifest with share target, service worker shell cache, `/share` handling, install hint (4.7.2) | P1-T13 | share-target Playwright test passes |
-| P3-T10 | iOS Shortcuts A and B, exported `.shortcut` files, docs with exact steps, `client: ios-shortcut` allowance in the API | P1-T10 | manual run on an iPhone recorded in STATUS.md; API allowance tests pass |
+| P3-T10 | iOS Shortcuts A and B, exported `.shortcut` files, docs with exact steps, `client: ios-shortcut` allowance in the API | P1-T10 | manual run on an iPhone recorded in docs/internal/STATUS.md; API allowance tests pass |
 | P3-T11 | Notes-app converters: Evernote ENEX, Notion export zip, Google Keep Takeout, Apple Notes via ENEX | G2 | fixtures exact-match |
 | P3-T12 | Specialized converters: ICS, HL7 v2, MusicXML, fonts via fontTools, 3D mesh metadata, USPTO and JATS via Docling, Google Workspace via Drive export (user token) | G2 | fixtures pass; each marked Beta in the matrix |
 | P3-T13 | Warnings and suggestions for every fetch failure mode wired into UI, CLI, MCP, SDK errors | P3-T03 | the warning coverage test (4.1.3) still passes with new codes |
 
-Gate G3: all P3 tasks done; `v0.3.0` released; extension passes `web-ext lint` and Chrome validation and is submitted to both stores (approval pending is acceptable); a fetch node completed a real captions job against staging from the Pi with the VPS making no platform request (verified from Squid logs); STATUS.md updated.
+Gate G3: all P3 tasks done; `v0.3.0` released; extension passes `web-ext lint` and Chrome validation and is submitted to both stores (approval pending is acceptable); a fetch node completed a real captions job against staging from the Pi with the VPS making no platform request (verified from Squid logs); docs/internal/STATUS.md updated.
 
 ## 4.17.5 Phase 4: Public instance launch
 
@@ -109,7 +109,7 @@ Goal: the free instance is live, protected, lawful, observable, and cheap.
 | P4-T03 | Abuse controls complete (4.11): per-IP daily budgets, sub-queues, blocklist hot reload, admin commands `top`, `block`, `keys`, `jobs kill`, `reap`, `report`, `support-bundle` | P4-T02 | security tests item 5 pass; admin command tests pass |
 | P4-T04 | Monitoring stack: metrics, compose monitoring overlay, Grafana dashboard JSON, alert rules, Discord and email receivers, weekly digest timer | P2-T12 | alerts fire in a test by injecting metrics; dashboard imports cleanly |
 | P4-T05 | Log redaction verified end to end; job table retention; privacy page matches behavior (test reads the page and asserts the stated fields are the only ones logged) | P4-T03 | redaction tests pass |
-| P4-T06 | Legal pages in the web app with `.env` substitution; DMCA mailbox config; takedown doc; platform stance doc | P1-T13 | pages render; links in footer; owner sign-off recorded in DECISIONS.md |
+| P4-T06 | Legal pages in the web app with `.env` substitution; DMCA mailbox config; takedown doc; platform stance doc | P1-T13 | pages render; links in footer; owner sign-off recorded in docs/internal/DECISIONS.md |
 | P4-T07 | Runbook (4.10) complete with Hetzner, Cloudflare (rules as copyable expressions), Tailscale policy, Pi first boot, monitoring, cost, sponsor pack generator | P4-T04 | a second person can follow it on a fresh account (owner dry run recorded) |
 | P4-T08 | Staging instance on a small Hetzner box using the full public overlay; k6 load run at target rates; 72-hour soak with synthetic traffic | P4-T01..T05 | thresholds pass; no alert false positives during soak; memory stable |
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | P4-T08 | report in `docs/ops/redteam-<date>.md`; no open high findings |
@@ -121,7 +121,7 @@ Goal: the free instance is live, protected, lawful, observable, and cheap.
 | P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run and competitive benchmark story (P4-B04), Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | P4-T10 | drafts in `docs/launch/` reviewed by the owner |
 | P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | P4-T04 | `ezmd admin report --sponsor-pack` produces the document |
 
-Launch checklist (every line must be checked and dated in STATUS.md before DNS cutover):
+Launch checklist (every line must be checked and dated in docs/internal/STATUS.md before DNS cutover):
 
 1. `audit-host.sh` passes on the production box.
 2. Every container non-root, read-only, caps dropped, seccomp on workers (`docker inspect` check).
@@ -139,12 +139,12 @@ Launch checklist (every line must be checked and dated in STATUS.md before DNS c
 14. `EZMD_SPONSOR_NAME` set or the "Support" link present; nothing gated.
 15. Cloudflare: proxied records only, Full strict TLS, WAF rules, rate rule, cache rules, Rocket Loader off.
 16. Hetzner firewall: 80/443 from Cloudflare ranges only; 22 closed or Tailscale-only.
-17. Budget ceiling and downgrade plan written in DECISIONS.md.
+17. Budget ceiling and downgrade plan written in docs/internal/DECISIONS.md.
 18. CHANGELOG has the release entry; `v1.0.0` tagged after one week of stable operation.
 
-Benchmark gate (owner directive, D-0032): in every category, ezmd's default install scores at or above the best competitor on the primary metric (ties within the 95% interval count), on the held-out split. A category may only be exempted when the winner relies on a license ezmd cannot ship by default and ezmd's opt-in extra matches it; the exemption is recorded in DECISIONS.md with the numbers and shown in docs/benchmarks.md.
+Benchmark gate (owner directive, D-0032): in every category, ezmd's default install scores at or above the best competitor on the primary metric (ties within the 95% interval count), on the held-out split. A category may only be exempted when the winner relies on a license ezmd cannot ship by default and ezmd's opt-in extra matches it; the exemption is recorded in docs/internal/DECISIONS.md with the numbers and shown in docs/benchmarks.md.
 
-Gate G4: benchmark gate holds; launch checklist complete; 7 days of operation with no critical alert; `v1.0.0` released; STATUS.md updated.
+Gate G4: benchmark gate holds; launch checklist complete; 7 days of operation with no critical alert; `v1.0.0` released; docs/internal/STATUS.md updated.
 
 ## 4.17.6 Phase 5: Persona verticals and integrations
 
@@ -160,7 +160,7 @@ Goal: the features that make specific professions choose ezmd. Each is independe
 | P5-T06 | Raycast extension and Alfred workflow | G4 | published |
 | P5-T07 | GitHub Action `ezmd-action` | G4 | marketplace listing live; used by this repo's docs build |
 | P5-T08 | n8n and Zapier templates | G4 | templates in docs; one n8n template verified |
-| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in DECISIONS.md; code signing deferred until funded | G4 | binaries attached to the release; smoke test on each OS |
+| P5-T09 | Desktop binary: PyInstaller single-file build of `ezmd serve` plus the web UI for macOS, Windows, Linux (air-gapped and non-technical personas); Tauri wrapper evaluated and decided in docs/internal/DECISIONS.md; code signing deferred until funded | G4 | binaries attached to the release; smoke test on each OS |
 | P5-T10 | Channel and playlist batch for marketers via the extension (queue every video on a channel page) and the CLI with the fetch extra | P3-T08 | extension batch test passes |
 | P5-T11 | Safari extension, only if sponsorship covers the Apple developer fee | P3-T08 | decision recorded |
 

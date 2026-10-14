@@ -1,4 +1,4 @@
-"""ezmd_api.ratelimit: sliding-window limits and admission control (docs/spec/part1.md 7.6, 8.4).
+"""ezmd_api.ratelimit: sliding-window limits and admission control (docs/internal/spec/part1.md 7.6, 8.4).
 
 Windows live in Redis (or memory in inline mode). The most restrictive window checked during a
 request is reported in `X-RateLimit-Limit/Remaining/Reset` by the middleware in `main.py`.

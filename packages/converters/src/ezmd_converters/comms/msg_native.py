@@ -1,4 +1,4 @@
-"""Native Outlook .msg reader on olefile (BSD-2-Clause), the default MSG path (docs/spec/part2.md 9b step 2).
+"""Native Outlook .msg reader on olefile (BSD-2-Clause), the default MSG path (docs/internal/spec/part2.md 9b step 2).
 
 Reads the documented MS-OXMSG property streams: `__substg1.0_<id><type>` (`001F` UTF-16LE, `001E` 8-bit in the
 message code page, `0102` binary), fixed-size values from `__properties_version1.0` (dates, recipient type,

@@ -191,7 +191,7 @@ Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings
 
 ## Retired spellings
 
-These older codes are still accepted on input and normalize to the canonical code (DECISIONS.md D-0017).
+These older codes are still accepted on input and normalize to the canonical code (docs/internal/DECISIONS.md D-0017).
 
 | Alias | Canonical code |
 |---|---|

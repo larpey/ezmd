@@ -1,5 +1,5 @@
 """ezmd_api.jobs: the job store, its state machine, and progress events
-(docs/spec/part1.md sections 7.1 and 7.2).
+(docs/internal/spec/part1.md sections 7.1 and 7.2).
 
 Every state change and progress write goes through `JobStore`, which persists the row and appends
 a numbered event to the per-job buffer (published on `ezmd:job:{id}`), so SSE clients never poll

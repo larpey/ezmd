@@ -1,4 +1,4 @@
-"""ezmd.render.text: text normalization and Markdown escaping helpers (docs/spec/part3.md section 14).
+"""ezmd.render.text: text normalization and Markdown escaping helpers (docs/internal/spec/part3.md section 14).
 
 - NFC normalization everywhere; non-printing characters (zero-width, joiners, BOM, bidi controls, Unicode
   tag characters, soft hyphen) are removed and counted.

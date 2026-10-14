@@ -1,4 +1,4 @@
-"""Minimal safe reader for repository archives (zip and tar.gz) with the docs/spec/part1.md 8.2 limits.
+"""Minimal safe reader for repository archives (zip and tar.gz) with the docs/internal/spec/part1.md 8.2 limits.
 
 Members are streamed into memory (never extracted to disk). Enforced: total uncompressed size
 (`EZMD_ARCHIVE_MAX_BYTES`, default 500 MB), 10,000 entries, a 100:1 compression ratio per zip entry and for a

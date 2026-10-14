@@ -1,4 +1,4 @@
-"""Phase 0 close council (DECISIONS.md D-0017) API changes: fetch re-enqueue, FetchRequired
+"""Phase 0 close council (docs/internal/DECISIONS.md D-0017) API changes: fetch re-enqueue, FetchRequired
 re-validation and depth cap, result-size cap, keyed limits, result query keys, agent salt, IR cache
 key, experimental_disabled."""
 

@@ -1,4 +1,4 @@
-"""The real spawn-child sandbox path (docs/spec/part1.md section 8.1)."""
+"""The real spawn-child sandbox path (docs/internal/spec/part1.md section 8.1)."""
 
 from __future__ import annotations
 

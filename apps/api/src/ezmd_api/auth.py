@@ -1,5 +1,5 @@
 """ezmd_api.auth: callers (client IP hash + optional API key), API keys, Turnstile, fetch-node auth
-(docs/spec/part1.md section 7.4).
+(docs/internal/spec/part1.md section 7.4).
 
 - API keys come from the `api_keys` table or the `keys.json` bootstrap file (`ezmd_api.keys`); both
   store only HMAC-SHA256(pepper, key). A key may restrict the client IP and User-Agent.
@@ -7,7 +7,7 @@
 - Turnstile is implemented but off unless `EZMD_TURNSTILE_SECRET` is set (or public mode demands it).
   A verified token yields a short-lived signed JWT cookie bound to the client IP hash and a nonce;
   it covers `CHALLENGE_MAX_USES` further URL jobs (counted per nonce in the state backend, so a
-  copied cookie cannot be replayed beyond that) until it expires (docs/spec/part4.md 4.13).
+  copied cookie cannot be replayed beyond that) until it expires (docs/internal/spec/part4.md 4.13).
   Siteverify goes to `EZMD_TURNSTILE_VERIFY_URL`; the compose API has no egress and uses Caddy's
   fixed-upstream relay (D-0044). An unreachable or misconfigured siteverify is `turnstile_unavailable`
   (503, logged), never a silent `turnstile_failed`.
@@ -60,7 +60,7 @@ CHALLENGE_HEADER = "x-ezmd-challenge"
 CHALLENGE_MAX_USES = 5
 SITEVERIFY_CONFIG_ERRORS = frozenset({"missing-input-secret", "invalid-input-secret"})
 """Siteverify error codes that mean this instance is misconfigured, not that the visitor failed."""
-"""URL jobs one challenge JWT may cover (docs/spec/part4.md: "good for up to 5 convert calls")."""
+"""URL jobs one challenge JWT may cover (docs/internal/spec/part4.md: "good for up to 5 convert calls")."""
 _EPHEMERAL_JWT_KEY = secrets.token_bytes(32)
 
 

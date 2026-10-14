@@ -1,6 +1,6 @@
 """ezmd.inputs: input abstraction over local files, uploaded bytes, URLs, and residential fetches.
 
-Implemented from docs/spec/part1.md section 5.1.
+Implemented from docs/internal/spec/part1.md section 5.1.
 """
 
 from __future__ import annotations

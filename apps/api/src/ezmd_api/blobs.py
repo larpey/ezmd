@@ -1,7 +1,7 @@
 """ezmd_api.blobs: blob storage for uploads, cached IR, rendered results, and attachments.
 
 Keys are always `jobs/{job_id}/...` built from ids and fixed names, never from user filenames, so a
-job purge is a prefix delete (docs/spec/part1.md section 8.4).
+job purge is a prefix delete (docs/internal/spec/part1.md section 8.4).
 """
 
 from __future__ import annotations

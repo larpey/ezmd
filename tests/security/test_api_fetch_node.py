@@ -1,4 +1,4 @@
-"""Fetch-node routes (docs/spec/part1.md 7.3, 7.4): absent without a secret, bearer + CIDR required,
+"""Fetch-node routes (docs/internal/spec/part1.md 7.3, 7.4): absent without a secret, bearer + CIDR required,
 claim tokens bound to one job."""
 
 from __future__ import annotations

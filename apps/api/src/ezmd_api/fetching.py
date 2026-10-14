@@ -1,4 +1,4 @@
-"""ezmd_api.fetching: the fetch half of a job (docs/spec/part1.md 7.2, 8.3; DECISIONS.md D-0017).
+"""ezmd_api.fetching: the fetch half of a job (docs/internal/spec/part1.md 7.2, 8.3; docs/internal/DECISIONS.md D-0017).
 
 The `fetch` queue worker is the only process with general egress, so it never parses what it
 downloads: `fetch_job` validates and fetches the URL through `ezmd.core.netguard`, stores the raw

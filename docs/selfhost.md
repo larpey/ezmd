@@ -9,12 +9,12 @@ environment variables, never the sandbox.
 
 ```sh
 git clone https://github.com/larpey/ezmd && cd ezmd
-deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 0.1.0-rc4
+deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 0.1.0
 ```
 
-`--version` is an image tag on GHCR (no leading `v`). Until `0.1.0` is released, use the newest
-`0.1.0-rcN` tag listed on the [GitHub releases](https://github.com/larpey/ezmd/releases) page;
-`0.1.0-rc4` is the newest candidate when this page was written.
+`--version` is an image tag on GHCR (no leading `v`): use the newest release listed on the
+[GitHub releases](https://github.com/larpey/ezmd/releases) page, for example `0.1.0`, or a
+`0.1.0-rcN` tag to try a release candidate.
 
 `bootstrap.sh` is safe to run again; it only fills in what is missing:
 
@@ -229,10 +229,10 @@ The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-r
 
 ```sh
 ID='^https://github\.com/larpey/ezmd/\.github/workflows/images\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$'
-cosign verify ghcr.io/larpey/ezmd-api:0.1.0-rc4 \
+cosign verify ghcr.io/larpey/ezmd-api:0.1.0 \
   --certificate-identity-regexp "$ID" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
-cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0-rc4 \
+cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0 \
   --certificate-identity-regexp "$ID" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```

@@ -4,7 +4,7 @@ The spec routes EPUB chapters through section 5's shared HTML-to-IR module; that
 (P1-T02), so this walker covers what ebooks need (headings, paragraphs, lists, tables with spans, code,
 quotes, images, figures, EPUB footnotes and page breaks) and can be swapped for the shared module later.
 
-Parsing never touches the network or resolves entities (docs/spec/part1.md 8.2): lxml's XML parser runs
+Parsing never touches the network or resolves entities (docs/internal/spec/part1.md 8.2): lxml's XML parser runs
 with `resolve_entities=False, no_network=True, load_dtd=False, huge_tree=False`; documents that are not
 well-formed XML (HTML entities such as `&nbsp;`, unclosed tags) fall back to lxml's HTML parser with
 `no_network=True`. Scripts, styles, `<nav>`, and hidden elements are dropped; hidden ones are counted.

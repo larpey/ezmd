@@ -1,6 +1,6 @@
 """Render parsed nested data (JSON, YAML, TOML, XML-as-tree) as IR blocks.
 
-Layout rules (docs/spec/part2.md 10c step 3, adapted):
+Layout rules (docs/internal/spec/part2.md 10c step 3, adapted):
 - a mapping's scalar members (and short lists of scalars) form a two-column Key/Value `Table`;
 - each nested member gets a `Heading` one level down and is rendered recursively;
 - an array of objects is a records `Table` (nested objects flattened by dot path to `schema_depth`, deeper

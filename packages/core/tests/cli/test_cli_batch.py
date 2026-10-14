@@ -1,4 +1,4 @@
-"""`ezmd batch` (docs/spec/part4.md 4.2.2 item 2 and the idempotency acceptance criterion)."""
+"""`ezmd batch` (docs/internal/spec/part4.md 4.2.2 item 2 and the idempotency acceptance criterion)."""
 
 from __future__ import annotations
 

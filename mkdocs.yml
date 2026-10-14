@@ -31,8 +31,8 @@ plugins:
   - search
   - swagger-ui-tag
 
-not_in_nav: |
-  /decisions/*.md
+exclude_docs: |
+  internal/
 
 markdown_extensions:
   - admonition
@@ -91,12 +91,5 @@ nav:
   - Project:
       - Security policy: security-policy.md
       - Changelog: changelog.md
-      - Status: status.md
       - Roadmap: roadmap.md
       - Licenses: licenses.md
-  - Specification:
-      - Overview: spec/README.md
-      - "Part 1: Mission, rules, foundation": spec/part1.md
-      - "Part 2: Converter families": spec/part2.md
-      - "Part 3: Media, OCR, output format": spec/part3.md
-      - "Part 4: Interfaces, deployment, roadmap": spec/part4.md

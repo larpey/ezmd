@@ -159,7 +159,7 @@ def build_page(
     outline: Outline,
     max_tokens: int,
 ) -> dict[str, Any]:
-    """The structured tool result for one page (docs/spec/part4.md 4.4.2)."""
+    """The structured tool result for one page (docs/internal/spec/part4.md 4.4.2)."""
     nxt = page.next_inner
     next_cursor = encode_cursor(McpCursor(job_id, profile, page_no + 1, nxt)) if nxt else None
     if next_cursor is None:

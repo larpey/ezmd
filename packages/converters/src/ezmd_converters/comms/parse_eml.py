@@ -1,4 +1,4 @@
-"""Parse RFC 5322 / MIME bytes into a ParsedMessage (docs/spec/part2.md 9c steps 1, 2, 4).
+"""Parse RFC 5322 / MIME bytes into a ParsedMessage (docs/internal/spec/part2.md 9c steps 1, 2, 4).
 
 stdlib `email` with `policy.default`. Header values are length-capped before the structured header parser
 sees them, raw 8-bit header bytes are repaired as UTF-8, and the MIME tree walk is bounded in depth and part

@@ -1,4 +1,4 @@
-"""ezmd.render.plaintext: the `txt` export (docs/spec/part3.md section 19).
+"""ezmd.render.plaintext: the `txt` export (docs/internal/spec/part3.md section 19).
 
 Derived from the IR, not from the Markdown: headings as their text on their own line, lists as `- ` lines,
 tables as tab-separated rows under their caption, transcripts as `Speaker [HH:MM:SS]: text`, images as

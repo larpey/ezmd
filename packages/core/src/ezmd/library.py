@@ -1,4 +1,4 @@
-"""ezmd.library: the public Python API (docs/spec/part4.md section 4.3).
+"""ezmd.library: the public Python API (docs/internal/spec/part4.md section 4.3).
 
 The library is the product; the CLI, the API worker, and the MCP server wrap it. Everything here is
 thin over `ezmd.pipeline.convert_ref` and `ezmd.render.render`, so there is exactly one conversion

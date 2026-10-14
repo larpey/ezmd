@@ -1,4 +1,4 @@
-"""ezmd_api.errors: the error schema (docs/spec/part1.md section 7.5) and exception handlers.
+"""ezmd_api.errors: the error schema (docs/internal/spec/part1.md section 7.5) and exception handlers.
 
 Messages never carry stack traces, server paths, or engine internals; those are logged with the
 request id instead.

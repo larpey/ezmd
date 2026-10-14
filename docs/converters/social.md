@@ -1,7 +1,7 @@
 # Social and forums (Phase 1 stub)
 
 Package `ezmd_converters.social`, converters `web.social_reddit` and `web.social_hn`, family `web` (spec:
-docs/spec/part2.md section 7; ROADMAP P1-T07). The full adapters (comment `more` expansion, Markdown bodies,
+docs/internal/spec/part2.md section 7; ROADMAP P1-T07). The full adapters (comment `more` expansion, Markdown bodies,
 listings, user pages, rate limiting, Stack Exchange, Bluesky, Mastodon, feeds) are Phase 3 (P3-T02).
 
 ## Family flag

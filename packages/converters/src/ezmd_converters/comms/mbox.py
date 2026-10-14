@@ -1,4 +1,4 @@
-"""comms.mbox: a Unix mailbox to one combined Document (docs/spec/part2.md 9c steps 5 and 8).
+"""comms.mbox: a Unix mailbox to one combined Document (docs/internal/spec/part2.md 9c steps 5 and 8).
 
 `mailbox.mbox` splits the file on `From ` lines (lazily, after building its table of contents). A split
 whose first line is not a header is an unescaped `From ` inside a body and is merged back into the previous

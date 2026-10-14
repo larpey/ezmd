@@ -1,6 +1,6 @@
 """ezmd.detect: content-type detection by magic, never by extension alone.
 
-Implemented from docs/spec/part1.md section 5.1. Magika (Apache-2.0) runs on the first 1 MiB plus
+Implemented from docs/internal/spec/part1.md section 5.1. Magika (Apache-2.0) runs on the first 1 MiB plus
 the last 64 KiB; libmagic runs on the same sample; the extension is mapped through a small table.
 
 Resolution order:
@@ -489,7 +489,7 @@ class MagicDetector:
             mime, confidence = OCTET, 0.0
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
-            # decide (docs/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
+            # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
             mime, confidence = RFC822, max(confidence, 0.9)
         return Detected(
             mime=mime,

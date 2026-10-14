@@ -1,4 +1,4 @@
-"""ezmd.render.tables: table representations (docs/spec/part3.md section 15).
+"""ezmd.render.tables: table representations (docs/internal/spec/part3.md section 15).
 
 Pipe tables for small tables, key:value records for wide or long ones, minimal HTML when merged cells
 carry meaning (`merged_cells=html`), sampling (first 20 + last 5 records, summary line) for very large

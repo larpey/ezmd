@@ -1,4 +1,4 @@
-"""The typer application: command registration and logging setup (docs/spec/part4.md 4.2)."""
+"""The typer application: command registration and logging setup (docs/internal/spec/part4.md 4.2)."""
 
 from __future__ import annotations
 

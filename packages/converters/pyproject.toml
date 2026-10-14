@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 # Imports `ezmd` at runtime; the dependency is declared by `ezmd` itself to avoid a
-# metadata cycle (see DECISIONS.md D-0003).
+# metadata cycle (see docs/internal/DECISIONS.md D-0003).
 dependencies = [
     "charset-normalizer>=3.4",
     "defusedxml>=0.7.1,<0.8",
@@ -32,18 +32,18 @@ Repository = "https://github.com/larpey/ezmd"
 Issues = "https://github.com/larpey/ezmd/issues"
 Changelog = "https://github.com/larpey/ezmd/blob/main/CHANGELOG.md"
 [project.optional-dependencies]
-# 7z archives (docs/spec/part2.md section 12): py7zr is LGPL-2.1-or-later, used unmodified as a separate
+# 7z archives (docs/internal/spec/part2.md section 12): py7zr is LGPL-2.1-or-later, used unmodified as a separate
 # package (dynamic use), kept out of the default install as the spec requires.
 7z = ["py7zr>=1.1,<2"]
-# Docling layout engine for PDF (docs/spec/part4.md 4.3.3); pulls torch, ~1.2 GB. docling-slim with only the
+# Docling layout engine for PDF (docs/internal/spec/part4.md 4.3.3); pulls torch, ~1.2 GB. docling-slim with only the
 # PDF pipeline extras: the full `docling` meta-package also pins typer<0.27 and websockets<17 (its CLI and
 # service client), which would downgrade the default install's CLI dependencies in the universal lock.
 # opencv-python-headless (Apache-2.0) is imported by Docling's TableFormer; the full `docling` gets it via RapidOCR.
 docs = ["docling-slim[format-pdf,models-local,convert-core]>=2.135,<3", "opencv-python-headless>=4.10"]
 # Parquet (data.parquet). pyarrow is Apache-2.0 but ~50 MB per wheel, too big for the default install
-# budget (docs/spec/part4.md 4.3.3); see docs/decisions/P1-T05-data.md.
+# budget (docs/internal/spec/part4.md 4.3.3); see docs/internal/decisions/P1-T05-data.md.
 data = ["pyarrow>=17.0"]
-# Copyleft engines (docs/spec/part4.md 4.3.3 `ezmd[nonfree]`), never in the default install; each module that
+# Copyleft engines (docs/internal/spec/part4.md 4.3.3 `ezmd[nonfree]`), never in the default install; each module that
 # imports one calls ezmd.core.licensing.notify_once. extract-msg (GPL-3.0) reads Outlook .msg for comms.msg.
 nonfree = ["extract-msg>=0.56.1,<0.57"]
 

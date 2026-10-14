@@ -1,6 +1,6 @@
 """Office family (`documents.*`): DOCX, PPTX, XLSX, ODF, RTF, legacy formats via LibreOffice, iWork.
 
-docs/spec/part2.md section 2 and docs/converters/office.md. Every zip package is validated and sanitized by
+docs/internal/spec/part2.md section 2 and docs/converters/office.md. Every zip package is validated and sanitized by
 `_package.OfficePackage` (archive limits, macro and ActiveX removal, external relationship filtering, DTD
 refusal) before any parser sees it.
 """

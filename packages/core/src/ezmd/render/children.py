@@ -1,7 +1,7 @@
 """ezmd.render.children: render `Document.children` (archive members, email attachments) inline.
 
 The renderer works on one flat block list, so child Documents are flattened into the parent before
-rendering (docs/spec/part2.md step 28, part3.md section D):
+rendering (docs/internal/spec/part2.md step 28, part3.md section D):
 
 - After the parent body, each child becomes a section headed `<child path>` (the child's `metadata.source`
   after the last `!`, else the first block's `provenance.path`, else its source). The section is a

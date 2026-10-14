@@ -1,4 +1,4 @@
-"""ezmd_api.admin: the host-only `ezmd-admin` CLI (docs/spec/part1.md 7.4, docs/spec/part4.md 4.11.6).
+"""ezmd_api.admin: the host-only `ezmd-admin` CLI (docs/internal/spec/part1.md 7.4, docs/internal/spec/part4.md 4.11.6).
 
 There are no admin HTTP endpoints. Run these on the host (or `docker compose exec api ezmd-admin ...`);
 they read the same EZMD_* environment as the API.

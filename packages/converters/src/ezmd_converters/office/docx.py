@@ -3,7 +3,7 @@
 Part 2 section 2: styles, numbering, tables with gridSpan/vMerge, footnotes and endnotes, tracked changes
 (w:ins, w:del, w:moveFrom, w:moveTo, w:rPrChange), comments with replies and resolved state, text boxes,
 OMML equations, hidden text. python-docx does not expose revisions or comments, and Pandoc (GPL) would only
-be an optional external binary, so the default path reads the XML directly (docs/decisions/P1-T01-office.md).
+be an optional external binary, so the default path reads the XML directly (docs/internal/decisions/P1-T01-office.md).
 """
 
 from __future__ import annotations

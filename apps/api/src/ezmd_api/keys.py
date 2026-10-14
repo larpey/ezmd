@@ -1,5 +1,5 @@
 """ezmd_api.keys: API keys from the `api_keys` table and from the `keys.json` bootstrap file
-(docs/spec/part1.md section 7.4, docs/spec/part4.md section 4.11.1).
+(docs/internal/spec/part1.md section 7.4, docs/internal/spec/part4.md section 4.11.1).
 
 Both sources store only HMAC-SHA256(EZMD_KEY_PEPPER, key) and yield the same `KeyRecord`, so the
 rest of the API never cares where a key came from.

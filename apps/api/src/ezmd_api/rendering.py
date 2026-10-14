@@ -1,5 +1,5 @@
 """ezmd_api.rendering: render a cached ConversionResult for a (profile, format, overrides) triple
-and cache the output per job in the blob store (docs/spec/part1.md section 7.3).
+and cache the output per job in the blob store (docs/internal/spec/part1.md section 7.3).
 
 All rendering goes through `ezmd.render.render`; this module only adapts its output to HTTP
 bodies and headers, builds the zip bundle, and stores attachments under safe blob keys.

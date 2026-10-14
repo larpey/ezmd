@@ -1,4 +1,4 @@
-"""ezmd.core.logging: redaction filter for every ezmd log handler (docs/spec/part1.md section 8.4).
+"""ezmd.core.logging: redaction filter for every ezmd log handler (docs/internal/spec/part1.md section 8.4).
 
 Redacts API keys (header values and the `ak_<env>_<22 base62>` pattern), Authorization/Bearer
 values, Turnstile tokens, fetch-node claim tokens, and URL userinfo, in the message, the args, and

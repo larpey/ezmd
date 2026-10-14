@@ -1,5 +1,5 @@
 """Static checks on the operator scripts in deploy/ (P1-T14). The end-to-end run (bootstrap, backup,
-wipe, restore, upgrade with rollback) needs Docker and is recorded in docs/decisions/P1-T14-T16.md."""
+wipe, restore, upgrade with rollback) needs Docker and is recorded in docs/internal/decisions/P1-T14-T16.md."""
 
 from __future__ import annotations
 

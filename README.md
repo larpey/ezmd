@@ -12,8 +12,8 @@ list of warnings. When something cannot be converted, ezmd says so instead of dr
 
 > **Status: release candidate.** Release candidates of `0.1.0` are on PyPI (`ezmd`, `ezmd-converters`,
 > `ezmd-mcp`) and signed images are on GHCR. Until `0.1.0` is final, the commands below install the newest
-> candidate. The npm SDK (`@ezmd/sdk`) and the public instance come with the final release. See
-> [STATUS.md](STATUS.md) and [ROADMAP.md](ROADMAP.md).
+> candidate. The npm SDK (`@ezmd/sdk`) and the public instance come with the final release. See the
+> [roadmap](docs/roadmap.md).
 
 ## Install
 
@@ -127,7 +127,7 @@ Claude Desktop (`claude_desktop_config.json`), using the published package:
 ```
 
 From a source checkout, use `"command": "uv"` with `"args": ["--directory", "/path/to/ezmd", "run",
-"ezmd-mcp", ...]`. After `0.1.0` the version pin can go. Other clients, tools, and the HTTP transport:
+"ezmd-mcp", ...]`. Other clients, tools, and the HTTP transport:
 [docs/mcp.md](docs/mcp.md).
 
 ### REST API and web UI
@@ -183,7 +183,7 @@ Then open http://localhost:8080. Signed images for each release are on GHCR (`gh
 The full list, with engines, extras, status, fixture counts, and thresholds, is the generated
 [converter matrix](docs/converters/README.md). Local directories are not an input yet (zip the folder, or
 use `ezmd batch` to convert the files in it one by one). Audio, video, OCR, chat exports, and social
-platforms are on the [roadmap](ROADMAP.md).
+platforms are on the [roadmap](docs/roadmap.md).
 
 ## Output profiles
 

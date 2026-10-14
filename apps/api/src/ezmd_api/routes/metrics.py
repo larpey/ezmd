@@ -1,8 +1,8 @@
-"""GET /metrics: Prometheus text format (docs/spec/part4.md 4.10.5).
+"""GET /metrics: Prometheus text format (docs/internal/spec/part4.md 4.10.5).
 
 Mounted only when EZMD_METRICS_TOKEN is set, and every scrape must send
 `Authorization: Bearer <EZMD_METRICS_TOKEN>`. Caddy also 404s /metrics at the public edge, so the
-token is the second of two independent controls (docs/decisions/P1-T10.md). Not in the OpenAPI
+token is the second of two independent controls (docs/internal/decisions/P1-T10.md). Not in the OpenAPI
 document: it is an operator endpoint, documented in docs/api.md.
 """
 

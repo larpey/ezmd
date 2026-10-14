@@ -1,6 +1,6 @@
 """archives.archive: zip, tar (plain, gz, bz2, xz), single-file gz/bz2/xz, and 7z (optional extra).
 
-docs/spec/part2.md section 12 step 27-28 and docs/spec/part1.md 8.2. The parent Document lists every member
+docs/internal/spec/part2.md section 12 step 27-28, part1.md 8.2. The parent Document lists every member
 (a directory tree as a ListBlock and a summary Table); each convertible member is converted through the
 registry with `options.ctx.convert_child` and attached to `Document.children` with provenance
 `source = "<outer>!<inner path>"` and `path = <inner path>`. Archives nested inside the archive are opened

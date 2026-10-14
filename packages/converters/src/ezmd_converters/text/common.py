@@ -1,4 +1,4 @@
-"""The size cap shared by the plain text and Markdown converters (docs/spec/part2.md 13.4)."""
+"""The size cap shared by the plain text and Markdown converters (docs/internal/spec/part2.md 13.4)."""
 
 from __future__ import annotations
 

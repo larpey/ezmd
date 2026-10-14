@@ -1,5 +1,5 @@
 """POST /v1/convert: create a job from a multipart upload or a JSON URL request
-(docs/spec/part1.md sections 7.1, 7.3, 8.2)."""
+(docs/internal/spec/part1.md sections 7.1, 7.3, 8.2)."""
 
 from __future__ import annotations
 

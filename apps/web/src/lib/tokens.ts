@@ -1,5 +1,5 @@
 /**
- * Frontmatter `tokens`: one count per tokenizer (docs/spec/part2.md frontmatter table and section 20), for
+ * Frontmatter `tokens`: one count per tokenizer (docs/internal/spec/part2.md frontmatter table and section 20), for
  * example `{o200k_base: 10950, cl100k_base: 11210, claude_approx: 11800}`. The OpenAPI document does not
  * model the `format=json` body (the SDK types `frontmatter` as `Record<string, unknown>`), so the shape is
  * declared here and every value is checked at runtime.

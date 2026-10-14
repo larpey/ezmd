@@ -1,6 +1,6 @@
 # Email converters (communication family)
 
-Family id `comms` (docs/spec/part2.md section 9). This page covers the email part: EML, MBOX, and Outlook MSG.
+Family id `comms` (docs/internal/spec/part2.md section 9). This page covers the email part: EML, MBOX, and Outlook MSG.
 Chat exports, ICS, and VCF are separate tasks.
 
 | Converter | Inputs | Engine | Install |

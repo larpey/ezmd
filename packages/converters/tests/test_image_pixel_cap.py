@@ -1,4 +1,4 @@
-"""Pillow's decompression-bomb cap is 50 megapixels (docs/spec/part1.md 8.2), set once when
+"""Pillow's decompression-bomb cap is 50 megapixels (docs/internal/spec/part1.md 8.2), set once when
 ezmd_converters is imported, before any converter can open an image."""
 
 from __future__ import annotations

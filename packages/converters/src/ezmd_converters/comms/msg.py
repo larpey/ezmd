@@ -1,4 +1,4 @@
-"""Outlook .msg converters (docs/spec/part2.md 9b step 2, 9c step 7).
+"""Outlook .msg converters (docs/internal/spec/part2.md 9b step 2, 9c step 7).
 
 - `comms.msg`: the default, a native reader on olefile (BSD-2-Clause) in `comms.msg_native`.
 - `comms.msg_extract`: extract-msg (GPL-3.0) from the `nonfree` extra, second in the chain; it runs only when

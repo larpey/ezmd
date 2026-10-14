@@ -1,4 +1,4 @@
-"""Anonymous creation limit (docs/spec/part4.md 4.14.3 and 4.14.5 item 5): the 21st request in 60 s gets 429.
+"""Anonymous creation limit (docs/internal/spec/part4.md 4.14.3 and 4.14.5 item 5): the 21st request in 60 s gets 429.
 
 Consumes the runner's anonymous budget, so the workflow runs it after the Playwright suite
 (`-m ratelimit`). The stack keeps EZMD_ANON_RATELIMIT_MAX=20 per 60 s (tests/integration/stack.sh).

@@ -1,4 +1,4 @@
-"""ezmd_mcp.http: the streamable HTTP transport behind a bearer-token check (docs/spec/part1.md 8.4).
+"""ezmd_mcp.http: the streamable HTTP transport behind a bearer-token check (docs/internal/spec/part1.md 8.4).
 
 The token is checked on every HTTP request with a constant-time comparison before the MCP app sees it.
 The legacy SSE transport is deliberately not offered (deprecated in the MCP specification).

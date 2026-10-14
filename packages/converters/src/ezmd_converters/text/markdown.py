@@ -1,4 +1,4 @@
-"""text.markdown_passthrough: parse Markdown into the IR (docs/spec/part1.md P0-T06).
+"""text.markdown_passthrough: parse Markdown into the IR (docs/internal/spec/part1.md P0-T06).
 
 Uses markdown-it-py (MIT) in CommonMark mode with tables, strikethrough, footnotes, and task lists.
 The goal is that rendering a Markdown input in the `full` profile reproduces its structure:

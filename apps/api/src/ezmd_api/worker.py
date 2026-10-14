@@ -1,4 +1,4 @@
-"""ezmd_api.worker: RQ worker entry and the job runner (docs/spec/part1.md sections 7.1, 7.2, 8.1).
+"""ezmd_api.worker: RQ worker entry and the job runner (docs/internal/spec/part1.md sections 7.1, 7.2, 8.1).
 
 `process_job(services, job_id)` drives one job through fetching (`fetching.py`; a fetched body is
 always re-enqueued, so parsing never runs in the egress-capable fetch worker), converting (in a spawn

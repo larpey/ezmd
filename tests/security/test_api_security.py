@@ -1,4 +1,4 @@
-"""API hardening (docs/spec/part1.md sections 7.5, 8.2, 8.4): security headers, error schema,
+"""API hardening (docs/internal/spec/part1.md sections 7.5, 8.2, 8.4): security headers, error schema,
 executables, multipart filename sanitization, CORS, log redaction, settings guards."""
 
 from __future__ import annotations

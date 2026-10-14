@@ -3,7 +3,7 @@
 olefile reads but does not create compound files, so the MSG fixture and the MSG unit tests build theirs here.
 The writer emits 512-byte sectors, a mini stream for streams under 4096 bytes, a FAT without DIFAT sectors
 (enough for files up to ~7 MB), and a balanced binary sibling tree per storage. The .msg builder lays out the
-property streams the spec names (docs/spec/part2.md 9b step 2): `__substg1.0_<tag>` streams,
+property streams the spec names (docs/internal/spec/part2.md 9b step 2): `__substg1.0_<tag>` streams,
 `__properties_version1.0`, recipient and attachment storages, and embedded messages (`3701000D`).
 Deterministic: no timestamps in directory entries.
 """

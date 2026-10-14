@@ -1,4 +1,4 @@
-"""docs/spec/part1.md 8.3 netguard tests. No real network: a fake resolver and a local HTTP server."""
+"""docs/internal/spec/part1.md 8.3 netguard tests. No real network: a fake resolver and a local HTTP server."""
 
 from __future__ import annotations
 

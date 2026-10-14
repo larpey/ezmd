@@ -1,4 +1,4 @@
-# Integration-test overlay (P1-T15; docs/spec/part4.md 4.14.3). Never use it in production.
+# Integration-test overlay (P1-T15; docs/internal/spec/part4.md 4.14.3). Never use it in production.
 #
 # Adds `fixtures`: a static HTTP server for fixtures/web on the internal network, reachable from the
 # workers as http://web.fixtures.example:8000/. The name is dotted and not on the netguard hostname

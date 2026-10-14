@@ -1,7 +1,7 @@
 # Archives
 
-Package `ezmd_converters.archives`, converter family `archives` (spec: docs/spec/part2.md section 12 steps
-27-28, docs/spec/part1.md 8.2).
+Package `ezmd_converters.archives`, converter family `archives` (spec: docs/internal/spec/part2.md section 12 steps
+27-28, docs/internal/spec/part1.md 8.2).
 
 | Converter | Formats | Status | Engine |
 |---|---|---|---|

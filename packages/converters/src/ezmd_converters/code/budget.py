@@ -1,4 +1,4 @@
-"""Token budgeting for repository packs (docs/spec/part2.md 8c step 6).
+"""Token budgeting for repository packs (docs/internal/spec/part2.md 8c step 6).
 
 Applied in order until the pack fits: (a) drop lockfiles, generated and minified files; (b) drop test
 directories; (c) switch files over 300 lines to signatures-only; (d) truncate every remaining file to its first

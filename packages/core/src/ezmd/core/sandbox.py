@@ -1,6 +1,6 @@
 """ezmd.core.sandbox: the only place in ezmd that starts external processes.
 
-Implemented from docs/spec/part1.md section 8.1. Every external binary (ffmpeg, pandoc, deno, yt-dlp,
+Implemented from docs/internal/spec/part1.md section 8.1. Every external binary (ffmpeg, pandoc, deno, yt-dlp,
 tesseract, ...) goes through `run()`:
 
 - argv must be a list of strings; a plain string is rejected (no shell, ever).

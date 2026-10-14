@@ -1,4 +1,4 @@
-"""Directory tree listing for repository packs (docs/spec/part2.md 8c step 5).
+"""Directory tree listing for repository packs (docs/internal/spec/part2.md 8c step 5).
 
 Directories first, then files, each sorted by name. Default-excluded directories are collapsed to one line
 (`node_modules/ (excluded, 1,204 files)`); rule-excluded files carry their reason. Budget actions never

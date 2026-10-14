@@ -28,7 +28,7 @@ OVERLAP_SAME_LINE = 0.6
 """Glyphs whose boxes overlap vertically by at least this fraction of the shorter one share a line even when
 their reported origins disagree (some Type 3 and broken fonts)."""
 PRIVATE_USE_SCANNED = 0.05
-"""docs/spec/part2.md 1e.8: more than 5 percent private-use glyphs on a page means the text layer is unusable."""
+"""docs/internal/spec/part2.md 1e.8: over 5 percent private-use glyphs on a page means the text layer is unusable."""
 
 
 @dataclass(slots=True)
@@ -69,7 +69,7 @@ class PageText:
 
 
 _LIGATURE_LO, _LIGATURE_HI = chr(0xFB00), chr(0xFB06)
-"""Latin ligatures (ff, fi, fl, ffi, ffl, long st, st) are NFKC-expanded (docs/spec/part2.md 1e.8)."""
+"""Latin ligatures (ff, fi, fl, ffi, ffl, long st, st) are NFKC-expanded (docs/internal/spec/part2.md 1e.8)."""
 
 
 @dataclass(slots=True)

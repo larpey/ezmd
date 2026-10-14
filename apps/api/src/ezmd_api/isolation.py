@@ -1,5 +1,5 @@
 """ezmd_api.isolation: run one conversion in a `multiprocessing` spawn child
-(docs/spec/part1.md section 8.1).
+(docs/internal/spec/part1.md section 8.1).
 
 The child applies POSIX resource limits (address space, CPU, process count, file size) and caps the
 math libraries' thread pools before it imports any engine, builds `ezmd.library.Options` from the

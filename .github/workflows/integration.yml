@@ -1,5 +1,5 @@
 # Integration, network-tier security and browser tests against the compose stack
-# (docs/spec/part4.md 4.14.3, 4.14.5, 4.14.6; ROADMAP P1-T15). Runs on merge to main, nightly, and on demand.
+# (docs/internal/spec/part4.md 4.14.3, 4.14.5, 4.14.6; ROADMAP P1-T15). Runs on merge to main, nightly, and on demand.
 # The fast security tier runs in ci.yml with the unit tests (`pytest packages apps tests`).
 #
 # Phase 1 (stack as shipped, EZMD_ALLOW_PRIVATE_NETWORKS=false): network-tier SSRF and edge-header

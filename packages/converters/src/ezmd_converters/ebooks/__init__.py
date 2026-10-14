@@ -1,4 +1,4 @@
-"""Ebooks family (converter family "documents", docs/spec/part2.md section 4): EPUB 2/3 and Jupyter notebooks.
+"""Ebooks family (converter family "documents", docs/internal/spec/part2.md section 4): EPUB 2/3 and Jupyter notebooks.
 
 Markdown and plain text live in the `text` family. MOBI/AZW/CHM (Calibre), FB2, LaTeX, reStructuredText,
 AsciiDoc, Org, Textile, and MediaWiki are planned (docs/converters/ebooks.md).

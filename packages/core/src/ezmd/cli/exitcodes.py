@@ -1,4 +1,4 @@
-"""Exit codes (docs/spec/part4.md 4.2.2) and the mapping from exceptions and API error codes to them.
+"""Exit codes (docs/internal/spec/part4.md 4.2.2) and the mapping from exceptions and API error codes to them.
 
 0 success; 1 generic failure; 2 bad arguments or missing dependency (a missing file, or an optional extra
 the input needs: `extra_required`, whether the converter is unavailable or returned a stub that says so);

@@ -1,4 +1,4 @@
-"""ezmd_api.uploads: streaming multipart parsing with a hard byte cap (docs/spec/part1.md 8.2).
+"""ezmd_api.uploads: streaming multipart parsing with a hard byte cap (docs/internal/spec/part1.md 8.2).
 
 The body is read from `request.stream()` and counted; the request is aborted as soon as a file part
 reaches `max_file_bytes + 1`, before the rest of the body is read. `Content-Length` is advisory only.

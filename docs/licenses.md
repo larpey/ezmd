@@ -13,7 +13,7 @@ purpose, and they tell you their license the first time they load.
 - Packages under denied licenses may ship only in a named extra, and the converter that needs them
   calls `ezmd.core.licensing.notify_once("<extra>")` on first import. The notice is printed to
   stderr once per machine (a stamp file in the cache directory records it).
-- Changing the allowlist is a policy decision logged in `DECISIONS.md`.
+- Changing the allowlist is a policy decision logged in `docs/internal/DECISIONS.md`.
 - The check runs in CI: `uv run python tools/license_check.py` for the Python tree (from `uv.lock`,
   all platforms) and `pnpm licenses list --json --prod | node tools/license_check.mjs` for the
   JavaScript tree. Per-package decisions live in `tools/license_overrides.toml`, each with a URL to the
@@ -23,7 +23,7 @@ purpose, and they tell you their license the first time they load.
   runtime, installed by your resolver from PyPI; ezmd does not bundle them, and the published worker image
   does not include `docs`. Installing CPU torch first avoids them entirely (see
   [Install](install.md#docling-on-linux-cpu-torch)). They are listed by name in the `[platform_runtime]` section of
-  `tools/license_allowlist.toml`; see `docs/decisions/audit-fix-packaging.md`.
+  `tools/license_allowlist.toml`; see `docs/internal/decisions/audit-fix-packaging.md`.
 
 ## Allowlist
 

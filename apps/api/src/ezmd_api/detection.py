@@ -1,5 +1,5 @@
 """ezmd_api.detection: type detection plus the up-front support check, shared by uploads (before a job
-exists) and fetched bodies (in the conversion worker). docs/spec/part1.md section 8.2.
+exists) and fetched bodies (in the conversion worker). docs/internal/spec/part1.md section 8.2.
 
 An input is refused when its detected type is executable or when no registered converter would claim it
 (available, experimental, or registered but missing its extra), so the caller gets 415

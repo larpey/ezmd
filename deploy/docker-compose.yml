@@ -1,4 +1,4 @@
-# ezmd self-host (core profile, docs/spec/part4.md 4.9.2).
+# ezmd self-host (core profile, docs/internal/spec/part4.md 4.9.2).
 #   deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com   # first run (idempotent)
 # or by hand:
 #   cp deploy/env.example deploy/.env   # edit EZMD_DOMAIN, EZMD_PUBLIC_URL, secrets

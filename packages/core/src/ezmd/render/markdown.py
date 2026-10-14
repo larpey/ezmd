@@ -1,4 +1,4 @@
-"""ezmd.render.markdown: the Markdown renderer (docs/spec/part3.md section D).
+"""ezmd.render.markdown: the Markdown renderer (docs/internal/spec/part3.md section D).
 
 Pipeline: title and heading plan -> units per block -> footnote and page-marker placement -> cursor and token
 budget -> head blocks and H1 -> (rag) chunking -> injection scan -> (agent) untrusted fence -> frontmatter

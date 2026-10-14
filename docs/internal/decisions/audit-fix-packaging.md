@@ -1,6 +1,6 @@
 # Audit fix: packaging (dependency bounds, license files, license gate scope)
 
-For the orchestrator to number and append to DECISIONS.md.
+For the orchestrator to number and append to docs/internal/DECISIONS.md.
 
 ## 1. Cap direct dependencies that have a pre-release of a new major
 

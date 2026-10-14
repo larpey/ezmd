@@ -1,6 +1,6 @@
 # P1-T01 (Office part): decision entries
 
-Proposed entries for DECISIONS.md. The orchestrator folds them in at merge.
+Proposed entries for docs/internal/DECISIONS.md. The orchestrator folds them in at merge.
 
 ## Approach note: DOCX (`documents.docx`)
 - Library: lxml 6.1.3 (BSD-3-Clause; verified `lxml-6.1.3.dist-info/licenses/LICENSE.txt`). The parser reads

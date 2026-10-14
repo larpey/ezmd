@@ -33,7 +33,7 @@ Repository = "https://github.com/larpey/ezmd"
 Issues = "https://github.com/larpey/ezmd/issues"
 Changelog = "https://github.com/larpey/ezmd/blob/main/CHANGELOG.md"
 [project.optional-dependencies]
-# docs/spec/part4.md 4.3.3: users install `ezmd[<extra>]`; the converter extras live on ezmd-converters
+# docs/internal/spec/part4.md 4.3.3: users install `ezmd[<extra>]`; the converter extras live on ezmd-converters
 # (D-0003), so ezmd forwards them. media, ocr, web and fetch arrive with their phases; server needs ezmd-api,
 # which is not published yet.
 docs = ["ezmd-converters[docs]"]
@@ -42,7 +42,7 @@ data = ["ezmd-converters[data]"]
 # ezmd-mcp is pinned exactly like ezmd-converters (tools/bump_version.py keeps both pins in step).
 mcp = ["ezmd-mcp==0.1.0rc4"]
 all = ["ezmd-converters[docs,data,7z]", "ezmd-mcp==0.1.0rc4"]
-# Forbidden licenses (GPL extract-msg); never part of `all` (docs/spec/part4.md 4.3.3).
+# Forbidden licenses (GPL extract-msg); never part of `all` (docs/internal/spec/part4.md 4.3.3).
 nonfree = ["ezmd-converters[nonfree]"]
 
 [project.scripts]

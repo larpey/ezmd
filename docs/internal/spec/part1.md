@@ -18,20 +18,20 @@ ezmd converts anything into LLM-ready Markdown: PDFs, Office documents, web page
 
 The project is done when every item below is true. Do not report completion before then.
 
-1. All phases in ROADMAP.md (Phase 0 through the final phase defined in Part 4) have state `done` in STATUS.md, or `shipped-experimental` with a documented limitation.
+1. All phases in docs/internal/ROADMAP.md (Phase 0 through the final phase defined in Part 4) have state `done` in docs/internal/STATUS.md, or `shipped-experimental` with a documented limitation.
 2. The fixture corpus in `fixtures/` passes its golden tests at or above the per-converter threshold recorded in `fixtures/thresholds.toml`. No converter is below threshold unless it is flagged `experimental`.
 3. `docker compose -f deploy/compose.yml up` on a clean Linux x86_64 machine with Docker installed (no GPU, no prior state) brings up API, web UI, Redis, and a worker; uploading a PDF, a DOCX, a URL, and a 60-second MP3 through the UI each produce correct Markdown. A script `deploy/smoke.sh` automates this check and passes.
 4. The public instance is deployed on the Hetzner Ashburn VPS, reachable over HTTPS with valid TLS, Turnstile active on link fetches, rate limits active, 24-hour purge job running, and `deploy/smoke.sh --remote <url>` passes against it.
-5. The Raspberry Pi fetch node image builds, and a fetch node connected over Tailscale successfully claims and completes a residential fetch job end to end (verified at least once against a real short video URL from a sanctioned test source, logged in STATUS.md).
+5. The Raspberry Pi fetch node image builds, and a fetch node connected over Tailscale successfully claims and completes a residential fetch job end to end (verified at least once against a real short video URL from a sanctioned test source, logged in docs/internal/STATUS.md).
 6. `docs/` contains: quickstart, self-host guide, API reference (generated from OpenAPI), CLI reference, library reference, MCP reference, extension guide, fetch node guide, output format reference, security and threat model, license policy, contributing guide.
 7. CI is green on main: unit tests, golden tests, `ruff`, `mypy --strict` on `packages/core`, `pnpm lint`, `pnpm typecheck`, license allowlist check, `pip-audit`, `pnpm audit`, Docker image build for all services.
 8. A release is tagged (`v0.1.0` or higher), the Python package is published to PyPI, the Docker images are published to GHCR with multi-arch (amd64, arm64) manifests, and the browser extension is built as an unsigned zip in release assets.
 9. The Red team pass (section 2.3) has run against the public-facing phases and all `critical` and `high` findings are closed.
-10. The final report (section 2.9) has been written to STATUS.md.
+10. The final report (section 2.9) has been written to docs/internal/STATUS.md.
 
 ### 1.3 Fixed decisions (shared by all four parts)
 
-- Working codename: **ezmd**. Python package `ezmd`, CLI `ezmd`, Docker image `ezmd`. The first task in ROADMAP.md is a name availability check (PyPI, npm, GitHub org, `.dev` and `.com` domain). If the name is taken on PyPI or npm, you pick another short name, record it in DECISIONS.md, and perform a global rename before any other task. Domain availability is informational only; do not purchase a domain (that is externally costly and requires the human).
+- Working codename: **ezmd**. Python package `ezmd`, CLI `ezmd`, Docker image `ezmd`. The first task in docs/internal/ROADMAP.md is a name availability check (PyPI, npm, GitHub org, `.dev` and `.com` domain). If the name is taken on PyPI or npm, you pick another short name, record it in docs/internal/DECISIONS.md, and perform a global rename before any other task. Domain availability is informational only; do not purchase a domain (that is externally costly and requires the human).
 - License: Apache-2.0 for everything in the repo. Default-install dependencies and weights must be one of: MIT, Apache-2.0, BSD-2/3, ISC, PSF, MPL-2.0 (unmodified), CC-BY-4.0. Forbidden in defaults: AGPL, GPL (any version), LGPL for statically linked code, SSPL, BSL, OpenRAIL-M and variants, CC-BY-NC, Qwen Research License, MinerU license, and any "custom terms" license. Forbidden licenses may appear only as clearly named optional extras (`pip install ezmd[chandra]`, `ezmd[pymupdf]`) that print the license name and a one-line summary on first use. CI enforces this with an allowlist in `tools/license_allowlist.toml`.
 - Stack: Python 3.12 for core, converters, API, workers. TypeScript for the web UI (React + Vite, static build served by the API), the browser extension (MV3), and a thin JS SDK. FastAPI for HTTP. Redis + RQ for the job queue. SQLite by default for job metadata with a Postgres option via `EZMD_DATABASE_URL`. Local filesystem for blobs by default with S3-compatible (MinIO) option via `EZMD_BLOB_URL`. Magika + libmagic for content-type detection. uv for Python packaging, pnpm for JS. Docker Compose for self-host. Everything runs CPU-only by default; GPU is optional acceleration.
 - Monorepo layout:
@@ -49,7 +49,7 @@ ezmd/
   deploy/               # docker compose files, Caddy config, Tailscale notes, Pi image script
   fixtures/             # test corpus + golden outputs
   docs/
-  DECISIONS.md, ROADMAP.md, STATUS.md, CLAUDE.md
+  docs/internal/DECISIONS.md, docs/internal/ROADMAP.md, docs/internal/STATUS.md, .claude/CLAUDE.md
 ```
 
 - Architecture: the public VPS (Hetzner Ashburn) runs API, UI, queue, and converters. A Raspberry Pi at the owner's home runs `apps/fetch-node`, connects outbound-only to the VPS over Tailscale, polls the `fetch_residential` queue for jobs that need a residential IP (TikTok, YouTube, Instagram, etc.), downloads, extracts audio with ffmpeg, and uploads the audio back. The VPS never exposes the Pi. Fallback chain when no fetch node is online: platform captions endpoints, then mirror/embed endpoints, then yt-dlp with a PO-token sidecar, then `needs_user_action` asking the user to upload the file or use the extension.
@@ -64,18 +64,18 @@ ezmd/
 
 You run this loop until the definition of done is met.
 
-1. Read `STATUS.md` and `ROADMAP.md`.
+1. Read `docs/internal/STATUS.md` and `docs/internal/ROADMAP.md`.
 2. Pick the first task whose state is `pending` and whose `blocked_by` list is empty or all `done`. Phases are ordered; do not start a task from phase N+1 while any phase N task is `pending` or `in_progress`, unless phase N's remaining tasks are all `blocked` on an external event (which should be rare and logged).
-3. Set the task to `in_progress` in STATUS.md and commit that change alone.
+3. Set the task to `in_progress` in docs/internal/STATUS.md and commit that change alone.
 4. Run the research step (section 2.5) if the task involves a converter, an external integration, or an architectural choice.
 5. Implement on a feature branch named `task/<phase>-<task-id>-<slug>`.
 6. Run the quality gates (section 2.4). If a gate fails, fix and re-run. If a converter fails its fixture threshold, convene the council (section 2.3).
-7. Update STATUS.md (state `done`, last commit hash, metrics), commit, merge to `main` with a fast-forward or squash merge, delete the branch.
+7. Update docs/internal/STATUS.md (state `done`, last commit hash, metrics), commit, merge to `main` with a fast-forward or squash merge, delete the branch.
 8. Go to step 1.
 
-Stop and ask the human only when a decision is both irreversible and externally costly. The exhaustive list of such decisions: spending money (buying a domain, upgrading a server plan, paying for an API), publishing a package name to PyPI or npm for the first time (name squatting is irreversible), publishing a browser extension to a store, deleting data that is not reproducible from the repo, and sending any email or message to a third party. For everything else, decide, log the decision in DECISIONS.md with rationale and the alternatives you rejected, and move on. If you are blocked on a human decision, write it in STATUS.md under `## Blocked on human`, mark the task `blocked`, and continue with other unblocked tasks. Only when nothing is unblocked do you stop and write the report.
+Stop and ask the human only when a decision is both irreversible and externally costly. The exhaustive list of such decisions: spending money (buying a domain, upgrading a server plan, paying for an API), publishing a package name to PyPI or npm for the first time (name squatting is irreversible), publishing a browser extension to a store, deleting data that is not reproducible from the repo, and sending any email or message to a third party. For everything else, decide, log the decision in docs/internal/DECISIONS.md with rationale and the alternatives you rejected, and move on. If you are blocked on a human decision, write it in docs/internal/STATUS.md under `## Blocked on human`, mark the task `blocked`, and continue with other unblocked tasks. Only when nothing is unblocked do you stop and write the report.
 
-### 2.2 DECISIONS.md format
+### 2.2 docs/internal/DECISIONS.md format
 
 Each entry is appended, never edited, in this form:
 
@@ -98,9 +98,9 @@ Approach notes (section 2.5) go under the task's decision entry as a `### Approa
 
 Convene a council for (a) any architectural decision (new service, new queue, new storage shape, changes to the IR, changes to the API contract, changes to the security model) and (b) any converter whose first implementation fails its fixture threshold. Also convene one before tagging each release.
 
-A council is three reviewer subagents, spawned in parallel, each given the same context bundle and one of three roles. Each writes a position of at most 400 words. You (the orchestrator) read all three, decide, and log the decision with a one-paragraph summary of each position in DECISIONS.md. Councils are limited to 3 iterations per problem; after the third, apply the time-and-budget rule (section 2.7).
+A council is three reviewer subagents, spawned in parallel, each given the same context bundle and one of three roles. Each writes a position of at most 400 words. You (the orchestrator) read all three, decide, and log the decision with a one-paragraph summary of each position in docs/internal/DECISIONS.md. Councils are limited to 3 iterations per problem; after the third, apply the time-and-budget rule (section 2.7).
 
-Context bundle for every council member: the relevant section of this spec, the current DECISIONS.md entry for the task, the failing test output or the design question, the files changed on the branch (diff or paths), and `STATUS.md`.
+Context bundle for every council member: the relevant section of this spec, the current docs/internal/DECISIONS.md entry for the task, the failing test output or the design question, the files changed on the branch (diff or paths), and `docs/internal/STATUS.md`.
 
 Prompt template. Replace the bracketed fields. Send the same bundle to all three; only the ROLE block differs.
 
@@ -129,7 +129,7 @@ QUESTION: [the decision to make, or: "Converter X scores 0.71 on fixture set Y; 
 
 CONTEXT:
 [spec excerpt]
-[DECISIONS.md entry]
+[docs/internal/DECISIONS.md entry]
 [test output or design options]
 [changed files]
 
@@ -156,7 +156,7 @@ payload that is unpickled unsafely. Where you can, write a failing test under te
 Output: a table (attack, severity, reproduced yes/no, file:line, fix). Do not fix anything yourself.
 ```
 
-Every `critical` and `high` finding becomes a task in STATUS.md that blocks the phase from shipping.
+Every `critical` and `high` finding becomes a task in docs/internal/STATUS.md that blocks the phase from shipping.
 
 ### 2.4 Quality gates
 
@@ -166,8 +166,8 @@ No task is `done` until all of these pass locally and in CI:
 2. Golden fixture tests: `uv run pytest fixtures -q` passes at the threshold for every converter the task touches. Thresholds live in `fixtures/thresholds.toml`.
 3. Lint and types: `uv run ruff check .`, `uv run ruff format --check .`, `uv run mypy --strict packages/core`, `uv run mypy apps/api packages/converters packages/mcp` (non-strict but no errors), `pnpm -r lint`, `pnpm -r typecheck`.
 4. License check: `uv run python tools/license_check.py` and `pnpm licenses list --json | node tools/license_check.mjs` pass against the allowlist.
-5. Security audit: `uv run pip-audit` and `pnpm audit --audit-level=high` report no unresolved high or critical advisories (allowlist with expiry in `tools/audit_ignore.toml` if a fix is unavailable; each entry needs a DECISIONS.md reference).
-6. STATUS.md updated with the task's state, last commit, and metrics.
+5. Security audit: `uv run pip-audit` and `pnpm audit --audit-level=high` report no unresolved high or critical advisories (allowlist with expiry in `tools/audit_ignore.toml` if a fix is unavailable; each entry needs a docs/internal/DECISIONS.md reference).
+6. docs/internal/STATUS.md updated with the task's state, last commit, and metrics.
 
 Fixture scoring. Each fixture is a directory `fixtures/<family>/<name>/` containing `input.<ext>` (or `input.url` with a URL and a frozen `input.html` or `input.har` snapshot so tests never hit the network), `expected.full.md`, `expected.sidecar.json`, and `meta.toml` (converter id, threshold overrides, notes on what the fixture tests). The scorer in `packages/core/ezmd/testing/score.py` computes:
 
@@ -188,7 +188,7 @@ Before implementing any converter or any integration with an external library, s
 2. Read the library's docs for the specific API you will call.
 3. Read the library's GitHub issues from the last 6 months filtered to "bug", "breaking", and the file type you care about. Note open issues that affect your use.
 4. Check whether a fixture-like public sample exists that you can legally include in `fixtures/` (public domain, CC0, CC-BY, or generated by you). Never include commercial media or anything scraped from a platform in fixtures.
-5. Write a 10-line approach note into the task's DECISIONS.md entry:
+5. Write a 10-line approach note into the task's docs/internal/DECISIONS.md entry:
 
 ```
 ### Approach note
@@ -206,7 +206,7 @@ Time box: 1 day; if tables under 0.80 after council, ship experimental.
 
 ### 2.6 Dependency, license, security, commit, branch, and release rules
 
-Dependency rule. Add a dependency only if it saves more than 200 lines of non-trivial code or provides a model or parser you cannot reasonably write. Every new dependency gets one line in the task's DECISIONS.md entry: name, version pin, license, size, why. Pin exact versions in lockfiles (`uv.lock`, `pnpm-lock.yaml`). Model weights are downloaded at first use into `EZMD_MODEL_DIR` (default `~/.cache/ezmd/models`), never bundled in the Python package, and the Docker images for self-host have a `-models` variant that pre-bakes the default CPU weights.
+Dependency rule. Add a dependency only if it saves more than 200 lines of non-trivial code or provides a model or parser you cannot reasonably write. Every new dependency gets one line in the task's docs/internal/DECISIONS.md entry: name, version pin, license, size, why. Pin exact versions in lockfiles (`uv.lock`, `pnpm-lock.yaml`). Model weights are downloaded at first use into `EZMD_MODEL_DIR` (default `~/.cache/ezmd/models`), never bundled in the Python package, and the Docker images for self-host have a `-models` variant that pre-bakes the default CPU weights.
 
 License rule. Restated: Apache-2.0 for the repo. Allowlist for defaults: MIT, Apache-2.0, BSD-2, BSD-3, ISC, PSF, MPL-2.0 unmodified, CC-BY-4.0. Forbidden in defaults: AGPL, GPL, LGPL static, SSPL, BSL, OpenRAIL-M, CC-BY-NC, Qwen Research License, MinerU license, custom terms. Forbidden licenses are allowed only in named extras, declared in `pyproject.toml` under `[project.optional-dependencies]` with a name that is the engine name (`chandra`, `pymupdf`, `extract-msg`), and the extra's converter module must call `ezmd.core.licensing.notify_once("<extra>")` on first import, which prints the license name and a URL to stderr once per machine (stamp file in the cache dir). `tools/license_check.py` walks `uv export --no-dev` for defaults and the per-extra resolution and fails if any package resolves to a license not on the allowlist for the default set. Packages with ambiguous metadata go in `tools/license_overrides.toml` with a link to the license file you verified.
 
@@ -216,7 +216,7 @@ Commit conventions. Conventional Commits: `feat(converters/documents): add DOCX 
 
 Branch strategy. Trunk-based. `main` is always green. Feature branches `task/<phase>-<task-id>-<slug>` are merged by you after gates pass (squash merge, commit message is the task summary). No long-lived branches. If a task takes more than one day, merge intermediate working slices behind a feature flag rather than keeping the branch open.
 
-Releases. Tag `v0.0.x` after each phase completes (Phase 0 is `v0.0.1`). Tag `v0.1.0` when the definition of done is met. Tags are annotated, the message is the phase summary from STATUS.md, and the CI release workflow builds and publishes the Python package (to TestPyPI for `v0.0.x`, to PyPI for `v0.1.0` and later, the first PyPI publish is a human-gated decision), Docker images to GHCR, and the extension zip as a release asset. A changelog is generated from conventional commits into `CHANGELOG.md`.
+Releases. Tag `v0.0.x` after each phase completes (Phase 0 is `v0.0.1`). Tag `v0.1.0` when the definition of done is met. Tags are annotated, the message is the phase summary from docs/internal/STATUS.md, and the CI release workflow builds and publishes the Python package (to TestPyPI for `v0.0.x`, to PyPI for `v0.1.0` and later, the first PyPI publish is a human-gated decision), Docker images to GHCR, and the extension zip as a release asset. A changelog is generated from conventional commits into `CHANGELOG.md`.
 
 ### 2.7 Time and budget awareness
 
@@ -224,7 +224,7 @@ Prefer a working vertical slice over breadth. A converter that handles 80% of re
 
 Do not optimize before the fixture corpus passes. Do not build abstractions for a second use case that does not exist yet. Do not write docs for features that are not merged.
 
-### 2.8 STATUS.md format
+### 2.8 docs/internal/STATUS.md format
 
 ```markdown
 # ezmd status
@@ -260,15 +260,15 @@ Overall: 14 / 87 tasks done
 |---|---|---|---|
 ```
 
-Task states: `pending`, `in_progress`, `done`, `blocked`, `shipped-experimental`, `dropped` (with reason in Notes and a DECISIONS.md entry).
+Task states: `pending`, `in_progress`, `done`, `blocked`, `shipped-experimental`, `dropped` (with reason in Notes and a docs/internal/DECISIONS.md entry).
 
 ### 2.9 Final report
 
-When the definition of done is met, replace the top of STATUS.md with a `## Final report` section containing: one paragraph summary; a table of every converter with its family, engine, fixture score, threshold, and experimental flag; the public instance URL and the smoke test output; the list of human-gated decisions that were made or are still waiting; the list of experimental converters and dropped tasks with reasons; total commits, tests, and fixture count; the five highest-risk areas you would want a human to look at first; and the suggested next five tasks. Then stop.
+When the definition of done is met, replace the top of docs/internal/STATUS.md with a `## Final report` section containing: one paragraph summary; a table of every converter with its family, engine, fixture score, threshold, and experimental flag; the public instance URL and the smoke test output; the list of human-gated decisions that were made or are still waiting; the list of experimental converters and dropped tasks with reasons; total commits, tests, and fixture count; the five highest-risk areas you would want a human to look at first; and the suggested next five tasks. Then stop.
 
 ---
 
-## 3. CLAUDE.md
+## 3. .claude/CLAUDE.md
 
 Place this file at the repo root verbatim (update the commands if the tooling changes, and log that change).
 
@@ -278,10 +278,10 @@ Place this file at the repo root verbatim (update the commands if the tooling ch
 Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript UI/extension.
 
 ## Read first
-- `docs/spec/part1.md` through `part4.md`: the build specification. Part 1 section 2 contains the operating rules. Follow them.
-- `STATUS.md`: current phase, task table, blockers. Update it after every task.
-- `ROADMAP.md`: ordered phases and tasks with acceptance criteria.
-- `DECISIONS.md`: append-only decision log. Every non-trivial choice goes here.
+- `docs/internal/spec/part1.md` through `part4.md`: the build specification. Part 1 section 2 contains the operating rules. Follow them.
+- `docs/internal/STATUS.md`: current phase, task table, blockers. Update it after every task.
+- `docs/internal/ROADMAP.md`: ordered phases and tasks with acceptance criteria.
+- `docs/internal/DECISIONS.md`: append-only decision log. Every non-trivial choice goes here.
 
 ## Layout
 - `packages/core/ezmd/`: IR (`ir.py`), registry (`registry.py`), renderers (`render/`), profiles (`profiles.py`), detection (`detect.py`), testing utilities (`testing/`).
@@ -328,7 +328,7 @@ Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript
 - Do not ask the human unless the decision is irreversible and externally costly.
 
 ## Spec pointer
-The authoritative specification is `docs/spec/part1.md` to `docs/spec/part4.md`. When this file and the spec disagree, the spec wins; log the disagreement in DECISIONS.md and fix this file.
+The authoritative specification is `docs/internal/spec/part1.md` to `docs/internal/spec/part4.md`. When this file and the spec disagree, the spec wins; log the disagreement in docs/internal/DECISIONS.md and fix this file.
 ```
 
 ---
@@ -2243,24 +2243,24 @@ Tests in `tests/security/test_netguard.py` cover: `http://169.254.169.254/`, `ht
 
 Phase 0 ends with a working vertical slice: a plain-text file goes from the web UI through the API and queue to a worker, is converted into the IR, rendered through the skeleton renderer, and comes back as Markdown with frontmatter, all inside Docker Compose, with every CI gate active. Everything after Phase 0 adds converters, renderer rules, and deployment targets to this skeleton.
 
-Each task below lists acceptance criteria. Mark tasks `done` in STATUS.md only when every criterion holds.
+Each task below lists acceptance criteria. Mark tasks `done` in docs/internal/STATUS.md only when every criterion holds.
 
 ### P0-T01 Name availability check
 
 1. Check `ezmd` on PyPI (`https://pypi.org/pypi/ezmd/json` returns 404 means free), npm (`https://registry.npmjs.org/ezmd`), GitHub org (`https://github.com/ezmd` 404), and `ezmd.dev` / `ezmd.com` via RDAP (`https://rdap.org/domain/ezmd.dev`).
-2. Record results in DECISIONS.md as D-0001. If PyPI or npm is taken, choose a new name (short, pronounceable, free on both), record it, and rename everywhere before continuing. Domain availability is recorded only; do not purchase.
+2. Record results in docs/internal/DECISIONS.md as D-0001. If PyPI or npm is taken, choose a new name (short, pronounceable, free on both), record it, and rename everywhere before continuing. Domain availability is recorded only; do not purchase.
 3. Acceptance: D-0001 exists with the four results and the final name.
 
 ### P0-T02 Repository scaffold
 
-1. Create the monorepo layout from 1.3. Root files: `pyproject.toml` (uv workspace with members `packages/*`, `apps/api`, `apps/fetch-node`, `packages/mcp`), `uv.lock`, `package.json` (pnpm workspace: `apps/web`, `apps/extension`, `packages/sdk-ts`), `pnpm-workspace.yaml`, `Makefile` (`gates`, `test`, `lint`, `fmt`, `golden`, `up`, `smoke`), `ruff.toml` (line length 120, rules `E,F,W,I,N,UP,B,S,C4,SIM,RUF`, bandit S rules enabled), `mypy.ini` (strict for `packages/core`), `.editorconfig`, `.gitignore`, `.env.example`, `LICENSE` (Apache-2.0), `NOTICE`, `README.md` (one screen: what it is, quickstart with `uvx ezmd convert`, compose one-liner, link to docs), `CLAUDE.md` (section 3), `DECISIONS.md`, `ROADMAP.md` (all phases and tasks from all four parts, with ids and blocked_by), `STATUS.md` (section 2.8 format, all tasks `pending`), `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` (disclosure address placeholder, supported versions), `CODE_OF_CONDUCT.md`.
-2. Copy the four spec parts into `docs/spec/`.
+1. Create the monorepo layout from 1.3. Root files: `pyproject.toml` (uv workspace with members `packages/*`, `apps/api`, `apps/fetch-node`, `packages/mcp`), `uv.lock`, `package.json` (pnpm workspace: `apps/web`, `apps/extension`, `packages/sdk-ts`), `pnpm-workspace.yaml`, `Makefile` (`gates`, `test`, `lint`, `fmt`, `golden`, `up`, `smoke`), `ruff.toml` (line length 120, rules `E,F,W,I,N,UP,B,S,C4,SIM,RUF`, bandit S rules enabled), `mypy.ini` (strict for `packages/core`), `.editorconfig`, `.gitignore`, `.env.example`, `LICENSE` (Apache-2.0), `NOTICE`, `README.md` (one screen: what it is, quickstart with `uvx ezmd convert`, compose one-liner, link to docs), `.claude/CLAUDE.md` (section 3), `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md` (all phases and tasks from all four parts, with ids and blocked_by), `docs/internal/STATUS.md` (section 2.8 format, all tasks `pending`), `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md` (disclosure address placeholder, supported versions), `CODE_OF_CONDUCT.md`.
+2. Copy the four spec parts into `docs/internal/spec/`.
 3. `packages/core/pyproject.toml`: package `ezmd`, Python `>=3.12`, deps: `pydantic>=2`, `pyyaml`, `tiktoken`, `magika`, `python-magic`, `rapidfuzz`, `typer`, `rich`, `httpx`. Entry points: `ezmd = ezmd.cli:app`, `ezmd-score = ezmd.testing.cli:score`, `ezmd-golden = ezmd.testing.cli:golden`.
 4. Acceptance: `uv sync --all-packages --dev` succeeds; `pnpm install` succeeds; `make gates` runs (it may fail on empty packages at this point, but each gate command executes); git initialized with `main`, first commit `chore: scaffold monorepo`.
 
 ### P0-T03 Core IR
 
-1. Implement `packages/core/ezmd/ir.py` exactly as in section 4 (you may fix type errors mypy finds, logging each change in DECISIONS.md if it changes semantics).
+1. Implement `packages/core/ezmd/ir.py` exactly as in section 4 (you may fix type errors mypy finds, logging each change in docs/internal/DECISIONS.md if it changes semantics).
 2. Tests in `packages/core/tests/test_ir.py`: round-trip every block type through `model_dump_json` and `model_validate_json`; `finalize()` assigns ids, rejects duplicate ids and dangling parents; `Table` validator rejects out-of-shape cells and sets `has_merged_cells`; `plain_text()` ordering; `counts()` correctness on a synthetic document with every block type; `sections()` grouping with and without a leading heading.
 3. Acceptance: tests pass; `mypy --strict packages/core` clean; coverage of `ir.py` at least 95%.
 
@@ -2320,7 +2320,7 @@ Each task below lists acceptance criteria. Mark tasks `done` in STATUS.md only w
 
 1. `deploy/Dockerfile.api` (python:3.12-slim pinned by digest, uv install, non-root, builds web UI in a node stage and copies `dist`), `deploy/Dockerfile.worker` (same base plus libmagic, ffmpeg, pandoc, bubblewrap; model pre-bake stage for Magika; non-root, read-only FS compatible), `deploy/compose.yml` (services: `caddy`, `api`, `worker-default`, `worker-media`, `worker-fetch`, `redis` with `requirepass` and no host port, `purge` as a one-shot scheduler sidecar or in-API scheduler; internal network for workers with no default egress except allowlist; volumes for SQLite and blobs; healthchecks; `mem_limit`, `pids_limit`, `cap_drop`, `read_only`, `security_opt`), `deploy/compose.gpu.yml` override (adds the NVIDIA runtime to `worker-media`, used from Part 2), `deploy/Caddyfile` (TLS automatic when `EZMD_DOMAIN` set, otherwise plain HTTP on 8080; `request_body max_size`; security headers; `/v1/fetch-node/*` restricted to the Tailscale interface address), `deploy/seccomp-worker.json`, `deploy/egress-allowlist.sh`, `deploy/smoke.sh` (waits for `/readyz`, posts a text file, polls, asserts Markdown contains the expected heading, also tests `format=json`, exits non-zero on failure; `--remote` mode skips bring-up).
 2. `.env.example` lists every variable with defaults and comments. `EZMD_PUBLIC_MODE=false` by default.
-3. Acceptance: on a clean machine `docker compose -f deploy/compose.yml up --build -d && deploy/smoke.sh` passes; image sizes recorded in STATUS.md metrics (`api` under 400 MB, `worker` under 1.2 GB before any ML extras); `docker compose config` validates; the worker container has no route to the internet (test from inside with a curl to a public IP that must fail, included in smoke.sh).
+3. Acceptance: on a clean machine `docker compose -f deploy/compose.yml up --build -d && deploy/smoke.sh` passes; image sizes recorded in docs/internal/STATUS.md metrics (`api` under 400 MB, `worker` under 1.2 GB before any ML extras); `docker compose config` validates; the worker container has no route to the internet (test from inside with a curl to a public IP that must fail, included in smoke.sh).
 
 ### P0-T12 CI and release workflow
 
@@ -2329,14 +2329,14 @@ Each task below lists acceptance criteria. Mark tasks `done` in STATUS.md only w
 3. `.github/workflows/release.yml`: on tag `v*`: build and push multi-arch images to GHCR (`ghcr.io/<org>/ezmd-api`, `ezmd-worker`, `ezmd-fetch-node` from Part 4), build the Python package with `uv build` and publish to TestPyPI for `v0.0.*` (PyPI for `v0.1.0+` is behind a manual environment approval, which is the human gate), attach the extension zip (from Part 4) and `CHANGELOG.md` section as release notes.
 4. `tools/license_check.py`, `tools/license_check.mjs`, `tools/license_allowlist.toml`, `tools/license_overrides.toml`, `tools/audit_ignore.toml`.
 5. Dependabot config for pip, npm, docker, and GitHub Actions, weekly.
-6. Acceptance: CI green on `main`; a test tag `v0.0.1-rc1` on a branch triggers the release workflow through the image build step successfully (publishing steps may be dry-run with `if: false` until the human gate is cleared, logged in STATUS.md under Blocked on human).
+6. Acceptance: CI green on `main`; a test tag `v0.0.1-rc1` on a branch triggers the release workflow through the image build step successfully (publishing steps may be dry-run with `if: false` until the human gate is cleared, logged in docs/internal/STATUS.md under Blocked on human).
 
 ### P0-T13 Docs skeleton and Phase 0 close
 
 1. `docs/`: `index.md`, `quickstart.md` (CLI, compose, API curl examples), `selfhost.md` (env vars table generated from `settings.py`), `api.md` (rendered from OpenAPI with a short narrative), `cli.md` (generated), `output-format.md` (placeholder pointing at Part 3 until implemented), `security.md` (section 8 adapted for users, threat model table), `licenses.md` (policy, allowlist, extras), `plugins.md` (entry point how-to with the 40-line example), `converters/README.md` (table to be filled per family), `errors.md` (codes table).
 2. `mkdocs.yml` with Material theme (MIT) building `docs/` to `site/`; CI builds docs and fails on warnings.
 3. Council: convene the three-reviewer council on the question "Is the Phase 0 IR, registry, and API contract sufficient for Parts 2 to 4 without breaking changes? Name anything that must change now." Apply accepted changes, log D-entries.
-4. Tag `v0.0.1`. Update STATUS.md phase table. Write a short Phase 0 summary in STATUS.md.
-5. Acceptance: docs build clean; council logged; tag exists; STATUS.md shows Phase 0 `done` 13/13.
+4. Tag `v0.0.1`. Update docs/internal/STATUS.md phase table. Write a short Phase 0 summary in docs/internal/STATUS.md.
+5. Acceptance: docs build clean; council logged; tag exists; docs/internal/STATUS.md shows Phase 0 `done` 13/13.
 
-End of Part 1. Continue with Part 2 (converter families), Part 3 (output format and profiles), and Part 4 (fetch node, extension, MCP, deployment, public instance). ROADMAP.md must contain every task from all four parts before Phase 1 begins.
+End of Part 1. Continue with Part 2 (converter families), Part 3 (output format and profiles), and Part 4 (fetch node, extension, MCP, deployment, public instance). docs/internal/ROADMAP.md must contain every task from all four parts before Phase 1 begins.

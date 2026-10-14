@@ -1,5 +1,5 @@
 """HTTP transport: bearer token on every request, loopback by default, refusal to bind publicly without a
-token (docs/spec/part4.md 4.4.3 and 4.4.6, part1 8.4)."""
+token (docs/internal/spec/part4.md 4.4.3 and 4.4.6, part1 8.4)."""
 
 from __future__ import annotations
 

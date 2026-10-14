@@ -1,4 +1,4 @@
-"""REST API against the compose stack (docs/spec/part4.md 4.14.3): uploads, SSE, profiles, formats,
+"""REST API against the compose stack (docs/internal/spec/part4.md 4.14.3): uploads, SSE, profiles, formats,
 warnings, deletion, auth. Owner-key calls bypass the anonymous limits; see test_it_ratelimit.py."""
 
 from __future__ import annotations

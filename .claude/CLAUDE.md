@@ -2,13 +2,13 @@
 
 Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript UI/extension.
 
-The spec was written under the codename "anymd"; the project was first named intomd (DECISIONS.md D-0001) and renamed to ezmd before its first release (D-0037). The copies in `docs/spec/` use ezmd; DECISIONS.md entries before D-0037 use the old name intomd, read it as ezmd.
+The spec was written under the codename "anymd"; the project was first named intomd (docs/internal/DECISIONS.md D-0001) and renamed to ezmd before its first release (D-0037). The copies in `docs/internal/spec/` use ezmd; docs/internal/DECISIONS.md entries before D-0037 use the old name intomd, read it as ezmd.
 
 ## Read first
-- `docs/spec/part1.md` through `part4.md`: the build specification (`docs/spec/README.md` has the reconciliation notes). Part 1 section 2 contains the operating rules. Follow them.
-- `STATUS.md`: current phase, task table, blockers. Update it after every task.
-- `ROADMAP.md`: ordered phases and tasks with acceptance criteria.
-- `DECISIONS.md`: append-only decision log. Every non-trivial choice goes here. D-0002 records where the spec parts conflict and which one wins.
+- `docs/internal/spec/part1.md` through `part4.md`: the build specification (`docs/internal/spec/README.md` has the reconciliation notes). Part 1 section 2 contains the operating rules. Follow them.
+- `docs/internal/STATUS.md`: current phase, task table, blockers. Update it after every task.
+- `docs/internal/ROADMAP.md`: ordered phases and tasks with acceptance criteria.
+- `docs/internal/DECISIONS.md`: append-only decision log. Every non-trivial choice goes here. D-0002 records where the spec parts conflict and which one wins.
 
 ## Layout
 - `packages/core/src/ezmd/`: IR (`ir.py`), inputs (`inputs.py`), detection (`detect.py`), registry (`registry.py`), chains (`chains.py`), builtin registration (`builtin.py`), pipeline (`pipeline.py`), renderers (`render/`), profiles (`profiles.py`), warning codes (`warnings/codes.py`), security utilities (`core/`: sandbox, netguard, licensing, logging, textclean), CLI (`cli/`), testing utilities (`testing/`).
@@ -57,4 +57,4 @@ The spec was written under the codename "anymd"; the project was first named int
 - Do not ask the human unless the decision is irreversible and externally costly.
 
 ## Spec pointer
-The authoritative specification is `docs/spec/part1.md` to `docs/spec/part4.md`. When this file and the spec disagree, the spec wins; log the disagreement in DECISIONS.md and fix this file.
+The authoritative specification is `docs/internal/spec/part1.md` to `docs/internal/spec/part4.md`. When this file and the spec disagree, the spec wins; log the disagreement in docs/internal/DECISIONS.md and fix this file.

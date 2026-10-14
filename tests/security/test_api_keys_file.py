@@ -1,4 +1,4 @@
-"""keys.json bootstrap keys (docs/spec/part4.md 4.11.1, P1-T10): hashed storage, per-key limits, client
+"""keys.json bootstrap keys (docs/internal/spec/part4.md 4.11.1, P1-T10): hashed storage, per-key limits, client
 restrictions, expiry, reload, and fail-fast on a malformed file."""
 
 from __future__ import annotations

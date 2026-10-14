@@ -1,4 +1,4 @@
-"""data.sqlite: SQLite databases via stdlib sqlite3, read-only (docs/spec/part2.md section 10, SqliteConverter).
+"""data.sqlite: SQLite databases via stdlib sqlite3, read-only (docs/internal/spec/part2.md 10, SqliteConverter).
 
 The input is copied to a private temp file and opened as `file:...?mode=ro&immutable=1` with
 `PRAGMA query_only`, `trusted_schema=OFF` and the defensive flag, so neither the original nor the copy

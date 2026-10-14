@@ -12,7 +12,7 @@ ezmd says so in the warnings instead of dropping it quietly.
     Release candidates of `0.1.0` are on PyPI (`pip install ezmd` installs the newest one until the final is
     out; see [Install](install.md)), and signed images are on GHCR. The npm SDK and the public instance come
     with `0.1.0`. Audio, video, OCR, and chat exports arrive in later phases; see the
-    [roadmap](roadmap.md) and [status](status.md).
+    [roadmap](roadmap.md).
 
 ## What works today
 

@@ -1,5 +1,5 @@
 """ezmd_api.fetchpolicy: platform policy lookups shared by job creation, the worker, and the
-fetch-node claim (docs/spec/part1.md 8.3, DECISIONS.md D-0017 items 4 and 6).
+fetch-node claim (docs/internal/spec/part1.md 8.3, docs/internal/DECISIONS.md D-0017 items 4 and 6).
 
 Residential routing is decided here and only here: a host whose policy is `residential_only`, or a
 keyed caller whose key has the residential permission and who asked for it. Nothing a converter

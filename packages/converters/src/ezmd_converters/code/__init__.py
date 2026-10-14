@@ -1,4 +1,4 @@
-"""Code family (docs/spec/part2.md section 8): single source files and repository packing.
+"""Code family (docs/internal/spec/part2.md section 8): single source files and repository packing.
 
 Phase 1 converters in this package: `code.source_file` (one file, one fenced block, optional signatures-only
 and outline) and `code.repo_pack` (zip or tar.gz of a repository, or a GitHub repository URL fetched as a

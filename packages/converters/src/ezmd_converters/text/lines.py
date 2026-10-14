@@ -1,4 +1,4 @@
-"""Line joining for plain text, shared by `text.plain` and the email bodies (docs/spec/part2.md section 2 step
+"""Line joining for plain text, shared by `text.plain` and the email bodies (docs/internal/spec/part2.md section 2 step
 22(7) and failure mode 10).
 
 Within one blank-line-separated run, a line continues the previous line (a hard wrap) when the previous line is

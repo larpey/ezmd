@@ -1,6 +1,6 @@
 """documents.docling_pdf: Docling (MIT) layout engine, the default PDF engine when the `docs` extra is installed.
 
-docs/spec/part2.md 1b/1c: `DocumentConverter` with `PdfPipelineOptions` on the default docling-parse backend,
+docs/internal/spec/part2.md 1b/1c: `DocumentConverter` with `PdfPipelineOptions` on the default docling-parse backend,
 run in page batches (`pdf.batch_pages`, default 25) with a deadline check between batches; Docling items are
 mapped to IR blocks with page + bbox provenance; running headers/footers are dropped and counted. A pypdfium2
 pass over the sanitized copy supplies the scan classifier (`pages_without_text`) and heading levels from the

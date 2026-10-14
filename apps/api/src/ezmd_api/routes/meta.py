@@ -1,4 +1,4 @@
-"""Meta routes: /v1/capabilities, /v1/warnings, /healthz, /readyz (docs/spec/part1.md section 7.3)."""
+"""Meta routes: /v1/capabilities, /v1/warnings, /healthz, /readyz (docs/internal/spec/part1.md section 7.3)."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-# Release images (docs/spec/part4.md 4.15.4; P1-T16). Called by release.yml for a version tag.
+# Release images (docs/internal/spec/part4.md 4.15.4; P1-T16). Called by release.yml for a version tag.
 # Per target: build linux/amd64+arm64 and push BY DIGEST ONLY (no tag yet), Trivy-scan that digest
 # (HIGH/CRITICAL with a fix fail the release), write an SPDX SBOM with syft, sign the digest with
 # cosign keyless (GitHub OIDC -> Fulcio, logged in Rekor) and attach the SBOM as a signed

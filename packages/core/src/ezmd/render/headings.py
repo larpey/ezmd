@@ -1,4 +1,4 @@
-"""ezmd.render.headings: title selection and the heading plan (docs/spec/part3.md section 14, "Headings").
+"""ezmd.render.headings: title selection and the heading plan (docs/internal/spec/part3.md section 14, "Headings").
 
 - Exactly one H1: the title. Source headings shift down one level and are clamped to parent + 1.
 - Derived numbering (`3.2`) replaces any source numbering; anchors are `sec-3-2` (the H1 is `doc`).

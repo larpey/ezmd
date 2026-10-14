@@ -1,4 +1,4 @@
-"""data.toml: TOML via stdlib `tomllib` (docs/spec/part2.md section 10, TomlIniConverter, TOML part).
+"""data.toml: TOML via stdlib `tomllib` (docs/internal/spec/part2.md section 10, TomlIniConverter, TOML part).
 
 Floats keep their source spelling (`parse_float`), datetimes render in ISO 8601, top-level keys form a
 Key/Value table, `[tables]` become headings by dotted path, and arrays of tables become records tables.

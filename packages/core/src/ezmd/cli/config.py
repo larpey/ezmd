@@ -1,4 +1,4 @@
-"""CLI configuration: the config file (docs/spec/part4.md 4.2.1), environment overrides, and precedence.
+"""CLI configuration: the config file (docs/internal/spec/part4.md 4.2.1), environment overrides, and precedence.
 
 Precedence, highest first: command-line flags, environment variables (`EZMD_PROFILE`, `EZMD_FORMAT`,
 `EZMD_REMOTE`, `EZMD_API_KEY`, `EZMD_SIDECAR`), the config file, built-in defaults. The file lives at

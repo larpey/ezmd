@@ -1,4 +1,4 @@
-"""ezmd.core.netguard: SSRF-safe URL fetching (docs/spec/part1.md section 8.3).
+"""ezmd.core.netguard: SSRF-safe URL fetching (docs/internal/spec/part1.md section 8.3).
 
 Every outbound fetch of user-supplied URLs goes through `fetch()` (or `guarded_client()` for
 adapters that need a client). Guarantees:
@@ -10,8 +10,8 @@ adapters that need a client). Guarantees:
    are normalized first. Hostnames `localhost`, `*.localhost`, `*.internal`, `*.local`, `*.arpa`,
    and cloud metadata names are rejected. Ports of internal services (Redis, databases, Docker,
    Kubernetes, etcd, Consul, message brokers, mail, SMB, ...) are rejected on every host, so a public
-   name cannot be used to reach them either (docs/spec/part4.md 4.14.5 item 1: "ports 6379 and 5432 on
-   public hosts"). Section 8.3 names no port list; this is a denylist (docs/decisions/P1-T15.md,
+   name cannot be used to reach them either (docs/internal/spec/part4.md 4.14.5 item 1: "ports 6379 and 5432 on
+   public hosts"). Section 8.3 names no port list; this is a denylist (docs/internal/decisions/P1-T15.md,
    D-P1-T15-5), so web servers on arbitrary ports keep working.
 3. DNS is resolved once (3 s timeout); if any A/AAAA answer is blocked the fetch is refused. The
    connection is then pinned to the resolved address while SNI and Host keep the original name, so
@@ -147,7 +147,7 @@ _EXTRA_BLOCKED_NETS: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...] =
 
 
 class NetguardError(Exception):
-    """Base class. `code` maps to the API error schema (docs/spec/part1.md section 7.5)."""
+    """Base class. `code` maps to the API error schema (docs/internal/spec/part1.md section 7.5)."""
 
     code = "url_blocked"
 

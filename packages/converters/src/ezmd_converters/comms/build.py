@@ -1,4 +1,4 @@
-"""ParsedMessage to IR (docs/spec/part2.md 9c steps 1 to 4 and 6), shared by EML, MBOX, and MSG.
+"""ParsedMessage to IR (docs/internal/spec/part2.md 9c steps 1 to 4 and 6), shared by EML, MBOX, and MSG.
 
 One message renders as: a heading (the subject, or `From · Date` inside a mailbox), the headers Table,
 the body blocks (headings shifted below the message heading), an `Attachments` heading and Table when the

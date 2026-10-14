@@ -1,4 +1,4 @@
-"""`--remote URL`: run a conversion on an ezmd instance over the REST API (docs/spec/part3.md).
+"""`--remote URL`: run a conversion on an ezmd instance over the REST API (docs/internal/spec/part3.md).
 
 Flow: `POST /v1/convert?wait=30&format=json` (multipart upload for files and stdin, a JSON body for
 URLs). A 200 carrying `X-Ezmd-Job` is the finished result; a 202 envelope means the job is still

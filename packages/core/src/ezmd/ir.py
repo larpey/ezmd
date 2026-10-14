@@ -3,7 +3,7 @@
 Blocks are flat and ordered. Hierarchy is expressed via `parent_id` (sections, figures, slides)
 and via explicit nesting inside ListBlock. Every block carries Provenance.
 
-Implemented from docs/spec/part1.md section 4. Deviations are logged in DECISIONS.md (D-0004).
+Implemented from docs/internal/spec/part1.md section 4. Deviations are logged in docs/internal/DECISIONS.md (D-0004).
 """
 
 from __future__ import annotations

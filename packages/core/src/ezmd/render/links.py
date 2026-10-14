@@ -1,4 +1,4 @@
-"""ezmd.render.links: link normalization (docs/spec/part3.md section 14, "Links").
+"""ezmd.render.links: link normalization (docs/internal/spec/part3.md section 14, "Links").
 
 URLs are resolved against the source URL, tracking parameters are stripped, `mailto:` links become text,
 and anchor-only links are rewritten to derived heading anchors when the target can be identified.

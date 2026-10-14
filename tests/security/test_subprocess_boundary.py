@@ -1,4 +1,4 @@
-"""docs/spec/part1.md 8.4: `subprocess` is imported only in ezmd.core.sandbox."""
+"""docs/internal/spec/part1.md 8.4: `subprocess` is imported only in ezmd.core.sandbox."""
 
 from __future__ import annotations
 

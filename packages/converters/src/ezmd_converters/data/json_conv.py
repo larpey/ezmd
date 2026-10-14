@@ -1,4 +1,4 @@
-"""data.json: JSON and JSON Lines (docs/spec/part2.md section 10, JsonConverter).
+"""data.json: JSON and JSON Lines (docs/internal/spec/part2.md section 10, JsonConverter).
 
 stdlib `json` with `parse_int`/`parse_float`/`parse_constant` hooks that keep every number as its source
 spelling, so `1.10`, 19-digit ids and `1e400` survive. A document that fails to parse as JSON is retried as

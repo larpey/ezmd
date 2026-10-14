@@ -39,7 +39,7 @@ dev = [
     "mkdocs-swagger-ui-tag>=0.7",
     "fakeredis>=2.26",
     # Builds decks in tests (test_office_pptx_xlsx.py) and fixtures/office/_generate.py; MIT. Dev only: the
-    # pptx converter reads the XML with lxml (docs/decisions/P1-T01-office.md).
+    # pptx converter reads the XML with lxml (docs/internal/decisions/P1-T01-office.md).
     "python-pptx>=1.0.2",
 ]
 

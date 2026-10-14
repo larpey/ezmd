@@ -99,7 +99,7 @@ RUN apt-get update \
 # Pre-bake: magika ships its model in the wheel; prove it loads offline so first use never downloads.
 RUN /app/.venv/bin/python -c "import magika; magika.Magika()"
 
-# Worker venv: the shared venv plus converter extras (docs/spec/part4.md 4.9.1). Default `data`
+# Worker venv: the shared venv plus converter extras (docs/internal/spec/part4.md 4.9.1). Default `data`
 # (pyarrow, Apache-2.0) so Parquet converts in the stock image. `docs` (Docling + torch) is opt-in:
 # the universal lock resolves the CUDA torch wheels on Linux (several GB), see docs/selfhost.md.
 # Never put `nonfree` or `7z` here: the published image must stay on the default license allowlist.

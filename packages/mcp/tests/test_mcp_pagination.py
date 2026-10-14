@@ -1,4 +1,4 @@
-"""Pagination acceptance (docs/spec/part4.md 4.4.6): page 1 fits max_tokens, and walking every cursor
+"""Pagination acceptance (docs/internal/spec/part4.md 4.4.6): page 1 fits max_tokens, and walking every cursor
 rebuilds the full body byte for byte."""
 
 from __future__ import annotations

@@ -79,7 +79,7 @@ def canonical_json(value: Any) -> str:
 
 
 def sanitize_filename(raw: str | None, *, fallback: str = "upload") -> str:
-    """Multipart filename rule (docs/spec/part1.md section 8.2): basename only, control characters
+    """Multipart filename rule (docs/internal/spec/part1.md section 8.2): basename only, control characters
     and path separators stripped, capped at 255 bytes. The result is for display and extension hints;
     it is never used as a path on disk."""
     if not raw:

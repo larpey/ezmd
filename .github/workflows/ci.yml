@@ -1,4 +1,4 @@
-# CI gates (docs/spec/part4.md 4.15.1, adapted to Phase 0 of this repo; part1.md P0-T12).
+# CI gates (docs/internal/spec/part4.md 4.15.1, adapted to Phase 0 of this repo; part1.md P0-T12).
 # Actions are pinned by commit SHA; Renovate (helpers:pinGitHubActionDigests) keeps them current.
 name: ci
 on:
@@ -151,7 +151,7 @@ jobs:
       matrix:
         # Uncompressed size budgets in MB (part1.md P0-T11 acceptance).
         include:
-          # api: D-0012 (magika: onnxruntime + numpy) and docs/decisions/P1-T14-T16.md (the API loads the
+          # api: D-0012 (magika: onnxruntime + numpy) and docs/internal/decisions/P1-T14-T16.md (the API loads the
           # same converter registry as the workers, so it carries the default converter install).
           - { target: api, budget_mb: 600 }
           - { target: worker, budget_mb: 1200 }

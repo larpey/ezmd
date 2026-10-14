@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ezmd first-run bootstrap (docs/spec/part4.md 4.9.8, core profile). Safe to run again: existing
+# ezmd first-run bootstrap (docs/internal/spec/part4.md 4.9.8, core profile). Safe to run again: existing
 # secrets, keys and settings are kept; only missing ones are created.
 #
 #   deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com

@@ -1,6 +1,6 @@
 # P1-T03 code converter: decisions
 
-## Approach note (docs/spec/part1.md 2.5)
+## Approach note (docs/internal/spec/part1.md 2.5)
 
 - Scope delivered: `code.source_file` and `code.repo_pack` (zip and tar.gz repository archives, GitHub
   repository URLs through `FetchRequired` to the codeload tarball), with native secret scanning. Remaining

@@ -1,4 +1,4 @@
-"""Communication family, email part (docs/spec/part2.md section 9): EML, MBOX, and Outlook MSG.
+"""Communication family, email part (docs/internal/spec/part2.md section 9): EML, MBOX, and Outlook MSG.
 
 - `comms.eml`: one RFC 5322 message (stdlib `email`, `policy.default`).
 - `comms.mbox`: a Unix mailbox (stdlib `mailbox`), threaded, capped at `comms.max_messages`.

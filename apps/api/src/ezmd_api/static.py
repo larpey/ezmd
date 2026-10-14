@@ -4,7 +4,7 @@ Hashed assets under `assets/` are cached for a year (immutable); everything else
 `index.html` fallback, is `no-cache`, and misses are `no-store`. These are the only cache headers on
 static paths (Caddy sets none). API and reserved operator paths (`/v1`, `/admin`, `/metrics`, ...)
 never fall through to the SPA: unknown ones answer 404, so an unmounted admin or metrics route is not
-mistaken for a live page (docs/spec/part4.md 4.14.5 item 7). A wrong method on a real route answers
+mistaken for a live page (docs/internal/spec/part4.md 4.14.5 item 7). A wrong method on a real route answers
 405 with `Allow`.
 """
 

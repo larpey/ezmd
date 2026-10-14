@@ -1,4 +1,4 @@
-"""ezmd.render.blocks: Markdown for individual IR blocks (docs/spec/part3.md section 14).
+"""ezmd.render.blocks: Markdown for individual IR blocks (docs/internal/spec/part3.md section 14).
 
 Each function returns a `Unit` (or None when the block is dropped by the profile). Tables live in
 `tables.py`, transcripts in `transcript.py`; grouping of runs and figures happens in `units.py`.

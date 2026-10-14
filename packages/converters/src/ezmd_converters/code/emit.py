@@ -1,4 +1,4 @@
-"""IR emission for repository packs (docs/spec/part2.md 8c steps 5 and 10)."""
+"""IR emission for repository packs (docs/internal/spec/part2.md 8c steps 5 and 10)."""
 
 from __future__ import annotations
 

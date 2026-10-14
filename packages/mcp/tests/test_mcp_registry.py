@@ -1,4 +1,4 @@
-"""Registry listing (docs/spec/part4.md 4.4.5): server.json validates against the official schema (vendored
+"""Registry listing (docs/internal/spec/part4.md 4.4.5): server.json validates against the official schema (vendored
 from modelcontextprotocol/registry, 2025-12-11) and agrees with the package metadata and README marker.
 The release workflow publishes it with `mcp-publisher publish`, which the registry validates on upload; CI
 does not run `mcp-publisher validate` separately, so this schema test is the pre-release check."""

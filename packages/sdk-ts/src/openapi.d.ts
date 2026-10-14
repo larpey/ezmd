@@ -525,7 +525,7 @@ export interface components {
         };
         /**
          * ErrorResponse
-         * @description The error schema of docs/spec/part1.md section 7.5.
+         * @description The error schema of docs/internal/spec/part1.md section 7.5.
          * @example {
          *       "error": {
          *         "code": "input_too_large",

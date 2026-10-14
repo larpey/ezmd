@@ -1,4 +1,4 @@
-"""Job routes: state, SSE events, results, attachments, supply, delete (docs/spec/part1.md 7.3)."""
+"""Job routes: state, SSE events, results, attachments, supply, delete (docs/internal/spec/part1.md 7.3)."""
 
 from __future__ import annotations
 

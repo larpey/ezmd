@@ -5,7 +5,7 @@ Paragraph or List by bullet level, tables with merged cells, charts as data tabl
 pictures with alt text, speaker notes as a Paragraph with attrs slide_part=notes (D-0017), and slide
 comments. Shapes are read in top-then-left order, with placeholder positions inherited from the layout.
 python-pptx is not used at runtime: it pulls in Pillow and XlsxWriter only to read text and XML that lxml
-reads directly (docs/decisions/P1-T01-office.md).
+reads directly (docs/internal/decisions/P1-T01-office.md).
 """
 
 from __future__ import annotations

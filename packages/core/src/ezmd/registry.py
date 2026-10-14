@@ -1,7 +1,7 @@
 """ezmd.registry: converter protocol, options, registry with priority resolution, fallback chains,
 and entry-point plugin discovery.
 
-Implemented from docs/spec/part1.md section 5.2, plus wildcard chain matching (section 5.3).
+Implemented from docs/internal/spec/part1.md section 5.2, plus wildcard chain matching (section 5.3).
 """
 
 from __future__ import annotations
@@ -488,7 +488,7 @@ def _named_unavailable_error(blocked: Unavailable) -> ConversionError:
 
 
 class Unavailable:
-    """A built-in converter whose optional engine is not installed (docs/spec/part4.md 4.3.3).
+    """A built-in converter whose optional engine is not installed (docs/internal/spec/part4.md 4.3.3).
 
     Families return these from `converters()` instead of raising, so `ezmd capabilities` and
     `GET /v1/capabilities` list the converter with the reason and the extra that would enable it,

@@ -1,4 +1,4 @@
-"""HTML email bodies through the web family's HTML-to-IR module in file mode (docs/spec/part2.md 9c step 2).
+"""HTML email bodies through the web family's HTML-to-IR module in file mode (docs/internal/spec/part2.md 9c step 2).
 
 The body runs through `ezmd_converters.web.pipeline.build_document` with the `full_body` engine (no
 article extraction: an email has no boilerplate to remove, and readability heuristics drop quotes and

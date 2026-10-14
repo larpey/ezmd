@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ezmd restore (docs/spec/part4.md 4.9.9).
+# ezmd restore (docs/internal/spec/part4.md 4.9.9).
 #
 #   deploy/restore.sh [--with-env] [--verify-only] [--no-smoke] <backup.tar.gz>
 #

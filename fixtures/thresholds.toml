@@ -1,4 +1,4 @@
-# Golden thresholds (docs/spec/part1.md 2.4). The default applies to every converter id without an entry.
+# Golden thresholds (docs/internal/spec/part1.md 2.4). The default applies to every converter id without an entry.
 # Per-converter thresholds live next to the fixtures: fixtures/<family>/thresholds.toml with a [converters]
 # table (D-0020). Upward overrides are allowed for trivial converters (P0-T06); meta.toml may only lower.
 default = 0.85

@@ -1,4 +1,4 @@
-"""ezmd MCP server (docs/spec/part4.md section 4.4).
+"""ezmd MCP server (docs/internal/spec/part4.md section 4.4).
 
 A thin client over the ezmd library (local mode) or an ezmd REST instance (remote mode). It contains
 no conversion logic: it validates tool arguments, enforces the allowed file roots, pages the renderer's

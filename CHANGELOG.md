@@ -4,61 +4,6 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
-### Security
-- LibreOffice's profile now disables active content (OLE, DDE) and Python, blocks untrusted links, never
-  updates links, fields or charts, and never recalculates on load, so linked files and URLs and
-  `WEBSERVICE()` are not fetched. `office.require_sandbox` (default on with `EZMD_REQUIRE_SANDBOX=1` or
-  `EZMD_SERVER=1`) refuses to run LibreOffice without bubblewrap with the error code `sandbox_unavailable`
-  (not retried); local runs without it log a warning (D-0056).
-- Archive and package limits now count every decompressed byte (skipped tar members, 7z entries in a solid
-  block that are not kept, documents inside archives), refuse oversized zip directories before parsing
-  them, DOCTYPE-check every XML-looking package part, and keep Docling offline even when `HF_HUB_OFFLINE=0`
-  is inherited (D-0057).
-- The injection scanner exempts only the marker comments the renderer emitted, and scans the sheet names,
-  image refs and page labels inside them; a document's own `<!-- ezmd: ... -->` is scanned. Marker
-  comments cannot be closed early by `-->` in a name. Only http(s), relative and fragment links are
-  emitted (`java\tscript:` is no longer a link). DOCX hidden text is scanned and never written to the
-  frontmatter (D-0059).
-- URL fetches refuse hostnames with a label over 63 octets, over 253 in total, or an empty label (before,
-  `getaddrinfo` raised UnicodeError and the job failed with a 500); a trailing dot is normalized.
-- Executables detected by Magika (`application/x-executable-elf`, Mach-O, COFF, DEX, Windows drivers,
-  Python bytecode and the rest of Magika's executable group) are refused like libmagic's; Magika's archive
-  labels need the archive's signature when libmagic disagrees (1 MiB of `a` is no longer an ISO image);
-  Magika's ONNX session uses `EZMD_MAGIKA_THREADS` threads (default 1) (D-0058).
-
-### Documentation
-- Install docs no longer pin `0.1.0rc2`: pip and uv take the newest release candidate while no final exists.
-- Linux: `ezmd[docs]` pulls about 6 GB of CUDA torch and NVIDIA wheels from PyPI, not 1.2 GB; the install
-  page shows how to get CPU torch first with pip or `uv --torch-backend cpu` (D-0051).
-
-### Fixed
-- PDF text layers whose font size is carried by the text matrix (`1 Tf` with a scaled `Tm` or CTM) no
-  longer split every word at ascenders and descenders into one-glyph lines and spurious N-column tables;
-  rotated tables on upright pages keep whole lines too (D-0050).
-- `pip install --pre ezmd` no longer resolves defusedxml 0.8.0rc2 or openpyxl 3.2.0b1: both are capped
-  below the pre-released series, like httpx and lxml (D-0039).
-- With the `docs` extra but no Docling models, PDFs no longer spend about 20 s importing torch before
-  falling back: Docling is skipped up front and the result carries an `engine_fallback` warning naming the
-  missing models and the download command. `ezmd doctor` checks the models (D-0052).
-- `ezmd doctor` no longer shows ffmpeg as MISSING while the `media` extra is unreleased, and `--quiet`
-  prints only problems.
-- Web pages: Wikipedia articles are titled by their name, not the JSON-LD short description; og:title loses
-  a trailing site name; MediaWiki references become footnotes (`[^n]`) instead of digits glued to the text;
-  unresolved references keep their brackets; empty table rows (image-only infobox rows) are dropped (D-0053).
-- Web tables whose cells Trafilatura cannot read (lists in divs, inline-block divs, as in Wikipedia
-  infoboxes) are converted from the page's own table instead of coming out with empty cells (D-0070).
-- A missing optional extra exits 2 (`extra_required`) for every input type; Parquet exited 1 and 7z 3.
-  Unsupported types carry the stable code `unsupported_media_type` (exit 6) instead of being recognized by
-  their message (D-0054).
-- `ezmd batch` stops starting new files at the first failure (before, up to workers + 1 more converted)
-  and shows how many were cancelled; `-q` also silences Docling's "Loading weights" progress bars;
-  `ftp://` and other non-http URLs fail with an unsupported-scheme message (exit 2) instead of "no such
-  file"; `-f zip` explains that zip is the API's bundle and what `--out` writes instead (D-0055).
-- `@ezmd/sdk`: `@ezmd/sdk/node` has types under TypeScript's `moduleResolution: node10` (`typesVersions`);
-  the package version is unchanged.
-
-## [Unreleased]
-
 Fixes from the pre-0.1.0 test pass on rc4: install tests, a self-hosted stack test, a red team and a competitive
 benchmark (D-0044 to D-0071).
 
@@ -77,7 +22,8 @@ benchmark (D-0044 to D-0071).
 - The prompt-injection scan covers DOCX hidden text and spoofed `<!-- ezmd: -->` markers; marker comments cannot
   be closed early; links are emitted only for http(s), relative and fragment targets (D-0059).
 - Archives charge every decompressed byte and bound zip directories before parsing (D-0057); executables in
-  Magika's executable group are refused (D-0058); overlong hostnames are refused as `url_blocked`.
+  Magika's executable group are refused, Magika's archive labels need the archive's signature, and Magika uses
+  `EZMD_MAGIKA_THREADS` threads (default 1) (D-0058); overlong hostnames are refused as `url_blocked`.
 - The API refuses to start with a Turnstile setup that cannot work (no JWT secret, no Turnstile secret).
 
 ### Fixed
@@ -97,7 +43,9 @@ benchmark (D-0044 to D-0071).
 - Docling is skipped up front when its models are missing, and `ezmd doctor` checks them (D-0052).
 - Wikipedia titles, footnote references and infobox cells (D-0053, D-0070).
 - Missing extras exit 2 with `extra_required`; unsupported types carry `unsupported_media_type` (D-0054); `batch`
-  stops at the first failure; `-q` silences model loading bars; non-http URLs are refused as a scheme (D-0055).
+  stops at the first failure; `-q` silences model loading bars; non-http URLs are refused as a scheme; `-f zip` explains what to use instead (D-0055).
+- `ezmd doctor` no longer reports ffmpeg as missing while the `media` extra is unreleased, and `--quiet` prints
+  only problems.
 - Trailing-dot hosts (`https://example.com./`) are fetched.
 - Wrong HTTP methods get 405; `Retry-After` is exact; rejected creations refund their rate-limit hits (D-0049).
 - The API reports its real version; the plain-HTTP port binds to loopback by default; `upgrade.sh` prunes only
@@ -108,9 +56,13 @@ benchmark (D-0044 to D-0071).
 - `defusedxml` is capped below 0.8 and `openpyxl` below 3.2 so `pip install --pre` does not pull pre-releases.
 
 ### Documentation
-- Linux `ezmd[docs]` documents the CPU-only torch install (3.2 GB of CUDA wheels otherwise); install docs no
-  longer pin a release candidate; the self-hosting guide covers the Turnstile relay, 413/415 and dedup rules,
-  readiness, key restrictions, LibreOffice sandboxing and Git Bash.
+- Linux `ezmd[docs]` documents the CPU-only torch install (about 6 GB of CUDA torch and NVIDIA wheels
+  otherwise, D-0051); install docs no longer pin a release candidate; the self-hosting guide covers the
+  Turnstile relay, 413/415 and dedup rules, readiness, key restrictions, LibreOffice sandboxing and Git Bash.
+- The build specification, decision log, status and roadmap trackers and agent instructions moved to
+  `docs/internal/` and `.claude/CLAUDE.md` and are no longer published on the docs site, which gets a short
+  public roadmap instead. `ezmd` and `ezmd-converters` have real PyPI descriptions. Security reports go
+  through GitHub private vulnerability reporting; the placeholder email addresses are gone.
 
 ## [0.1.0-rc4] - 2026-10-13
 

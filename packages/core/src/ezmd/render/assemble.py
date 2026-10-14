@@ -1,6 +1,6 @@
 """ezmd.render.assemble: place footnotes and page markers, build the head blocks, apply token budgets.
 
-Body grammar (docs/spec/part3.md section 14): summary blockquote, orientation line, contents, the H1 title,
+Body grammar (docs/internal/spec/part3.md section 14): summary blockquote, orientation line, contents, the H1 title,
 the body, and (compact) the numbered `## Links` list.
 """
 

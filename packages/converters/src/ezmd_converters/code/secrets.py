@@ -1,4 +1,4 @@
-"""Secret scanning and redaction (docs/spec/part2.md 8b step 4, 8c step 8).
+"""Secret scanning and redaction (docs/internal/spec/part2.md 8b step 4, 8c step 8).
 
 Secretlint/detect-secrets style rules implemented natively with `re` so the scan has no extra dependency:
 provider token formats (AWS, GitHub, Slack, Stripe, JWT), PEM private key blocks, and generic assignments to

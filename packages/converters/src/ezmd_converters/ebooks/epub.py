@@ -1,4 +1,4 @@
-"""documents.epub: EPUB 2 and 3 to the IR (docs/spec/part2.md section 4c steps 1-8).
+"""documents.epub: EPUB 2 and 3 to the IR (docs/internal/spec/part2.md section 4c steps 1-8).
 
 Spine order, TOC headings (nav or NCX) without duplicating a chapter's own title, EPUB3 footnotes
 (`epub:type` noteref/footnote), images as Image blocks with alt text, the cover, page-list page breaks,

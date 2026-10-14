@@ -66,7 +66,7 @@ def _golden(
         typer.echo(f"wrote {md_path} and {sc_path}")
     if write:
         typer.secho(
-            "Reminder: goldens need a Skeptic review (docs/spec/part1.md 2.4) before they are committed.",
+            "Reminder: goldens need a Skeptic review (docs/internal/spec/part1.md 2.4) before they are committed.",
             fg=typer.colors.YELLOW,
             err=True,
         )

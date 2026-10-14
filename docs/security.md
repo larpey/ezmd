@@ -4,7 +4,7 @@ ezmd treats every input as hostile. The public instance and self-hosted instance
 defaults; self-hosters may loosen limits through environment variables, never the sandbox. To report
 a vulnerability, follow `SECURITY.md` in the repository root.
 
-This page adapts [Part 1, section 8](spec/part1.md#8-security-baseline) of the specification for
+This page adapts [Part 1, section 8](https://github.com/larpey/ezmd/blob/main/docs/internal/spec/part1.md#8-security-baseline) of the specification for
 operators and users. Items marked Planned are specified but not built yet.
 
 ## Sandboxed workers

@@ -1,4 +1,4 @@
-"""`ezmd convert` (docs/spec/part4.md 4.2.2 item 1 and 4.2.3)."""
+"""`ezmd convert` (docs/internal/spec/part4.md 4.2.2 item 1 and 4.2.3)."""
 
 from __future__ import annotations
 

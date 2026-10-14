@@ -1,6 +1,6 @@
 """ezmd.render.base: renderer interface and the output data classes every renderer shares.
 
-docs/spec/part1.md section 6 defines the contract; docs/spec/part3.md section D defines the format.
+docs/internal/spec/part1.md section 6 defines the contract; docs/internal/spec/part3.md section D defines the format.
 """
 
 from __future__ import annotations

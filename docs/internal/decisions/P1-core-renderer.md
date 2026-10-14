@@ -33,7 +33,7 @@ No new dependencies. No new warning codes. IR schema stays `"1.1"`; every IR cha
    `truncated` is also set when any child Document is truncated.
 6. **Frontmatter `source_type: archive`.** The Part 3 enum is amended with `archive` for
    `SourceType.ARCHIVE`, as it was with `text` and `markdown` (D-0017 item 5). Should be appended to
-   `DECISIONS.md` by the orchestrator (this branch does not own it).
+   `docs/internal/DECISIONS.md` by the orchestrator (this branch does not own it).
 7. **Preamble footnotes** are flushed at the first heading of any level (they used to fall through to the
    document end because the preamble sat at level 1).
 8. **Definition lists** (`ListBlock.attrs["kind"] = "definition"`): `**term**` plus definitions as lazy

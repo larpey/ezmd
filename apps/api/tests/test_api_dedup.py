@@ -1,4 +1,4 @@
-"""Idempotency and deduplication (docs/spec/part1.md section 7.1)."""
+"""Idempotency and deduplication (docs/internal/spec/part1.md section 7.1)."""
 
 from __future__ import annotations
 

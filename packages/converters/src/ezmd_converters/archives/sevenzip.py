@@ -1,7 +1,7 @@
 """archives.sevenzip: 7z listing and in-memory extraction through py7zr (LGPL-2.1-or-later, optional `7z` extra).
 
 py7zr is imported lazily and used unmodified as a separately installed package (dynamic use, allowed by
-tools/license_allowlist.toml); docs/spec/part2.md section 12 keeps it out of the default install. Every byte
+tools/license_allowlist.toml); docs/internal/spec/part2.md section 12 keeps it out of the default install. Every byte
 py7zr produces goes through a writer that charges the shared Budget, so the total, per-entry, and
 whole-archive ratio caps hold even though 7z solid blocks do not declare per-entry compressed sizes.
 """

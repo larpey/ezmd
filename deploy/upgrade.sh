@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ezmd upgrade (docs/spec/part4.md 4.9.9).
+# ezmd upgrade (docs/internal/spec/part4.md 4.9.9).
 #
 #   deploy/upgrade.sh <version> [--no-pull] [--build] [--no-backup] [--health-timeout S]
 #

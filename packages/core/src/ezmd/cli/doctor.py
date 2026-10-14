@@ -1,4 +1,4 @@
-"""`ezmd doctor`: environment checks with a one-line fix for each problem (docs/spec/part4.md 4.2.2 item 5).
+"""`ezmd doctor`: environment checks with a one-line fix for each problem (docs/internal/spec/part4.md 4.2.2 item 5).
 
 Each row is OK, WARN, or MISSING. A row may be `required_by` an extra (or `core`, or `configured` for
 services the user configured); the command exits 2 only when a MISSING row is required by core, by an
@@ -41,7 +41,7 @@ PLANNED_EXTRAS: dict[str, str] = {
     "fetch": "media fetching",
     "server": "the API server (self-host it with Docker Compose for now: " + SELFHOST_DOCS + ")",
 }
-"""Extras the spec names (docs/spec/part4.md 4.3.3) that are not published yet. Doctor lists them as coming
+"""Extras the spec names (docs/internal/spec/part4.md 4.3.3) that are not published yet. Doctor lists them as coming
 in a later release instead of printing a pip command that would fail; tests/test_extras_hints.py keeps this
 in step with its PENDING list. The published extras are read from the installed `ezmd` metadata."""
 

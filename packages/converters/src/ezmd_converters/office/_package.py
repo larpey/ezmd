@@ -1,4 +1,4 @@
-"""Zip-container validation and sanitation for OOXML and ODF packages (docs/spec/part1.md 8.2).
+"""Zip-container validation and sanitation for OOXML and ODF packages (docs/internal/spec/part1.md 8.2).
 
 Before any parser sees a package:
 
