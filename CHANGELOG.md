@@ -13,6 +13,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   block that are not kept, documents inside archives), refuse oversized zip directories before parsing
   them, DOCTYPE-check every XML-looking package part, and keep Docling offline even when `HF_HUB_OFFLINE=0`
   is inherited (D-0057).
+- The injection scanner exempts only the marker comments the renderer emitted, and scans the sheet names,
+  image refs and page labels inside them; a document's own `<!-- ezmd: ... -->` is scanned. Marker
+  comments cannot be closed early by `-->` in a name. Only http(s), relative and fragment links are
+  emitted (`java\tscript:` is no longer a link). DOCX hidden text is scanned and never written to the
+  frontmatter (D-0059).
 - URL fetches refuse hostnames with a label over 63 octets, over 253 in total, or an empty label (before,
   `getaddrinfo` raised UnicodeError and the job failed with a 500); a trailing dot is normalized.
 - Executables detected by Magika (`application/x-executable-elf`, Mach-O, COFF, DEX, Windows drivers,

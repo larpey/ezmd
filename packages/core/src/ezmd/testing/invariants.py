@@ -68,14 +68,22 @@ def frontmatter_fields(md: str) -> dict[str, object]:
     if end == -1:
         return {}
     out: dict[str, object] = {}
-    for line in md[3:end].splitlines():
+    lines = md[3:end].splitlines()
+    for i, line in enumerate(lines):
         m = _FM_LINE.match(line)
         if not m or m.group(1) not in FRONTMATTER_KEYS:
             continue
         key, value = m.group(1), m.group(2).strip()
         if key == "warnings":
-            inner = value.strip("[]")
-            out[key] = frozenset(w.strip().strip("\"'") for w in inner.split(",") if w.strip())
+            if value:
+                items = value.strip("[]").split(",")
+            else:  # a block list: "warnings:" then "  - code" lines
+                items = []
+                for item in lines[i + 1 :]:
+                    if not item.startswith("  - "):
+                        break
+                    items.append(item[4:])
+            out[key] = frozenset(w.strip().strip("\"'") for w in items if w.strip())
         else:
             out[key] = value.strip("\"'")
     return out

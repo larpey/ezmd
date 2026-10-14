@@ -32,7 +32,8 @@ Every package is checked before any parser sees it:
 - XML is parsed with entity resolution, network access, and DTD loading turned off. A part that declares a
   DOCTYPE is refused. openpyxl runs on a rewritten copy of the package, using defusedxml.
 - Hidden text (`w:vanish`, white-on-white runs, ODF hidden text) is left out of the body and counted in
-  `removed_hidden_elements`. `office.keep_hidden=true` stores it in `metadata.extra.hidden_text`.
+  `removed_hidden_elements`, and the injection scanner reads it from that warning. `office.keep_hidden=true`
+  also stores it in `metadata.extra.hidden_text` for library users; it is never written to the frontmatter.
 - LibreOffice runs through the sandbox (bubblewrap with no network, on Linux when it can run) with a
   throwaway profile that disables macros, Python and active content (OLE, DDE), blocks links from untrusted
   documents, never updates links, fields or charts, and never recalculates on load, so linked files, linked
