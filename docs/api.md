@@ -61,12 +61,14 @@ Query parameters on `POST /v1/convert`:
   the job metadata is in the `X-Ezmd-Job` header.
 - `format`: the result format when `wait` returns a result.
 
-Identical input, options, and profile from the same caller return the existing job with
-`"deduplicated": true` and status `200`. An `Idempotency-Key` header (at most 255 characters) also
-deduplicates. In public mode anonymous jobs are never deduplicated across clients.
+Identical input, options, and profile as a finished, unexpired job return that job with
+`"deduplicated": true` and status `200`. The scope is the API key for keyed callers; anonymous
+callers share one scope, except in public mode, where it is the client IP. An `Idempotency-Key`
+header (at most 255 characters, scoped to the caller) also deduplicates.
 
-The detected type, never the file extension, decides how a file is handled. Executables are
-rejected with `unsupported_media_type`.
+The detected type, never the file extension, decides how a file is handled. Executables and types
+no installed converter handles are rejected with `415 unsupported_media_type` before a job is
+created (`detail.reason` is `executable` or `no_converter`).
 
 ## Job states
 
@@ -186,7 +188,8 @@ Counters live in Redis (memory in inline mode), so API and worker processes add 
 ## Admin CLI
 
 Administration is host-only: there are no admin HTTP endpoints. `ezmd-admin` reads the same
-`EZMD_*` environment as the API (`docker compose exec api ezmd-admin ...`):
+`EZMD_*` environment as the API. In the compose stack, run it inside the `api` container from the
+repository root: `docker compose -f deploy/docker-compose.yml --env-file deploy/.env exec api ezmd-admin ...`.
 
 | Command | Does |
 |---|---|

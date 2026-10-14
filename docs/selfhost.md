@@ -9,11 +9,12 @@ environment variables, never the sandbox.
 
 ```sh
 git clone https://github.com/larpey/ezmd && cd ezmd
-deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 0.1.0-rc2
+deploy/bootstrap.sh --domain ezmd.example.com --email you@example.com --version 0.1.0-rc4
 ```
 
-`--version` is an image tag on GHCR. The release candidates `0.1.0-rc1` and `0.1.0-rc2` are published
-today; `0.1.0` is available from the v0.1.0 release, so use the rc tag until then.
+`--version` is an image tag on GHCR (no leading `v`). Until `0.1.0` is released, use the newest
+`0.1.0-rcN` tag listed on the [GitHub releases](https://github.com/larpey/ezmd/releases) page;
+`0.1.0-rc4` is the newest candidate when this page was written.
 
 `bootstrap.sh` is safe to run again; it only fills in what is missing:
 
@@ -41,6 +42,10 @@ By hand: `cp deploy/env.example deploy/.env`, fill in the secrets, `docker compo
 | `redis` | Queues, job events, rate limits (no persistence) | internal |
 | `purge` | Retention purge and fetch-node claim reaper | internal |
 
+Only `caddy` publishes host ports. In TLS mode that is 80 and 443; the plain-HTTP port is bound to
+`EZMD_PLAIN_BIND` (default `127.0.0.1`). Caddy also listens on port 9180 inside the compose networks
+for the Turnstile relay (below); it is never published.
+
 Every app container runs as uid 10001 with a read-only root filesystem, a `/tmp` tmpfs, all
 capabilities dropped, `no-new-privileges`, and CPU, memory, and pid limits. Workers also load
 `deploy/seccomp-worker.json`. See [Security](security.md) and `deploy/README.md` for details.
@@ -62,6 +67,88 @@ The stack derives it in one place, and no client-supplied header can set it:
 The same settings work with or without Cloudflare in front; nothing changes when you switch. When
 you run the API without compose, leave `EZMD_TRUST_PROXY_HEADER` empty unless a proxy that
 overwrites the header sits in front, and set `EZMD_TRUSTED_PROXIES` to that proxy's address.
+
+### Turnstile
+
+Turnstile is off until `EZMD_TURNSTILE_SECRET` is set (public mode requires it for URL jobs).
+
+1. In the Cloudflare dashboard create a Turnstile widget for your hostname ("Managed", invisible
+   preferred). Put the site key in `EZMD_TURNSTILE_SITEKEY` and the secret in `EZMD_TURNSTILE_SECRET`,
+   then recreate the API so it reads them: `docker compose -f deploy/docker-compose.yml --env-file
+   deploy/.env up -d --force-recreate api` (`restart` keeps the old environment).
+2. Nothing else is needed for the network. The `api` container has no internet route, so it posts
+   siteverify to Caddy's internal relay (`EZMD_TURNSTILE_VERIFY_URL`, compose default
+   `http://caddy:9180/turnstile/v0/siteverify`). The relay answers only
+   `POST /turnstile/v0/siteverify`, only from private addresses, and forwards only to
+   `https://challenges.cloudflare.com`. If your host filters outbound traffic, Caddy must reach
+   `challenges.cloudflare.com:443`.
+3. Check it by submitting a URL in the web UI. When the API cannot get a verdict (relay or Cloudflare
+   unreachable, or a wrong secret), the visitor gets `503 turnstile_unavailable` with `Retry-After`
+   and the API logs the cause at ERROR (`docker compose ... logs api | grep siteverify`). A visitor
+   who fails the challenge gets `403 turnstile_failed`.
+
+Cloudflare's test keys exercise the whole path: site key `1x00000000000000000000AA` with secret
+`1x0000000000000000000000000000000AA` always passes; secret `2x0000000000000000000000000000000AA`
+always fails.
+
+### What the API accepts
+
+- Types come from the content (Magika, libmagic), never the extension. Executables
+  (`detail.reason: executable`) and types no installed converter handles (`no_converter`) are refused
+  with `415 unsupported_media_type` before a job is created. A URL whose body turns out to be one of
+  these fails its job with the same code.
+- Uploads over the caller's cap are `413 input_too_large`: `EZMD_ANON_MAX_UPLOAD_MB` for anonymous
+  callers, the key's `max_upload_mb` for keyed ones, and `EZMD_CADDY_MAX_BODY` at the edge for
+  everyone. Rejected requests (413, 429, and the global-capacity 503) do not use up the caller's rate
+  limit.
+- Deduplication: a request with the same input, options and profile as a finished, unexpired job
+  returns that job (`200`, `"deduplicated": true`) instead of converting again. For keyed callers the
+  scope is the API key. Anonymous callers share one scope outside public mode, so on a private instance
+  two anonymous users who upload the same file get the same job; with `EZMD_PUBLIC_MODE=true` the scope
+  is the client IP. Jobs are deleted after `EZMD_RETENTION_HOURS`.
+- Attachments: `GET /v1/jobs/{id}/attachments/{path}` serves only files the job stored, such as table
+  CSVs. Images extracted from documents are not stored yet, so their references in the Markdown and
+  sidecar return 404.
+
+### Health and readiness
+
+`/healthz` is 200 while the API process serves requests. `/readyz` is 200 when the database and
+Redis answer and an RQ worker heartbeated within the last 60 s; workers beat every 30 s, idle or
+busy. A 503 names the failing check in `checks`. The reaper in the `purge` service requeues jobs
+that a Redis restart dropped and fails jobs whose worker died (about a minute after its last
+heartbeat), which frees the caller's concurrency slot.
+
+### API keys and their restrictions
+
+`bootstrap.sh` creates one unlimited `owner` key in `keys.json`. Create more with
+`ezmd-admin keys create` (see [Admin CLI](api.md#admin-cli)), run inside the `api` container from
+the repository root:
+
+```sh
+docker compose -f deploy/docker-compose.yml --env-file deploy/.env exec api \
+  ezmd-admin keys create --store file --name ci
+```
+
+Per-key limits are set with the `keys create` options. Restrictions (`ips`, `user_agents`,
+`allowed_sources`, `disabled_sources`, `residential_allowed`) are fields of the `keys.json` entry
+([format](api.md#api-keys)); there is no CLI for them yet. Edit the file in the state volume and the
+API reloads it within a few seconds. A key used from a disallowed IP or User-Agent gets
+`403 forbidden`; a URL job whose submitted URL, any redirect, or any converter-requested fetch leaves
+the allowed hosts fails with `forbidden`.
+
+### Windows and Git Bash
+
+The scripts run under Git Bash with Docker Desktop. Run them as `bash deploy/<script>.sh` from the
+repository root.
+
+- `deploy/lib.sh` sets `MSYS_NO_PATHCONV=1` so Git Bash does not rewrite arguments for `docker.exe`;
+  paths are converted explicitly.
+- `chmod 600` and `chmod 700` (on `deploy/.env`, `deploy/ezmd-owner.key` and `deploy/backups/`) do
+  nothing on NTFS. Those files hold every secret: keep the checkout inside your user profile or
+  restrict the folder with `icacls`, and keep backups on an encrypted disk.
+- With `MSYS_NO_PATHCONV=1`, native Windows `curl.exe` cannot write to `/dev/null` (it fails with
+  error 23). The scripts never ask it to (`curl_w` in `lib.sh`); scripts of your own that source
+  `lib.sh` should not either.
 
 Planned: the media worker and model init container (Phase 2), Postgres and MinIO profiles, and the
 public and Raspberry Pi overlays (Phases 3 and 4).
@@ -106,16 +193,21 @@ Every process brings the database to the Alembic head at startup. A database cre
 
 ## Releases and image verification
 
-The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-release and publishes to PyPI as a pre-release (pip and uv install it only with `--pre` or an exact version); `vX.Y.Z` publishes to PyPI, npm (`@ezmd/sdk`) and the MCP registry. Every PyPI publish waits for the owner's approval in the `release` environment. Images are pushed by digest, scanned with Trivy (HIGH/CRITICAL findings with a fix fail the release), given an SPDX SBOM (syft; also attached to the GitHub release) and signed with cosign keyless before any tag points at them:
+The owner pushes release tags. `vX.Y.Z-rcN` builds the images and a GitHub pre-release and publishes to PyPI as a pre-release (pip and uv install it only with `--pre` or an exact version); `vX.Y.Z` publishes to PyPI, npm (`@ezmd/sdk`) and the MCP registry. Every PyPI publish waits for the owner's approval in the `release` environment. Images are pushed by digest, scanned with Trivy (HIGH/CRITICAL findings with a fix fail the release), given an SPDX SBOM (syft; also attached to the GitHub release) and signed with cosign keyless before any tag points at them. Verify with cosign 3 or later; the signatures use the Sigstore bundle format, which cosign 2 reports as "no signatures found":
 
 ```sh
-cosign verify ghcr.io/larpey/ezmd-api:0.1.0-rc2 \
-  --certificate-identity-regexp '^https://github.com/larpey/ezmd/.github/workflows/images.yml@refs/tags/v' \
+ID='^https://github\.com/larpey/ezmd/\.github/workflows/images\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$'
+cosign verify ghcr.io/larpey/ezmd-api:0.1.0-rc4 \
+  --certificate-identity-regexp "$ID" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
-cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0-rc2 \
-  --certificate-identity-regexp '^https://github.com/larpey/ezmd/.github/workflows/images.yml@refs/tags/v' \
+cosign verify-attestation --type spdxjson ghcr.io/larpey/ezmd-api:0.1.0-rc4 \
+  --certificate-identity-regexp "$ID" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
+
+The expression is anchored and its dots are escaped, so only `images.yml` in `larpey/ezmd` at a
+release tag matches (an unescaped `.` also accepts look-alike names). Use the tag you run; the same
+commands work for `ezmd-worker` and `ezmd-fetch-node`.
 
 One-time owner setup before the first publish (until then the publish jobs skip with a notice):
 
