@@ -56,7 +56,7 @@ x-worker: &worker
     target: worker
   security_opt:
     - no-new-privileges:true
-    - seccomp=./seccomp-worker.json
+    - seccomp=./${EZMD_WORKER_SECCOMP:-seccomp-worker.json}
   environment: &worker-env
     <<: *app-env
     # LibreOffice (opt-in through EZMD_WORKER_APT_PACKAGES) runs only inside bubblewrap; where bwrap

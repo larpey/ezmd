@@ -169,14 +169,25 @@ off, and `worker-default` sits only on the `internal` network (it can reach `api
 internet); keep it that way. The workers also set `EZMD_REQUIRE_SANDBOX=1`, so LibreOffice runs only
 inside bubblewrap (installed in the worker image). With the stack's `seccomp-worker.json`, bubblewrap
 cannot create its namespaces, so LibreOffice conversions are refused with a message that says so; the
-other converters are unaffected. You have two choices, and both are yours to make:
+other converters are unaffected (a LibreOffice job fails with `sandbox_unavailable`). To convert legacy
+Office files anyway, pick one of these:
 
-- allow unprivileged user namespaces for the workers with a seccomp profile of your own that permits
-  `unshare`, `clone` with namespace flags, `mount`, `umount2`, `pivot_root` and `setns` (tested: bwrap
-  then works as uid 10001 with every capability dropped). This exposes more kernel surface to the
-  worker; or
-- set `EZMD_REQUIRE_SANDBOX=0` in the env file and run LibreOffice without bubblewrap, for trusted
-  input only.
+- **Sandboxed LibreOffice (recommended if you need it).** Set `EZMD_WORKER_SECCOMP=seccomp-worker-userns.json`
+  in the env file and recreate the workers
+  (`docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --force-recreate worker-default worker-fetch`).
+  That profile is `seccomp-worker.json` plus exactly what bubblewrap needs: `unshare`, `clone` with
+  namespace flags, `mount`, `umount2`, `pivot_root` and `setns` (and `clone3` answering ENOSYS so the C
+  library falls back to `clone`). The workers still run as uid 10001 with every capability dropped
+  and `no-new-privileges`; bubblewrap then gives each external tool its own empty network (loopback
+  only), a fresh `/tmp`, and read-only system directories. The trade-off: code in the worker, including
+  a converter compromised by a hostile file, can create user namespaces, and the kernel code behind
+  them has a long history of privilege-escalation bugs. Keep the host kernel patched. On hosts that
+  restrict unprivileged user namespaces in AppArmor (Ubuntu 23.10 and later), bubblewrap may still
+  fail; the worker then keeps refusing LibreOffice, it never falls back to running it unsandboxed.
+- **Unsandboxed LibreOffice, trusted input only.** Set `EZMD_REQUIRE_SANDBOX=0` in the env file.
+  soffice then runs with only the container's isolation (no internet, but the same `/tmp` and network
+  as the worker, which can reach `api` and `redis`).
+
 `deploy/docker-compose.gpu.yml` adds a `worker-media` service for the Phase 2 image.
 
 ## Backups
@@ -272,6 +283,7 @@ These are read by `deploy/docker-compose.yml` and Caddy, not by the API:
 | `EZMD_BACKUP_DIR` | `deploy/backups` | Where `backup.sh` writes tarballs. |
 | `EZMD_BACKUP_KEEP` | `14` | How many backups `backup.sh` keeps. |
 | `EZMD_ENV_FILE` | `deploy/.env` | Shell variable only: the env file the scripts and containers use. |
+| `EZMD_WORKER_SECCOMP` | `seccomp-worker.json` | Seccomp profile (a file in `deploy/`) for both workers. `seccomp-worker-userns.json` allows the user namespaces bubblewrap needs; see the LibreOffice note. |
 | `EZMD_REQUIRE_SANDBOX` | `1` | Passed to the workers and read by the LibreOffice converter: refuse to run `soffice` when bubblewrap cannot sandbox it. `0` runs it unsandboxed (trusted input only). |
 
 ## API environment variables

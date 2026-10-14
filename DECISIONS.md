@@ -539,3 +539,13 @@ Decision: `PASSTHROUGH_CONVERSION_CODES` adds all three. `unsupported_media_type
 Alternatives: 501 `not_implemented` (that code means the contract has the feature but ezmd does not build it yet); 503 (implies a retry can succeed).
 Consequences: until fix/rc5-core is merged these codes are never raised. The TypeScript SDK's error-code union does not list them yet.
 Council: not convened (audit fix).
+
+## D-0066: An opt-in worker seccomp profile lets bubblewrap sandbox LibreOffice
+Date: 2026-10-13
+Task: audit (rc5, LibreOffice sandbox)
+Status: accepted
+Context: D-0064 keeps LibreOffice refused in the default stack because `seccomp-worker.json` denies the user namespaces bubblewrap needs. Operators who need legacy Office formats had only the unsandboxed `EZMD_REQUIRE_SANDBOX=0`.
+Decision: `deploy/seccomp-worker-userns.json` is `seccomp-worker.json` with its namespace-related rules replaced: the CAP_SYS_ADMIN-gated `clone`/`clone3`/`setns`/`unshare` entries, the s390 flag-masked `clone` rules and the `mount`/`umount2` ERRNO entries lose those names, and one rule allows `clone`, `unshare`, `setns`, `mount`, `umount2` and `pivot_root` unconditionally, with `clone3` answering ENOSYS (seccomp cannot inspect its flags; glibc falls back to `clone`). A test pins that nothing else differs. Compose reads the profile name from `EZMD_WORKER_SECCOMP` (default `seccomp-worker.json`), so switching is one line in the env file. Checked live with the rc4 worker image plus bubblewrap, as uid 10001 with `cap_drop: ALL`, `no-new-privileges`, read-only root and `--network none`: under the default profile `ezmd.core.sandbox.bwrap_available()` is False and tools run unwrapped; under the userns profile it is True, `sandbox.run(["pandoc", ...])` succeeds inside bwrap, and a sandboxed process sees only `lo` and an empty `/tmp`. A LibreOffice conversion inside bwrap was not run (the rc4 image has no soffice).
+Alternatives: make it the default (more kernel surface for every install, most of which never add LibreOffice); ship it as a compose override file (compose merges `security_opt` lists, so an override cannot replace the default profile cleanly).
+Consequences: with the userns profile, any code in the worker can create user namespaces. Hosts whose AppArmor restricts unprivileged user namespaces may still block bwrap; LibreOffice then stays refused.
+Council: not convened; the trade-off is stated in docs/selfhost.md for the operator.
