@@ -137,3 +137,15 @@ def test_workers_ship_bubblewrap_and_require_the_office_sandbox() -> None:
     dockerfile = (COMPOSE.parent / "Dockerfile").read_text(encoding="utf-8")
     worker = dockerfile.split("FROM runtime-common AS worker", 1)[1].split("\nFROM ", 1)[0]
     assert "bubblewrap" in worker.split("apt-get install", 1)[1].split("\n", 1)[0]
+
+
+def test_worker_job_memory_leaves_room_below_the_container_limit() -> None:
+    """The child's RLIMIT_AS (EZMD_JOB_MEM_MB) equalled the 4g worker limit, and the input copy on the /tmp
+    tmpfs plus the RQ parent count against the same cgroup, so a large job could be OOM-killed."""
+    import re
+
+    worker = _services()["worker-default"]
+    job_mb = int(re.fullmatch(r"\$\{EZMD_JOB_MEM_MB:-(\d+)\}", worker["environment"]["EZMD_JOB_MEM_MB"]).group(1))
+    limit = worker["deploy"]["resources"]["limits"]["memory"]
+    limit_mb = int(re.fullmatch(r"\$\{EZMD_WORKER_DEFAULT_MEM:-(\d+)g\}", limit).group(1)) * 1024
+    assert job_mb <= limit_mb - 1024, (job_mb, limit_mb)

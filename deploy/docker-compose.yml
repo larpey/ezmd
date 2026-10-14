@@ -57,7 +57,7 @@ x-worker: &worker
   security_opt:
     - no-new-privileges:true
     - seccomp=./seccomp-worker.json
-  environment:
+  environment: &worker-env
     <<: *app-env
     # LibreOffice (opt-in through EZMD_WORKER_APT_PACKAGES) runs only inside bubblewrap; where bwrap
     # cannot create its namespaces (this seccomp profile denies them) the converter refuses instead of
@@ -153,6 +153,11 @@ services:
     <<: *worker
     command: ["python", "-m", "ezmd_api.worker", "--queues", "default"]
     networks: [internal]
+    environment:
+      <<: *worker-env
+      # The conversion child's address-space cap. It must stay below the container limit: the input copy
+      # on the /tmp tmpfs and the RQ parent count against the same memory cgroup. Raise both together.
+      EZMD_JOB_MEM_MB: ${EZMD_JOB_MEM_MB:-3072}
     deploy:
       resources:
         limits:
