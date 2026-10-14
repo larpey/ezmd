@@ -487,3 +487,13 @@ Decision: `RateResult` carries the recorded hit (`key`, `member`) and the exact 
 Alternatives: check limits after reading the body (an anonymous client could then stream unlimited 200 MB bodies before being limited); peek without recording and record at the end (two concurrent requests could both pass).
 Consequences: the memory backend's member is the hit's timestamp; two hits in the same `time.time()` tick refund either one, which is equivalent.
 Council: not convened (audit fix).
+
+## D-0050: Anonymous deduplication is scoped to the client IP hash in every mode
+Date: 2026-10-13
+Task: audit (rc5 red team, F2)
+Status: accepted
+Context: part1 7.1 forbids cross-IP dedup of anonymous requests only when `EZMD_PUBLIC_MODE=true`. With public mode off (the self-host default) an anonymous caller who submitted the same file or URL as another got that caller's finished job back: its id and display filename. Anonymous jobs are not bound to a caller and the id is the capability, so the second caller could read the result and `DELETE` the job (confirmed live by the red team from three IPs).
+Decision: anonymous dedup always adds `client_ip_hash` to the lookup; keyed dedup stays scoped by key. `Idempotency-Key` was already scoped to the caller identity. This is stricter than the spec, which is recorded here; the spec's public-mode rule is a subset.
+Alternatives: return a fresh job that reuses the cached IR (saves the conversion but needs a copy path for blobs; possible later); bind anonymous jobs to their IP for reads and deletes (breaks result links shared on purpose, which the threat model accepts).
+Consequences: two anonymous users of a private instance who convert the same file each pay for the conversion.
+Council: not convened (audit fix).

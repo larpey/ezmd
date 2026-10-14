@@ -62,8 +62,8 @@ Query parameters on `POST /v1/convert`:
 - `format`: the result format when `wait` returns a result.
 
 Identical input, options, and profile as a finished, unexpired job return that job with
-`"deduplicated": true` and status `200`. The scope is the API key for keyed callers; anonymous
-callers share one scope, except in public mode, where it is the client IP. An `Idempotency-Key`
+`"deduplicated": true` and status `200`. The scope is the API key for keyed callers and the client
+IP for anonymous callers (in every mode: the job id grants access to the job). An `Idempotency-Key`
 header (at most 255 characters, scoped to the caller) also deduplicates.
 
 The detected type, never the file extension, decides how a file is handled. Executables and types

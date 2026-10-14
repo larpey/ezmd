@@ -34,7 +34,7 @@ DEFAULT_OVERRIDES: dict[str, str] = {"data_dir": "`~/.ezmd`"}
 
 DESCRIPTIONS: dict[str, str] = {
     "public_mode": "Public-instance mode. Requires `EZMD_JWT_SECRET` and `EZMD_KEY_PEPPER` of at least 32 bytes, "
-    "requires a Turnstile challenge for URL jobs, and never deduplicates anonymous jobs across clients.",
+    "requires a Turnstile challenge for URL jobs.",
     "public_url": "Externally visible base URL. Used for links in error documents and to decide whether "
     "cookies are marked `Secure`.",
     "data_dir": "Base directory for the default SQLite database and filesystem blob store.",

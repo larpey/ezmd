@@ -102,10 +102,10 @@ always fails.
   everyone. Rejected requests (413, 429, and the global-capacity 503) do not use up the caller's rate
   limit.
 - Deduplication: a request with the same input, options and profile as a finished, unexpired job
-  returns that job (`200`, `"deduplicated": true`) instead of converting again. For keyed callers the
-  scope is the API key. Anonymous callers share one scope outside public mode, so on a private instance
-  two anonymous users who upload the same file get the same job; with `EZMD_PUBLIC_MODE=true` the scope
-  is the client IP. Jobs are deleted after `EZMD_RETENTION_HOURS`.
+  returns that job (`200`, `"deduplicated": true`) instead of converting again. The scope is the API
+  key for keyed callers and the client IP for anonymous ones, in every mode: a job id grants access to
+  the job, so a caller never receives another caller's id. Jobs are deleted after
+  `EZMD_RETENTION_HOURS`.
 - Attachments: `GET /v1/jobs/{id}/attachments/{path}` serves only files the job stored, such as table
   CSVs. Images extracted from documents are not stored yet, so their references in the Markdown and
   sidecar return 404.
@@ -265,7 +265,7 @@ Field `foo_bar` is read from `EZMD_FOO_BAR`. Comma lists are plain comma-separat
 
 | Variable | Type | Default | Description |
 |---|---|---|---|
-| `EZMD_PUBLIC_MODE` | bool | `false` | Public-instance mode. Requires `EZMD_JWT_SECRET` and `EZMD_KEY_PEPPER` of at least 32 bytes, requires a Turnstile challenge for URL jobs, and never deduplicates anonymous jobs across clients. |
+| `EZMD_PUBLIC_MODE` | bool | `false` | Public-instance mode. Requires `EZMD_JWT_SECRET` and `EZMD_KEY_PEPPER` of at least 32 bytes, requires a Turnstile challenge for URL jobs. |
 | `EZMD_PUBLIC_URL` | str | `http://localhost:8000` | Externally visible base URL. Used for links in error documents and to decide whether cookies are marked `Secure`. |
 | `EZMD_DATA_DIR` | path | `~/.ezmd` | Base directory for the default SQLite database and filesystem blob store. |
 | `EZMD_WEB_DIST` | path | unset | Directory with the built web UI (`apps/web/dist`) to serve at `/`. Unset: `apps/web/dist` next to the source tree when present, else no UI. The compose stack defaults it to the image's `/app/apps/web/dist`. |

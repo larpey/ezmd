@@ -116,8 +116,9 @@ def _idempotency(request: Request, caller: Caller, services: Services) -> str | 
 
 
 def _dedup_scope_ip(caller: Caller, services: Services) -> str | None:
-    """Public mode never dedups anonymous requests across different client IP hashes."""
-    if caller.api_key is None and services.settings.public_mode:
+    """Anonymous dedup never crosses client IP hashes, public mode or not: the job id is the capability, so
+    handing one caller another's job id would hand over the job (D-0050). Keyed dedup is scoped by key."""
+    if caller.api_key is None:
         return caller.ip_hash
     return None
 
