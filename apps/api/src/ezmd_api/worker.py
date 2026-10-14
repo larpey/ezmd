@@ -82,21 +82,17 @@ def _process(services: Services, job_id: str) -> None:
 def _detect_fetched(services: Services, job_id: str, body: Path) -> str | None:
     """Detect a fetched body's type here, outside the fetch worker. Returns the mime, or None when
     the job was failed or handed to another queue."""
-    from ezmd.detect import detect, is_executable
-    from ezmd.inputs import InputRef
+    from ezmd_api.detection import Unsupported, detect_supported
 
     row = services.jobs.require(job_id)
     if row.mime:
         return row.mime
     path_part = (row.input_url or "").split("?", 1)[0]
     name = sanitize_filename(path_part.rsplit("/", 1)[-1], fallback="download")
-    size = body.stat().st_size
-    probe = InputRef(
-        kind="bytes", display=name, local_path=body, declared_mime=row.declared_mime, max_bytes=max(1, size)
-    )
-    mime = detect(probe).mime
-    if is_executable(mime):
-        services.jobs.fail(job_id, "unsupported_media_type", "Executable files are not accepted.")
+    try:
+        mime = detect_supported(body, display=name, declared_mime=row.declared_mime)
+    except Unsupported as e:
+        services.jobs.fail(job_id, "unsupported_media_type", e.message)
         return None
     services.jobs.update(job_id, mime=mime)
     target = q.queue_for_mime(mime)

@@ -211,7 +211,7 @@ async def test_keyed_upload_limit_is_the_keys(settings_factory: Callable[..., Se
     async with api_client(settings_factory(anon_max_upload_mb=1)) as (client, app):
         services = app.state.services
         key, _ = create_api_key(services.db, services.settings, "big", env="test", max_upload_bytes=4 * 1024 * 1024)
-        data = b"a" * (2 * 1024 * 1024)
+        data = (b"a line of plain text\n" * 110_000)[: 2 * 1024 * 1024]
         assert (await upload(client, data, "a.txt")).status_code == 413
         assert (await upload(client, data, "a.txt", headers={"X-API-Key": key})).status_code == 202
 

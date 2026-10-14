@@ -467,3 +467,13 @@ Decision: when `/sys/fs/cgroup/pids.max` (v2) or `/sys/fs/cgroup/pids/pids.max` 
 Alternatives: raise the fixed limit (any fixed value can be exhausted by other containers of the same uid); give each container its own uid (a larger compose change, and still host-wide per uid); count the uid's threads and add headroom (other containers' processes are not visible inside the pid namespace).
 Consequences: a bare-metal worker whose user already has more than 4096 threads would still fail; ONNX Runtime's own intra-op pool is not governed by these variables (Magika's session options are core code).
 Council: not convened (audit fix).
+
+## D-0048: Inputs no converter can claim are refused with 415 before a job exists
+Date: 2026-10-13
+Task: audit (rc5 pre-release testing)
+Status: accepted
+Context: an upload whose detected type no converter handles (random binaries, `application/octet-stream`, images without an image converter) and real ELF binaries were accepted with 202 and then failed with 500 `conversion_failed`. Magika labels real ELF files `application/x-executable-elf`, which `ezmd.detect.EXECUTABLE_MIMES` does not list (checked with /bin/ls and libc in the rc4 image).
+Decision: `ezmd_api.detection.detect_supported` (used for uploads, fetch-node media and fetched URL bodies) raises `Unsupported` when the type is executable (`detail.reason: executable`) or when the registry has neither a candidate (including experimental converters) nor a registered-but-unavailable converter for it (`no_converter`). Uploads answer 415 `unsupported_media_type` with `detail.mime` and `detail.reason`, and no job or blob is created; a fetched body fails its job with the same code (status 415 in the job error). Inputs a converter would claim but that turn out damaged still fail as `conversion_failed`.
+Alternatives: extend the executable list in the API (it belongs in core detection; the no-converter rule already catches these types); keep accepting and fail later (the reported bug).
+Consequences: the API image must register the same converters as the worker image, or an upload is refused that a worker could convert (both images install the same converter packages; extras that are missing register as unavailable, which still admits the input). Core follow-ups: add the Magika executable-group mimes (`application/x-executable-elf`, `application/x-mach-o`, `application/x-coff`, `application/x-android-dex`, `application/x-windows-driver`, ...) to EXECUTABLE_MIMES; Magika calls a megabyte of a single repeated byte an ISO image.
+Council: not convened (audit fix).

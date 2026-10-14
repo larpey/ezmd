@@ -20,8 +20,9 @@ async def test_413_over_cap_streaming(settings_factory: Callable[..., Settings])
         assert err["code"] == "input_too_large"
         assert err["detail"]["limit_bytes"] == limit
         assert err["detail"]["received_bytes"] > limit
-        ok = await upload(client, b"a" * limit, "edge.txt")
-        assert ok.status_code == 202
+        # Real text: Magika calls a megabyte of one repeated byte an ISO image, which nothing converts (415).
+        ok = await upload(client, (b"a line of plain text\n" * (limit // 21 + 1))[:limit], "edge.txt")
+        assert ok.status_code == 202, ok.text
 
 
 async def test_413_on_declared_content_length(settings_factory: Callable[..., Settings]) -> None:

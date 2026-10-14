@@ -296,25 +296,16 @@ async def _create_from_upload(request: Request, services: Services, caller: Call
 
 
 def _detect_upload(upload: UploadedFile) -> str:
-    """Detect an upload that parse_multipart already held to the caller's cap. The InputRef gets the
-    upload's own size as its cap: ezmd.inputs' 100 MiB library default is not the API's tier cap."""
-    from ezmd import detect as detection
-    from ezmd.inputs import InputRef, InputTooLarge
+    """Detect an upload that parse_multipart already held to the caller's cap; 415 when nothing can convert it."""
+    from ezmd.inputs import InputTooLarge
+    from ezmd_api.detection import Unsupported, detect_supported
 
-    ref = InputRef(
-        kind="bytes",
-        display=upload.filename,
-        local_path=upload.path,
-        declared_mime=upload.content_type,
-        max_bytes=max(1, upload.size),
-    )
     try:
-        mime = detection.detect(ref).mime
+        return detect_supported(upload.path, display=upload.filename, declared_mime=upload.content_type)
     except InputTooLarge:
         raise ApiError("input_too_large", "The upload is too large.", detail={"received_bytes": upload.size}) from None
-    if detection.is_executable(mime):
-        raise ApiError("unsupported_media_type", "Executable files are not accepted.", detail={"mime": mime})
-    return mime
+    except Unsupported as e:
+        raise ApiError("unsupported_media_type", e.message, detail={"mime": e.mime, "reason": e.reason}) from None
 
 
 async def _create_from_url(request: Request, services: Services, caller: Caller, wait: float, fmt: str) -> Response:

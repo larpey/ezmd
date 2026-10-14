@@ -17,7 +17,7 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 | <a id="method_not_allowed"></a>`method_not_allowed` | 405 | The method is not supported on this path. |
 | <a id="job_not_ready"></a>`job_not_ready` | 409 | The job is not done (or not waiting for input); `detail.state` has its state. |
 | <a id="input_too_large"></a>`input_too_large` | 413 | The upload or fetched body exceeds the limit; `detail` has the limit. |
-| <a id="unsupported_media_type"></a>`unsupported_media_type` | 415 | The detected type is not supported, or it is an executable. |
+| <a id="unsupported_media_type"></a>`unsupported_media_type` | 415 | The detected type is an executable (`detail.reason` `executable`) or no converter on this instance handles it (`no_converter`); `detail.mime` is the detected type. Uploads get this before a job is created; a fetched URL body fails its job with it. |
 | <a id="url_blocked"></a>`url_blocked` | 422 | The URL failed the SSRF guard: disallowed scheme, userinfo, or a private, loopback, link-local, or metadata address. |
 | <a id="platform_disabled"></a>`platform_disabled` | 422 | The host is disabled by this instance's platform policy. |
 | <a id="experimental_disabled"></a>`experimental_disabled` | 422 | Only an experimental converter handles this input, and experimental converters are turned off on this instance. |

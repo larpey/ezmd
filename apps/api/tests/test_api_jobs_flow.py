@@ -174,17 +174,20 @@ async def test_wait_returns_result_body(client: httpx.AsyncClient) -> None:
     assert envelope["state"] == "done"
 
 
+# A PDF header over garbage: detection and admission accept it, the PDF converter fails on it. (A blob
+# nothing can convert is refused with 415 before a job exists; see test_api_unsupported.py.)
+BROKEN_PDF = b"%PDF-1.7\n" + b"\x00\x01garbage" * 64
+
+
 async def test_wait_returns_error_for_failed_job(client: httpx.AsyncClient) -> None:
-    r = await upload(
-        client, b"\x00\x01\x02\xff" * 64, "blob.bin", content_type="application/octet-stream", params={"wait": 20}
-    )
+    r = await upload(client, BROKEN_PDF, "broken.pdf", content_type="application/pdf", params={"wait": 20})
     assert r.status_code == 500
     assert r.json()["error"]["code"] == "conversion_failed"
     assert json.loads(r.headers["x-ezmd-job"])["state"] == "failed"
 
 
 async def test_failed_job_exposes_error(client: httpx.AsyncClient) -> None:
-    r = await upload(client, b"\x00\x01\x02\xff" * 64, "blob.bin", content_type="application/octet-stream")
+    r = await upload(client, BROKEN_PDF, "broken.pdf", content_type="application/pdf")
     body = await wait_for_state(client, r.json()["job"]["id"])
     assert body["state"] == "failed"
     assert body["error"]["code"] == "conversion_failed"
