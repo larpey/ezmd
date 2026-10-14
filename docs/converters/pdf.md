@@ -5,7 +5,7 @@ type is something else, at lower confidence). Chain: `documents.docling_pdf` the
 
 | Converter | Engine | Install | Notes |
 |---|---|---|---|
-| `documents.docling_pdf` | Docling (MIT), docling-parse backend, layout + TableFormer models | `pip install 'ezmd[docs]'` (torch, ~1.2 GB) | Default when installed. Registered `unavailable` otherwise. |
+| `documents.docling_pdf` | Docling (MIT), docling-parse backend, layout + TableFormer models | `pip install 'ezmd[docs]'` (torch, ~1.2 GB with CPU torch; on Linux install CPU torch first, see [Install](../install.md#docling-on-linux-cpu-torch)) | Default when installed. Registered `unavailable` otherwise. |
 | `documents.pdfium_text` | pypdfium2 (BSD-3-Clause / Apache-2.0) text layer + layout heuristics | default | Always available; emits `engine_fallback` when Docling is not installed. |
 
 ## Pipeline (both engines)

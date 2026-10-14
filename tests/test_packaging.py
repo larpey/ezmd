@@ -92,6 +92,11 @@ def test_license_files_declared(member: str) -> None:
     assert _project(member).get("license-files") == ["LICENSE", "NOTICE"]
 
 
+# The only top-level directory each wheel may carry besides its dist-info. `ezmd/testing` stays in the core
+# wheel on purpose: the spec ships `ezmd-score`/`ezmd-golden` with `ezmd`, and `ezmd shadow` imports it (D-0051).
+WHEEL_PACKAGES = {"packages/core": "ezmd", "packages/converters": "ezmd_converters", "packages/mcp": "ezmd_mcp"}
+
+
 def _uv() -> str | None:
     return os.environ.get("UV") or shutil.which("uv")
 
@@ -112,6 +117,9 @@ def test_built_dists_carry_license_and_notice(member: str, tmp_path: Path) -> No
     with zipfile.ZipFile(wheel) as zf:
         names = set(zf.namelist())
     dist_info = next(n.split("/", 1)[0] for n in names if n.split("/", 1)[0].endswith(".dist-info"))
+    package = WHEEL_PACKAGES[member]
+    stray = sorted(n for n in names if n.split("/", 1)[0] not in (package, dist_info) or "__pycache__" in n)
+    assert not stray, f"{wheel.name} ships files outside {package}/ (tests, tools, caches): {stray[:10]}"
     for f in ("LICENSE", "NOTICE"):
         assert f"{dist_info}/licenses/{f}" in names, f"{wheel.name} lacks {dist_info}/licenses/{f}"
     (sdist,) = tmp_path.glob("*.tar.gz")

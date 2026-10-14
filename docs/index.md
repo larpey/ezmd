@@ -9,9 +9,9 @@ sidecar with block provenance and an explicit list of warnings. When something c
 ezmd says so in the warnings instead of dropping it quietly.
 
 !!! note "Status: release candidate"
-    `0.1.0rc2` is on PyPI as a pre-release (`pip install ezmd==0.1.0rc2`; plain `pip install ezmd` works once
-    `0.1.0` is final), and signed images tagged `0.1.0-rc2` are on GHCR. The npm SDK and the public instance
-    come with `0.1.0`. Audio, video, OCR, and chat exports arrive in later phases; see the
+    Release candidates of `0.1.0` are on PyPI (`pip install ezmd` installs the newest one until the final is
+    out; see [Install](install.md)), and signed images are on GHCR. The npm SDK and the public instance come
+    with `0.1.0`. Audio, video, OCR, and chat exports arrive in later phases; see the
     [roadmap](roadmap.md) and [status](status.md).
 
 ## What works today

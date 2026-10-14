@@ -4,6 +4,11 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Documentation
+- Install docs no longer pin `0.1.0rc2`: pip and uv take the newest release candidate while no final exists.
+- Linux: `ezmd[docs]` pulls about 6 GB of CUDA torch and NVIDIA wheels from PyPI, not 1.2 GB; the install
+  page shows how to get CPU torch first with pip or `uv --torch-backend cpu` (D-0051).
+
 ### Fixed
 - PDF text layers whose font size is carried by the text matrix (`1 Tf` with a scaled `Tm` or CTM) no
   longer split every word at ascenders and descenders into one-glyph lines and spurious N-column tables;
