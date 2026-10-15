@@ -4,6 +4,17 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-15
+
+The first stable release. The code is the same as 0.1.0-rc5; see the release candidates below for everything in
+0.1.0.
+
+### Packaging
+- `@ezmd/sdk` 0.1.0 is published to npm, and `ezmd-mcp` is listed in the MCP registry.
+
+### Documentation
+- The README and docs no longer describe release candidates.
+
 ## [0.1.0-rc5] - 2026-10-14
 
 Fixes from the pre-0.1.0 test pass on rc4: install tests, a self-hosted stack test, a red team and a competitive

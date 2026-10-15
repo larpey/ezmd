@@ -8,10 +8,9 @@ frontmatter under one of four output profiles (`full`, `compact`, `rag`, `agent`
 sidecar with block provenance and an explicit list of warnings. When something cannot be converted,
 ezmd says so in the warnings instead of dropping it quietly.
 
-!!! note "Status: release candidate"
-    Release candidates of `0.1.0` are on PyPI (`pip install ezmd` installs the newest one until the final is
-    out; see [Install](install.md)), and signed images are on GHCR. The npm SDK and the public instance come
-    with `0.1.0`. Audio, video, OCR, and chat exports arrive in later phases; see the
+!!! note "Status: 0.1"
+    `ezmd`, `ezmd-converters` and `ezmd-mcp` are on PyPI (see [Install](install.md)), `@ezmd/sdk` is on npm,
+    and signed images are on GHCR. Audio, video, OCR, and chat exports arrive in later phases; see the
     [roadmap](roadmap.md).
 
 ## What works today
