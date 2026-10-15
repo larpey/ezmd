@@ -4,8 +4,10 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+## [0.1.0-rc5] - 2026-10-14
+
 Fixes from the pre-0.1.0 test pass on rc4: install tests, a self-hosted stack test, a red team and a competitive
-benchmark (D-0044 to D-0071).
+benchmark (D-0044 to D-0071). The npm SDK stays at 0.1.0-rc.3 (unchanged).
 
 ### Security
 - Anonymous jobs are never deduplicated across client IPs; before, a second caller submitting the same file or
