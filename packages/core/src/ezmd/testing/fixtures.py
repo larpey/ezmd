@@ -39,13 +39,15 @@ against the golden (math, block counts, list nesting, table spans, links, images
 so a leak fails even when it barely moves the score.
 
 Sidecars are compared exactly after `normalize_sidecar` (`metrics` timing removed, `frontmatter` versions
-replaced by a placeholder), and `write_golden` writes them normalized.
+replaced by a placeholder), and `write_golden` writes them normalized. `render_full` counts `tokens_total` with
+the frontmatter versions replaced by the same placeholder, so a release does not change every golden.
 """
 
 from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import shutil
 import time
 import tomllib
@@ -69,6 +71,7 @@ VOLATILE_TIMING = ("duration_seconds", "fetch_seconds")
 """`metrics` timing fields, removed from sidecars before they are written or compared."""
 VOLATILE_VERSIONS = ("converter_version", "ezmd_version")
 """`frontmatter` version fields, replaced by NORMALIZED before sidecars are written or compared."""
+_VERSION_LINE = re.compile(rf"^({'|'.join(VOLATILE_VERSIONS)}): .*$", re.MULTILINE)
 
 
 EXTRA_PROBES: dict[str, str] = {"docs": "docling", "data": "pyarrow", "7z": "py7zr"}
@@ -368,7 +371,18 @@ def render_full(result: ConversionResult) -> tuple[str, dict[str, object] | None
     from ezmd.render import render
 
     out = render(result, "full", "md", converted_at=PINNED_TIME, fetched_at=PINNED_TIME)
-    return out.markdown, out.sidecar
+    sidecar = out.sidecar
+    if sidecar is not None and "tokens_total" in sidecar:
+        sidecar = {**sidecar, "tokens_total": version_independent_tokens(out.markdown)}
+    return out.markdown, sidecar
+
+
+def version_independent_tokens(markdown: str) -> int:
+    """o200k_base tokens in `markdown` with the frontmatter version lines set to NORMALIZED, so the count
+    does not depend on the release (`0.1.0rc5` and `0.1.0` tokenize differently)."""
+    from ezmd.render.tokens import count_tokens
+
+    return count_tokens(_VERSION_LINE.sub(lambda m: f'{m.group(1)}: "{NORMALIZED}"', markdown))["o200k_base"]
 
 
 def run_fixture(fx: Fixture, root: Path) -> FixtureRun:

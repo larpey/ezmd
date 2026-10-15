@@ -17,6 +17,7 @@ from ezmd.testing.fixtures import (
     load_meta,
     normalize_sidecar,
     run_fixture,
+    version_independent_tokens,
     write_golden,
 )
 
@@ -61,6 +62,15 @@ def test_normalize_sidecar_touches_only_volatile_fields() -> None:
         "document": {"blocks": [{"type": "paragraph"}]},
     }
     assert normalize_sidecar(out) == out
+
+
+def test_tokens_total_does_not_depend_on_the_release() -> None:
+    def md(version: str) -> str:
+        return f'---\nconverter_version: "{version}"\nezmd_version: "{version}"\ntitle: "T"\n---\n\nBody text.\n'
+
+    assert version_independent_tokens(md("0.1.0rc5")) == version_independent_tokens(md("0.1.0"))
+    assert version_independent_tokens(md("0.1.0")) == version_independent_tokens(md("12.34.56.dev7"))
+    assert version_independent_tokens(md("0.1.0")) != version_independent_tokens(md("0.1.0") + "More.\n")
 
 
 def test_unchanged_sidecar_passes(tmp_path: Path) -> None:
