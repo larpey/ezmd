@@ -9,10 +9,8 @@ its own.
 uvx ezmd-mcp                       # stdio, local mode
 ```
 
-!!! note "Release candidate"
-    Until `0.1.0` is final, PyPI has only release candidates of `ezmd-mcp`, and `uvx ezmd-mcp` runs the
-    newest one (uv takes a pre-release when a package has no final release). To pin one, write
-    `ezmd-mcp==0.1.0rcN` after `uvx`. From a source checkout (see [Install](install.md)), use
+!!! note "From a source checkout"
+    From a source checkout (see [Install](install.md)), run the server with
     `uv --directory /path/to/ezmd run ezmd-mcp` instead:
 
     ```bash

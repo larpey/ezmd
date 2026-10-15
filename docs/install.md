@@ -1,12 +1,5 @@
 # Install
 
-!!! note "Release candidate"
-    Until `0.1.0` is final, PyPI has only release candidates of `ezmd`, `ezmd-converters` and `ezmd-mcp`.
-    pip and uv install a pre-release when a package has no final release, so the plain commands below
-    already get the newest candidate; pin one with `ezmd==0.1.0rcN` if you need to. Do not add
-    `pip install --pre`: it also takes pre-releases of every dependency. Signed container images are on
-    GHCR, and the npm package `@ezmd/sdk` is published with `0.1.0`.
-
 ## From PyPI
 
 Python 3.12 or newer. On Linux and macOS, also install libmagic (`apt install libmagic1`,

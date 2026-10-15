@@ -10,10 +10,8 @@ ezmd turns an input into an intermediate representation and renders it as Markdo
 frontmatter under one of four output profiles, plus a JSON sidecar with block provenance and an explicit
 list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
 
-> **Status: release candidate.** Release candidates of `0.1.0` are on PyPI (`ezmd`, `ezmd-converters`,
-> `ezmd-mcp`) and signed images are on GHCR. Until `0.1.0` is final, the commands below install the newest
-> candidate. The npm SDK (`@ezmd/sdk`) and the public instance come with the final release. See the
-> [roadmap](docs/roadmap.md).
+> **Status: 0.1.** Documents, web pages, data files, code, email, ebooks and archives convert today. OCR,
+> audio and video come next; see the [roadmap](docs/roadmap.md).
 
 ## Install
 
@@ -27,9 +25,7 @@ uvx ezmd convert https://example.com
 uvx ezmd-mcp                               # the MCP server
 ```
 
-pip and uv take a release candidate when a package has no final release, so these work before `0.1.0`
-too; do not add `--pre`, which also takes pre-releases of every dependency. On Linux, install CPU torch
-first or `ezmd[docs]` pulls about 6 GB of CUDA wheels, and the Docling extra needs its models downloaded
+On Linux, install CPU torch first or `ezmd[docs]` pulls about 6 GB of CUDA wheels, and the Docling extra needs its models downloaded
 once; see [docs/install.md](docs/install.md#extras).
 
 From source (needs [uv](https://docs.astral.sh/uv/)):
@@ -54,9 +50,9 @@ uv run ezmd capabilities
 uv run ezmd doctor
 ```
 
-The TypeScript client is published to npm with the final `0.1.0` release (not available yet):
+The TypeScript client is on npm:
 
-<!-- readme: skip (not published yet) -->
+<!-- readme: skip (installs from the network) -->
 ```sh
 npm install @ezmd/sdk
 ```
