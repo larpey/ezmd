@@ -90,7 +90,8 @@ def test_paired_diff_detects_a_consistent_gap() -> None:
         paired_diff_ci([1.0], [1.0, 2.0])
 
 
-def test_run_tool_records_ok_error_timeout_crash_and_unsupported(tmp_path: Path) -> None:
+def test_run_tool_records_ok_error_timeout_crash_and_unsupported(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("EZMD_BENCH_CACHE", str(tmp_path / "cache"))  # a fresh machine has no cache yet
     script = tmp_path / "fake_worker.py"
     script.write_text(FAKE_WORKER, encoding="utf-8")
     inputs = {}

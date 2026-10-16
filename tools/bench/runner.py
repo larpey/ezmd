@@ -226,6 +226,8 @@ class Worker:
     def start(self, timeout: float | None = None) -> None:
         self.log.parent.mkdir(parents=True, exist_ok=True)
         err: IO[str] = self.log.open("a", encoding="utf-8", errors="replace")
+        workdir = cache_dir()
+        workdir.mkdir(parents=True, exist_ok=True)
         self.proc = subprocess.Popen(
             self.launch.command,
             stdin=subprocess.PIPE,
@@ -234,7 +236,7 @@ class Worker:
             text=True,
             encoding="utf-8",
             env=worker_env(self.launch.env),
-            cwd=str(cache_dir()),
+            cwd=str(workdir),
         )
         self._lines = queue.Queue()
         threading.Thread(target=self._pump, args=(self.proc.stdout, self._lines), daemon=True).start()
