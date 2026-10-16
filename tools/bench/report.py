@@ -5,6 +5,7 @@ failure rate (error, timeout or crash over attempted documents), coverage (attem
 category), median and p95 wall seconds per attempted document, and the peak memory over the run. ezmd's
 verdict against the best competitor uses a paired bootstrap over the documents (or tables) both tools scored:
 "leads" when the whole 95% interval of (ezmd - best) is above zero, "trails" when it is below, else "ties".
+The self-graded fixture categories get no verdict: ezmd's own fixtures cannot support a claim against others.
 The best competitor is the highest primary value among tools with at least MIN_N scored documents.
 """
 
@@ -181,7 +182,8 @@ def write_report(date: str) -> int:
             report["scorecard"][cat] = {
                 t: {k: v for k, v in row.items() if k != "per_doc"} for t, row in sorted(rows.items())
             }
-            report["verdicts"][cat] = {e: _verdict(rows, e) for e in EZMD_TOOLS if e in rows}
+            if not cat.startswith("fixtures"):  # self-graded: scores only, no leads/trails claims
+                report["verdicts"][cat] = {e: _verdict(rows, e) for e in EZMD_TOOLS if e in rows}
     for name, tool in tools.items():
         freeze = tool.venv / "freeze.txt"
         report["tools"][name] = {

@@ -38,16 +38,12 @@ Each cell: primary metric [95% CI] (n). fail = error/timeout/crash share of atte
 | ezmd-docs* | 0.930 [0.884, 0.969] | 94 | 1.1% | 94/94 | 0.02 | 0.47 | 2079 | 2201 |
 | mineru | 0.687 [0.524, 0.784] | 10 | 10.0% | 10/94 | 0.53 | 9.78 | 3195 | 3423 |
 | trafilatura | 0.641 [0.508, 0.768] | 17 | 0.0% | 17/94 | 0.01 | 0.05 | 68 | 69 |
+| marker | 0.616 [0.468, 0.713] | 10 | 10.0% | 10/94 | 0.97 | 3.45 | 4600 | 4670 |
 | pymupdf4llm | 0.603 [0.474, 0.706] | 13 | 7.7% | 13/94 | 0.52 | 0.94 | 267 | 314 |
 | docling | 0.586 [0.496, 0.671] | 44 | 9.1% | 44/94 | 0.02 | 0.71 | 2075 | 2164 |
 | pandoc | 0.564 [0.469, 0.655] | 39 | 10.3% | 39/94 | 0.06 | 0.57 | 24 | 190 |
-| markitdown | 0.532 [0.462, 0.604] | 68 | 2.9% | 68/94 | 0.01 | 0.10 | 146 | 149 |
+| markitdown | 0.528 [0.460, 0.600] | 68 | 2.9% | 68/94 | 0.01 | 0.10 | 146 | 149 |
 | unstructured | 0.453 [0.381, 0.524] | 67 | 7.5% | 67/94 | 0.08 | 0.47 | 1519 | 1534 |
-| marker | n/a | 0 | 10.0% | 10/94 | 0.97 | 3.45 | 4600 | 4670 |
-
-ezmd: **leads** vs mineru (gap +0.251; paired diff +0.313 [+0.216, +0.476] over 10 shared).
-
-ezmd-docs: **leads** vs mineru (gap +0.243; paired diff +0.241 [+0.047, +0.456] over 10 shared).
 
 ## ezmd fixtures (self-graded, supporting evidence only): archives
 
@@ -80,10 +76,6 @@ Not attempted (format not supported): docling, marker, mineru, pandoc, pymupdf4l
 
 Not attempted (format not supported): docling, marker, mineru, pandoc, pymupdf4llm, trafilatura.
 
-ezmd: **leads** vs unstructured (gap +0.819; paired diff +0.819 [+0.688, +0.944] over 8 shared).
-
-ezmd-docs: **leads** vs unstructured (gap +0.819; paired diff +0.819 [+0.688, +0.944] over 8 shared).
-
 ## ezmd fixtures (self-graded, supporting evidence only): data
 
 | tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
@@ -97,10 +89,6 @@ ezmd-docs: **leads** vs unstructured (gap +0.819; paired diff +0.819 [+0.688, +0
 
 Not attempted (format not supported): marker, mineru, pymupdf4llm, trafilatura.
 
-ezmd: **leads** vs unstructured (gap +0.701; paired diff +0.755 [+0.608, +0.887] over 12 shared).
-
-ezmd-docs: **leads** vs unstructured (gap +0.701; paired diff +0.755 [+0.608, +0.887] over 12 shared).
-
 ## ezmd fixtures (self-graded, supporting evidence only): ebooks
 
 | tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
@@ -113,10 +101,6 @@ ezmd-docs: **leads** vs unstructured (gap +0.701; paired diff +0.755 [+0.608, +0
 | unstructured | 0.161 [0.000, 0.484] | 3 | 66.7% | 3/5 | 0.19 | 0.60 | 1499 | 1512 |
 
 Not attempted (format not supported): docling, marker, mineru, trafilatura.
-
-ezmd: **leads** vs markitdown (gap +0.345; paired diff +0.345 [+0.242, +0.463] over 5 shared).
-
-ezmd-docs: **leads** vs markitdown (gap +0.345; paired diff +0.345 [+0.242, +0.463] over 5 shared).
 
 ## ezmd fixtures (self-graded, supporting evidence only): edgar
 
@@ -145,10 +129,6 @@ Not attempted (format not supported): marker, mineru, pymupdf4llm.
 
 Not attempted (format not supported): marker, mineru, pymupdf4llm, trafilatura.
 
-ezmd: **leads** vs markitdown (gap +0.398; paired diff +0.398 [+0.333, +0.465] over 10 shared).
-
-ezmd-docs: **leads** vs markitdown (gap +0.398; paired diff +0.398 [+0.333, +0.465] over 10 shared).
-
 ## ezmd fixtures (self-graded, supporting evidence only): pdf
 
 | tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
@@ -159,14 +139,10 @@ ezmd-docs: **leads** vs markitdown (gap +0.398; paired diff +0.398 [+0.333, +0.4
 | unstructured | 0.663 [0.470, 0.841] | 10 | 10.0% | 10/10 | 0.12 | 0.21 | 1533 | 1534 |
 | docling | 0.637 [0.463, 0.775] | 10 | 10.0% | 10/10 | 0.50 | 0.76 | 2133 | 2164 |
 | pymupdf4llm | 0.621 [0.472, 0.721] | 10 | 10.0% | 10/10 | 0.38 | 0.95 | 288 | 314 |
+| marker | 0.616 [0.468, 0.713] | 10 | 10.0% | 10/10 | 0.97 | 3.45 | 4600 | 4670 |
 | markitdown | 0.585 [0.441, 0.686] | 10 | 10.0% | 10/10 | 0.02 | 0.12 | 148 | 148 |
-| marker | n/a | 0 | 10.0% | 10/10 | 0.97 | 3.45 | 4600 | 4670 |
 
 Not attempted (format not supported): pandoc, trafilatura.
-
-ezmd: **leads** vs mineru (gap +0.313; paired diff +0.313 [+0.216, +0.476] over 10 shared).
-
-ezmd-docs: **leads** vs mineru (gap +0.241; paired diff +0.241 [+0.047, +0.456] over 10 shared).
 
 ## ezmd fixtures (self-graded, supporting evidence only): text
 
@@ -174,16 +150,12 @@ ezmd-docs: **leads** vs mineru (gap +0.241; paired diff +0.241 [+0.047, +0.456] 
 |---|---|---|---|---|---|---|---|---|
 | ezmd* | 1.000 [1.000, 1.000] | 6 | 0.0% | 6/6 | 0.01 | 0.02 | 261 | 261 |
 | ezmd-docs* | 1.000 [1.000, 1.000] | 6 | 0.0% | 6/6 | 0.01 | 0.01 | 2170 | 2170 |
-| markitdown | 0.903 [0.778, 0.991] | 6 | 0.0% | 6/6 | 0.01 | 0.03 | 148 | 148 |
 | pandoc | 0.883 [0.825, 0.941] | 2 | 0.0% | 2/6 | 0.09 | 0.10 | 64 | 103 |
+| markitdown | 0.862 [0.738, 0.971] | 6 | 0.0% | 6/6 | 0.01 | 0.03 | 148 | 148 |
 | docling | 0.824 [0.798, 0.851] | 2 | 0.0% | 2/6 | 0.05 | 0.08 | 2124 | 2124 |
 | unstructured | 0.642 [0.474, 0.826] | 6 | 0.0% | 6/6 | 0.09 | 0.12 | 1534 | 1534 |
 
 Not attempted (format not supported): marker, mineru, pymupdf4llm, trafilatura.
-
-ezmd: **leads** vs markitdown (gap +0.097; paired diff +0.097 [+0.009, +0.222] over 6 shared).
-
-ezmd-docs: **leads** vs markitdown (gap +0.097; paired diff +0.097 [+0.009, +0.222] over 6 shared).
 
 ## ezmd fixtures (self-graded, supporting evidence only): web
 
@@ -198,10 +170,6 @@ ezmd-docs: **leads** vs markitdown (gap +0.097; paired diff +0.097 [+0.009, +0.2
 | unstructured | 0.647 [0.524, 0.774] | 14 | 0.0% | 14/14 | 0.06 | 0.09 | 1534 | 1534 |
 
 Not attempted (format not supported): marker, mineru, pymupdf4llm.
-
-ezmd: **leads** vs markitdown (gap +0.187; paired diff +0.187 [+0.088, +0.301] over 14 shared).
-
-ezmd-docs: **leads** vs markitdown (gap +0.187; paired diff +0.187 [+0.088, +0.301] over 14 shared).
 
 ## PDF, OmniDocBench display formulas (1 - edit distance; CDM off)
 

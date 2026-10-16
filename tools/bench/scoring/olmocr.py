@@ -88,6 +88,8 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         rec = json.loads(line)
         by_tool_tests[rec["tool"]].append(rec)
     attempted_tools = {t for t, rs in by_tool(results).items() if attempted(rs)}
+    # An empty output passes "absent" tests (no header, no footer); a failed conversion must not.
+    failed = {(r.tool, _pdf_of(r.doc_id)) for r in results if r.status in ("error", "timeout", "crash")}
     tools: dict[str, Any] = {}
     for tool, recs in sorted(by_tool_tests.items()):
         if tool not in attempted_tools:
@@ -96,7 +98,7 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         types: dict[str, list[float]] = defaultdict(list)
         per_pdf: dict[str, list[float]] = defaultdict(list)
         for rec in sorted(recs, key=lambda r: (r["jsonl"], r["test"])):
-            v = 1.0 if rec["passed"] else 0.0
+            v = 1.0 if rec["passed"] and (tool, rec["pdf"]) not in failed else 0.0
             groups[rec["jsonl"]].append(v)
             types[rec["type"]].append(v)
             per_pdf[rec["pdf"]].append(v)

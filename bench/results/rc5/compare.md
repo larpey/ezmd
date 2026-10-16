@@ -13,16 +13,12 @@
 ## ezmd fixtures (self-graded, supporting evidence only): comms
 
 - ezmd: 1.000 [1.000, 1.000] -> 1.000 [1.000, 1.000]; after - before +0.000 [+0.000, +0.000] (n=9)
-  - vs unstructured (0.181): beats, +0.819 [+0.688, +0.944]
 - ezmd-docs: 1.000 [0.999, 1.000] -> 1.000 [0.999, 1.000]; after - before +0.000 [+0.000, +0.000] (n=9)
-  - vs unstructured (0.181): beats, +0.819 [+0.688, +0.944]
 
 ## ezmd fixtures (self-graded, supporting evidence only): data
 
 - ezmd: 0.941 [0.827, 1.000] -> 0.941 [0.827, 1.000]; after - before +0.000 [+0.000, +0.000] (n=18)
-  - vs unstructured (0.240): beats, +0.755 [+0.608, +0.887]
 - ezmd-docs: 0.941 [0.827, 1.000] -> 0.941 [0.827, 1.000]; after - before +0.000 [+0.000, +0.000] (n=18)
-  - vs unstructured (0.240): beats, +0.755 [+0.608, +0.887]
 
 ## ezmd fixtures (self-graded, supporting evidence only): ebooks
 
@@ -37,32 +33,22 @@
 ## ezmd fixtures (self-graded, supporting evidence only): office
 
 - ezmd: 1.000 [1.000, 1.000] -> 1.000 [1.000, 1.000]; after - before +0.000 [+0.000, +0.000] (n=12)
-  - vs unstructured (0.513): beats, +0.486 [+0.419, +0.566]
 - ezmd-docs: 1.000 [1.000, 1.000] -> 1.000 [1.000, 1.000]; after - before +0.000 [+0.000, +0.000] (n=12)
-  - vs unstructured (0.513): beats, +0.486 [+0.419, +0.566]
 
 ## ezmd fixtures (self-graded, supporting evidence only): pdf
 
 - ezmd: 1.000 [1.000, 1.000] -> 1.000 [1.000, 1.000]; after - before +0.000 [+0.000, +0.000] (n=10)
-  - vs pymupdf4llm (0.621): beats, +0.379 [+0.279, +0.528]
-  - vs unstructured (0.663): beats, +0.337 [+0.159, +0.530]
 - ezmd-docs: 0.928 [0.804, 1.000] -> 0.928 [0.804, 1.000]; after - before +0.000 [+0.000, +0.000] (n=10)
-  - vs pymupdf4llm (0.621): beats, +0.308 [+0.150, +0.495]
-  - vs unstructured (0.663): beats, +0.266 [+0.108, +0.462]
 
 ## ezmd fixtures (self-graded, supporting evidence only): text
 
 - ezmd: 1.000 [1.000, 1.000] -> 1.000 [1.000, 1.000]; after - before +0.000 [+0.000, +0.000] (n=6)
-  - vs unstructured (0.642): beats, +0.357 [+0.174, +0.526]
 - ezmd-docs: 1.000 [1.000, 1.000] -> 1.000 [1.000, 1.000]; after - before +0.000 [+0.000, +0.000] (n=6)
-  - vs unstructured (0.642): beats, +0.357 [+0.174, +0.526]
 
 ## ezmd fixtures (self-graded, supporting evidence only): web
 
 - ezmd: 0.987 [0.969, 1.000] -> 0.987 [0.969, 1.000]; after - before +0.000 [+0.000, +0.000] (n=14)
-  - vs unstructured (0.647): beats, +0.340 [+0.215, +0.463]
 - ezmd-docs: 0.987 [0.969, 1.000] -> 0.987 [0.969, 1.000]; after - before +0.000 [+0.000, +0.000] (n=14)
-  - vs unstructured (0.647): beats, +0.340 [+0.215, +0.463]
 
 ## PDF, OmniDocBench display formulas (1 - edit distance; CDM off)
 

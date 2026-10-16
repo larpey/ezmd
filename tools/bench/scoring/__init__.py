@@ -7,8 +7,9 @@ Each scorer writes `<run_dir>/scores.json`:
 
 Official benchmark code does the scoring wherever it exists (olmOCR-Bench, OmniDocBench, the ScrapingHub
 article-extraction evaluate.py); the ezmd fixture corpus uses ezmd's own scorer (ezmd.testing.score).
-Every tool's output is normalized the same way before scoring: a leading YAML frontmatter block is removed
-(only ezmd writes one; it is metadata, not page content).
+ezmd's leading YAML frontmatter block is removed before scoring (it is metadata, not page content, and only ezmd
+writes one); other tools' output is scored as written. On olmOCR-Bench a document the tool failed to convert
+(error, timeout, crash) fails every one of its tests, as upstream olmocr counts a missing candidate.
 """
 
 from __future__ import annotations

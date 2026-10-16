@@ -22,11 +22,17 @@ def strip_frontmatter(md: str) -> str:
     return text
 
 
+def is_ezmd(tool: str) -> bool:
+    return tool == "ezmd" or tool.startswith("ezmd-")
+
+
 def read_output(result: DocResult, run_dir: Path) -> str:
-    """The tool's Markdown for an ok result (frontmatter removed), else ""."""
+    """The tool's Markdown for an ok result, else "". ezmd's frontmatter is removed (it is metadata, and only
+    ezmd writes it); other tools' output is kept as is, so a page that starts with a `---` rule loses nothing."""
     if result.status != "ok" or not result.output:
         return ""
-    return strip_frontmatter((run_dir / result.output).read_text(encoding="utf-8", errors="replace"))
+    md = (run_dir / result.output).read_text(encoding="utf-8", errors="replace")
+    return strip_frontmatter(md) if is_ezmd(result.tool) else md
 
 
 _MD = MarkdownIt("commonmark", {"html": True}).enable(["table", "strikethrough"])

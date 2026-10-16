@@ -18,8 +18,9 @@
 
 [tools.ezmd]
 kind = "venv"
-# Filled by install: the worktree wheels (0.1.0rc4) until the same version is on PyPI.
-requirements = ["ezmd==0.1.0rc4"]
+# The published release. Install builds this checkout's wheels only when PyPI does not have the version yet.
+# The 2026-10-13 baseline used 0.1.0rc4 and the rc5 rerun a 0.1.0rc5 build (bench/results/*/notes.md).
+requirements = ["ezmd==0.1.0"]
 torch = false
 adapter = "ezmd_adapter"
 formats = ["*"]
@@ -27,7 +28,7 @@ license = "Apache-2.0"
 
 [tools.ezmd-docs]
 kind = "venv"
-requirements = ["ezmd[docs]==0.1.0rc4"]
+requirements = ["ezmd[docs]==0.1.0"]
 torch = true
 adapter = "ezmd_adapter"
 formats = ["*"]

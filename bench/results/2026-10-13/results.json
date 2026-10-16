@@ -1016,8 +1016,11 @@
     "value": 0.9305
    },
    "marker": {
-    "ci": null,
-    "n": 0,
+    "ci": [
+     0.4678,
+     0.713
+    ],
+    "n": 10,
     "speed": {
      "attempted": 10,
      "failed": 1,
@@ -1031,12 +1034,12 @@
      "peak_rss_mb": 4670.3,
      "total": 94
     },
-    "value": null
+    "value": 0.6159
    },
    "markitdown": {
     "ci": [
-     0.4617,
-     0.6039
+     0.4599,
+     0.5995
     ],
     "n": 68,
     "speed": {
@@ -1052,7 +1055,7 @@
      "peak_rss_mb": 148.8,
      "total": 94
     },
-    "value": 0.5321
+    "value": 0.5284
    },
    "mineru": {
     "ci": [
@@ -2478,8 +2481,11 @@
     "value": 0.9285
    },
    "marker": {
-    "ci": null,
-    "n": 0,
+    "ci": [
+     0.4678,
+     0.713
+    ],
+    "n": 10,
     "speed": {
      "attempted": 10,
      "failed": 1,
@@ -2493,7 +2499,7 @@
      "peak_rss_mb": 4670.3,
      "total": 10
     },
-    "value": null
+    "value": 0.6159
    },
    "markitdown": {
     "ci": [
@@ -2688,8 +2694,8 @@
    },
    "markitdown": {
     "ci": [
-     0.7779,
-     0.9907
+     0.7379,
+     0.9708
     ],
     "n": 6,
     "speed": {
@@ -2703,7 +2709,7 @@
      "peak_rss_mb": 148.3,
      "total": 6
     },
-    "value": 0.9033
+    "value": 0.8617
    },
    "mineru": {
     "ci": null,
@@ -5182,258 +5188,6 @@
   }
  },
  "verdicts": {
-  "fixtures-all": {
-   "ezmd": {
-    "best_competitor": "mineru",
-    "best_value": 0.6872,
-    "ezmd": "ezmd",
-    "ezmd_value": 0.9381,
-    "gap": 0.2509,
-    "paired_ci": [
-     0.2162,
-     0.4758
-    ],
-    "paired_diff": 0.3128,
-    "paired_n": 10,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "mineru",
-    "best_value": 0.6872,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 0.9305,
-    "gap": 0.2433,
-    "paired_ci": [
-     0.0468,
-     0.4558
-    ],
-    "paired_diff": 0.2413,
-    "paired_n": 10,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-archives": {
-   "ezmd": null,
-   "ezmd-docs": null
-  },
-  "fixtures-code": {
-   "ezmd": null,
-   "ezmd-docs": null
-  },
-  "fixtures-comms": {
-   "ezmd": {
-    "best_competitor": "unstructured",
-    "best_value": 0.1807,
-    "ezmd": "ezmd",
-    "ezmd_value": 1.0,
-    "gap": 0.8193,
-    "paired_ci": [
-     0.6883,
-     0.9444
-    ],
-    "paired_diff": 0.8193,
-    "paired_n": 8,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "unstructured",
-    "best_value": 0.1807,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 0.9998,
-    "gap": 0.8191,
-    "paired_ci": [
-     0.6883,
-     0.9444
-    ],
-    "paired_diff": 0.8191,
-    "paired_n": 8,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-data": {
-   "ezmd": {
-    "best_competitor": "unstructured",
-    "best_value": 0.2396,
-    "ezmd": "ezmd",
-    "ezmd_value": 0.941,
-    "gap": 0.7014,
-    "paired_ci": [
-     0.608,
-     0.8867
-    ],
-    "paired_diff": 0.7553,
-    "paired_n": 12,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "unstructured",
-    "best_value": 0.2396,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 0.941,
-    "gap": 0.7014,
-    "paired_ci": [
-     0.608,
-     0.8867
-    ],
-    "paired_diff": 0.7553,
-    "paired_n": 12,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-ebooks": {
-   "ezmd": {
-    "best_competitor": "markitdown",
-    "best_value": 0.6554,
-    "ezmd": "ezmd",
-    "ezmd_value": 1.0,
-    "gap": 0.3446,
-    "paired_ci": [
-     0.2417,
-     0.4632
-    ],
-    "paired_diff": 0.3446,
-    "paired_n": 5,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "markitdown",
-    "best_value": 0.6554,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 1.0,
-    "gap": 0.3446,
-    "paired_ci": [
-     0.2417,
-     0.4632
-    ],
-    "paired_diff": 0.3446,
-    "paired_n": 5,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-edgar": {
-   "ezmd": null,
-   "ezmd-docs": null
-  },
-  "fixtures-office": {
-   "ezmd": {
-    "best_competitor": "markitdown",
-    "best_value": 0.6022,
-    "ezmd": "ezmd",
-    "ezmd_value": 1.0,
-    "gap": 0.3978,
-    "paired_ci": [
-     0.3332,
-     0.4652
-    ],
-    "paired_diff": 0.3977,
-    "paired_n": 10,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "markitdown",
-    "best_value": 0.6022,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 1.0,
-    "gap": 0.3978,
-    "paired_ci": [
-     0.3332,
-     0.4652
-    ],
-    "paired_diff": 0.3977,
-    "paired_n": 10,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-pdf": {
-   "ezmd": {
-    "best_competitor": "mineru",
-    "best_value": 0.6872,
-    "ezmd": "ezmd",
-    "ezmd_value": 1.0,
-    "gap": 0.3128,
-    "paired_ci": [
-     0.2162,
-     0.4758
-    ],
-    "paired_diff": 0.3128,
-    "paired_n": 10,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "mineru",
-    "best_value": 0.6872,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 0.9285,
-    "gap": 0.2413,
-    "paired_ci": [
-     0.0468,
-     0.4558
-    ],
-    "paired_diff": 0.2413,
-    "paired_n": 10,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-text": {
-   "ezmd": {
-    "best_competitor": "markitdown",
-    "best_value": 0.9033,
-    "ezmd": "ezmd",
-    "ezmd_value": 1.0,
-    "gap": 0.0967,
-    "paired_ci": [
-     0.0093,
-     0.2221
-    ],
-    "paired_diff": 0.0966,
-    "paired_n": 6,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "markitdown",
-    "best_value": 0.9033,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 1.0,
-    "gap": 0.0967,
-    "paired_ci": [
-     0.0093,
-     0.2221
-    ],
-    "paired_diff": 0.0966,
-    "paired_n": 6,
-    "verdict": "leads"
-   }
-  },
-  "fixtures-web": {
-   "ezmd": {
-    "best_competitor": "markitdown",
-    "best_value": 0.8008,
-    "ezmd": "ezmd",
-    "ezmd_value": 0.9874,
-    "gap": 0.1866,
-    "paired_ci": [
-     0.0877,
-     0.3007
-    ],
-    "paired_diff": 0.1866,
-    "paired_n": 14,
-    "verdict": "leads"
-   },
-   "ezmd-docs": {
-    "best_competitor": "markitdown",
-    "best_value": 0.8008,
-    "ezmd": "ezmd-docs",
-    "ezmd_value": 0.9874,
-    "gap": 0.1866,
-    "paired_ci": [
-     0.0877,
-     0.3007
-    ],
-    "paired_diff": 0.1866,
-    "paired_n": 14,
-    "verdict": "leads"
-   }
-  },
   "omnidoc-formula": {
    "ezmd": {
     "best_competitor": "marker",

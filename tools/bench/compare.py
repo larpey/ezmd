@@ -92,7 +92,7 @@ def render(result: dict[str, Any]) -> str:
             delta = f"{d['diff']:+.3f} [{d['ci'][0]:+.3f}, {d['ci'][1]:+.3f}] (n={d['n']})" if d else "n/a"
             lines.append(f"- {ez}: {_ci(row['before'])} -> {_ci(row['after'])}; after - before {delta}")
             for rival, v in row["vs"].items():
-                if "diff" in v:
+                if "diff" in v and not cat.startswith("fixtures"):  # self-graded: no claims vs rivals
                     lines.append(
                         f"  - vs {rival} ({v['value']:.3f}): {v['verdict']}, {v['diff']:+.3f} "
                         f"[{v['ci'][0]:+.3f}, {v['ci'][1]:+.3f}]"

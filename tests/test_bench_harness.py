@@ -13,10 +13,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))  # tools/ is not an installed package
 
+from tools.bench import corpora  # noqa: E402
 from tools.bench.config import Tool  # noqa: E402
 from tools.bench.runner import Launch, parse_mem_usage, run_tool  # noqa: E402
 from tools.bench.schema import Doc, DocResult, append_result, read_results  # noqa: E402
-from tools.bench.scoring.text import markdown_to_text, strip_frontmatter  # noqa: E402
+from tools.bench.scoring.text import markdown_to_text, read_output, strip_frontmatter  # noqa: E402
 from tools.bench.stats import bootstrap_ci, paired_diff_ci, percentile  # noqa: E402
 from tools.bench.warmup import _pdf_bytes  # noqa: E402
 
@@ -132,6 +133,35 @@ def test_output_normalization() -> None:
     assert strip_frontmatter("# no frontmatter\n") == "# no frontmatter\n"
     text = markdown_to_text(strip_frontmatter(md) + "\n<table><tr><td>a</td><td>b</td></tr></table>\n")
     assert text == "Head\n\nBody link and code.\n\na b"
+
+
+def test_only_ezmd_output_loses_its_frontmatter(tmp_path: Path) -> None:
+    page = "---\nnot frontmatter, a horizontal rule\n---\n\nBody\n"
+    (tmp_path / "out.md").write_bytes(page.encode("utf-8"))
+
+    def result(tool: str, status: str = "ok") -> DocResult:
+        return DocResult("olmocr", "d", "c", tool, "1", status, output="out.md")
+
+    assert read_output(result("markitdown"), tmp_path) == page
+    assert read_output(result("ezmd"), tmp_path) == "Body\n"
+    assert read_output(result("ezmd-docs"), tmp_path) == "Body\n"
+    assert read_output(result("markitdown", "timeout"), tmp_path) == ""
+
+
+def test_heldout_is_the_rest_of_the_corpus(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    docs = [Doc("toy", f"d{i:02d}", tmp_path / f"d{i:02d}.pdf", "c") for i in range(20)]
+
+    def toy(sample: int | None = 5) -> list[Doc]:
+        return corpora._sample(docs, sample)
+
+    monkeypatch.setitem(corpora.CORPORA, "toy", toy)
+    sample = {d.id for d in toy()}
+    held = {d.id for d in corpora.heldout("toy")}
+    assert len(sample) == 5 and len(held) == 15 and not sample & held
+
+    monkeypatch.setitem(corpora.CORPORA, "all", lambda sample=None: docs)
+    with pytest.raises(ValueError, match="no held-out split"):
+        corpora.heldout("all")
 
 
 def test_warmup_pdf_is_well_formed() -> None:

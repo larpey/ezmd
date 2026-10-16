@@ -5,7 +5,7 @@
 Loads every `<bench>/*.jsonl` with olmocr's own `load_tests`, adds olmocr's `BaselineTest` for each PDF exactly as
 olmocr.bench.benchmark does, and runs each test's official `run()` against `<candidates>/<tool>/<pdf stem>.md`.
 Writes one JSON line per (tool, test): {"tool", "test", "jsonl", "pdf", "type", "passed"}. A missing Markdown
-file is an empty output (the test runs on ""), matching a failed conversion.
+file is an empty output (the test runs on ""); `scoring/olmocr.py` then fails every test of a failed conversion.
 """
 
 from __future__ import annotations

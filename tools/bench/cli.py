@@ -1,7 +1,7 @@
 """`python -m tools.bench <command>`.
 
 install  [--tools a,b] [--force]          create competitor environments under the cache directory
-run      --corpus NAME [--tools a,b] [--sample N] [--timeout S] [--date YYYY-MM-DD]
+run      --corpus NAME [--tools a,b] [--sample N | --split heldout] [--timeout S] [--date YYYY-MM-DD]
 score    --corpus NAME [--date ...]       score raw outputs (per-document scores.jsonl)
 report   [--date ...]                     aggregate into bench/results/<date>/results.json + summary.md
 smoke                                     run + score + report on the smoke corpus with every tool
@@ -26,8 +26,10 @@ def run_dir(date: str, corpus: str) -> Path:
     return cache_dir() / "runs" / date / corpus
 
 
-def cmd_run(corpus: str, tools: list[str] | None, sample: int | None, timeout: float, date: str) -> int:
-    from tools.bench.corpora import CORPORA
+def cmd_run(
+    corpus: str, tools: list[str] | None, sample: int | None, timeout: float, date: str, split: str = "sample"
+) -> int:
+    from tools.bench.corpora import CORPORA, heldout
     from tools.bench.install import binary_path
     from tools.bench.runner import run_tool
 
@@ -37,12 +39,19 @@ def cmd_run(corpus: str, tools: list[str] | None, sample: int | None, timeout: f
     if unknown:
         print(f"unknown tools: {unknown}", file=sys.stderr)
         return 2
-    docs = CORPORA[corpus](sample) if sample is not None else CORPORA[corpus]()  # type: ignore[call-arg]
+    if split == "heldout":
+        if sample is not None:
+            print("--sample and --split heldout are exclusive", file=sys.stderr)
+            return 2
+        docs = heldout(corpus)
+    else:
+        docs = CORPORA[corpus](sample) if sample is not None else CORPORA[corpus]()  # type: ignore[call-arg]
     out = run_dir(date, corpus)
     out.mkdir(parents=True, exist_ok=True)
     manifest = {
         "corpus": corpus,
         "sample": sample,
+        "split": split,
         "documents": [{"id": d.id, "category": d.category, "input": str(d.input), **d.meta} for d in docs],
     }
     (out / "docs.json").write_text(json.dumps(manifest, indent=1, default=str), encoding="utf-8")
@@ -74,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
         if name == "run":
             p.add_argument("--sample", type=int, default=None)
             p.add_argument("--timeout", type=float, default=300.0)
+            p.add_argument("--split", choices=("sample", "heldout"), default="sample")
     p = sub.add_parser("fetch", help="download corpora and set up the official scorers")
     p.add_argument("--only")
     p = sub.add_parser("compare", help="ezmd before/after on the same documents")
@@ -99,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
 
         return fetch(_names(args.only))
     if args.cmd == "run":
-        return cmd_run(args.corpus, _names(args.tools), args.sample, args.timeout, args.date)
+        return cmd_run(args.corpus, _names(args.tools), args.sample, args.timeout, args.date, args.split)
     if args.cmd == "score":
         from tools.bench.scoring import score_corpus
 

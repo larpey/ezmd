@@ -171,3 +171,13 @@ CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "omnidoc": omnidoc,
     "web": web,
 }
+
+
+def heldout(corpus: str) -> list[Doc]:
+    """The documents of `corpus` outside its default sample: never used to develop or tune ezmd, so a score
+    on them is not fitted to the published sample (D-0032 "on a held-out split")."""
+    seen = {d.id for d in CORPORA[corpus]()}  # type: ignore[call-arg]
+    rest = [d for d in CORPORA[corpus](None) if d.id not in seen]
+    if not rest:
+        raise ValueError(f"{corpus}: the default sample is the whole corpus, so there is no held-out split")
+    return rest

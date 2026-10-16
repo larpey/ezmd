@@ -15,6 +15,7 @@ import json
 import shutil
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -41,11 +42,17 @@ def _docker() -> str:
 
 
 def on_pypi(name: str, version: str) -> bool:
+    """Whether PyPI has `name==version`. A network failure stops the install: falling back to local wheels then
+    would label this checkout's code with a PyPI version it may not match."""
     try:
         with urllib.request.urlopen(f"https://pypi.org/pypi/{name}/json", timeout=30) as resp:
             releases = json.load(resp).get("releases", {})
-    except OSError:
-        return False
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            return False
+        raise SystemExit(f"PyPI lookup for {name} failed: HTTP {exc.code}") from exc
+    except OSError as exc:
+        raise SystemExit(f"cannot reach PyPI to check {name}=={version}: {exc}") from exc
     return bool(releases.get(version))
 
 
