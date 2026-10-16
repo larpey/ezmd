@@ -4,7 +4,7 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-10-15
+## [0.1.0] - 2026-10-16
 
 The first stable release. The code is the same as 0.1.0-rc5; see the release candidates below for everything in
 0.1.0.
@@ -14,6 +14,9 @@ The first stable release. The code is the same as 0.1.0-rc5; see the release can
 
 ### Documentation
 - The README and docs no longer describe release candidates.
+- Benchmarks (`docs/benchmarks.md`): ezmd against MinerU, Marker, Docling, pymupdf4llm, Unstructured, MarkItDown and
+  Trafilatura on olmOCR-Bench, OmniDocBench and an article-extraction benchmark. The harness (`tools/bench`), the
+  pins and the raw results are in the repository, so the numbers can be rerun.
 
 ## [0.1.0-rc5] - 2026-10-14
 
@@ -41,7 +44,7 @@ benchmark (D-0044 to D-0071). The npm SDK stays at 0.1.0-rc.3 (unchanged).
 
 ### Fixed
 - PDF text layer: lines are grouped by baseline with the effective font size, so real PDFs no longer split into
-  one line per glyph (51.7% to 0.5% broken words on a 101-page benchmark sample; olmOCR-Bench 0.277 to 0.335)
+  one line per glyph (51.7% to 0.5% broken words on a 101-page benchmark sample; olmOCR-Bench 0.277 to 0.335; see `bench/results/rc5`)
   (D-0050).
 - Turnstile verifies through an internal Caddy relay instead of failing (the API has no egress); no verdict is
   `503 turnstile_unavailable` (D-0044).

@@ -95,8 +95,8 @@ Overall: 32 / 85 tasks done
 | P4-T08 | Staging instance on a small Hetzner box using the full public overlay; k6 load run at target rates; 72-hour soak with synthetic traffic | pending | |  |
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | pending | |  |
 | P4-T10 | Production cutover: DNS, Cloudflare rules applied, Origin CA, Pi connected, uptime check, backups to off-box storage verified by a restore drill | pending | |  |
-| P4-B01 | Competitive benchmark harness (isolated competitor containers, pinned versions) | pending | |  |
-| P4-B02 | Benchmark corpora and metrics, per-category scorecards | pending | |  |
+| P4-B01 | Competitive benchmark harness (isolated competitor containers, pinned versions) | done | | tools/bench, `make bench`; pulled forward before v0.1.0 (D-0060) |
+| P4-B02 | Benchmark corpora and metrics, per-category scorecards | in_progress | | baseline subset 2026-10-13: olmOCR-Bench, OmniDocBench, AEB, fixtures (bench/results/2026-10-13); LLM-QA, self-generated sets, Marker pending |
 | P4-B03 | Iterate to win on the held-out split (benchmark gate, D-0032) | pending | |  |
 | P4-B04 | Publish docs/benchmarks.md with full results | pending | |  |
 | P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run benchmark story, Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | pending | |  |

@@ -1,0 +1,110 @@
+# Competitive benchmark tools (ROADMAP P4-B01, DECISIONS D-0032, D-0060).
+#
+# Every tool runs isolated: its own uv venv under $EZMD_BENCH_CACHE/venvs/<name> (default
+# ~/.cache/ezmd-bench), a pinned binary, or a pinned container. None of these is ever a dependency of an ezmd
+# package. `python -m tools.bench install` creates them; `requirements` are exact pins.
+#
+# Fields:
+#   kind          venv | binary | docker (docker: `image` pinned by digest; repo, corpora and runs are mounted)
+#   requirements  pip requirement strings installed into the venv (exact pins)
+#   torch         true: install torch with `uv pip --torch-backend auto` (CUDA wheel when a GPU is present)
+#   adapter       module under tools/bench/adapters/ that runs inside the tool's environment
+#   formats       input extensions the tool claims to read; other documents are not attempted (recorded as
+#                 "unsupported", which counts as a failure only where the scorecard says so)
+#   license       the tool's license, for the record (measuring only, never shipped)
+#   env           extra environment for the worker ("{cache}" is the cache directory)
+#   post_install  commands run after the venv is created ("{bin}" is the venv's scripts directory)
+#   containers    name prefixes of Docker containers the tool starts; their memory counts toward its peak
+
+[tools.ezmd]
+kind = "venv"
+# The published release. Install builds this checkout's wheels only when PyPI does not have the version yet.
+# The 2026-10-13 baseline used 0.1.0rc4 and the rc5 rerun a 0.1.0rc5 build (bench/results/*/notes.md).
+requirements = ["ezmd==0.1.0"]
+torch = false
+adapter = "ezmd_adapter"
+formats = ["*"]
+license = "Apache-2.0"
+
+[tools.ezmd-docs]
+kind = "venv"
+requirements = ["ezmd[docs]==0.1.0"]
+torch = true
+adapter = "ezmd_adapter"
+formats = ["*"]
+license = "Apache-2.0 (Docling MIT)"
+# docs/install.md "Docling models": ezmd never lets Docling download during a conversion, so the models are
+# fetched once with `docling-tools models download layout tableformer -o DIR` (install does this).
+env = { EZMD_DOCLING_ARTIFACTS = "{cache}/models/ezmd-docling" }
+post_install = [["{bin}/docling-tools", "models", "download", "layout", "tableformer", "-o", "{cache}/models/ezmd-docling"]]
+
+[tools.markitdown]
+kind = "venv"
+requirements = ["markitdown[all]==0.1.8"]
+torch = false
+adapter = "markitdown_adapter"
+formats = ["pdf", "docx", "pptx", "xlsx", "xls", "html", "htm", "epub", "csv", "json", "jsonl", "xml", "zip", "ipynb", "msg", "txt", "md", "rtf"]
+license = "MIT"
+
+[tools.docling]
+kind = "venv"
+requirements = ["docling==2.138.0"]
+torch = true
+adapter = "docling_adapter"
+formats = ["pdf", "docx", "pptx", "xlsx", "html", "htm", "md", "csv", "png", "jpg", "jpeg", "tif", "tiff", "bmp", "webp", "adoc", "xml"]
+license = "MIT"
+
+[tools.marker]
+kind = "venv"
+requirements = ["marker-pdf==2.0.0"]
+torch = true
+adapter = "marker_adapter"
+formats = ["pdf", "png", "jpg", "jpeg"]
+license = "GPL-3.0 code, OpenRAIL-M weights"
+# Marker 2 (surya) auto-selects its vLLM backend on an NVIDIA GPU and starts it as a Docker container
+# (vllm/vllm-openai); that container's memory is added to Marker's peak.
+containers = ["surya-vllm-"]
+env = { DOCKER_HF_CACHE_PATH = "{cache}/models/hf" }
+
+[tools.mineru]
+kind = "venv"
+requirements = ["mineru[torch]==4.0.12"]
+torch = true
+adapter = "mineru_adapter"
+formats = ["pdf", "png", "jpg", "jpeg"]
+license = "MinerU Open Source License (AGPL-3.0 derived)"
+
+[tools.pymupdf4llm]
+kind = "venv"
+requirements = ["pymupdf4llm==1.28.2"]
+torch = false
+adapter = "pymupdf4llm_adapter"
+formats = ["pdf", "epub", "xps", "fb2", "mobi"]
+license = "AGPL-3.0 or commercial"
+
+[tools.unstructured]
+# The official image bundles the system dependencies (libmagic, poppler, tesseract, LibreOffice) that the pip
+# install lacks on Windows (`unstructured[all-docs]` 0.27.25 in a venv segfaults importing python-magic there).
+kind = "docker"
+image = "downloads.unstructured.io/unstructured-io/unstructured@sha256:1dac8c29d1aba11b1297cd2c69337ad15b5ae1059cb795cc4f8ff0c8286b8bd9"
+image_version = "0.27.27-dev2"
+python = "python3"
+adapter = "unstructured_adapter"
+formats = ["pdf", "docx", "pptx", "xlsx", "html", "htm", "epub", "eml", "msg", "csv", "tsv", "json", "xml", "md", "txt", "rtf", "odt", "png", "jpg", "jpeg"]
+license = "Apache-2.0"
+
+[tools.trafilatura]
+kind = "venv"
+requirements = ["trafilatura==2.3.1"]
+torch = false
+adapter = "trafilatura_adapter"
+formats = ["html", "htm"]
+license = "Apache-2.0"
+
+[tools.pandoc]
+kind = "binary"
+version = "3.12.1"
+url = "https://github.com/jgm/pandoc/releases/download/3.12.1/pandoc-3.12.1-windows-x86_64.zip"
+adapter = "pandoc_adapter"
+formats = ["docx", "pptx", "xlsx", "odt", "epub", "html", "htm", "rtf", "ipynb", "csv", "tsv", "md", "rst", "tex", "org"]
+license = "GPL-2.0-or-later"
