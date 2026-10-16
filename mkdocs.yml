@@ -90,6 +90,7 @@ nav:
       - Code of conduct: code-of-conduct.md
   - Project:
       - Security policy: security-policy.md
+      - Benchmarks: benchmarks.md
       - Changelog: changelog.md
       - Roadmap: roadmap.md
       - Licenses: licenses.md
