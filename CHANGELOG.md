@@ -4,7 +4,29 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-10-16
+### Documentation
+- Benchmarks (`docs/benchmarks.md`): ezmd against MinerU, Marker, Docling, pymupdf4llm, Unstructured, MarkItDown and
+  Trafilatura on olmOCR-Bench, OmniDocBench and an article-extraction benchmark. The harness (`tools/bench`), the
+  pins and the raw results are in the repository, so the numbers can be rerun.
+
+## [0.1.1] - 2026-10-23
+
+A security release. No code changes; it rebuilds the packages and Docker images on fixed dependencies.
+
+### Security
+- Pillow 12.3.0 -> 13.0.0: 35 advisories, four of them critical in the image scan. Docling moves with it
+  (docling-slim 2.135.0 -> 2.142.1), because Docling 2.142 is the first that accepts Pillow 13.
+- certifi 2026.7.22 -> 2026.10.23: GHSA-6q48-6c7w-9gw2 (critical), emSign root certificates with compromised keys.
+- DOMPurify 3.4.16 -> 3.4.17 in the web app: GHSA-cg2g-xh64-v4q7 (critical), GHSA-mrv2-3pqr-j5jr (high) and a
+  low-severity advisory.
+
+pip installs of 0.1.0 already resolve the fixed Pillow and certifi, since neither is pinned; the 0.1.0 Docker
+images ship the old versions, so self-hosted deployments should move to 0.1.1.
+
+### Documentation
+- The README opens with a banner.
+
+## [0.1.0] - 2026-10-15
 
 The first stable release. The code is the same as 0.1.0-rc5; see the release candidates below for everything in
 0.1.0.
@@ -14,9 +36,6 @@ The first stable release. The code is the same as 0.1.0-rc5; see the release can
 
 ### Documentation
 - The README and docs no longer describe release candidates.
-- Benchmarks (`docs/benchmarks.md`): ezmd against MinerU, Marker, Docling, pymupdf4llm, Unstructured, MarkItDown and
-  Trafilatura on olmOCR-Bench, OmniDocBench and an article-extraction benchmark. The harness (`tools/bench`), the
-  pins and the raw results are in the repository, so the numbers can be rerun.
 
 ## [0.1.0-rc5] - 2026-10-14
 

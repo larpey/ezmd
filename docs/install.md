@@ -113,5 +113,5 @@ bash deploy/bootstrap.sh --plain-http --build              # or build from this 
 
 ## TypeScript client
 
-`npm install @ezmd/sdk` works once `0.1.0` is released; until then, build it from the checkout
-(`pnpm install && pnpm --filter @ezmd/sdk build`).
+`npm install @ezmd/sdk` installs the client from npm. To build it from the checkout instead, run
+`pnpm install && pnpm --filter @ezmd/sdk build`.

@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/assets/banner.jpg" alt="ezmd: anything to Markdown. A collage of documents runs into a red cut and comes out as clean Markdown." width="100%"></p>
+
 # ezmd
 
 Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
