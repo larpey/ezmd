@@ -8,7 +8,7 @@ COMPOSE := docker compose -f deploy/docker-compose.yml
 TMPDIR ?= /tmp
 HAS_PNPM := $(shell test -f pnpm-lock.yaml && command -v pnpm >/dev/null 2>&1 && echo yes)
 
-.PHONY: help gates lint fmt typecheck test golden licenses audit up down smoke images linux-gates
+.PHONY: help gates lint fmt typecheck test golden licenses audit up down smoke images linux-gates bench bench-full
 
 help:  ## list targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -72,3 +72,13 @@ smoke:  ## bring the stack up and run the end-to-end smoke test
 
 linux-gates:  ## run the Python gates in a throwaway Linux container (for Windows/macOS hosts)
 	bash tools/linux_gates.sh
+
+bench:  ## competitive benchmark: every free competitor on the smoke corpus -> bench/results/<date>/ (tools/bench)
+	uv run python -m tools.bench install
+	uv run python -m tools.bench smoke
+
+bench-full:  ## competitive benchmark baseline: all corpora (downloads them first; hours on one GPU)
+	uv run python -m tools.bench install
+	uv run python -m tools.bench fetch
+	for c in fixtures web olmocr omnidoc; do uv run python -m tools.bench run --corpus $$c && uv run python -m tools.bench score --corpus $$c; done
+	uv run python -m tools.bench report

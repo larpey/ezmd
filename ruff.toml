@@ -16,6 +16,9 @@ ignore = [
 "**/tests/**" = ["S", "N802", "RUF012"]
 "tests/**" = ["S"]
 "packages/core/src/ezmd/warnings/codes.py" = ["S105", "E501"]
+# Benchmark harness: seeded RNGs are for bootstrap statistics, and it starts each competitor (pinned paths from
+# competitors.toml, argument lists, never a shell) as a subprocess.
+"tools/bench/**" = ["S311", "S603", "S607"]
 
 [lint.isort]
 known-first-party = ["ezmd", "ezmd_converters", "ezmd_api", "ezmd_mcp", "ezmd_fetch_node"]

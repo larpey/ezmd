@@ -41,6 +41,8 @@ dev = [
     # Builds decks in tests (test_office_pptx_xlsx.py) and fixtures/office/_generate.py; MIT. Dev only: the
     # pptx converter reads the XML with lxml (docs/internal/decisions/P1-T01-office.md).
     "python-pptx>=1.0.2",
+    # Competitive benchmark harness (tools/bench): peak RSS over each competitor's process tree; BSD-3-Clause.
+    "psutil>=7.0",
 ]
 
 [tool.pytest.ini_options]

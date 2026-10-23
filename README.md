@@ -13,7 +13,8 @@ frontmatter under one of four output profiles, plus a JSON sidecar with block pr
 list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
 
 > **Status: 0.1.** Documents, web pages, data files, code, email, ebooks and archives convert today. OCR,
-> audio and video come next; see the [roadmap](docs/roadmap.md).
+> audio and video come next; see the [roadmap](docs/roadmap.md). How ezmd compares with other converters, with the
+> harness to rerun it: [benchmarks](docs/benchmarks.md).
 
 ## Install
 
