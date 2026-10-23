@@ -1,6 +1,6 @@
 {
   "name": "@ezmd/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dependency-free TypeScript client for the ezmd REST API.",
   "keywords": [
     "markdown",

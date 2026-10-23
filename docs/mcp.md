@@ -242,8 +242,8 @@ with `--remote` (below), or run `ezmd-mcp --transport http` yourself.
 
 ## Registry
 
-The package is published to the official MCP registry as `io.github.larpey/ezmd` with the final `0.1.0`
-release (release candidates are not listed). `packages/mcp/server.json` is validated against the registry
+The package is published to the official MCP registry as `io.github.larpey/ezmd` with each final release
+(release candidates are not listed). `packages/mcp/server.json` is validated against the registry
 schema in the test suite; the registry validates it again when the release workflow runs
 `mcp-publisher publish`. It lists the stdio package only; a `remotes` entry for a hosted `/mcp` is added
 once the API serves it.
