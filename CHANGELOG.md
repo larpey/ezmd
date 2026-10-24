@@ -14,6 +14,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   `1.0 · 10^20` no longer reads `1020`. Without extended Markdown, digit scripts render as `10²⁰` (D-0072).
 - PDF tables: a header cell centred over a two-line header joins the header row, header cells that span
   two columns no longer merge the columns below them, and a typeset formula is no longer emitted as a table.
+- PDF: math letters set outside Unicode's basic plane (TeX's math italic 𝑥, 𝐷) were decoded as two
+  replacement characters each and every variable in a formula was lost; they now read as plain `x`, `D`.
+- PDF: bold section headings only slightly larger than the body (ACL-style 12 pt over 11 pt) are headings,
+  and the title page's author and affiliation lines above "Abstract" are not.
 
 ## [0.1.1] - 2026-10-23
 

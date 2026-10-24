@@ -226,3 +226,43 @@ def test_small_unit_on_the_same_baseline_keeps_the_break(tmp_path: Path) -> None
     doc = convert_path(path)
     styled = [s for b in doc.blocks for s in getattr(b, "spans", []) if s.styles]
     assert styled == []
+
+
+# -- harder papers: Mamba, KAN, LLaMA -----------------------------------------------
+
+
+def test_math_alphanumerics_fold_to_plain_letters() -> None:
+    from ezmd_converters.pdf.textlayer import _fold
+
+    assert [_fold(c) for c in ("\U0001d465", "\U0001d403", "ℎ", "ﬁ", "∆", "x")] == [
+        "x",
+        "D",
+        "h",
+        "fi",
+        "∆",
+        "x",
+    ]
+
+
+def test_acl_bold_section_headings_just_above_body_size() -> None:
+    """ACL papers set 12 pt bold section headings over an 11 pt body: under 1.15x, still headings; a non-bold
+    line at that size (an affiliation) is not."""
+    title = _line(1, 117, 75, "LLaMA: Open and Efficient Foundation Language Models", 0, size=14.35, bold=True)
+    authors = _line(1, 130, 116, "Hugo Touvron, Thibaut Lavril, Gautier Izacard", 1, size=11.96, bold=True)
+    venue = _line(1, 277, 182, "Meta AI", 2, size=11.96)
+    abstract = _line(1, 157, 215, "Abstract", 3, size=11.96, bold=True)
+    intro = _line(1, 71, 391, "1 Introduction", 4, size=11.96, bold=True)
+    sub = _line(1, 71, 450, "2.1 Pre-training Data", 5, size=10.91, bold=True)
+    body = [_line(1, 71, 480 + 12 * k, "Body text " * 6, k, size=10.91) for k in range(6, 30)]
+    src = plan_headings([_page([title, authors, venue, abstract, intro, sub, *body])], 10.91, [], set())
+    levels = [src.level(ln) for ln in (title, authors, venue, abstract, intro, sub)]
+    assert levels == [1, None, None, 2, 2, 3]
+
+
+def test_lone_math_symbol_in_a_figure_is_not_a_heading() -> None:
+    sym = _line(1, 300, 200, "∆", 0, size=16)
+    letter = _line(1, 330, 200, "A", 1, size=16)
+    head = _line(1, 72, 100, "State Space Models", 2, size=16, bold=True)
+    lines = [head, sym, letter, *(_body(k, 240 + 12 * k) for k in range(3, 13))]
+    src = plan_headings([_page(lines)], 10.0, [], set())
+    assert [src.level(head), src.level(sym), src.level(letter)] == [1, None, None]

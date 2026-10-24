@@ -11,7 +11,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
-from ezmd_converters.pdf.layout import HEADING_RATIO, norm_text, size_levels
+from ezmd_converters.pdf.layout import HEADING_RATIO, norm_text
 from ezmd_converters.pdf.textlayer import Line, PageText
 
 SECTION_NUMBER = re.compile(r"^(\d{1,2}(?:\.\d{1,2}){0,4})\.?\s+(?=\S)")
@@ -23,6 +23,16 @@ PROSE_RUN = 3
 NUMBERED_MAX_WORDS = 12
 """A bold body-size line with a section number is a heading only when its title is at most this many words,
 starts with a capital, and does not end like a sentence."""
+FRONT_MATTER = frozenset(
+    {"abstract", "summary", "keywords", "index terms", "contents", "preface", "foreword", "executive summary"}
+)
+"""Before the first bookmarked heading, only these unbookmarked lines can be headings: the title page's author
+names and affiliations are set in heading sizes too."""
+BOLD_HEADING_RATIO = 1.05
+"""Bold lines this much larger than the body are heading candidates too: ACL-style papers set 12 pt section
+headings over an 11 pt body (1.09x, under `HEADING_RATIO`)."""
+MIN_HEADING_LETTERS = 2
+"""A heading has at least this many letters; a lone 𝐴 or ∆ in a diagram's lettering is not one."""
 TURNED_MINORITY = 0.5
 """Turned lines are margin furniture (an arXiv stamp) only when under this share of their page's lines; on a
 page typeset sideways they are the content and keep their headings."""
@@ -44,6 +54,10 @@ class HeadingSources:
     outline: dict[tuple[str, int | None], int] = field(default_factory=dict)
     outline_any: dict[str, int] = field(default_factory=dict)
     sizes: dict[float, int] = field(default_factory=dict)
+    bold_sizes: set[float] = field(default_factory=set)
+    """Sizes in `sizes` that are headings only when the line is bold (under `HEADING_RATIO` x body)."""
+    front: set[int] = field(default_factory=set)
+    """`Line.order` of title-page lines between the title and "Abstract": authors and affiliations."""
     use_struct: bool = False
     struct_only: bool = False
     used: dict[str, int] = field(default_factory=dict)
@@ -65,14 +79,18 @@ class HeadingSources:
     offset: int = 0
     """Added to outline levels when a first-page title sits above them."""
     _top: int = 2
+    _outline_started: bool = False
 
     def level(self, ln: Line) -> int | None:
         """Heading level of `ln`, or None. Call once per line, in reading order: outline bookmarks are consumed
         and the depth of "3.1" headings is measured from the last top-level numbered heading."""
-        if ln.order in self.turned or ln.order in self.prose:
+        if ln.order in self.turned or ln.order in self.prose or ln.order in self.front:
             return None
-        size_level = self.sizes.get(round(ln.size * 2) / 2)
-        if len(ln.text) > 200:
+        if sum(ch.isalpha() for ch in ln.text) < MIN_HEADING_LETTERS:
+            return None
+        size = round(ln.size * 2) / 2
+        size_level = self.sizes.get(size)
+        if len(ln.text) > 200 or (size in self.bold_sizes and not ln.bold):
             size_level = None
         if self.use_struct:
             hits = [self.struct[(ln.page - 1, m)] for m in ln.mcids if (ln.page - 1, m) in self.struct]
@@ -101,7 +119,10 @@ class HeadingSources:
             return self._count("font_size", 1)
         lvl = self._take_outline(ln)
         if lvl is not None:
+            self._outline_started = True
             return self._count("outline", lvl + self.offset)
+        if not self._outline_started and norm_text(ln.text) not in FRONT_MATTER:
+            return None
         lvl = self._outline_size_level(ln)
         if lvl is not None:
             return self._count("font_size", lvl + self.offset)
@@ -183,6 +204,41 @@ def prose_runs(pages: Sequence[PageText], body: float, skip: set[int]) -> set[in
     return out
 
 
+def heading_sizes(pages: Sequence[PageText], body: float, skip: set[int]) -> tuple[dict[float, int], set[float]]:
+    """Heading font sizes (rounded to 0.5 pt) mapped to levels 1..6, largest first, and the subset that counts
+    only for bold lines."""
+    big: set[float] = set()
+    bold: set[float] = set()
+    for p in pages:
+        for ln in p.lines:
+            if ln.order in skip or not 0 < len(ln.text) <= 200:
+                continue
+            size = round(ln.size * 2) / 2
+            if ln.size >= body * HEADING_RATIO:
+                big.add(size)
+            elif ln.bold and ln.size >= body * BOLD_HEADING_RATIO:
+                bold.add(size)
+    bold -= big
+    ordered = sorted(big | bold, reverse=True)
+    return {s: min(i + 1, 6) for i, s in enumerate(ordered)}, bold
+
+
+def front_matter_lines(pages: Sequence[PageText], skip: set[int]) -> set[int]:
+    """On the first page, the lines between the largest line (the title) and a front-matter heading such as
+    "Abstract": author names and affiliations, set in heading sizes. Empty when the page has no such heading."""
+    page = next((p for p in pages if any(ln.order not in skip for ln in p.lines)), None)
+    if page is None:
+        return set()
+    lines = [ln for ln in page.lines if ln.order not in skip and not ln.turn]
+    marker = next((ln for ln in lines if norm_text(ln.text) in FRONT_MATTER), None)
+    if marker is None:
+        return set()
+    top = max(ln.size for ln in lines)
+    title = [ln for ln in lines if round(ln.size * 2) == round(top * 2)]
+    below = max(ln.y1 for ln in title)
+    return {ln.order for ln in lines if below <= ln.y0 < marker.y0 and ln not in title}
+
+
 def plan_outline(src: HeadingSources, pages: Sequence[PageText], skip: set[int]) -> None:
     """Switch `src` to outline mode when the outline covers the body, and find the first-page title above it."""
     titles: Counter[str] = Counter()
@@ -229,8 +285,9 @@ def plan_headings(
     """Heading sources for the document; `skip` holds running header/footer orders."""
     turned = minority_turned(pages)
     prose = prose_runs(pages, body, skip | turned)
-    sizes = size_levels(pages, body, skip | prose | turned)
-    src = HeadingSources(sizes=sizes, body=body, prose=prose, turned=turned)
+    sizes, bold_sizes = heading_sizes(pages, body, skip | prose | turned)
+    src = HeadingSources(sizes=sizes, bold_sizes=bold_sizes, body=body, prose=prose, turned=turned)
+    src.front = front_matter_lines(pages, skip)
     for level, title, page in outline:
         key = norm_text(title)
         src.outline.setdefault((key, page), level)

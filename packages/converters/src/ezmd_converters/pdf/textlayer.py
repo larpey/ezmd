@@ -79,6 +79,20 @@ class PageText:
 
 _LIGATURE_LO, _LIGATURE_HI = chr(0xFB00), chr(0xFB06)
 """Latin ligatures (ff, fi, fl, ffi, ffl, long st, st) are NFKC-expanded (docs/internal/spec/part2.md 1e.8)."""
+_MATH_ALNUM_LO, _MATH_ALNUM_HI = 0x1D400, 0x1D7FF
+"""Mathematical Alphanumeric Symbols (TeX math italic 𝑥, bold 𝐃, double-struck 𝔼): NFKC-folded to the plain
+letter or digit, like U+210E ℎ (Planck constant, TeX's math italic h). The style carries no meaning in text
+and each costs several tokens where the letter costs one."""
+_SURROGATE_HI = range(0xD800, 0xDC00)
+_SURROGATE_LO = range(0xDC00, 0xE000)
+
+
+def _fold(ch: str) -> str:
+    """Expand ligatures and fold math alphanumerics to plain characters; everything else is kept."""
+    code = ord(ch)
+    if _LIGATURE_LO <= ch <= _LIGATURE_HI or _MATH_ALNUM_LO <= code <= _MATH_ALNUM_HI or code == 0x210E:
+        return unicodedata.normalize("NFKC", ch)
+    return ch
 
 
 @dataclass(slots=True)
@@ -265,8 +279,19 @@ def _glyphs(
     cache: dict[int, tuple[bool, int]] = {}
     private = 0
     n = textpage.count_chars()
+    pair = False
     for i in range(n):
+        if pair:
+            pair = False
+            continue
         code = pdfium_c.FPDFText_GetUnicode(textpage.raw, i)
+        if code in _SURROGATE_HI and i + 1 < n:
+            low = pdfium_c.FPDFText_GetUnicode(textpage.raw, i + 1)
+            if low in _SURROGATE_LO:
+                # pdfium reports a character outside the BMP (TeX math italic 𝑥) as two UTF-16 halves at
+                # consecutive indices with the same box; decoded alone each became U+FFFD.
+                code = 0x10000 + ((code - 0xD800) << 10) + (low - 0xDC00)
+                pair = True
         if code in _HYPHEN_CODES:
             code = 0x2D  # pdfium reports a line-end hyphen as U+0002; soft hyphens are U+00AD
         ch = chr(code) if 0 < code < 0x110000 else ""
@@ -285,7 +310,7 @@ def _glyphs(
         box = tf.box(left, bottom, right, top)
         size, turn, origin = _size_and_frame(textpage, i, tf, box)
         href = _href_at(links, (left + right) / 2, (bottom + top) / 2) if links else None
-        for c in unicodedata.normalize("NFKC", ch) if _LIGATURE_LO <= ch <= _LIGATURE_HI else ch:
+        for c in _fold(ch):
             out.append(_placed(_Glyph(c, *box, size, bold, mcid, href), turn, origin))
     return out, private
 
