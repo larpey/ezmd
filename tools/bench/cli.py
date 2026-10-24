@@ -55,7 +55,15 @@ def cmd_run(
         "split": split,
         "documents": [{"id": d.id, "category": d.category, "input": str(d.input), **d.meta} for d in docs],
     }
-    (out / "docs.json").write_text(json.dumps(manifest, indent=1, default=str), encoding="utf-8")
+    existing = out / "docs.json"
+    if existing.exists():
+        # results.jsonl is append-only and the scorers read this manifest, so one run directory holds one
+        # document set; another sample or split needs another --date.
+        old = {d["id"] for d in json.loads(existing.read_text(encoding="utf-8"))["documents"]}
+        if old != {d.id for d in docs}:
+            print(f"{out} already holds a run over a different document set; use another --date", file=sys.stderr)
+            return 2
+    existing.write_text(json.dumps(manifest, indent=1, default=str), encoding="utf-8")
     print(f"{corpus}: {len(docs)} documents -> {out}")
     for name in names:
         tool = all_tools[name]

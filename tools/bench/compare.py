@@ -18,14 +18,17 @@ from tools.bench.report import EZMD_TOOLS, MIN_N, _label
 from tools.bench.stats import paired_diff_ci
 
 
-def _categories(run: Path) -> dict[str, dict[str, Any]]:
-    """category -> tool -> {value, ci, n, per_doc}, from every scores.json of a dated run."""
+def _categories(run: Path) -> tuple[dict[str, dict[str, Any]], dict[str, bool]]:
+    """(category -> tool -> {value, ci, n, per_doc}, category -> higher is better), from every scores.json of a
+    dated run."""
     out: dict[str, dict[str, Any]] = {}
+    higher: dict[str, bool] = {}
     for scores_path in sorted(run.glob("*/scores.json")):
         corpus = scores_path.parent.name
         scores = json.loads(scores_path.read_text(encoding="utf-8"))
+        directions: dict[str, bool] = scores.get("category_direction", {})
         for tool, s in scores["tools"].items():
-            if corpus == "omnidoc":
+            if corpus in ("omnidoc", "arxiv"):
                 cats = s["categories"]
             elif corpus == "olmocr":
                 cats = {"pdf-olmocr": {**s["primary"], "per_doc": s["per_doc"]}}
@@ -38,23 +41,28 @@ def _categories(run: Path) -> dict[str, dict[str, Any]]:
                     cats[f"fixtures-{fam}"] = {**v, "per_doc": docs}
             for cat, v in cats.items():
                 out.setdefault(cat, {})[tool] = v
-    return out
+                higher[cat] = directions.get(cat, bool(scores.get("higher_is_better", True)))
+    return out, higher
 
 
-def _paired(a: dict[str, float], b: dict[str, float]) -> dict[str, Any] | None:
+def _paired(a: dict[str, float], b: dict[str, float], higher: bool = True) -> dict[str, Any] | None:
     common = sorted(set(a) & set(b))
     if len(common) < MIN_N:
         return None
     diff, (lo, hi) = paired_diff_ci([a[k] for k in common], [b[k] for k in common])
-    verdict = "beats" if lo > 0 else "trails" if hi < 0 else "ties"
+    if higher:
+        verdict = "beats" if lo > 0 else "trails" if hi < 0 else "ties"
+    else:
+        verdict = "beats" if hi < 0 else "trails" if lo > 0 else "ties"
     return {"diff": round(diff, 4), "ci": [round(lo, 4), round(hi, 4)], "n": len(common), "verdict": verdict}
 
 
 def compare(before: str, after: str, rivals: list[str]) -> dict[str, Any]:
-    b = _categories(cache_dir() / "runs" / before)
-    a = _categories(cache_dir() / "runs" / after)
-    out: dict[str, Any] = {"before": before, "after": after, "categories": {}}
+    b, _ = _categories(cache_dir() / "runs" / before)
+    a, higher = _categories(cache_dir() / "runs" / after)
+    out: dict[str, Any] = {"before": before, "after": after, "categories": {}, "directions": higher}
     for cat in sorted(set(a) & set(b)):
+        up = higher.get(cat, True)
         rows: dict[str, Any] = {}
         for ez in EZMD_TOOLS:
             if ez not in a[cat] or ez not in b[cat]:
@@ -63,13 +71,13 @@ def compare(before: str, after: str, rivals: list[str]) -> dict[str, Any]:
             row: dict[str, Any] = {
                 "before": {k: old.get(k) for k in ("value", "ci", "n")},
                 "after": {k: new.get(k) for k in ("value", "ci", "n")},
-                "after_minus_before": _paired(new.get("per_doc") or {}, old.get("per_doc") or {}),
+                "after_minus_before": _paired(new.get("per_doc") or {}, old.get("per_doc") or {}, up),
                 "vs": {},
             }
             for rival in rivals:
                 if rival in b[cat]:
                     r = b[cat][rival]
-                    row["vs"][rival] = {"value": r.get("value"), **(_paired(new["per_doc"], r["per_doc"]) or {})}
+                    row["vs"][rival] = {"value": r.get("value"), **(_paired(new["per_doc"], r["per_doc"], up) or {})}
             rows[ez] = row
         if rows:
             out["categories"][cat] = rows

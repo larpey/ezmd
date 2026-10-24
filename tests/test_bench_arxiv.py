@@ -54,6 +54,9 @@ def test_arxiv_corpus_reads_the_manifest_and_samples_with_the_seed(
     assert len(sample) == 3 and sample == corpora.arxiv(3)
     assert len(corpora.arxiv()) == corpora.ARXIV_SAMPLE
     assert {d.id for d in corpora.heldout("arxiv")} | {d.id for d in corpora.arxiv()} == {d.id for d in docs}
+    (docs[0].input).unlink()
+    with pytest.raises(FileNotFoundError, match="1 of 40 papers"):
+        corpora.arxiv()
 
 
 def test_norm_and_words_fold_tex_typography() -> None:

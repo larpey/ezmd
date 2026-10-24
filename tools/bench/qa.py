@@ -286,7 +286,8 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
                 if len(answers) == len(questions):
                     break
             if len(answers) != len(questions):
-                answers = (answers + [UNKNOWN] * len(questions))[: len(questions)]
+                # Not written: a padded record would be cached as answered and graded as wrong.
+                return f"{r.tool} {r.doc_id}: FAILED, the model returned {len(answers)} of {len(questions)} answers"
         items = [{**q, "answer_given": a} for q, a in zip(questions, answers, strict=True)]
         record = {"model": client.model, "server": client.base_url, "tool": r.tool, "doc": r.doc_id, "items": items}
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -330,7 +331,8 @@ def grade(client: Client, run_dir: Path, tools: list[str] | None, workers: int) 
                 if len(graded) == len(to_grade):
                     break
             if len(graded) != len(to_grade):
-                graded = (graded + [False] * len(to_grade))[: len(to_grade)]
+                # Left ungraded so the next run retries it; a padded False would hide the failure in the score.
+                return f"{record['tool']} {record['doc']}: FAILED, the grader returned {len(graded)} of {len(to_grade)}"
         it_graded = iter(graded)
         verdicts = [False if s else next(it_graded) for s in shortcut]
         for it, v in zip(pending, verdicts, strict=True):

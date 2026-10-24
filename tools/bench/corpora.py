@@ -190,11 +190,20 @@ def arxiv(sample: int | None = ARXIV_SAMPLE) -> list[Doc]:
     30-paper run keeps the subject mix of the 109."""
     pdf_dir = arxiv_root() / "papers"
     docs = []
+    missing = []
     for entry in arxiv_manifest():
         path = pdf_dir / f"{entry['id']}.pdf"
-        if path.exists():
-            meta = {"title": entry["title"], "license": entry["license"], "year": entry.get("year")}
-            docs.append(Doc("arxiv", str(entry["id"]).replace(".", "_"), path, _slug(entry["set"]), meta))
+        if not path.exists():
+            missing.append(str(entry["id"]))
+            continue
+        meta = {"title": entry["title"], "license": entry["license"], "year": entry.get("year")}
+        docs.append(Doc("arxiv", str(entry["id"]).replace(".", "_"), path, _slug(entry["set"]), meta))
+    if missing:
+        # A seeded sample of a partial corpus is a different cohort; say so instead of sampling what is there.
+        raise FileNotFoundError(
+            f"arxiv: {len(missing)} of {len(missing) + len(docs)} papers are not in {pdf_dir} "
+            f"(first: {missing[0]}); run `python -m tools.bench fetch --only arxiv`"
+        )
     docs.sort(key=lambda d: d.id)
     return _sample(docs, sample)
 

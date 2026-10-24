@@ -129,6 +129,7 @@ def fetch_arxiv() -> None:
     for entry in arxiv_manifest():
         dest = out / f"{entry['id']}.pdf"
         if dest.exists() and dest.stat().st_size > 0:
+            _check_digest(dest, entry)
             continue
         url = f"https://arxiv.org/pdf/{entry['id']}"
         req = urllib.request.Request(url, headers={"User-Agent": "ezmd-bench/1 (https://github.com/larpey/ezmd)"})
@@ -137,8 +138,22 @@ def fetch_arxiv() -> None:
         if not data.startswith(b"%PDF"):
             raise RuntimeError(f"{url}: not a PDF ({data[:40]!r})")
         dest.write_bytes(data)
+        _check_digest(dest, entry)
         print(f"arxiv: {dest.name} ({len(data) // 1024} KB)", flush=True)
         time.sleep(3)
+
+
+def _check_digest(pdf: Path, entry: dict[str, object]) -> None:
+    """The manifest pins each paper by the sha256 of the bytes the results were measured on. arXiv may replace
+    a PDF (a new version, a regenerated file); a different file is a different corpus, so it is an error."""
+    import hashlib
+
+    want = entry.get("sha256")
+    if not want:
+        return
+    got = hashlib.sha256(pdf.read_bytes()).hexdigest()
+    if got != want:
+        raise RuntimeError(f"arxiv: {pdf.name} has sha256 {got[:12]}..., the manifest pins {str(want)[:12]}...")
 
 
 FETCHERS = {"olmocr": fetch_olmocr, "omnidoc": fetch_omnidoc, "web": fetch_web, "arxiv": fetch_arxiv}

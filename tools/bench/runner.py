@@ -372,10 +372,10 @@ def run_tool(
                 yield result
                 continue
             if worker is None or not worker.alive:
-                worker = Worker(launch or worker_launch(tool, pandoc), log)
                 try:
+                    worker = Worker(launch or worker_launch(tool, pandoc), log)
                     worker.start()
-                except RuntimeError as exc:
+                except (RuntimeError, OSError) as exc:  # docker or the venv missing: install skipped the tool
                     result = DocResult(
                         doc.corpus,
                         doc.id,
