@@ -172,6 +172,8 @@ def test_qa_scores_become_the_primary_metric(tmp_path: Path, monkeypatch: pytest
 def test_parse_json_array_tolerates_fences_and_chatter() -> None:
     assert qa.parse_json_array('Sure!\n```json\n["a", "b"]\n```\nDone.') == ["a", "b"]
     assert qa.parse_json_array('[{"question": "q"}]') == [{"question": "q"}]
+    tex = '[{"answer": "\\alpha = 1", "quote": "the \\sigma term\\n"}]'
+    assert qa.parse_json_array(tex) == [{"answer": "\\alpha = 1", "quote": "the \\sigma term\n"}]
     with pytest.raises(ValueError):
         qa.parse_json_array("no array here")
     with pytest.raises(ValueError):

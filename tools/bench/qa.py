@@ -48,6 +48,8 @@ MODEL_TTL_SECONDS = 4 * 3600
 """LM Studio unloads the model after this long idle; a run keeps it busy, the next morning does not."""
 QUESTIONS_WANTED = 6
 QUESTIONS_KEPT = 5
+MIN_QUESTIONS = 3
+"""A paper with fewer valid questions than this is generated again on the next run."""
 SEED = 20261013
 UNKNOWN = "UNKNOWN"
 
@@ -123,6 +125,7 @@ class Client:
 
 
 _FENCE = re.compile(r"^```[a-zA-Z]*\s*|\s*```$", re.M)
+_BAD_ESCAPE = re.compile(r"\\(?![\\\"/bfnrtu])")
 
 
 def _note(exc: Exception) -> None:
@@ -136,7 +139,13 @@ def parse_json_array(text: str) -> list[Any]:
     start, end = cleaned.find("["), cleaned.rfind("]")
     if start < 0 or end <= start:
         raise ValueError(f"no JSON array in reply: {text[:200]!r}")
-    value = json.loads(cleaned[start : end + 1])
+    body = cleaned[start : end + 1]
+    try:
+        value = json.loads(body)
+    except json.JSONDecodeError:
+        # Models copy TeX into quotes as written (\alpha, \Delta): a backslash that starts no JSON escape is a
+        # literal backslash.
+        value = json.loads(_BAD_ESCAPE.sub(r"\\\\", body))
     if not isinstance(value, list):
         raise ValueError("reply is not a JSON array")
     return value
@@ -192,7 +201,9 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
     def one(doc: dict[str, Any]) -> str:
         path = qa_dir() / f"{doc['id']}.json"
         if path.exists():
-            return f"{doc['id']}: cached ({len(json.loads(path.read_text(encoding='utf-8'))['questions'])} questions)"
+            have = len(json.loads(path.read_text(encoding="utf-8"))["questions"])
+            if have >= MIN_QUESTIONS:
+                return f"{doc['id']}: cached ({have} questions)"
         text = cut_tokens(witness(doc["id"], Path(doc["input"])).text, DOC_TOKENS)
         kept: list[dict[str, str]] = []
         for _attempt in range(2):
@@ -202,7 +213,7 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
             except (ValueError, json.JSONDecodeError) as exc:
                 _note(exc)
                 continue
-            if len(kept) >= 3:
+            if len(kept) >= MIN_QUESTIONS:
                 break
         record = {"model": client.model, "server": client.base_url, "doc": doc["id"], "questions": kept}
         path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
