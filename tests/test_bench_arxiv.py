@@ -186,11 +186,13 @@ def test_validate_questions_drops_pairs_whose_quote_is_not_in_the_text() -> None
         {"question": "What accuracy?", "answer": "92.4%", "quote": "The model reaches 92.4% accuracy on the test set."},
         {"question": "How long?", "answer": "3 days", "quote": "training took 3 DAYS on 8 gpus"},
         {"question": "Invented?", "answer": "yes", "quote": "This sentence is not in the paper."},
+        {"question": "Rewrapped?", "answer": "8 GPUs", "quote": "Training took 3 days on 8 GPUs in total."},
+        {"question": "Wrong number?", "answer": "16 GPUs", "quote": "Training took 3 days on 8 GPUs."},
         {"question": "Long answer", "answer": " ".join(["w"] * 20), "quote": "Training took 3 days on 8 GPUs."},
         "not a dict",
     ]
     kept = qa.validate_questions(raw, text)
-    assert [k["answer"] for k in kept] == ["92.4%", "3 days"]
+    assert [k["answer"] for k in kept] == ["92.4%", "3 days", "8 GPUs"]
 
 
 def test_cut_tokens_keeps_a_prefix_within_the_limit() -> None:

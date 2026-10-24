@@ -7,7 +7,8 @@
 
 Why a text-layer witness: the questions are written from the PDF's own text (pypdfium2), never from any tool's
 output, so no converter gets to choose what is asked. Every question must come with a quote, and a question
-whose quote is not in the text layer is thrown away: that filters invented facts. The same model answers from
+whose quote is not grounded in the text layer (verbatim, or most of its words plus every word of the answer)
+is thrown away: that filters invented facts. The same model answers from
 each tool's Markdown with the instruction to say UNKNOWN when the text does not contain the answer, then grades
 each answer against the reference. Grading short factual answers is an easy task for a local model; writing the
 questions is the hard one, which is why their quotes are checked mechanically.
@@ -35,7 +36,7 @@ from typing import Any
 
 from tools.bench.corpora import arxiv_root
 from tools.bench.schema import DocResult, read_results
-from tools.bench.scoring.arxiv import count_tokens, norm, witness
+from tools.bench.scoring.arxiv import WORD, count_tokens, norm, witness
 from tools.bench.scoring.text import read_output
 
 DEFAULT_URL = "http://localhost:1234/v1"
@@ -167,9 +168,32 @@ def cut_tokens(text: str, limit: int) -> str:
     return cut[:nl] if nl > lo // 2 else cut
 
 
+QUOTE_WORDS_FOUND = 0.8
+TOKEN = re.compile(r"[a-z0-9]+")
+"""Any alphanumeric run: an answer's numbers ("8", "92") must be in the text layer too."""
+"""Share of a quote's words (3+ alphanumerics) that must occur in the text layer for the pair to be kept."""
+
+
+def grounded(quote: str, answer: str, text_words: set[str], haystack: str) -> bool:
+    """Whether a question is backed by the text layer: every word and number of the answer occurs in it, and
+    its quote occurs verbatim (whitespace and case folded) or at least QUOTE_WORDS_FOUND of the quote's words do.
+    Models rarely copy a sentence byte for byte across a PDF's hyphenation and line breaks; the word test keeps
+    such quotes while still throwing out invented facts."""
+    awords = TOKEN.findall(norm(answer))
+    if not all(w in text_words for w in awords):
+        return False
+    if norm(quote) in haystack:
+        return True
+    qwords = WORD.findall(norm(quote))
+    if not qwords:
+        return False
+    return sum(1 for w in qwords if w in text_words) / len(qwords) >= QUOTE_WORDS_FOUND
+
+
 def validate_questions(raw: list[Any], text: str) -> list[dict[str, str]]:
-    """Keep pairs whose quote really occurs in the text layer (whitespace and case folded)."""
+    """Keep pairs that are grounded in the text layer (see `grounded`), at most QUESTIONS_KEPT."""
     haystack = norm(text)
+    text_words = set(TOKEN.findall(haystack))
     kept: list[dict[str, str]] = []
     for item in raw:
         if not isinstance(item, dict):
@@ -177,7 +201,7 @@ def validate_questions(raw: list[Any], text: str) -> list[dict[str, str]]:
         q, a, quote = (str(item.get(k, "")).strip() for k in ("question", "answer", "quote"))
         if not (q and a and quote) or len(a.split()) > 16:
             continue
-        if norm(quote) not in haystack:
+        if not grounded(quote, a, text_words, haystack):
             continue
         kept.append({"question": q, "answer": a, "quote": quote})
         if len(kept) == QUESTIONS_KEPT:
