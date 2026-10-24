@@ -87,20 +87,26 @@ profiles; `ezmd 0.1.0` is the release.
 
 | tool | answer accuracy | correct answers per 10k tokens | text recall | source recall | silent loss (lower is better) | outline recall | tokens per page, o200k / Claude (lower is better) |
 |---|---|---|---|---|---|---|---|
-| Docling 2.138.0 | 0.800 [0.707, 0.887] | 2.53 | 0.978 | 0.943 | 0.10 | 0.844 | 930 / 1,425 |
-| MinerU 4.0.12 | 0.796 [0.736, 0.849] | 2.07 | 0.969 | 0.944 | 0.13 | 0.874 | 1,226 / 1,819 |
-| **ezmd 0.1.0** | 0.782 [0.702, 0.856] | 2.03 | 0.994 | 0.946 | 0.00 | 0.506 | 1,181 / 1,739 |
-| **ezmd main, rag** | 0.782 [0.693, 0.862] | 1.88 | 0.992 | 0.946 | 0.00 | 0.786 | 1,363 / 2,067 |
-| pymupdf4llm 1.28.2 | 0.771 [0.671, 0.860] | 2.25 | 0.973 | 0.935 | 0.17 | 0.843 | 1,055 / 1,591 |
-| **ezmd main, full** | 0.758 [0.660, 0.847] | 2.06 | 0.992 | 0.947 | 0.00 | 0.786 | 1,158 / 1,710 |
-| **ezmd main, compact** | 0.729 [0.636, 0.813] | 3.07 | 0.707 | 0.707 | 0.00 | 0.567 | 727 / 1,097 |
-| MarkItDown 0.1.8 | 0.718 [0.629, 0.804] | 1.61 | 0.677 | 0.616 | 0.90 | 0.010 | 1,441 / 2,112 |
+| MinerU 4.0.12 | 0.816 [0.758, 0.869] | 2.13 | 0.969 | 0.944 | 0.13 | 0.874 | 1,226 / 1,819 |
+| **ezmd main, rag** | 0.802 [0.722, 0.876] | 1.89 | 0.992 | 0.946 | 0.00 | 0.786 | 1,363 / 2,067 |
+| Docling 2.138.0 | 0.800 [0.707, 0.887] | 2.52 | 0.978 | 0.943 | 0.10 | 0.844 | 930 / 1,425 |
+| **ezmd 0.1.0** | 0.776 [0.698, 0.849] | 2.03 | 0.994 | 0.946 | 0.00 | 0.506 | 1,181 / 1,739 |
+| pymupdf4llm 1.28.2 | 0.776 [0.676, 0.860] | 2.27 | 0.973 | 0.935 | 0.17 | 0.843 | 1,055 / 1,591 |
+| **ezmd main, full** | 0.762 [0.673, 0.847] | 2.05 | 0.992 | 0.947 | 0.00 | 0.786 | 1,158 / 1,710 |
+| MarkItDown 0.1.8 | 0.738 [0.651, 0.820] | 1.68 | 0.677 | 0.616 | 0.90 | 0.010 | 1,441 / 2,112 |
+| **ezmd main, compact** | 0.729 [0.636, 0.813] | 3.05 | 0.707 | 0.707 | 0.00 | 0.567 | 727 / 1,097 |
+
+Answer accuracy is graded consistently: the grader's verdict for a given document, question and answer text is
+cached and shared by every tool and run, because the local grader, asked twice about the same answer, changed its
+mind on 20 of 1,119 answers in this run alone. The same cache holds the model's answers keyed by the exact text it
+saw, so a tool whose output does not change between runs scores the same in both (the answers themselves proved
+deterministic: 148 of 148 identical on a re-run over the same text).
 
 What it says, with the paired tests over the same 30 papers (`bench/results/2026-10-24/summary.md`):
 
-- **On born-digital papers the converter barely moves answer accuracy.** All three ezmd rows tie with Docling on
-  the paired test, and every other tool's interval overlaps Docling's; even MarkItDown's output, which glues words together and loses a third of the text, still answers 72% of
-  the questions. The questions are facts a model can often find in a damaged text. Where converters differ is in
+- **On born-digital papers the converter barely moves answer accuracy.** All three ezmd rows tie with Docling and
+  MinerU on the paired test, and every tool's interval overlaps every other's; even MarkItDown's output, which
+  glues words together and loses a third of the text, still answers 74% of the questions. The questions are facts a model can often find in a damaged text. Where converters differ is in
   what reaches the model and whether anyone is told.
 - **Against the independent witness the text-recall lead mostly disappears.** Text recall against the PDF's own
   text layer puts ezmd 0.014 ahead of Docling ([+0.008, +0.020], paired) and 0.023 ahead of MinerU. Against the
@@ -123,8 +129,42 @@ What it says, with the paired tests over the same 30 papers (`bench/results/2026
   is a converter fix or a profile default, and they are the next work.
 - **Outline recall jumped with the PDF fixes** (0.506 for 0.1.0 to 0.786 for main) and still trails MinerU
   (0.874) and Docling (0.844).
-- **Compact is the one profile that beats Docling on correct answers per token** (3.07 against 2.53, paired
-  +0.54 [+0.00, +1.12]), at the cost of answer accuracy on the papers it cuts.
+- **Compact is the one profile that beats Docling on correct answers per token** (3.05 against 2.52), at the
+  cost of answer accuracy on the papers it cuts.
+
+### After the fixes
+
+The measurements above are the state of `main` on the morning of 2026-10-24. The same day, four changes went in
+because of them, and the three `ezmd main` rows were converted and scored again on the same papers with the same
+cached questions and verdicts (`bench/results/2026-10-24-fix2/compare.md` for full and compact,
+`bench/results/2026-10-24-fix3/compare.md` for rag, which was run once more after the marker change):
+
+- paragraphs follow the page's own line spacing (double-spaced manuscripts were one paragraph per line);
+- a damaged PDF that qpdf repairs on open carries a `file_repaired` warning (#23, the one silent loss below);
+- headerless tables render an empty header row instead of `| col_1 | col_2 |`, a marker comment and a `Columns:`
+  line;
+- `rag` chunk markers carry the chunk number only; the content hash and token count stay in the sidecar (D-0073).
+
+| profile | answer accuracy before → after | tokens per page, o200k before → after | Claude | correct answers per 10k tokens | text recall | source recall |
+|---|---|---|---|---|---|---|
+| **ezmd main, full** | 0.762 → 0.762 | 1,158 → 1,140 | 1,710 → 1,681 | 2.05 → 2.12 | 0.992 → 0.992 | 0.947 → 0.947 |
+| **ezmd main, compact** | 0.729 → 0.742 | 727 → 736 | 1,097 → 1,112 | 3.05 → 3.06 | 0.707 → 0.723 | 0.707 → 0.714 |
+| **ezmd main, rag** | 0.802 → 0.742 | 1,363 → 1,295 | 2,067 → 1,975 | 1.89 → 1.84 | 0.992 → 0.992 | 0.946 → 0.946 |
+
+What moved and what did not: recall is unchanged to the third decimal, because none of the four changes touches
+a word of the document; they remove text ezmd had added around it. Full is 1.6% smaller and compact fits 2% more
+of each paper under its cap. Rag is 5% smaller. The rag profile's answer accuracy fell by nine of 148 answers:
+its text did not change, its chunk boundaries did (joined paragraphs pack differently), and the answering model,
+deterministic on identical text, answered 22 questions differently on the re-laid-out text, 14 of them worse.
+The full profile over the same text moved zero. That is the measured width of this metric's sensitivity to layout,
+about the same as its confidence interval, and the reason the page leads with recall and silent loss rather than
+with answer accuracy. On the damaged set, the fixed build's silent loss is 0 of 30 (from 1 of 30) with recall
+unchanged, and the warning still names the unreadable pages exactly.
+
+The token gap that remains is, to the word, what ezmd keeps and Docling does not: ezmd's output has 451,000 words
+to Docling's 378,000 over the 30 papers, and after the fixes the largest single difference is the equations,
+which Docling replaces with 850 `formula-not-decoded` comments and ezmd writes out as text. The next converter
+work is the figure lettering that still becomes tables.
 
 Speed and footprint, from a second pass over the same 30 papers with the GPU otherwise idle (the first pass shared
 it with a game client; outputs were identical, so every other column stands):

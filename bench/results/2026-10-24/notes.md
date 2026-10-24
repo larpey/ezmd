@@ -72,3 +72,24 @@
   compact 0.37, Docling 0.47, pymupdf4llm 0.52, ezmd main 0.55, ezmd 0.1.0 0.56, MinerU 0.59, rag 0.67,
   MarkItDown 0.69. These live in scores.json `secondary` (`claude_pdf_upload_tokens_per_page`,
   `claude_share_of_pdf_upload`), not in the category tables.
+
+## Afternoon: the fixes, rerun, and two things learned about the grader
+
+- Verdict consistency. Before any converter change, the grader (gpt-oss-20b, temperature 0, fixed seed) had given
+  20 of the 1,119 non-UNKNOWN answers in this run a different verdict for the same document, question and answer
+  text when they came from different tools. Verdicts are now cached per (document, question, answer) and shared;
+  every run in this directory was ungraded and regraded through the cache, which is why the answer-accuracy
+  column differs slightly from the morning's first write-up (MinerU 0.796 -> 0.816, MarkItDown 0.718 -> 0.738,
+  ezmd 0.1.0 0.782 -> 0.776, ezmd main 0.758 -> 0.762, rag 0.782 -> 0.802; Docling and compact unchanged). The
+  answers themselves are deterministic: re-answering the unchanged rag outputs (`runs/2026-10-24-noise`)
+  reproduced 148 of 148 answer texts, so answers are cached by exact text as well.
+- The fixes (commits c8984ec, 4ee8fb9, 2706575 on the PR branch): paragraph assembly by measured line spacing,
+  `file_repaired`, empty header rows for headerless tables, short chunk markers. `runs/2026-10-24-fix2` has
+  full/compact/rag with the first three; `runs/2026-10-24-fix3` has rag with all four. Recall unchanged to the
+  fourth decimal; full 1,158 -> 1,140 o200k tokens per page (paired -18 [-23, -13]); rag 1,363 -> 1,295
+  (paired -69 [-82, -57]); compact 727 -> 736 because more of each paper fits under its cap (text recall 0.707 ->
+  0.723). Damaged set: ezmd-main silent loss 1/30 -> 0/30, page accuracy 1.00, trunc recall 0.486 unchanged.
+- Rag answer accuracy 0.802 -> 0.742 (paired -0.060 [-0.127, +0.007]) with identical text: the joined
+  paragraphs pack into different chunks, and the model answered 22 of 148 questions differently on the re-laid-out
+  text (14 worse, 8 better; several UNKNOWNs on the math paper 2301.00845). Full over the same text: 0 flips. The
+  metric is sensitive to layout at about the width of its interval.

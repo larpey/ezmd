@@ -241,8 +241,8 @@ ezmd is at 0.1. What that means in practice:
   exports, social platforms. Local directories are not an input yet; zip the folder, or use `ezmd batch`.
 
 How it compares is measured, not claimed. On 30 whole arXiv papers, with a local model answering the same
-148 questions from every converter's output, ezmd, Docling, MinerU and pymupdf4llm all land between 76% and
-80% correct, within each other's error bars. Measured against each paper's LaTeX source, a witness no converter
+148 questions from every converter's output, ezmd, Docling, MinerU and pymupdf4llm all land between 74% and
+82% correct, within each other's error bars. Measured against each paper's LaTeX source, a witness no converter
 produced, ezmd, MinerU and Docling keep the same share of the words (94 to 95%), so ezmd does not keep more text
 than the layout tools. Where they differ: ezmd lost more than 5% of a paper's words without saying so on 0 of 30
 papers, against 3 to 5 of 30 for the others; on papers damaged on purpose (scanned pages, truncated files) it

@@ -71,27 +71,34 @@ Each cell: primary metric [95% CI] (n). fail = error/timeout/crash share of atte
   1.26, compact 1.13 -> 1.50, MarkItDown 1.69 -> 1.45, pymupdf4llm 4.84 -> 4.66, Docling 6.74 -> 5.75, MinerU
   15.60 -> 12.55. The GPU tools gained 15 to 20%; the CPU tools moved within noise. `docs/benchmarks.md` reports
   the clean pass.
+- Claude token counts (`tokens --corpus arxiv --date 2026-10-24 --pdf`, model claude-sonnet-5-5; Sonnet, Opus
+  and Haiku return the same count, checked on 2301.00845: 31,802 each): every output of every tool, and the raw
+  PDF upload of 28 of the 30 papers (2604.27899 has 108 pages and 2605.03239 is 29.7 MB, 39.6 MB as base64;
+  the API takes 100 pages and 32 MB). Upload: 3,054 Claude tokens per page. Output as a share of the upload:
+  compact 0.37, Docling 0.47, pymupdf4llm 0.52, ezmd main 0.55, ezmd 0.1.0 0.56, MinerU 0.59, rag 0.67,
+  MarkItDown 0.69. These live in scores.json `secondary` (`claude_pdf_upload_tokens_per_page`,
+  `claude_share_of_pdf_upload`), not in the category tables.
 
 ## arXiv papers, correct answers per 10k tokens of converted text
 
 | tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
 |---|---|---|---|---|---|---|---|---|
-| ezmd-main-compact* | 3.068 [2.600, 3.554] | 30 | 0.0% | 30/30 | 1.13 | 3.90 | 232 | 349 |
+| ezmd-main-compact* | 3.048 [2.599, 3.499] | 30 | 0.0% | 30/30 | 1.13 | 3.90 | 232 | 349 |
 | docling | 2.525 [1.979, 3.083] | 30 | 0.0% | 30/30 | 6.74 | 21.85 | 3042 | 5040 |
-| pymupdf4llm | 2.250 [1.767, 2.718] | 30 | 0.0% | 30/30 | 4.84 | 25.68 | 480 | 659 |
-| mineru | 2.065 [1.636, 2.506] | 30 | 0.0% | 30/30 | 15.60 | 78.85 | 4775 | 6770 |
-| ezmd-main* | 2.057 [1.568, 2.541] | 30 | 0.0% | 30/30 | 1.18 | 4.28 | 235 | 348 |
-| ezmd* | 2.033 [1.590, 2.457] | 30 | 0.0% | 30/30 | 1.03 | 3.79 | 236 | 356 |
-| ezmd-main-rag* | 1.878 [1.421, 2.326] | 30 | 0.0% | 30/30 | 1.22 | 4.42 | 235 | 351 |
-| markitdown | 1.613 [1.217, 1.984] | 30 | 0.0% | 30/30 | 1.69 | 16.20 | 176 | 899 |
+| pymupdf4llm | 2.272 [1.782, 2.754] | 30 | 0.0% | 30/30 | 4.84 | 25.68 | 480 | 659 |
+| mineru | 2.128 [1.691, 2.575] | 30 | 0.0% | 30/30 | 15.60 | 78.85 | 4775 | 6770 |
+| ezmd-main* | 2.049 [1.578, 2.527] | 30 | 0.0% | 30/30 | 1.18 | 4.28 | 235 | 348 |
+| ezmd* | 2.028 [1.580, 2.454] | 30 | 0.0% | 30/30 | 1.03 | 3.79 | 236 | 356 |
+| ezmd-main-rag* | 1.891 [1.469, 2.314] | 30 | 0.0% | 30/30 | 1.22 | 4.42 | 235 | 351 |
+| markitdown | 1.679 [1.265, 2.076] | 30 | 0.0% | 30/30 | 1.69 | 16.20 | 176 | 899 |
 
-ezmd: **trails** vs docling (gap -0.491; paired diff -0.491 [-0.804, -0.158] over 30 shared).
+ezmd: **trails** vs docling (gap -0.497; paired diff -0.497 [-0.809, -0.162] over 30 shared).
 
-ezmd-main: **trails** vs docling (gap -0.468; paired diff -0.468 [-0.792, -0.113] over 30 shared).
+ezmd-main: **trails** vs docling (gap -0.475; paired diff -0.475 [-0.802, -0.131] over 30 shared).
 
-ezmd-main-compact: **leads** vs docling (gap +0.543; paired diff +0.543 [+0.001, +1.119] over 30 shared).
+ezmd-main-compact: **ties** vs docling (gap +0.523; paired diff +0.523 [-0.013, +1.107] over 30 shared).
 
-ezmd-main-rag: **trails** vs docling (gap -0.647; paired diff -0.647 [-0.959, -0.347] over 30 shared).
+ezmd-main-rag: **trails** vs docling (gap -0.633; paired diff -0.633 [-0.947, -0.326] over 30 shared).
 
 ## arXiv papers, Claude tokens per page (Anthropic count_tokens; lower is better)
 
@@ -139,22 +146,22 @@ ezmd-main-rag: **trails** vs mineru (gap -0.088; paired diff -0.088 [-0.130, -0.
 
 | tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
 |---|---|---|---|---|---|---|---|---|
+| mineru | 0.816 [0.758, 0.869] | 30 | 0.0% | 30/30 | 15.60 | 78.85 | 4775 | 6770 |
+| ezmd-main-rag* | 0.802 [0.722, 0.876] | 30 | 0.0% | 30/30 | 1.22 | 4.42 | 235 | 351 |
 | docling | 0.800 [0.707, 0.887] | 30 | 0.0% | 30/30 | 6.74 | 21.85 | 3042 | 5040 |
-| mineru | 0.796 [0.736, 0.849] | 30 | 0.0% | 30/30 | 15.60 | 78.85 | 4775 | 6770 |
-| ezmd* | 0.782 [0.702, 0.856] | 30 | 0.0% | 30/30 | 1.03 | 3.79 | 236 | 356 |
-| ezmd-main-rag* | 0.782 [0.693, 0.862] | 30 | 0.0% | 30/30 | 1.22 | 4.42 | 235 | 351 |
-| pymupdf4llm | 0.771 [0.671, 0.860] | 30 | 0.0% | 30/30 | 4.84 | 25.68 | 480 | 659 |
-| ezmd-main* | 0.758 [0.660, 0.847] | 30 | 0.0% | 30/30 | 1.18 | 4.28 | 235 | 348 |
+| ezmd* | 0.776 [0.698, 0.849] | 30 | 0.0% | 30/30 | 1.03 | 3.79 | 236 | 356 |
+| pymupdf4llm | 0.776 [0.676, 0.860] | 30 | 0.0% | 30/30 | 4.84 | 25.68 | 480 | 659 |
+| ezmd-main* | 0.762 [0.673, 0.847] | 30 | 0.0% | 30/30 | 1.18 | 4.28 | 235 | 348 |
+| markitdown | 0.738 [0.651, 0.820] | 30 | 0.0% | 30/30 | 1.69 | 16.20 | 176 | 899 |
 | ezmd-main-compact* | 0.729 [0.636, 0.813] | 30 | 0.0% | 30/30 | 1.13 | 3.90 | 232 | 349 |
-| markitdown | 0.718 [0.629, 0.804] | 30 | 0.0% | 30/30 | 1.69 | 16.20 | 176 | 899 |
 
-ezmd: **ties** vs docling (gap -0.018; paired diff -0.018 [-0.107, +0.076] over 30 shared).
+ezmd: **ties** vs mineru (gap -0.040; paired diff -0.040 [-0.114, +0.034] over 30 shared).
 
-ezmd-main: **ties** vs docling (gap -0.042; paired diff -0.042 [-0.147, +0.067] over 30 shared).
+ezmd-main: **ties** vs mineru (gap -0.053; paired diff -0.053 [-0.147, +0.033] over 30 shared).
 
-ezmd-main-compact: **ties** vs docling (gap -0.071; paired diff -0.071 [-0.162, +0.027] over 30 shared).
+ezmd-main-compact: **trails** vs mineru (gap -0.087; paired diff -0.087 [-0.180, -0.000] over 30 shared).
 
-ezmd-main-rag: **ties** vs docling (gap -0.018; paired diff -0.018 [-0.118, +0.082] over 30 shared).
+ezmd-main-rag: **ties** vs mineru (gap -0.013; paired diff -0.013 [-0.100, +0.073] over 30 shared).
 
 ## arXiv papers, silent loss (over 5% of words lost with no warning raised; lower is better)
 
