@@ -1,0 +1,2299 @@
+{
+ "corpora": {
+  "arxiv": {
+   "doc_ids": [
+    "2301_00845",
+    "2306_01437",
+    "2307_09320",
+    "2309_02493",
+    "2309_11883",
+    "2401_14768",
+    "2402_18566",
+    "2405_19103",
+    "2406_00931",
+    "2407_17846",
+    "2409_12245",
+    "2409_12666",
+    "2505_09990",
+    "2511_10456",
+    "2601_01904",
+    "2601_09140",
+    "2602_16406",
+    "2603_04657",
+    "2604_22634",
+    "2604_27899",
+    "2605_03239",
+    "2605_07812",
+    "2605_12617",
+    "2605_19932",
+    "2606_18055",
+    "2606_19750",
+    "2606_23684",
+    "2607_04866",
+    "2607_07101",
+    "2608_21964"
+   ],
+   "documents": 30,
+   "sample": null
+  }
+ },
+ "date": "2026-10-24",
+ "directions": {
+  "arxiv-answers-per-10k-tokens": true,
+  "arxiv-outline-recall": true,
+  "arxiv-qa": true,
+  "arxiv-silent-loss": false,
+  "arxiv-text-recall": true,
+  "arxiv-tokens-per-page": false
+ },
+ "hardware": {
+  "cpu": "AMD Ryzen 9 7900X 12-Core Processor",
+  "gpus": [
+   "NVIDIA GeForce RTX 4090, 24564 MiB, 616.56"
+  ],
+  "logical_cores": 24,
+  "os": "Windows 11 (10.0.26200)",
+  "physical_cores": 12,
+  "python": "3.12.10",
+  "ram_gb": 95.1
+ },
+ "notes": "## Run conditions\n\n- arXiv corpus only (`bench/CORPORA.md`): the seeded 30 of 109 whole papers, seed 20261013; ids in\n  `results.json`. The other corpora were not rerun; their 2026-10-13 numbers stand.\n- `ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this branch at 7a13bd5 (main at 3c8bdde, the\n  0.1.1 release plus the unreleased text-layer PDF fixes of PR #19), wheels built by `install` (`local = true`),\n  under the `full`, `compact` and `rag` profiles. `ezmd` is the published 0.1.0 wheel from the 2026-10-13\n  baseline's venv; its PDF code is the one 0.1.1 shipped.\n- The same machine as the 2026-10-13 baseline. A game client was open and idle for the whole run (about 8.5 GB\n  of VRAM and a quarter of the GPU), so every timing is shared with it; speed and memory are indicative only.\n- Docker Desktop was not running, so Marker (its vLLM backend is a container) and Unstructured (official image)\n  were not attempted. Trafilatura and pandoc do not read PDFs.\n- Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.\n\n## What the metrics mean\n\n- Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,\n  NFKC-folded) present in the output. Running headers and footers are part of the text layer, so a tool that\n  drops them on purpose gives up a little recall here.\n- Silent loss: the document lost more than 5% of those words and the tool raised no warning of a kind that\n  means content was dropped, cut or not understood (`tools/bench/scoring/arxiv.py`, LOSS_KINDS). ezmd's\n  always-on notices (removed running headers, hidden elements, engine fallback) do not count as a warning; the\n  competitors have no warning channel at all. A failed conversion is loud, not silent. Lower is better.\n- Outline recall: share of the PDF's bookmarks found as a heading in the output, numbering ignored, over the\n  papers with at least three bookmarks.\n- Tokens per page: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer) over the\n  PDF's page count. Lower is better.\n- Answer accuracy: five questions per paper written by a local model from the text layer, each backed by a\n  verbatim quote that was checked against the text layer, answered from each tool's Markdown by the same model\n  (UNKNOWN when the text does not contain the answer) and graded by it against the reference answer. A failed\n  conversion answers UNKNOWN to everything. Correct answers per 10k tokens divides the correct count by the\n  output's token count.\n",
+ "schema": 1,
+ "scorecard": {
+  "arxiv-answers-per-10k-tokens": {
+   "docling": {
+    "ci": [
+     1.9786,
+     3.0834
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 2.5246
+   },
+   "ezmd": {
+    "ci": [
+     1.5902,
+     2.4568
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 2.0331
+   },
+   "ezmd-main": {
+    "ci": [
+     1.5684,
+     2.5411
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 2.057
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     2.5998,
+     3.5543
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 3.0681
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     1.4211,
+     2.3265
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 1.8776
+   },
+   "markitdown": {
+    "ci": [
+     1.2171,
+     1.9843
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 1.6128
+   },
+   "mineru": {
+    "ci": [
+     1.6363,
+     2.5064
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 2.0648
+   },
+   "pymupdf4llm": {
+    "ci": [
+     1.7671,
+     2.7177
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 2.2499
+   }
+  },
+  "arxiv-outline-recall": {
+   "docling": {
+    "ci": [
+     0.7822,
+     0.901
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 0.844
+   },
+   "ezmd": {
+    "ci": [
+     0.3895,
+     0.6213
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 0.5062
+   },
+   "ezmd-main": {
+    "ci": [
+     0.698,
+     0.863
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 0.7858
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     0.4667,
+     0.6591
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 0.567
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     0.698,
+     0.863
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 0.7858
+   },
+   "markitdown": {
+    "ci": [
+     0.0,
+     0.026
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 0.0104
+   },
+   "mineru": {
+    "ci": [
+     0.8087,
+     0.9327
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 0.8739
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.7577,
+     0.9168
+    ],
+    "n": 24,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 0.8428
+   }
+  },
+  "arxiv-qa": {
+   "docling": {
+    "ci": [
+     0.7067,
+     0.8867
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 0.8
+   },
+   "ezmd": {
+    "ci": [
+     0.7022,
+     0.8556
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 0.7822
+   },
+   "ezmd-main": {
+    "ci": [
+     0.66,
+     0.8467
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 0.7578
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     0.6356,
+     0.8133
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 0.7289
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     0.6933,
+     0.8622
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 0.7822
+   },
+   "markitdown": {
+    "ci": [
+     0.6289,
+     0.8044
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 0.7178
+   },
+   "mineru": {
+    "ci": [
+     0.7356,
+     0.8489
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 0.7956
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.6711,
+     0.86
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 0.7711
+   }
+  },
+  "arxiv-silent-loss": {
+   "docling": {
+    "ci": [
+     0.0,
+     0.2
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 0.1
+   },
+   "ezmd": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "ezmd-main": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "markitdown": {
+    "ci": [
+     0.8,
+     1.0
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 0.9
+   },
+   "mineru": {
+    "ci": [
+     0.0333,
+     0.2667
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 0.1333
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.0667,
+     0.3
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 0.1667
+   }
+  },
+  "arxiv-text-recall": {
+   "docling": {
+    "ci": [
+     0.9718,
+     0.9828
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 0.9776
+   },
+   "ezmd": {
+    "ci": [
+     0.9906,
+     0.9963
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 0.9936
+   },
+   "ezmd-main": {
+    "ci": [
+     0.9886,
+     0.9946
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 0.9918
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     0.5991,
+     0.8053
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 0.7074
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     0.9886,
+     0.9946
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 0.9918
+   },
+   "markitdown": {
+    "ci": [
+     0.5786,
+     0.7617
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 0.6769
+   },
+   "mineru": {
+    "ci": [
+     0.9623,
+     0.9754
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 0.9688
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.9607,
+     0.9823
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 0.9727
+   }
+  },
+  "arxiv-tokens-per-page": {
+   "docling": {
+    "ci": [
+     833.0026,
+     1039.2993
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 930.1067
+   },
+   "ezmd": {
+    "ci": [
+     1033.9125,
+     1349.1858
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 1180.5233
+   },
+   "ezmd-main": {
+    "ci": [
+     1011.962,
+     1321.3673
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 1158.0933
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     569.1757,
+     884.2791
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 727.1
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     1191.6069,
+     1562.2183
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 1363.1633
+   },
+   "markitdown": {
+    "ci": [
+     1245.6518,
+     1643.544
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 1440.58
+   },
+   "mineru": {
+    "ci": [
+     1058.3703,
+     1421.5833
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 1226.15
+   },
+   "pymupdf4llm": {
+    "ci": [
+     946.5082,
+     1184.5915
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 1054.9533
+   }
+  }
+ },
+ "tools": {
+  "docling": {
+   "freeze": [
+    "accelerate==1.15.0",
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "attrs==26.1.0",
+    "beautifulsoup4==4.15.0",
+    "certifi==2026.7.22",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "colorama==0.4.6",
+    "colorlog==6.12.0",
+    "defusedxml==0.7.1",
+    "dill==0.4.1",
+    "doclang==0.7.3",
+    "docling==2.138.0",
+    "docling-core==2.101.1",
+    "docling-ibm-models==4.0.3",
+    "docling-parse==7.22.3",
+    "docling-slim==2.138.0",
+    "et-xmlfile==2.0.0",
+    "faker==40.43.0",
+    "filelock==4.1.1",
+    "filetype==1.2.0",
+    "fsspec==2026.9.0",
+    "h11==0.16.0",
+    "hf-xet==1.7.0",
+    "httpcore==1.0.9",
+    "httpx==0.28.1",
+    "huggingface-hub==1.33.0",
+    "idna==3.20",
+    "jinja2==3.1.6",
+    "jsonref==1.1.0",
+    "jsonschema==4.26.0",
+    "jsonschema-specifications==2025.9.1",
+    "langcodes==3.5.1",
+    "latex2mathml==3.81.1",
+    "lxml==6.1.3",
+    "mail-parser==4.8.0",
+    "markdown-it-py==4.2.0",
+    "marko==2.2.4",
+    "markupsafe==3.0.4",
+    "mdurl==0.1.2",
+    "mpire==2.10.2",
+    "mpmath==1.3.0",
+    "multiprocess==0.70.19",
+    "networkx==3.7",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "omegaconf==2.4.0",
+    "opencv-python-headless==5.0.0.93",
+    "openpyxl==3.1.5",
+    "packaging==26.3",
+    "pandas==3.0.6",
+    "pillow==12.3.0",
+    "pluggy==1.6.0",
+    "polyfactory==3.3.0",
+    "psutil==7.2.2",
+    "pyclipper==1.4.0",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pydantic-settings==2.15.0",
+    "pygments==2.21.0",
+    "pylatexenc==2.11",
+    "pypdfium2==5.14.0",
+    "python-dateutil==2.9.0.post0",
+    "python-docx==1.2.0",
+    "python-dotenv==1.2.4",
+    "python-oxmsg==0.0.2",
+    "python-pptx==1.0.2",
+    "pywin32==312",
+    "pyyaml==6.0.3",
+    "rapidocr==3.10.0",
+    "referencing==0.37.0",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "rpds-py==2026.9.1",
+    "rtree==1.4.1",
+    "safetensors==0.8.0",
+    "scipy==1.18.1",
+    "semchunk==3.2.5",
+    "setuptools==84.0.0",
+    "shapely==2.2.0",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "soupsieve==3.0.3",
+    "sympy==1.14.0",
+    "tabulate==0.10.0",
+    "tokenizers==0.23.3",
+    "torch==2.14.1+cu132",
+    "torchvision==0.29.1+cu132",
+    "tqdm==4.70.1",
+    "transformers==5.19.0",
+    "tree-sitter==0.26.0",
+    "tree-sitter-c==0.24.2",
+    "tree-sitter-javascript==0.25.0",
+    "tree-sitter-python==0.25.0",
+    "tree-sitter-typescript==0.23.2",
+    "typer==0.26.8",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "urllib3==2.8.0",
+    "websockets==16.1.1",
+    "xlsxwriter==3.2.9"
+   ],
+   "kind": "venv",
+   "license": "MIT",
+   "requirements": [
+    "docling==2.138.0"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 37.99
+   },
+   "version": "2.138.0"
+  },
+  "ezmd": {
+   "freeze": [
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "babel==2.18.0",
+    "certifi==2026.7.22",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "colorama==0.4.6",
+    "courlan==1.4.0",
+    "dateparser==1.4.3",
+    "defusedxml==0.7.1",
+    "et-xmlfile==2.0.0",
+    "ezmd==0.1.0",
+    "ezmd-converters==0.1.0",
+    "flatbuffers==25.12.19",
+    "h11==0.16.0",
+    "htmldate==1.11.0",
+    "httpcore==1.0.9",
+    "httpx==0.28.1",
+    "idna==3.20",
+    "justext==3.0.2",
+    "lxml==6.1.3",
+    "lxml-html-clean==0.4.5",
+    "magika==1.0.3",
+    "markdown-it-py==4.2.0",
+    "mdit-py-plugins==0.6.1",
+    "mdurl==0.1.2",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.31.0",
+    "openpyxl==3.1.5",
+    "packaging==26.3",
+    "pathspec==1.1.1",
+    "pikepdf==10.17.0",
+    "pillow==12.3.0",
+    "protobuf==7.36.2",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pygments==2.21.0",
+    "pypdfium2==5.14.0",
+    "python-dateutil==2.9.0.post0",
+    "python-magic-bin==0.4.14",
+    "pytz==2026.5",
+    "pyyaml==6.0.3",
+    "rapidfuzz==3.14.6",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "striprtf==0.0.33",
+    "tiktoken==0.14.0",
+    "tld==0.13.2",
+    "trafilatura==2.3.1",
+    "typer==0.27.3",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "tzlocal==5.4.4",
+    "urllib3==2.8.0"
+   ],
+   "kind": "venv",
+   "license": "Apache-2.0",
+   "requirements": [
+    "ezmd==0.1.0"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 1.68
+   },
+   "version": "0.1.0"
+  },
+  "ezmd-docs": {
+   "freeze": [
+    "accelerate==1.15.0",
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "attrs==26.1.0",
+    "babel==2.18.0",
+    "certifi==2026.7.22",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "colorama==0.4.6",
+    "courlan==1.4.0",
+    "dateparser==1.4.3",
+    "defusedxml==0.7.1",
+    "doclang==0.7.3",
+    "docling-core==2.101.1",
+    "docling-ibm-models==4.0.3",
+    "docling-parse==7.22.3",
+    "docling-slim==2.138.0",
+    "et-xmlfile==2.0.0",
+    "ezmd==0.1.0rc4",
+    "ezmd-converters==0.1.0rc4",
+    "filelock==4.1.1",
+    "filetype==1.2.0",
+    "flatbuffers==25.12.19",
+    "fsspec==2026.9.0",
+    "h11==0.16.0",
+    "hf-xet==1.7.0",
+    "htmldate==1.11.0",
+    "httpcore==1.0.9",
+    "httpx==0.28.1",
+    "huggingface-hub==1.33.0",
+    "idna==3.20",
+    "jinja2==3.1.6",
+    "jsonref==1.1.0",
+    "jsonschema==4.26.0",
+    "jsonschema-specifications==2025.9.1",
+    "justext==3.0.2",
+    "langcodes==3.5.1",
+    "latex2mathml==3.81.1",
+    "lxml==6.1.3",
+    "lxml-html-clean==0.4.5",
+    "magika==1.0.3",
+    "markdown-it-py==4.2.0",
+    "markupsafe==3.0.4",
+    "mdit-py-plugins==0.6.1",
+    "mdurl==0.1.2",
+    "mpmath==1.3.0",
+    "networkx==3.7",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.31.0",
+    "opencv-python-headless==5.0.0.93",
+    "openpyxl==3.1.5",
+    "packaging==26.3",
+    "pandas==3.0.6",
+    "pathspec==1.1.1",
+    "pikepdf==10.17.0",
+    "pillow==12.3.0",
+    "pluggy==1.6.0",
+    "protobuf==7.36.2",
+    "psutil==7.2.2",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pydantic-settings==2.15.0",
+    "pygments==2.21.0",
+    "pypdfium2==5.14.0",
+    "python-dateutil==2.9.0.post0",
+    "python-dotenv==1.2.4",
+    "python-magic-bin==0.4.14",
+    "pytz==2026.5",
+    "pywin32==312",
+    "pyyaml==6.0.3",
+    "rapidfuzz==3.14.6",
+    "referencing==0.37.0",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "rpds-py==2026.9.1",
+    "rtree==1.4.1",
+    "safetensors==0.8.0",
+    "scipy==1.18.1",
+    "setuptools==84.0.0",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "striprtf==0.0.33",
+    "sympy==1.14.0",
+    "tabulate==0.10.0",
+    "tiktoken==0.14.0",
+    "tld==0.13.2",
+    "tokenizers==0.23.3",
+    "torch==2.14.1+cu132",
+    "torchvision==0.29.1+cu132",
+    "tqdm==4.70.1",
+    "trafilatura==2.3.1",
+    "transformers==5.19.0",
+    "typer==0.26.8",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "tzlocal==5.4.4",
+    "urllib3==2.8.0"
+   ],
+   "kind": "venv",
+   "license": "Apache-2.0 (Docling MIT)",
+   "requirements": [
+    "ezmd[docs]==0.1.0"
+   ],
+   "startup_seconds_median": {},
+   "version": ""
+  },
+  "ezmd-main": {
+   "freeze": [
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "attrs==26.1.0",
+    "babel==2.18.0",
+    "certifi==2026.10.23",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "colorama==0.4.6",
+    "courlan==1.4.0",
+    "cryptography==50.0.2",
+    "dateparser==1.4.3",
+    "defusedxml==0.7.1",
+    "et-xmlfile==2.0.0",
+    "ezmd @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd-0.1.1-py3-none-any.whl",
+    "ezmd-converters @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd_converters-0.1.1-py3-none-any.whl",
+    "ezmd-mcp @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd_mcp-0.1.1-py3-none-any.whl",
+    "flatbuffers==25.12.19",
+    "h11==0.16.0",
+    "htmldate==1.11.0",
+    "httpcore==1.0.9",
+    "httpcore2==2.16.0",
+    "httpx==0.28.1",
+    "httpx2==2.16.0",
+    "idna==3.20",
+    "jsonschema==4.26.0",
+    "jsonschema-specifications==2025.9.1",
+    "justext==3.0.2",
+    "lxml==6.1.3",
+    "lxml-html-clean==0.4.5",
+    "magika==1.0.3",
+    "markdown-it-py==4.2.0",
+    "mcp==2.3.0",
+    "mcp-types==2.3.0",
+    "mdit-py-plugins==0.6.1",
+    "mdurl==0.1.2",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.31.0",
+    "openpyxl==3.1.5",
+    "opentelemetry-api==1.45.1",
+    "packaging==26.3",
+    "pathspec==1.1.1",
+    "pikepdf==10.17.0",
+    "pillow==13.0.0",
+    "protobuf==7.37.0rc1",
+    "pycparser==3.12",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pygments==2.21.0",
+    "pyjwt==2.15.1",
+    "pypdfium2==5.14.0",
+    "python-dateutil==3.0.0",
+    "python-magic-bin==0.4.14",
+    "python-multipart==0.0.32",
+    "pytz==2026.5",
+    "pywin32==312",
+    "pyyaml==6.0.3",
+    "rapidfuzz==3.14.6",
+    "referencing==0.37.0",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "rpds-py==2026.9.1",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "sse-starlette==3.5.0",
+    "starlette==1.9.0",
+    "striprtf==0.0.34",
+    "tiktoken==0.14.0",
+    "tld==0.13.2",
+    "trafilatura==2.3.1",
+    "truststore==0.10.5",
+    "typer==0.27.3",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "tzlocal==5.4.5",
+    "urllib3==2.8.0",
+    "uvicorn==0.54.0"
+   ],
+   "kind": "venv",
+   "license": "Apache-2.0",
+   "requirements": [
+    "ezmd"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 1.44
+   },
+   "version": "0.1.1"
+  },
+  "ezmd-main-compact": {
+   "freeze": [
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "attrs==26.1.0",
+    "babel==2.18.0",
+    "certifi==2026.10.23",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "colorama==0.4.6",
+    "courlan==1.4.0",
+    "cryptography==50.0.2",
+    "dateparser==1.4.3",
+    "defusedxml==0.7.1",
+    "et-xmlfile==2.0.0",
+    "ezmd @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd-0.1.1-py3-none-any.whl",
+    "ezmd-converters @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd_converters-0.1.1-py3-none-any.whl",
+    "ezmd-mcp @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd_mcp-0.1.1-py3-none-any.whl",
+    "flatbuffers==25.12.19",
+    "h11==0.16.0",
+    "htmldate==1.11.0",
+    "httpcore==1.0.9",
+    "httpcore2==2.16.0",
+    "httpx==0.28.1",
+    "httpx2==2.16.0",
+    "idna==3.20",
+    "jsonschema==4.26.0",
+    "jsonschema-specifications==2025.9.1",
+    "justext==3.0.2",
+    "lxml==6.1.3",
+    "lxml-html-clean==0.4.5",
+    "magika==1.0.3",
+    "markdown-it-py==4.2.0",
+    "mcp==2.3.0",
+    "mcp-types==2.3.0",
+    "mdit-py-plugins==0.6.1",
+    "mdurl==0.1.2",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.31.0",
+    "openpyxl==3.1.5",
+    "opentelemetry-api==1.45.1",
+    "packaging==26.3",
+    "pathspec==1.1.1",
+    "pikepdf==10.17.0",
+    "pillow==13.0.0",
+    "protobuf==7.37.0rc1",
+    "pycparser==3.12",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pygments==2.21.0",
+    "pyjwt==2.15.1",
+    "pypdfium2==5.14.0",
+    "python-dateutil==3.0.0",
+    "python-magic-bin==0.4.14",
+    "python-multipart==0.0.32",
+    "pytz==2026.5",
+    "pywin32==312",
+    "pyyaml==6.0.3",
+    "rapidfuzz==3.14.6",
+    "referencing==0.37.0",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "rpds-py==2026.9.1",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "sse-starlette==3.5.0",
+    "starlette==1.9.0",
+    "striprtf==0.0.34",
+    "tiktoken==0.14.0",
+    "tld==0.13.2",
+    "trafilatura==2.3.1",
+    "truststore==0.10.5",
+    "typer==0.27.3",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "tzlocal==5.4.5",
+    "urllib3==2.8.0",
+    "uvicorn==0.54.0"
+   ],
+   "kind": "venv",
+   "license": "Apache-2.0",
+   "requirements": [
+    "ezmd"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 1.46
+   },
+   "version": "0.1.1"
+  },
+  "ezmd-main-rag": {
+   "freeze": [
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "attrs==26.1.0",
+    "babel==2.18.0",
+    "certifi==2026.10.23",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "colorama==0.4.6",
+    "courlan==1.4.0",
+    "cryptography==50.0.2",
+    "dateparser==1.4.3",
+    "defusedxml==0.7.1",
+    "et-xmlfile==2.0.0",
+    "ezmd @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd-0.1.1-py3-none-any.whl",
+    "ezmd-converters @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd_converters-0.1.1-py3-none-any.whl",
+    "ezmd-mcp @ file:///C:/Users/luke/.cache/ezmd-bench/wheels/ezmd-local/ezmd_mcp-0.1.1-py3-none-any.whl",
+    "flatbuffers==25.12.19",
+    "h11==0.16.0",
+    "htmldate==1.11.0",
+    "httpcore==1.0.9",
+    "httpcore2==2.16.0",
+    "httpx==0.28.1",
+    "httpx2==2.16.0",
+    "idna==3.20",
+    "jsonschema==4.26.0",
+    "jsonschema-specifications==2025.9.1",
+    "justext==3.0.2",
+    "lxml==6.1.3",
+    "lxml-html-clean==0.4.5",
+    "magika==1.0.3",
+    "markdown-it-py==4.2.0",
+    "mcp==2.3.0",
+    "mcp-types==2.3.0",
+    "mdit-py-plugins==0.6.1",
+    "mdurl==0.1.2",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.31.0",
+    "openpyxl==3.1.5",
+    "opentelemetry-api==1.45.1",
+    "packaging==26.3",
+    "pathspec==1.1.1",
+    "pikepdf==10.17.0",
+    "pillow==13.0.0",
+    "protobuf==7.37.0rc1",
+    "pycparser==3.12",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pygments==2.21.0",
+    "pyjwt==2.15.1",
+    "pypdfium2==5.14.0",
+    "python-dateutil==3.0.0",
+    "python-magic-bin==0.4.14",
+    "python-multipart==0.0.32",
+    "pytz==2026.5",
+    "pywin32==312",
+    "pyyaml==6.0.3",
+    "rapidfuzz==3.14.6",
+    "referencing==0.37.0",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "rpds-py==2026.9.1",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "sse-starlette==3.5.0",
+    "starlette==1.9.0",
+    "striprtf==0.0.34",
+    "tiktoken==0.14.0",
+    "tld==0.13.2",
+    "trafilatura==2.3.1",
+    "truststore==0.10.5",
+    "typer==0.27.3",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "tzlocal==5.4.5",
+    "urllib3==2.8.0",
+    "uvicorn==0.54.0"
+   ],
+   "kind": "venv",
+   "license": "Apache-2.0",
+   "requirements": [
+    "ezmd"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 1.48
+   },
+   "version": "0.1.1"
+  },
+  "marker": {
+   "freeze": [
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anthropic==0.125.0",
+    "anyio==4.15.1",
+    "beautifulsoup4==4.15.0",
+    "certifi==2026.7.22",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "cloudpickle==3.1.2",
+    "colorama==0.4.6",
+    "cryptography==50.0.2",
+    "distro==1.9.0",
+    "docstring-parser==0.18.0",
+    "filelock==3.32.7",
+    "filetype==1.2.0",
+    "fsspec==2026.9.0",
+    "ftfy==6.3.1",
+    "google-auth==2.62.0",
+    "google-genai==2.30.1",
+    "h11==0.16.0",
+    "hf-xet==1.7.0",
+    "httpcore==1.0.9",
+    "httpx==0.28.1",
+    "huggingface-hub==1.33.0",
+    "idna==3.20",
+    "jinja2==3.1.6",
+    "jiter==0.17.0",
+    "joblib==1.6.0",
+    "markdown-it-py==4.2.0",
+    "markdown2==2.5.5",
+    "markdownify==1.2.3",
+    "marker-pdf==2.0.0",
+    "markupsafe==3.0.4",
+    "mdurl==0.1.2",
+    "mpmath==1.3.0",
+    "narwhals==2.27.1",
+    "networkx==3.7",
+    "numpy==2.5.4",
+    "openai==2.54.0",
+    "opencv-python-headless==4.11.0.86",
+    "packaging==26.3",
+    "pdftext==0.7.1",
+    "pillow==10.4.0",
+    "platformdirs==4.13.0",
+    "psutil==7.2.2",
+    "pyasn1==0.6.4",
+    "pyasn1-modules==0.4.2",
+    "pycparser==3.11",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pydantic-settings==2.15.0",
+    "pygments==2.21.0",
+    "pypdfium2==5.10.1",
+    "python-dotenv==1.2.4",
+    "pyyaml==6.0.3",
+    "rapidfuzz==3.14.6",
+    "regex==2026.9.29",
+    "requests==2.34.2",
+    "rich==15.0.0",
+    "safetensors==0.8.0",
+    "scikit-learn==1.9.1",
+    "scipy==1.18.1",
+    "setuptools==84.0.0",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "sniffio==1.3.1",
+    "soupsieve==3.0.3",
+    "surya-ocr==0.22.1",
+    "sympy==1.14.0",
+    "tenacity==9.1.4",
+    "threadpoolctl==3.7.0",
+    "tokenizers==0.23.3",
+    "torch==2.14.1+cu132",
+    "torchvision==0.29.1+cu132",
+    "tqdm==4.70.1",
+    "transformers==5.19.0",
+    "typer==0.27.3",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "urllib3==2.8.0",
+    "wcwidth==0.9.2",
+    "websockets==16.1.1"
+   ],
+   "kind": "venv",
+   "license": "GPL-3.0 code, OpenRAIL-M weights",
+   "requirements": [
+    "marker-pdf==2.0.0"
+   ],
+   "startup_seconds_median": {},
+   "version": ""
+  },
+  "markitdown": {
+   "freeze": [
+    "azure-ai-contentunderstanding==1.2.0b3",
+    "azure-ai-documentintelligence==1.0.2",
+    "azure-core==1.41.0",
+    "azure-identity==1.26.0",
+    "beautifulsoup4==4.15.0",
+    "certifi==2026.7.22",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "cobble==0.1.4",
+    "coloredlogs==15.0.1",
+    "cryptography==50.0.2",
+    "defusedxml==0.7.1",
+    "et-xmlfile==2.0.0",
+    "flatbuffers==25.12.19",
+    "humanfriendly==10.0",
+    "idna==3.20",
+    "isodate==0.7.2",
+    "lxml==6.1.3",
+    "magika==0.6.3",
+    "mammoth==1.11.0",
+    "markdownify==1.2.3",
+    "markitdown==0.1.8",
+    "mpmath==1.3.0",
+    "msal==1.39.0",
+    "msal-extensions==1.3.1",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.20.1",
+    "openpyxl==3.1.5",
+    "packaging==26.3",
+    "pandas==3.0.6",
+    "pdfminer-six==20260107",
+    "pdfplumber==0.11.10",
+    "pillow==12.3.0",
+    "protobuf==7.36.2",
+    "pycparser==3.11",
+    "pydub==0.25.1",
+    "pyjwt==2.15.1",
+    "pypdfium2==5.14.0",
+    "pyreadline3==3.5.6",
+    "python-dateutil==2.9.0.post0",
+    "python-dotenv==1.2.4",
+    "python-pptx==1.0.2",
+    "requests==2.34.2",
+    "six==1.17.0",
+    "soupsieve==3.0.3",
+    "speechrecognition==3.17.0",
+    "sympy==1.14.0",
+    "typing-extensions==4.16.0",
+    "tzdata==2026.5",
+    "urllib3==2.8.0",
+    "xlrd==2.0.2",
+    "xlsxwriter==3.2.9",
+    "youtube-transcript-api==1.2.4"
+   ],
+   "kind": "venv",
+   "license": "MIT",
+   "requirements": [
+    "markitdown[all]==0.1.8"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 1.56
+   },
+   "version": "0.1.8"
+  },
+  "mineru": {
+   "freeze": [
+    "accelerate==1.15.0",
+    "aiofiles==25.1.0",
+    "aiosqlite==0.22.1",
+    "annotated-doc==0.0.5",
+    "annotated-types==0.8.0",
+    "anyio==4.15.1",
+    "beautifulsoup4==4.15.0",
+    "brotli==1.2.0",
+    "certifi==2026.7.22",
+    "cffi==2.1.1",
+    "charset-normalizer==3.5.2",
+    "click==8.5.0",
+    "cobble==0.1.4",
+    "colorama==0.4.6",
+    "cryptography==50.0.2",
+    "distro==1.9.0",
+    "docvortex==0.5.16",
+    "et-xmlfile==2.0.0",
+    "fastapi==0.143.0",
+    "fastapi-offline==1.7.7",
+    "filelock==3.32.7",
+    "flatbuffers==25.12.19",
+    "fonttools==4.66.1",
+    "fsspec==2026.9.0",
+    "ftfy==6.3.1",
+    "gradio==6.30.0",
+    "gradio-client==2.7.2",
+    "groovy==0.1.2",
+    "h11==0.16.0",
+    "hf-gradio==0.4.1",
+    "hf-xet==1.7.0",
+    "httpcore==1.0.9",
+    "httpcore2==2.13.1",
+    "httpx==0.28.1",
+    "httpx-retries==0.6.0",
+    "httpx2==2.13.1",
+    "huggingface-hub==2.2.0",
+    "idna==3.20",
+    "jieba==0.42.1",
+    "jinja2==3.1.6",
+    "jiter==0.17.0",
+    "json-repair==0.64.0",
+    "latex2mathml==3.81.1",
+    "loguru==0.7.3",
+    "lxml==6.1.3",
+    "magika==1.0.3",
+    "mammoth==1.13.0",
+    "markdown-it-py==4.2.0",
+    "markupsafe==3.0.4",
+    "mathml2omml==0.0.2",
+    "mdurl==0.1.2",
+    "metafile-render==0.3.1",
+    "mineru==4.0.12",
+    "mineru-llama-cpp==0.1.3",
+    "mineru-vl-utils==2.0.7",
+    "modelscope==1.40.2",
+    "modelscope-hub==0.4.6",
+    "mpmath==1.3.0",
+    "networkx==3.7",
+    "nh3==0.3.7",
+    "numpy==2.5.4",
+    "olefile==0.47",
+    "onnxruntime==1.31.0",
+    "openai==2.54.0",
+    "openpyxl==3.1.5",
+    "opentelemetry-api==1.45.1",
+    "orjson==3.13.0",
+    "packaging==26.3",
+    "pandas==3.0.6",
+    "pillow==12.3.0",
+    "protobuf==7.36.2",
+    "psutil==7.2.2",
+    "pyclipper==1.4.0",
+    "pycparser==3.11",
+    "pydantic==2.14.1",
+    "pydantic-core==2.50.1",
+    "pydub==0.25.1",
+    "pygments==2.21.0",
+    "pylatexenc==2.11",
+    "pypdf==6.20.1",
+    "pypdfium2==5.14.0",
+    "pypptx-with-oxml==1.0.3",
+    "python-dateutil==2.9.0.post0",
+    "python-docx==1.2.0",
+    "python-multipart==0.0.32",
+    "pytz==2026.5",
+    "pyyaml==6.0.3",
+    "regex==2026.9.29",
+    "reportlab==5.0.1",
+    "requests==2.34.2",
+    "resvg-py==0.5.0",
+    "rich==15.0.0",
+    "rl-accel==0.9.1",
+    "safehttpx==0.1.7",
+    "safetensors==0.8.0",
+    "semantic-version==2.10.0",
+    "setuptools==84.0.0",
+    "shapely==2.2.0",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "sniffio==1.3.1",
+    "soupsieve==3.0.3",
+    "starlette==1.8.0",
+    "sympy==1.14.0",
+    "tinycss2==1.5.1",
+    "tokenizers==0.23.3",
+    "tomlkit==0.14.0",
+    "torch==2.14.1+cu132",
+    "torchvision==0.29.1+cu132",
+    "tqdm==4.70.1",
+    "transformers==5.19.0",
+    "truststore==0.10.5",
+    "typer==0.27.3",
+    "typing-extensions==4.16.0",
+    "typing-inspection==0.4.4",
+    "tzdata==2026.5",
+    "urllib3==2.8.0",
+    "uvicorn==0.54.0",
+    "watchfiles==1.3.0",
+    "wcwidth==0.9.2",
+    "webencodings==0.6.1",
+    "win32-setctime==1.2.0",
+    "xlsxwriter==3.2.9",
+    "ziafont==0.11",
+    "ziamath==0.13"
+   ],
+   "kind": "venv",
+   "license": "MinerU Open Source License (AGPL-3.0 derived)",
+   "requirements": [
+    "mineru[torch]==4.0.12"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 19.95
+   },
+   "version": "4.0.12"
+  },
+  "pandoc": {
+   "freeze": null,
+   "kind": "binary",
+   "license": "GPL-2.0-or-later",
+   "requirements": [
+    "https://github.com/jgm/pandoc/releases/download/3.12.1/pandoc-3.12.1-windows-x86_64.zip"
+   ],
+   "startup_seconds_median": {},
+   "version": "3.12.1"
+  },
+  "pymupdf4llm": {
+   "freeze": [
+    "flatbuffers==25.12.19",
+    "networkx==3.7",
+    "numpy==2.5.4",
+    "onnxruntime==1.31.0",
+    "packaging==26.3",
+    "protobuf==7.36.2",
+    "psutil==7.2.2",
+    "pymupdf==1.28.2",
+    "pymupdf-layout==1.28.2",
+    "pymupdf4llm==1.28.2",
+    "pyyaml==6.0.3",
+    "tabulate==0.10.0"
+   ],
+   "kind": "venv",
+   "license": "AGPL-3.0 or commercial",
+   "requirements": [
+    "pymupdf4llm==1.28.2"
+   ],
+   "startup_seconds_median": {
+    "arxiv": 1.35
+   },
+   "version": "1.28.2"
+  },
+  "trafilatura": {
+   "freeze": [
+    "babel==2.18.0",
+    "certifi==2026.7.22",
+    "charset-normalizer==3.5.2",
+    "courlan==1.4.0",
+    "dateparser==1.4.3",
+    "htmldate==1.11.0",
+    "justext==3.0.2",
+    "lxml==6.1.3",
+    "lxml-html-clean==0.4.5",
+    "python-dateutil==2.9.0.post0",
+    "pytz==2026.5",
+    "regex==2026.9.29",
+    "six==1.17.0",
+    "tld==0.13.2",
+    "trafilatura==2.3.1",
+    "tzdata==2026.5",
+    "tzlocal==5.4.4",
+    "urllib3==2.8.0"
+   ],
+   "kind": "venv",
+   "license": "Apache-2.0",
+   "requirements": [
+    "trafilatura==2.3.1"
+   ],
+   "startup_seconds_median": {},
+   "version": ""
+  },
+  "unstructured": {
+   "freeze": null,
+   "kind": "docker",
+   "license": "Apache-2.0",
+   "requirements": [
+    "downloads.unstructured.io/unstructured-io/unstructured@sha256:1dac8c29d1aba11b1297cd2c69337ad15b5ae1059cb795cc4f8ff0c8286b8bd9"
+   ],
+   "startup_seconds_median": {},
+   "version": "0.27.27-dev2"
+  }
+ },
+ "verdicts": {
+  "arxiv-answers-per-10k-tokens": {
+   "ezmd": {
+    "best_competitor": "docling",
+    "best_value": 2.5246,
+    "ezmd": "ezmd",
+    "ezmd_value": 2.0331,
+    "gap": -0.4915,
+    "paired_ci": [
+     -0.8041,
+     -0.1578
+    ],
+    "paired_diff": -0.4915,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main": {
+    "best_competitor": "docling",
+    "best_value": 2.5246,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 2.057,
+    "gap": -0.4676,
+    "paired_ci": [
+     -0.7918,
+     -0.1131
+    ],
+    "paired_diff": -0.4676,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "docling",
+    "best_value": 2.5246,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 3.0681,
+    "gap": 0.5435,
+    "paired_ci": [
+     0.0012,
+     1.1185
+    ],
+    "paired_diff": 0.5435,
+    "paired_n": 30,
+    "verdict": "leads"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "docling",
+    "best_value": 2.5246,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 1.8776,
+    "gap": -0.647,
+    "paired_ci": [
+     -0.9586,
+     -0.3466
+    ],
+    "paired_diff": -0.647,
+    "paired_n": 30,
+    "verdict": "trails"
+   }
+  },
+  "arxiv-outline-recall": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.8739,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.5062,
+    "gap": -0.3677,
+    "paired_ci": [
+     -0.4855,
+     -0.2482
+    ],
+    "paired_diff": -0.3676,
+    "paired_n": 24,
+    "verdict": "trails"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.8739,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.7858,
+    "gap": -0.0881,
+    "paired_ci": [
+     -0.1295,
+     -0.0478
+    ],
+    "paired_diff": -0.0881,
+    "paired_n": 24,
+    "verdict": "trails"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "mineru",
+    "best_value": 0.8739,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 0.567,
+    "gap": -0.3069,
+    "paired_ci": [
+     -0.4149,
+     -0.2144
+    ],
+    "paired_diff": -0.3069,
+    "paired_n": 24,
+    "verdict": "trails"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "mineru",
+    "best_value": 0.8739,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 0.7858,
+    "gap": -0.0881,
+    "paired_ci": [
+     -0.1295,
+     -0.0478
+    ],
+    "paired_diff": -0.0881,
+    "paired_n": 24,
+    "verdict": "trails"
+   }
+  },
+  "arxiv-qa": {
+   "ezmd": {
+    "best_competitor": "docling",
+    "best_value": 0.8,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.7822,
+    "gap": -0.0178,
+    "paired_ci": [
+     -0.1067,
+     0.0756
+    ],
+    "paired_diff": -0.0178,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "docling",
+    "best_value": 0.8,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.7578,
+    "gap": -0.0422,
+    "paired_ci": [
+     -0.1467,
+     0.0667
+    ],
+    "paired_diff": -0.0422,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "docling",
+    "best_value": 0.8,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 0.7289,
+    "gap": -0.0711,
+    "paired_ci": [
+     -0.1622,
+     0.0267
+    ],
+    "paired_diff": -0.0711,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "docling",
+    "best_value": 0.8,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 0.7822,
+    "gap": -0.0178,
+    "paired_ci": [
+     -0.1178,
+     0.0823
+    ],
+    "paired_diff": -0.0178,
+    "paired_n": 30,
+    "verdict": "ties"
+   }
+  },
+  "arxiv-silent-loss": {
+   "ezmd": {
+    "best_competitor": "docling",
+    "best_value": 0.1,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.2,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "docling",
+    "best_value": 0.1,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.2,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "docling",
+    "best_value": 0.1,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.2,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "docling",
+    "best_value": 0.1,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.2,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 30,
+    "verdict": "ties"
+   }
+  },
+  "arxiv-text-recall": {
+   "ezmd": {
+    "best_competitor": "docling",
+    "best_value": 0.9776,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.9936,
+    "gap": 0.016,
+    "paired_ci": [
+     0.0097,
+     0.0225
+    ],
+    "paired_diff": 0.016,
+    "paired_n": 30,
+    "verdict": "leads"
+   },
+   "ezmd-main": {
+    "best_competitor": "docling",
+    "best_value": 0.9776,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.9918,
+    "gap": 0.0142,
+    "paired_ci": [
+     0.008,
+     0.0204
+    ],
+    "paired_diff": 0.0142,
+    "paired_n": 30,
+    "verdict": "leads"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "docling",
+    "best_value": 0.9776,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 0.7074,
+    "gap": -0.2702,
+    "paired_ci": [
+     -0.3757,
+     -0.174
+    ],
+    "paired_diff": -0.2702,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "docling",
+    "best_value": 0.9776,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 0.9918,
+    "gap": 0.0142,
+    "paired_ci": [
+     0.008,
+     0.0204
+    ],
+    "paired_diff": 0.0142,
+    "paired_n": 30,
+    "verdict": "leads"
+   }
+  },
+  "arxiv-tokens-per-page": {
+   "ezmd": {
+    "best_competitor": "docling",
+    "best_value": 930.1067,
+    "ezmd": "ezmd",
+    "ezmd_value": 1180.5233,
+    "gap": 250.4166,
+    "paired_ci": [
+     171.4328,
+     334.742
+    ],
+    "paired_diff": 250.4167,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main": {
+    "best_competitor": "docling",
+    "best_value": 930.1067,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 1158.0933,
+    "gap": 227.9866,
+    "paired_ci": [
+     160.075,
+     301.1808
+    ],
+    "paired_diff": 227.9867,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "docling",
+    "best_value": 930.1067,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 727.1,
+    "gap": -203.0067,
+    "paired_ci": [
+     -331.2888,
+     -84.7183
+    ],
+    "paired_diff": -203.0067,
+    "paired_n": 30,
+    "verdict": "leads"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "docling",
+    "best_value": 930.1067,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 1363.1633,
+    "gap": 433.0566,
+    "paired_ci": [
+     343.7179,
+     532.525
+    ],
+    "paired_diff": 433.0567,
+    "paired_n": 30,
+    "verdict": "trails"
+   }
+  }
+ }
+}

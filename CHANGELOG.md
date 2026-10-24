@@ -4,6 +4,16 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Added
+- Benchmark harness (`tools/bench`): an `arxiv` corpus of 109 whole CC BY papers that measures what a downstream
+  model gets rather than a page's edit distance: text recall against the PDF's own text layer, silent loss (over
+  5% of the words gone with no warning raised), outline recall against the PDF's bookmarks, o200k tokens per page
+  and answer accuracy, where a local model (`tools/bench/qa.py`, LM Studio) writes grounded questions from the
+  text layer, answers them from each tool's output and grades them. `ezmd-main`, `ezmd-main-compact` and
+  `ezmd-main-rag` rows run the checkout's code under three profiles; the ezmd adapter records each document's
+  warnings so declared loss can be told from silent loss. First results in `bench/results/2026-10-24/` and
+  `docs/benchmarks.md`.
+
 ### Fixed
 - PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
   heading, and a notice set in heading-sized type is a paragraph, not three headings.

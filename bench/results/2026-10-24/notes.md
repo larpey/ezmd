@@ -12,6 +12,16 @@
   were not attempted. Trafilatura and pandoc do not read PDFs.
 - Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.
 
+## QA model
+
+- `openai/gpt-oss-20b` (MXFP4 GGUF) served by LM Studio on the same GPU, loaded with a 32,768-token context,
+  one request at a time, temperature 0, seed 20261013, reasoning effort low. Documents are cut to 24,000 o200k
+  tokens before they are sent (no paper in the sample needed cutting except through MinerU's embedded images,
+  which are replaced by a placeholder first).
+- 148 questions over the 30 papers (five each; one paper yielded three that passed the grounding check).
+  Questions are cached under the corpus and shared by every tool row, so every tool answered the same questions.
+- The same model grades. UNKNOWN and empty answers are wrong without a model call.
+
 ## What the metrics mean
 
 - Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,
