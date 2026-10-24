@@ -76,6 +76,7 @@
  "date": "2026-10-24",
  "directions": {
   "arxiv-answers-per-10k-tokens": true,
+  "arxiv-claude-tokens-per-page": false,
   "arxiv-outline-recall": true,
   "arxiv-qa": true,
   "arxiv-silent-loss": false,
@@ -102,7 +103,7 @@
   "python": "3.12.10",
   "ram_gb": 95.1
  },
- "notes": "## Run conditions\n\n- arXiv corpus only (`bench/CORPORA.md`): the seeded 30 of 109 whole papers, seed 20261013; ids in\n  `results.json`. The other corpora were not rerun; their 2026-10-13 numbers stand.\n- `ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this branch at 7a13bd5 (main at 3c8bdde, the\n  0.1.1 release plus the unreleased text-layer PDF fixes of PR #19), wheels built by `install` (`local = true`),\n  under the `full`, `compact` and `rag` profiles. `ezmd` is the published 0.1.0 wheel from the 2026-10-13\n  baseline's venv; its PDF code is the one 0.1.1 shipped.\n- The same machine as the 2026-10-13 baseline. A game client was open and idle for the whole run (about 8.5 GB\n  of VRAM and a quarter of the GPU), so every timing is shared with it; speed and memory are indicative only.\n- Docker Desktop was not running, so Marker (its vLLM backend is a container) and Unstructured (official image)\n  were not attempted. Trafilatura and pandoc do not read PDFs.\n- Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.\n\n## QA model\n\n- `openai/gpt-oss-20b` (MXFP4 GGUF) served by LM Studio on the same GPU, loaded with a 32,768-token context,\n  one request at a time, temperature 0, seed 20261013, reasoning effort low. Documents are cut to 24,000 o200k\n  tokens before they are sent (no paper in the sample needed cutting except through MinerU's embedded images,\n  which are replaced by a placeholder first).\n- 148 questions over the 30 papers (five each; one paper yielded three that passed the grounding check).\n  Questions are cached under the corpus and shared by every tool row, so every tool answered the same questions.\n- The same model grades. UNKNOWN and empty answers are wrong without a model call.\n\n## What the metrics mean\n\n- Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,\n  NFKC-folded) present in the output. Running headers and footers are part of the text layer, so a tool that\n  drops them on purpose gives up a little recall here.\n- Silent loss: the document lost more than 5% of those words and the tool raised no warning of a kind that\n  means content was dropped, cut or not understood (`tools/bench/scoring/arxiv.py`, LOSS_KINDS). ezmd's\n  always-on notices (removed running headers, hidden elements, engine fallback) do not count as a warning; the\n  competitors have no warning channel at all. A failed conversion is loud, not silent. Lower is better.\n- Outline recall: share of the PDF's bookmarks found as a heading in the output, numbering ignored, over the\n  papers with at least three bookmarks.\n- Tokens per page: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer) over the\n  PDF's page count. Lower is better.\n- Answer accuracy: five questions per paper written by a local model from the text layer, each backed by a\n  verbatim quote that was checked against the text layer, answered from each tool's Markdown by the same model\n  (UNKNOWN when the text does not contain the answer) and graded by it against the reference answer. A failed\n  conversion answers UNKNOWN to everything. Correct answers per 10k tokens divides the correct count by the\n  output's token count.\n",
+ "notes": "## Run conditions\n\n- arXiv corpus only (`bench/CORPORA.md`): the seeded 30 of 109 whole papers, seed 20261013; ids in\n  `results.json`. The other corpora were not rerun; their 2026-10-13 numbers stand.\n- `ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this branch at 7a13bd5 (main at 3c8bdde, the\n  0.1.1 release plus the unreleased text-layer PDF fixes of PR #19), wheels built by `install` (`local = true`),\n  under the `full`, `compact` and `rag` profiles. `ezmd` is the published 0.1.0 wheel from the 2026-10-13\n  baseline's venv; its PDF code is the one 0.1.1 shipped.\n- The same machine as the 2026-10-13 baseline. A game client was open and idle for the whole run (about 8.5 GB\n  of VRAM and a quarter of the GPU), so every timing is shared with it; speed and memory are indicative only.\n- Docker Desktop was not running, so Marker (its vLLM backend is a container) and Unstructured (official image)\n  were not attempted. Trafilatura and pandoc do not read PDFs.\n- Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.\n\n## QA model\n\n- `openai/gpt-oss-20b` (MXFP4 GGUF) served by LM Studio on the same GPU, loaded with a 32,768-token context,\n  one request at a time, temperature 0, seed 20261013, reasoning effort low. Documents are cut to 24,000 o200k\n  tokens before they are sent (no paper in the sample needed cutting except through MinerU's embedded images,\n  which are replaced by a placeholder first).\n- 148 questions over the 30 papers (five each; one paper yielded three that passed the grounding check).\n  Questions are cached under the corpus and shared by every tool row, so every tool answered the same questions.\n- The same model grades. UNKNOWN and empty answers are wrong without a model call.\n\n## What the metrics mean\n\n- Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,\n  NFKC-folded) present in the output. Running headers and footers are part of the text layer, so a tool that\n  drops them on purpose gives up a little recall here.\n- Silent loss: the document lost more than 5% of those words and the tool raised no warning of a kind that\n  means content was dropped, cut or not understood (`tools/bench/scoring/arxiv.py`, LOSS_KINDS). ezmd's\n  always-on notices (removed running headers, hidden elements, engine fallback) do not count as a warning; the\n  competitors have no warning channel at all. A failed conversion is loud, not silent. Lower is better.\n- Outline recall: share of the PDF's bookmarks found as a heading in the output, numbering ignored, over the\n  papers with at least three bookmarks.\n- Tokens per page: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer) over the\n  PDF's page count. Lower is better.\n- Answer accuracy: five questions per paper written by a local model from the text layer, each backed by a\n  verbatim quote that was checked against the text layer, answered from each tool's Markdown by the same model\n  (UNKNOWN when the text does not contain the answer) and graded by it against the reference answer. A failed\n  conversion answers UNKNOWN to everything. Correct answers per 10k tokens divides the correct count by the\n  output's token count.\n\n## Later the same day: independent witness and damaged papers\n\n- `arxiv-source-recall` was added after the first run and scored over the same outputs. The LaTeX sources came\n  from `https://arxiv.org/e-print/<id>` (`fetch --only arxiv-source`); 9 of the 109 papers (3 of the 30 in the\n  sample: 2309.11883, 2601.09140, 2604.27899) were submitted as PDF only and have no source. The raw pdfium text\n  layer scores 0.945 against the source. Against it ezmd main scores 0.947, ezmd 0.1.0 and rag 0.946, MinerU 0.944,\n  Docling 0.943, pymupdf4llm 0.935, compact 0.707, MarkItDown 0.616; paired, ezmd main is +0.004 [+0.002, +0.006]\n  over Docling, +0.003 [-0.001, +0.007] over MinerU and +0.012 [+0.005, +0.019] over pymupdf4llm. Link targets\n  and DOIs are stripped from the source witness: the first version counted them and credited the full profile,\n  which writes URLs out, with words that never print.\n- `arxiv-damaged` (`tools/bench/damage.py`, ten papers of the sample, seeded; scan / pages / trunc) ran with\n  `--timeout 900` for every tool but Marker and Unstructured (Docker off). The game client was closed partway\n  through this run, so its timings are mixed and not reported. ezmd's one silent loss is `2402.18566~trunc`:\n  QPDF rebuilt the cross-reference table, pdfium read all 15 pages, 9% of the words (the tail of one content\n  stream) were gone and no warning said so; issue #23. ezmd's page accuracy was first scored 0.81 on\n  `2604.27899~pages` because that paper has five pages with no text of its own (full-page figures) that the warning\n  rightly lists; the scorer now expects those pages, and scores 1.00.\n",
  "schema": 1,
  "scorecard": {
   "arxiv-answers-per-10k-tokens": {
@@ -257,6 +258,160 @@
      "total": 30
     },
     "value": 2.2499
+   }
+  },
+  "arxiv-claude-tokens-per-page": {
+   "docling": {
+    "ci": [
+     1280.9213,
+     1577.4406
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 1425.2533
+   },
+   "ezmd": {
+    "ci": [
+     1537.5605,
+     1964.7222
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 1738.9933
+   },
+   "ezmd-main": {
+    "ci": [
+     1509.3229,
+     1932.9264
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 1710.36
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     861.6712,
+     1328.8593
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 1096.8767
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     1819.4375,
+     2347.9381
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 2067.3267
+   },
+   "markitdown": {
+    "ci": [
+     1848.5186,
+     2376.2145
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 2112.2867
+   },
+   "mineru": {
+    "ci": [
+     1592.7846,
+     2079.8694
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 1819.35
+   },
+   "pymupdf4llm": {
+    "ci": [
+     1433.4258,
+     1770.9005
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 1590.48
    }
   },
   "arxiv-outline-recall": {
@@ -3226,6 +3381,64 @@
      -0.3466
     ],
     "paired_diff": -0.647,
+    "paired_n": 30,
+    "verdict": "trails"
+   }
+  },
+  "arxiv-claude-tokens-per-page": {
+   "ezmd": {
+    "best_competitor": "docling",
+    "best_value": 1425.2533,
+    "ezmd": "ezmd",
+    "ezmd_value": 1738.9933,
+    "gap": 313.74,
+    "paired_ci": [
+     216.3752,
+     421.1778
+    ],
+    "paired_diff": 313.74,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main": {
+    "best_competitor": "docling",
+    "best_value": 1425.2533,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 1710.36,
+    "gap": 285.1067,
+    "paired_ci": [
+     199.1183,
+     379.3413
+    ],
+    "paired_diff": 285.1067,
+    "paired_n": 30,
+    "verdict": "trails"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "docling",
+    "best_value": 1425.2533,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 1096.8767,
+    "gap": -328.3766,
+    "paired_ci": [
+     -510.8749,
+     -158.2938
+    ],
+    "paired_diff": -328.3767,
+    "paired_n": 30,
+    "verdict": "leads"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "docling",
+    "best_value": 1425.2533,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 2067.3267,
+    "gap": 642.0734,
+    "paired_ci": [
+     510.9815,
+     788.2974
+    ],
+    "paired_diff": 642.0733,
     "paired_n": 30,
     "verdict": "trails"
    }

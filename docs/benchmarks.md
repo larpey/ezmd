@@ -60,22 +60,28 @@ gets from the converted file, with the PDF itself as the witness, so the compari
 - **Outline recall.** The share of the PDF's bookmarks found as a heading in the output, over the 24 papers with
   three or more bookmarks.
 - **Tokens per page.** o200k tokens of the output per PDF page, frontmatter removed; MinerU's embedded images count
-  as one placeholder each.
+  as one placeholder each. The second figure is the exact Claude count of the same text from Anthropic's
+  token-counting endpoint (`tools/bench/tokens.py`, model `claude-sonnet-5-5`): Claude's tokenizer runs 1.47 to
+  1.53 times o200k on every tool's Markdown, so the ranking and the gaps between tools are the same in both, and a
+  Claude agent pays about 1.5 times the o200k figure.
 
-Each cell is the mean over the 30 papers with its 95% bootstrap interval. `ezmd main` is the unreleased code of
+Paper-level columns are means over the 30 papers, except source recall (27 papers with a source) and outline recall
+(24 papers with bookmarks); answer accuracy covers the 148 questions across the 30 papers and is the one column shown
+with its 95% bootstrap interval here (every column's interval is in `bench/results/2026-10-24/summary.md`). `ezmd
+main` is the unreleased code of
 this repository at 7a13bd5 (the 0.1.1 release plus the PDF fixes of PR #19) under the `full`, `rag` and `compact`
 profiles; `ezmd 0.1.0` is the release.
 
-| tool | answer accuracy | correct answers per 10k tokens | text recall | source recall | silent loss (lower is better) | outline recall | tokens per page (lower is better) |
+| tool | answer accuracy | correct answers per 10k tokens | text recall | source recall | silent loss (lower is better) | outline recall | tokens per page, o200k / Claude (lower is better) |
 |---|---|---|---|---|---|---|---|
-| Docling 2.138.0 | 0.800 [0.707, 0.887] | 2.53 | 0.978 | 0.943 | 0.10 | 0.844 | 930 |
-| MinerU 4.0.12 | 0.796 [0.736, 0.849] | 2.07 | 0.969 | 0.944 | 0.13 | 0.874 | 1,226 |
-| **ezmd 0.1.0** | 0.782 [0.702, 0.856] | 2.03 | 0.994 | 0.946 | 0.00 | 0.506 | 1,181 |
-| **ezmd main, rag** | 0.782 [0.693, 0.862] | 1.88 | 0.992 | 0.946 | 0.00 | 0.786 | 1,363 |
-| pymupdf4llm 1.28.2 | 0.771 [0.671, 0.860] | 2.25 | 0.973 | 0.935 | 0.17 | 0.843 | 1,055 |
-| **ezmd main, full** | 0.758 [0.660, 0.847] | 2.06 | 0.992 | 0.947 | 0.00 | 0.786 | 1,158 |
-| **ezmd main, compact** | 0.729 [0.636, 0.813] | 3.07 | 0.707 | 0.707 | 0.00 | 0.567 | 727 |
-| MarkItDown 0.1.8 | 0.718 [0.629, 0.804] | 1.61 | 0.677 | 0.616 | 0.90 | 0.010 | 1,441 |
+| Docling 2.138.0 | 0.800 [0.707, 0.887] | 2.53 | 0.978 | 0.943 | 0.10 | 0.844 | 930 / 1,425 |
+| MinerU 4.0.12 | 0.796 [0.736, 0.849] | 2.07 | 0.969 | 0.944 | 0.13 | 0.874 | 1,226 / 1,819 |
+| **ezmd 0.1.0** | 0.782 [0.702, 0.856] | 2.03 | 0.994 | 0.946 | 0.00 | 0.506 | 1,181 / 1,739 |
+| **ezmd main, rag** | 0.782 [0.693, 0.862] | 1.88 | 0.992 | 0.946 | 0.00 | 0.786 | 1,363 / 2,067 |
+| pymupdf4llm 1.28.2 | 0.771 [0.671, 0.860] | 2.25 | 0.973 | 0.935 | 0.17 | 0.843 | 1,055 / 1,591 |
+| **ezmd main, full** | 0.758 [0.660, 0.847] | 2.06 | 0.992 | 0.947 | 0.00 | 0.786 | 1,158 / 1,710 |
+| **ezmd main, compact** | 0.729 [0.636, 0.813] | 3.07 | 0.707 | 0.707 | 0.00 | 0.567 | 727 / 1,097 |
+| MarkItDown 0.1.8 | 0.718 [0.629, 0.804] | 1.61 | 0.677 | 0.616 | 0.90 | 0.010 | 1,441 / 2,112 |
 
 What it says, with the paired tests over the same 30 papers (`bench/results/2026-10-24/summary.md`):
 

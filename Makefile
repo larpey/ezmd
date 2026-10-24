@@ -80,5 +80,6 @@ bench:  ## competitive benchmark: every free competitor on the smoke corpus -> b
 bench-full:  ## competitive benchmark baseline: all corpora (downloads them first; hours on one GPU)
 	uv run python -m tools.bench install
 	uv run python -m tools.bench fetch
-	for c in fixtures web olmocr omnidoc; do uv run python -m tools.bench run --corpus $$c && uv run python -m tools.bench score --corpus $$c; done
+	for c in fixtures web olmocr omnidoc arxiv arxiv-damaged; do uv run python -m tools.bench run --corpus $$c && uv run python -m tools.bench score --corpus $$c; done
 	uv run python -m tools.bench report
+	@echo "arxiv answer accuracy needs a local model: uv run python -m tools.bench qa all --corpus arxiv; Claude token counts need a key: uv run python -m tools.bench tokens --corpus arxiv"
