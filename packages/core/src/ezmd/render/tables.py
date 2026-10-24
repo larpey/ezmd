@@ -129,7 +129,11 @@ def _kv_line(grid: _Grid, row: list[str]) -> str:
 
 
 def _pipe(grid: _Grid) -> tuple[list[str], list[str]]:
-    header = "| " + " | ".join(h.replace("|", "\\|") for h in grid.headers) + " |"
+    # A table with no header row of its own gets an empty header: Markdown needs the row, a reader does not
+    # need `col_1 | col_2 | ...` spelled out, and an empty cell says plainly that the source named no column.
+    # Names the source did give (a converter can synthesize part of a header) stay.
+    names = ["" if grid.synthesized and h == f"col_{i + 1}" else h for i, h in enumerate(grid.headers)]
+    header = "| " + " | ".join(h.replace("|", "\\|") for h in names) + " |"
     delim = "|" + "|".join("---:" if n else "---" for n in grid.numeric) + "|"
     rows = ["| " + " | ".join(row) + " |" for row in grid.md[grid.header_rows :]]
     return [header, delim], rows
@@ -218,9 +222,10 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
         line += f" ({path})"
     head = [line]
     if grid.synthesized:
+        # Counted for the sidecar; the empty header row of the pipe table (or the col_N keys of the other
+        # representations) already show the reader that the source had no header, so no marker per table.
         ctx.header_synthesized += 1
-        head.append(ctx.marker("ezmd: header synthesized"))
-    if rep in ("kv", "sampled") or table.n_cols > 4:
+    if rep in ("kv", "sampled") or (table.n_cols > 4 and not grid.synthesized):
         head.append("Columns: " + ", ".join(grid.headers))
     head_text = "\n".join(head)
     rows: list[str] | None

@@ -114,7 +114,14 @@ def test_header_inference_and_synthesis() -> None:
     inferred = render(make_result([table([["Name", "Qty"], ["a", "1"], ["b", "2"]], header_rows=0)]), "full").body
     assert "| Name | Qty |\n|---|---:|\n| a | 1 |" in inferred
     synth = render(make_result([table([["1", "2"], ["3", "4"]], header_rows=0)]), "full").body
-    assert "**Table 1**\n<!-- ezmd: header synthesized -->\n\n| col_1 | col_2 |" in synth
+    # A table with no header gets an empty header row, no marker comment and no `col_N` names (they carried
+    # no information and cost tokens on every such table).
+    assert "**Table 1**\n\n|  |  |\n|---|---:|\n| 1 | 2 |" in synth
+    assert "col_1" not in synth and "header synthesized" not in synth
+    wide = render(
+        make_result([table([[str(i) for i in range(6)], [str(i) for i in range(6)]], header_rows=0)]), "full"
+    ).body
+    assert "Columns:" not in wide  # the Columns line is only worth printing when the names mean something
 
 
 def test_table_caption_from_figure_and_rag_atomic_rows() -> None:

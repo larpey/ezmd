@@ -3,8 +3,8 @@ title: "Pond Survey Workbook"
 source: "input.xlsx"
 source_type: xlsx
 converter: documents.xlsx
-converter_version: "0.1.0rc1"
-ezmd_version: "0.1.0rc1"
+converter_version: "0.1.1"
+ezmd_version: "0.1.1"
 schema_version: 1
 profile: full
 provenance: block
@@ -12,9 +12,9 @@ fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 author: "Field Team"
 sheets: ["Visits", "Summary", "Lookup"]
-word_count: 102
-tokens: {o200k_base: 451, cl100k_base: 454, claude_approx: 487}
-content_hash: "sha256:fbf2926aeb7315dda93455cf56d443eb9767833b50ff3fff898aff31b66864e2"
+word_count: 100
+tokens: {o200k_base: 440, cl100k_base: 443, claude_approx: 475}
+content_hash: "sha256:a3d87594a380c02dce98dc5cf24c8e3bca2d355513ab664aa67adcba2933aa82"
 source_hash: "sha256:474334c052229c81c56a228906796e62477cbdfa7e7e99d88f9cddae49652fc3"
 truncated: false
 warnings: [hidden_sheets_included, cell_errors, comments_present, formulas_present]
@@ -36,9 +36,8 @@ Columns: Site, Visit date, Species, Share, Cost
 | Total |  | 34 |  | $295.75 |
 
 **Table 2: Region 2 (A8:B9)**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 |
+|  |  |
 |---|---|
 | Notes |  |
 | Rain on 10 April | #REF! |

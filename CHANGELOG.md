@@ -19,6 +19,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   `docs/benchmarks.md`.
 
 ### Fixed
+- Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
+  `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
+  synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
+  the generated names and markers were 17,000 of the words ezmd emitted and Docling did not.
 - PDF (text-layer engine): paragraphs in double-spaced manuscripts are no longer one line each. The assembler
   measures the page's own line spacing and continues a paragraph within it, and treats a first-line indent
   after a short line as the start of a new paragraph (a hanging indent after a full line still continues). On
