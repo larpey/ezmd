@@ -18,6 +18,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   silent loss, a repaired truncated file (#23). First results in `bench/results/2026-10-24/` and
   `docs/benchmarks.md`.
 
+### Changed
+- `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
+  content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
+  (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
+  the marker reads it from the frontmatter `content_hash` or the sidecar.
+
 ### Fixed
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts

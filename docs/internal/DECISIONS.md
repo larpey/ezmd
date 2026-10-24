@@ -694,3 +694,13 @@ Decision: without extended Markdown, a superscript or subscript span made only o
 Alternatives: keep plain text (meaning lost for every exponent); `^20` without the closing caret (not Markdown, and ambiguous next to text); always use `^x^` (not CommonMark, so the spec gates it on `extended_markdown`).
 Consequences: footnote markers in the text-layer engine now read `meters.¹` instead of `meters.1`, and the `pdf/footnotes-running-header` golden changes accordingly. DOCX, ODF, PPTX, EPUB and HTML superscripts get the same rendering. The spec line in part3.md section 17 needs amending to match.
 Council: not convened (reviewer-flagged spec deviation; open to owner revision).
+
+## D-0073: Chunk markers carry the chunk number, not the content hash or the token count
+Date: 2026-10-24
+Task: Benchmark follow-up (arXiv whole-paper tokens per page)
+Status: accepted
+Context: The `rag` profile wraps every chunk in `<!-- chunk id="<hash>#c0001" section="1" tokens="357" page="1" -->` ... `<!-- /chunk -->`. Over 30 arXiv papers the markers were 91,471 of 958,968 o200k tokens, 9.5% of the output, 17 tokens per marker. The 12-character hash is the same on every chunk of a document and already sits in the frontmatter and the sidecar; the token count is a property of the text any consumer can recompute.
+Decision: the marker's `id` is the chunk number within the document (`c0001`) and the `tokens` attribute is gone. `section`, `page`, `start`, `end`, `part` and `oversized` stay. The sidecar's `Chunk` records are unchanged: full id `<hash>#c0001`, token count, pages, block ids.
+Alternatives: keep the format (one token in ten of every indexed document spent on repetition); drop the closing marker too (chunks are contiguous, but the closer is what lets a consumer cut on either edge, and it is 4 tokens); move the markers out of the body entirely (then the body no longer says where a chunk starts, which is the point of the profile).
+Consequences: a consumer that parsed the hash out of the marker reads it from the frontmatter `content_hash` or the sidecar instead. `docs/output-format.md` updated. No fixture golden covers the rag body; the unit tests that pinned the old attributes change with it.
+Council: not convened (output-format change measured by the benchmark; owner approved the direction in session).
