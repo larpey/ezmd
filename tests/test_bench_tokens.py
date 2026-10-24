@@ -34,10 +34,11 @@ def _run(tmp_path: Path) -> Path:
 def test_count_run_caches_by_content_and_skips_failed_documents(tmp_path: Path) -> None:
     run = _run(tmp_path)
     calls: list[str] = []
+    models: list[str] = []
 
     def fake(text: str, model: str) -> int:
         calls.append(text)
-        assert model == "m"
+        models.append(model)
         return len(text.split())
 
     counted = tokens.count_run(run, None, model="m", counter=fake)
@@ -52,6 +53,10 @@ def test_count_run_caches_by_content_and_skips_failed_documents(tmp_path: Path) 
     (run / "rival" / "d1.md").write_text("alpha", encoding="utf-8")
     tokens.count_run(run, ["rival"], model="m", counter=fake)
     assert len(calls) == 3
+    # another model's tokenizer is another count: the cache is per model as well as per content
+    tokens.count_run(run, ["rival"], model="m2", counter=fake)
+    assert len(calls) == 4 and models == ["m", "m", "m", "m2"]
+    assert json.loads(tokens.cache_path(run, "rival", "d1").read_text(encoding="utf-8"))["model"] == "m2"
 
 
 def test_cached_count_is_none_when_missing_or_stale(tmp_path: Path) -> None:
@@ -60,6 +65,7 @@ def test_cached_count_is_none_when_missing_or_stale(tmp_path: Path) -> None:
     assert tokens.cached_count(run, r) is None
     tokens.count_run(run, ["ezmd-main"], model="m", counter=lambda t, m: 3)
     assert tokens.cached_count(run, r) == 3
+    assert tokens.cached_record(run, r) == {"tokens": 3, "model": "m"}
     (run / "ezmd-main" / "d1.md").write_text("changed", encoding="utf-8")
     assert tokens.cached_count(run, r) is None
 

@@ -75,16 +75,22 @@ def cache_path(run_dir: Path, tool: str, doc_id: str) -> Path:
     return run_dir / "tokens" / "claude" / tool / f"{doc_id}.json"
 
 
-def cached_count(run_dir: Path, result: DocResult) -> int | None:
-    """The cached Claude token count of this output, when `tokens` has run and the output is unchanged."""
+def cached_record(run_dir: Path, result: DocResult) -> dict[str, Any] | None:
+    """`{"tokens", "model"}` of this output's cached count, when `tokens` has run and the output is unchanged;
+    the model is part of the record because each model's tokenizer gives its own count."""
     path = cache_path(run_dir, result.tool, result.doc_id)
     if not path.exists() or not result.output:
         return None
     data = json.loads(path.read_text(encoding="utf-8"))
     text = strip_data_uris(read_output(result, run_dir))
-    if data.get("sha256") != hashlib.sha256(text.encode("utf-8")).hexdigest():
+    if data.get("sha256") != hashlib.sha256(text.encode("utf-8")).hexdigest() or not data.get("model"):
         return None
-    return int(data["tokens"])
+    return {"tokens": int(data["tokens"]), "model": str(data["model"])}
+
+
+def cached_count(run_dir: Path, result: DocResult) -> int | None:
+    record = cached_record(run_dir, result)
+    return None if record is None else int(record["tokens"])
 
 
 def count_run(
@@ -111,9 +117,11 @@ def count_run(
         path = cache_path(run_dir, result.tool, result.doc_id)
         text = strip_data_uris(read_output(result, run_dir))
         digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
-        if path.exists() and json.loads(path.read_text(encoding="utf-8")).get("sha256") == digest:
-            counted[result.tool] = counted.get(result.tool, 0) + 1
-            continue
+        if path.exists():
+            cached = json.loads(path.read_text(encoding="utf-8"))
+            if cached.get("sha256") == digest and cached.get("model") == model:
+                counted[result.tool] = counted.get(result.tool, 0) + 1
+                continue
         tokens = counter(text, model)
         path.parent.mkdir(parents=True, exist_ok=True)
         record: dict[str, Any] = {"tokens": tokens, "model": model, "sha256": digest}

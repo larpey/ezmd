@@ -77,9 +77,14 @@ bench:  ## competitive benchmark: every free competitor on the smoke corpus -> b
 	uv run python -m tools.bench install
 	uv run python -m tools.bench smoke
 
+BENCH_DATE ?= $(shell date +%F)  # one run directory for the whole target, even across midnight
+
 bench-full:  ## competitive benchmark baseline: all corpora (downloads them first; hours on one GPU)
 	uv run python -m tools.bench install
 	uv run python -m tools.bench fetch
-	for c in fixtures web olmocr omnidoc arxiv arxiv-damaged; do uv run python -m tools.bench run --corpus $$c && uv run python -m tools.bench score --corpus $$c; done
-	uv run python -m tools.bench report
-	@echo "arxiv answer accuracy needs a local model: uv run python -m tools.bench qa all --corpus arxiv; Claude token counts need a key: uv run python -m tools.bench tokens --corpus arxiv"
+	for c in fixtures web olmocr omnidoc arxiv arxiv-damaged; do uv run python -m tools.bench run --corpus $$c --date $(BENCH_DATE) && uv run python -m tools.bench score --corpus $$c --date $(BENCH_DATE); done
+	uv run python -m tools.bench report --date $(BENCH_DATE)
+	@echo "Optional, then re-score and re-report with --date $(BENCH_DATE):"
+	@echo "  answer accuracy (local model): uv run python -m tools.bench qa all --corpus arxiv --date $(BENCH_DATE)"
+	@echo "  Claude token counts (API key): uv run python -m tools.bench tokens --corpus arxiv --date $(BENCH_DATE)"
+	@echo "  uv run python -m tools.bench score --corpus arxiv --date $(BENCH_DATE) && uv run python -m tools.bench report --date $(BENCH_DATE)"

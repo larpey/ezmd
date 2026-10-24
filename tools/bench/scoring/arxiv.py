@@ -230,9 +230,10 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
     lost = rec < 1.0 - LOSS_THRESHOLD
     declared = declared_loss(result, run_dir)
     tokens = count_tokens(md) if ok else None
-    from tools.bench.tokens import cached_count  # exact Claude count when `tokens` has run (cycle-free here)
+    from tools.bench.tokens import cached_record  # exact Claude count when `tokens` has run (cycle-free here)
 
-    claude = cached_count(run_dir, result) if ok else None
+    claude_record = cached_record(run_dir, result) if ok else None
+    claude = claude_record["tokens"] if claude_record else None
     qa = qa_scores(result, run_dir)
     out: dict[str, float | None] = {
         "arxiv-text-recall": round(rec, 4),
@@ -249,6 +250,7 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
         "declared": None if declared is None else float(declared),
         "tokens": None if tokens is None else float(tokens),
         "text_layer_source_recall": w.text_layer_source_recall,
+        "claude_model": claude_record["model"] if claude_record else None,
     }
     return out
 
@@ -294,6 +296,8 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
             # The same for every tool: the raw pdfium text layer's own recall against the LaTeX source, the
             # reference to read arxiv-source-recall by.
             "text_layer_source_recall": {"value": round(sum(refs) / len(refs), 4) if refs else None},
+            # The model whose tokenizer produced arxiv-claude-tokens-per-page (tools/bench/tokens.py --model).
+            "claude_model": {"value": sorted({v["claude_model"] for v in per_doc.values() if v["claude_model"]})},
             "lost_rate": {"value": round(sum(lost) / len(lost), 4) if lost else None},
             "declared_rate": {"value": round(sum(declared) / len(declared), 4) if declared else None},
             "false_alarm_rate": {
