@@ -46,7 +46,13 @@ def _ezmd() -> tuple[str, Convert]:
     def convert(path: Path) -> str:
         result = ezmd.convert(str(path), profile=profile)
         warnings = [
-            {"kind": str(getattr(w.kind, "value", w.kind)), "severity": w.severity, "count": w.count, "page": w.page}
+            {
+                "kind": str(getattr(w.kind, "value", w.kind)),
+                "severity": w.severity,
+                "count": w.count,
+                "page": w.page,
+                "detail": {str(k): v for k, v in dict(w.detail or {}).items()},
+            }
             for w in result.conversion.document.warnings
         ]
         truncated = bool(result.frontmatter.get("truncated"))

@@ -40,6 +40,15 @@ CATEGORY_LABELS = {
     "arxiv-outline-recall": "arXiv papers, outline recall (PDF bookmarks found as headings)",
     "arxiv-tokens-per-page": "arXiv papers, o200k tokens per page (lower is better)",
     "arxiv-answers-per-10k-tokens": "arXiv papers, correct answers per 10k tokens of converted text",
+    "arxiv-source-recall": "arXiv papers, source recall (share of the LaTeX source's words kept; independent witness)",
+    "damaged-silent-loss": "Damaged arXiv papers, silent loss, all kinds (lost over 5%, no warning; lower is better)",
+    "damaged-scan-silent-loss": "Damaged arXiv papers, scanned (every page an image): silent loss (lower is better)",
+    "damaged-pages-silent-loss": "Damaged arXiv papers, a block of image-only pages: silent loss (lower is better)",
+    "damaged-trunc-silent-loss": "Damaged arXiv papers, file truncated at 80%: silent loss (lower is better)",
+    "damaged-scan-text-recall": "Damaged arXiv papers, scanned: text recall of the intact paper (OCR recovers it)",
+    "damaged-pages-text-recall": "Damaged arXiv papers, a block of image-only pages: text recall of the intact paper",
+    "damaged-trunc-text-recall": "Damaged arXiv papers, file truncated at 80%: text recall of the intact paper",
+    "damaged-page-accuracy": "Damaged arXiv papers, pages named by the pages_without_text warning (Jaccard; ezmd only)",
 }
 
 
@@ -103,7 +112,7 @@ def _categories(corpus: str, scores: dict[str, Any], results: list[DocResult]) -
     cats: dict[str, dict[str, Any]] = defaultdict(dict)
     for tool, s in scores["tools"].items():
         rs = by_tool.get(tool, [])
-        if corpus in ("omnidoc", "arxiv"):
+        if corpus in ("omnidoc", "arxiv", "arxiv-damaged"):
             for cat, v in s["categories"].items():
                 cats[cat][tool] = {**v, "speed": _speed(rs)}
         elif corpus == "olmocr":

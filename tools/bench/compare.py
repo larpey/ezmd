@@ -28,7 +28,7 @@ def _categories(run: Path) -> tuple[dict[str, dict[str, Any]], dict[str, bool]]:
         scores = json.loads(scores_path.read_text(encoding="utf-8"))
         directions: dict[str, bool] = scores.get("category_direction", {})
         for tool, s in scores["tools"].items():
-            if corpus in ("omnidoc", "arxiv"):
+            if corpus in ("omnidoc", "arxiv", "arxiv-damaged"):
                 cats = s["categories"]
             elif corpus == "olmocr":
                 cats = {"pdf-olmocr": {**s["primary"], "per_doc": s["per_doc"]}}
