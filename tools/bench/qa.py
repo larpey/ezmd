@@ -41,7 +41,8 @@ from tools.bench.scoring.text import read_output
 DEFAULT_URL = "http://localhost:1234/v1"
 DEFAULT_MODEL = "openai/gpt-oss-20b"
 CONTEXT_TOKENS = 32_768
-"""Context the model is loaded with; the document is cut to DOC_TOKENS so prompt and answer fit."""
+"""Context each request needs; the document is cut to DOC_TOKENS so prompt and answer fit. llama.cpp shares
+one KV cache between parallel requests, so the model is loaded with CONTEXT_TOKENS times the worker count."""
 DOC_TOKENS = 24_000
 MODEL_TTL_SECONDS = 4 * 3600
 """LM Studio unloads the model after this long idle; a run keeps it busy, the next morning does not."""
@@ -195,7 +196,7 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
         text = cut_tokens(witness(doc["id"], Path(doc["input"])).text, DOC_TOKENS)
         kept: list[dict[str, str]] = []
         for _attempt in range(2):
-            reply = client.chat(GENERATE_PROMPT.format(n=QUESTIONS_WANTED, text=text), max_tokens=6000)
+            reply = client.chat(GENERATE_PROMPT.format(n=QUESTIONS_WANTED, text=text), max_tokens=4000)
             try:
                 kept = validate_questions(parse_json_array(reply), text)
             except (ValueError, json.JSONDecodeError) as exc:
@@ -345,8 +346,9 @@ def ensure_model(client: Client, workers: int) -> None:
             pass
         raise SystemExit(f"{client.base_url} is not serving {client.model} and lms is not installed to load it")
     subprocess.run([lms, "server", "start"], check=False, capture_output=True)
+    needed = CONTEXT_TOKENS * workers
     context = loaded_context(lms, client.model)
-    if context is not None and context >= CONTEXT_TOKENS:
+    if context is not None and context >= needed:
         return
     if context is not None:
         subprocess.run([lms, "unload", client.model], check=False, capture_output=True)
@@ -358,7 +360,7 @@ def ensure_model(client: Client, workers: int) -> None:
             "--gpu",
             "max",
             "--context-length",
-            str(CONTEXT_TOKENS),
+            str(needed),
             "--parallel",
             str(workers),
             "--ttl",
@@ -370,8 +372,8 @@ def ensure_model(client: Client, workers: int) -> None:
         check=True,
     )
     context = loaded_context(lms, client.model)
-    if context is None or context < CONTEXT_TOKENS:
-        raise SystemExit(f"{client.model} did not come up with a {CONTEXT_TOKENS}-token context (got {context})")
+    if context is None or context < needed:
+        raise SystemExit(f"{client.model} did not come up with a {needed}-token context (got {context})")
 
 
 def main(

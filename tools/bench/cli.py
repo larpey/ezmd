@@ -103,7 +103,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--date", default=today)
     p.add_argument("--model", default=None, help="model id on the local OpenAI-compatible server")
     p.add_argument("--base-url", default=None, help="default http://localhost:1234/v1 (LM Studio)")
-    p.add_argument("--workers", type=int, default=4)
+    p.add_argument(
+        "--workers", type=int, default=1, help="parallel requests; the model is loaded with 32k context each"
+    )
     args = ap.parse_args(argv)
     if args.cmd == "install":
         from tools.bench.install import main as install
