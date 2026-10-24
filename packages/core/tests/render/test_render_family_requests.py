@@ -366,7 +366,6 @@ def test_converter_synthesized_header_note_and_col_names() -> None:
     # No per-table marker: the unnamed column is an empty header cell, the named one keeps its name.
     assert "header synthesized" not in out.body
     assert "|  | price |" in out.body
-    assert out.sidecar is None or True  # the count still reaches the sidecar via ctx.header_synthesized
 
 
 # ---------------------------------------------------------------------------- hidden headings, slides
