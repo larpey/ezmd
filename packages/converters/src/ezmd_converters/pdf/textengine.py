@@ -12,7 +12,7 @@ from ezmd.ir import Block, Document, Warning, WarningKind
 from ezmd.registry import ConversionError, ConvertOptions
 from ezmd_converters.pdf.assemble import Assembler, PageGeom, vocabulary
 from ezmd_converters.pdf.common import ScanReport, classify, ocr_stub, scan_warnings
-from ezmd_converters.pdf.headings import HeadingSources, plan_headings
+from ezmd_converters.pdf.headings import HeadingSources, page_title, plan_headings
 from ezmd_converters.pdf.layout import (
     Item,
     body_font_size,
@@ -72,6 +72,8 @@ def text_document(doc: Document, path: str, info: PdfInfo, popts: PdfOptions, op
     layer = read_text_layer(path, info, options)
     running = set() if popts.keep_running_headers else running_lines(layer.pages)
     headings = heading_sources(layer, info, popts, running)
+    if doc.metadata.title is None:
+        doc.metadata.title = page_title(layer.pages, headings.body, running)
     all_lines = [ln for p in layer.pages for ln in p.lines if ln.order not in running]
     asm = Assembler(doc.metadata.source, "pdfium", headings, vocabulary(all_lines), popts.dehyphenate)
     rep = classify(layer.pages, popts)

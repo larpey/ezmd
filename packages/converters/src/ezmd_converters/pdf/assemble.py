@@ -3,6 +3,7 @@ with dehyphenation and inline links, lists, best-effort tables, and page markers
 
 from __future__ import annotations
 
+import dataclasses
 import re
 from dataclasses import dataclass, field
 
@@ -151,6 +152,18 @@ class Assembler:
     # -- lines --------------------------------------------------------------
     def _line(self, ln: Line) -> None:
         level = self.headings.level(ln)
+        cut = self.headings.run_in.pop(ln.order, None)
+        if level is not None and cut is not None:
+            head, tail = _split_runs(ln.runs, cut)
+            if head:
+                text, href, script = head[-1]
+                head[-1] = (text.rstrip().rstrip(".:"), href, script)  # "2.1. Metric graph theory." loses its "."
+            self.flush()
+            self.blocks.append(Heading(level=level, spans=_spans(head), provenance=self._lprov([ln])))
+            if tail:
+                self._para.append(dataclasses.replace(ln, runs=tail))
+                _join(self._runs, tail, self.vocab, self.dehyphenate)
+            return
         if level is not None:
             self.flush()
             prev = self.blocks[-1] if self.blocks else None
@@ -334,6 +347,23 @@ def _continues_table(prev: Table, tail: Table, table: Table) -> bool:
 
 def _header_texts(t: Table) -> list[str]:
     return [" ".join(s.text for s in c.spans) for c in sorted(t.cells, key=lambda c: c.col) if c.row == 0]
+
+
+def _split_runs(runs: list[Run], n: int) -> tuple[list[Run], list[Run]]:
+    """Runs split after `n` characters of text (a run-in heading and the paragraph it opens)."""
+    head: list[Run] = []
+    rest: list[Run] = []
+    for text, href, script in runs:
+        if n >= len(text):
+            head.append((text, href, script))
+            n -= len(text)
+        elif n > 0:
+            head.append((text[:n], href, script))
+            rest.append((text[n:].lstrip(), href, script))
+            n = 0
+        else:
+            rest.append((text, href, script))
+    return head, [r for r in rest if r[0]]
 
 
 def _strip_marker(runs: list[Run], n: int) -> list[Run]:

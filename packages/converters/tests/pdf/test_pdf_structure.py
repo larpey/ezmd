@@ -231,17 +231,15 @@ def test_small_unit_on_the_same_baseline_keeps_the_break(tmp_path: Path) -> None
 # -- harder papers: Mamba, KAN, LLaMA -----------------------------------------------
 
 
-def test_math_alphanumerics_fold_to_plain_letters() -> None:
+def test_math_italic_folds_to_plain_letters_and_other_styles_stay() -> None:
+    """Italic is how every TeX variable is set (no meaning); bold, double-struck and script carry meaning."""
     from ezmd_converters.pdf.textlayer import _fold
 
-    assert [_fold(c) for c in ("\U0001d465", "\U0001d403", "ℎ", "ﬁ", "∆", "x")] == [
-        "x",
-        "D",
-        "h",
-        "fi",
-        "∆",
-        "x",
-    ]
+    italic = [_fold(c) for c in ("𝑥", "𝐷", "𝜆", "ℎ")]
+    assert italic == ["x", "D", "λ", "h"]
+    kept = ("𝐃", "𝔼", "𝒜", "∆")  # bold D, double-struck E, script A, increment
+    assert [_fold(c) for c in kept] == list(kept)
+    assert _fold("ﬁ") == "fi"
 
 
 def test_acl_bold_section_headings_just_above_body_size() -> None:
@@ -266,3 +264,124 @@ def test_lone_math_symbol_in_a_figure_is_not_a_heading() -> None:
     lines = [head, sym, letter, *(_body(k, 240 + 12 * k) for k in range(3, 13))]
     src = plan_headings([_page(lines)], 10.0, [], set())
     assert [src.level(head), src.level(sym), src.level(letter)] == [1, None, None]
+
+
+def test_appendix_numbered_headings_match_their_bookmarks() -> None:
+    """Mamba's appendix: "B Related Work", "B.1 S4 Variants..." for bookmarks without the letters, while a
+    title that starts with "A" ("A Simplified SSM Architecture") still matches whole."""
+    heads = [
+        _line(1, 72, 60, "1 Introduction", 0, size=12, bold=True),
+        _line(1, 72, 120, "A Simplified SSM Architecture", 1, bold=True),
+        _line(1, 72, 180, "B Related Work", 2, size=12, bold=True),
+        _line(1, 72, 240, "B.1 S4 Variants and Derivatives", 3, bold=True),
+    ]
+    lines = [*heads, *(_body(k, 300 + 12 * k) for k in range(4, 14))]
+    outline = [
+        (1, "Introduction", 0),
+        (2, "A Simplified SSM Architecture", 0),
+        (1, "Related Work", 0),
+        (2, "S4 Variants and Derivatives", 0),
+    ]
+    src = plan_headings([_page(lines)], 10.0, outline, set())
+    assert [src.level(ln) for ln in heads] == [1, 2, 1, 2]
+
+
+# -- bug hunt over 100+ CC BY arXiv papers ---------------------------------------------
+
+
+def test_junk_metadata_titles_are_rejected() -> None:
+    from ezmd_converters.pdf.pdfinfo import plausible_title
+
+    assert plausible_title("") is None  # Word stored a lone private-use glyph
+    assert plausible_title("Microsoft Word - draft3.docx") is None
+    assert plausible_title("main.tex") is None
+    assert plausible_title("untitled") is None
+    assert plausible_title("Mamba: Linear-Time Sequence Modeling") == "Mamba: Linear-Time Sequence Modeling"
+
+
+def test_page_title_prefers_first_page_largest_text_over_first_heading() -> None:
+    from ezmd_converters.pdf.headings import page_title
+
+    lines = [
+        _line(1, 100, 80, "Straintronics using the monolayer-Xene platform", 0, size=17, bold=True),
+        _line(1, 100, 102, "a comparative study", 1, size=17, bold=True),
+        _line(1, 100, 140, "Ada Lovelace, Charles Babbage", 2, size=11),
+        *(_body(k, 180 + 12 * k) for k in range(3, 13)),
+    ]
+    assert (
+        page_title([_page(lines)], 10.0, set()) == "Straintronics using the monolayer-Xene platform a comparative study"
+    )
+
+
+def test_page_title_takes_a_centred_capitals_title_at_body_size() -> None:
+    from ezmd_converters.pdf.headings import page_title
+
+    title = Line(1, 184, 120, 428, 131, 10.9, False, [("COMPACT T(1) THEOREM À LA STEIN", None, None)], 0)
+    lines = [title, *(_line(1, 72, 180 + 12 * k, "Body text " * 7, k, size=10.9) for k in range(1, 12))]
+    assert page_title([_page(lines)], 10.9, set()) == "COMPACT T(1) THEOREM À LA STEIN"
+
+
+def test_free_standing_accents_compose_with_their_letters(tmp_path: Path) -> None:
+    """TeX's \'A draws "´" as its own glyph over "A", after the rest of the word."""
+    path = _pdf_with(tmp_path, [(72, 700, 10, "ARPAD wrote"), (74.5, 702.0, 10, "\xb4")])
+    lines = _page_lines_of(path)
+    assert lines[0].text == "ÁRPAD wrote"
+
+
+def _page_lines_of(path: Path) -> list[Line]:
+    import pypdfium2 as pdfium
+
+    from ezmd.core.textclean import CleanStats
+    from ezmd_converters.pdf.textlayer import read_page
+
+    doc = pdfium.PdfDocument(str(path))
+    try:
+        return read_page(doc, 0, [], CleanStats(), 0).lines
+    finally:
+        doc.close()
+
+
+def test_ieee_and_revtex_headings_match_bookmarks() -> None:
+    heads = [
+        _line(1, 72, 60, "I. INTRODUCTION", 0, size=8),  # small capitals, smaller than the body
+        _line(1, 72, 120, "A. Proposed Courses", 1),  # IEEE letter subsection, body size
+        _line(1, 72, 180, "MODEL", 2, size=8),  # REVTeX: numeral drawn apart
+    ]
+    lines = [*heads, *(_body(k, 220 + 12 * k) for k in range(3, 13))]
+    outline = [(1, "Introduction", 0), (2, "Proposed Courses", 0), (1, "Model", 0)]
+    src = plan_headings([_page(lines)], 10.0, outline, set())
+    assert [src.level(ln) for ln in heads] == [1, 2, 1]
+
+
+def test_contents_list_without_page_numbers_does_not_take_bookmarks() -> None:
+    names = ["1. Introduction", "2. Methods", "2.1. Data", "2.2. Model", "3. Results", "4. Discussion"]
+    listing = [_line(1, 83, 300 + 12 * k, n, k) for k, n in enumerate(names)]
+    real = [_line(2, 72, 60 + 100 * k, n, 100 + k, size=12, bold=True) for k, n in enumerate(names)]
+    body = [_body(200 + k, 700 + k, page=2) for k in range(10)]
+    outline = [(1 if "." not in n[2:] else 2, n, None) for n in names]
+    src = plan_headings([_page(listing), _page([*real, *body], 2)], 10.0, outline, set())
+    assert [src.level(ln) for ln in listing] == [None] * 6
+    assert all(src.level(ln) is not None for ln in real)
+
+
+def test_run_in_heading_is_split_from_its_paragraph() -> None:
+    from ezmd_converters.pdf.assemble import Assembler
+    from ezmd_converters.pdf.layout import Item
+
+    run_in = _line(1, 83, 370, "2.1. Metric graph theory. For a graph G, a walk of length k is", 1)
+    heads = [_line(1, 83, 300, "2. Recollections", 0, size=12, bold=True), run_in]
+    tail = _line(1, 83, 600, "3. Results", 12, size=12, bold=True)
+    lines = [*heads, *(_body(k, 400 + 12 * k) for k in range(2, 12)), tail]
+    outline = [(1, "2. Recollections", 0), (2, "2.1. Metric graph theory", 0), (1, "3. Results", 0)]
+    src = plan_headings([_page(lines)], 10.0, outline, set())
+    assert src.outline_mode
+    asm = Assembler("t.pdf", "pdfium", src, set(), True)
+    from ezmd_converters.pdf.assemble import PageGeom
+
+    asm.page(PageGeom(1, 612, 792), [Item(ln.x0, ln.y0, ln.x1, ln.y1, ln.order, line=ln) for ln in lines], False)
+    kinds = [(type(b).__name__, spans_text(b.spans)[:30]) for b in asm.blocks[:3]]
+    assert kinds == [
+        ("Heading", "2. Recollections"),
+        ("Heading", "2.1. Metric graph theory"),
+        ("Paragraph", "For a graph G, a walk of lengt"),
+    ]

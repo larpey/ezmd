@@ -16,6 +16,21 @@ from ezmd_converters.pdf.textlayer import Line, PageText
 
 SECTION_NUMBER = re.compile(r"^(\d{1,2}(?:\.\d{1,2}){0,4})\.?\s+(?=\S)")
 """A leading section number: "3", "3.2.1", "4." followed by the title."""
+NUMBERING = (
+    re.compile(r"^(?:appendix|section|chapter|part)\s+(?=\S)", re.IGNORECASE),
+    re.compile(r"^\d{1,2}(?:\.\d{1,2}){0,4}[.):]?\s+(?=\S)"),
+    re.compile(r"^[IVXLC]{1,6}[.):]\s+(?=\S)"),
+    re.compile(r"^[A-Z](?:\.\d{1,2}){1,4}[.):]?\s+(?=\S)"),
+    re.compile(r"^[A-Z][.):]\s+(?=\S)"),
+    re.compile(r"^[B-HJ-Z]\s+(?=[A-Z])"),
+)
+"""Leading numbering in any common style, stripped (in order, each at most once) to match a heading to its
+bookmark: "3.1", "4." and "2)" (arabic), "II." (IEEE roman), "B.1" and "A." (appendix and IEEE letters),
+"B Related Work" (appendix letter; never "A" or "I", which are words: "A Simplified SSM Architecture"), and
+"Appendix C"."""
+WRAPPED_MIN_CHARS = 20
+"""A heading that wraps onto a second line matches its bookmark by its first line when that is at least this
+long and at least half the title."""
 OUTLINE_MIN_MATCHES = 3
 """The outline drives headings when at least this many of its titles (or all of them, if fewer) are found."""
 PROSE_RUN = 3
@@ -31,11 +46,26 @@ names and affiliations are set in heading sizes too."""
 BOLD_HEADING_RATIO = 1.05
 """Bold lines this much larger than the body are heading candidates too: ACL-style papers set 12 pt section
 headings over an 11 pt body (1.09x, under `HEADING_RATIO`)."""
-MIN_HEADING_LETTERS = 2
-"""A heading has at least this many letters; a lone 𝐴 or ∆ in a diagram's lettering is not one."""
+HEADING_WORD = re.compile(r"[^\W\d_]{2,}")
+"""A heading has a word of two letters or more; a lone 𝐴 or ∆, or `h¯Ω1/λ0`, in a diagram's lettering is not
+one."""
 TURNED_MINORITY = 0.5
 """Turned lines are margin furniture (an arXiv stamp) only when under this share of their page's lines; on a
 page typeset sideways they are the content and keep their headings."""
+
+
+def heading_key(text: str) -> tuple[str, bool]:
+    """(match key, whether numbering was stripped): the text without leading numbering, case-folded, spaces
+    collapsed and trailing ".:" dropped, so "II. RELATED WORK", "2 Related Work" and the bookmark "Related
+    Work" share a key."""
+    rest = text.strip()
+    numbered = False
+    for pattern in NUMBERING:
+        m = pattern.match(rest)
+        if m is not None:
+            rest = rest[m.end() :]
+            numbered = True
+    return norm_text(rest), numbered
 
 
 def section_number(text: str) -> tuple[int | None, str]:
@@ -53,6 +83,11 @@ class HeadingSources:
     struct: dict[tuple[int, int], int] = field(default_factory=dict)
     outline: dict[tuple[str, int | None], int] = field(default_factory=dict)
     outline_any: dict[str, int] = field(default_factory=dict)
+    contents: set[int] = field(default_factory=set)
+    """`Line.order` of lines on a printed table-of-contents page (never headings: they list them)."""
+    run_in: dict[int, int] = field(default_factory=dict)
+    """Run-in headings found by `level`: `Line.order` -> length of the heading at the start of the line
+    ("2.1. Metric graph theory." before the paragraph's first sentence). The assembler splits the line."""
     sizes: dict[float, int] = field(default_factory=dict)
     bold_sizes: set[float] = field(default_factory=set)
     """Sizes in `sizes` that are headings only when the line is bold (under `HEADING_RATIO` x body)."""
@@ -84,9 +119,9 @@ class HeadingSources:
     def level(self, ln: Line) -> int | None:
         """Heading level of `ln`, or None. Call once per line, in reading order: outline bookmarks are consumed
         and the depth of "3.1" headings is measured from the last top-level numbered heading."""
-        if ln.order in self.turned or ln.order in self.prose or ln.order in self.front:
+        if ln.order in self.turned or ln.order in self.prose or ln.order in self.front or ln.order in self.contents:
             return None
-        if sum(ch.isalpha() for ch in ln.text) < MIN_HEADING_LETTERS:
+        if not HEADING_WORD.search(ln.text):
             return None
         size = round(ln.size * 2) / 2
         size_level = self.sizes.get(size)
@@ -103,7 +138,7 @@ class HeadingSources:
                 return None
         if self.outline_mode:
             return self._outline_mode_level(ln)
-        key = norm_text(ln.text)
+        key, _ = heading_key(ln.text)
         lvl = self.outline.get((key, ln.page - 1)) or self.outline_any.get(key)
         if lvl is not None:
             return self._count("outline", lvl)
@@ -145,7 +180,11 @@ class HeadingSources:
     def _take_outline(self, ln: Line) -> int | None:
         key = outline_key(ln, self.body, self.outline_left, self.numbered_keys)
         if key is None:
-            return None
+            hit = run_in_heading(ln.text, self.outline_left)
+            if hit is None:
+                return None
+            key, cut = hit
+            self.run_in[ln.order] = cut
         self.outline_left[key] -= 1
         return self.outline.get((key, ln.page - 1)) or self.outline_any.get(key)
 
@@ -168,18 +207,31 @@ class HeadingSources:
 
 
 def outline_key(ln: Line, body: float, left: Counter[str], numbered: set[str]) -> str | None:
-    """The outline title `ln` matches, or None. The line must look like a heading (bold, large, or numbered),
-    so a figure label repeating a section title does not take the bookmark."""
-    depth, rest = section_number(ln.text)
-    if not (ln.bold or ln.size >= body * HEADING_RATIO or depth is not None):
+    """The outline title `ln` matches, or None.
+
+    - It must look like a heading: bold, large or numbered, so a figure label repeating a section title does
+      not take the bookmark. A line that matches exactly and is set apart from the body some other way also
+      counts: REVTeX's small capitals ("INTRODUCTION", numeral drawn apart, often smaller than the body), or
+      a size 5% off the body's.
+    - An unnumbered line does not take a title that also appears numbered.
+    - The first line of a wrapped heading matches its title by prefix."""
+    whole = norm_text(ln.text)
+    key, has_number = heading_key(ln.text)
+    letters = [c for c in ln.text if c.isalpha()]
+    caps = len(letters) >= 3 and all(c.isupper() for c in letters)
+    set_apart = caps or abs(ln.size - body) >= 0.05 * body
+    looks_like_heading = ln.bold or ln.size >= body * HEADING_RATIO or has_number
+    if not looks_like_heading and (not set_apart or left[key] <= 0):
         return None
-    keys = [norm_text(ln.text)] + ([norm_text(rest)] if depth is not None else [])
-    for key in keys:
-        if left[key] <= 0:
-            continue
-        if depth is None and key in numbered:
-            continue
-        return key
+    if not has_number and key in numbered:
+        return None
+    for candidate in (whole, key):
+        if left[candidate] > 0:
+            return candidate
+    if len(key) >= WRAPPED_MIN_CHARS:
+        for title, n in left.items():
+            if n > 0 and title.startswith(key) and len(key) >= 0.5 * len(title):
+                return title
     return None
 
 
@@ -223,6 +275,48 @@ def heading_sizes(pages: Sequence[PageText], body: float, skip: set[int]) -> tup
     return {s: min(i + 1, 6) for i, s in enumerate(ordered)}, bold
 
 
+def page_title(pages: Sequence[PageText], body: float, skip: set[int]) -> str | None:
+    """The title set on the first page: its largest upright text (consecutive lines of that size joined), when
+    that is heading-sized, has a word, and is not a numbered section or "Abstract". Used when the PDF's
+    metadata has no usable title, instead of the first top-level heading ("1. Introduction")."""
+    page = next((p for p in pages if any(ln.order not in skip for ln in p.lines)), None)
+    if page is None:
+        return None
+    lines = [ln for ln in page.lines if ln.order not in skip and not ln.turn and HEADING_WORD.search(ln.text)]
+    if not lines:
+        return None
+    top = max(ln.size for ln in lines)
+    if top >= body * HEADING_RATIO:
+        group = sorted((ln for ln in lines if round(ln.size * 2) == round(top * 2)), key=lambda ln: ln.order)
+    else:
+        group = _caps_title_lines(lines, page.width)
+        if not group:
+            return None
+    run = [group[0]]
+    for ln in group[1:]:
+        if ln.order == run[-1].order + 1 and 0 <= ln.y0 - run[-1].y1 <= 0.8 * ln.size:
+            run.append(ln)
+        else:
+            break
+    text = " ".join(ln.text for ln in run).strip()
+    if section_number(text)[0] is not None or norm_text(text) in FRONT_MATTER or len(text) > 250:
+        return None
+    return text
+
+
+def _caps_title_lines(lines: list[Line], width: float) -> list[Line]:
+    """AMS-style title pages set the title at body size in capitals or bold, centred at the top: the topmost
+    line when it is centred and set that way, with the lines continuing it."""
+    first = min(lines, key=lambda ln: (ln.y0, ln.x0))
+    letters = [c for c in first.text if c.isalpha()]
+    caps = bool(letters) and sum(c.isupper() for c in letters) >= 0.9 * len(letters)
+    centred = abs((first.x0 + first.x1) / 2 - width / 2) <= 0.05 * width
+    if not centred or not (caps or first.bold) or len(first.text.split()) < 2:
+        return []
+    same = [ln for ln in lines if round(ln.size * 2) == round(first.size * 2) and ln.bold == first.bold]
+    return sorted(same, key=lambda ln: ln.order)[sorted(same, key=lambda ln: ln.order).index(first) :]
+
+
 def front_matter_lines(pages: Sequence[PageText], skip: set[int]) -> set[int]:
     """On the first page, the lines between the largest line (the title) and a front-matter heading such as
     "Abstract": author names and affiliations, set in heading sizes. Empty when the page has no such heading."""
@@ -246,18 +340,19 @@ def plan_outline(src: HeadingSources, pages: Sequence[PageText], skip: set[int])
         titles[key] += 1
     if not titles:
         return
-    hidden = skip | src.prose | src.turned
+    src.contents |= listed_titles(pages, titles, skip)
+    hidden = skip | src.prose | src.turned | src.contents
     lines = [ln for p in pages for ln in p.lines if ln.order not in hidden]
     src.numbered_keys = {
-        norm_text(rest)
-        for ln in lines
-        for depth, rest in [section_number(ln.text)]
-        if depth is not None and norm_text(rest) in titles
+        key for ln in lines for key, has_number in [heading_key(ln.text)] if has_number and key in titles
     }
     left = titles.copy()
     matched: list[tuple[Line, int]] = []
     for ln in lines:
         hit = outline_key(ln, src.body, left, src.numbered_keys)
+        if hit is None:
+            run_in = run_in_heading(ln.text, left)
+            hit = run_in[0] if run_in is not None else None
         if hit is not None:
             left[hit] -= 1
             matched.append((ln, src.outline.get((hit, ln.page - 1)) or src.outline_any.get(hit) or 1))
@@ -288,12 +383,70 @@ def plan_headings(
     sizes, bold_sizes = heading_sizes(pages, body, skip | prose | turned)
     src = HeadingSources(sizes=sizes, bold_sizes=bold_sizes, body=body, prose=prose, turned=turned)
     src.front = front_matter_lines(pages, skip)
+    src.contents = contents_lines(pages, skip)
     for level, title, page in outline:
-        key = norm_text(title)
+        key, _ = heading_key(title)
         src.outline.setdefault((key, page), level)
         src.outline_any.setdefault(key, level)
     plan_outline(src, pages, skip)
     return src
+
+
+PAGE_REF = re.compile(r"(?:\.\s*){2,}\s*\d{1,4}$|\S\s+\d{1,4}$")
+"""A contents entry: dot leaders or a gap before a closing page number ("2.1. Metric graph theory .... 5")."""
+CONTENTS_MIN_LINES = 5
+CONTENTS_SHARE = 0.3
+
+
+RUN_IN_END = re.compile(r"[.:]\s+(?=\S)")
+
+
+def run_in_heading(text: str, left: Counter[str]) -> tuple[str, int] | None:
+    """(title, length) when `text` opens with a numbered bookmarked title closed by "." or ":" and the
+    paragraph continues on the line: AMS-style run-in headings ("2.1. Metric graph theory. For a graph G,").
+    The length covers the heading and its closing punctuation."""
+    if heading_key(text)[1] is False:
+        return None
+    for m in RUN_IN_END.finditer(text):
+        key, numbered = heading_key(text[: m.start()])
+        if numbered and left[key] > 0:
+            return key, m.start() + 1
+        if len(key) > 120:
+            break
+    return None
+
+
+def listed_titles(pages: Sequence[PageText], titles: Counter[str], skip: set[int]) -> set[int]:
+    """Orders of a contents list printed without page numbers: on one page, `CONTENTS_MIN_LINES` or more
+    consecutive, tightly spaced lines that are each an outline title. The headings come later; the list must
+    not take their bookmarks."""
+    out: set[int] = set()
+    for p in pages:
+        run: list[Line] = []
+        for ln in sorted((ln for ln in p.lines if ln.order not in skip), key=lambda ln: ln.order):
+            listed = titles[heading_key(ln.text)[0]] > 0 or titles[norm_text(ln.text)] > 0
+            if listed and (not run or 0 <= ln.y0 - run[-1].y1 <= ln.size):
+                run.append(ln)
+                continue
+            if len(run) >= CONTENTS_MIN_LINES:
+                out.update(r.order for r in run)
+            run = [ln] if listed else []
+        if len(run) >= CONTENTS_MIN_LINES:
+            out.update(r.order for r in run)
+    return out
+
+
+def contents_lines(pages: Sequence[PageText], skip: set[int]) -> set[int]:
+    """Orders of the lines on printed table-of-contents pages: at least `CONTENTS_MIN_LINES` lines, and
+    `CONTENTS_SHARE` of the page, end in a page number. They repeat the headings, so matching them would hand
+    the headings' bookmarks to the contents page."""
+    out: set[int] = set()
+    for p in pages:
+        lines = [ln for ln in p.lines if ln.order not in skip]
+        refs = [ln for ln in lines if PAGE_REF.search(ln.text) and HEADING_WORD.search(ln.text)]
+        if len(refs) >= CONTENTS_MIN_LINES and len(refs) >= CONTENTS_SHARE * len(lines):
+            out.update(ln.order for ln in refs)
+    return out
 
 
 def minority_turned(pages: Sequence[PageText]) -> set[int]:

@@ -63,6 +63,25 @@ def _text(obj: object) -> str | None:
     return s or None
 
 
+_JUNK_TITLE = re.compile(
+    r"^(?:microsoft (?:word|powerpoint|excel) - .*|untitled.*|document\d*|slide \d+|title|"
+    r".*\.(?:docx?|pptx?|xlsx?|tex|dvi|pdf|indd|qxd))$",
+    re.IGNORECASE,
+)
+_WORD = re.compile(r"[^\W\d_]{2,}")
+
+
+def plausible_title(text: str | None) -> str | None:
+    """`text` when it can be a document title: it has a word of two letters or more and is not a producer's
+    placeholder ("Microsoft Word - draft3.docx", "untitled", a lone private-use glyph from Word)."""
+    if text is None:
+        return None
+    text = text.strip()
+    if not _WORD.search(text) or _JUNK_TITLE.match(text):
+        return None
+    return text
+
+
 def parse_pdf_date(raw: str | None) -> datetime | None:
     if not raw:
         return None
@@ -87,7 +106,7 @@ def read_info(pdf: pikepdf.Pdf, *, source: str) -> PdfInfo:
     page_index = {p.obj.objgen: i for i, p in enumerate(pdf.pages)}
     try:
         docinfo = pdf.docinfo
-        info.title = _text(docinfo.get("/Title"))
+        info.title = plausible_title(_text(docinfo.get("/Title")))
         info.author = _text(docinfo.get("/Author"))
         info.subject = _text(docinfo.get("/Subject"))
         kw = _text(docinfo.get("/Keywords"))
@@ -99,7 +118,7 @@ def read_info(pdf: pikepdf.Pdf, *, source: str) -> PdfInfo:
     if info.title is None:
         try:
             with pdf.open_metadata() as meta:
-                info.title = _text(meta.get("dc:title"))
+                info.title = plausible_title(_text(meta.get("dc:title")))
         except Exception:
             pass
     info.language = _text(pdf.Root.get("/Lang"))

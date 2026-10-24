@@ -18,6 +18,15 @@ All notable changes are generated from Conventional Commits. This project uses s
   replacement characters each and every variable in a formula was lost; they now read as plain `x`, `D`.
 - PDF: bold section headings only slightly larger than the body (ACL-style 12 pt over 11 pt) are headings,
   and the title page's author and affiliation lines above "Abstract" are not.
+- PDF titles: junk metadata titles (a lone private-use glyph from Word, "Microsoft Word - x.docx", file
+  names) are ignored, and without a metadata title the title is the first page's largest text, or its
+  centred capitals at body size (AMS), instead of the first heading ("1. Introduction").
+- PDF: accents TeX draws as separate glyphs (`´` over `A`) compose into the letter (`Á`), and math italic
+  folds to plain letters while bold, script and double-struck math letters keep their style.
+- PDF headings: bookmarks match headings numbered in any style (`2.1.`, IEEE `II.` and `A.`, appendix `B.1`),
+  REVTeX small-capital headings, headings that wrap onto a second line, and run-in headings
+  ("2.1. Metric graph theory. For a graph G, ..."), which are split from their paragraph. A printed table
+  of contents, with or without page numbers, no longer takes the bookmarks of the headings it lists.
 
 ## [0.1.1] - 2026-10-23
 

@@ -79,10 +79,11 @@ class PageText:
 
 _LIGATURE_LO, _LIGATURE_HI = chr(0xFB00), chr(0xFB06)
 """Latin ligatures (ff, fi, fl, ffi, ffl, long st, st) are NFKC-expanded (docs/internal/spec/part2.md 1e.8)."""
-_MATH_ALNUM_LO, _MATH_ALNUM_HI = 0x1D400, 0x1D7FF
-"""Mathematical Alphanumeric Symbols (TeX math italic 𝑥, bold 𝐃, double-struck 𝔼): NFKC-folded to the plain
-letter or digit, like U+210E ℎ (Planck constant, TeX's math italic h). The style carries no meaning in text
-and each costs several tokens where the letter costs one."""
+_MATH_ITALIC = (range(0x1D434, 0x1D468), range(0x1D6E2, 0x1D71C))
+"""Mathematical italic Latin and Greek (TeX's default for a variable: 𝑥, 𝐷, 𝜆), folded to the plain letter
+like U+210E ℎ (TeX's math italic h). That style is how every variable is set, so it carries no meaning, and
+each costs several tokens where the letter costs one. Bold (𝐀, often a matrix or a different quantity),
+script, fraktur and double-struck letters (𝔼, ℝ) are kept: there the style is the meaning."""
 _SURROGATE_HI = range(0xD800, 0xDC00)
 _SURROGATE_LO = range(0xDC00, 0xE000)
 
@@ -90,7 +91,7 @@ _SURROGATE_LO = range(0xDC00, 0xE000)
 def _fold(ch: str) -> str:
     """Expand ligatures and fold math alphanumerics to plain characters; everything else is kept."""
     code = ord(ch)
-    if _LIGATURE_LO <= ch <= _LIGATURE_HI or _MATH_ALNUM_LO <= code <= _MATH_ALNUM_HI or code == 0x210E:
+    if _LIGATURE_LO <= ch <= _LIGATURE_HI or code == 0x210E or any(code in r for r in _MATH_ITALIC):
         return unicodedata.normalize("NFKC", ch)
     return ch
 
@@ -120,6 +121,30 @@ class _Glyph:
 
 _HYPHEN_CODES = frozenset({0x02, 0xAD})
 _SPACE = _Glyph(" ", 0.0, 0.0, 0.0, 0.0, 0.0, False, -1, None)
+
+_ACCENTS = {
+    "`": "\u0300",
+    "\u00b4": "\u0301",
+    "\u02ca": "\u0301",
+    "\u02cb": "\u0300",
+    "\u02c6": "\u0302",
+    "^": "\u0302",
+    "\u02dc": "\u0303",
+    "~": "\u0303",
+    "\u00af": "\u0304",
+    "\u02c9": "\u0304",
+    "\u02d8": "\u0306",
+    "\u02d9": "\u0307",
+    "\u00a8": "\u0308",
+    "\u02da": "\u030a",
+    "\u02dd": "\u030b",
+    "\u02c7": "\u030c",
+    "\u00b8": "\u0327",
+    "\u02db": "\u0328",
+}
+"""Spacing accents TeX sets as their own glyph over (or, for cedilla and ogonek, under) a letter, mapped to
+the combining mark: `\\'A` draws `´` above `A`, which reads "´ A" unless composed back into `Á`."""
+_BELOW = frozenset({"\u0327", "\u0328"})
 
 
 class _Transform:
@@ -257,7 +282,7 @@ def read_page(
             textpage.close()
     finally:
         page.close()
-    lines = _lines(glyphs, index + 1, order_base, stats)
+    lines = _lines(_compose_accents(glyphs), index + 1, order_base, stats)
     chars = sum(1 for g in glyphs if g is not None and not g.ch.isspace())
     return PageText(
         number=index + 1,
@@ -313,6 +338,43 @@ def _glyphs(
         for c in _fold(ch):
             out.append(_placed(_Glyph(c, *box, size, bold, mcid, href), turn, origin))
     return out, private
+
+
+def _compose_accents(glyphs: list[_Glyph | None]) -> list[_Glyph | None]:
+    """Fold each free-standing accent glyph into the nearby letter it is drawn on: the letter's box spans the
+    accent's centre along the line, and the accent sits above it (below for a cedilla) on the same line.
+    Accents with no such letter (a quoted backtick in code) are kept as they are."""
+    out = list(glyphs)
+    drop: set[int] = set()
+    for k, g in enumerate(glyphs):
+        if g is None or g.ch not in _ACCENTS:
+            continue
+        mark = _ACCENTS[g.ch]
+        mid = (g.along[0] + g.along[1]) / 2
+        best: tuple[float, int] | None = None
+        for j in range(len(glyphs)):  # anywhere on the page: TeX may draw a line's accents after the whole line
+            b = out[j]
+            if j == k or j in drop or b is None or not b.ch.isalpha() or b.turn != g.turn:
+                continue
+            if not b.along[0] - 0.5 <= mid <= b.along[1] + 0.5:
+                continue
+            gap = b.across[0] - g.across[1] if mark not in _BELOW else g.across[0] - b.across[1]
+            if -0.5 * b.size <= gap <= 0.5 * b.size and (best is None or abs(j - k) < best[0]):  # nearest in order
+                best = (abs(j - k), j)
+        if best is None:
+            continue
+        j = best[1]
+        b = out[j]
+        assert b is not None
+        composed = unicodedata.normalize("NFC", b.ch + mark)
+        out[j] = _Glyph(
+            composed, b.x0, b.y0, b.x1, b.y1, b.size, b.bold, b.mcid, b.href, b.turn, b.along, b.across, b.base
+        )
+        drop.add(k)
+        for n in (k - 1, k + 1):  # pdfium puts a space on each side of the interrupting accent
+            if 0 <= n < len(glyphs) and glyphs[n] is _SPACE:
+                drop.add(n)
+    return [g for k, g in enumerate(out) if k not in drop]
 
 
 def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: CleanStats) -> list[Line]:
