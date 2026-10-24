@@ -30,6 +30,7 @@ from tools.bench.corpora import (
     aeb_root,
     arxiv_manifest,
     arxiv_root,
+    arxiv_source_dir,
     corpora_dir,
     omnidoc_root,
 )
@@ -143,12 +144,12 @@ def fetch_arxiv() -> None:
         time.sleep(3)
 
 
-def _check_digest(pdf: Path, entry: dict[str, object]) -> None:
+def _check_digest(pdf: Path, entry: dict[str, object], key: str = "sha256") -> None:
     """The manifest pins each paper by the sha256 of the bytes the results were measured on. arXiv may replace
     a PDF (a new version, a regenerated file); a different file is a different corpus, so it is an error."""
     import hashlib
 
-    want = entry.get("sha256")
+    want = entry.get(key)
     if not want:
         return
     got = hashlib.sha256(pdf.read_bytes()).hexdigest()
@@ -157,7 +158,41 @@ def _check_digest(pdf: Path, entry: dict[str, object]) -> None:
         raise RuntimeError(f"arxiv: {pdf.name} has sha256 {got[:12]}..., the manifest pins {str(want)[:12]}...")
 
 
-FETCHERS = {"olmocr": fetch_olmocr, "omnidoc": fetch_omnidoc, "web": fetch_web, "arxiv": fetch_arxiv}
+def fetch_arxiv_source() -> None:
+    """The LaTeX source (arXiv e-print) of every manifest paper, the witness for text recall that no PDF text
+    layer produced (tools/bench/scoring/latex.py). A paper submitted as PDF only has no source; arXiv answers
+    with the PDF, and an empty marker file records that so the paper is skipped, not refetched."""
+    import urllib.request
+
+    out = arxiv_source_dir()
+    out.mkdir(parents=True, exist_ok=True)
+    for entry in arxiv_manifest():
+        dest = out / f"{entry['id']}.src"
+        if dest.exists():
+            if dest.stat().st_size > 0:
+                _check_digest(dest, entry, "source_sha256")
+            continue
+        url = f"https://arxiv.org/e-print/{entry['id']}"
+        req = urllib.request.Request(url, headers={"User-Agent": "ezmd-bench/1 (https://github.com/larpey/ezmd)"})
+        with urllib.request.urlopen(req, timeout=120) as resp:  # noqa: S310 (https URL built from the manifest)
+            data = resp.read()
+        if data.startswith(b"%PDF"):
+            dest.write_bytes(b"")
+            print(f"arxiv source: {entry['id']} was submitted as PDF only", flush=True)
+        else:
+            dest.write_bytes(data)
+            _check_digest(dest, entry, "source_sha256")
+            print(f"arxiv source: {dest.name} ({len(data) // 1024} KB)", flush=True)
+        time.sleep(3)
+
+
+FETCHERS = {
+    "olmocr": fetch_olmocr,
+    "omnidoc": fetch_omnidoc,
+    "web": fetch_web,
+    "arxiv": fetch_arxiv,
+    "arxiv-source": fetch_arxiv_source,
+}
 
 
 def main(only: list[str] | None) -> int:

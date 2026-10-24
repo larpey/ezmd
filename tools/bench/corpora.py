@@ -176,6 +176,12 @@ def arxiv_root() -> Path:
     return corpora_dir() / "arxiv"
 
 
+def arxiv_source_dir() -> Path:
+    """LaTeX sources (`fetch --only arxiv-source`): `<id>.src` is the e-print archive, empty when the paper
+    was submitted as PDF only."""
+    return arxiv_root() / "source"
+
+
 def arxiv_manifest() -> list[dict[str, Any]]:
     entries: list[dict[str, Any]] = json.loads(ARXIV_MANIFEST.read_text(encoding="utf-8"))
     return entries
@@ -213,6 +219,32 @@ def arxiv(sample: int | None = ARXIV_SAMPLE) -> list[Doc]:
     return _sample(docs, sample)
 
 
+def arxiv_damaged(sample: int | None = None) -> list[Doc]:
+    """Damaged copies (tools/bench/damage.py: scan, pages, trunc) of DAMAGED_SAMPLE papers of the arXiv sample,
+    built into the corpus cache on first use. `sample` is a number of papers (every kind of each); None means
+    the default DAMAGED_SAMPLE. Each document's meta carries the intact paper (`source`, `paper`), the damage
+    `kind`, the 1-based `damaged_pages` and the page count, which the scorer needs for the witness."""
+    from tools.bench import damage
+
+    papers = _sample(arxiv(), sample if sample is not None else damage.DAMAGED_SAMPLE)
+    docs: list[Doc] = []
+    for paper in papers:
+        for kind in damage.KINDS:
+            dest = damage.damaged_dir() / f"{paper.input.stem}~{kind}.pdf"
+            meta_path = dest.with_suffix(".json")
+            if dest.exists() and meta_path.exists():
+                meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                if "textless_pages" not in meta:
+                    meta = {**meta, "textless_pages": damage.textless_pages(paper.input)}
+                    meta_path.write_text(json.dumps(meta), encoding="utf-8")
+            else:
+                meta = damage.build(kind, paper.input, dest)
+                meta_path.write_text(json.dumps(meta), encoding="utf-8")
+            meta = {**meta, "source": str(paper.input), "paper": paper.id, "title": paper.meta.get("title")}
+            docs.append(Doc("arxiv-damaged", f"{paper.id}~{kind}", dest, kind, meta))
+    return docs
+
+
 CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "smoke": smoke,
     "fixtures": fixtures,
@@ -220,6 +252,7 @@ CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "omnidoc": omnidoc,
     "web": web,
     "arxiv": arxiv,
+    "arxiv-damaged": arxiv_damaged,
 }
 
 

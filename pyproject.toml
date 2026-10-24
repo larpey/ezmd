@@ -43,6 +43,9 @@ dev = [
     "python-pptx>=1.0.2",
     # Competitive benchmark harness (tools/bench): peak RSS over each competitor's process tree; BSD-3-Clause.
     "psutil>=7.0",
+    # tools/bench/scoring/latex.py: words of an arXiv paper's LaTeX source, the witness independent of any PDF
+    # text layer; MIT.
+    "pylatexenc>=2.10",
 ]
 
 [tool.pytest.ini_options]

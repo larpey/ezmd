@@ -127,14 +127,30 @@ class Witness:
     words: Counter[str]
     bookmarks: list[str]
     text: str
+    source: Counter[str] | None = None
+    """Words of the paper's LaTeX source (scoring/latex.py), when it was fetched and has a main file."""
+
+    @property
+    def text_layer_source_recall(self) -> float | None:
+        """The raw pdfium text layer's own recall against the source: the reference a text-layer reader is
+        measured by (a converter can beat it a little by joining hyphenated words and folding ligatures)."""
+        return recall(self.source, self.words) if self.source else None
 
 
 def witness_dir() -> Path:
     return arxiv_root() / "witness"
 
 
+def arxiv_id(doc_id: str) -> str:
+    """`2301_00845` -> `2301.00845` (document ids are file-name safe; arXiv ids carry a dot)."""
+    return doc_id.replace("_", ".", 1)
+
+
 def witness(doc_id: str, pdf: Path) -> Witness:
-    """The PDF's own text layer and bookmarks, extracted once and cached as JSON under the corpus."""
+    """The PDF's own text layer and bookmarks, extracted once and cached as JSON under the corpus, plus the
+    words of the LaTeX source when `fetch --only arxiv-source` has stored it."""
+    from tools.bench.scoring.latex import source_text
+
     path = witness_dir() / f"{doc_id}.json"
     if path.exists():
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -154,7 +170,14 @@ def witness(doc_id: str, pdf: Path) -> Witness:
             doc.close()
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
-    return Witness(int(data["pages"]), words(str(data["text"])), list(data["bookmarks"]), str(data["text"]))
+    source = source_text(doc_id, arxiv_id(doc_id))
+    return Witness(
+        int(data["pages"]),
+        words(str(data["text"])),
+        list(data["bookmarks"]),
+        str(data["text"]),
+        words(source) if source else None,
+    )
 
 
 _DATA_URI = re.compile(r"data:[a-zA-Z0-9.+/-]+;base64,[A-Za-z0-9+/=\s]+")
@@ -210,6 +233,7 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
     qa = qa_scores(result, run_dir)
     out: dict[str, float | None] = {
         "arxiv-text-recall": round(rec, 4),
+        "arxiv-source-recall": (None if w.source is None else round(recall(w.source, words(md)), 4) if ok else 0.0),
         "arxiv-silent-loss": float(ok and lost and not declared),
         "arxiv-outline-recall": outline_recall(w.bookmarks, headings_of(md) if ok else []),
         "arxiv-tokens-per-page": round(tokens / w.pages, 1) if tokens is not None and w.pages else None,
@@ -220,6 +244,7 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
         "lost": float(lost),
         "declared": None if declared is None else float(declared),
         "tokens": None if tokens is None else float(tokens),
+        "text_layer_source_recall": w.text_layer_source_recall,
     }
     return out
 
@@ -232,6 +257,7 @@ def _inputs(run_dir: Path) -> dict[str, Path]:
 CATEGORIES = (
     "arxiv-qa",
     "arxiv-text-recall",
+    "arxiv-source-recall",
     "arxiv-silent-loss",
     "arxiv-outline-recall",
     "arxiv-tokens-per-page",
@@ -256,7 +282,11 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         any_qa = any_qa or cats["arxiv-qa"]["n"] > 0
         declared = [v["declared"] for v in per_doc.values() if v["declared"] is not None]
         lost = [v["lost"] for v in per_doc.values()]
+        refs = [v["text_layer_source_recall"] for v in per_doc.values() if v["text_layer_source_recall"] is not None]
         secondary = {
+            # The same for every tool: the raw pdfium text layer's own recall against the LaTeX source, the
+            # reference to read arxiv-source-recall by.
+            "text_layer_source_recall": {"value": round(sum(refs) / len(refs), 4) if refs else None},
             "lost_rate": {"value": round(sum(lost) / len(lost), 4) if lost else None},
             "declared_rate": {"value": round(sum(declared) / len(declared), 4) if declared else None},
             "false_alarm_rate": {
