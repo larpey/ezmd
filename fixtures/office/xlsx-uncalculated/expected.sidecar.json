@@ -679,7 +679,7 @@
   "footnotes": [],
   "frontmatter": {
     "author": "Transit Desk",
-    "content_hash": "sha256:f72cf5d66e2aa67ef5761b995fd5758f0f342191168b447ebcfde6303f093be0",
+    "content_hash": "sha256:ad6f2798420adac5457346b205a55007cefbaded708bc9ba8c48b723f4728e36",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.xlsx",
     "converter_version": "<normalized>",
@@ -698,16 +698,16 @@
     "source_type": "xlsx",
     "title": "Fuel Budget",
     "tokens": {
-      "cl100k_base": 182,
-      "claude_approx": 197,
-      "o200k_base": 182
+      "cl100k_base": 171,
+      "claude_approx": 185,
+      "o200k_base": 171
     },
     "truncated": false,
     "warnings": [
       "formula_uncalculated",
       "formulas_present"
     ],
-    "word_count": 37
+    "word_count": 35
   },
   "heading_shift": 0,
   "injection_findings": [],
@@ -797,7 +797,7 @@
       "id": "sec-2",
       "level": 2,
       "number": "2",
-      "offset_end": 446,
+      "offset_end": 402,
       "offset_start": 284,
       "original_level": 2,
       "original_title": "Check",
@@ -881,16 +881,16 @@
         "col_2"
       ],
       "number": 2,
-      "offset_end": 445,
+      "offset_end": 401,
       "offset_start": 328,
       "page": 2,
       "representation": "pipe",
       "rows": 1,
-      "tokens": 42
+      "tokens": 31
     }
   ],
   "tokens_estimated": false,
-  "tokens_total": 430,
+  "tokens_total": 418,
   "warnings": [
     {
       "block_id": null,

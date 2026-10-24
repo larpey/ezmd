@@ -4,7 +4,39 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Added
+- Benchmark harness (`tools/bench`): an `arxiv` corpus of 109 whole CC BY papers that measures what a downstream
+  model gets rather than a page's edit distance: text recall against the PDF's own text layer, silent loss (over
+  5% of the words gone with no warning raised), outline recall against the PDF's bookmarks, o200k tokens per page
+  and answer accuracy, where a local model (`tools/bench/qa.py`, LM Studio) writes grounded questions from the
+  text layer, answers them from each tool's output and grades them. `ezmd-main`, `ezmd-main-compact` and
+  `ezmd-main-rag` rows run the checkout's code under three profiles; the ezmd adapter records each document's
+  warnings so declared loss can be told from silent loss. Two witnesses keep the numbers honest: each paper's LaTeX
+  source (`fetch --only arxiv-source`, `tools/bench/scoring/latex.py`), which no converter's extractor produced,
+  and an `arxiv-damaged` corpus (`tools/bench/damage.py`: scanned, partly scanned and truncated copies of ten
+  papers) that checks whether a tool says what it lost and which pages. The damaged set found ezmd's first
+  silent loss, a repaired truncated file (#23). First results in `bench/results/2026-10-24/` and
+  `docs/benchmarks.md`.
+
+### Changed
+- `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
+  content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
+  (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
+  the marker reads it from the frontmatter `content_hash` or the sidecar.
+
 ### Fixed
+- Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
+  `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
+  synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
+  the generated names and markers were 17,000 of the words ezmd emitted and Docling did not.
+- PDF (text-layer engine): paragraphs in double-spaced manuscripts are no longer one line each. The assembler
+  measures the page's own line spacing and continues a paragraph within it, and treats a first-line indent
+  after a short line as the start of a new paragraph (a hanging indent after a full line still continues). On
+  a double-spaced arXiv paper this turns 1,404 one-line "paragraphs" into 1,031 real ones; the leftovers are
+  display equations.
+- PDF: a damaged file that qpdf repairs on open (truncated, or a broken cross-reference table) now carries a
+  `file_repaired` warning with qpdf's messages, so the content lost past the damage is declared rather than
+  silent (#23, found by the damaged-paper benchmark: 9% of a truncated paper's words gone with no sign).
 - PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
   heading, and a notice set in heading-sized type is a paragraph, not three headings.
 - PDF: outline bookmarks match numbered headings ("3.1 Encoder" for the bookmark "Encoder"), each bookmark is
@@ -40,6 +72,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   use it from each surface, what it converts, where it stands, and why. It says what is true today: ezmd
   reports what it couldn't convert, and no comparison with other tools appears until the benchmark is
   published.
+- Benchmarks (`docs/benchmarks.md`): ezmd against MinerU, Marker, Docling, pymupdf4llm, Unstructured, MarkItDown and
+  Trafilatura on olmOCR-Bench, OmniDocBench and an article-extraction benchmark. The harness (`tools/bench`), the
+  pins and the raw results are in the repository, so the numbers can be rerun.
 
 ## [0.1.1] - 2026-10-23
 
@@ -95,7 +130,7 @@ benchmark (D-0044 to D-0071). The npm SDK stays at 0.1.0-rc.3 (unchanged).
 
 ### Fixed
 - PDF text layer: lines are grouped by baseline with the effective font size, so real PDFs no longer split into
-  one line per glyph (51.7% to 0.5% broken words on a 101-page benchmark sample; olmOCR-Bench 0.277 to 0.335)
+  one line per glyph (51.7% to 0.5% broken words on a 101-page benchmark sample; olmOCR-Bench 0.277 to 0.335; see `bench/results/rc5`)
   (D-0050).
 - Turnstile verifies through an internal Caddy relay instead of failing (the API has no egress); no verdict is
   `503 turnstile_unavailable` (D-0044).

@@ -363,8 +363,9 @@ def test_html_table_cells_stay_plain_text() -> None:
 def test_converter_synthesized_header_note_and_col_names() -> None:
     t = table([["", "price"], ["a", "1"], ["b", "2"]]).model_copy(update={"attrs": {"header_synthesized": "true"}})
     out = render(make_result([t]), "full")
-    assert "<!-- ezmd: header synthesized -->" in out.body
-    assert "| col_1 | price |" in out.body
+    # No per-table marker: the unnamed column is an empty header cell, the named one keeps its name.
+    assert "header synthesized" not in out.body
+    assert "|  | price |" in out.body
 
 
 # ---------------------------------------------------------------------------- hidden headings, slides

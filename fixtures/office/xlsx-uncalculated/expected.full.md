@@ -3,8 +3,8 @@ title: "Fuel Budget"
 source: "input.xlsx"
 source_type: xlsx
 converter: documents.xlsx
-converter_version: "0.1.0rc1"
-ezmd_version: "0.1.0rc1"
+converter_version: "0.1.1"
+ezmd_version: "0.1.1"
 schema_version: 1
 profile: full
 provenance: block
@@ -12,9 +12,9 @@ fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
 author: "Transit Desk"
 sheets: ["Budget", "Check"]
-word_count: 37
-tokens: {o200k_base: 182, cl100k_base: 182, claude_approx: 197}
-content_hash: "sha256:f72cf5d66e2aa67ef5761b995fd5758f0f342191168b447ebcfde6303f093be0"
+word_count: 35
+tokens: {o200k_base: 171, cl100k_base: 171, claude_approx: 185}
+content_hash: "sha256:ad6f2798420adac5457346b205a55007cefbaded708bc9ba8c48b723f4728e36"
 source_hash: "sha256:9889cbb504266939eaea65f92691cc7dc1facfa4f7d08ea087eb10a2eac7b43a"
 truncated: false
 warnings: [formula_uncalculated, formulas_present]
@@ -38,8 +38,7 @@ injection_risk: none
 ## 2 Check {#sec-2}
 
 **Table 2**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 |
+|  |  |
 |---|---|
 | Average price | =AVERAGE(Budget!C2:C4) |

@@ -1,0 +1,504 @@
+{
+ "before": "2026-10-24",
+ "after": "2026-10-24-fix3",
+ "categories": {
+  "arxiv-answers-per-10k-tokens": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1.8911,
+     "ci": [
+      1.4689,
+      2.3145
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1.8352,
+     "ci": [
+      1.3907,
+      2.2661
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0559,
+     "ci": [
+      -0.2016,
+      0.0814
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 2.5246,
+      "diff": -0.6894,
+      "ci": [
+       -0.9791,
+       -0.3839
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 2.1282,
+      "diff": -0.293,
+      "ci": [
+       -0.5178,
+       -0.0745
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 2.2725,
+      "diff": -0.4373,
+      "ci": [
+       -0.6821,
+       -0.187
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-claude-tokens-per-page": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 2067.3267,
+     "ci": [
+      1819.4375,
+      2347.9381
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1974.96,
+     "ci": [
+      1738.3993,
+      2239.92
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -92.3667,
+     "ci": [
+      -111.7672,
+      -75.5922
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 1425.2533,
+      "diff": 549.7067,
+      "ci": [
+       433.1245,
+       680.0823
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1819.35,
+      "diff": 155.61,
+      "ci": [
+       10.1442,
+       300.3924
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 1590.48,
+      "diff": 384.48,
+      "ci": [
+       262.4697,
+       522.0731
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-outline-recall": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 24,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.844,
+      "diff": -0.0582,
+      "ci": [
+       -0.1096,
+       -0.0077
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.0881,
+      "ci": [
+       -0.1295,
+       -0.0478
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.057,
+      "ci": [
+       -0.1007,
+       -0.0154
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-qa": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.8022,
+     "ci": [
+      0.7222,
+      0.8756
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7422,
+     "ci": [
+      0.64,
+      0.8311
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.06,
+     "ci": [
+      -0.1267,
+      0.0067
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.8,
+      "diff": -0.0578,
+      "ci": [
+       -0.1711,
+       0.0489
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.8156,
+      "diff": -0.0733,
+      "ci": [
+       -0.18,
+       0.02
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.7756,
+      "diff": -0.0333,
+      "ci": [
+       -0.14,
+       0.08
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   }
+  },
+  "arxiv-silent-loss": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-source-recall": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.9459,
+     "ci": [
+      0.9146,
+      0.9732
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.9458,
+     "ci": [
+      0.9146,
+      0.9731
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": -0.0001,
+     "ci": [
+      -0.0002,
+      0.0001
+     ],
+     "n": 27,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9426,
+      "diff": 0.0033,
+      "ci": [
+       0.0015,
+       0.0052
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": 0.0022,
+      "ci": [
+       -0.0021,
+       0.0073
+      ],
+      "n": 27,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": 0.0108,
+      "ci": [
+       0.0037,
+       0.0184
+      ],
+      "n": 27,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-text-recall": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0,
+     "ci": [
+      -0.0001,
+      0.0001
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9776,
+      "diff": 0.0142,
+      "ci": [
+       0.008,
+       0.0204
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": 0.023,
+      "ci": [
+       0.0168,
+       0.0291
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": 0.0191,
+      "ci": [
+       0.0089,
+       0.0319
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-tokens-per-page": {
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1363.1633,
+     "ci": [
+      1191.6069,
+      1562.2183
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1294.6233,
+     "ci": [
+      1133.5622,
+      1479.412
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -68.54,
+     "ci": [
+      -81.7067,
+      -57.253
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 930.1067,
+      "diff": 364.5167,
+      "ci": [
+       286.5958,
+       452.9128
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1226.15,
+      "diff": 68.4733,
+      "ci": [
+       -36.3438,
+       170.6045
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": 239.67,
+      "ci": [
+       155.6827,
+       333.6621
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  }
+ },
+ "directions": {
+  "arxiv-answers-per-10k-tokens": true,
+  "arxiv-claude-tokens-per-page": false,
+  "arxiv-outline-recall": true,
+  "arxiv-qa": true,
+  "arxiv-silent-loss": false,
+  "arxiv-source-recall": true,
+  "arxiv-text-recall": true,
+  "arxiv-tokens-per-page": false
+ }
+}

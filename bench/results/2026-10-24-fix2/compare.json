@@ -1,0 +1,1923 @@
+{
+ "before": "2026-10-24",
+ "after": "2026-10-24-fix2",
+ "categories": {
+  "arxiv-answers-per-10k-tokens": {
+   "ezmd-main": {
+    "before": {
+     "value": 2.0491,
+     "ci": [
+      1.5778,
+      2.5271
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 2.1211,
+     "ci": [
+      1.6195,
+      2.6223
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.072,
+     "ci": [
+      -0.0702,
+      0.2593
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 2.5246,
+      "diff": -0.4035,
+      "ci": [
+       -0.7185,
+       -0.0843
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 2.1282,
+      "diff": -0.0071,
+      "ci": [
+       -0.2919,
+       0.277
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 2.2725,
+      "diff": -0.1514,
+      "ci": [
+       -0.4127,
+       0.1093
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 3.0476,
+     "ci": [
+      2.5992,
+      3.4989
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 3.056,
+     "ci": [
+      2.6184,
+      3.5049
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0084,
+     "ci": [
+      -0.1523,
+      0.1834
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 2.5246,
+      "diff": 0.5314,
+      "ci": [
+       -0.0352,
+       1.1645
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 2.1282,
+      "diff": 0.9278,
+      "ci": [
+       0.3998,
+       1.5161
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 2.2725,
+      "diff": 0.7835,
+      "ci": [
+       0.2562,
+       1.3952
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1.8911,
+     "ci": [
+      1.4689,
+      2.3145
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1.8103,
+     "ci": [
+      1.3565,
+      2.2658
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0809,
+     "ci": [
+      -0.2274,
+      0.0537
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 2.5246,
+      "diff": -0.7143,
+      "ci": [
+       -1.04,
+       -0.3974
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 2.1282,
+      "diff": -0.3179,
+      "ci": [
+       -0.5787,
+       -0.0591
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 2.2725,
+      "diff": -0.4622,
+      "ci": [
+       -0.7278,
+       -0.2133
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-claude-tokens-per-page": {
+   "ezmd-main": {
+    "before": {
+     "value": 1710.36,
+     "ci": [
+      1509.3229,
+      1932.9264
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1681.3867,
+     "ci": [
+      1483.5031,
+      1896.6814
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -28.9733,
+     "ci": [
+      -37.3207,
+      -20.9164
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 1425.2533,
+      "diff": 256.1333,
+      "ci": [
+       174.948,
+       345.1
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1819.35,
+      "diff": -137.9633,
+      "ci": [
+       -284.0593,
+       -13.94
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 1590.48,
+      "diff": 90.9067,
+      "ci": [
+       -7.6075,
+       188.1428
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 1096.8767,
+     "ci": [
+      861.6712,
+      1328.8593
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1111.53,
+     "ci": [
+      878.5503,
+      1331.7701
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 14.6533,
+     "ci": [
+      -11.6432,
+      48.7476
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 1425.2533,
+      "diff": -313.7233,
+      "ci": [
+       -495.8109,
+       -147.6106
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 1819.35,
+      "diff": -707.82,
+      "ci": [
+       -999.3868,
+       -477.131
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 1590.48,
+      "diff": -478.95,
+      "ci": [
+       -701.3657,
+       -282.5767
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 2067.3267,
+     "ci": [
+      1819.4375,
+      2347.9381
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 2030.98,
+     "ci": [
+      1788.9064,
+      2302.3588
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -36.3467,
+     "ci": [
+      -51.1367,
+      -22.742
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 1425.2533,
+      "diff": 605.7267,
+      "ci": [
+       484.0454,
+       742.9259
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1819.35,
+      "diff": 211.63,
+      "ci": [
+       63.4905,
+       361.3778
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 1590.48,
+      "diff": 440.5,
+      "ci": [
+       312.4338,
+       585.7598
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-outline-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 24,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.844,
+      "diff": -0.0582,
+      "ci": [
+       -0.1096,
+       -0.0077
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.0881,
+      "ci": [
+       -0.1295,
+       -0.0478
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.057,
+      "ci": [
+       -0.1007,
+       -0.0154
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.567,
+     "ci": [
+      0.4667,
+      0.6591
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.571,
+     "ci": [
+      0.4706,
+      0.6638
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.004,
+     "ci": [
+      0.0,
+      0.009
+     ],
+     "n": 24,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.844,
+      "diff": -0.2729,
+      "ci": [
+       -0.3753,
+       -0.1902
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.3029,
+      "ci": [
+       -0.4102,
+       -0.2108
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.2718,
+      "ci": [
+       -0.3839,
+       -0.178
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 24,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.844,
+      "diff": -0.0582,
+      "ci": [
+       -0.1096,
+       -0.0077
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.0881,
+      "ci": [
+       -0.1295,
+       -0.0478
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.057,
+      "ci": [
+       -0.1007,
+       -0.0154
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-qa": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.7622,
+     "ci": [
+      0.6732,
+      0.8467
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7622,
+     "ci": [
+      0.6778,
+      0.8378
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      -0.04,
+      0.04
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.8,
+      "diff": -0.0378,
+      "ci": [
+       -0.1333,
+       0.06
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.8156,
+      "diff": -0.0533,
+      "ci": [
+       -0.1467,
+       0.0333
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.7756,
+      "diff": -0.0133,
+      "ci": [
+       -0.1067,
+       0.08
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.7289,
+     "ci": [
+      0.6356,
+      0.8134
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7422,
+     "ci": [
+      0.6556,
+      0.8222
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0133,
+     "ci": [
+      -0.02,
+      0.0533
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.8,
+      "diff": -0.0578,
+      "ci": [
+       -0.1467,
+       0.0401
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.8156,
+      "diff": -0.0733,
+      "ci": [
+       -0.1667,
+       0.0133
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.7756,
+      "diff": -0.0333,
+      "ci": [
+       -0.12,
+       0.0733
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.8022,
+     "ci": [
+      0.7222,
+      0.8756
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7556,
+     "ci": [
+      0.6622,
+      0.8467
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0467,
+     "ci": [
+      -0.1133,
+      0.0067
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.8,
+      "diff": -0.0444,
+      "ci": [
+       -0.1511,
+       0.0556
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.8156,
+      "diff": -0.06,
+      "ci": [
+       -0.1667,
+       0.04
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.7756,
+      "diff": -0.02,
+      "ci": [
+       -0.12,
+       0.0933
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   }
+  },
+  "arxiv-silent-loss": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-source-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.9465,
+     "ci": [
+      0.9153,
+      0.9737
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.9465,
+     "ci": [
+      0.9153,
+      0.9737
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": -0.0,
+     "ci": [
+      -0.0001,
+      0.0
+     ],
+     "n": 27,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9426,
+      "diff": 0.0039,
+      "ci": [
+       0.0018,
+       0.0063
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": 0.0029,
+      "ci": [
+       -0.0006,
+       0.0072
+      ],
+      "n": 27,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": 0.0115,
+      "ci": [
+       0.0045,
+       0.0193
+      ],
+      "n": 27,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.7073,
+     "ci": [
+      0.6178,
+      0.7946
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.7144,
+     "ci": [
+      0.6263,
+      0.8011
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": 0.007,
+     "ci": [
+      0.0015,
+      0.0145
+     ],
+     "n": 27,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9426,
+      "diff": -0.2282,
+      "ci": [
+       -0.3212,
+       -0.1386
+      ],
+      "n": 27,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": -0.2293,
+      "ci": [
+       -0.3231,
+       -0.1401
+      ],
+      "n": 27,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": -0.2207,
+      "ci": [
+       -0.3115,
+       -0.1347
+      ],
+      "n": 27,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.9459,
+     "ci": [
+      0.9146,
+      0.9732
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.9459,
+     "ci": [
+      0.9147,
+      0.9731
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": -0.0,
+     "ci": [
+      -0.0001,
+      0.0001
+     ],
+     "n": 27,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9426,
+      "diff": 0.0033,
+      "ci": [
+       0.0016,
+       0.0053
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": 0.0023,
+      "ci": [
+       -0.002,
+       0.0073
+      ],
+      "n": 27,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": 0.0109,
+      "ci": [
+       0.0038,
+       0.0185
+      ],
+      "n": 27,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-text-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.9917,
+     "ci": [
+      0.9885,
+      0.9945
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0001,
+     "ci": [
+      -0.0002,
+      -0.0
+     ],
+     "n": 30,
+     "verdict": "trails"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9776,
+      "diff": 0.0142,
+      "ci": [
+       0.0079,
+       0.0203
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": 0.023,
+      "ci": [
+       0.0168,
+       0.0291
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": 0.019,
+      "ci": [
+       0.009,
+       0.0319
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.7074,
+     "ci": [
+      0.5991,
+      0.8053
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7233,
+     "ci": [
+      0.6154,
+      0.8198
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0158,
+     "ci": [
+      0.0015,
+      0.0344
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9776,
+      "diff": -0.2543,
+      "ci": [
+       -0.3596,
+       -0.1592
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": -0.2455,
+      "ci": [
+       -0.3517,
+       -0.1489
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": -0.2495,
+      "ci": [
+       -0.3538,
+       -0.1568
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0,
+     "ci": [
+      -0.0001,
+      0.0001
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9776,
+      "diff": 0.0142,
+      "ci": [
+       0.008,
+       0.0204
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": 0.023,
+      "ci": [
+       0.0168,
+       0.0291
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": 0.0191,
+      "ci": [
+       0.0089,
+       0.0319
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-tokens-per-page": {
+   "ezmd-main": {
+    "before": {
+     "value": 1158.0933,
+     "ci": [
+      1011.962,
+      1321.3673
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1140.0867,
+     "ci": [
+      996.0019,
+      1300.6994
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -18.0067,
+     "ci": [
+      -23.1504,
+      -13.0033
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 930.1067,
+      "diff": 209.98,
+      "ci": [
+       144.8146,
+       280.2853
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1226.15,
+      "diff": -86.0633,
+      "ci": [
+       -190.1883,
+       3.0107
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": 85.1333,
+      "ci": [
+       12.0353,
+       162.029
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 727.1,
+     "ci": [
+      569.1757,
+      884.2791
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 736.1933,
+     "ci": [
+      580.3895,
+      887.1163
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 9.0933,
+     "ci": [
+      -7.4108,
+      30.023
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 930.1067,
+      "diff": -193.9133,
+      "ci": [
+       -320.06,
+       -74.0382
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 1226.15,
+      "diff": -489.9567,
+      "ci": [
+       -699.7217,
+       -325.1673
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": -318.76,
+      "ci": [
+       -476.8824,
+       -182.3836
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1363.1633,
+     "ci": [
+      1191.6069,
+      1562.2183
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1339.73,
+     "ci": [
+      1173.3662,
+      1530.7517
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -23.4333,
+     "ci": [
+      -32.3142,
+      -15.1594
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "docling": {
+      "value": 930.1067,
+      "diff": 409.6233,
+      "ci": [
+       327.0981,
+       503.8611
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1226.15,
+      "diff": 113.58,
+      "ci": [
+       8.7858,
+       218.853
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": 284.7767,
+      "ci": [
+       195.6041,
+       384.6437
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "damaged-page-accuracy": {
+   "ezmd-main": {
+    "before": {
+     "value": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 20
+    },
+    "after": {
+     "value": 1.0,
+     "ci": [
+      1.0,
+      1.0
+     ],
+     "n": 20
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 20,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": null
+     },
+     "mineru": {
+      "value": null
+     },
+     "pymupdf4llm": {
+      "value": null
+     }
+    }
+   }
+  },
+  "damaged-pages-silent-loss": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.3,
+      "diff": -0.3,
+      "ci": [
+       -0.6,
+       0.0
+      ],
+      "n": 10,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.3,
+       0.0
+      ],
+      "n": 10,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1.0,
+      "diff": -1.0,
+      "ci": [
+       -1.0,
+       -1.0
+      ],
+      "n": 10,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "damaged-pages-text-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.7667,
+     "ci": [
+      0.7372,
+      0.7951
+     ],
+     "n": 10
+    },
+    "after": {
+     "value": 0.7667,
+     "ci": [
+      0.7372,
+      0.7951
+     ],
+     "n": 10
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9619,
+      "diff": -0.1952,
+      "ci": [
+       -0.2298,
+       -0.1617
+      ],
+      "n": 10,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.9669,
+      "diff": -0.2002,
+      "ci": [
+       -0.2287,
+       -0.1712
+      ],
+      "n": 10,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.7517,
+      "diff": 0.0149,
+      "ci": [
+       0.005,
+       0.0225
+      ],
+      "n": 10,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "damaged-scan-silent-loss": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.8,
+      "diff": -0.8,
+      "ci": [
+       -1.0,
+       -0.5
+      ],
+      "n": 10,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.3,
+       0.0
+      ],
+      "n": 10,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1.0,
+      "diff": -1.0,
+      "ci": [
+       -1.0,
+       -1.0
+      ],
+      "n": 10,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "damaged-scan-text-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.004,
+     "ci": [
+      0.0032,
+      0.0048
+     ],
+     "n": 10
+    },
+    "after": {
+     "value": 0.004,
+     "ci": [
+      0.0032,
+      0.0048
+     ],
+     "n": 10
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.9174,
+      "diff": -0.9134,
+      "ci": [
+       -0.936,
+       -0.8892
+      ],
+      "n": 10,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.9695,
+      "diff": -0.9656,
+      "ci": [
+       -0.9738,
+       -0.9578
+      ],
+      "n": 10,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.0,
+      "diff": 0.004,
+      "ci": [
+       0.0032,
+       0.0048
+      ],
+      "n": 10,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "damaged-silent-loss": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.0333,
+     "ci": [
+      0.0,
+      0.1
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0333,
+     "ci": [
+      -0.1,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.4,
+      "diff": -0.4,
+      "ci": [
+       -0.5667,
+       -0.2333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.0667,
+      "diff": -0.0667,
+      "ci": [
+       -0.1667,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.6667,
+      "diff": -0.6667,
+      "ci": [
+       -0.8333,
+       -0.5
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "damaged-trunc-silent-loss": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.1,
+     "ci": [
+      0.0,
+      0.3
+     ],
+     "n": 10
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 10
+    },
+    "after_minus_before": {
+     "diff": -0.1,
+     "ci": [
+      -0.3,
+      0.0
+     ],
+     "n": 10,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.3,
+       0.0
+      ],
+      "n": 10,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.0,
+      "diff": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 10,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.0,
+      "diff": 0.0,
+      "ci": [
+       0.0,
+       0.0
+      ],
+      "n": 10,
+      "verdict": "ties"
+     }
+    }
+   }
+  },
+  "damaged-trunc-text-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.4863,
+     "ci": [
+      0.1953,
+      0.783
+     ],
+     "n": 10
+    },
+    "after": {
+     "value": 0.4863,
+     "ci": [
+      0.1953,
+      0.783
+     ],
+     "n": 10
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      -0.0001,
+      0.0001
+     ],
+     "n": 10,
+     "verdict": "ties"
+    },
+    "vs": {
+     "docling": {
+      "value": 0.4797,
+      "diff": 0.0066,
+      "ci": [
+       0.0014,
+       0.012
+      ],
+      "n": 10,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.0955,
+      "diff": 0.3908,
+      "ci": [
+       0.0932,
+       0.692
+      ],
+      "n": 10,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.5845,
+      "diff": -0.0981,
+      "ci": [
+       -0.3007,
+       0.0135
+      ],
+      "n": 10,
+      "verdict": "ties"
+     }
+    }
+   }
+  }
+ },
+ "directions": {
+  "arxiv-answers-per-10k-tokens": true,
+  "arxiv-claude-tokens-per-page": false,
+  "arxiv-outline-recall": true,
+  "arxiv-qa": true,
+  "arxiv-silent-loss": false,
+  "arxiv-source-recall": true,
+  "arxiv-text-recall": true,
+  "arxiv-tokens-per-page": false,
+  "damaged-page-accuracy": true,
+  "damaged-pages-silent-loss": false,
+  "damaged-pages-text-recall": true,
+  "damaged-scan-silent-loss": false,
+  "damaged-scan-text-recall": true,
+  "damaged-silent-loss": false,
+  "damaged-trunc-silent-loss": false,
+  "damaged-trunc-text-recall": true
+ }
+}

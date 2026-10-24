@@ -50,6 +50,7 @@ class WarningKind(StrEnum):
     ENCRYPTED_NO_PASSWORD = "encrypted_no_password"
     COPY_RESTRICTED_IGNORED = "copy_restricted_ignored"
     PAGES_WITHOUT_TEXT = "pages_without_text"
+    FILE_REPAIRED = "file_repaired"
     UNMAPPED_GLYPHS = "unmapped_glyphs"
     OCR_UNAVAILABLE = "ocr_unavailable"
     OCR_CONFIDENCE_LOW = "ocr_confidence_low"
@@ -330,6 +331,10 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.PAGES_WITHOUT_TEXT, "warning", "pdf",
              "Some pages have no text layer; their content is missing.",
              "Enable OCR or upload a text-layer PDF."),
+    CodeSpec(WarningKind.FILE_REPAIRED, "warning", "pdf",
+             "The PDF was damaged (truncated or with a broken cross-reference table) and repaired on open; content "
+             "past the damage may be missing with no other sign.",
+             "Check the page count and the end of the document against the original; re-download or re-export it."),
     CodeSpec(WarningKind.UNMAPPED_GLYPHS, "warning", "pdf",
              "Some characters have no text mapping in the PDF's fonts (often math symbols); they appear as U+FFFD.",
              "Check the listed pages against the PDF; re-export with embedded ToUnicode maps, or use OCR on them."),

@@ -240,13 +240,21 @@ ezmd is at 0.1. What that means in practice:
 - **Not yet:** scanned PDFs (OCR is next on the [roadmap](docs/roadmap.md)), audio and video, chat
   exports, social platforms. Local directories are not an input yet; zip the folder, or use `ezmd batch`.
 
-A public benchmark that measures tokens, downstream answer accuracy and the rate of silent loss across
-converters is being built. Until it is published, no number here compares ezmd with anything else.
+How it compares is measured, not claimed. On 30 whole arXiv papers, with a local model answering the same
+148 questions from every converter's output, ezmd, Docling, MinerU and pymupdf4llm all land between 74% and
+82% correct, within each other's error bars. Measured against each paper's LaTeX source, a witness no converter
+produced, ezmd, MinerU and Docling keep the same share of the words (94 to 95%), so ezmd does not keep more text
+than the layout tools. Where they differ: ezmd lost more than 5% of a paper's words without saying so on 0 of 30
+papers, against 3 to 5 of 30 for the others; on papers damaged on purpose (scanned pages, truncated files) it
+named the unreadable pages exactly and still had one silent loss of its own, a repaired file, now
+[issue #23](https://github.com/larpey/ezmd/issues/23). Docling's output is about 20% smaller in tokens than ezmd's
+default profile. The numbers, the harness and what ezmd still does badly are in
+[docs/benchmarks.md](docs/benchmarks.md).
 
 ## Why ezmd
 
 - **Loss is reported.** Every dropped or degraded element ezmd detects becomes a structured warning with
-  a code and a suggestion, and the benchmark above will measure what still slips through.
+  a code and a suggestion, and the benchmark above measures what still slips through.
 - **Provenance.** With the sidecar, every block records its source page and position.
 - **Permissive by default.** The default install pulls only allowlisted licenses; anything else is an
   opt-in extra, named as such.

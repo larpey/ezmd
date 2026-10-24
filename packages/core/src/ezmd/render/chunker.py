@@ -228,10 +228,12 @@ def chunk_units(
                 merged_preamble=sec.merged_preamble,
             )
             chunks.append(chunk)
-            attrs = [f'id="{chunk.id}"']
+            # The marker names the chunk within the document (`c0001`); the sidecar's Chunk keeps the full
+            # `<content hash>#c0001` id and the token count. Repeating the hash and the count in every marker
+            # was 9.5% of a rag document (D-0073).
+            attrs = [f'id="c{n:04d}"']
             if sec.heading and sec.heading.number:
                 attrs.append(f'section="{sec.heading.number}"')
-            attrs.append(f'tokens="{chunk.tokens}"')
             if chunk.page_start is not None:
                 attrs.append(f'page="{chunk.page_start}"')
             if start is not None:

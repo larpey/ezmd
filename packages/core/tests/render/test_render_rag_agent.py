@@ -46,9 +46,12 @@ def test_chunks_respect_budget_markers_and_breadcrumbs() -> None:
         assert c.tokens == count_o200k(c.text)
         if not c.oversized:
             assert c.tokens <= 400, c.breadcrumb
-        assert f'id="{c.id}"' in body and f"{c.text}\n<!-- /chunk -->" in body
-    markers = re.findall(r'<!-- chunk id="([0-9a-f]{12})#c\d{4}" section="[\d.]+" tokens="\d+"', body)
-    assert len(set(markers)) == 1
+        # The marker carries the chunk number only; the sidecar's Chunk keeps the full hash#cNNNN id (D-0073).
+        assert re.fullmatch(r"[0-9a-f]{12}#c\d{4}", c.id)
+        assert f'id="{c.id.split("#")[1]}"' in body and f"{c.text}\n<!-- /chunk -->" in body
+    markers = re.findall(r'<!-- chunk id="(c\d{4})" section="[\d.]+"', body)
+    assert len(markers) == len(set(markers)) == len(out.chunks)
+    assert 'tokens="' not in body and "#c" not in body
 
 
 def test_short_section_merged_with_following_sibling() -> None:

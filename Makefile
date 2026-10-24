@@ -8,7 +8,7 @@ COMPOSE := docker compose -f deploy/docker-compose.yml
 TMPDIR ?= /tmp
 HAS_PNPM := $(shell test -f pnpm-lock.yaml && command -v pnpm >/dev/null 2>&1 && echo yes)
 
-.PHONY: help gates lint fmt typecheck test golden licenses audit up down smoke images linux-gates
+.PHONY: help gates lint fmt typecheck test golden licenses audit up down smoke images linux-gates bench bench-full
 
 help:  ## list targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-10s %s\n", $$1, $$2}'
@@ -72,3 +72,19 @@ smoke:  ## bring the stack up and run the end-to-end smoke test
 
 linux-gates:  ## run the Python gates in a throwaway Linux container (for Windows/macOS hosts)
 	bash tools/linux_gates.sh
+
+bench:  ## competitive benchmark: every free competitor on the smoke corpus -> bench/results/<date>/ (tools/bench)
+	uv run python -m tools.bench install
+	uv run python -m tools.bench smoke
+
+BENCH_DATE ?= $(shell date +%F)  # one run directory for the whole target, even across midnight
+
+bench-full:  ## competitive benchmark baseline: all corpora (downloads them first; hours on one GPU)
+	uv run python -m tools.bench install
+	uv run python -m tools.bench fetch
+	for c in fixtures web olmocr omnidoc arxiv arxiv-damaged; do uv run python -m tools.bench run --corpus $$c --date $(BENCH_DATE) && uv run python -m tools.bench score --corpus $$c --date $(BENCH_DATE); done
+	uv run python -m tools.bench report --date $(BENCH_DATE)
+	@echo "Optional, then re-score and re-report with --date $(BENCH_DATE):"
+	@echo "  answer accuracy (local model): uv run python -m tools.bench qa all --corpus arxiv --date $(BENCH_DATE)"
+	@echo "  Claude token counts (API key): uv run python -m tools.bench tokens --corpus arxiv --date $(BENCH_DATE)"
+	@echo "  uv run python -m tools.bench score --corpus arxiv --date $(BENCH_DATE) && uv run python -m tools.bench report --date $(BENCH_DATE)"

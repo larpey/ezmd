@@ -3,16 +3,16 @@ title: "Harbor Lane Shipping Corp. 10-K December 31, 2025"
 source: "https://filings.example.invalid/hlsc/hlsc-20251231.htm"
 source_type: web
 converter: specialized.edgar
-converter_version: "0.1.0rc1"
-ezmd_version: "0.1.0rc1"
+converter_version: "0.1.1"
+ezmd_version: "0.1.1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-word_count: 642
-tokens: {o200k_base: 1640, cl100k_base: 1637, claude_approx: 1771}
-content_hash: "sha256:0c362d63f32f2f827d1d19e2672d39245b58456799843780adc6adbec0add862"
+word_count: 637
+tokens: {o200k_base: 1616, cl100k_base: 1613, claude_approx: 1745}
+content_hash: "sha256:257ed4ec0119e602c45b6d9911af0b5f4a793187a8de083e2c83e1427b60b73c"
 source_hash: "sha256:4852db38e9c1e88f0d3be7e76d307b9350ae10d9d84cd8afd3229367bf70597e"
 truncated: false
 warnings: [removed_running_header_footer, heading_inferred_from_formatting]
@@ -86,9 +86,8 @@ Commission File Number 001-99999
 *(Exact name of registrant as specified in its charter)*
 
 **Table 2**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 |
+|  |  |
 |---|---|
 | Title of each class | Trading Symbol(s) |
 | Common Stock, $0.01 par value | HLSC |
@@ -100,9 +99,8 @@ As of February 27, 2026, the registrant had 12,500,000 shares of common stock ou
 **TABLE OF CONTENTS**
 
 **Table 3**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 | col_3 |
+|  |  |  |
 |---|---|---:|
 | PART I |  | 3 |
 | Item 1. | Business | 4 |

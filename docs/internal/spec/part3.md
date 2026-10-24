@@ -1052,7 +1052,7 @@ Profiles are config tables consumed by the renderer; the user can override any f
 2. Sections shorter than `min_chunk_tokens` (default 100) are merged with the following sibling section (both headings kept in the chunk).
 3. Overlap is 0 by default (`overlap_tokens`); when set, the overlap is the trailing sentences of the previous chunk, re-emitted at the top of the next, never partial sentences.
 4. Each chunk begins with a breadcrumb line in bold, `**Q3 2025 Fleet Safety Review > 3 Results > 3.2 Harsh braking by route**`, built from the title and the heading path. The heading of the current section is repeated as a heading line after the breadcrumb only in the first chunk of a section.
-5. Markers: `<!-- chunk id="<docid>#c0007" section="3.2" tokens="386" page="7" start="00:04:35" -->` and `<!-- /chunk -->`. `docid` is the first 12 hex of `content_hash`; chunk ids are zero-padded sequential; `page` or `start` (for transcripts) or `slide` is present when known. `part="2/3"` is present for split tables.
+5. Markers: `<!-- chunk id="c0007" section="3.2" page="7" start="00:04:35" -->` and `<!-- /chunk -->`. The marker id is the zero-padded chunk number within the document; the sidecar `chunks` carry the full id `<docid>#c0007` (`docid` is the first 12 hex of `content_hash`) and the token count (D-0073: repeating both in every marker cost a tenth of a rag document). `page` or `start` (for transcripts) or `slide` is present when known. `part="2/3"` is present for split tables.
 6. Optional contextual line (`context=llm`): one or two sentences generated per chunk by the pluggable LLM with the Anthropic contextual-retrieval prompt ("give a short succinct context to situate this chunk within the overall document for the purposes of improving search retrieval"), inserted after the breadcrumb as `*Context: ...*`. Off by default.
 7. Output shapes: the Markdown file with inline markers (default), or `format=jsonl` with one object per chunk `{id, doc, section, breadcrumb, text, tokens, page, start, end, part, metadata}`, or `format=files` writing `chunks/0007.md` each with its own minimal frontmatter.
 8. Transcripts chunk by chapter then by paragraphs; each chunk keeps whole paragraphs; the breadcrumb includes the time range.
@@ -1205,7 +1205,7 @@ sidecar: "harbor-lane-depot-report.ezmd.json"
 ---
 # Harbor Lane depot report {#doc}
 
-<!-- chunk id="1c2b3a4d5e6f#c0001" section="1" tokens="132" -->
+<!-- chunk id="c0001" section="1" -->
 **Harbor Lane depot report > 1 Throughput by week**
 
 The Harbor Lane depot handled 4,210 pallets in September, up 6% on August. Two of the four dock doors were out of service for a week, which the team covered with extended evening shifts.
@@ -1224,7 +1224,7 @@ The Harbor Lane depot handled 4,210 pallets in September, up 6% on August. Two o
 Figure 1: Dock door 3 during the hydraulic repair in week 37.
 <!-- /chunk -->
 
-<!-- chunk id="1c2b3a4d5e6f#c0002" section="2" tokens="151" start="00:00:03" end="00:00:45" -->
+<!-- chunk id="c0002" section="2" start="00:00:03" end="00:00:45" -->
 **Harbor Lane depot report > 2 Interview with the shift lead [00:00:03 - 00:00:45]**
 
 ## 2 Interview with the shift lead {#sec-2}

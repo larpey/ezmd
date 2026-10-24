@@ -3,16 +3,16 @@ title: "TENNESSEE VALLEY AUTHORITY 8-K April 24, 2026"
 source: "https://www.sec.gov/Archives/edgar/data/1376986/000137698626000026/tve-20260424.htm"
 source_type: web
 converter: specialized.edgar
-converter_version: "0.1.0rc1"
-ezmd_version: "0.1.0rc1"
+converter_version: "0.1.1"
+ezmd_version: "0.1.1"
 schema_version: 1
 profile: full
 provenance: block
 fetched_at: 2026-01-01T00:00:00Z
 converted_at: 2026-01-01T00:00:00Z
-word_count: 992
-tokens: {o200k_base: 1909, cl100k_base: 1940, claude_approx: 2062}
-content_hash: "sha256:79f61390ceb0c3c8ee15bde8b71d7b3620a2de2845b609154ce53eadbe30f462"
+word_count: 984
+tokens: {o200k_base: 1872, cl100k_base: 1903, claude_approx: 2022}
+content_hash: "sha256:dea15616a6bdb6ad11a6964d921e9d6ae6d4c2cbda7c69a9ca9613d25a039075"
 source_hash: "sha256:13c0f80d7cf0c8730721be61bc0056f621f57ef37242790fcffcb45dd9f47399"
 truncated: false
 warnings: [heading_inferred_from_formatting]
@@ -75,9 +75,8 @@ Date of Report (Date of earliest event reported): April 24, 2026
 *(Exact name of registrant as specified in its charter)*
 
 **Table 2**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 | col_3 |
+|  |  |  |
 |---|---|---|
 | A corporate agency of the United States created by an act of Congress *(State or other jurisdiction of incorporation or organization)* | 000-52313 *(Commission file number)* | 62-0474417 *(IRS Employer Identification No.)* |
 | 400 W. Summit Hill Drive Knoxville, Tennessee *(Address of principal executive offices)* |  | 37902 *(Zip Code)* |
@@ -103,9 +102,8 @@ Check the appropriate box below if the Form 8-K filing is intended to simultaneo
 Securities registered pursuant to Section 12(b) of the Act:
 
 **Table 3**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 | col_3 |
+|  |  |  |
 |---|---|---|
 | Title of each class | Trading Symbol(s) | Name of each exchange on which registered |
 | N/A | N/A | N/A |
@@ -141,9 +139,8 @@ There are no family relationships between Mr. Skaggs and any director, executive
 Pursuant to the requirements of the Securities Exchange Act of 1934, the registrant has duly caused this report to be signed on its behalf by the undersigned hereunto duly authorized.
 
 **Table 5**
-<!-- ezmd: header synthesized -->
 
-| col_1 | col_2 |
+|  |  |
 |---|---|
 |  | Tennessee Valley Authority |
 |  | (Registrant) |

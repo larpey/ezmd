@@ -198,15 +198,18 @@ Overlap is off by default (`overlap_tokens`). Each chunk is wrapped in markers a
 breadcrumb:
 
 ```text
-<!-- chunk id="e659c2f007e8#c0001" section="1" tokens="112" -->
+<!-- chunk id="c0001" section="1" -->
 **Kitchen Sink > 1 Lists**
 
 ...
 <!-- /chunk -->
 ```
 
-The id prefix is the first 12 hex characters of the IR content hash; `page`, `start`, or `slide`
-attributes appear when known.
+`id` numbers the chunk within the document; `page`, `start`, `end`, `part` and `oversized` attributes
+appear when they apply. The sidecar's `chunks` carry the full id (`<content hash>#c0001`, the hash being the
+first 12 hex characters of the IR content hash), the token count, the pages and the block ids, so a retriever
+joins on the sidecar and the markers stay short: repeating the hash and the count in every marker cost about
+one token in ten of a rag document (D-0073).
 
 Planned: `format=jsonl` and per-chunk files, generated context lines (`context=llm`), transcript
 rendering from media converters (Phase 2), and DOCX, SRT, and VTT exports.
