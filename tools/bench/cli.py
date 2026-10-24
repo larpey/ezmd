@@ -105,7 +105,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--date", default=today)
     p.add_argument("--tools")
     p = sub.add_parser("qa", help="question answering over converted documents with a local model")
-    p.add_argument("step", choices=("generate", "answer", "grade", "all"))
+    p.add_argument(
+        "step",
+        choices=("generate", "answer", "grade", "all", "seed", "ungrade"),
+        help="seed: put a graded run's verdicts in the shared grade cache; ungrade: drop a run's verdicts",
+    )
     p.add_argument("--corpus", required=True)
     p.add_argument("--tools")
     p.add_argument("--date", default=today)

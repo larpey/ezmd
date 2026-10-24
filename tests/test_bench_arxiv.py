@@ -220,3 +220,69 @@ def test_verdict_respects_lower_is_better() -> None:
     }
     assert _verdict(rows, "ezmd-main", higher=False)["verdict"] == "leads"
     assert _verdict(rows, "ezmd-main", higher=True)["verdict"] == "trails"
+
+
+class _Grader:
+    """A grader whose verdict flips on every call, like a sampled model on a bad day."""
+
+    model = "fake"
+
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def chat(self, prompt: str, **_: object) -> str:
+        self.calls += 1
+        n = prompt.count("candidate:")
+        return json.dumps([self.calls % 2 == 1] * n)
+
+
+def _graded_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    monkeypatch.setenv("EZMD_BENCH_CACHE", str(tmp_path / "cache"))
+    run = tmp_path / "run"
+    (run / "qa" / "ezmd-main").mkdir(parents=True)
+    (run / "docs.json").write_text(json.dumps({"documents": [{"id": "2601_00001"}]}), encoding="utf-8")
+    record = {
+        "tool": "ezmd-main",
+        "doc": "2601_00001",
+        "items": [
+            {"question": "How many?", "answer": "14", "answer_given": "14"},
+            {"question": "Which?", "answer": "blue", "answer_given": "UNKNOWN"},
+        ],
+    }
+    (run / "qa" / "ezmd-main" / "2601_00001.json").write_text(json.dumps(record), encoding="utf-8")
+    return run
+
+
+def test_grade_verdicts_are_cached_per_answer_so_identical_answers_grade_identically(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = _graded_run(tmp_path, monkeypatch)
+    grader = _Grader()
+    qa.grade(grader, run, None, 1)  # type: ignore[arg-type]
+    first = json.loads((run / "qa" / "ezmd-main" / "2601_00001.json").read_text(encoding="utf-8"))
+    assert [it["correct"] for it in first["items"]] == [True, False]  # UNKNOWN is the shortcut, never graded
+    assert grader.calls == 1
+    assert qa.cached_grade("2601_00001", "How many?", " 14 ") is True  # whitespace and case do not matter
+    # another run with the same answer: the cache answers, the flipping grader is never asked
+    qa.ungrade(run, None)
+    qa.grade(grader, run, None, 1)  # type: ignore[arg-type]
+    second = json.loads((run / "qa" / "ezmd-main" / "2601_00001.json").read_text(encoding="utf-8"))
+    assert [it["correct"] for it in second["items"]] == [True, False] and grader.calls == 1
+    # a different answer is graded afresh
+    second["items"][0]["answer_given"] = "fourteen"
+    del second["items"][0]["correct"]
+    (run / "qa" / "ezmd-main" / "2601_00001.json").write_text(json.dumps(second), encoding="utf-8")
+    qa.grade(grader, run, None, 1)  # type: ignore[arg-type]
+    assert grader.calls == 2
+
+
+def test_seed_grades_fills_the_cache_from_a_graded_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    run = _graded_run(tmp_path, monkeypatch)
+    path = run / "qa" / "ezmd-main" / "2601_00001.json"
+    record = json.loads(path.read_text(encoding="utf-8"))
+    record["items"][0]["correct"] = False
+    record["items"][1]["correct"] = False
+    path.write_text(json.dumps(record), encoding="utf-8")
+    assert qa.seed_grades(run, None) == 1  # the UNKNOWN shortcut is not a verdict worth keeping
+    assert qa.cached_grade("2601_00001", "How many?", "14") is False
+    assert qa.seed_grades(run, None) == 0

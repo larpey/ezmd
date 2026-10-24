@@ -53,7 +53,11 @@ uv run python -m tools.bench score --corpus arxiv-damaged --date D
 `qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
 `EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
 never from a tool's output, and each must quote the sentence that answers it; a quote that is not in the text
-layer drops the question. Questions are cached under the corpus and shared by every tool and run. The tool rows
+layer drops the question. Questions are cached under the corpus and shared by every tool and run, and so are
+the grader's verdicts, keyed by document, question and answer text: a sampled model grades the same answer
+differently on another day, which would read as a change in accuracy between two runs that produced the same
+answers. `qa seed --date D` puts an already graded run's verdicts in that cache; `qa ungrade --date D` drops a
+run's verdicts so `qa grade` decides again, from the cache where it can. The tool rows
 `ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this checkout's code (`local = true` builds the
 wheels) under three profiles; `ezmd` stays the published release.
 

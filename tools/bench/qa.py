@@ -300,6 +300,78 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
     return 0
 
 
+def grade_cache_dir() -> Path:
+    return qa_dir() / "grades"
+
+
+def _grade_key(doc_id: str, question: str, answer_given: str) -> str:
+    import hashlib
+
+    text = "\n".join([doc_id, " ".join(question.split()), " ".join(answer_given.split()).casefold()])
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:32]
+
+
+def cached_grade(doc_id: str, question: str, answer_given: str) -> bool | None:
+    path = grade_cache_dir() / f"{_grade_key(doc_id, question, answer_given)}.json"
+    if not path.exists():
+        return None
+    return bool(json.loads(path.read_text(encoding="utf-8"))["correct"])
+
+
+def store_grade(doc_id: str, question: str, answer_given: str, correct: bool, grader: str) -> None:
+    path = grade_cache_dir() / f"{_grade_key(doc_id, question, answer_given)}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    record = {"doc": doc_id, "question": question, "answer_given": answer_given, "correct": correct, "grader": grader}
+    path.write_text(json.dumps(record, ensure_ascii=False), encoding="utf-8", newline="\n")
+
+
+def seed_grades(run_dir: Path, tools: list[str] | None) -> int:
+    """Put the verdicts of an already graded run into the cache (where no verdict for that answer exists yet),
+    so later runs grade an identical answer identically. Returns the number of verdicts added."""
+    added = 0
+    files = sorted((run_dir / "qa").glob("*/*.json")) if (run_dir / "qa").exists() else []
+    for path in files:
+        if tools is not None and path.parent.name not in tools:
+            continue
+        record = json.loads(path.read_text(encoding="utf-8"))
+        for it in record["items"]:
+            if "correct" not in it or "answer_given" not in it:
+                continue
+            if it["answer_given"].strip() in ("", UNKNOWN):
+                continue  # the shortcut, never the model's verdict
+            if cached_grade(record["doc"], it["question"], it["answer_given"]) is None:
+                store_grade(
+                    record["doc"],
+                    it["question"],
+                    it["answer_given"],
+                    bool(it["correct"]),
+                    str(record.get("grader", "")),
+                )
+                added += 1
+    print(f"grade cache: {added} verdicts added from {run_dir}")
+    return added
+
+
+def ungrade(run_dir: Path, tools: list[str] | None) -> int:
+    """Remove the verdicts of a run so `grade` decides again (from the cache where it can)."""
+    n = 0
+    files = sorted((run_dir / "qa").glob("*/*.json")) if (run_dir / "qa").exists() else []
+    for path in files:
+        if tools is not None and path.parent.name not in tools:
+            continue
+        record = json.loads(path.read_text(encoding="utf-8"))
+        changed = False
+        for it in record["items"]:
+            if it.pop("correct", None) is not None:
+                changed = True
+                n += 1
+        record.pop("grader", None)
+        if changed:
+            path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
+    print(f"ungraded {n} answers under {run_dir}")
+    return n
+
+
 def grade(client: Client, run_dir: Path, tools: list[str] | None, workers: int) -> int:
     files = sorted((run_dir / "qa").glob("*/*.json")) if (run_dir / "qa").exists() else []
     if tools is not None:
@@ -314,11 +386,20 @@ def grade(client: Client, run_dir: Path, tools: list[str] | None, workers: int) 
         verdicts: list[bool] = []
         shortcut = [it["answer_given"].strip() == UNKNOWN or not it["answer_given"].strip() for it in pending]
         to_grade = [it for it, s in zip(pending, shortcut, strict=True) if not s]
+        # The grader is a sampled model: the same answer can get a different verdict on another day, which
+        # would show up as a change in accuracy between two runs that produced identical answers. So a verdict
+        # is cached by (document, question, answer) under the corpus and reused by every run and tool.
+        cached: dict[int, bool] = {}
+        for i, it in enumerate(to_grade):
+            hit = cached_grade(record["doc"], it["question"], it["answer_given"])
+            if hit is not None:
+                cached[i] = hit
+        fresh = [it for i, it in enumerate(to_grade) if i not in cached]
         graded: list[bool] = []
-        if to_grade:
+        if fresh:
             listed = "\n".join(
                 f"{i + 1}. question: {it['question']}\n   reference: {it['answer']}\n   candidate: {it['answer_given']}"
-                for i, it in enumerate(to_grade)
+                for i, it in enumerate(fresh)
             )
             prompt = GRADE_PROMPT.format(unknown=UNKNOWN, items=listed)
             for _attempt in range(2):
@@ -327,13 +408,17 @@ def grade(client: Client, run_dir: Path, tools: list[str] | None, workers: int) 
                 except (ValueError, json.JSONDecodeError) as exc:
                     _note(exc)
                     continue
-                graded = [bool(v) for v in got][: len(to_grade)]
-                if len(graded) == len(to_grade):
+                graded = [bool(v) for v in got][: len(fresh)]
+                if len(graded) == len(fresh):
                     break
-            if len(graded) != len(to_grade):
+            if len(graded) != len(fresh):
                 # Left ungraded so the next run retries it; a padded False would hide the failure in the score.
-                return f"{record['tool']} {record['doc']}: FAILED, the grader returned {len(graded)} of {len(to_grade)}"
-        it_graded = iter(graded)
+                return f"{record['tool']} {record['doc']}: FAILED, the grader returned {len(graded)} of {len(fresh)}"
+            for it, v in zip(fresh, graded, strict=True):
+                store_grade(record["doc"], it["question"], it["answer_given"], v, client.model)
+        it_fresh = iter(graded)
+        merged = [cached[i] if i in cached else next(it_fresh) for i in range(len(to_grade))]
+        it_graded = iter(merged)
         verdicts = [False if s else next(it_graded) for s in shortcut]
         for it, v in zip(pending, verdicts, strict=True):
             it["correct"] = v
@@ -429,6 +514,12 @@ def main(
     if not (run_dir / "docs.json").exists():
         print(f"qa: no run under {run_dir} (run the corpus first)", file=sys.stderr)
         return 1
+    if step == "seed":  # no model needed
+        seed_grades(run_dir, tools)
+        return 0
+    if step == "ungrade":
+        ungrade(run_dir, tools)
+        return 0
     client = Client(
         base_url or os.environ.get("EZMD_BENCH_LLM_URL", DEFAULT_URL),
         model or os.environ.get("EZMD_BENCH_LLM_MODEL", DEFAULT_MODEL),
