@@ -2,67 +2,66 @@
 
 # ezmd
 
-Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
-tools. Reports what it couldn't convert. Apache-2.0.
+**Anything in. Clean Markdown out.** ezmd turns PDFs, Office files, web pages, data files, code and
+archives into Markdown that AI models read well, keeps a record of where every part came from, and tells
+you what it could not convert.
 
 [![ci](https://github.com/larpey/ezmd/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/larpey/ezmd/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/ezmd.svg)](https://pypi.org/project/ezmd/)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-ezmd turns files and web pages into clean Markdown that AI models read well. Each conversion comes with
-a short header of facts (title, source, page and token counts), a list of warnings, and an optional JSON
-sidecar that records which page every paragraph came from. When something can't be converted, ezmd tells
-you instead of quietly dropping it.
-
-> **Status: 0.1.** Documents, web pages, data files, code, email, ebooks and archives convert today. OCR,
-> audio and video come next; see the [roadmap](docs/roadmap.md).
-
-## Install
-
-From PyPI (Python 3.12 or newer):
-
 <!-- readme: skip (installs from the network) -->
 ```sh
-pip install ezmd                           # or: uv tool install ezmd
-pip install "ezmd[docs]"                   # optional: Docling for PDF layout (large, pulls torch)
-uvx ezmd convert https://example.com
-uvx ezmd-mcp                               # the MCP server
+pip install ezmd                       # Python 3.12 or newer; or: uv tool install ezmd
+ezmd convert paper.pdf                 # Markdown on stdout, warnings on stderr
+ezmd convert https://example.com -o page.md
 ```
 
-On Linux, install CPU torch first or `ezmd[docs]` pulls about 6 GB of CUDA wheels, and the Docling extra needs its models downloaded
-once; see [docs/install.md](docs/install.md#extras).
+Apache-2.0. Runs on a CPU with no model downloads. Works as a CLI, a Python library, an MCP server for
+Claude, Cursor and other agents, a REST API with a web UI, and a self-hosted Docker stack.
 
-From source (needs [uv](https://docs.astral.sh/uv/)):
+## What you get
 
-<!-- readme: skip (clones from the network) -->
-```sh
-git clone https://github.com/larpey/ezmd && cd ezmd
+Converting the [Mamba paper](https://arxiv.org/abs/2312.00752) (36 pages, CC BY 4.0) with the default
+install takes about four seconds and gives one Markdown file:
+
+```markdown
+---
+title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces"
+source: "mamba.pdf"
+source_type: pdf
+pages: 36
+word_count: 22409
+tokens: {o200k_base: 44058, cl100k_base: 44292, claude_approx: 47583}
+warnings: [removed_script_or_macro, engine_fallback, removed_running_header_footer, injection_suspected]
+---
+# Mamba: Linear-Time Sequence Modeling with Selective State Spaces
+
+## 1 Introduction {#sec-1}
+...
+## 3 Selective State Space Models {#sec-3}
+### 3.1 Motivation: Selection as a Means of Compression {#sec-3-1}
 ```
 
-<!-- readme: skip (installs packages; the test environment is already synced) -->
-```sh
-uv sync --all-packages
-uv sync --all-packages --extra docs          # optional: Docling for PDF layout (large, pulls torch)
-uv sync --all-packages --extra data          # optional: pyarrow for Parquet
-```
+Every conversion comes with three things:
 
-Check what is available on your machine (converters, extras, and system programs such as LibreOffice):
+- **A header of facts.** Title, source, page count, word count, token counts under three tokenizers, a
+  content hash, and the list of warning codes. An agent can decide what to do with a document before
+  reading it.
+- **Structure, kept.** Headings follow the document's own outline, with anchors. Tables stay tables,
+  superscripts stay superscripts (`10²⁰`, not `1020`), lists stay lists, links keep their targets. Running
+  headers, footers and page numbers are removed; words broken across lines are joined.
+- **Warnings, not silence.** Everything ezmd detects it could not convert becomes a warning with a code,
+  a count, the pages involved and a suggestion: pages with no text layer, glyphs the PDF's fonts cannot
+  map to text, a table that lost its header, content that looks like instructions to an AI. The full list
+  is in [docs/warnings.md](docs/warnings.md).
 
-<!-- readme: run -->
-```sh
-uv run ezmd capabilities
-uv run ezmd doctor
-```
+With `--sidecar`, a JSON file beside the Markdown records the page and position of every block, so
+answers can cite the page they came from.
 
-The TypeScript client is on npm:
+## Use it from
 
-<!-- readme: skip (installs from the network) -->
-```sh
-npm install @ezmd/sdk
-```
-
-## Quickstart
-
-### CLI
+### The command line
 
 <!-- readme: run -->
 ```sh
@@ -73,17 +72,19 @@ uv run ezmd detect fixtures/pdf/born-digital-report/input.pdf
 uv run ezmd batch fixtures/text --recursive --out out/text
 ```
 
-Warnings go to stderr as `WARN [code] message`. `ezmd batch` skips unchanged inputs when run again. URLs
-work too; they are fetched through an SSRF guard that refuses private and loopback addresses:
+The commands above run from a source checkout and use files from `fixtures/`, so you can paste them as
+they are; installed, drop the `uv run`. Warnings go to stderr as `WARN [code] message`. `ezmd batch`
+skips unchanged inputs when run again. URLs are fetched through an SSRF guard that refuses private and
+loopback addresses:
 
 <!-- readme: skip (needs network access) -->
 ```sh
 uv run ezmd convert https://example.com --profile compact
 ```
 
-Every command and option is in the [CLI reference](docs/cli.md).
+Every command and option: [docs/cli.md](docs/cli.md).
 
-### Python library
+### Python
 
 <!-- readme: run -->
 ```python
@@ -102,17 +103,16 @@ print(len(result.chunks(chunk_tokens=200)), "rag chunks")  # other profiles rend
 
 `result.render("rag")` renders another profile without converting again. See [docs/library.md](docs/library.md).
 
-### MCP server
+### Claude, Cursor and other agents (MCP)
 
-From a source checkout, point your MCP client at `uv run ezmd-mcp`. Claude Code:
+ezmd is on the MCP registry as `io.github.larpey/ezmd`. Claude Code:
 
 <!-- readme: skip (needs the Claude Code CLI) -->
 ```sh
 claude mcp add ezmd -- uvx ezmd-mcp
-claude mcp add ezmd -- uv --directory /path/to/ezmd run ezmd-mcp   # from a source checkout
 ```
 
-Claude Desktop (`claude_desktop_config.json`), using the published package:
+Claude Desktop (`claude_desktop_config.json`):
 
 ```json
 {
@@ -125,9 +125,9 @@ Claude Desktop (`claude_desktop_config.json`), using the published package:
 }
 ```
 
-From a source checkout, use `"command": "uv"` with `"args": ["--directory", "/path/to/ezmd", "run",
-"ezmd-mcp", ...]`. Other clients, tools, and the HTTP transport:
-[docs/mcp.md](docs/mcp.md).
+The agent gets tools to convert a URL, a file or pasted text, page through long results, and ask what
+this install can convert, with the same warnings. Other clients, the HTTP transport, and running from a
+source checkout: [docs/mcp.md](docs/mcp.md).
 
 ### REST API and web UI
 
@@ -143,16 +143,17 @@ uv run ezmd serve --port 8080
 curl -s -F file=@fixtures/text/plain-utf8/input.txt -F profile=compact "http://127.0.0.1:8080/v1/convert?wait=30&format=md"
 ```
 
-The web UI is served at `/` once it is built (needs Node 22 and pnpm); then open http://127.0.0.1:8080:
+The web UI is served at `/` once it is built (needs Node 22 and pnpm):
 
 <!-- readme: skip (installs Node packages from the network) -->
 ```sh
 pnpm install && pnpm --filter @ezmd/web build
 ```
 
-API reference: [docs/api.md](docs/api.md) and [docs/api/openapi.json](docs/api/openapi.json).
+API reference: [docs/api.md](docs/api.md) and [docs/api/openapi.json](docs/api/openapi.json). The
+TypeScript client is `npm install @ezmd/sdk`.
 
-### Self-host with Docker
+### Your own server (Docker)
 
 The Compose stack (Caddy, API, sandboxed workers, Redis) builds from this checkout:
 
@@ -162,8 +163,42 @@ bash deploy/bootstrap.sh --plain-http --build
 ```
 
 Then open http://localhost:8080. Signed images for each release are on GHCR (`ghcr.io/larpey/ezmd-api`,
-`ezmd-worker`, `ezmd-fetch-node`). Everything else
-(TLS, API keys, backups, upgrades, every environment variable): [docs/selfhost.md](docs/selfhost.md).
+`ezmd-worker`, `ezmd-fetch-node`). TLS, API keys, backups, upgrades and every environment variable:
+[docs/selfhost.md](docs/selfhost.md).
+
+## Install
+
+<!-- readme: skip (installs from the network) -->
+```sh
+pip install ezmd                           # or: uv tool install ezmd
+pip install "ezmd[docs]"                   # optional: Docling layout models for PDFs (large, pulls torch)
+uvx ezmd-mcp                               # the MCP server
+```
+
+On Linux, install CPU torch first or `ezmd[docs]` pulls about 6 GB of CUDA wheels; the Docling extra
+downloads its models once. Details and every extra: [docs/install.md](docs/install.md).
+
+From source (needs [uv](https://docs.astral.sh/uv/)):
+
+<!-- readme: skip (clones from the network) -->
+```sh
+git clone https://github.com/larpey/ezmd && cd ezmd
+```
+
+<!-- readme: skip (installs packages; the test environment is already synced) -->
+```sh
+uv sync --all-packages
+uv sync --all-packages --extra docs          # optional: Docling for PDF layout (large, pulls torch)
+uv sync --all-packages --extra data          # optional: pyarrow for Parquet
+```
+
+Check what this machine can convert (converters, extras, system programs such as LibreOffice):
+
+<!-- readme: run -->
+```sh
+uv run ezmd capabilities
+uv run ezmd doctor
+```
 
 ## What it converts
 
@@ -179,12 +214,12 @@ Then open http://localhost:8080. Signed images for each release are on GHCR (`gh
 | Specialized | SEC EDGAR filings |
 | Text | Plain text, Markdown |
 
-The full list, with engines, extras, status, fixture counts, and thresholds, is the generated
-[converter matrix](docs/converters/README.md). Local directories are not an input yet (zip the folder, or
-use `ezmd batch` to convert the files in it one by one). Audio, video, OCR, chat exports, and social
-platforms are on the [roadmap](docs/roadmap.md).
+The full list, with engines, extras, status, fixture counts and thresholds, is the generated
+[converter matrix](docs/converters/README.md).
 
 ## Output profiles
+
+One conversion renders in any of four shapes:
 
 - `full`: fidelity first; full frontmatter, numbered headings, page markers, and a JSON sidecar.
 - `compact`: for pasting into a chat; minimal frontmatter, link list at the end, a 16,000-token budget.
@@ -193,19 +228,38 @@ platforms are on the [roadmap](docs/roadmap.md).
 
 Details: [docs/output-format.md](docs/output-format.md).
 
+## Where it stands
+
+ezmd is at 0.1. What that means in practice:
+
+- **Solid:** web pages, DOCX, XLSX, PPTX, data files, code, archives, email, EPUB.
+- **Good and improving:** born-digital PDFs with the default engine. A run over 109 random open-licensed
+  arXiv papers (2,553 pages, about 0.1 s per page on a desktop CPU) found and fixed problems with
+  titles, heading outlines, superscripts, math letters and table headers; the remaining known gaps are
+  figures whose lettering comes out as a table, and display equations, which stay as text.
+- **Not yet:** scanned PDFs (OCR is next on the [roadmap](docs/roadmap.md)), audio and video, chat
+  exports, social platforms. Local directories are not an input yet; zip the folder, or use `ezmd batch`.
+
+A public benchmark that measures tokens, downstream answer accuracy and the rate of silent loss across
+converters is being built. Until it is published, no number here compares ezmd with anything else.
+
 ## Why ezmd
 
-- Loss is reported: every dropped or degraded element ezmd detects becomes a structured warning with a code and
-  a suggestion. A published measurement of what still slips through is on the [roadmap](docs/roadmap.md).
-- Permissive by default: the default install pulls only allowlisted licenses; anything else is an opt-in extra.
-- One box: CLI, library, REST API, web UI, and MCP server share one conversion path, and the Compose stack runs on a single machine.
-- Output profiles: one conversion renders as `full`, `compact`, `rag`, or `agent`.
-- Hostile input is the default assumption: sandboxed workers, an SSRF guard, archive and size limits.
+- **Loss is reported.** Every dropped or degraded element ezmd detects becomes a structured warning with
+  a code and a suggestion, and the benchmark above will measure what still slips through.
+- **Provenance.** With the sidecar, every block records its source page and position.
+- **Permissive by default.** The default install pulls only allowlisted licenses; anything else is an
+  opt-in extra, named as such.
+- **One conversion path.** CLI, library, REST API, web UI and MCP server share it, and the Compose stack
+  runs on one machine.
+- **Hostile input is the default assumption.** Sandboxed workers, an SSRF guard, archive and size limits,
+  secrets scrubbed from repository packs, and a flag on content that reads like instructions to an AI.
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) (setup, the council process, the fixture process),
-[SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+[SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Bug reports with a file that
+converts badly are the most useful kind; the fixture process turns them into tests.
 
 ## License
 

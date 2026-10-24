@@ -36,8 +36,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   Contents entries with dot leaders and lines over 150 characters are never headings.
 
 ### Documentation
-- The README says what is true today: ezmd reports what it couldn't convert. "No silent loss" returns when a
-  published benchmark measures it. The opening paragraph is in plain language.
+- The README is rewritten for a first-time reader: what you get (a real paper's header and outline), how to
+  use it from each surface, what it converts, where it stands, and why. It says what is true today: ezmd
+  reports what it couldn't convert, and no comparison with other tools appears until the benchmark is
+  published.
 
 ## [0.1.1] - 2026-10-23
 
