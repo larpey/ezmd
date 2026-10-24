@@ -349,6 +349,11 @@
     "suggestion": "Retry, or download the content in your browser and upload it.",
     "aliases": []
   },
+  "file_repaired": {
+    "severity": "warning",
+    "suggestion": "Check the page count and the end of the document against the original; re-download or re-export it.",
+    "aliases": []
+  },
   "fillers_removed": {
     "severity": "info",
     "suggestion": "Enable verbatim mode to keep filler words.",
