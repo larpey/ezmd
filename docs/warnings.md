@@ -33,6 +33,7 @@ Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings
 | `encrypted_no_password` | error | pdf | The PDF is encrypted and no password was supplied. | Provide the password in the PDF options or upload an unencrypted copy. |
 | `copy_restricted_ignored` | info | pdf | The PDF's copy-restriction flag was ignored for extraction. | Make sure you have the right to extract text from this document. |
 | `pages_without_text` | warning | pdf | Some pages have no text layer; their content is missing. | Enable OCR or upload a text-layer PDF. |
+| `unmapped_glyphs` | warning | pdf | Some characters have no text mapping in the PDF's fonts (often math symbols); they appear as U+FFFD. | Check the listed pages against the PDF; re-export with embedded ToUnicode maps, or use OCR on them. |
 | `ocr_unavailable` | warning | pdf | OCR was needed but no OCR engine is available. | OCR (the ocr extra) is coming in a later release; use a text-layer PDF or an instance with OCR enabled. |
 | `ocr_confidence_low` | warning | pdf | OCR confidence was low on some pages or regions; text may be wrong. | Upload a higher-resolution scan (300 DPI or more) or try a layout OCR engine. |
 | `reading_order_uncertain` | warning | pdf | Reading order of a multi-column or complex layout may be wrong. | Try a layout-aware engine such as --engine pdf=docling, and check column order. |

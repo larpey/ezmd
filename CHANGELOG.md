@@ -4,6 +4,37 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Fixed
+- PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
+  heading, and a notice set in heading-sized type is a paragraph, not three headings.
+- PDF: outline bookmarks match numbered headings ("3.1 Encoder" for the bookmark "Encoder"), each bookmark is
+  used once, and figure labels that repeat a section title stay labels. Without an outline, bold numbered
+  lines such as "3.1 Encoder and Decoder Stacks" become headings at their numbering depth.
+- PDF: superscripts and subscripts are kept as such, including exponents set as separate text objects, so
+  `1.0 · 10^20` no longer reads `1020`. Without extended Markdown, digit scripts render as `10²⁰` (D-0072).
+- PDF tables: a header cell centred over a two-line header joins the header row, header cells that span
+  two columns no longer merge the columns below them, and a typeset formula is no longer emitted as a table.
+- PDF: math letters set outside Unicode's basic plane (TeX's math italic 𝑥, 𝐷) were decoded as two
+  replacement characters each and every variable in a formula was lost; they now read as plain `x`, `D`.
+- PDF: bold section headings only slightly larger than the body (ACL-style 12 pt over 11 pt) are headings,
+  and the title page's author and affiliation lines above "Abstract" are not.
+- PDF titles: junk metadata titles (a lone private-use glyph from Word, "Microsoft Word - x.docx", file
+  names) are ignored, and without a metadata title the title is the first page's largest text, or its
+  centred capitals at body size (AMS), instead of the first heading ("1. Introduction").
+- PDF: accents TeX draws as separate glyphs (`´` over `A`) compose into the letter (`Á`), and math italic
+  folds to plain letters while bold, script and double-struck math letters keep their style.
+- PDF headings: bookmarks match headings numbered in any style (`2.1.`, IEEE `II.` and `A.`, appendix `B.1`),
+  REVTeX small-capital headings, headings that wrap onto a second line, and run-in headings
+  ("2.1. Metric graph theory. For a graph G, ..."), which are split from their paragraph. A printed table
+  of contents, with or without page numbers, no longer takes the bookmarks of the headings it lists.
+- PDF: a glyph whose font maps it to its text twice (`ψψ` for one `ψ`) is one character; glyphs with no
+  text mapping stay visible as U+FFFD and raise the new `unmapped_glyphs` warning naming their pages.
+- PDF: display equations (a fraction's rows, an equation number at the right, dense math symbols) are no
+  longer emitted as tables.
+- PDF titles: a title set at body size under "Draft version" notes (AASTeX) is found in the top of the first
+  page, and a title split across objects ("Eagle" and ": Ethical Dataset ...") joins without a gap.
+  Contents entries with dot leaders and lines over 150 characters are never headings.
+
 ### Documentation
 - The README says what is true today: ezmd reports what it couldn't convert. "No silent loss" returns when a
   published benchmark measures it. The opening paragraph is in plain language.

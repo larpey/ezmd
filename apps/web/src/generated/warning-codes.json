@@ -879,6 +879,11 @@
       "truncated_max_tokens"
     ]
   },
+  "unmapped_glyphs": {
+    "severity": "warning",
+    "suggestion": "Check the listed pages against the PDF; re-export with embedded ToUnicode maps, or use OCR on them.",
+    "aliases": []
+  },
   "unreadable_region": {
     "severity": "warning",
     "suggestion": "Upload a sharper, higher-resolution scan of the marked region.",
