@@ -37,7 +37,13 @@ All notable changes are generated from Conventional Commits. This project uses s
   display equations.
 - PDF: a damaged file that qpdf repairs on open (truncated, or a broken cross-reference table) now carries a
   `file_repaired` warning with qpdf's messages, so the content lost past the damage is declared rather than
-  silent (#23, found by the damaged-paper benchmark: 9% of a truncated paper's words gone with no sign).
+  silent (#23, found by the damaged-paper benchmark: 9% of a truncated paper's words gone with no sign). The
+  warning now says where, as far as the file's object graph allows (`ezmd_converters/pdf/repair.py`): the pages
+  whose content stream is gone or cut (`detail.pages_content_damaged`, also the warning's `page`), the pages
+  that draw an image or form that is gone (`pages_figures_missing`), and a count of fonts that lost part of
+  their definition (`fonts_damaged`), with the message saying that text set in them may be incomplete on pages
+  that cannot be pinpointed. Font damage is counted rather than placed because it does not map to pages: on 51
+  repaired arXiv papers the pages with a damaged font and the pages that lost words barely overlap.
 - PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
   heading, and a notice set in heading-sized type is a paragraph, not three headings.
 - PDF: outline bookmarks match numbered headings ("3.1 Encoder" for the bookmark "Encoder"), each bookmark is

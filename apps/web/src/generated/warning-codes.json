@@ -351,7 +351,7 @@
   },
   "file_repaired": {
     "severity": "warning",
-    "suggestion": "Check the page count and the end of the document against the original; re-download or re-export it.",
+    "suggestion": "Check the named pages, the page count and the end of the document against the original; re-download or re-export it.",
     "aliases": []
   },
   "fillers_removed": {

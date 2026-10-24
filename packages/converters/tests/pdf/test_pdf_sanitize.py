@@ -179,6 +179,11 @@ def test_repaired_file_is_declared(tmp_path: Path) -> None:
         assert repaired[0].count and repaired[0].count >= 1
         assert "damaged" in str(repaired[0].detail["qpdf"]) or "startxref" in str(repaired[0].detail["qpdf"])
         assert str(cut) not in str(repaired[0].detail["qpdf"])  # no local paths in a warning
+        # The cut falls inside page 3's content stream; page 4's is past it. Both are named, and the warning
+        # points at the first of them.
+        assert repaired[0].detail["pages_content_damaged"] == "3,4"
+        assert repaired[0].page == 3
+        assert "pages 3, 4 lost their content stream" in repaired[0].message
     finally:
         san.cleanup()
     intact = sanitize(src, passwords=[""], max_pages=10, source="input.pdf")
