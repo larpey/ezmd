@@ -260,6 +260,22 @@ What it says:
 line (`2605.03112`, 94.9% kept), now declared. All 46 repaired files carry the warning, the other 33 are refused
 loudly, recall is unchanged, and the pages warning names the unreadable pages exactly on all 158 image variants.
 
+**Where the loss is.** A file-level flag says less than it could, so the warning now places what the object
+graph can place (`ezmd_converters/pdf/repair.py`, `bench/results/2026-10-24-repair/`): the pages whose content
+stream is gone or cut, the pages that draw a figure or form that is gone, and a count of fonts that lost part of
+their definition. The third is a count and not a page list on purpose. Truncation takes a LaTeX PDF's tail, and
+the tail is font data: programs, width tables, ToUnicode maps, Type3 glyph procedures. Whether losing one costs
+any text depends on the font type and the reader's fallbacks, and on the 51 repaired papers of the sample and
+held-out sets the pages carrying a damaged font and the pages that lost words barely overlap (any broken
+reference flags 803 pages for 28 that lost text; the text-mapping subset flags 375 and still misses 11 of the
+28). The words that did go were figure axis labels, math symbols and ligatures, which is what a font without
+its program or map loses. So on the 30-paper sample the five repaired truncated files all carry the located
+detail; the one that lost over 5% of its words (`2402.18566`, 91% kept) names page 1, whose second content
+stream is gone, and 16 damaged fonts, and the message says the text set in them may be incomplete on pages it
+cannot pinpoint. On the held-out split, 44 of the 46 repaired files carry located detail (42 count fonts, 18 name
+pages that lost a figure, 2 name pages that lost their content stream), and the one that lost over 5%
+(`2605.03112`) names page 6 and 27 fonts. Silent loss stays at 0 of 30 and 0 of 237, and recall is unchanged.
+
 Caveats: ten papers per kind is enough to see the pattern and not enough for narrow intervals; the 5% line is
 the same for a dropped page and an OCR error, which is deliberate (the reader downstream cannot tell them apart)
 but is harsher on OCR than a per-page view would be; the renders are pdfium's at 150 dpi, cleaner than a real

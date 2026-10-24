@@ -20,6 +20,7 @@ from pikepdf import Array, Dictionary, Name
 
 from ezmd.ir import Warning, WarningKind
 from ezmd_converters.pdf.pdfinfo import PdfInfo, read_info
+from ezmd_converters.pdf.repair import assess, warned_objects
 
 _ACTIVE_ACTIONS = frozenset(
     {
@@ -88,6 +89,20 @@ def _short_repair(message: str) -> str:
     return tail.strip() if sep and ("\\" in head or "/" in head or head.endswith(")")) else message.strip()
 
 
+def _repaired_warning(pdf: pikepdf.Pdf, repairs: list[str]) -> Warning:
+    found = assess(pdf, warned_objects(repairs))
+    head = f"The PDF was damaged and repaired on open ({len(repairs)} qpdf warning(s))"
+    clauses = found.clauses()
+    message = f"{head}: {'; '.join(clauses)}." if clauses else f"{head}; content past the damage may be missing."
+    return Warning(
+        kind=WarningKind.FILE_REPAIRED,
+        message=message,
+        count=len(repairs),
+        page=found.pages_content_damaged[0] if found.pages_content_damaged else None,
+        detail={"qpdf": " | ".join(_short_repair(r) for r in repairs[:5]), **found.detail()},
+    )
+
+
 def sanitize(path: Path, *, passwords: list[str], max_pages: int, source: str) -> Sanitized:
     """Open, strip active content, cap pages, and save a sanitized copy. Raises EncryptedNoPassword or
     UnreadablePdf."""
@@ -97,18 +112,9 @@ def sanitize(path: Path, *, passwords: list[str], max_pages: int, source: str) -
         repairs = [str(w) for w in pdf.get_warnings()]
         if repairs:
             # qpdf rebuilt the cross-reference table or skipped unreadable objects: the file opened, but what it
-            # held past the damage (a page's content stream, a font) may be gone, and nothing downstream can tell.
-            warnings.append(
-                Warning(
-                    kind=WarningKind.FILE_REPAIRED,
-                    message=(
-                        f"The PDF was damaged and repaired on open ({len(repairs)} qpdf warning(s)); content past "
-                        "the damage may be missing."
-                    ),
-                    count=len(repairs),
-                    detail={"qpdf": " | ".join(_short_repair(r) for r in repairs[:5])},
-                )
-            )
+            # held past the damage may be gone, and nothing downstream can tell. Name what the object graph can
+            # place (pages whose content stream or figures are gone) and count what it cannot (damaged fonts).
+            warnings.append(_repaired_warning(pdf, repairs))
         if pdf.is_encrypted and not used_password and not pdf.allow.extract:
             warnings.append(
                 Warning(

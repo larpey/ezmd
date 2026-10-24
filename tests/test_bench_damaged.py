@@ -204,6 +204,8 @@ def test_damaged_scorer_separates_declared_silent_and_loud(tmp_path: Path, monke
     assert ez["secondary"]["failed_rate"]["value"] == pytest.approx(1 / 3, abs=1e-3)
     assert ez["secondary"]["declared_when_lost"]["value"] == 1.0
     assert rival["secondary"]["declared_when_lost"]["value"] is None
+    # nothing here was repaired, so the located share has nothing to count
+    assert ez["secondary"]["located_when_lost"] == {"value": None, "n": 0}
     # the pages variant lost exactly the block
     pages_recall = ez["categories"]["damaged-pages-text-recall"]["value"]
     w = witness("paper", FIXTURE)
@@ -212,6 +214,29 @@ def test_damaged_scorer_separates_declared_silent_and_loud(tmp_path: Path, monke
 
 def _run_kept(run: Path) -> str:
     return (run / "ezmd-main" / "paper~pages.md").read_text(encoding="utf-8")
+
+
+def test_located_loss_reads_the_repaired_warning_detail(tmp_path: Path) -> None:
+    """`file_repaired` with a page list or a font count counts as located; the bare file-level warning, another
+    warning, or no warning channel does not."""
+
+    def result(tool: str, warnings: list[dict[str, object]] | None) -> DocResult:
+        name = f"{tool}-{len(warnings) if warnings is not None else 'x'}"
+        (tmp_path / f"{name}.md").write_text("", encoding="utf-8")
+        if warnings is not None:
+            (tmp_path / f"{name}.md.warnings.json").write_text(json.dumps({"warnings": warnings}), encoding="utf-8")
+        return DocResult("arxiv-damaged", "paper~trunc", "trunc", tool, "1", "ok", output=f"{name}.md")
+
+    located = {"kind": "file_repaired", "detail": {"qpdf": "file is damaged", "pages_content_damaged": "3,4"}}
+    fonts = {"kind": "file_repaired", "detail": {"qpdf": "file is damaged", "fonts_damaged": 8}}
+    bare = {"kind": "file_repaired", "detail": {"qpdf": "file is damaged"}}
+    other = {"kind": "pages_without_text", "detail": {"pages": "3"}}
+    assert damaged.located_loss(result("ezmd-main", [located]), tmp_path) is True
+    assert damaged.located_loss(result("ezmd-main", [other, fonts]), tmp_path) is True
+    assert damaged.located_loss(result("ezmd-main", [bare]), tmp_path) is False
+    assert damaged.located_loss(result("ezmd-main", [other]), tmp_path) is None
+    assert damaged.located_loss(result("ezmd-main", None), tmp_path) is None
+    assert damaged.located_loss(result("rival", [located]), tmp_path) is None
 
 
 def test_damaged_heldout_is_the_held_out_papers(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
