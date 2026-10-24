@@ -1,0 +1,765 @@
+[
+ {
+  "id": "2605.21101",
+  "title": "B-Fields and Star Formation across Scales with TRAO (B-FROST): CO Abundances, Dynamics and Relative Orientations in the Translucent High Latitude Cloud MBM12",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.22943",
+  "title": "A new method to probe conducting filaments in MoS$_2$-based memristors",
+  "set": "Engineering",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.05040",
+  "title": "The Fine-Grained Complexity of Counting Hypergraph Motifs",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2405.08416",
+  "title": "Compact $T(1)$ theorem à la Stein",
+  "set": "Mathematics",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2506.23978",
+  "title": "LLM Agents Are the Antidote to Walled Gardens",
+  "set": "Business, Management and Accounting",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.00199",
+  "title": "Optical Memory Optimization Across Rubidium Isotopes and Transitions",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2601.01904",
+  "title": "Evaluating Feature Dependent Noise in Preference-based Reinforcement Learning",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2404.06536",
+  "title": "Exact Floquet flat band and heating suppression via two-rate drive protocols",
+  "set": "Physics and Astronomy",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2406.10785",
+  "title": "ShareLoRA: Parameter Efficient and Robust Large Language Model Fine-tuning via Shared Low-Rank Adaptation",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2306.01437",
+  "title": "Straintronics using the monolayer-Xene platform -- a comparative study",
+  "set": "Materials Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2511.06907",
+  "title": "Optimizing GEMM for Energy and Performance on Versal ACAP Architectures",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2509.16727",
+  "title": "Pain in 3D: Generating Controllable Synthetic Faces for Automated Pain Assessment",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2410.18307",
+  "title": "Quantum Computing Education in Latin America: Experiences and Strategies",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2112.12070",
+  "title": "A Single-Target License Plate Detection with Attention",
+  "set": "Engineering",
+  "year": 2021,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.19932",
+  "title": "PEEK: Context Map as an Orientation Cache for Long-Context LLM Agents",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.03718",
+  "title": "Magnitude homology of real hyperplane arrangements",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.16782",
+  "title": "KRONOS II: Solar-like Umbra and Penumbra Properties on the Young Sun V1298~Tau",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.24195",
+  "title": "ZFLean: a framework for set-level mathematics in Lean",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2405.19103",
+  "title": "Voice Jailbreak Attacks Against GPT-4o",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2311.12899",
+  "title": "$γ$-Chiral is same as Chiral",
+  "set": "Mathematics",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2306.12672",
+  "title": "From Word Models to World Models: Translating from Natural Language to the Probabilistic Language of Thought",
+  "set": "Computer Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2401.14768",
+  "title": "On Mixed Cages of Girth 6",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.28351",
+  "title": "Quantum geometry of connected state manifolds: When diabolic points act as bridges between eigenstate manifolds",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2301.00845",
+  "title": "Weak solutions to the near-field reflector problem with spatial restrictions approached with generalized reflectors constructed from ellipsoids",
+  "set": "Mathematics",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.23381",
+  "title": "AutoGPS: Automated Geometry Problem Solving via Multimodal Formalization and Deductive Reasoning",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2608.13175",
+  "title": "$g$-vector fans and picture categories for 0-Auslander extriangulated categories",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2410.23583",
+  "title": "BioNCERE: Non-Contrastive Enhancement For Relation Extraction In Biomedical Texts",
+  "set": "Biochemistry, Genetics and Molecular Biology",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.21879",
+  "title": "Momentum anisotropy from Resistive Magnetohydrodynamics",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2602.20691",
+  "title": "Multiple protostellar outflows from a single protostar with a misaligned disk",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2603.07467",
+  "title": "Probabilistic Inference and Learning with Stein's Method",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2609.00403",
+  "title": "A Multi-Branch Feature Fusion Approach for Health Misinformation Detection and Propagation",
+  "set": "Social Sciences",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2407.17846",
+  "title": "Schwarzschild black-hole immersed in an electric or magnetic background in Entangled Relativity",
+  "set": "Physics and Astronomy",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.07866",
+  "title": "Maximal hypersurfaces with prescribed light-like cones in Lorentz-Minkowski space",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.31370",
+  "title": "Witness Complexity of Short Descriptions: A Cryptographic Perspective",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.04326",
+  "title": "Design and Evaluation of an NDN-Based Network for Distributed Digital Twins",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.19394",
+  "title": "Can Continual Pre-training Bridge the Performance Gap between General-purpose and Specialized Language Models in the Medical Domain?",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.09990",
+  "title": "PointArena: Probing Multimodal Grounding Through Language-Guided Pointing",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.04866",
+  "title": "Bursty Arrivals, Smooth Sojourns: Non-Poissonian Temporal Dynamics in a Logistics Warehouse",
+  "set": "Engineering",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.19750",
+  "title": "Manifold Bandits: Bayesian Curriculum Learning over the Latent Geometry of Large Language Models",
+  "set": "Decision Sciences",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.11606",
+  "title": "Globally Consistent Coloring Schemes for Language Identification",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2406.17385",
+  "title": "Native Design Bias: Studying the Impact of English Nativeness on Language Model Performance",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2608.21964",
+  "title": "Repo2Skill-Evo: Repository Skills Go Stale in Silence",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2406.00931",
+  "title": "Cohomological splitting over rationally connected bases",
+  "set": "Mathematics",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.03112",
+  "title": "Fast Strategy Solving for the Informed Player in Two-Player Zero-Sum Linear-Quadratic Differential Games with One-Sided Information",
+  "set": "Decision Sciences",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2307.09320",
+  "title": "Biomaker CA: a Biome Maker project using Cellular Automata",
+  "set": "Computer Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.09201",
+  "title": "Order parameters and ground-state phase diagram of the interacting topological Su-Schrieffer-Heeger model with extended-range hoppings",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2310.07655",
+  "title": "On the diameter of semigroups of transformations and partitions",
+  "set": "Computer Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.24832",
+  "title": "Difference-Making without Making a Difference",
+  "set": "Arts and Humanities",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.27618",
+  "title": "Evaluating Local Explainability Metrics for Machine Learning Models on Tabular Data",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.04272",
+  "title": "RL Excursions during Pre-Training: Re-examining Policy Optimization for LLM training",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.15565",
+  "title": "Exciton Bohr radius of lead halide perovskites for photovoltaic and light-emitting applications",
+  "set": "Engineering",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.27882",
+  "title": "On-sky Fibre-Target-Alignment of the 4MOST instrument: calibration and performance",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2408.00473",
+  "title": "Towards Explainable and Interpretable Musical Difficulty Estimation: A Parameter-efficient Approach",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.22634",
+  "title": "Constraints on the Primordial Black Hole Abundance using Pulsar Parameter Drifts",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2609.02128",
+  "title": "Bridging the local and the global: a physically constrained buoyancy--drag model for unified prediction of Rayleigh--Taylor and Richtmyer--Meshkov mixing widths across density ratios",
+  "set": "Engineering",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.12617",
+  "title": "MLPs are Efficient Distilled Generative Recommenders",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2405.05309",
+  "title": "Hyperfine Structure Investigation of Singly Ionized Thulium in FT Spectra",
+  "set": "Physics and Astronomy",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.03239",
+  "title": "Squid funnels time their elastic recoil to amplify pulsed jets",
+  "set": "Engineering",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2409.12245",
+  "title": "Computing-specific pedagogies and theoretical models: common uses and relationships",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2307.06952",
+  "title": "Non-Hermitian propagation in equally-spaced Hermitian waveguide arrays",
+  "set": "Physics and Astronomy",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2409.12666",
+  "title": "Keys and Evacuation via Virtualization",
+  "set": "Mathematics",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2409.16922",
+  "title": "Decomposition of Equivariant Maps via Invariant Maps: Application to Universal Approximation under Symmetry",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2504.10353",
+  "title": "Patch and Shuffle: A Preprocessing Technique for Texture Classification in Autonomous Cementitious Fabrication",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2304.00748",
+  "title": "Sandwiched Hybrid Waveguide Platform for Integrated Photonics Application",
+  "set": "Engineering",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.12921",
+  "title": "Capillary curvature images",
+  "set": "Mathematics",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.20838",
+  "title": "Long-memory Markov chains with power-law intensities",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.09696",
+  "title": "Discovery of Nonlinear Dynamics with Automated Basis Function Generation",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2308.15998",
+  "title": "Lambda polarization at Electron-ion collider in China",
+  "set": "Physics and Astronomy",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2603.04657",
+  "title": "Stan: An LLM-based thermodynamics course assistant",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2402.07949",
+  "title": "Optimizing the Design of an Artificial Pancreas to Improve Diabetes Management",
+  "set": "Medicine",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2508.14868",
+  "title": "Critical trajectories in kinetic geometry",
+  "set": "Mathematics",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.27899",
+  "title": "Simulating clinical interventions with a generative multimodal model of human physiology",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2501.07956",
+  "title": "Observation of prethermalization in weakly nonintegrable unitary maps",
+  "set": "Physics and Astronomy",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2304.12251",
+  "title": "Ordinal time series analysis with the R package otsfeatures",
+  "set": "Computer Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.23008",
+  "title": "Synthetic Document Question Answering in Hungarian",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.18055",
+  "title": "MERMAID-v1 PET Scanner Prototype: Initial Characterization and First Zebrafish Scans",
+  "set": "Medicine",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2601.14692",
+  "title": "Morphology-, Noise-, and Resolution-Robust Ultrasound Elasticity Imaging with Fourier Neural Operators",
+  "set": "Medicine",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2508.13930",
+  "title": "InPars+: Supercharging Synthetic Data Generation for Information Retrieval Systems",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.25069",
+  "title": "(Quasi-)affineness of perverse character varieties",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2601.09140",
+  "title": "Space and space-time topologies in a type-II hyperbolic lattice",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2512.20663",
+  "title": "Multiple-Timescale Theory of the Susceptible-Infected-Recovered-Vaccinated Epidemic Model (SIRV) for High Basic Reproduction Number",
+  "set": "Medicine",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2402.14258",
+  "title": "Eagle: Ethical Dataset Given from Real Interactions",
+  "set": "Social Sciences",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.20616",
+  "title": "Overview of results from NA61/SHINE",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2412.15858",
+  "title": "Bayesian pulsar timing and noise analysis with Vela.jl: an overview",
+  "set": "Physics and Astronomy",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2511.10456",
+  "title": "Continuous Branching Processes with Settlement in Cancer Metastasis: Stochastic Modelling and the Feller Property",
+  "set": "Mathematics",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.07004",
+  "title": "The dynamical origin of the magnetic field distributions in compressible turbulence",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2309.02493",
+  "title": "NOEMA observations of GN-z11: Constraining Neutral Interstellar Medium and Dust Formation in the Heart of Cosmic Reionization at $z=10.6$",
+  "set": "Physics and Astronomy",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2512.01219",
+  "title": "Neural Network Optimal Power Flow via Energy Gradient Flow and Unified Dynamics",
+  "set": "Engineering",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2604.10209",
+  "title": "Scalable Generative Sampling and Multilevel Estimation for Lattice Field Theories Near Criticality",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.05381",
+  "title": "Towards High Resolution Probabilistic Coastal Inundation Forecasting from Sparse Observations",
+  "set": "Environmental Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2308.08526",
+  "title": "Ab-initio Insights on the Fermiology of $d^1$ Transition metals in Honeycomb lattice : Hierarchy of hopping pathways and spin-orbit coupling",
+  "set": "Physics and Astronomy",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2607.07101",
+  "title": "GeoProp: Grounding Robot State in Vision for Generalist Manipulation",
+  "set": "Engineering",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2602.16406",
+  "title": "Bounds and Constructions of Codes for Ordered Composite DNA Sequences",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2603.22319",
+  "title": "Sparsely-Supervised Data Assimilation via Physics-Informed Schrödinger Bridge",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2609.37732",
+  "title": "The Camera Inside the Editor: Reading the Implicit Camera of Image Editors with Painted Calibration Patterns",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2403.15397",
+  "title": "Regulating Large Language Models: A Roundtable Report",
+  "set": "Social Sciences",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2412.21095",
+  "title": "Lyapunov-Based Deep Neural Networks for Adaptive Control of Stochastic Nonlinear Systems",
+  "set": "Engineering",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2603.20499",
+  "title": "Counting points on braid varieties and the Deligne--Simpson problem",
+  "set": "Mathematics",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2301.11796",
+  "title": "Call for Papers -- The BabyLM Challenge: Sample-efficient pretraining on a developmentally plausible corpus",
+  "set": "Computer Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2509.24868",
+  "title": "DRIFT-Net: A Spectral--Coupled Neural Operator for PDEs Learning",
+  "set": "Physics and Astronomy",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2512.24938",
+  "title": "Microscopic Insights to the Ultralow Thermal Conductivity of Monolayer 1T-SnTe2",
+  "set": "Materials Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.07812",
+  "title": "GRASP -- Graph-Based Anomaly Detection Through Self-Supervised Classification",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2606.23684",
+  "title": "Emergent Andreev Reflection from a Lattice Duality Defect",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2505.22356",
+  "title": "Suitability Filter: A Statistical Framework for Classifier Evaluation in Real-World Deployment Settings",
+  "set": "Computer Science",
+  "year": 2025,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2309.11883",
+  "title": "On-the-Fly SfM: What you capture is What you get",
+  "set": "Computer Science",
+  "year": 2023,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2212.12975",
+  "title": "Interactive Layout Drawing Interface with Shadow Guidance",
+  "set": "Computer Science",
+  "year": 2022,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2608.13498",
+  "title": "Quadratic effective energy--momentum tensor on uniform-density hypersurfaces during slow-roll inflation",
+  "set": "Physics and Astronomy",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2402.18566",
+  "title": "A Categorization of Complexity Classes for Information Retrieval and Synthesis Using Natural Logic",
+  "set": "Computer Science",
+  "year": 2024,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ },
+ {
+  "id": "2605.27565",
+  "title": "Cloak: Heuristic ORAM Optimization Through Fixed Temporal Distribution",
+  "set": "Computer Science",
+  "year": 2026,
+  "license": "http://creativecommons.org/licenses/by/4.0/"
+ }
+]

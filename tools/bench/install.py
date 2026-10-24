@@ -66,14 +66,24 @@ def build_local_wheels() -> Path:
     return out
 
 
-def install_venv(tool: Tool, *, force: bool, find_links: Path | None) -> None:
+def git_describe() -> str:
+    """Commit (and dirty marker) of this checkout, recorded next to a locally built tool."""
+    out = subprocess.run(
+        ["git", "describe", "--always", "--dirty", "--abbrev=12"], cwd=ROOT, capture_output=True, text=True, check=True
+    )
+    return out.stdout.strip()
+
+
+def install_venv(
+    tool: Tool, *, force: bool, find_links: Path | None, requirements: tuple[str, ...] | None = None
+) -> None:
     if tool.python.exists() and not force:
         print(f"{tool.name}: venv exists, skipping (use --force to rebuild)")
         return
     if tool.venv.exists():
         shutil.rmtree(tool.venv)
     subprocess.run([_uv(), "venv", "--python", PYTHON, str(tool.venv)], check=True)
-    cmd = [_uv(), "pip", "install", "--python", str(tool.python), *tool.requirements]
+    cmd = [_uv(), "pip", "install", "--python", str(tool.python), *(requirements or tool.requirements)]
     if tool.torch:
         cmd += ["--torch-backend", "auto"]
     if find_links is not None:
@@ -130,10 +140,18 @@ def main(names: list[str] | None, *, force: bool) -> int:
                 subprocess.run([_docker(), "pull", str(tool.extra["image"])], check=True)
                 continue
             links = None
-            if tool.name.startswith("ezmd") and not on_pypi("ezmd", tool.requirements[0].split("==", 1)[1]):
+            reqs: tuple[str, ...] | None = None
+            if tool.extra.get("local"):
+                # The wheels themselves are the requirements, so PyPI's copy of the same version never wins.
                 find_links = find_links or build_local_wheels()
                 links = find_links
-            install_venv(tool, force=force, find_links=links)
+                reqs = tuple(str(w) for w in sorted(links.glob("*.whl"))) + tuple(tool.requirements[1:])
+            elif tool.name.startswith("ezmd") and not on_pypi("ezmd", tool.requirements[0].split("==", 1)[1]):
+                find_links = find_links or build_local_wheels()
+                links = find_links
+            install_venv(tool, force=force, find_links=links, requirements=reqs)
+            if tool.extra.get("local"):
+                (tool.venv / "source.txt").write_text(git_describe() + "\n", encoding="utf-8")
         except (subprocess.CalledProcessError, OSError, SystemExit) as exc:
             print(f"{tool.name}: install FAILED: {exc}")
             failed.append(tool.name)

@@ -26,6 +26,18 @@ adapter = "ezmd_adapter"
 formats = ["*"]
 license = "Apache-2.0"
 
+[tools.ezmd-main]
+kind = "venv"
+# This checkout's code, whatever its version string says: `local = true` always builds the wheels from the
+# working tree (install records the commit in <venv>/source.txt). The row to read when the question is "did the
+# unreleased changes help", next to `ezmd`, the published release.
+requirements = ["ezmd"]
+local = true
+torch = false
+adapter = "ezmd_adapter"
+formats = ["*"]
+license = "Apache-2.0"
+
 [tools.ezmd-docs]
 kind = "venv"
 requirements = ["ezmd[docs]==0.1.0"]
