@@ -15,8 +15,8 @@ Whole born-digital papers, scored against witnesses the PDF itself carries, so n
   them every such loss is silent. A failed conversion is loud, not silent.
 - the bookmarks (`get_toc`): `outline recall` is the share of bookmarks found as a heading in the output,
   numbering ignored, over documents with at least OUTLINE_MIN bookmarks.
-- `tokens per page`: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer) per PDF
-  page. Lower is better.
+- `tokens per page`: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer; base64
+  images a tool embeds count as one placeholder each) per PDF page. Lower is better.
 - `answer accuracy` and `correct answers per 10k tokens`: from tools/bench/qa.py when it has run (questions a
   local model wrote from the text layer, answered from each tool's output, graded by the same model).
 
@@ -157,10 +157,16 @@ def witness(doc_id: str, pdf: Path) -> Witness:
     return Witness(int(data["pages"]), words(str(data["text"])), list(data["bookmarks"]), str(data["text"]))
 
 
+_DATA_URI = re.compile(r"data:[a-zA-Z0-9.+/-]+;base64,[A-Za-z0-9+/=\s]+")
+
+
 def count_tokens(text: str) -> int:
+    """o200k_base tokens of the text a user would feed a model. Images a tool embeds as base64 data URIs
+    (MinerU) are not text and are counted as one placeholder each; a model API takes them as images, not
+    tokens of Markdown."""
     import tiktoken
 
-    return len(tiktoken.get_encoding("o200k_base").encode(text, disallowed_special=()))
+    return len(tiktoken.get_encoding("o200k_base").encode(_DATA_URI.sub("data:image", text), disallowed_special=()))
 
 
 def declared_loss(result: DocResult, run_dir: Path) -> bool | None:

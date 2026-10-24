@@ -43,6 +43,8 @@ DEFAULT_MODEL = "openai/gpt-oss-20b"
 CONTEXT_TOKENS = 32_768
 """Context the model is loaded with; the document is cut to DOC_TOKENS so prompt and answer fit."""
 DOC_TOKENS = 24_000
+MODEL_TTL_SECONDS = 4 * 3600
+"""LM Studio unloads the model after this long idle; a run keeps it busy, the next morning does not."""
 QUESTIONS_WANTED = 6
 QUESTIONS_KEPT = 5
 SEED = 20261013
@@ -307,17 +309,47 @@ def grade(client: Client, run_dir: Path, tools: list[str] | None, workers: int) 
     return 0
 
 
-def ensure_model(client: Client, workers: int) -> None:
-    """Load the model into LM Studio (`lms`) with the context length this pipeline needs, unless it is up."""
+def _lms() -> str | None:
+    found = shutil.which("lms")
+    if found:
+        return found
+    local = Path.home() / ".lmstudio" / "bin" / ("lms.exe" if os.name == "nt" else "lms")
+    return str(local) if local.exists() else None
+
+
+def loaded_context(lms: str, model: str) -> int | None:
+    """Context length the model is loaded with in LM Studio (`lms ps --json`), None when it is not loaded."""
+    out = subprocess.run([lms, "ps", "--json"], capture_output=True, text=True, check=False)
     try:
-        if client.model in client.models():
-            return
-    except (urllib.error.URLError, OSError):
-        pass
-    lms = shutil.which("lms") or str(Path.home() / ".lmstudio" / "bin" / ("lms.exe" if os.name == "nt" else "lms"))
-    if not Path(lms).exists():
+        rows = json.loads(out.stdout or "[]")
+    except json.JSONDecodeError:
+        return None
+    for row in rows:
+        if row.get("identifier") == model or row.get("modelKey") == model:
+            return int(row.get("contextLength") or 0)
+    return None
+
+
+def ensure_model(client: Client, workers: int) -> None:
+    """Have LM Studio serve the model with at least CONTEXT_TOKENS of context. `/v1/models` lists every model on
+    disk, loaded or not, and a request to an unloaded one makes LM Studio load it with its default 4k context,
+    which this pipeline's prompts overflow; so the loaded context is checked with `lms ps` and the model is
+    reloaded when it is missing or too small."""
+    lms = _lms()
+    if lms is None:
+        try:
+            if client.model in client.models():
+                print(f"qa: lms not installed; trusting {client.base_url} to serve {client.model}", flush=True)
+                return
+        except (urllib.error.URLError, OSError):
+            pass
         raise SystemExit(f"{client.base_url} is not serving {client.model} and lms is not installed to load it")
     subprocess.run([lms, "server", "start"], check=False, capture_output=True)
+    context = loaded_context(lms, client.model)
+    if context is not None and context >= CONTEXT_TOKENS:
+        return
+    if context is not None:
+        subprocess.run([lms, "unload", client.model], check=False, capture_output=True)
     subprocess.run(
         [
             lms,
@@ -329,14 +361,17 @@ def ensure_model(client: Client, workers: int) -> None:
             str(CONTEXT_TOKENS),
             "--parallel",
             str(workers),
+            "--ttl",
+            str(MODEL_TTL_SECONDS),
             "--identifier",
             client.model,
             "-y",
         ],
         check=True,
     )
-    if client.model not in client.models():
-        raise SystemExit(f"{client.model} did not come up on {client.base_url}")
+    context = loaded_context(lms, client.model)
+    if context is None or context < CONTEXT_TOKENS:
+        raise SystemExit(f"{client.model} did not come up with a {CONTEXT_TOKENS}-token context (got {context})")
 
 
 def main(
