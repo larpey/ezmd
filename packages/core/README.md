@@ -1,7 +1,7 @@
 # ezmd
 
 Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
-tools. No silent loss. Apache-2.0.
+tools. Reports what it couldn't convert. Apache-2.0.
 
 ezmd renders every input as Markdown with YAML frontmatter under one of four output profiles, plus a JSON
 sidecar with block provenance and an explicit list of warnings. When something cannot be converted, ezmd

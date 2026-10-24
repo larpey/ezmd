@@ -3,14 +3,15 @@
 # ezmd
 
 Convert anything (documents, web pages, data files, code, archives, and more) to clean Markdown for AI
-tools. No silent loss. Apache-2.0.
+tools. Reports what it couldn't convert. Apache-2.0.
 
 [![ci](https://github.com/larpey/ezmd/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/larpey/ezmd/actions/workflows/ci.yml)
 [![license: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-ezmd turns an input into an intermediate representation and renders it as Markdown with YAML
-frontmatter under one of four output profiles, plus a JSON sidecar with block provenance and an explicit
-list of warnings. When something cannot be converted, ezmd says so instead of dropping it quietly.
+ezmd turns files and web pages into clean Markdown that AI models read well. Each conversion comes with
+a short header of facts (title, source, page and token counts), a list of warnings, and an optional JSON
+sidecar that records which page every paragraph came from. When something can't be converted, ezmd tells
+you instead of quietly dropping it.
 
 > **Status: 0.1.** Documents, web pages, data files, code, email, ebooks and archives convert today. OCR,
 > audio and video come next; see the [roadmap](docs/roadmap.md).
@@ -194,7 +195,8 @@ Details: [docs/output-format.md](docs/output-format.md).
 
 ## Why ezmd
 
-- No silent loss: every dropped or degraded element becomes a structured warning with a code and a suggestion.
+- Loss is reported: every dropped or degraded element ezmd detects becomes a structured warning with a code and
+  a suggestion. A published measurement of what still slips through is on the [roadmap](docs/roadmap.md).
 - Permissive by default: the default install pulls only allowlisted licenses; anything else is an opt-in extra.
 - One box: CLI, library, REST API, web UI, and MCP server share one conversion path, and the Compose stack runs on a single machine.
 - Output profiles: one conversion renders as `full`, `compact`, `rag`, or `agent`.
