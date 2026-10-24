@@ -286,3 +286,65 @@ def test_seed_grades_fills_the_cache_from_a_graded_run(tmp_path: Path, monkeypat
     assert qa.seed_grades(run, None) == 1  # the UNKNOWN shortcut is not a verdict worth keeping
     assert qa.cached_grade("2601_00001", "How many?", "14") is False
     assert qa.seed_grades(run, None) == 0
+
+
+class _Answerer:
+    """An answerer whose answers change on every call."""
+
+    model = "fake"
+    base_url = "http://x"
+
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def chat(self, prompt: str, **_: object) -> str:
+        self.calls += 1
+        return json.dumps([f"answer {self.calls}"])
+
+
+def _answer_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    cache = tmp_path / "cache"
+    monkeypatch.setenv("EZMD_BENCH_CACHE", str(cache))
+    run = tmp_path / "run"
+    (run / "ezmd-main").mkdir(parents=True)
+    (run / "ezmd-main" / "2601_00001.md").write_text("The depot moved fourteen pallets.", encoding="utf-8")
+    (run / "docs.json").write_text(json.dumps({"documents": [{"id": "2601_00001"}]}), encoding="utf-8")
+    from tools.bench.schema import append_result
+
+    append_result(
+        run / "results.jsonl",
+        DocResult("arxiv", "2601_00001", "c", "ezmd-main", "1", "ok", output="ezmd-main/2601_00001.md"),
+    )
+    qdir = qa.qa_dir()
+    qdir.mkdir(parents=True, exist_ok=True)
+    (qdir / "2601_00001.json").write_text(
+        json.dumps({"questions": [{"question": "How many?", "answer": "14", "quote": "moved fourteen pallets"}]}),
+        encoding="utf-8",
+    )
+    return run
+
+
+def test_answers_are_cached_by_the_text_the_model_saw(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    run = _answer_run(tmp_path, monkeypatch)
+    model = _Answerer()
+    qa.answer(model, run, None, 1)  # type: ignore[arg-type]
+    first = json.loads((run / "qa" / "ezmd-main" / "2601_00001.json").read_text(encoding="utf-8"))
+    assert first["items"][0]["answer_given"] == "answer 1" and model.calls == 1
+    # the same text in another run: the cached answer, not a second sample
+    other = tmp_path / "run2"
+    other.mkdir()
+    for name in ("docs.json", "results.jsonl"):
+        (other / name).write_text((run / name).read_text(encoding="utf-8"), encoding="utf-8")
+    (other / "ezmd-main").mkdir()
+    (other / "ezmd-main" / "2601_00001.md").write_text(
+        (run / "ezmd-main" / "2601_00001.md").read_text("utf-8"), "utf-8"
+    )
+    qa.answer(model, other, None, 1)  # type: ignore[arg-type]
+    second = json.loads((other / "qa" / "ezmd-main" / "2601_00001.json").read_text(encoding="utf-8"))
+    assert second["items"][0]["answer_given"] == "answer 1" and model.calls == 1
+    # changed text is answered afresh
+    (other / "ezmd-main" / "2601_00001.md").write_text("The depot moved fifteen pallets.", encoding="utf-8")
+    (other / "qa" / "ezmd-main" / "2601_00001.json").unlink()
+    qa.answer(model, other, None, 1)  # type: ignore[arg-type]
+    assert model.calls == 2
+    assert qa.seed_answers(run, None) == 0  # already cached by the run itself

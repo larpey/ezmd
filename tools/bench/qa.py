@@ -273,21 +273,30 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
         if r.status != "ok" or not md.strip():
             answers = [UNKNOWN] * len(questions)
         else:
-            listed = "\n".join(f"{i + 1}. {q['question']}" for i, q in enumerate(questions))
-            prompt = ANSWER_PROMPT.format(unknown=UNKNOWN, questions=listed, text=cut_tokens(md, DOC_TOKENS))
-            answers = []
-            for _attempt in range(2):
-                try:
-                    got = parse_json_array(client.chat(prompt, max_tokens=3000))
-                except (ValueError, json.JSONDecodeError) as exc:
-                    _note(exc)
-                    continue
-                answers = [str(a) if a is not None else UNKNOWN for a in got][: len(questions)]
-                if len(answers) == len(questions):
-                    break
-            if len(answers) != len(questions):
-                # Not written: a padded record would be cached as answered and graded as wrong.
-                return f"{r.tool} {r.doc_id}: FAILED, the model returned {len(answers)} of {len(questions)} answers"
+            # Like the verdicts, answers are cached by the exact text the model saw: a sampled model answers the
+            # same text differently on another day, and a tool whose output did not change between two runs
+            # must score the same in both.
+            text = cut_tokens(md, DOC_TOKENS)
+            hit = cached_answers(r.doc_id, questions, text)
+            if hit is not None:
+                answers = hit
+            else:
+                listed = "\n".join(f"{i + 1}. {q['question']}" for i, q in enumerate(questions))
+                prompt = ANSWER_PROMPT.format(unknown=UNKNOWN, questions=listed, text=text)
+                answers = []
+                for _attempt in range(2):
+                    try:
+                        got = parse_json_array(client.chat(prompt, max_tokens=3000))
+                    except (ValueError, json.JSONDecodeError) as exc:
+                        _note(exc)
+                        continue
+                    answers = [str(a) if a is not None else UNKNOWN for a in got][: len(questions)]
+                    if len(answers) == len(questions):
+                        break
+                if len(answers) != len(questions):
+                    # Not written: a padded record would be cached as answered and graded as wrong.
+                    return f"{r.tool} {r.doc_id}: FAILED, the model returned {len(answers)} of {len(questions)} answers"
+                store_answers(r.doc_id, questions, text, answers, client.model)
         items = [{**q, "answer_given": a} for q, a in zip(questions, answers, strict=True)]
         record = {"model": client.model, "server": client.base_url, "tool": r.tool, "doc": r.doc_id, "items": items}
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -298,6 +307,65 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
         for line in pool.map(one, results):
             print(line, flush=True)
     return 0
+
+
+def answer_cache_dir() -> Path:
+    return qa_dir() / "answers"
+
+
+def _answer_key(doc_id: str, questions: list[dict[str, str]], text: str) -> str:
+    import hashlib
+
+    h = hashlib.sha256()
+    h.update(doc_id.encode("utf-8"))
+    for q in questions:
+        h.update(b"\n")
+        h.update(" ".join(q["question"].split()).encode("utf-8"))
+    h.update(b"\n\x00")
+    h.update(text.encode("utf-8"))
+    return h.hexdigest()[:32]
+
+
+def cached_answers(doc_id: str, questions: list[dict[str, str]], text: str) -> list[str] | None:
+    path = answer_cache_dir() / f"{_answer_key(doc_id, questions, text)}.json"
+    if not path.exists():
+        return None
+    answers = json.loads(path.read_text(encoding="utf-8"))["answers"]
+    return [str(a) for a in answers] if len(answers) == len(questions) else None
+
+
+def store_answers(doc_id: str, questions: list[dict[str, str]], text: str, answers: list[str], model: str) -> None:
+    path = answer_cache_dir() / f"{_answer_key(doc_id, questions, text)}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    record = {"doc": doc_id, "model": model, "answers": answers}
+    path.write_text(json.dumps(record, ensure_ascii=False), encoding="utf-8", newline="\n")
+
+
+def seed_answers(run_dir: Path, tools: list[str] | None) -> int:
+    """Put the answers of an already answered run into the cache (keyed by the text the model saw), where no
+    answer for that text exists yet. Returns the number of documents added."""
+    added = 0
+    for r in read_results(run_dir / "results.jsonl"):
+        if (tools is not None and r.tool not in tools) or r.status != "ok":
+            continue
+        path = run_dir / "qa" / r.tool / f"{r.doc_id}.json"
+        if not path.exists():
+            continue
+        items = json.loads(path.read_text(encoding="utf-8"))["items"]
+        if not items or not all("answer_given" in it for it in items):
+            continue
+        questions = _questions(r.doc_id)
+        if [q["question"] for q in questions] != [it["question"] for it in items]:
+            continue
+        md = strip_data_uris(read_output(r, run_dir))
+        if not md.strip():
+            continue
+        text = cut_tokens(md, DOC_TOKENS)
+        if cached_answers(r.doc_id, questions, text) is None:
+            store_answers(r.doc_id, questions, text, [str(it["answer_given"]) for it in items], "seeded")
+            added += 1
+    print(f"answer cache: {added} documents added from {run_dir}")
+    return added
 
 
 def grade_cache_dir() -> Path:
@@ -515,6 +583,7 @@ def main(
         print(f"qa: no run under {run_dir} (run the corpus first)", file=sys.stderr)
         return 1
     if step == "seed":  # no model needed
+        seed_answers(run_dir, tools)
         seed_grades(run_dir, tools)
         return 0
     if step == "ungrade":
