@@ -61,9 +61,13 @@ gets from the converted file, with the PDF itself as the witness, so the compari
   three or more bookmarks.
 - **Tokens per page.** o200k tokens of the output per PDF page, frontmatter removed; MinerU's embedded images count
   as one placeholder each. The second figure is the exact Claude count of the same text from Anthropic's
-  token-counting endpoint (`tools/bench/tokens.py`, model `claude-sonnet-5-5`): Claude's tokenizer runs 1.47 to
-  1.53 times o200k on every tool's Markdown, so the ranking and the gaps between tools are the same in both, and a
-  Claude agent pays about 1.5 times the o200k figure.
+  token-counting endpoint (`tools/bench/tokens.py`, model `claude-sonnet-5-5`; Sonnet, Opus and Haiku share one
+  tokenizer and return the same count, checked on one paper). Claude's tokenizer runs 1.47 to 1.53 times o200k on
+  every tool's Markdown, so the ranking and the gaps between tools are the same in both. For the average paper here
+  (25 pages) that is about 32,000 Claude tokens from Docling, 36,000 from pymupdf4llm, 39,000 from ezmd's full
+  profile, 41,000 from MinerU, 47,000 from MarkItDown and from ezmd's rag profile, and 18,000 from compact, which
+  cuts at 16,000 o200k tokens. ezmd's default output does not save tokens over Docling today; the fixes listed
+  below are what would change that.
 
 Paper-level columns are means over the 30 papers, except source recall (27 papers with a source) and outline recall
 (24 papers with bookmarks); answer accuracy covers the 148 questions across the 30 papers and is the one column shown
