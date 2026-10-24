@@ -74,6 +74,8 @@ class PageText:
     chars: int
     image_fraction: float
     private_use: int = 0
+    unmapped: int = 0
+    """Glyphs the font maps to U+FFFD (no text known); kept in the text so the gap is visible."""
     image_boxes: list[Rect] = field(default_factory=list)
 
 
@@ -278,6 +280,7 @@ def read_page(
         textpage = page.get_textpage()
         try:
             glyphs, private = _glyphs(textpage, tf, links)
+            unmapped = sum(1 for g in glyphs if g is not None and g.ch == "\ufffd")
         finally:
             textpage.close()
     finally:
@@ -292,6 +295,7 @@ def read_page(
         chars=chars,
         image_fraction=image_fraction,
         private_use=private,
+        unmapped=unmapped,
         image_boxes=image_boxes,
     )
 
@@ -331,8 +335,16 @@ def _glyphs(
             out.append(_SPACE)
             continue
         left, bottom, right, top = textpage.get_charbox(i, loose=False)
-        bold, mcid = _font_flags(textpage, i, cache)
         box = tf.box(left, bottom, right, top)
+        last = out[-1] if out else None
+        # Some fonts' ToUnicode maps a glyph to its text twice ("hi lo hi lo" for 𝜓): a repeat in the very same
+        # box, or a stray half left over from it, is not a second character.
+        same_box = last is not None and (last.x0, last.y0, last.x1, last.y1) == box
+        if same_box and last is not None and (0xD800 <= code <= 0xDFFF or _fold(ch) == last.ch):
+            continue
+        if 0xD800 <= code <= 0xDFFF:
+            continue  # an unpaired UTF-16 half carries no character
+        bold, mcid = _font_flags(textpage, i, cache)
         size, turn, origin = _size_and_frame(textpage, i, tf, box)
         href = _href_at(links, (left + right) / 2, (bottom + top) / 2) if links else None
         for c in _fold(ch):

@@ -153,6 +153,26 @@ def _column_of(ln: Line, cols: list[tuple[float, float]]) -> int:
     return min(range(len(cols)), key=lambda k: max(cols[k][0] - mid, mid - cols[k][1], 0.0))
 
 
+EQUATION_NUMBER = re.compile(r"^\(\d{1,3}[a-z]?\)$")
+"""A display equation's number, "(4)" or "(3a)", set flush right like a last column."""
+MATH_CHARS = frozenset("=+×·∑∏∫√∂∇∞≤≥≈≠∈∝±∓→↦⟨⟩|^′") | {chr(c) for c in range(0x391, 0x3CA)}
+"""Operators, relations and Greek letters (a minus sign is left out: negative numbers fill real tables)."""
+MATH_DENSITY = 0.2
+"""A grid whose visible characters are at least this share math symbols is typeset math, not a table."""
+
+
+def _display_math(group: list[list[Line]]) -> bool:
+    """A display equation (or a block of them) that row and column grouping mistook for a table: fractions
+    put the numerator, the main line and the denominator on separate rows and the equation number sits at
+    the right like a last column. Half or more of the rows carry an equation number or an "=", or the grid
+    is dense with math symbols."""
+    mathy = sum(1 for r in group if EQUATION_NUMBER.match(r[-1].text.strip()) or any("=" in ln.text for ln in r))
+    if 2 * mathy >= len(group):
+        return True
+    ink = [ch for r in group for ln in r for ch in ln.text if not ch.isspace()]
+    return bool(ink) and sum(ch in MATH_CHARS for ch in ink) >= MATH_DENSITY * len(ink)
+
+
 def _sparse_pair(group: list[list[Line]], n_cols: int) -> bool:
     """Two rows that leave a third or more of their cells empty and hold at most one number are a typeset
     formula, not a table (`Attention(Q, K, V) = softmax(` over `√dk`, numbered `(1)`)."""
@@ -182,7 +202,8 @@ def detect_tables(lines: list[Line]) -> tuple[list[TableGrid], list[Line]]:
         group = rows[i:j]
         width = max(len(r) for r in group)
         cols = _columns([r for r in group if len(r) == width] if width >= 3 else group)
-        if len(group) >= 2 and 2 <= len(cols) <= max(width, 2) + 1 and not _sparse_pair(group, len(cols)):
+        tabular = len(group) >= 2 and 2 <= len(cols) <= max(width, 2) + 1
+        if tabular and not _sparse_pair(group, len(cols)) and not _display_math(group):
             grid = [["" for _ in cols] for _ in group]
             cell_runs: list[list[list[Run]]] = [[[] for _ in cols] for _ in group]
             for r_i, row in enumerate(group):

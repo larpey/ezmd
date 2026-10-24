@@ -27,6 +27,13 @@ All notable changes are generated from Conventional Commits. This project uses s
   REVTeX small-capital headings, headings that wrap onto a second line, and run-in headings
   ("2.1. Metric graph theory. For a graph G, ..."), which are split from their paragraph. A printed table
   of contents, with or without page numbers, no longer takes the bookmarks of the headings it lists.
+- PDF: a glyph whose font maps it to its text twice (`ψψ` for one `ψ`) is one character; glyphs with no
+  text mapping stay visible as U+FFFD and raise the new `unmapped_glyphs` warning naming their pages.
+- PDF: display equations (a fraction's rows, an equation number at the right, dense math symbols) are no
+  longer emitted as tables.
+- PDF titles: a title set at body size under "Draft version" notes (AASTeX) is found in the top of the first
+  page, and a title split across objects ("Eagle" and ": Ethical Dataset ...") joins without a gap.
+  Contents entries with dot leaders and lines over 150 characters are never headings.
 
 ## [0.1.1] - 2026-10-23
 

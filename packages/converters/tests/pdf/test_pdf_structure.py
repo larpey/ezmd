@@ -12,7 +12,7 @@ import pikepdf
 from conftest import convert_path, new_pdf, save
 from pikepdf import Name
 
-from ezmd.ir import Heading, InlineStyle, Paragraph, Table, spans_text
+from ezmd.ir import Heading, InlineStyle, Paragraph, Table, WarningKind, spans_text
 from ezmd_converters.pdf.headings import plan_headings, section_number
 from ezmd_converters.pdf.layout import detect_tables
 from ezmd_converters.pdf.textlayer import Line, PageText
@@ -385,3 +385,101 @@ def test_run_in_heading_is_split_from_its_paragraph() -> None:
         ("Heading", "2.1. Metric graph theory"),
         ("Paragraph", "For a graph G, a walk of lengt"),
     ]
+
+
+# -- second hunt pass: glyph mapping, equation grids, title zone -----------------------
+
+
+def _pdf_with_cmap(tmp_path: Path, text: str, bfchars: str) -> Path:
+    """One line of `text` in Helvetica whose ToUnicode CMap carries `bfchars` ("<41> <00410041>")."""
+    pdf = new_pdf([[]])
+    cmap = (
+        "/CIDInit /ProcSet findresource begin 12 dict begin begincmap /CMapName /Custom def\n"
+        "1 begincodespacerange <00> <FF> endcodespacerange\n"
+        f"{bfchars.count('<') // 2} beginbfchar {bfchars} endbfchar\n"
+        "endcmap CMapName currentdict /CMap defineresource pop end end"
+    )
+    font = pdf.pages[0].obj.Resources.Font.F1
+    font.ToUnicode = pdf.make_indirect(pikepdf.Stream(pdf, cmap.encode("ascii")))
+    ops: list[tuple[list[object], str]] = [
+        ([], "BT"),
+        ([Name("/F1"), 10], "Tf"),
+        ([72, 700], "Td"),
+        ([pikepdf.String(text)], "Tj"),
+        ([], "ET"),
+    ]
+    pdf.pages[0].obj.Contents = pdf.make_indirect(pikepdf.Stream(pdf, pikepdf.unparse_content_stream(ops)))
+    return save(pdf, tmp_path / "cmap.pdf")
+
+
+def test_glyph_mapped_to_its_text_twice_is_one_character(tmp_path: Path) -> None:
+    """Some fonts' ToUnicode gives a glyph its text twice (ψψ for one ψ); the repeat shares the glyph's box."""
+    path = _pdf_with_cmap(tmp_path, "A plan", "<41> <00410041>")
+    assert [ln.text for ln in _page_lines_of(path)] == ["A plan"]
+
+
+def test_unmapped_glyphs_are_kept_and_warned(tmp_path: Path) -> None:
+    path = _pdf_with_cmap(tmp_path, "see A here", "<41> <FFFD>")
+    doc = convert_path(path)
+    assert "�" in doc.plain_text()
+    warn = next(w for w in doc.warnings if w.kind == WarningKind.UNMAPPED_GLYPHS)
+    assert warn.count == 1 and warn.page == 1 and warn.detail["pages"] == "1"
+
+
+def test_display_equation_with_fraction_is_not_a_table() -> None:
+    lines = [
+        _line(1, 200, 100, "8πG", 0),
+        _line(1, 300, 100, "1", 1),
+        _line(1, 72, 112, "H² =", 2),
+        _line(1, 200, 112, "ϕ′² + a²V", 3),
+        _line(1, 330, 112, ",", 4),
+        _line(1, 480, 112, "(4)", 5),
+        _line(1, 200, 124, "3", 6),
+        _line(1, 300, 124, "2", 7),
+    ]
+    tables, rest = detect_tables(lines)
+    assert tables == [] and len(rest) == 8
+
+
+def test_numeric_table_without_equals_is_still_a_table() -> None:
+    rows = [("Layer", "Params", "FLOPs"), ("Small", "12M", "1.1"), ("Base", "110M", "4.2"), ("Large", "340M", "13.5")]
+    lines = [
+        _line(1, x, 100 + 14 * r, text, r * 3 + c)
+        for r, row in enumerate(rows)
+        for c, (x, text) in enumerate(zip((72, 200, 300), row, strict=True))
+    ]
+    tables, _rest = detect_tables(lines)
+    assert len(tables) == 1 and tables[0].rows[0] == ["Layer", "Params", "FLOPs"]
+
+
+def test_page_title_in_the_top_zone_under_draft_notes() -> None:
+    """AASTeX: "Draft version" notes top left in small type, then the title at body size, centred."""
+    from ezmd_converters.pdf.headings import page_title
+
+    title = "Hyperfine Structure Investigation of Singly Ionized Thulium in FT Spectra"
+    lines = [
+        _line(1, 60, 53, "Draft version May 10, 2024", 0, size=8),
+        _line(1, 60, 63, "Typeset using LaTeX twocolumn style in AASTeX631", 1, size=8),
+        _line(1, 131, 109, title, 2, size=9.96),
+        _line(1, 72, 130, "Taha Yusuf Kebapci, Seyma Parlatan", 3, size=9),
+        *(_line(1, 60, 180 + 12 * k, "Body text " * 8, k, size=9.96) for k in range(4, 20)),
+    ]
+    assert page_title([_page(lines)], 10.0, set()) == title
+
+
+def test_page_title_joins_a_colon_set_as_a_separate_object() -> None:
+    from ezmd_converters.pdf.headings import page_title
+
+    a = Line(1, 129, 84, 163, 97, 14.35, True, [("Eagle", None, None)], 0)
+    b = Line(1, 182, 84, 466, 95, 14.35, True, [(": Ethical Dataset Given from Real Interactions", None, None)], 1)
+    lines = [a, b, *(_body(k, 140 + 12 * k) for k in range(2, 12))]
+    assert page_title([_page(lines)], 10.0, set()) == "Eagle: Ethical Dataset Given from Real Interactions"
+
+
+def test_contents_entries_and_overlong_lines_are_not_headings() -> None:
+    entry = _line(1, 72, 100, "4.1 Motivation . . . . . . . . . . . . . . . . . . . . 12", 0, size=14)
+    long = _line(1, 72, 130, "4 School of Fundamental Physics and Mathematical Sciences, " * 3, 1, size=14)
+    head = _line(1, 72, 160, "Results", 2, size=14, bold=True)
+    lines = [entry, long, head, *(_body(k, 200 + 12 * k) for k in range(3, 13))]
+    src = plan_headings([_page(lines)], 10.0, [], set())
+    assert [src.level(entry), src.level(long), src.level(head)] == [None, None, 1]

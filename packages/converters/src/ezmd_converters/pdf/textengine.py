@@ -131,6 +131,20 @@ def _warnings(
             )
         )
     heading_warnings(doc, headings, info)
+    unmapped = [(p.number, p.unmapped) for p in layer.pages if p.unmapped]
+    if unmapped:
+        listed = ",".join(str(n) for n, _ in unmapped)
+        total = sum(c for _, c in unmapped)
+        doc.warnings.append(
+            Warning(
+                kind=WarningKind.UNMAPPED_GLYPHS,
+                message=f"{total} character(s) have no text mapping in the PDF's fonts (shown as U+FFFD) on page(s) "
+                f"{listed}.",
+                page=unmapped[0][0],
+                count=total,
+                detail={"pages": listed},
+            )
+        )
     if uncertain:
         listed = ",".join(str(n) for n in uncertain)
         doc.warnings.append(

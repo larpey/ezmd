@@ -49,6 +49,10 @@ headings over an 11 pt body (1.09x, under `HEADING_RATIO`)."""
 HEADING_WORD = re.compile(r"[^\W\d_]{2,}")
 """A heading has a word of two letters or more; a lone 𝐴 or ∆, or `h¯Ω1/λ0`, in a diagram's lettering is not
 one."""
+HEADING_MAX_CHARS = 150
+"""Longer text is never a heading: an abstract set in one line, or an affiliation with a footnote number."""
+DOT_LEADERS = re.compile(r"(?:\.\s){4,}")
+"""A contents entry's dot leaders (". . . ."); such a line lists a heading, it is not one."""
 TURNED_MINORITY = 0.5
 """Turned lines are margin furniture (an arXiv stamp) only when under this share of their page's lines; on a
 page typeset sideways they are the content and keep their headings."""
@@ -121,7 +125,9 @@ class HeadingSources:
         and the depth of "3.1" headings is measured from the last top-level numbered heading."""
         if ln.order in self.turned or ln.order in self.prose or ln.order in self.front or ln.order in self.contents:
             return None
-        if not HEADING_WORD.search(ln.text):
+        if not HEADING_WORD.search(ln.text) or DOT_LEADERS.search(ln.text):
+            return None
+        if len(ln.text) > HEADING_MAX_CHARS and ln.order not in self.title_orders:
             return None
         size = round(ln.size * 2) / 2
         size_level = self.sizes.get(size)
@@ -289,32 +295,47 @@ def page_title(pages: Sequence[PageText], body: float, skip: set[int]) -> str | 
     if top >= body * HEADING_RATIO:
         group = sorted((ln for ln in lines if round(ln.size * 2) == round(top * 2)), key=lambda ln: ln.order)
     else:
-        group = _caps_title_lines(lines, page.width)
+        group = _top_title_lines(lines, page.height, page.width)
         if not group:
             return None
     run = [group[0]]
     for ln in group[1:]:
-        if ln.order == run[-1].order + 1 and 0 <= ln.y0 - run[-1].y1 <= 0.8 * ln.size:
+        prev = run[-1]
+        same_line = abs(ln.y1 - prev.y1) <= 0.3 * ln.size and ln.x0 >= prev.x1  # "Eagle" then ": Ethical ..."
+        if ln.order == prev.order + 1 and (same_line or 0 <= ln.y0 - prev.y1 <= 0.8 * ln.size):
             run.append(ln)
         else:
             break
-    text = " ".join(ln.text for ln in run).strip()
+    text = run[0].text
+    for ln in run[1:]:
+        text += ln.text if ln.text[:1] in ",.:;)" else " " + ln.text
+    text = text.strip()
     if section_number(text)[0] is not None or norm_text(text) in FRONT_MATTER or len(text) > 250:
         return None
     return text
 
 
-def _caps_title_lines(lines: list[Line], width: float) -> list[Line]:
-    """AMS-style title pages set the title at body size in capitals or bold, centred at the top: the topmost
-    line when it is centred and set that way, with the lines continuing it."""
-    first = min(lines, key=lambda ln: (ln.y0, ln.x0))
-    letters = [c for c in first.text if c.isalpha()]
-    caps = bool(letters) and sum(c.isupper() for c in letters) >= 0.9 * len(letters)
-    centred = abs((first.x0 + first.x1) / 2 - width / 2) <= 0.05 * width
-    if not centred or not (caps or first.bold) or len(first.text.split()) < 2:
+TITLE_ZONE = 0.35
+"""When no text on the first page is heading-sized, the title is looked for in this top share of the page."""
+
+
+def _top_title_lines(lines: list[Line], height: float, width: float) -> list[Line]:
+    """Title pages that set the title at body size (AMS capitals, AASTeX under "Draft version" notes): the
+    largest centred line of two words or more in the top of the page, with the lines continuing it."""
+
+    def centred(ln: Line) -> bool:
+        return abs((ln.x0 + ln.x1) / 2 - width / 2) <= 0.06 * width
+
+    zone = [ln for ln in lines if ln.y0 <= TITLE_ZONE * height and len(ln.text.split()) >= 2 and centred(ln)]
+    if not zone:
         return []
-    same = [ln for ln in lines if round(ln.size * 2) == round(first.size * 2) and ln.bold == first.bold]
-    return sorted(same, key=lambda ln: ln.order)[sorted(same, key=lambda ln: ln.order).index(first) :]
+    top = max(ln.size for ln in zone)
+    first = min((ln for ln in zone if round(ln.size * 2) == round(top * 2)), key=lambda ln: (ln.y0, ln.x0))
+    same = sorted(
+        (ln for ln in lines if round(ln.size * 2) == round(first.size * 2) and ln.bold == first.bold),
+        key=lambda ln: ln.order,
+    )
+    return same[same.index(first) :]
 
 
 def front_matter_lines(pages: Sequence[PageText], skip: set[int]) -> set[int]:
