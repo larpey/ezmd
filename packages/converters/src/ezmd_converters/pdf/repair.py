@@ -85,8 +85,8 @@ def assess(pdf: pikepdf.Pdf, warned: frozenset[int] = frozenset()) -> RepairAsse
     about (a cut stream keeps its object but loses data; its number appears in the warning)."""
     content_pages: list[int] = []
     figure_pages: list[int] = []
-    damaged_fonts: set[tuple[int, int]] = set()
-    missing_fonts = 0
+    damaged_fonts: set[object] = set()
+    missing_fonts: set[object] = set()
     budget = _MAX_RESOURCES
     for number, page in enumerate(pdf.pages, start=1):
         try:
@@ -97,23 +97,26 @@ def assess(pdf: pikepdf.Pdf, warned: frozenset[int] = frozenset()) -> RepairAsse
         if "/Contents" in entries and _content_gone(entries["/Contents"], warned):
             content_pages.append(number)
         figures = False
-        for kind, name, obj in _resources(entries.get("/Resources"), depth=0, seen=set()):
+        resources = entries.get("/Resources")
+        for kind, owner, name, obj in _resources(resources, depth=0, seen=set()):
             budget -= 1
             if budget <= 0:
                 break
+            # A resource dictionary shared by several pages is one dictionary: count its entries once.
+            key = (owner if owner is not None else ("page", number), name)
             if kind == "/XObject":
                 figures = figures or _gone(obj, warned)
             elif kind == "/Font":
                 if _gone(obj, warned):
-                    missing_fonts += 1
+                    missing_fonts.add(key)
                 elif isinstance(obj, Dictionary) and _font_damaged(obj, warned):
-                    damaged_fonts.add(obj.objgen if obj.is_indirect else (-number, hash(name)))
+                    damaged_fonts.add(obj.objgen if obj.is_indirect else key)
         if figures:
             figure_pages.append(number)
     return RepairAssessment(
         pages_content_damaged=tuple(content_pages),
         pages_figures_missing=tuple(figure_pages),
-        fonts_damaged=len(damaged_fonts) + missing_fonts,
+        fonts_damaged=len(damaged_fonts) + len(missing_fonts),
     )
 
 
@@ -149,16 +152,22 @@ def _content_gone(contents: object, warned: frozenset[int]) -> bool:
     return _gone(contents, warned)
 
 
-def _resources(res: object, *, depth: int, seen: set[tuple[int, int]]) -> Iterator[tuple[str, str, object]]:
-    """(category, name, object) for every font and XObject a resource dictionary declares, following form
-    XObjects' own resources a few levels down."""
+def _resources(
+    res: object, *, depth: int, seen: set[tuple[int, int]]
+) -> Iterator[tuple[str, tuple[int, int] | None, str, object]]:
+    """(category, owner, name, object) for every font and XObject a resource dictionary declares, following form
+    XObjects' own resources a few levels down. `owner` is the object number of the /Font or /XObject dictionary
+    holding the entry when that dictionary is indirect (and so may be shared between pages), else None."""
     if not isinstance(res, Dictionary):
         return
     groups = _entries(res)
     for category in ("/Font", "/XObject"):
         group = groups.get(category)
-        for name, obj in _entries(group).items() if isinstance(group, Dictionary) else ():
-            yield category, name, obj
+        if not isinstance(group, Dictionary):
+            continue
+        owner = group.objgen if group.is_indirect else (res.objgen if res.is_indirect else None)
+        for name, obj in _entries(group).items():
+            yield category, owner, name, obj
             if category == "/XObject" and depth < _FORM_DEPTH and isinstance(obj, Stream):
                 og = obj.objgen if obj.is_indirect else None
                 if og is not None and og in seen:
@@ -184,7 +193,14 @@ _FONT_PROGRAMS = ("/FontFile", "/FontFile2", "/FontFile3")
 absent or incomplete (LaTeX ligatures and math symbols), so losing it can cost text even with a map present."""
 
 
-def _font_damaged(font: Dictionary, warned: frozenset[int]) -> bool:
+_FONT_DEPTH = 2
+"""A Type0 font's /DescendantFonts hold CIDFonts, which have no descendants of their own; anything deeper is a
+cycle in a hostile or broken file and is not followed."""
+
+
+def _font_damaged(font: Dictionary, warned: frozenset[int], depth: int = 0) -> bool:
+    if depth >= _FONT_DEPTH:
+        return False
     try:
         entries = dict(font.items())
     except _READ_ERRORS:
@@ -214,7 +230,8 @@ def _font_damaged(font: Dictionary, warned: frozenset[int]) -> bool:
     if isinstance(descendants, Array):
         try:
             return any(
-                _gone(d, warned) or (isinstance(d, Dictionary) and _font_damaged(d, warned)) for d in descendants
+                _gone(d, warned) or (isinstance(d, Dictionary) and _font_damaged(d, warned, depth + 1))
+                for d in descendants
             )
         except _READ_ERRORS:
             return True

@@ -33,6 +33,24 @@ trailer << /Root 1 0 R >>
 """
 
 
+# Two pages share one indirect resource dictionary whose only font is gone, and page 1 also uses a Type0 font whose
+# /DescendantFonts array points back at the font itself (a cycle qpdf preserves).
+_SHARED = b"""%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Contents 6 0 R /Resources 12 0 R >> endobj
+4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Contents 6 0 R /Resources 12 0 R >> endobj
+6 0 obj << /Length 44 >>
+stream
+BT /F1 12 Tf 20 100 Td (Hello) Tj ET
+endstream
+endobj
+12 0 obj << /Font << /F1 97 0 R /F2 20 0 R >> >> endobj
+20 0 obj << /Type /Font /Subtype /Type0 /BaseFont /Loop /Encoding /Identity-H /DescendantFonts [20 0 R] >> endobj
+trailer << /Root 1 0 R >>
+"""
+
+
 def _open(tmp_path: Path, data: bytes) -> pikepdf.Pdf:
     path = tmp_path / "damaged.pdf"
     path.write_bytes(data)
@@ -55,6 +73,13 @@ def test_blank_page_and_intact_font_are_not_losses(tmp_path: Path) -> None:
     assert 4 not in found.pages_content_damaged  # no /Contents is a blank page, not a lost stream
     assert 1 not in found.pages_content_damaged
     assert 1 not in found.pages_figures_missing
+
+
+def test_shared_resources_count_a_missing_font_once_and_a_font_cycle_ends(tmp_path: Path) -> None:
+    with _open(tmp_path, _SHARED) as pdf:
+        found = assess(pdf)
+    assert found.fonts_damaged == 1  # /F1 is gone once, not once per page; the self-referencing /F2 is intact
+    assert found.pages_content_damaged == ()
 
 
 def test_cut_stream_named_by_qpdf_counts_as_damaged(tmp_path: Path) -> None:
