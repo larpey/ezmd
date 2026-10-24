@@ -16,7 +16,8 @@ All notable changes are generated from Conventional Commits. This project uses s
   and an `arxiv-damaged` corpus (`tools/bench/damage.py`: scanned, partly scanned and truncated copies of ten
   papers) that checks whether a tool says what it lost and which pages. The damaged set found ezmd's first
   silent loss, a repaired truncated file (#23). First results in `bench/results/2026-10-24/` and
-  `docs/benchmarks.md`.
+  `docs/benchmarks.md`. `run --corpus arxiv-damaged --split heldout` damages the 79 held-out papers the same
+  way; the #23 fix is confirmed there (`bench/results/2026-10-24-heldout/`: 0 of 237 silent, 0.1.0 1 of 237).
 
 ### Changed
 - `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the

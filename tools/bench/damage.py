@@ -22,15 +22,15 @@ import io
 from pathlib import Path
 from typing import Any
 
-from tools.bench.corpora import arxiv_root
+from tools.bench.corpora import DAMAGED_SAMPLE, arxiv_root
+
+__all__ = ["DAMAGED_SAMPLE", "KINDS", "build", "damaged_dir", "damaged_pages", "textless_pages"]
 
 KINDS = ("scan", "pages", "trunc")
 SCAN_DPI = 150
 PAGES_SHARE = 0.2
 PAGES_START = 1 / 3
 TRUNC_SHARE = 0.8
-DAMAGED_SAMPLE = 10
-"""Papers of the arXiv sample that get damaged copies (every kind for each)."""
 
 
 def damaged_dir() -> Path:

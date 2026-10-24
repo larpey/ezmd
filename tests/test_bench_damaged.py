@@ -212,3 +212,32 @@ def test_damaged_scorer_separates_declared_silent_and_loud(tmp_path: Path, monke
 
 def _run_kept(run: Path) -> str:
     return (run / "ezmd-main" / "paper~pages.md").read_text(encoding="utf-8")
+
+
+def test_damaged_heldout_is_the_held_out_papers(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tools.bench import corpora
+    from tools.bench.corpora import Doc
+
+    monkeypatch.setenv("EZMD_BENCH_CACHE", str(tmp_path / "cache"))
+    papers = [Doc("arxiv", f"p{i:02d}", tmp_path / f"p{i:02d}.pdf", "c", {"title": f"t{i}"}) for i in range(40)]
+
+    def arxiv(sample: int | None = 30) -> list[Doc]:
+        return corpora._sample(papers, sample)
+
+    monkeypatch.setattr(corpora, "arxiv", arxiv)
+    monkeypatch.setitem(corpora.CORPORA, "arxiv", arxiv)
+
+    def build(kind: str, src: Path, dest: Path) -> dict[str, object]:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        return {"kind": kind, "damaged_pages": [], "pages": 3, "textless_pages": []}
+
+    monkeypatch.setattr(damage, "build", build)
+    default = corpora.arxiv_damaged()
+    assert len(default) == 3 * damage.DAMAGED_SAMPLE
+    default_papers = {d.meta["paper"] for d in default}
+    assert default_papers <= {d.id for d in corpora.arxiv()}
+    held = corpora.heldout("arxiv-damaged")
+    held_papers = {d.meta["paper"] for d in held}
+    assert held_papers == {d.id for d in corpora.heldout("arxiv")} and len(held) == 3 * len(held_papers)
+    assert not held_papers & default_papers and len(held_papers) == 10
+    assert {d.id for d in held} == {f"{p}~{k}" for p in held_papers for k in damage.KINDS}
