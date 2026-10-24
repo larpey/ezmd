@@ -18,6 +18,16 @@ Each cell: primary metric [95% CI] (n). fail = error/timeout/crash share of atte
   were not attempted. Trafilatura and pandoc do not read PDFs.
 - Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.
 
+## QA model
+
+- `openai/gpt-oss-20b` (MXFP4 GGUF) served by LM Studio on the same GPU, loaded with a 32,768-token context,
+  one request at a time, temperature 0, seed 20261013, reasoning effort low. Documents are cut to 24,000 o200k
+  tokens before they are sent (no paper in the sample needed cutting except through MinerU's embedded images,
+  which are replaced by a placeholder first).
+- 148 questions over the 30 papers (five each; one paper yielded three that passed the grounding check).
+  Questions are cached under the corpus and shared by every tool row, so every tool answered the same questions.
+- The same model grades. UNKNOWN and empty answers are wrong without a model call.
+
 ## What the metrics mean
 
 - Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,
@@ -121,6 +131,27 @@ ezmd-main-compact: **ties** vs docling (gap -0.100; paired diff -0.100 [-0.200, 
 
 ezmd-main-rag: **ties** vs docling (gap -0.100; paired diff -0.100 [-0.200, +0.000] over 30 shared).
 
+## arXiv papers, source recall (share of the LaTeX source's words kept; independent witness)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| ezmd-main* | 0.947 [0.915, 0.974] | 27 | 0.0% | 30/30 | 1.18 | 4.28 | 235 | 348 |
+| ezmd-main-rag* | 0.946 [0.915, 0.973] | 27 | 0.0% | 30/30 | 1.22 | 4.42 | 235 | 351 |
+| ezmd* | 0.946 [0.914, 0.973] | 27 | 0.0% | 30/30 | 1.03 | 3.79 | 236 | 356 |
+| mineru | 0.944 [0.912, 0.971] | 27 | 0.0% | 30/30 | 15.60 | 78.85 | 4775 | 6770 |
+| docling | 0.943 [0.911, 0.970] | 27 | 0.0% | 30/30 | 6.74 | 21.85 | 3042 | 5040 |
+| pymupdf4llm | 0.935 [0.903, 0.963] | 27 | 0.0% | 30/30 | 4.84 | 25.68 | 480 | 659 |
+| ezmd-main-compact* | 0.707 [0.618, 0.795] | 27 | 0.0% | 30/30 | 1.13 | 3.90 | 232 | 349 |
+| markitdown | 0.616 [0.517, 0.710] | 27 | 0.0% | 30/30 | 1.69 | 16.20 | 176 | 899 |
+
+ezmd: **ties** vs mineru (gap +0.002; paired diff +0.002 [-0.001, +0.006] over 27 shared).
+
+ezmd-main: **ties** vs mineru (gap +0.003; paired diff +0.003 [-0.001, +0.007] over 27 shared).
+
+ezmd-main-compact: **trails** vs mineru (gap -0.236; paired diff -0.236 [-0.331, -0.147] over 27 shared).
+
+ezmd-main-rag: **ties** vs mineru (gap +0.002; paired diff +0.002 [-0.002, +0.007] over 27 shared).
+
 ## arXiv papers, text recall (share of the PDF text layer's words kept)
 
 | tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
@@ -162,4 +193,120 @@ ezmd-main: **trails** vs docling (gap +227.987; paired diff +227.987 [+160.075, 
 ezmd-main-compact: **leads** vs docling (gap -203.007; paired diff -203.007 [-331.289, -84.718] over 30 shared).
 
 ezmd-main-rag: **trails** vs docling (gap +433.057; paired diff +433.057 [+343.718, +532.525] over 30 shared).
+
+## Damaged arXiv papers, pages named by the pages_without_text warning (Jaccard; ezmd only)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| ezmd* | 1.000 [1.000, 1.000] | 20 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| ezmd-main* | 1.000 [1.000, 1.000] | 20 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| docling | n/a | 0 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| markitdown | n/a | 0 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+| mineru | n/a | 0 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| pymupdf4llm | n/a | 0 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+
+## Damaged arXiv papers, a block of image-only pages: silent loss (lower is better)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| ezmd* | 0.000 [0.000, 0.000] | 10 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| ezmd-main* | 0.000 [0.000, 0.000] | 10 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| mineru | 0.100 [0.000, 0.300] | 10 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| docling | 0.300 [0.000, 0.600] | 10 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| markitdown | 1.000 [1.000, 1.000] | 10 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+| pymupdf4llm | 1.000 [1.000, 1.000] | 10 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+
+ezmd: **ties** vs mineru (gap -0.100; paired diff -0.100 [-0.300, +0.000] over 10 shared).
+
+ezmd-main: **ties** vs mineru (gap -0.100; paired diff -0.100 [-0.300, +0.000] over 10 shared).
+
+## Damaged arXiv papers, a block of image-only pages: text recall of the intact paper
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| mineru | 0.967 [0.959, 0.975] | 10 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| docling | 0.962 [0.950, 0.972] | 10 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| ezmd-main* | 0.767 [0.737, 0.795] | 10 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| ezmd* | 0.765 [0.736, 0.793] | 10 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| pymupdf4llm | 0.752 [0.726, 0.778] | 10 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+| markitdown | 0.488 [0.346, 0.632] | 10 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+
+ezmd: **trails** vs mineru (gap -0.202; paired diff -0.202 [-0.230, -0.173] over 10 shared).
+
+ezmd-main: **trails** vs mineru (gap -0.200; paired diff -0.200 [-0.229, -0.171] over 10 shared).
+
+## Damaged arXiv papers, scanned (every page an image): silent loss (lower is better)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| ezmd* | 0.000 [0.000, 0.000] | 10 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| ezmd-main* | 0.000 [0.000, 0.000] | 10 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| mineru | 0.100 [0.000, 0.300] | 10 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| docling | 0.800 [0.500, 1.000] | 10 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| markitdown | 1.000 [1.000, 1.000] | 10 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+| pymupdf4llm | 1.000 [1.000, 1.000] | 10 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+
+ezmd: **ties** vs mineru (gap -0.100; paired diff -0.100 [-0.300, +0.000] over 10 shared).
+
+ezmd-main: **ties** vs mineru (gap -0.100; paired diff -0.100 [-0.300, +0.000] over 10 shared).
+
+## Damaged arXiv papers, scanned: text recall of the intact paper (OCR recovers it)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| mineru | 0.970 [0.961, 0.978] | 10 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| docling | 0.917 [0.893, 0.940] | 10 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| ezmd* | 0.004 [0.003, 0.005] | 10 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| ezmd-main* | 0.004 [0.003, 0.005] | 10 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| markitdown | 0.000 [0.000, 0.000] | 10 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+| pymupdf4llm | 0.000 [0.000, 0.000] | 10 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+
+ezmd: **trails** vs mineru (gap -0.966; paired diff -0.966 [-0.974, -0.958] over 10 shared).
+
+ezmd-main: **trails** vs mineru (gap -0.966; paired diff -0.966 [-0.974, -0.958] over 10 shared).
+
+## Damaged arXiv papers, silent loss, all kinds (lost over 5%, no warning; lower is better)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| ezmd* | 0.033 [0.000, 0.100] | 30 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| ezmd-main* | 0.033 [0.000, 0.100] | 30 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| mineru | 0.067 [0.000, 0.167] | 30 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| docling | 0.400 [0.233, 0.568] | 30 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| markitdown | 0.667 [0.500, 0.833] | 30 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+| pymupdf4llm | 0.667 [0.500, 0.833] | 30 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+
+ezmd: **ties** vs mineru (gap -0.033; paired diff -0.033 [-0.167, +0.067] over 30 shared).
+
+ezmd-main: **ties** vs mineru (gap -0.033; paired diff -0.033 [-0.167, +0.067] over 30 shared).
+
+## Damaged arXiv papers, file truncated at 80%: silent loss (lower is better)
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| markitdown | 0.000 [0.000, 0.000] | 10 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+| mineru | 0.000 [0.000, 0.000] | 10 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| pymupdf4llm | 0.000 [0.000, 0.000] | 10 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+| docling | 0.100 [0.000, 0.300] | 10 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| ezmd* | 0.100 [0.000, 0.300] | 10 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| ezmd-main* | 0.100 [0.000, 0.300] | 10 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+
+ezmd: **ties** vs markitdown (gap +0.100; paired diff +0.100 [+0.000, +0.300] over 10 shared).
+
+ezmd-main: **ties** vs markitdown (gap +0.100; paired diff +0.100 [+0.000, +0.300] over 10 shared).
+
+## Damaged arXiv papers, file truncated at 80%: text recall of the intact paper
+
+| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |
+|---|---|---|---|---|---|---|---|---|
+| pymupdf4llm | 0.585 [0.291, 0.878] | 10 | 13.3% | 30/30 | 1.80 | 6.61 | 364 | 583 |
+| ezmd-main* | 0.486 [0.195, 0.783] | 10 | 16.7% | 30/30 | 0.39 | 1.33 | 225 | 243 |
+| ezmd* | 0.486 [0.195, 0.783] | 10 | 16.7% | 30/30 | 0.20 | 1.23 | 225 | 244 |
+| docling | 0.480 [0.193, 0.772] | 10 | 16.7% | 30/30 | 8.13 | 59.78 | 3222 | 4649 |
+| mineru | 0.096 [0.000, 0.287] | 10 | 30.0% | 30/30 | 14.73 | 67.89 | 4300 | 6704 |
+| markitdown | 0.000 [0.000, 0.000] | 10 | 33.3% | 30/30 | 0.16 | 1.82 | 178 | 230 |
+
+ezmd: **ties** vs pymupdf4llm (gap -0.098; paired diff -0.098 [-0.301, +0.014] over 10 shared).
+
+ezmd-main: **ties** vs pymupdf4llm (gap -0.098; paired diff -0.098 [-0.301, +0.014] over 10 shared).
 

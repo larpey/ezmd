@@ -29,4 +29,14 @@ A free hosted instance with abuse protection, rate limits, and published retenti
 
 Features for specific professions and integrations with the tools they use, ordered by demand.
 
+## Maybe: a native core
+
+A Rust core for the text-layer engine (word reconstruction, heading planning, rendering) with Python bindings,
+so the Python package keeps working and a single static binary, a WebAssembly build and embedding in other
+languages become possible. Not a speed project: the parsing already happens in C++ (pdfium), and a whole paper
+converts in about a second on a CPU. It starts when one of these happens: users ask for a CLI without a Python
+install, the API needs thousands of documents a minute and the per-process cost dominates, or a profile shows
+the Python reconstruction code is the bottleneck on large documents. Until then the converter fixes the
+[benchmark](benchmarks.md) points at come first.
+
 Dates are not promised. The [changelog](changelog.md) records what has shipped.

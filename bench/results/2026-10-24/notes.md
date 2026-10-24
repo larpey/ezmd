@@ -40,3 +40,21 @@
   (UNKNOWN when the text does not contain the answer) and graded by it against the reference answer. A failed
   conversion answers UNKNOWN to everything. Correct answers per 10k tokens divides the correct count by the
   output's token count.
+
+## Later the same day: independent witness and damaged papers
+
+- `arxiv-source-recall` was added after the first run and scored over the same outputs. The LaTeX sources came
+  from `https://arxiv.org/e-print/<id>` (`fetch --only arxiv-source`); 9 of the 109 papers (3 of the 30 in the
+  sample: 2309.11883, 2601.09140, 2604.27899) were submitted as PDF only and have no source. The raw pdfium text
+  layer scores 0.945 against the source. Against it ezmd main scores 0.947, ezmd 0.1.0 and rag 0.946, MinerU 0.944,
+  Docling 0.943, pymupdf4llm 0.935, compact 0.707, MarkItDown 0.616; paired, ezmd main is +0.004 [+0.002, +0.006]
+  over Docling, +0.003 [-0.001, +0.007] over MinerU and +0.012 [+0.005, +0.019] over pymupdf4llm. Link targets
+  and DOIs are stripped from the source witness: the first version counted them and credited the full profile,
+  which writes URLs out, with words that never print.
+- `arxiv-damaged` (`tools/bench/damage.py`, ten papers of the sample, seeded; scan / pages / trunc) ran with
+  `--timeout 900` for every tool but Marker and Unstructured (Docker off). The game client was closed partway
+  through this run, so its timings are mixed and not reported. ezmd's one silent loss is `2402.18566~trunc`:
+  QPDF rebuilt the cross-reference table, pdfium read all 15 pages, 9% of the words (the tail of one content
+  stream) were gone and no warning said so; issue #23. ezmd's page accuracy was first scored 0.81 on
+  `2604.27899~pages` because that paper has five pages with no text of its own (full-page figures) that the warning
+  rightly lists; the scorer now expects those pages, and scores 1.00.

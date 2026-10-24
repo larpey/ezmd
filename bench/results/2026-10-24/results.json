@@ -35,6 +35,42 @@
    ],
    "documents": 30,
    "sample": null
+  },
+  "arxiv-damaged": {
+   "doc_ids": [
+    "2309_02493~scan",
+    "2309_02493~pages",
+    "2309_02493~trunc",
+    "2402_18566~scan",
+    "2402_18566~pages",
+    "2402_18566~trunc",
+    "2409_12245~scan",
+    "2409_12245~pages",
+    "2409_12245~trunc",
+    "2511_10456~scan",
+    "2511_10456~pages",
+    "2511_10456~trunc",
+    "2601_01904~scan",
+    "2601_01904~pages",
+    "2601_01904~trunc",
+    "2601_09140~scan",
+    "2601_09140~pages",
+    "2601_09140~trunc",
+    "2604_22634~scan",
+    "2604_22634~pages",
+    "2604_22634~trunc",
+    "2604_27899~scan",
+    "2604_27899~pages",
+    "2604_27899~trunc",
+    "2605_12617~scan",
+    "2605_12617~pages",
+    "2605_12617~trunc",
+    "2608_21964~scan",
+    "2608_21964~pages",
+    "2608_21964~trunc"
+   ],
+   "documents": 30,
+   "sample": null
   }
  },
  "date": "2026-10-24",
@@ -43,8 +79,17 @@
   "arxiv-outline-recall": true,
   "arxiv-qa": true,
   "arxiv-silent-loss": false,
+  "arxiv-source-recall": true,
   "arxiv-text-recall": true,
-  "arxiv-tokens-per-page": false
+  "arxiv-tokens-per-page": false,
+  "damaged-page-accuracy": true,
+  "damaged-pages-silent-loss": false,
+  "damaged-pages-text-recall": true,
+  "damaged-scan-silent-loss": false,
+  "damaged-scan-text-recall": true,
+  "damaged-silent-loss": false,
+  "damaged-trunc-silent-loss": false,
+  "damaged-trunc-text-recall": true
  },
  "hardware": {
   "cpu": "AMD Ryzen 9 7900X 12-Core Processor",
@@ -57,7 +102,7 @@
   "python": "3.12.10",
   "ram_gb": 95.1
  },
- "notes": "## Run conditions\n\n- arXiv corpus only (`bench/CORPORA.md`): the seeded 30 of 109 whole papers, seed 20261013; ids in\n  `results.json`. The other corpora were not rerun; their 2026-10-13 numbers stand.\n- `ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this branch at 7a13bd5 (main at 3c8bdde, the\n  0.1.1 release plus the unreleased text-layer PDF fixes of PR #19), wheels built by `install` (`local = true`),\n  under the `full`, `compact` and `rag` profiles. `ezmd` is the published 0.1.0 wheel from the 2026-10-13\n  baseline's venv; its PDF code is the one 0.1.1 shipped.\n- The same machine as the 2026-10-13 baseline. A game client was open and idle for the whole run (about 8.5 GB\n  of VRAM and a quarter of the GPU), so every timing is shared with it; speed and memory are indicative only.\n- Docker Desktop was not running, so Marker (its vLLM backend is a container) and Unstructured (official image)\n  were not attempted. Trafilatura and pandoc do not read PDFs.\n- Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.\n\n## What the metrics mean\n\n- Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,\n  NFKC-folded) present in the output. Running headers and footers are part of the text layer, so a tool that\n  drops them on purpose gives up a little recall here.\n- Silent loss: the document lost more than 5% of those words and the tool raised no warning of a kind that\n  means content was dropped, cut or not understood (`tools/bench/scoring/arxiv.py`, LOSS_KINDS). ezmd's\n  always-on notices (removed running headers, hidden elements, engine fallback) do not count as a warning; the\n  competitors have no warning channel at all. A failed conversion is loud, not silent. Lower is better.\n- Outline recall: share of the PDF's bookmarks found as a heading in the output, numbering ignored, over the\n  papers with at least three bookmarks.\n- Tokens per page: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer) over the\n  PDF's page count. Lower is better.\n- Answer accuracy: five questions per paper written by a local model from the text layer, each backed by a\n  verbatim quote that was checked against the text layer, answered from each tool's Markdown by the same model\n  (UNKNOWN when the text does not contain the answer) and graded by it against the reference answer. A failed\n  conversion answers UNKNOWN to everything. Correct answers per 10k tokens divides the correct count by the\n  output's token count.\n",
+ "notes": "## Run conditions\n\n- arXiv corpus only (`bench/CORPORA.md`): the seeded 30 of 109 whole papers, seed 20261013; ids in\n  `results.json`. The other corpora were not rerun; their 2026-10-13 numbers stand.\n- `ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this branch at 7a13bd5 (main at 3c8bdde, the\n  0.1.1 release plus the unreleased text-layer PDF fixes of PR #19), wheels built by `install` (`local = true`),\n  under the `full`, `compact` and `rag` profiles. `ezmd` is the published 0.1.0 wheel from the 2026-10-13\n  baseline's venv; its PDF code is the one 0.1.1 shipped.\n- The same machine as the 2026-10-13 baseline. A game client was open and idle for the whole run (about 8.5 GB\n  of VRAM and a quarter of the GPU), so every timing is shared with it; speed and memory are indicative only.\n- Docker Desktop was not running, so Marker (its vLLM backend is a container) and Unstructured (official image)\n  were not attempted. Trafilatura and pandoc do not read PDFs.\n- Per-document timeout 300 s. Model loading and warm-up are excluded from s/doc.\n\n## QA model\n\n- `openai/gpt-oss-20b` (MXFP4 GGUF) served by LM Studio on the same GPU, loaded with a 32,768-token context,\n  one request at a time, temperature 0, seed 20261013, reasoning effort low. Documents are cut to 24,000 o200k\n  tokens before they are sent (no paper in the sample needed cutting except through MinerU's embedded images,\n  which are replaced by a placeholder first).\n- 148 questions over the 30 papers (five each; one paper yielded three that passed the grounding check).\n  Questions are cached under the corpus and shared by every tool row, so every tool answered the same questions.\n- The same model grades. UNKNOWN and empty answers are wrong without a model call.\n\n## What the metrics mean\n\n- Text recall: share of the PDF text layer's word occurrences (pypdfium2, every page, 3+ alphanumerics,\n  NFKC-folded) present in the output. Running headers and footers are part of the text layer, so a tool that\n  drops them on purpose gives up a little recall here.\n- Silent loss: the document lost more than 5% of those words and the tool raised no warning of a kind that\n  means content was dropped, cut or not understood (`tools/bench/scoring/arxiv.py`, LOSS_KINDS). ezmd's\n  always-on notices (removed running headers, hidden elements, engine fallback) do not count as a warning; the\n  competitors have no warning channel at all. A failed conversion is loud, not silent. Lower is better.\n- Outline recall: share of the PDF's bookmarks found as a heading in the output, numbering ignored, over the\n  papers with at least three bookmarks.\n- Tokens per page: o200k_base tokens of the output (ezmd's frontmatter removed, as in every scorer) over the\n  PDF's page count. Lower is better.\n- Answer accuracy: five questions per paper written by a local model from the text layer, each backed by a\n  verbatim quote that was checked against the text layer, answered from each tool's Markdown by the same model\n  (UNKNOWN when the text does not contain the answer) and graded by it against the reference answer. A failed\n  conversion answers UNKNOWN to everything. Correct answers per 10k tokens divides the correct count by the\n  output's token count.\n",
  "schema": 1,
  "scorecard": {
   "arxiv-answers-per-10k-tokens": {
@@ -676,6 +721,160 @@
     "value": 0.1667
    }
   },
+  "arxiv-source-recall": {
+   "docling": {
+    "ci": [
+     0.9115,
+     0.9698
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 3042.2,
+     "median_s": 6.735,
+     "p95_s": 21.852,
+     "peak_rss_mb": 5039.5,
+     "total": 30
+    },
+    "value": 0.9426
+   },
+   "ezmd": {
+    "ci": [
+     0.9142,
+     0.9734
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 236.4,
+     "median_s": 1.035,
+     "p95_s": 3.786,
+     "peak_rss_mb": 356.4,
+     "total": 30
+    },
+    "value": 0.9457
+   },
+   "ezmd-main": {
+    "ci": [
+     0.9153,
+     0.9737
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 234.8,
+     "median_s": 1.177,
+     "p95_s": 4.283,
+     "peak_rss_mb": 348.0,
+     "total": 30
+    },
+    "value": 0.9465
+   },
+   "ezmd-main-compact": {
+    "ci": [
+     0.6178,
+     0.7946
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 232.4,
+     "median_s": 1.134,
+     "p95_s": 3.901,
+     "peak_rss_mb": 349.0,
+     "total": 30
+    },
+    "value": 0.7073
+   },
+   "ezmd-main-rag": {
+    "ci": [
+     0.9146,
+     0.9732
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 235.1,
+     "median_s": 1.22,
+     "p95_s": 4.417,
+     "peak_rss_mb": 350.8,
+     "total": 30
+    },
+    "value": 0.9459
+   },
+   "markitdown": {
+    "ci": [
+     0.5172,
+     0.7095
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 175.9,
+     "median_s": 1.69,
+     "p95_s": 16.202,
+     "peak_rss_mb": 899.4,
+     "total": 30
+    },
+    "value": 0.6164
+   },
+   "mineru": {
+    "ci": [
+     0.9122,
+     0.9711
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 4775.0,
+     "median_s": 15.604,
+     "p95_s": 78.852,
+     "peak_rss_mb": 6769.9,
+     "total": 30
+    },
+    "value": 0.9436
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.9032,
+     0.9632
+    ],
+    "n": 27,
+    "speed": {
+     "attempted": 30,
+     "failed": 0,
+     "failure_classes": {},
+     "failure_rate": 0.0,
+     "median_rss_mb": 480.0,
+     "median_s": 4.838,
+     "p95_s": 25.676,
+     "peak_rss_mb": 658.7,
+     "total": 30
+    },
+    "value": 0.935
+   }
+  },
   "arxiv-text-recall": {
    "docling": {
     "ci": [
@@ -983,6 +1182,1026 @@
     },
     "value": 1054.9533
    }
+  },
+  "damaged-page-accuracy": {
+   "docling": {
+    "ci": null,
+    "n": 0,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": null
+   },
+   "ezmd": {
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 20,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 1.0
+   },
+   "ezmd-main": {
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 20,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 1.0
+   },
+   "markitdown": {
+    "ci": null,
+    "n": 0,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": null
+   },
+   "mineru": {
+    "ci": null,
+    "n": 0,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": null
+   },
+   "pymupdf4llm": {
+    "ci": null,
+    "n": 0,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": null
+   }
+  },
+  "damaged-pages-silent-loss": {
+   "docling": {
+    "ci": [
+     0.0,
+     0.6
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.3
+   },
+   "ezmd": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "ezmd-main": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "markitdown": {
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 1.0
+   },
+   "mineru": {
+    "ci": [
+     0.0,
+     0.3
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.1
+   },
+   "pymupdf4llm": {
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 1.0
+   }
+  },
+  "damaged-pages-text-recall": {
+   "docling": {
+    "ci": [
+     0.9502,
+     0.9723
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.9619
+   },
+   "ezmd": {
+    "ci": [
+     0.7355,
+     0.7932
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.7652
+   },
+   "ezmd-main": {
+    "ci": [
+     0.7372,
+     0.7951
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.7667
+   },
+   "markitdown": {
+    "ci": [
+     0.3457,
+     0.632
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 0.4883
+   },
+   "mineru": {
+    "ci": [
+     0.959,
+     0.9752
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.9669
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.7263,
+     0.778
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 0.7517
+   }
+  },
+  "damaged-scan-silent-loss": {
+   "docling": {
+    "ci": [
+     0.5,
+     1.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.8
+   },
+   "ezmd": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "ezmd-main": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "markitdown": {
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 1.0
+   },
+   "mineru": {
+    "ci": [
+     0.0,
+     0.3
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.1
+   },
+   "pymupdf4llm": {
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 1.0
+   }
+  },
+  "damaged-scan-text-recall": {
+   "docling": {
+    "ci": [
+     0.8929,
+     0.9402
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.9174
+   },
+   "ezmd": {
+    "ci": [
+     0.0032,
+     0.0048
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.004
+   },
+   "ezmd-main": {
+    "ci": [
+     0.0032,
+     0.0048
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.004
+   },
+   "markitdown": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "mineru": {
+    "ci": [
+     0.9613,
+     0.9781
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.9695
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 0.0
+   }
+  },
+  "damaged-silent-loss": {
+   "docling": {
+    "ci": [
+     0.2333,
+     0.5675
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.4
+   },
+   "ezmd": {
+    "ci": [
+     0.0,
+     0.1
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.0333
+   },
+   "ezmd-main": {
+    "ci": [
+     0.0,
+     0.1
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.0333
+   },
+   "markitdown": {
+    "ci": [
+     0.5,
+     0.8333
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 0.6667
+   },
+   "mineru": {
+    "ci": [
+     0.0,
+     0.1667
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.0667
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.5,
+     0.8333
+    ],
+    "n": 30,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 0.6667
+   }
+  },
+  "damaged-trunc-silent-loss": {
+   "docling": {
+    "ci": [
+     0.0,
+     0.3
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.1
+   },
+   "ezmd": {
+    "ci": [
+     0.0,
+     0.3
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.1
+   },
+   "ezmd-main": {
+    "ci": [
+     0.0,
+     0.3
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.1
+   },
+   "markitdown": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "mineru": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 0.0
+   }
+  },
+  "damaged-trunc-text-recall": {
+   "docling": {
+    "ci": [
+     0.1932,
+     0.7723
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 3221.8,
+     "median_s": 8.132,
+     "p95_s": 59.779,
+     "peak_rss_mb": 4648.7,
+     "total": 30
+    },
+    "value": 0.4797
+   },
+   "ezmd": {
+    "ci": [
+     0.1953,
+     0.7831
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.3,
+     "median_s": 0.196,
+     "p95_s": 1.226,
+     "peak_rss_mb": 244.4,
+     "total": 30
+    },
+    "value": 0.4862
+   },
+   "ezmd-main": {
+    "ci": [
+     0.1953,
+     0.783
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 5,
+     "failure_classes": {
+      "error:ConversionError": 5
+     },
+     "failure_rate": 0.1667,
+     "median_rss_mb": 225.1,
+     "median_s": 0.39,
+     "p95_s": 1.334,
+     "peak_rss_mb": 243.3,
+     "total": 30
+    },
+    "value": 0.4863
+   },
+   "markitdown": {
+    "ci": [
+     0.0,
+     0.0
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 10,
+     "failure_classes": {
+      "error:FileConversionException": 10
+     },
+     "failure_rate": 0.3333,
+     "median_rss_mb": 177.8,
+     "median_s": 0.164,
+     "p95_s": 1.822,
+     "peak_rss_mb": 230.1,
+     "total": 30
+    },
+    "value": 0.0
+   },
+   "mineru": {
+    "ci": [
+     0.0,
+     0.2866
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 9,
+     "failure_classes": {
+      "error:PdfiumError": 9
+     },
+     "failure_rate": 0.3,
+     "median_rss_mb": 4299.9,
+     "median_s": 14.727,
+     "p95_s": 67.885,
+     "peak_rss_mb": 6703.6,
+     "total": 30
+    },
+    "value": 0.0955
+   },
+   "pymupdf4llm": {
+    "ci": [
+     0.2915,
+     0.8777
+    ],
+    "n": 10,
+    "speed": {
+     "attempted": 30,
+     "failed": 4,
+     "failure_classes": {
+      "error:FzErrorArgument": 3,
+      "error:IndexError": 1
+     },
+     "failure_rate": 0.1333,
+     "median_rss_mb": 363.9,
+     "median_s": 1.8,
+     "p95_s": 6.612,
+     "peak_rss_mb": 583.0,
+     "total": 30
+    },
+    "value": 0.5845
+   }
   }
  },
  "tools": {
@@ -1100,7 +2319,8 @@
     "docling==2.138.0"
    ],
    "startup_seconds_median": {
-    "arxiv": 37.99
+    "arxiv": 37.99,
+    "arxiv-damaged": 15.18
    },
    "version": "2.138.0"
   },
@@ -1173,7 +2393,8 @@
     "ezmd==0.1.0"
    ],
    "startup_seconds_median": {
-    "arxiv": 1.68
+    "arxiv": 1.68,
+    "arxiv-damaged": 1.55
    },
    "version": "0.1.0"
   },
@@ -1379,7 +2600,8 @@
     "ezmd"
    ],
    "startup_seconds_median": {
-    "arxiv": 1.44
+    "arxiv": 1.44,
+    "arxiv-damaged": 1.56
    },
    "version": "0.1.1"
   },
@@ -1729,7 +2951,8 @@
     "markitdown[all]==0.1.8"
    ],
    "startup_seconds_median": {
-    "arxiv": 1.56
+    "arxiv": 1.56,
+    "arxiv-damaged": 1.67
    },
    "version": "0.1.8"
   },
@@ -1867,7 +3090,8 @@
     "mineru[torch]==4.0.12"
    ],
    "startup_seconds_median": {
-    "arxiv": 19.95
+    "arxiv": 19.95,
+    "arxiv-damaged": 15.86
    },
    "version": "4.0.12"
   },
@@ -1902,7 +3126,8 @@
     "pymupdf4llm==1.28.2"
    ],
    "startup_seconds_median": {
-    "arxiv": 1.35
+    "arxiv": 1.35,
+    "arxiv-damaged": 1.07
    },
    "version": "1.28.2"
   },
@@ -2179,6 +3404,64 @@
     "verdict": "ties"
    }
   },
+  "arxiv-source-recall": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.9436,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.9457,
+    "gap": 0.0021,
+    "paired_ci": [
+     -0.0014,
+     0.0065
+    ],
+    "paired_diff": 0.0021,
+    "paired_n": 27,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.9436,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.9465,
+    "gap": 0.0029,
+    "paired_ci": [
+     -0.0006,
+     0.0072
+    ],
+    "paired_diff": 0.0029,
+    "paired_n": 27,
+    "verdict": "ties"
+   },
+   "ezmd-main-compact": {
+    "best_competitor": "mineru",
+    "best_value": 0.9436,
+    "ezmd": "ezmd-main-compact",
+    "ezmd_value": 0.7073,
+    "gap": -0.2363,
+    "paired_ci": [
+     -0.3306,
+     -0.1466
+    ],
+    "paired_diff": -0.2363,
+    "paired_n": 27,
+    "verdict": "trails"
+   },
+   "ezmd-main-rag": {
+    "best_competitor": "mineru",
+    "best_value": 0.9436,
+    "ezmd": "ezmd-main-rag",
+    "ezmd_value": 0.9459,
+    "gap": 0.0023,
+    "paired_ci": [
+     -0.002,
+     0.0074
+    ],
+    "paired_diff": 0.0023,
+    "paired_n": 27,
+    "verdict": "ties"
+   }
+  },
   "arxiv-text-recall": {
    "ezmd": {
     "best_competitor": "docling",
@@ -2293,6 +3576,220 @@
     "paired_diff": 433.0567,
     "paired_n": 30,
     "verdict": "trails"
+   }
+  },
+  "damaged-page-accuracy": {
+   "ezmd": null,
+   "ezmd-main": null
+  },
+  "damaged-pages-silent-loss": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.1,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.3,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 10,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.1,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.3,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 10,
+    "verdict": "ties"
+   }
+  },
+  "damaged-pages-text-recall": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.9669,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.7652,
+    "gap": -0.2017,
+    "paired_ci": [
+     -0.2302,
+     -0.1726
+    ],
+    "paired_diff": -0.2017,
+    "paired_n": 10,
+    "verdict": "trails"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.9669,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.7667,
+    "gap": -0.2002,
+    "paired_ci": [
+     -0.2287,
+     -0.1712
+    ],
+    "paired_diff": -0.2002,
+    "paired_n": 10,
+    "verdict": "trails"
+   }
+  },
+  "damaged-scan-silent-loss": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.1,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.3,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 10,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.1,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.0,
+    "gap": -0.1,
+    "paired_ci": [
+     -0.3,
+     0.0
+    ],
+    "paired_diff": -0.1,
+    "paired_n": 10,
+    "verdict": "ties"
+   }
+  },
+  "damaged-scan-text-recall": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.9695,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.004,
+    "gap": -0.9655,
+    "paired_ci": [
+     -0.9738,
+     -0.9578
+    ],
+    "paired_diff": -0.9656,
+    "paired_n": 10,
+    "verdict": "trails"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.9695,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.004,
+    "gap": -0.9655,
+    "paired_ci": [
+     -0.9738,
+     -0.9578
+    ],
+    "paired_diff": -0.9656,
+    "paired_n": 10,
+    "verdict": "trails"
+   }
+  },
+  "damaged-silent-loss": {
+   "ezmd": {
+    "best_competitor": "mineru",
+    "best_value": 0.0667,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.0333,
+    "gap": -0.0334,
+    "paired_ci": [
+     -0.1667,
+     0.0667
+    ],
+    "paired_diff": -0.0333,
+    "paired_n": 30,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "mineru",
+    "best_value": 0.0667,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.0333,
+    "gap": -0.0334,
+    "paired_ci": [
+     -0.1667,
+     0.0667
+    ],
+    "paired_diff": -0.0333,
+    "paired_n": 30,
+    "verdict": "ties"
+   }
+  },
+  "damaged-trunc-silent-loss": {
+   "ezmd": {
+    "best_competitor": "markitdown",
+    "best_value": 0.0,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.1,
+    "gap": 0.1,
+    "paired_ci": [
+     0.0,
+     0.3
+    ],
+    "paired_diff": 0.1,
+    "paired_n": 10,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "markitdown",
+    "best_value": 0.0,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.1,
+    "gap": 0.1,
+    "paired_ci": [
+     0.0,
+     0.3
+    ],
+    "paired_diff": 0.1,
+    "paired_n": 10,
+    "verdict": "ties"
+   }
+  },
+  "damaged-trunc-text-recall": {
+   "ezmd": {
+    "best_competitor": "pymupdf4llm",
+    "best_value": 0.5845,
+    "ezmd": "ezmd",
+    "ezmd_value": 0.4862,
+    "gap": -0.0983,
+    "paired_ci": [
+     -0.3011,
+     0.0142
+    ],
+    "paired_diff": -0.0983,
+    "paired_n": 10,
+    "verdict": "ties"
+   },
+   "ezmd-main": {
+    "best_competitor": "pymupdf4llm",
+    "best_value": 0.5845,
+    "ezmd": "ezmd-main",
+    "ezmd_value": 0.4863,
+    "gap": -0.0982,
+    "paired_ci": [
+     -0.3007,
+     0.0136
+    ],
+    "paired_diff": -0.0981,
+    "paired_n": 10,
+    "verdict": "ties"
    }
   }
  }
