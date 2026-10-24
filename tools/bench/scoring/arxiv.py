@@ -230,6 +230,9 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
     lost = rec < 1.0 - LOSS_THRESHOLD
     declared = declared_loss(result, run_dir)
     tokens = count_tokens(md) if ok else None
+    from tools.bench.tokens import cached_count  # exact Claude count when `tokens` has run (cycle-free here)
+
+    claude = cached_count(run_dir, result) if ok else None
     qa = qa_scores(result, run_dir)
     out: dict[str, float | None] = {
         "arxiv-text-recall": round(rec, 4),
@@ -237,6 +240,7 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
         "arxiv-silent-loss": float(ok and lost and not declared),
         "arxiv-outline-recall": outline_recall(w.bookmarks, headings_of(md) if ok else []),
         "arxiv-tokens-per-page": round(tokens / w.pages, 1) if tokens is not None and w.pages else None,
+        "arxiv-claude-tokens-per-page": round(claude / w.pages, 1) if claude is not None and w.pages else None,
         "arxiv-qa": None if qa is None else round(qa[0] / qa[1], 4),
         "arxiv-answers-per-10k-tokens": (
             round(qa[0] / tokens * 10_000, 3) if qa is not None and tokens else (0.0 if qa is not None else None)
@@ -261,9 +265,12 @@ CATEGORIES = (
     "arxiv-silent-loss",
     "arxiv-outline-recall",
     "arxiv-tokens-per-page",
+    "arxiv-claude-tokens-per-page",
     "arxiv-answers-per-10k-tokens",
 )
-DIRECTION = {c: c not in ("arxiv-silent-loss", "arxiv-tokens-per-page") for c in CATEGORIES}
+DIRECTION = {
+    c: c not in ("arxiv-silent-loss", "arxiv-tokens-per-page", "arxiv-claude-tokens-per-page") for c in CATEGORIES
+}
 
 
 def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:

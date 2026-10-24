@@ -114,7 +114,16 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument(
         "--workers", type=int, default=1, help="parallel requests; the model is loaded with 32k context each"
     )
+    p = sub.add_parser("tokens", help="exact Claude token counts of each output (Anthropic count_tokens, free)")
+    p.add_argument("--corpus", required=True)
+    p.add_argument("--tools")
+    p.add_argument("--date", default=today)
+    p.add_argument("--model", default=None, help="model whose tokenizer counts; default claude-sonnet-5-5")
     args = ap.parse_args(argv)
+    if args.cmd == "tokens":
+        from tools.bench.tokens import main as tokens
+
+        return tokens(run_dir(args.date, args.corpus), _names(args.tools), model=args.model)
     if args.cmd == "install":
         from tools.bench.install import main as install
 

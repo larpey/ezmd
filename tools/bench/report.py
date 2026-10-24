@@ -39,6 +39,7 @@ CATEGORY_LABELS = {
     "arxiv-silent-loss": "arXiv papers, silent loss (over 5% of words lost with no warning raised; lower is better)",
     "arxiv-outline-recall": "arXiv papers, outline recall (PDF bookmarks found as headings)",
     "arxiv-tokens-per-page": "arXiv papers, o200k tokens per page (lower is better)",
+    "arxiv-claude-tokens-per-page": "arXiv papers, Claude tokens per page (Anthropic count_tokens; lower is better)",
     "arxiv-answers-per-10k-tokens": "arXiv papers, correct answers per 10k tokens of converted text",
     "arxiv-source-recall": "arXiv papers, source recall (share of the LaTeX source's words kept; independent witness)",
     "damaged-silent-loss": "Damaged arXiv papers, silent loss, all kinds (lost over 5%, no warning; lower is better)",
