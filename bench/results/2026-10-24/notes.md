@@ -58,3 +58,10 @@
   stream) were gone and no warning said so; issue #23. ezmd's page accuracy was first scored 0.81 on
   `2604.27899~pages` because that paper has five pages with no text of its own (full-page figures) that the warning
   rightly lists; the scorer now expects those pages, and scores 1.00.
+- Speed pass (`runs/2026-10-24-speed/arxiv`, 07:28 to 07:56 local): every tool again over the same 30 papers
+  with the game client closed and the GPU otherwise idle (about 3 GB of desktop use). Outputs were identical
+  (text recall matched the first pass for every tool to four decimals), so only the timings changed: medians in
+  seconds per paper, first pass -> clean pass: ezmd 0.1.0 1.03 -> 1.20, ezmd main full 1.18 -> 1.46, rag 1.22 ->
+  1.26, compact 1.13 -> 1.50, MarkItDown 1.69 -> 1.45, pymupdf4llm 4.84 -> 4.66, Docling 6.74 -> 5.75, MinerU
+  15.60 -> 12.55. The GPU tools gained 15 to 20%; the CPU tools moved within noise. `docs/benchmarks.md` reports
+  the clean pass.
