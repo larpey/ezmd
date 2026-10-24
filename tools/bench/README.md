@@ -15,19 +15,34 @@ make bench-full                               # all corpora, all tools (hours)
 ```
 
 Corpora: `smoke` (10 fixtures), `fixtures` (all 94), `olmocr`, `omnidoc`, `web`, `arxiv` (30 of 109 whole
-CC BY papers; `fetch --only arxiv`).
+CC BY papers; `fetch --only arxiv`), `arxiv-damaged` (three damaged copies of 10 of those papers, built on
+first use).
 
 The `arxiv` corpus measures what a downstream model gets, not a page's edit distance: text recall against the
-PDF's own text layer, **silent loss** (more than 5% of the words gone and no warning raised; only ezmd has a
-warning channel, and its always-on notices such as removed running headers do not count), outline recall
-against the PDF's bookmarks, o200k tokens per page, and answer accuracy. The answers come from a local model
-(`tools/bench/qa.py`, LM Studio by default, nothing leaves the machine):
+PDF's own text layer and against the paper's LaTeX source (`fetch --only arxiv-source`; the source is the
+witness no converter's extractor produced), **silent loss** (more than 5% of the words gone and no warning
+raised; only ezmd has a warning channel, and its always-on notices such as removed running headers do not
+count), outline recall against the PDF's bookmarks, o200k tokens per page, and answer accuracy. The answers
+come from a local model (`tools/bench/qa.py`, LM Studio by default, nothing leaves the machine):
 
 ```bash
+uv run python -m tools.bench fetch --only arxiv,arxiv-source  # the PDFs and their LaTeX sources
 uv run python -m tools.bench run --corpus arxiv --date D       # convert with every tool
 uv run python -m tools.bench qa all --corpus arxiv --date D    # generate questions, answer, grade (local model)
 uv run python -m tools.bench score --corpus arxiv --date D
 uv run python -m tools.bench report --date D
+```
+
+The `arxiv-damaged` corpus (`tools/bench/damage.py`) puts a known hole in each of ten papers: every page
+rendered to an image (a scan), a block of a fifth of the pages rendered to images, and the file truncated at
+80% of its bytes. The witness is the intact paper, so the scorer (`tools/bench/scoring/damaged.py`) knows what
+was lost and asks whether the tool said so: silent loss per kind and pooled (the primary metric, lower is
+better), text recall of the intact paper (a tool with OCR recovers a rendered page), and for ezmd how exactly
+its `pages_without_text` warning names the pages. A conversion that fails outright is loud, not silent.
+
+```bash
+uv run python -m tools.bench run --corpus arxiv-damaged --date D --timeout 900   # OCR on a scan is slow
+uv run python -m tools.bench score --corpus arxiv-damaged --date D
 ```
 
 `qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or

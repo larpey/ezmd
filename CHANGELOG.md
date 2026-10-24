@@ -11,7 +11,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   and answer accuracy, where a local model (`tools/bench/qa.py`, LM Studio) writes grounded questions from the
   text layer, answers them from each tool's output and grades them. `ezmd-main`, `ezmd-main-compact` and
   `ezmd-main-rag` rows run the checkout's code under three profiles; the ezmd adapter records each document's
-  warnings so declared loss can be told from silent loss. First results in `bench/results/2026-10-24/` and
+  warnings so declared loss can be told from silent loss. Two witnesses keep the numbers honest: each paper's LaTeX
+  source (`fetch --only arxiv-source`, `tools/bench/scoring/latex.py`), which no converter's extractor produced,
+  and an `arxiv-damaged` corpus (`tools/bench/damage.py`: scanned, partly scanned and truncated copies of ten
+  papers) that checks whether a tool says what it lost and which pages. The damaged set found ezmd's first
+  silent loss, a repaired truncated file (#23). First results in `bench/results/2026-10-24/` and
   `docs/benchmarks.md`.
 
 ### Fixed

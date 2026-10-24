@@ -49,6 +49,11 @@ gets from the converted file, with the PDF itself as the witness, so the compari
   own text layer, never from a converter's output, each backed by a quote checked against the text layer. The same
   model answered the 148 questions from each tool's Markdown and graded the answers against the references.
 - **Text recall.** The share of the text layer's word occurrences present in the output.
+- **Source recall.** The same share against the paper's LaTeX source (the arXiv e-print, turned into plain text
+  with math, preamble, labels and link targets removed). The source is the one witness no converter's extractor
+  produced, so it cannot favour the tool that shares a library with the witness. Over the 27 papers that have a
+  source (three were submitted as PDF only). The raw pdfium text layer itself scores 0.945 against it, which is
+  the reference to read the column by: nobody reaches 1.0 because the source holds words that never print.
 - **Silent loss.** The paper lost more than 5% of its words and the tool raised no warning that means content was
   dropped or cut. Only ezmd has a warning channel; its always-on notices (removed running headers, hidden elements)
   do not count, so this standard is stricter for ezmd than for the others, for whom every such loss is silent.
@@ -61,16 +66,16 @@ Each cell is the mean over the 30 papers with its 95% bootstrap interval. `ezmd 
 this repository at 7a13bd5 (the 0.1.1 release plus the PDF fixes of PR #19) under the `full`, `rag` and `compact`
 profiles; `ezmd 0.1.0` is the release.
 
-| tool | answer accuracy | correct answers per 10k tokens | text recall | silent loss (lower is better) | outline recall | tokens per page (lower is better) |
-|---|---|---|---|---|---|---|
-| Docling 2.138.0 | 0.800 [0.707, 0.887] | 2.53 | 0.978 | 0.10 | 0.844 | 930 |
-| MinerU 4.0.12 | 0.796 [0.736, 0.849] | 2.07 | 0.969 | 0.13 | 0.874 | 1,226 |
-| **ezmd 0.1.0** | 0.782 [0.702, 0.856] | 2.03 | 0.994 | 0.00 | 0.506 | 1,181 |
-| **ezmd main, rag** | 0.782 [0.693, 0.862] | 1.88 | 0.992 | 0.00 | 0.786 | 1,363 |
-| pymupdf4llm 1.28.2 | 0.771 [0.671, 0.860] | 2.25 | 0.973 | 0.17 | 0.843 | 1,055 |
-| **ezmd main, full** | 0.758 [0.660, 0.847] | 2.06 | 0.992 | 0.00 | 0.786 | 1,158 |
-| **ezmd main, compact** | 0.729 [0.636, 0.813] | 3.07 | 0.707 | 0.00 | 0.567 | 727 |
-| MarkItDown 0.1.8 | 0.718 [0.629, 0.804] | 1.61 | 0.677 | 0.90 | 0.010 | 1,441 |
+| tool | answer accuracy | correct answers per 10k tokens | text recall | source recall | silent loss (lower is better) | outline recall | tokens per page (lower is better) |
+|---|---|---|---|---|---|---|---|
+| Docling 2.138.0 | 0.800 [0.707, 0.887] | 2.53 | 0.978 | 0.943 | 0.10 | 0.844 | 930 |
+| MinerU 4.0.12 | 0.796 [0.736, 0.849] | 2.07 | 0.969 | 0.944 | 0.13 | 0.874 | 1,226 |
+| **ezmd 0.1.0** | 0.782 [0.702, 0.856] | 2.03 | 0.994 | 0.946 | 0.00 | 0.506 | 1,181 |
+| **ezmd main, rag** | 0.782 [0.693, 0.862] | 1.88 | 0.992 | 0.946 | 0.00 | 0.786 | 1,363 |
+| pymupdf4llm 1.28.2 | 0.771 [0.671, 0.860] | 2.25 | 0.973 | 0.935 | 0.17 | 0.843 | 1,055 |
+| **ezmd main, full** | 0.758 [0.660, 0.847] | 2.06 | 0.992 | 0.947 | 0.00 | 0.786 | 1,158 |
+| **ezmd main, compact** | 0.729 [0.636, 0.813] | 3.07 | 0.707 | 0.707 | 0.00 | 0.567 | 727 |
+| MarkItDown 0.1.8 | 0.718 [0.629, 0.804] | 1.61 | 0.677 | 0.616 | 0.90 | 0.010 | 1,441 |
 
 What it says, with the paired tests over the same 30 papers (`bench/results/2026-10-24/summary.md`):
 
@@ -78,8 +83,13 @@ What it says, with the paired tests over the same 30 papers (`bench/results/2026
   the paired test, and every other tool's interval overlaps Docling's; even MarkItDown's output, which glues words together and loses a third of the text, still answers 72% of
   the questions. The questions are facts a model can often find in a damaged text. Where converters differ is in
   what reaches the model and whether anyone is told.
-- **ezmd keeps the most text and is the only tool that says when it loses some.** Text recall 0.992 against
-  Docling's 0.978 (paired difference +0.014 [+0.008, +0.020]). Docling, MinerU and pymupdf4llm each lost more than
+- **Against the independent witness the text-recall lead mostly disappears.** Text recall against the PDF's own
+  text layer puts ezmd 0.014 ahead of Docling ([+0.008, +0.020], paired) and 0.023 ahead of MinerU. Against the
+  LaTeX source the same comparison is +0.004 [+0.002, +0.006] over Docling and +0.003 [-0.001, +0.007] over
+  MinerU: a lead of under half a point that still clears zero against Docling and is a tie with MinerU. Most of the
+  text-layer lead was agreement with ezmd's own extractor, which is why this column exists. ezmd's recall is as
+  high as anyone's, not higher.
+- **ezmd is the only tool that says when it loses some.** Docling, MinerU and pymupdf4llm each lost more than
   5% of the words on 3 to 5 of the 30 papers with no signal; MarkItDown did on 27. ezmd lost that much on 0 papers
   in the full and rag profiles. In the compact profile, which caps output at 16k tokens, it lost it on 19 papers and
   declared every one (`truncated: true`), which is why compact's silent-loss rate is also 0: declared loss is not
@@ -97,9 +107,9 @@ What it says, with the paired tests over the same 30 papers (`bench/results/2026
 - **Compact is the one profile that beats Docling on correct answers per token** (3.07 against 2.53, paired
   +0.54 [+0.00, +1.12]), at the cost of answer accuracy on the papers it cuts.
 
-Conditions and caveats: the witness is pdfium's text layer, which is also what ezmd's default PDF engine reads
-(Docling and MinerU extract text their own way), so ezmd's text-recall lead partly measures agreement with its own
-extractor, and the questions were written from that same text; one run, one grader model, 148 questions, and the
+Conditions and caveats: the text-layer witness is pdfium's, which is also what ezmd's default PDF engine reads
+(Docling and MinerU extract text their own way), so read the text-recall column with the source-recall column beside
+it, and the questions were written from that same text layer; one run, one grader model, 148 questions, and the
 grader's judgment of short answers is the metric; the questions ask for short stated facts (some from tables, none from figures), so a converter that
 garbles a table's structure can still score when the value survives somewhere in its text. Marker and Unstructured were not run (Docker was off). A game client was idle on the same
 GPU. Everything needed to rerun it, including the question cache's seed, is in the repository; the questions
