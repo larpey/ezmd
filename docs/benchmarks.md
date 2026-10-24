@@ -102,6 +102,15 @@ mind on 20 of 1,119 answers in this run alone. The same cache holds the model's 
 saw, so a tool whose output does not change between runs scores the same in both (the answers themselves proved
 deterministic: 148 of 148 identical on a re-run over the same text).
 
+One limit of the metric to know before reading the compact row: the local model's context fixes a window of
+24,000 o200k tokens, so questions are written from the first 24,000 tokens of the text layer and every tool's
+output is cut there before it is sent. The compact profile stops at 16,000 tokens and dropped the tail of 19 of
+the 30 papers (half of a paper's words on average, 13% kept at worst), yet 145 of the 148 questions have their
+evidence inside what compact kept, and the 15 answers on which full and compact disagree go nine to six with the
+evidence present in both. So the score does not say that compact's cut is cheap; it says the questions do not
+reach the part it cut. Measuring that cost needs questions drawn from the whole paper, which is harness work
+still to do.
+
 What it says, with the paired tests over the same 30 papers (`bench/results/2026-10-24/summary.md`):
 
 - **On born-digital papers the converter barely moves answer accuracy.** All three ezmd rows tie with Docling and
@@ -159,7 +168,9 @@ deterministic on identical text, answered 22 questions differently on the re-lai
 The full profile over the same text moved zero. That is the measured width of this metric's sensitivity to layout,
 about the same as its confidence interval, and the reason the page leads with recall and silent loss rather than
 with answer accuracy. On the damaged set, the fixed build's silent loss is 0 of 30 (from 1 of 30) with recall
-unchanged, and the warning still names the unreadable pages exactly.
+unchanged, and the warning still names the unreadable pages exactly. The same fix on damaged copies of the 79
+held-out papers, which no converter change was ever checked against: 0 of 237 silent (0.1.0: 1 of 237), and all
+46 truncated files qpdf could repair carry the warning ([details](#held-out-damaged)).
 
 The token gap that remains is, to the word, what ezmd keeps and Docling does not: ezmd's output has 451,000 words
 to Docling's 378,000 over the 30 papers, and after the fixes the largest single difference is the equations,
@@ -236,10 +247,18 @@ What it says:
   MuPDF repairs six and keeps over 97% of their words, so it loses nothing to declare. ezmd and Docling refuse
   five and repair five; of ezmd's five, four kept over 97% and one, `2402.18566`, kept 91% with no warning. The
   file was repaired by QPDF (cross-reference table rebuilt, one object truncated), and ezmd did not pass that on.
-  **This is ezmd's one silent loss in the benchmark, and it is a real gap**: the repair is visible to the library
-  and should become a warning ([#23](https://github.com/larpey/ezmd/issues/23)). The words themselves are gone
-  from the file, so the fix changes the declared-loss column, not recall; both numbers stay on this page when it
-  lands, and the fix is confirmed on damaged copies of the held-out papers, not these ten.
+  **This was ezmd's one silent loss in the benchmark, and it was a real gap**: the repair is visible to the
+  library and is now a `file_repaired` warning ([#23](https://github.com/larpey/ezmd/issues/23)). The words
+  themselves are gone from the file, so the fix changed the declared-loss column, not recall: 1 of 30 silent
+  before, 0 of 30 after, trunc recall 0.49 both times. Both rows above are the build before the fix.
+
+<a id="held-out-damaged"></a>
+**Held out.** A fix found on ten files could be shaped to them, so the same three variants were built from the
+79 arXiv papers outside the 30-paper sample, which no converter change was ever checked against (237 copies,
+`run --corpus arxiv-damaged --split heldout`, `bench/results/2026-10-24-heldout/`). The fixed build is silent on
+0 of 237; the published 0.1.0 on 1 of 237, the one truncated file of the 46 qpdf repaired that fell under the 95%
+line (`2605.03112`, 94.9% kept), now declared. All 46 repaired files carry the warning, the other 33 are refused
+loudly, recall is unchanged, and the pages warning names the unreadable pages exactly on all 158 image variants.
 
 Caveats: ten papers per kind is enough to see the pattern and not enough for narrow intervals; the 5% line is
 the same for a dropped page and an OCR error, which is deliberate (the reader downstream cannot tell them apart)

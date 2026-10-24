@@ -219,14 +219,20 @@ def arxiv(sample: int | None = ARXIV_SAMPLE) -> list[Doc]:
     return _sample(docs, sample)
 
 
-def arxiv_damaged(sample: int | None = None) -> list[Doc]:
-    """Damaged copies (tools/bench/damage.py: scan, pages, trunc) of DAMAGED_SAMPLE papers of the arXiv sample,
-    built into the corpus cache on first use. `sample` is a number of papers (every kind of each); None means
-    the default DAMAGED_SAMPLE. Each document's meta carries the intact paper (`source`, `paper`), the damage
-    `kind`, the 1-based `damaged_pages` and the page count, which the scorer needs for the witness."""
+DAMAGED_SAMPLE = 10
+"""Papers of the arXiv sample that get damaged copies (every kind for each)."""
+
+
+def arxiv_damaged(sample: int | None = DAMAGED_SAMPLE) -> list[Doc]:
+    """Damaged copies (tools/bench/damage.py: scan, pages, trunc) of `sample` papers of the arXiv sample, built
+    into the corpus cache on first use. None means those DAMAGED_SAMPLE papers plus every held-out arXiv paper,
+    so `heldout("arxiv-damaged")` is the damaged copies of the papers ezmd was never tuned on (the 30-paper
+    sample was used to find and fix converter faults, so its other 20 papers are not held out either). Each
+    document's meta carries the intact paper (`source`, `paper`), the damage `kind`, the 1-based `damaged_pages`
+    and the page count, which the scorer needs for the witness."""
     from tools.bench import damage
 
-    papers = _sample(arxiv(), sample if sample is not None else damage.DAMAGED_SAMPLE)
+    papers = _sample(arxiv(), DAMAGED_SAMPLE) + heldout("arxiv") if sample is None else _sample(arxiv(), sample)
     docs: list[Doc] = []
     for paper in papers:
         for kind in damage.KINDS:

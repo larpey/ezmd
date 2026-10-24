@@ -48,7 +48,11 @@ its `pages_without_text` warning names the pages. A conversion that fails outrig
 ```bash
 uv run python -m tools.bench run --corpus arxiv-damaged --date D --timeout 900   # OCR on a scan is slow
 uv run python -m tools.bench score --corpus arxiv-damaged --date D
+uv run python -m tools.bench run --corpus arxiv-damaged --split heldout --tools ezmd-main --date D2  # the 79 held-out papers, damaged the same way
 ```
+
+The held-out split of `arxiv-damaged` is the damaged copies of the 79 arXiv papers outside the 30-paper sample,
+never used to find or fix a converter fault, so a fix found on the ten sampled papers is confirmed there (#23).
 
 `qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
 `EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
