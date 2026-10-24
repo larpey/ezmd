@@ -18,6 +18,8 @@ import pypdfium2.raw as pdfium_c  # type: ignore[import-untyped]
 from ezmd.core.textclean import CleanStats, clean_text
 
 Rect = tuple[float, float, float, float]
+Run = tuple[str, str | None, str | None]
+"""(text, href, script): `script` is "sup", "sub", or None."""
 
 GAP_EM = 1.2
 """A horizontal gap wider than this many ems splits a baseline into separate lines (columns, table cells)."""
@@ -27,6 +29,10 @@ marker (about 0.35 em) stays on its line."""
 OVERLAP_SAME_LINE = 0.6
 """Glyphs whose boxes overlap vertically by at least this fraction of the shorter one share a line even when
 their reported origins disagree (some Type 3 and broken fonts)."""
+SCRIPT_RATIO = 0.8
+"""A glyph smaller than this fraction of its line's median size is a superscript or subscript candidate."""
+SCRIPT_SHIFT_EM = 0.12
+"""...when its baseline sits at least this many line ems above (superscript) or below (subscript) the line's."""
 PRIVATE_USE_SCANNED = 0.05
 """docs/internal/spec/part2.md 1e.8: over 5 percent private-use glyphs on a page means the text layer is unusable."""
 
@@ -41,15 +47,18 @@ class Line:
     y1: float
     size: float
     bold: bool
-    runs: list[tuple[str, str | None]]
-    """(text, href) runs in reading order."""
+    runs: list[Run]
+    """(text, href, script) runs in reading order."""
     order: int
     """Position in the content stream (pdfium character order)."""
     mcids: set[int] = field(default_factory=set)
+    turn: int = 0
+    """Reading direction in counter-clockwise quarter turns (0: upright; 1: runs up the page, like an arXiv
+    margin stamp or a rotated table)."""
 
     @property
     def text(self) -> str:
-        return "".join(t for t, _ in self.runs).strip()
+        return "".join(r[0] for r in self.runs).strip()
 
     @property
     def width(self) -> float:
@@ -291,18 +300,22 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
             sizes = sorted(g.size for g in ink)
             size = sizes[len(sizes) // 2]
             bold = sum(g.bold for g in ink) * 2 > len(ink)
-            runs: list[tuple[str, str | None]] = []
+            scripts = _scripts(cur, size)
+            runs: list[Run] = []
             for k, g in enumerate(cur):
                 text = clean_text(g.ch, stats)
                 if not text:
                     continue
-                href = g.href
-                if g.ch == " " and 0 < k < len(cur) - 1 and cur[k - 1].href == cur[k + 1].href:
-                    href = cur[k - 1].href  # a space inside a link belongs to the link
-                if runs and runs[-1][1] == href:
-                    runs[-1] = (runs[-1][0] + text, href)
+                href, script = g.href, scripts[k]
+                if g.ch == " " and 0 < k < len(cur) - 1:
+                    if cur[k - 1].href == cur[k + 1].href:
+                        href = cur[k - 1].href  # a space inside a link belongs to the link
+                    if scripts[k - 1] == scripts[k + 1]:
+                        script = scripts[k - 1]
+                if runs and runs[-1][1] == href and runs[-1][2] == script:
+                    runs[-1] = (runs[-1][0] + text, href, script)
                 else:
-                    runs.append((text, href))
+                    runs.append((text, href, script))
             runs = _collapse_spaces(runs)
             lines.append(
                 Line(
@@ -316,17 +329,21 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
                     runs=runs,
                     order=order_base + len(lines),
                     mcids={g.mcid for g in ink if g.mcid >= 0},
+                    turn=ink[0].turn,
                 )
             )
         cur.clear()
 
     last: _Glyph | None = None
+    broken = False
     for g in glyphs:
         if g is None:
-            flush()
-            last = None
+            broken = True  # pdfium's break: honored unless the next glyph is a script on the same baseline
             continue
         if g.ch == " ":
+            if broken:
+                flush()
+                last, broken = None, False
             if cur and cur[-1].ch != " ":
                 cur.append(g)
             continue
@@ -334,12 +351,44 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
             em = max(last.size, g.size, 1.0)
             gap = g.along[0] - last.along[1]
             backwards = g.along[1] < last.along[0] - 0.5 * em
-            if g.turn != last.turn or not _same_line(last, g, em) or gap > GAP_EM * em or backwards:
+            split = g.turn != last.turn or not _same_line(last, g, em) or gap > GAP_EM * em or backwards
+            if split or (broken and not _script_join(last, g, gap, em)):
                 flush()
+        elif broken:
+            flush()
+        broken = False
         cur.append(g)
         last = g
     flush()
     return lines
+
+
+def _script_join(a: _Glyph, b: _Glyph, gap: float, em: float) -> bool:
+    """Across a pdfium line break, `a` and `b` stay on one line when one of them is a raised or lowered
+    script glyph right next to the other (`O(n` `2` `· d)` in a formula set as three text objects). A small
+    glyph on the same baseline ("12.5" then a small "kg") keeps the break."""
+    small, big = (a, b) if a.size < b.size else (b, a)
+    shifted = abs(small.base - big.base) >= SCRIPT_SHIFT_EM * big.size
+    return small.size <= SCRIPT_RATIO * big.size and shifted and gap <= 0.5 * em
+
+
+def _scripts(cur: list[_Glyph], size: float) -> list[str | None]:
+    """Per glyph: "sup" or "sub" for small glyphs whose baseline is shifted from the line's (measured on the
+    full-size glyphs), else None. Spaces get None."""
+    full = sorted(g.base for g in cur if g.ch != " " and g.size > SCRIPT_RATIO * size)
+    out: list[str | None] = [None] * len(cur)
+    if not full:
+        return out
+    base = full[len(full) // 2]
+    for k, g in enumerate(cur):
+        if g.ch == " " or g.size > SCRIPT_RATIO * size:
+            continue
+        shift = (base - g.base) / size  # `across` grows towards the next line, so raised is positive
+        if shift >= SCRIPT_SHIFT_EM:
+            out[k] = "sup"
+        elif shift <= -SCRIPT_SHIFT_EM:
+            out[k] = "sub"
+    return out
 
 
 def _same_line(a: _Glyph, b: _Glyph, em: float) -> bool:
@@ -352,10 +401,10 @@ def _same_line(a: _Glyph, b: _Glyph, em: float) -> bool:
     return shorter > 0 and overlap >= OVERLAP_SAME_LINE * shorter
 
 
-def _collapse_spaces(runs: list[tuple[str, str | None]]) -> list[tuple[str, str | None]]:
-    out: list[tuple[str, str | None]] = []
+def _collapse_spaces(runs: list[Run]) -> list[Run]:
+    out: list[Run] = []
     prev_space = True
-    for text, href in runs:
+    for text, href, script in runs:
         buf = []
         for c in text:
             if c.isspace():
@@ -366,10 +415,10 @@ def _collapse_spaces(runs: list[tuple[str, str | None]]) -> list[tuple[str, str 
                 buf.append(c)
                 prev_space = False
         if buf:
-            out.append(("".join(buf), href))
+            out.append(("".join(buf), href, script))
     if out:
-        t, h = out[-1]
-        out[-1] = (t.rstrip(), h)
+        t, h, sc = out[-1]
+        out[-1] = (t.rstrip(), h, sc)
         if not out[-1][0]:
             out.pop()
     return out

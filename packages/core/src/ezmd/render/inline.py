@@ -13,6 +13,27 @@ from ezmd.render.text import clean_text, code_span, collapse_ws, escape_inline, 
 __all__ = ["plain_spans", "render_spans"]
 
 _MULTISPACE = re.compile(r" {2,}")
+_SCRIPT_SOURCE = "0123456789+-\u2212=()"
+_SUPERSCRIPT = str.maketrans(
+    _SCRIPT_SOURCE, "\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079\u207a\u207b\u207b\u207c\u207d\u207e"
+)
+_SUBSCRIPT = str.maketrans(
+    _SCRIPT_SOURCE, "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089\u208a\u208b\u208b\u208c\u208d\u208e"
+)
+_SCRIPT_CHARS = frozenset(_SCRIPT_SOURCE)
+
+
+def _unicode_script(text: str, styles: list[InlineStyle]) -> str:
+    """Without extended Markdown, a superscript or subscript made only of digits and signs becomes Unicode
+    script characters (`10^20` stays readable as 10²⁰, not 1020); anything else stays plain text."""
+    core = text.strip()
+    if not core:
+        return text
+    if InlineStyle.SUPERSCRIPT in styles and set(core) <= _SCRIPT_CHARS:
+        return text.translate(_SUPERSCRIPT)
+    if InlineStyle.SUBSCRIPT in styles and set(core) <= _SCRIPT_CHARS:
+        return text.translate(_SUBSCRIPT)
+    return text
 
 
 def change_view(mode: str, change: str | None) -> str:
@@ -131,6 +152,8 @@ def render_spans(ctx: RenderContext, spans: list[InlineSpan], *, heading: bool =
         text = collapse_ws(raw)
         if not text:
             continue
+        if not profile.extended_markdown:
+            text = _unicode_script(text, span.styles)
         if InlineStyle.CODE in span.styles:
             lead = " " if text.startswith(" ") else ""
             trail = " " if text.endswith(" ") and text.strip() else ""

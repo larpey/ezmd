@@ -11,6 +11,7 @@ from ezmd.ir import (
     Block,
     Heading,
     InlineSpan,
+    InlineStyle,
     ListBlock,
     ListItem,
     PageBreak,
@@ -19,8 +20,9 @@ from ezmd.ir import (
     Table,
     TableCell,
 )
-from ezmd_converters.pdf.layout import Item, TableGrid, norm_text
-from ezmd_converters.pdf.textlayer import Line
+from ezmd_converters.pdf.headings import HeadingSources
+from ezmd_converters.pdf.layout import Item, TableGrid
+from ezmd_converters.pdf.textlayer import Line, Run
 
 _BULLETS = "".join(chr(c) for c in (0x2022, 0x25E6, 0x25AA, 0x2023, 0x2219, 0x00B7, 0x25CF, 0x25A0, 0x2013, 0x2043))
 _BULLET = re.compile("^[" + re.escape(_BULLETS + "-*") + r"]\s+")
@@ -28,44 +30,6 @@ _NUMBERED = re.compile(r"^(\d{1,3}|[a-z])[.)]\s+")
 _HYPHEN_END = re.compile(r"([A-Za-z]+)-$")
 _WORD_START = re.compile(r"^([a-z]+)")
 _WORDS = re.compile(r"[A-Za-z]+")
-
-
-@dataclass(slots=True)
-class HeadingSources:
-    """Where heading levels come from, in precedence order."""
-
-    struct: dict[tuple[int, int], int] = field(default_factory=dict)
-    outline: dict[tuple[str, int | None], int] = field(default_factory=dict)
-    outline_any: dict[str, int] = field(default_factory=dict)
-    sizes: dict[float, int] = field(default_factory=dict)
-    use_struct: bool = False
-    struct_only: bool = False
-    used: dict[str, int] = field(default_factory=dict)
-    disagreements: int = 0
-
-    def level(self, ln: Line) -> int | None:
-        size_level = self.sizes.get(round(ln.size * 2) / 2)
-        if len(ln.text) > 200:
-            size_level = None
-        if self.use_struct:
-            hits = [self.struct[(ln.page - 1, m)] for m in ln.mcids if (ln.page - 1, m) in self.struct]
-            if hits or (ln.mcids and self.struct_only):
-                lvl = min(hits) if hits else None
-                if lvl != size_level:
-                    self.disagreements += 1
-                return self._count("structure_tree", lvl)
-            if self.struct_only:
-                return None
-        key = norm_text(ln.text)
-        lvl = self.outline.get((key, ln.page - 1)) or self.outline_any.get(key)
-        if lvl is not None:
-            return self._count("outline", lvl)
-        return self._count("font_size", size_level)
-
-    def _count(self, source: str, lvl: int | None) -> int | None:
-        if lvl is not None:
-            self.used[source] = self.used.get(source, 0) + 1
-        return lvl
 
 
 @dataclass(slots=True)
@@ -92,16 +56,20 @@ def _prov(source: str, g: PageGeom, x0: float, y0: float, x1: float, y1: float, 
     return Provenance(source=source, source_page=g.number, bbox=_bbox(x0, y0, x1, y1, g), engine=engine)
 
 
-def _spans(runs: list[tuple[str, str | None]]) -> list[InlineSpan]:
+_SCRIPT_STYLES = {"sup": [InlineStyle.SUPERSCRIPT], "sub": [InlineStyle.SUBSCRIPT]}
+
+
+def _spans(runs: list[Run]) -> list[InlineSpan]:
     out: list[InlineSpan] = []
-    for text, href in runs:
-        if out and out[-1].href == href:
-            out[-1] = InlineSpan(text=out[-1].text + text, href=href)
+    for text, href, script in runs:
+        styles = _SCRIPT_STYLES.get(script or "", [])
+        if out and out[-1].href == href and out[-1].styles == styles:
+            out[-1] = out[-1].model_copy(update={"text": out[-1].text + text})
         elif text:
-            out.append(InlineSpan(text=text, href=href))
+            out.append(InlineSpan(text=text, href=href, styles=list(styles)))
     if out:
-        out[0] = InlineSpan(text=out[0].text.lstrip(), href=out[0].href)
-        out[-1] = InlineSpan(text=out[-1].text.rstrip(), href=out[-1].href)
+        out[0] = out[0].model_copy(update={"text": out[0].text.lstrip()})
+        out[-1] = out[-1].model_copy(update={"text": out[-1].text.rstrip()})
     return [s for s in out if s.text]
 
 
@@ -109,24 +77,22 @@ def vocabulary(lines: list[Line]) -> set[str]:
     return {w.casefold() for ln in lines for w in _WORDS.findall(ln.text)}
 
 
-def _join(
-    acc: list[tuple[str, str | None]], nxt: list[tuple[str, str | None]], vocab: set[str], dehyphenate: bool
-) -> None:
+def _join(acc: list[Run], nxt: list[Run], vocab: set[str], dehyphenate: bool) -> None:
     """Append line runs to paragraph runs, joining hyphenated breaks when the joined word is known."""
     if not acc:
         acc.extend(nxt)
         return
-    last_text, last_href = acc[-1]
+    last_text, last_href, last_script = acc[-1]
     first = nxt[0][0] if nxt else ""
     m_end = _HYPHEN_END.search(last_text)
     m_start = _WORD_START.match(first)
     if m_end and m_start:
         joined = (m_end.group(1) + m_start.group(1)).casefold()
         if dehyphenate and joined in vocab:
-            acc[-1] = (last_text[:-1], last_href)
+            acc[-1] = (last_text[:-1], last_href, last_script)
         acc.extend(nxt)
         return
-    acc[-1] = (last_text + " ", last_href)
+    acc[-1] = (last_text + " ", last_href, last_script)
     acc.extend(nxt)
 
 
@@ -149,7 +115,7 @@ class _ListState:
     x0: float
     first: Line
     last: Line
-    items: list[tuple[float, list[tuple[str, str | None]]]] = field(default_factory=list)
+    items: list[tuple[float, list[Run]]] = field(default_factory=list)
 
 
 class Assembler:
@@ -161,7 +127,7 @@ class Assembler:
         self.dehyphenate = dehyphenate
         self.blocks: list[Block] = []
         self._para: list[Line] = []
-        self._runs: list[tuple[str, str | None]] = []
+        self._runs: list[Run] = []
         self._list: _ListState | None = None
         self._geom = PageGeom(1, 612.0, 792.0)
         self._table_tail: tuple[int, Table] | None = None
@@ -207,8 +173,8 @@ class Assembler:
         if mk is not None:
             self._flush_para()
             ordered, rest, start = mk
-            runs = (
-                [(rest, ln.runs[-1][1] if ln.runs else None)]
+            runs: list[Run] = (
+                [(rest, ln.runs[-1][1] if ln.runs else None, None)]
                 if len(ln.runs) <= 1
                 else _strip_marker(ln.runs, len(ln.text) - len(rest))
             )
@@ -323,7 +289,7 @@ class Assembler:
     def _table(self, t: TableGrid) -> Table:
         n_cols = max(len(r) for r in t.rows)
         cells = [
-            TableCell(spans=[InlineSpan(text=text)] if text else [], row=r, col=c, is_header=(r == 0 and t.header))
+            TableCell(spans=self._cell_spans(t, r, c, text), row=r, col=c, is_header=(r == 0 and t.header))
             for r, row in enumerate(t.rows)
             for c, text in enumerate(row)
         ]
@@ -335,6 +301,12 @@ class Assembler:
             provenance=_prov(self.source, self._geom, t.x0, t.y0, t.x1, t.y1, self.engine),
             attrs={"pdf_table": "heuristic"},
         )
+
+    @staticmethod
+    def _cell_spans(t: TableGrid, r: int, c: int, text: str) -> list[InlineSpan]:
+        if r < len(t.runs) and c < len(t.runs[r]) and t.runs[r][c]:
+            return _spans(t.runs[r][c])
+        return [InlineSpan(text=text)] if text else []
 
 
 CONTINUATION_EDGE = 0.3
@@ -364,12 +336,12 @@ def _header_texts(t: Table) -> list[str]:
     return [" ".join(s.text for s in c.spans) for c in sorted(t.cells, key=lambda c: c.col) if c.row == 0]
 
 
-def _strip_marker(runs: list[tuple[str, str | None]], n: int) -> list[tuple[str, str | None]]:
-    out: list[tuple[str, str | None]] = []
-    for text, href in runs:
+def _strip_marker(runs: list[Run], n: int) -> list[Run]:
+    out: list[Run] = []
+    for text, href, script in runs:
         if n >= len(text):
             n -= len(text)
             continue
-        out.append((text[n:], href))
+        out.append((text[n:], href, script))
         n = 0
     return out

@@ -4,6 +4,17 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Fixed
+- PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
+  heading, and a notice set in heading-sized type is a paragraph, not three headings.
+- PDF: outline bookmarks match numbered headings ("3.1 Encoder" for the bookmark "Encoder"), each bookmark is
+  used once, and figure labels that repeat a section title stay labels. Without an outline, bold numbered
+  lines such as "3.1 Encoder and Decoder Stacks" become headings at their numbering depth.
+- PDF: superscripts and subscripts are kept as such, including exponents set as separate text objects, so
+  `1.0 · 10^20` no longer reads `1020`. Without extended Markdown, digit scripts render as `10²⁰` (D-0072).
+- PDF tables: a header cell centred over a two-line header joins the header row, header cells that span
+  two columns no longer merge the columns below them, and a typeset formula is no longer emitted as a table.
+
 ## [0.1.1] - 2026-10-23
 
 A security release. No code changes; it rebuilds the packages and Docker images on fixed dependencies.

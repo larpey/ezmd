@@ -158,7 +158,19 @@
             "href": null,
             "math": null,
             "styles": [],
-            "text": "The channel was dredged to a depth of twelve meters.1"
+            "text": "The channel was dredged to a depth of twelve meters."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "superscript"
+            ],
+            "text": "1"
           }
         ],
         "type": "paragraph"
@@ -355,7 +367,19 @@
             "href": null,
             "math": null,
             "styles": [],
-            "text": "Armour units on the north breakwater were reset.2"
+            "text": "Armour units on the north breakwater were reset."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "superscript"
+            ],
+            "text": "2"
           }
         ],
         "type": "paragraph"
@@ -552,7 +576,19 @@
             "href": null,
             "math": null,
             "styles": [],
-            "text": "Two buoys were replaced with solar-powered units.3"
+            "text": "Two buoys were replaced with solar-powered units."
+          },
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [
+              "superscript"
+            ],
+            "text": "3"
           }
         ],
         "type": "paragraph"
@@ -714,7 +750,7 @@
   "footnotes": [],
   "frontmatter": {
     "author": "ezmd fixtures",
-    "content_hash": "sha256:380d2741754a0f62a2e70185f1482f8038b8282a196fc529df6edcb9d0ea6e3e",
+    "content_hash": "sha256:ee7a13b0b1d2dd7b698b1b4762f1a8e1ca87bfc9660e25a7deab43803bf6826e",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
     "converter_version": "<normalized>",
@@ -1004,7 +1040,7 @@
       "id": "sec-1",
       "level": 2,
       "number": "1",
-      "offset_end": 388,
+      "offset_end": 389,
       "offset_start": 54,
       "original_level": 2,
       "original_title": "1. Channel dredging",
@@ -1017,8 +1053,8 @@
       "id": "sec-2",
       "level": 2,
       "number": "2",
-      "offset_end": 721,
-      "offset_start": 388,
+      "offset_end": 723,
+      "offset_start": 389,
       "original_level": 2,
       "original_title": "2. Breakwater repairs",
       "time_end": null,
@@ -1030,8 +1066,8 @@
       "id": "sec-3",
       "level": 2,
       "number": "3",
-      "offset_end": 1031,
-      "offset_start": 721,
+      "offset_end": 1034,
+      "offset_start": 723,
       "original_level": 2,
       "original_title": "3. Navigation aids",
       "time_end": null,
@@ -1044,7 +1080,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 532,
+  "tokens_total": 536,
   "warnings": [
     {
       "block_id": null,

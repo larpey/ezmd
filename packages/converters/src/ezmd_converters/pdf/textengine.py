@@ -10,17 +10,16 @@ import pypdfium2 as pdfium  # type: ignore[import-untyped]
 from ezmd.core.textclean import CleanStats
 from ezmd.ir import Block, Document, Warning, WarningKind
 from ezmd.registry import ConversionError, ConvertOptions
-from ezmd_converters.pdf.assemble import Assembler, HeadingSources, PageGeom, vocabulary
+from ezmd_converters.pdf.assemble import Assembler, PageGeom, vocabulary
 from ezmd_converters.pdf.common import ScanReport, classify, ocr_stub, scan_warnings
+from ezmd_converters.pdf.headings import HeadingSources, plan_headings
 from ezmd_converters.pdf.layout import (
     Item,
     body_font_size,
     detect_tables,
     interleaved,
-    norm_text,
     order_items,
     running_lines,
-    size_levels,
 )
 from ezmd_converters.pdf.ocr import ocr_page
 from ezmd_converters.pdf.options import PdfOptions
@@ -60,16 +59,11 @@ def read_text_layer(path: str, info: PdfInfo, options: ConvertOptions) -> TextLa
 
 
 def heading_sources(layer: TextLayer, info: PdfInfo, popts: PdfOptions, skip: set[int]) -> HeadingSources:
-    body = body_font_size(layer.pages)
-    src = HeadingSources(sizes=size_levels(layer.pages, body, skip))
+    src = plan_headings(layer.pages, body_font_size(layer.pages), info.outline, skip)
     if info.struct_state == "usable" and popts.structure_tree != "ignore":
         src.struct = info.struct_headings
         src.use_struct = True
         src.struct_only = popts.structure_tree == "only"
-    for level, title, page in info.outline:
-        key = norm_text(title)
-        src.outline.setdefault((key, page), level)
-        src.outline_any.setdefault(key, level)
     return src
 
 

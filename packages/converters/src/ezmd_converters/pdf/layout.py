@@ -11,7 +11,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
-from ezmd_converters.pdf.textlayer import Line, PageText
+from ezmd_converters.pdf.textlayer import Line, PageText, Run
 
 MARGIN_ZONE = 0.08
 """Top and bottom share of the page height where running headers and footers live."""
@@ -82,6 +82,8 @@ class TableGrid:
     rows: list[list[str]]
     header: bool
     order: int
+    runs: list[list[list[Run]]] = field(default_factory=list)
+    """Per row and column, the cell's runs (scripts and links kept); empty for grids built from text only."""
 
 
 def _rows(lines: list[Line]) -> list[list[Line]]:
@@ -94,7 +96,32 @@ def _rows(lines: list[Line]) -> list[list[Line]]:
             rows.append([ln])
     for r in rows:
         r.sort(key=lambda ln: ln.x0)
-    return rows
+    return _attach_centered_header_cells(rows)
+
+
+def _has_digit(row: list[Line]) -> bool:
+    return any(ch.isdigit() for ln in row for ch in ln.text)
+
+
+def _attach_centered_header_cells(rows: list[list[Line]]) -> list[list[Line]]:
+    """A header cell set vertically centred over a two-line header ("Model" beside "BLEU" over "EN-DE EN-FR")
+    has a baseline of its own; move it into the header row above so it does not break the table. Only in the
+    header zone: both neighbours are multi-cell rows without digits, and the cell sits within half an em of
+    each and beside, not under, the cells above."""
+    out: list[list[Line]] = []
+    for k, row in enumerate(rows):
+        nxt = rows[k + 1] if k + 1 < len(rows) else None
+        prev = out[-1] if out else None
+        if len(row) == 1 and prev is not None and nxt is not None and len(prev) >= 2 and len(nxt) >= 2:
+            cell = row[0]
+            em = 0.5 * cell.size
+            near = cell.y0 - max(ln.y1 for ln in prev) <= em and min(ln.y0 for ln in nxt) - cell.y1 <= em
+            beside = all(cell.x1 < ln.x0 or cell.x0 > ln.x1 for ln in prev)
+            if near and beside and not _has_digit(prev) and not _has_digit(row):
+                out[-1] = sorted([*prev, cell], key=lambda ln: ln.x0)
+                continue
+        out.append(row)
+    return out
 
 
 def _is_cell_row(row: list[Line]) -> bool:
@@ -116,6 +143,26 @@ def _columns(rows: list[list[Line]]) -> list[tuple[float, float]]:
     return [(c[0], c[1]) for c in cols]
 
 
+def _column_of(ln: Line, cols: list[tuple[float, float]]) -> int:
+    """The column holding `ln`: the first one its left edge falls in, else the one nearest its centre (a
+    header cell spanning two columns lands in the first it covers)."""
+    for k, (a, b) in enumerate(cols):
+        if a - 1.0 <= ln.x0 <= b + 1.0:
+            return k
+    mid = (ln.x0 + ln.x1) / 2
+    return min(range(len(cols)), key=lambda k: max(cols[k][0] - mid, mid - cols[k][1], 0.0))
+
+
+def _sparse_pair(group: list[list[Line]], n_cols: int) -> bool:
+    """Two rows that leave a third or more of their cells empty and hold at most one number are a typeset
+    formula, not a table (`Attention(Q, K, V) = softmax(` over `√dk`, numbered `(1)`)."""
+    if len(group) != 2:
+        return False
+    filled = sum(len(r) for r in group)
+    numeric = sum(1 for r in group for ln in r if any(ch.isdigit() for ch in ln.text))
+    return filled <= (2 * n_cols) * 2 / 3 and numeric < 2
+
+
 def detect_tables(lines: list[Line]) -> tuple[list[TableGrid], list[Line]]:
     """Find runs of at least two consecutive multi-cell rows whose cells fall into consistent columns."""
     rows = _rows(lines)
@@ -133,14 +180,19 @@ def detect_tables(lines: list[Line]) -> tuple[list[TableGrid], list[Line]]:
                 break
             j += 1
         group = rows[i:j]
-        cols = _columns(group)
         width = max(len(r) for r in group)
-        if len(group) >= 2 and 2 <= len(cols) <= max(width, 2) + 1:
+        cols = _columns([r for r in group if len(r) == width] if width >= 3 else group)
+        if len(group) >= 2 and 2 <= len(cols) <= max(width, 2) + 1 and not _sparse_pair(group, len(cols)):
             grid = [["" for _ in cols] for _ in group]
+            cell_runs: list[list[list[Run]]] = [[[] for _ in cols] for _ in group]
             for r_i, row in enumerate(group):
                 for ln in row:
-                    c_i = next(k for k, (a, b) in enumerate(cols) if a - 1.0 <= ln.x0 <= b + 1.0)
+                    c_i = _column_of(ln, cols)
                     grid[r_i][c_i] = (grid[r_i][c_i] + " " + ln.text).strip()
+                    if cell_runs[r_i][c_i] and ln.runs:
+                        t, h, sc = cell_runs[r_i][c_i][-1]
+                        cell_runs[r_i][c_i][-1] = (t + " ", h, sc)
+                    cell_runs[r_i][c_i].extend(ln.runs)
                     used.add(ln.order)
             flat = [ln for r in group for ln in r]
             tables.append(
@@ -153,6 +205,7 @@ def detect_tables(lines: list[Line]) -> tuple[list[TableGrid], list[Line]]:
                     rows=grid,
                     header=all(ln.bold for ln in group[0]) and not all(ln.bold for ln in group[-1]),
                     order=min(ln.order for ln in flat),
+                    runs=cell_runs,
                 )
             )
             i = j
