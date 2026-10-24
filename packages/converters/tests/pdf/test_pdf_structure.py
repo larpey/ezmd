@@ -418,6 +418,12 @@ def test_glyph_mapped_to_its_text_twice_is_one_character(tmp_path: Path) -> None
     assert [ln.text for ln in _page_lines_of(path)] == ["A plan"]
 
 
+def test_ligature_spelled_by_tounicode_keeps_both_letters(tmp_path: Path) -> None:
+    """TeX fonts map the ff glyph to "ff" (two characters, one box): a ligature, not a doubling font."""
+    path = _pdf_with_cmap(tmp_path, "coeAicients", "<41> <00660066>")
+    assert [ln.text for ln in _page_lines_of(path)] == ["coefficients"]
+
+
 def test_unmapped_glyphs_are_kept_and_warned(tmp_path: Path) -> None:
     path = _pdf_with_cmap(tmp_path, "see A here", "<41> <FFFD>")
     doc = convert_path(path)

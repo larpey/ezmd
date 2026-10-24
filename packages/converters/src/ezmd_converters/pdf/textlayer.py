@@ -178,8 +178,15 @@ class _Transform:
         return x, self.h - y
 
 
-def _font_flags(textpage: pdfium.PdfTextPage, index: int, cache: dict[int, tuple[bool, int]]) -> tuple[bool, int]:
-    """(bold, mcid) for the text object that owns character `index`; cached per object."""
+LIGATURE_LETTERS = frozenset("fil")
+"""Letters a TeX font's ToUnicode spells a ligature glyph with ("ff", "fi", "ffl"): two of them in one box are
+one glyph, not a font that doubles every character."""
+
+
+def _font_flags(
+    textpage: pdfium.PdfTextPage, index: int, cache: dict[int, tuple[bool, int, str]]
+) -> tuple[bool, int, str]:
+    """(bold, mcid, font name) for the text object that owns character `index`; cached per object."""
     obj = pdfium_c.FPDFText_GetTextObject(textpage.raw, index)
     key = ctypes.cast(obj, ctypes.c_void_p).value or 0
     hit = cache.get(key)
@@ -192,7 +199,7 @@ def _font_flags(textpage: pdfium.PdfTextPage, index: int, cache: dict[int, tuple
     weight = pdfium_c.FPDFText_GetFontWeight(textpage.raw, index)
     bold = weight >= 600 or any(w in name for w in ("bold", "black", "heavy", "semibold", "demi"))
     mcid = pdfium_c.FPDFPageObj_GetMarkedContentID(obj) if obj else -1
-    cache[key] = (bold, int(mcid))
+    cache[key] = (bold, int(mcid), name)
     return cache[key]
 
 
@@ -305,7 +312,9 @@ def _glyphs(
 ) -> tuple[list[_Glyph | None], int]:
     """Glyphs in content order; None marks a line break pdfium generated."""
     out: list[_Glyph | None] = []
-    cache: dict[int, tuple[bool, int]] = {}
+    cache: dict[int, tuple[bool, int, str]] = {}
+    repeats: list[tuple[int, str, str]] = []
+    """(index in `out`, font name, character) of each character repeated in the very same box."""
     private = 0
     n = textpage.count_chars()
     pair = False
@@ -334,22 +343,28 @@ def _glyphs(
         if ch.isspace():
             out.append(_SPACE)
             continue
+        if 0xD800 <= code <= 0xDFFF:
+            continue  # an unpaired UTF-16 half (a leftover of a doubled 𝜓) carries no character
         left, bottom, right, top = textpage.get_charbox(i, loose=False)
         box = tf.box(left, bottom, right, top)
+        bold, mcid, font = _font_flags(textpage, i, cache)
         last = out[-1] if out else None
-        # Some fonts' ToUnicode maps a glyph to its text twice ("hi lo hi lo" for 𝜓): a repeat in the very same
-        # box, or a stray half left over from it, is not a second character.
-        same_box = last is not None and (last.x0, last.y0, last.x1, last.y1) == box
-        if same_box and last is not None and (0xD800 <= code <= 0xDFFF or _fold(ch) == last.ch):
-            continue
-        if 0xD800 <= code <= 0xDFFF:
-            continue  # an unpaired UTF-16 half carries no character
-        bold, mcid = _font_flags(textpage, i, cache)
+        if last is not None and (last.x0, last.y0, last.x1, last.y1) == box and _fold(ch) == last.ch:
+            repeats.append((len(out), font, last.ch))
         size, turn, origin = _size_and_frame(textpage, i, tf, box)
         href = _href_at(links, (left + right) / 2, (bottom + top) / 2) if links else None
         for c in _fold(ch):
             out.append(_placed(_Glyph(c, *box, size, bold, mcid, href), turn, origin))
-    return out, private
+    return _drop_doubled(out, repeats), private
+
+
+def _drop_doubled(glyphs: list[_Glyph | None], repeats: list[tuple[int, str, str]]) -> list[_Glyph | None]:
+    """Some fonts' ToUnicode gives every glyph its text twice ("hi lo hi lo" for 𝜓, "LL" for L): their repeats
+    in the very same box are dropped. A font whose only repeats are ligature letters ("ff" for the ff glyph)
+    is spelling ligatures, and keeps them."""
+    doubling = {font for _, font, ch in repeats if ch not in LIGATURE_LETTERS}
+    drop = {k for k, font, _ in repeats if font in doubling}
+    return [g for k, g in enumerate(glyphs) if k not in drop] if drop else glyphs
 
 
 def _compose_accents(glyphs: list[_Glyph | None]) -> list[_Glyph | None]:
