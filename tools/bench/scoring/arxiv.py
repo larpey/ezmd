@@ -160,13 +160,19 @@ def witness(doc_id: str, pdf: Path) -> Witness:
 _DATA_URI = re.compile(r"data:[a-zA-Z0-9.+/-]+;base64,[A-Za-z0-9+/=\s]+")
 
 
+def strip_data_uris(text: str) -> str:
+    """Base64 images a tool embeds (MinerU) replaced by a short placeholder: they are not text, and a
+    tokenizer's pre-split regex can choke on a 300 KB run with no whitespace."""
+    return _DATA_URI.sub("data:image", text)
+
+
 def count_tokens(text: str) -> int:
     """o200k_base tokens of the text a user would feed a model. Images a tool embeds as base64 data URIs
     (MinerU) are not text and are counted as one placeholder each; a model API takes them as images, not
     tokens of Markdown."""
     import tiktoken
 
-    return len(tiktoken.get_encoding("o200k_base").encode(_DATA_URI.sub("data:image", text), disallowed_special=()))
+    return len(tiktoken.get_encoding("o200k_base").encode(strip_data_uris(text), disallowed_special=()))
 
 
 def declared_loss(result: DocResult, run_dir: Path) -> bool | None:

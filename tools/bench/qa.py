@@ -36,7 +36,7 @@ from typing import Any
 
 from tools.bench.corpora import arxiv_root
 from tools.bench.schema import DocResult, read_results
-from tools.bench.scoring.arxiv import WORD, count_tokens, norm, witness
+from tools.bench.scoring.arxiv import WORD, count_tokens, norm, strip_data_uris, witness
 from tools.bench.scoring.text import read_output
 
 DEFAULT_URL = "http://localhost:1234/v1"
@@ -268,7 +268,7 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
         questions = _questions(r.doc_id)
         if not questions:
             return f"{r.tool} {r.doc_id}: no questions"
-        md = read_output(r, run_dir)
+        md = strip_data_uris(read_output(r, run_dir))
         answers: list[str]
         if r.status != "ok" or not md.strip():
             answers = [UNKNOWN] * len(questions)
