@@ -68,6 +68,15 @@ gets from the converted file, with the PDF itself as the witness, so the compari
   profile, 41,000 from MinerU, 47,000 from MarkItDown and from ezmd's rag profile, and 18,000 from compact, which
   cuts at 16,000 o200k tokens. ezmd's default output does not save tokens over Docling today; the fixes listed
   below are what would change that.
+- **Against uploading the PDF itself.** The same endpoint counts the PDF as a document block, which is what
+  Claude charges when a user attaches the paper instead of converting it: the extracted text plus an image of
+  every page. Over the 28 papers within the API's limits (100 pages, 32 MB) that is 3,054 Claude tokens per page,
+  so converted Markdown costs 37% of the upload from ezmd's compact profile, 47% from Docling, 55% from ezmd's
+  full profile and 69% from MarkItDown. This is a cost comparison, not a quality one: the upload also gives the
+  model the figures, tables and layout as images, which no text converter's output carries, and how well Claude
+  answers from the raw PDF was not measured (it would cost about 85,000 tokens a paper). The right way to get the
+  pictures back without paying for every page is a placeholder in the Markdown and the cropped figure in the
+  sidecar, fetched on demand; that is on the [roadmap](roadmap.md).
 
 Paper-level columns are means over the 30 papers, except source recall (27 papers with a source) and outline recall
 (24 papers with bookmarks); answer accuracy covers the 148 questions across the 30 papers and is the one column shown

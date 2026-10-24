@@ -33,6 +33,11 @@ uv run python -m tools.bench score --corpus arxiv --date D
 uv run python -m tools.bench report --date D
 ```
 
+`tokens --corpus arxiv --date D [--pdf]` adds exact Claude token counts of every output through Anthropic's free
+`count_tokens` endpoint (key from `ANTHROPIC_API_KEY` or keyring `anthropic`/`api_key`; cached by content hash
+under the run, so a rerun makes no request), and with `--pdf` the cost of uploading each source PDF as-is, the
+baseline the scorer reports every tool's output against. Re-run `score` afterwards.
+
 The `arxiv-damaged` corpus (`tools/bench/damage.py`) puts a known hole in each of ten papers: every page
 rendered to an image (a scan), a block of a fifth of the pages rendered to images, and the file truncated at
 80% of its bytes. The witness is the intact paper, so the scorer (`tools/bench/scoring/damaged.py`) knows what

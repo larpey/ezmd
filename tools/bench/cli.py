@@ -119,11 +119,12 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--tools")
     p.add_argument("--date", default=today)
     p.add_argument("--model", default=None, help="model whose tokenizer counts; default claude-sonnet-5-5")
+    p.add_argument("--pdf", action="store_true", help="also count each source PDF uploaded as-is (the baseline)")
     args = ap.parse_args(argv)
     if args.cmd == "tokens":
         from tools.bench.tokens import main as tokens
 
-        return tokens(run_dir(args.date, args.corpus), _names(args.tools), model=args.model)
+        return tokens(run_dir(args.date, args.corpus), _names(args.tools), model=args.model, pdf=args.pdf)
     if args.cmd == "install":
         from tools.bench.install import main as install
 

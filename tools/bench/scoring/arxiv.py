@@ -230,10 +230,11 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
     lost = rec < 1.0 - LOSS_THRESHOLD
     declared = declared_loss(result, run_dir)
     tokens = count_tokens(md) if ok else None
-    from tools.bench.tokens import cached_record  # exact Claude count when `tokens` has run (cycle-free here)
+    from tools.bench.tokens import cached_pdf_count, cached_record  # Claude counts when `tokens` has run
 
     claude_record = cached_record(run_dir, result) if ok else None
     claude = claude_record["tokens"] if claude_record else None
+    pdf_upload = cached_pdf_count(run_dir, result.doc_id, inputs[result.doc_id])
     qa = qa_scores(result, run_dir)
     out: dict[str, float | None] = {
         "arxiv-text-recall": round(rec, 4),
@@ -251,8 +252,26 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
         "tokens": None if tokens is None else float(tokens),
         "text_layer_source_recall": w.text_layer_source_recall,
         "claude_model": claude_record["model"] if claude_record else None,
+        "claude_pdf_upload": None if pdf_upload is None else float(pdf_upload),
+        "claude_share_of_pdf_upload": (round(claude / pdf_upload, 4) if claude is not None and pdf_upload else None),
     }
     return out
+
+
+def _mean(values: list[float | None]) -> float | None:
+    kept = [v for v in values if v is not None]
+    return round(sum(kept) / len(kept), 4) if kept else None
+
+
+def _mean_ratio(per_doc: dict[str, dict[str, float | None]], key: str, inputs: dict[str, Path]) -> float | None:
+    """Mean of per_doc[key] per PDF page over the documents that have the value."""
+    rows = []
+    for doc_id, v in per_doc.items():
+        if v.get(key) is not None:
+            pages = witness(doc_id, inputs[doc_id]).pages
+            if pages:
+                rows.append(float(v[key]) / pages)  # type: ignore[arg-type]
+    return round(sum(rows) / len(rows), 1) if rows else None
 
 
 def _inputs(run_dir: Path) -> dict[str, Path]:
@@ -298,6 +317,14 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
             "text_layer_source_recall": {"value": round(sum(refs) / len(refs), 4) if refs else None},
             # The model whose tokenizer produced arxiv-claude-tokens-per-page (tools/bench/tokens.py --model).
             "claude_model": {"value": sorted({v["claude_model"] for v in per_doc.values() if v["claude_model"]})},
+            # The baseline every tool is measured against: Claude tokens charged for uploading the PDF itself
+            # (its text plus an image of each page), per page, over the papers that were counted; and this tool's
+            # converted output as a share of that.
+            "claude_pdf_upload_tokens_per_page": {"value": _mean_ratio(per_doc, "claude_pdf_upload", inputs)},
+            "claude_share_of_pdf_upload": {
+                "value": _mean([v["claude_share_of_pdf_upload"] for v in per_doc.values()]),
+                "n": sum(1 for v in per_doc.values() if v["claude_share_of_pdf_upload"] is not None),
+            },
             "lost_rate": {"value": round(sum(lost) / len(lost), 4) if lost else None},
             "declared_rate": {"value": round(sum(declared) / len(declared), 4) if declared else None},
             "false_alarm_rate": {

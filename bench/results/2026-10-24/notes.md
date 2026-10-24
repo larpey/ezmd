@@ -65,3 +65,10 @@
   1.26, compact 1.13 -> 1.50, MarkItDown 1.69 -> 1.45, pymupdf4llm 4.84 -> 4.66, Docling 6.74 -> 5.75, MinerU
   15.60 -> 12.55. The GPU tools gained 15 to 20%; the CPU tools moved within noise. `docs/benchmarks.md` reports
   the clean pass.
+- Claude token counts (`tokens --corpus arxiv --date 2026-10-24 --pdf`, model claude-sonnet-5-5; Sonnet, Opus
+  and Haiku return the same count, checked on 2301.00845: 31,802 each): every output of every tool, and the raw
+  PDF upload of 28 of the 30 papers (2604.27899 has 108 pages and 2605.03239 is 29.7 MB, 39.6 MB as base64;
+  the API takes 100 pages and 32 MB). Upload: 3,054 Claude tokens per page. Output as a share of the upload:
+  compact 0.37, Docling 0.47, pymupdf4llm 0.52, ezmd main 0.55, ezmd 0.1.0 0.56, MinerU 0.59, rag 0.67,
+  MarkItDown 0.69. These live in scores.json `secondary` (`claude_pdf_upload_tokens_per_page`,
+  `claude_share_of_pdf_upload`), not in the category tables.

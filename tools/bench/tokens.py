@@ -131,11 +131,128 @@ def count_run(
     return counted
 
 
-def main(run_dir: Path, tools: list[str] | None, *, model: str | None = None) -> int:
+PDF_MAX_PAGES = 100
+PDF_MAX_BYTES = 32 * 1024 * 1024
+"""The API accepts PDF documents of up to this many pages and this many bytes of base64; larger papers get no
+upload count."""
+
+
+def count_pdf_remote(pdf_bytes: bytes, model: str, key: str) -> int:
+    """What Claude charges for the PDF itself as a document block: its text plus an image of every page."""
+    import base64
+
+    block = {
+        "type": "document",
+        "source": {"type": "base64", "media_type": "application/pdf", "data": base64.b64encode(pdf_bytes).decode()},
+    }
+    body = json.dumps({"model": model, "messages": [{"role": "user", "content": [block]}]}).encode("utf-8")
+    req = urllib.request.Request(
+        ENDPOINT,
+        data=body,
+        method="POST",
+        headers={"x-api-key": key, "anthropic-version": API_VERSION, "content-type": "application/json"},
+    )
+    for attempt in range(RETRIES):
+        try:
+            with urllib.request.urlopen(req, timeout=300) as resp:  # noqa: S310 (fixed https endpoint)
+                return int(json.loads(resp.read())["input_tokens"])
+        except urllib.error.HTTPError as exc:
+            if exc.code in (429, 500, 502, 503, 529) and attempt + 1 < RETRIES:
+                time.sleep(2**attempt)
+                continue
+            detail = exc.read()[:200].decode("utf-8", "replace")
+            raise RuntimeError(f"count_tokens HTTP {exc.code}: {detail}") from None
+    raise RuntimeError("count_tokens: retries exhausted")
+
+
+def pdf_cache_path(run_dir: Path, doc_id: str) -> Path:
+    return run_dir / "tokens" / "claude" / "pdf-upload" / f"{doc_id}.json"
+
+
+def cached_pdf_count(run_dir: Path, doc_id: str, pdf: Path) -> int | None:
+    """Claude tokens of uploading this document's PDF as-is, when `tokens --pdf` has counted these bytes."""
+    path = pdf_cache_path(run_dir, doc_id)
+    if not path.exists() or not pdf.exists():
+        return None
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if data.get("sha256") != hashlib.sha256(pdf.read_bytes()).hexdigest() or data.get("tokens") is None:
+        return None
+    return int(data["tokens"])
+
+
+def count_pdfs(
+    run_dir: Path,
+    *,
+    model: str = DEFAULT_MODEL,
+    counter: Callable[[bytes, str], int] | None = None,
+    pages_of: Callable[[Path], int] | None = None,
+) -> int:
+    """Count the raw PDF upload of every document in the run's docs.json (cached by the file's hash). Documents
+    over PDF_MAX_PAGES get a record with `tokens: null` so they are skipped, not retried. Returns the number of
+    documents with a count."""
+    if counter is None:
+        key = api_key()
+        if not key:
+            raise SystemExit("no Anthropic API key: set ANTHROPIC_API_KEY or store it in keyring (anthropic/api_key)")
+
+        def counter(pdf_bytes: bytes, model: str) -> int:
+            return count_pdf_remote(pdf_bytes, model, key)
+
+    if pages_of is None:
+
+        def pages_of(pdf: Path) -> int:
+            import pypdfium2 as pdfium
+
+            doc = pdfium.PdfDocument(str(pdf))
+            try:
+                return len(doc)
+            finally:
+                doc.close()
+
+    docs = json.loads((run_dir / "docs.json").read_text(encoding="utf-8"))["documents"]
+    counted = 0
+    for doc in docs:
+        pdf = Path(str(doc["input"]))
+        if pdf.suffix.lower() != ".pdf" or not pdf.exists():
+            continue
+        data = pdf.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        path = pdf_cache_path(run_dir, str(doc["id"]))
+        if path.exists():
+            cached = json.loads(path.read_text(encoding="utf-8"))
+            if cached.get("sha256") == digest and cached.get("model") == model:
+                counted += cached.get("tokens") is not None
+                continue
+        pages = pages_of(pdf)
+        too_big = pages > PDF_MAX_PAGES or len(data) * 4 // 3 > PDF_MAX_BYTES  # the API measures the base64
+        tokens = None if too_big else counter(data, model)
+        record: dict[str, Any] = {
+            "tokens": tokens,
+            "model": model,
+            "sha256": digest,
+            "pages": pages,
+            "bytes": len(data),
+        }
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(record), encoding="utf-8")
+        counted += tokens is not None
+        note = (
+            f"{tokens} tokens"
+            if tokens is not None
+            else f"skipped ({pages} pages, {len(data) // 1024} KB; the API takes {PDF_MAX_PAGES} pages, 32 MB base64)"
+        )
+        print(f"pdf-upload {doc['id']}: {note}", flush=True)
+    return counted
+
+
+def main(run_dir: Path, tools: list[str] | None, *, model: str | None = None, pdf: bool = False) -> int:
     if not (run_dir / "results.jsonl").exists():
         print(f"no results under {run_dir}", file=sys.stderr)
         return 1
     counted = count_run(run_dir, tools, model=model or DEFAULT_MODEL)
     for tool, n in sorted(counted.items()):
         print(f"{tool}: {n} documents counted")
+    if pdf:
+        n = count_pdfs(run_dir, model=model or DEFAULT_MODEL)
+        print(f"pdf-upload: {n} documents counted")
     return 0

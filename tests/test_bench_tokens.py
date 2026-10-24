@@ -70,6 +70,40 @@ def test_cached_count_is_none_when_missing_or_stale(tmp_path: Path) -> None:
     assert tokens.cached_count(run, r) is None
 
 
+def test_count_pdfs_caches_by_file_hash_and_skips_long_documents(tmp_path: Path) -> None:
+    run = _run(tmp_path)
+    short, long = tmp_path / "short.pdf", tmp_path / "long.pdf"
+    short.write_bytes(b"%PDF short")
+    long.write_bytes(b"%PDF long")
+    docs = {"documents": [{"id": "d1", "input": str(short)}, {"id": "d2", "input": str(long)}]}
+    (run / "docs.json").write_text(json.dumps(docs), encoding="utf-8")
+    calls: list[bytes] = []
+
+    def fake(data: bytes, model: str) -> int:
+        calls.append(data)
+        return 1000 * len(data)
+
+    pages = {short: 10, long: tokens.PDF_MAX_PAGES + 1}
+    assert tokens.count_pdfs(run, model="m", counter=fake, pages_of=lambda p: pages[p]) == 1
+    assert calls == [b"%PDF short"]  # the long document is recorded as skipped, never sent
+    assert tokens.cached_pdf_count(run, "d1", short) == 10_000
+    assert tokens.cached_pdf_count(run, "d2", long) is None
+    assert tokens.count_pdfs(run, model="m", counter=fake, pages_of=lambda p: pages[p]) == 1
+    assert len(calls) == 1  # cached, including the skip
+    short.write_bytes(b"%PDF other")
+    assert tokens.cached_pdf_count(run, "d1", short) is None
+    # a file over the byte limit is skipped the same way
+    big = tmp_path / "big.pdf"
+    big.write_bytes(b"%PDF" + b"0" * 64)
+    (run / "docs.json").write_text(json.dumps({"documents": [{"id": "d3", "input": str(big)}]}), encoding="utf-8")
+    tokens.PDF_MAX_BYTES, saved = 16, tokens.PDF_MAX_BYTES
+    try:
+        assert tokens.count_pdfs(run, model="m", counter=fake, pages_of=lambda p: 1) == 0
+    finally:
+        tokens.PDF_MAX_BYTES = saved
+    assert len(calls) == 1 and tokens.cached_pdf_count(run, "d3", big) is None
+
+
 def test_count_run_without_a_key_exits_with_a_message(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     run = _run(tmp_path)
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
