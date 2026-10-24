@@ -684,3 +684,13 @@ Decision: `text.plain` and `text.markdown_passthrough` read at most `extra.text.
 Alternatives: lowering the API's anonymous upload cap would also refuse large PDFs and archives, whose converters stream; raising worker memory only moves the cliff.
 Consequences: a 199 MB text upload converts its first 50 MB instead of failing. Converters that fall back to `text.plain` (source files, unknown `text/*`) get the same cap.
 Council: not convened (spec conformance fix).
+
+## D-0072: Digit superscripts and subscripts render as Unicode script characters
+Date: 2026-10-23
+Task: PDF text-layer structure fixes (Attention Is All You Need conversion)
+Status: accepted
+Context: docs/internal/spec/part3.md section 17 renders superscript and subscript spans as `^2^` / `~2~` only with `extended_markdown=true`, and otherwise as plain text, keeping any Unicode superscript characters the source had. Once the PDF text layer marks raised glyphs as superscripts, that rule turns `1.0 · 10^20` FLOPs into `1.0 · 1020` and `d^2` into `d2` in every default profile, which changes the meaning of numbers.
+Decision: without extended Markdown, a superscript or subscript span made only of digits, `+`, `-`, `−`, `=`, `(` and `)` renders as the Unicode script characters (`10²⁰`, `H₂O`). Any other span, such as letters or footnote symbols like `∗`, stays plain text as the spec says. Extended Markdown is unchanged.
+Alternatives: keep plain text (meaning lost for every exponent); `^20` without the closing caret (not Markdown, and ambiguous next to text); always use `^x^` (not CommonMark, so the spec gates it on `extended_markdown`).
+Consequences: footnote markers in the text-layer engine now read `meters.¹` instead of `meters.1`, and the `pdf/footnotes-running-header` golden changes accordingly. DOCX, ODF, PPTX, EPUB and HTML superscripts get the same rendering. The spec line in part3.md section 17 needs amending to match.
+Council: not convened (reviewer-flagged spec deviation; open to owner revision).

@@ -91,7 +91,8 @@ engine and, without the `docs` extra, fails with the install command.
 ## Warnings
 
 `encrypted_no_password`, `copy_restricted_ignored`, `attachment_skipped`, `removed_script_or_macro`,
-`unsupported_feature` (XFA), `page_cap_reached`, `pages_without_text`, `ocr_unavailable`, `engine_fallback`,
+`unsupported_feature` (XFA), `page_cap_reached`, `pages_without_text`, `unmapped_glyphs`, `ocr_unavailable`,
+`engine_fallback`,
 `reading_order_uncertain`, `heading_source_structure_tree`, `structure_tree_unusable`,
 `removed_running_header_footer`, `equation_unrecognized` (Docling), `removed_hidden_elements`, `timeout_partial`,
 `extraction_empty`.

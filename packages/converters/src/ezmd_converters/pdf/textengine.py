@@ -10,17 +10,16 @@ import pypdfium2 as pdfium  # type: ignore[import-untyped]
 from ezmd.core.textclean import CleanStats
 from ezmd.ir import Block, Document, Warning, WarningKind
 from ezmd.registry import ConversionError, ConvertOptions
-from ezmd_converters.pdf.assemble import Assembler, HeadingSources, PageGeom, vocabulary
+from ezmd_converters.pdf.assemble import Assembler, PageGeom, vocabulary
 from ezmd_converters.pdf.common import ScanReport, classify, ocr_stub, scan_warnings
+from ezmd_converters.pdf.headings import HeadingSources, page_title, plan_headings
 from ezmd_converters.pdf.layout import (
     Item,
     body_font_size,
     detect_tables,
     interleaved,
-    norm_text,
     order_items,
     running_lines,
-    size_levels,
 )
 from ezmd_converters.pdf.ocr import ocr_page
 from ezmd_converters.pdf.options import PdfOptions
@@ -60,16 +59,11 @@ def read_text_layer(path: str, info: PdfInfo, options: ConvertOptions) -> TextLa
 
 
 def heading_sources(layer: TextLayer, info: PdfInfo, popts: PdfOptions, skip: set[int]) -> HeadingSources:
-    body = body_font_size(layer.pages)
-    src = HeadingSources(sizes=size_levels(layer.pages, body, skip))
+    src = plan_headings(layer.pages, body_font_size(layer.pages), info.outline, skip)
     if info.struct_state == "usable" and popts.structure_tree != "ignore":
         src.struct = info.struct_headings
         src.use_struct = True
         src.struct_only = popts.structure_tree == "only"
-    for level, title, page in info.outline:
-        key = norm_text(title)
-        src.outline.setdefault((key, page), level)
-        src.outline_any.setdefault(key, level)
     return src
 
 
@@ -78,6 +72,8 @@ def text_document(doc: Document, path: str, info: PdfInfo, popts: PdfOptions, op
     layer = read_text_layer(path, info, options)
     running = set() if popts.keep_running_headers else running_lines(layer.pages)
     headings = heading_sources(layer, info, popts, running)
+    if doc.metadata.title is None:
+        doc.metadata.title = page_title(layer.pages, headings.body, running)
     all_lines = [ln for p in layer.pages for ln in p.lines if ln.order not in running]
     asm = Assembler(doc.metadata.source, "pdfium", headings, vocabulary(all_lines), popts.dehyphenate)
     rep = classify(layer.pages, popts)
@@ -135,6 +131,20 @@ def _warnings(
             )
         )
     heading_warnings(doc, headings, info)
+    unmapped = [(p.number, p.unmapped) for p in layer.pages if p.unmapped]
+    if unmapped:
+        listed = ",".join(str(n) for n, _ in unmapped)
+        total = sum(c for _, c in unmapped)
+        doc.warnings.append(
+            Warning(
+                kind=WarningKind.UNMAPPED_GLYPHS,
+                message=f"{total} character(s) have no text mapping in the PDF's fonts (shown as U+FFFD) on page(s) "
+                f"{listed}.",
+                page=unmapped[0][0],
+                count=total,
+                detail={"pages": listed},
+            )
+        )
     if uncertain:
         listed = ",".join(str(n) for n in uncertain)
         doc.warnings.append(
