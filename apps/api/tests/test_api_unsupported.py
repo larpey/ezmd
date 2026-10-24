@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import os
+import random
 from collections.abc import Callable
 from typing import Any
 
@@ -10,6 +10,10 @@ import pytest
 
 from ezmd_api.settings import Settings
 from ezmd_api.testing import api_client, upload, wait_for_state
+
+# Seeded so the bytes never look like a real format (os.urandom once began like a DOS executable on macOS CI,
+# turning `no_converter` into `executable`); same approach as packages/core/tests/test_detect.py.
+NOISE = bytes([0xA5]) + random.Random(20261023).randbytes(4095)
 
 
 def _detected(mime: str, label: str | None = None) -> Callable[[Any], Any]:
@@ -24,7 +28,7 @@ def _detected(mime: str, label: str | None = None) -> Callable[[Any], Any]:
 
 async def test_unknown_binary_upload_is_415_with_no_job(settings_factory: Callable[..., Settings]) -> None:
     async with api_client(settings_factory()) as (client, app):
-        r = await upload(client, os.urandom(4096), "blob.bin", content_type="application/octet-stream")
+        r = await upload(client, NOISE, "blob.bin", content_type="application/octet-stream")
         assert r.status_code == 415, r.text
         err = r.json()["error"]
         assert err["code"] == "unsupported_media_type"
@@ -40,7 +44,7 @@ async def test_elf_that_detection_names_differently_is_still_415(
 
     monkeypatch.setattr(ezmd.detect, "detect", _detected("application/x-executable-elf", "elf"))
     async with api_client(settings_factory()) as (client, _app):
-        r = await upload(client, b"\x7fELF" + os.urandom(512), "ls", content_type="application/octet-stream")
+        r = await upload(client, b"\x7fELF" + NOISE[:512], "ls", content_type="application/octet-stream")
     assert r.status_code == 415, r.text
     assert r.json()["error"]["code"] == "unsupported_media_type"
 
@@ -69,7 +73,7 @@ async def test_fetched_body_nothing_can_convert_fails_as_unsupported(
             url=url,
             status=200,
             headers={"content-type": "application/octet-stream"},
-            body=os.urandom(4096),
+            body=NOISE,
             resolved_ip="93.184.216.34",
             redirects=[],
             duration_seconds=0.01,

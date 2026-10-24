@@ -35,6 +35,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   page, and a title split across objects ("Eagle" and ": Ethical Dataset ...") joins without a gap.
   Contents entries with dot leaders and lines over 150 characters are never headings.
 
+### Documentation
+- The README says what is true today: ezmd reports what it couldn't convert. "No silent loss" returns when a
+  published benchmark measures it. The opening paragraph is in plain language.
+
 ## [0.1.1] - 2026-10-23
 
 A security release. No code changes; it rebuilds the packages and Docker images on fixed dependencies.
