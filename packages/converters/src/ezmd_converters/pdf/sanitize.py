@@ -82,12 +82,33 @@ def _open(path: Path, passwords: list[str]) -> tuple[pikepdf.Pdf, bool]:
     raise EncryptedNoPassword()
 
 
+def _short_repair(message: str) -> str:
+    """A qpdf warning without the file path it starts with (`<path>: file is damaged` -> `file is damaged`)."""
+    head, sep, tail = message.rpartition(": ")
+    return tail.strip() if sep and ("\\" in head or "/" in head or head.endswith(")")) else message.strip()
+
+
 def sanitize(path: Path, *, passwords: list[str], max_pages: int, source: str) -> Sanitized:
     """Open, strip active content, cap pages, and save a sanitized copy. Raises EncryptedNoPassword or
     UnreadablePdf."""
     pdf, used_password = _open(path, passwords)
     warnings: list[Warning] = []
     try:
+        repairs = [str(w) for w in pdf.get_warnings()]
+        if repairs:
+            # qpdf rebuilt the cross-reference table or skipped unreadable objects: the file opened, but what it
+            # held past the damage (a page's content stream, a font) may be gone, and nothing downstream can tell.
+            warnings.append(
+                Warning(
+                    kind=WarningKind.FILE_REPAIRED,
+                    message=(
+                        f"The PDF was damaged and repaired on open ({len(repairs)} qpdf warning(s)); content past "
+                        "the damage may be missing."
+                    ),
+                    count=len(repairs),
+                    detail={"qpdf": " | ".join(_short_repair(r) for r in repairs[:5])},
+                )
+            )
         if pdf.is_encrypted and not used_password and not pdf.allow.extract:
             warnings.append(
                 Warning(

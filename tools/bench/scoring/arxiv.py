@@ -57,6 +57,7 @@ LOSS_KINDS = frozenset(
         "timeout_hard",
         "unsupported_feature",
         "pages_without_text",
+        "file_repaired",
         "unmapped_glyphs",
         "ocr_unavailable",
         "equation_unrecognized",

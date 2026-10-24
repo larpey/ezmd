@@ -4,6 +4,7 @@ with dehyphenation and inline links, lists, best-effort tables, and page markers
 from __future__ import annotations
 
 import dataclasses
+import itertools
 import re
 from dataclasses import dataclass, field
 
@@ -109,6 +110,46 @@ def _marker(text: str) -> tuple[bool, str, int] | None:
     return None
 
 
+CONTINUE_EM = 0.7
+"""A line this close below the previous one (in ems) continues its paragraph whatever the page's spacing."""
+SPACING_SLACK_EM = 0.35
+"""How much more than the page's typical line gap a continuation may leave: a paragraph break in a
+double-spaced manuscript adds at least half a line, the indent rule catches the ones that add nothing."""
+INDENT_EM = 0.8
+"""A line starting this far right of the paragraph's left edge is indented."""
+MAX_INDENT_EM = 4.0
+"""A first-line indent is at most this wide; a bigger step left is a new block, not a return to the margin."""
+SHORT_LINE_EM = 1.0
+"""A line ending this far before the column's right edge stopped short: the end of a paragraph."""
+
+
+def line_spacing(lines: list[Line]) -> float:
+    """The page's typical vertical gap between consecutive lines of the same size in the same column, in ems:
+    the median over pairs, 0.0 when the page has too few lines to say."""
+    gaps: list[float] = []
+    by_pos = sorted(lines, key=lambda ln: (round(ln.x0 / (2.0 * max(ln.size, 1.0))), ln.y0))
+    for a, b in itertools.pairwise(by_pos):
+        if abs(a.size - b.size) > 0.15 * max(a.size, b.size) or b.x0 > a.x1 or a.x0 > b.x1:
+            continue
+        gap = (b.y0 - a.y1) / max(b.size, 1.0)
+        if -0.2 <= gap <= 2.0:
+            gaps.append(gap)
+    if len(gaps) < 4:
+        return 0.0
+    gaps.sort()
+    return gaps[len(gaps) // 2]
+
+
+def column_right_edges(lines: list[Line]) -> dict[int, float]:
+    """For each line, the right edge of its column: the 90th percentile of x1 over lines that start within two
+    ems of its left edge (so an indented first line still sees its column's edge)."""
+    out: dict[int, float] = {}
+    for ln in lines:
+        peers = sorted(o.x1 for o in lines if abs(o.x0 - ln.x0) <= 2.0 * max(ln.size, 1.0))
+        out[ln.order] = peers[min(len(peers) - 1, int(0.9 * len(peers)))] if peers else ln.x1
+    return out
+
+
 @dataclass(slots=True)
 class _ListState:
     ordered: bool
@@ -132,11 +173,19 @@ class Assembler:
         self._list: _ListState | None = None
         self._geom = PageGeom(1, 612.0, 792.0)
         self._table_tail: tuple[int, Table] | None = None
+        self._spacing = 0.0
+        """The page's typical gap between consecutive body lines, in ems (0.2 to 0.4 single-spaced, about 1.0
+        double-spaced)."""
+        self._right: dict[int, float] = {}
+        """Line order -> right edge of the column that line sits in."""
 
     # -- page level ---------------------------------------------------------
     def page(self, geom: PageGeom, ordered: list[Item], marker: bool) -> None:
         self.flush()
         self._geom = geom
+        lines = [it.line for it in ordered if it.line is not None]
+        self._spacing = line_spacing(lines)
+        self._right = column_right_edges(lines)
         if marker:
             self.blocks.append(
                 PageBreak(page_number=geom.number, provenance=Provenance(source=self.source, source_page=geom.number))
@@ -210,13 +259,27 @@ class Assembler:
         _join(self._runs, ln.runs, self.vocab, self.dehyphenate)
 
     def _continues(self, prev: Line, ln: Line) -> bool:
-        first = self._para[0]
-        return (
-            abs(prev.size - ln.size) <= 0.15 * max(prev.size, ln.size)
-            and -0.2 * ln.size <= ln.y0 - prev.y1 <= 0.7 * ln.size
-            and first.x0 - 2.0 <= ln.x0 <= first.x0 + 3.0 * ln.size
-            and prev.bold == ln.bold
-        )
+        """Does `ln` continue the open paragraph? Same size and weight; a vertical gap no larger than the page's
+        own line spacing allows (single-spaced text continues within 0.7 em, a double-spaced manuscript within
+        its measured spacing plus a little); and a left edge that fits the paragraph: at its left edge, or
+        returning to the margin after an indented first line. A line indented past the paragraph's left edge
+        after a short line is a new paragraph (the first-line indent of body text)."""
+        if abs(prev.size - ln.size) > 0.15 * max(prev.size, ln.size) or prev.bold != ln.bold:
+            return False
+        limit = max(CONTINUE_EM, self._spacing + SPACING_SLACK_EM)
+        if not -0.2 * ln.size <= ln.y0 - prev.y1 <= limit * ln.size:
+            return False
+        left = min(line.x0 for line in self._para)
+        if ln.x0 < left - 2.0:
+            # The first line was indented and this one returns to the margin.
+            return len(self._para) == 1 and left - ln.x0 <= MAX_INDENT_EM * ln.size
+        if ln.x0 > left + INDENT_EM * ln.size:
+            # Indented relative to the paragraph: a new paragraph when the previous line stopped short of the
+            # column's right edge, a continuation (a hanging indent, a centred line) otherwise.
+            right = self._right.get(prev.order, prev.x1)
+            if prev.x1 < right - SHORT_LINE_EM * ln.size:
+                return False
+        return ln.x0 <= left + 3.0 * ln.size
 
     def _lprov(self, lines: list[Line]) -> Provenance:
         return _prov(

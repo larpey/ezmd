@@ -163,3 +163,26 @@ def test_garbage_is_conversion_error(tmp_path: Path) -> None:
 def test_bad_option_value_fails_fast() -> None:
     with pytest.raises(ConversionError, match=r"pdf\.ocr"):
         convert_path(FIXTURES / "simple-table" / "input.pdf", {"pdf.ocr": "sometimes"})
+
+
+def test_repaired_file_is_declared(tmp_path: Path) -> None:
+    """A truncated PDF that qpdf repairs on open converts with `file_repaired`, so the loss past the damage is
+    never silent; an intact file gets no such warning."""
+    src = FIXTURES / "born-digital-report" / "input.pdf"
+    data = src.read_bytes()
+    cut = tmp_path / "cut.pdf"
+    cut.write_bytes(data[: int(len(data) * 0.8)])
+    san = sanitize(cut, passwords=[""], max_pages=10, source="cut.pdf")
+    try:
+        repaired = [w for w in san.warnings if w.kind == WarningKind.FILE_REPAIRED]
+        assert len(repaired) == 1
+        assert repaired[0].count and repaired[0].count >= 1
+        assert "damaged" in str(repaired[0].detail["qpdf"]) or "startxref" in str(repaired[0].detail["qpdf"])
+        assert str(cut) not in str(repaired[0].detail["qpdf"])  # no local paths in a warning
+    finally:
+        san.cleanup()
+    intact = sanitize(src, passwords=[""], max_pages=10, source="input.pdf")
+    try:
+        assert all(w.kind != WarningKind.FILE_REPAIRED for w in intact.warnings)
+    finally:
+        intact.cleanup()

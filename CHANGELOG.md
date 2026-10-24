@@ -19,6 +19,14 @@ All notable changes are generated from Conventional Commits. This project uses s
   `docs/benchmarks.md`.
 
 ### Fixed
+- PDF (text-layer engine): paragraphs in double-spaced manuscripts are no longer one line each. The assembler
+  measures the page's own line spacing and continues a paragraph within it, and treats a first-line indent
+  after a short line as the start of a new paragraph (a hanging indent after a full line still continues). On
+  a double-spaced arXiv paper this turns 1,404 one-line "paragraphs" into 1,031 real ones; the leftovers are
+  display equations.
+- PDF: a damaged file that qpdf repairs on open (truncated, or a broken cross-reference table) now carries a
+  `file_repaired` warning with qpdf's messages, so the content lost past the damage is declared rather than
+  silent (#23, found by the damaged-paper benchmark: 9% of a truncated paper's words gone with no sign).
 - PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
   heading, and a notice set in heading-sized type is a paragraph, not three headings.
 - PDF: outline bookmarks match numbered headings ("3.1 Encoder" for the bookmark "Encoder"), each bookmark is
