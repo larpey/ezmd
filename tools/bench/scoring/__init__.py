@@ -33,6 +33,8 @@ def score_corpus(corpus: str, run_dir: Path, tools: list[str] | None) -> int:
         from tools.bench.scoring.olmocr import score
     elif corpus == "omnidoc":
         from tools.bench.scoring.omnidoc import score
+    elif corpus == "arxiv":
+        from tools.bench.scoring.arxiv import score
     else:
         print(f"no scorer for corpus {corpus}")
         return 2

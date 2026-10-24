@@ -38,6 +38,30 @@ adapter = "ezmd_adapter"
 formats = ["*"]
 license = "Apache-2.0"
 
+[tools.ezmd-main-compact]
+# The same build under the `compact` profile (no frontmatter, no anchors, 16k-token cap): the row that says
+# what the compact output costs in answers, not just what it saves in tokens.
+kind = "venv"
+venv = "ezmd-main"
+requirements = ["ezmd"]
+local = true
+torch = false
+adapter = "ezmd_adapter"
+formats = ["*"]
+license = "Apache-2.0"
+env = { EZMD_BENCH_PROFILE = "compact" }
+
+[tools.ezmd-main-rag]
+kind = "venv"
+venv = "ezmd-main"
+requirements = ["ezmd"]
+local = true
+torch = false
+adapter = "ezmd_adapter"
+formats = ["*"]
+license = "Apache-2.0"
+env = { EZMD_BENCH_PROFILE = "rag" }
+
 [tools.ezmd-docs]
 kind = "venv"
 requirements = ["ezmd[docs]==0.1.0"]

@@ -13,6 +13,7 @@ import tomllib
 from collections import defaultdict
 from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 from tools.bench.config import ROOT, cache_dir
 from tools.bench.schema import Doc
@@ -164,12 +165,47 @@ def web(sample: int | None = None) -> list[Doc]:
     return _sample(docs, sample)
 
 
+ARXIV_MANIFEST = ROOT / "bench" / "corpora" / "arxiv-manifest.json"
+"""109 arXiv papers under CC BY 4.0 (OpenAlex sample, licence re-checked on each paper's arXiv page):
+ids, titles, subject sets and licences. `fetch --only arxiv` downloads the PDFs from arxiv.org."""
+ARXIV_SAMPLE = 30
+
+
+def arxiv_root() -> Path:
+    return corpora_dir() / "arxiv"
+
+
+def arxiv_manifest() -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = json.loads(ARXIV_MANIFEST.read_text(encoding="utf-8"))
+    return entries
+
+
+def _slug(text: str) -> str:
+    return "-".join("".join(ch if ch.isalnum() else " " for ch in text.lower()).split())
+
+
+def arxiv(sample: int | None = ARXIV_SAMPLE) -> list[Doc]:
+    """Whole born-digital papers (not single pages): the documents an LLM user actually feeds a converter.
+    Category = the paper's OpenAlex subject set; the seeded sample is drawn over the whole corpus so a
+    30-paper run keeps the subject mix of the 109."""
+    pdf_dir = arxiv_root() / "papers"
+    docs = []
+    for entry in arxiv_manifest():
+        path = pdf_dir / f"{entry['id']}.pdf"
+        if path.exists():
+            meta = {"title": entry["title"], "license": entry["license"], "year": entry.get("year")}
+            docs.append(Doc("arxiv", str(entry["id"]).replace(".", "_"), path, _slug(entry["set"]), meta))
+    docs.sort(key=lambda d: d.id)
+    return _sample(docs, sample)
+
+
 CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "smoke": smoke,
     "fixtures": fixtures,
     "olmocr": olmocr,
     "omnidoc": omnidoc,
     "web": web,
+    "arxiv": arxiv,
 }
 
 

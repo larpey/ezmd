@@ -33,12 +33,32 @@ Convert = Callable[[Path], str]
 
 
 def _ezmd() -> tuple[str, Convert]:
+    """ezmd under the profile EZMD_BENCH_PROFILE (default `full`). The document's warnings are written next to
+    the output as `<output>.warnings.json`, so a scorer can tell declared loss from silent loss whatever the
+    profile puts in its frontmatter."""
+    import json
+    import os
+
     import ezmd
 
+    profile = os.environ.get("EZMD_BENCH_PROFILE", "full")
+
     def convert(path: Path) -> str:
-        return str(ezmd.convert(str(path)).markdown)
+        result = ezmd.convert(str(path), profile=profile)
+        warnings = [
+            {"kind": str(getattr(w.kind, "value", w.kind)), "severity": w.severity, "count": w.count, "page": w.page}
+            for w in result.conversion.document.warnings
+        ]
+        truncated = bool(result.frontmatter.get("truncated"))
+        sidecar = {"profile": profile, "truncated": truncated, "warnings": warnings}
+        _SIDECARS[str(path)] = json.dumps(sidecar, ensure_ascii=False)
+        return str(result.markdown)
 
     return metadata.version("ezmd"), convert
+
+
+_SIDECARS: dict[str, str] = {}
+"""Extra JSON a tool wants written next to its output, keyed by input path (ezmd's warnings)."""
 
 
 def _markitdown() -> tuple[str, Convert]:
@@ -197,6 +217,9 @@ def main() -> int:
             out = Path(job["output"])
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(text, encoding="utf-8", newline="\n")
+            sidecar = _SIDECARS.pop(job["input"], None)
+            if sidecar is not None:
+                Path(str(out) + ".warnings.json").write_text(sidecar, encoding="utf-8", newline="\n")
             send({"id": job["id"], "ok": True, "seconds": time.perf_counter() - t0, "chars": len(text)})
         except Exception as exc:
             traceback.print_exc()

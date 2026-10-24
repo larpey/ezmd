@@ -14,7 +14,28 @@ uv run python -m tools.bench report [--date D] # bench/results/<D>/results.json 
 make bench-full                               # all corpora, all tools (hours)
 ```
 
-Corpora: `smoke` (10 fixtures), `fixtures` (all 94), `olmocr`, `omnidoc`, `web`.
+Corpora: `smoke` (10 fixtures), `fixtures` (all 94), `olmocr`, `omnidoc`, `web`, `arxiv` (30 of 109 whole
+CC BY papers; `fetch --only arxiv`).
+
+The `arxiv` corpus measures what a downstream model gets, not a page's edit distance: text recall against the
+PDF's own text layer, **silent loss** (more than 5% of the words gone and no warning raised; only ezmd has a
+warning channel, and its always-on notices such as removed running headers do not count), outline recall
+against the PDF's bookmarks, o200k tokens per page, and answer accuracy. The answers come from a local model
+(`tools/bench/qa.py`, LM Studio by default, nothing leaves the machine):
+
+```bash
+uv run python -m tools.bench run --corpus arxiv --date D       # convert with every tool
+uv run python -m tools.bench qa all --corpus arxiv --date D    # generate questions, answer, grade (local model)
+uv run python -m tools.bench score --corpus arxiv --date D
+uv run python -m tools.bench report --date D
+```
+
+`qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
+`EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
+never from a tool's output, and each must quote the sentence that answers it; a quote that is not in the text
+layer drops the question. Questions are cached under the corpus and shared by every tool and run. The tool rows
+`ezmd-main`, `ezmd-main-compact` and `ezmd-main-rag` are this checkout's code (`local = true` builds the
+wheels) under three profiles; `ezmd` stays the published release.
 
 Everything large lives in `~/.cache/ezmd-bench` (override with `EZMD_BENCH_CACHE`): `venvs/<tool>`, `bin/`,
 `models/`, `corpora/`, `runs/<date>/<corpus>/` (raw outputs, `results.jsonl`, `scores.json`, worker logs).

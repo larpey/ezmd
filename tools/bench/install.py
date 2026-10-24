@@ -139,6 +139,9 @@ def main(names: list[str] | None, *, force: bool) -> int:
             if tool.kind == "docker":
                 subprocess.run([_docker(), "pull", str(tool.extra["image"])], check=True)
                 continue
+            if tool.python.exists() and not force:
+                print(f"{tool.name}: venv exists, skipping (use --force to rebuild)")
+                continue
             links = None
             reqs: tuple[str, ...] | None = None
             if tool.extra.get("local"):

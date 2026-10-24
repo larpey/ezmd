@@ -28,6 +28,8 @@ from tools.bench.corpora import (
     OMNIDOC_GT_REVISION,
     OMNIDOC_PDF_REVISION,
     aeb_root,
+    arxiv_manifest,
+    arxiv_root,
     corpora_dir,
     omnidoc_root,
 )
@@ -117,7 +119,29 @@ def fetch_web() -> None:
     _git_at("https://github.com/scrapinghub/article-extraction-benchmark.git", AEB_REVISION, aeb_root())
 
 
-FETCHERS = {"olmocr": fetch_olmocr, "omnidoc": fetch_omnidoc, "web": fetch_web}
+def fetch_arxiv() -> None:
+    """The papers of bench/corpora/arxiv-manifest.json from arxiv.org, one request every few seconds (arXiv asks
+    that of bulk clients). Every paper is CC BY 4.0 per its arXiv abstract page."""
+    import urllib.request
+
+    out = arxiv_root() / "papers"
+    out.mkdir(parents=True, exist_ok=True)
+    for entry in arxiv_manifest():
+        dest = out / f"{entry['id']}.pdf"
+        if dest.exists() and dest.stat().st_size > 0:
+            continue
+        url = f"https://arxiv.org/pdf/{entry['id']}"
+        req = urllib.request.Request(url, headers={"User-Agent": "ezmd-bench/1 (https://github.com/larpey/ezmd)"})
+        with urllib.request.urlopen(req, timeout=120) as resp:  # noqa: S310 (https URL built from the manifest)
+            data = resp.read()
+        if not data.startswith(b"%PDF"):
+            raise RuntimeError(f"{url}: not a PDF ({data[:40]!r})")
+        dest.write_bytes(data)
+        print(f"arxiv: {dest.name} ({len(data) // 1024} KB)", flush=True)
+        time.sleep(3)
+
+
+FETCHERS = {"olmocr": fetch_olmocr, "omnidoc": fetch_omnidoc, "web": fetch_web, "arxiv": fetch_arxiv}
 
 
 def main(only: list[str] | None) -> int:

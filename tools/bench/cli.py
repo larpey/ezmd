@@ -4,6 +4,7 @@ install  [--tools a,b] [--force]          create competitor environments under t
 run      --corpus NAME [--tools a,b] [--sample N | --split heldout] [--timeout S] [--date YYYY-MM-DD]
 score    --corpus NAME [--date ...]       score raw outputs (per-document scores.jsonl)
 report   [--date ...]                     aggregate into bench/results/<date>/results.json + summary.md
+qa       generate|answer|grade|all --corpus NAME [--date ...] [--tools a,b]   local-model QA (tools/bench/qa.py)
 smoke                                     run + score + report on the smoke corpus with every tool
 """
 
@@ -95,6 +96,14 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("smoke")
     p.add_argument("--date", default=today)
     p.add_argument("--tools")
+    p = sub.add_parser("qa", help="question answering over converted documents with a local model")
+    p.add_argument("step", choices=("generate", "answer", "grade", "all"))
+    p.add_argument("--corpus", required=True)
+    p.add_argument("--tools")
+    p.add_argument("--date", default=today)
+    p.add_argument("--model", default=None, help="model id on the local OpenAI-compatible server")
+    p.add_argument("--base-url", default=None, help="default http://localhost:1234/v1 (LM Studio)")
+    p.add_argument("--workers", type=int, default=4)
     args = ap.parse_args(argv)
     if args.cmd == "install":
         from tools.bench.install import main as install
@@ -118,6 +127,18 @@ def main(argv: list[str] | None = None) -> int:
         from tools.bench.report import write_report
 
         return write_report(args.date)
+    if args.cmd == "qa":
+        from tools.bench.qa import main as qa
+
+        return qa(
+            args.step,
+            args.corpus,
+            run_dir(args.date, args.corpus),
+            _names(args.tools),
+            model=args.model,
+            base_url=args.base_url,
+            workers=args.workers,
+        )
     if args.cmd == "smoke":
         from tools.bench.report import write_report
         from tools.bench.scoring import score_corpus

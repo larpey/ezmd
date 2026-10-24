@@ -1,0 +1,372 @@
+"""Question answering over converted documents with a local model (LM Studio or any OpenAI-compatible server).
+
+    uv run python -m tools.bench qa generate --corpus arxiv --date D   # questions from each PDF's text layer
+    uv run python -m tools.bench qa answer   --corpus arxiv --date D   # each tool's output answers them
+    uv run python -m tools.bench qa grade    --corpus arxiv --date D   # the model grades against the reference
+    uv run python -m tools.bench qa all      --corpus arxiv --date D
+
+Why a text-layer witness: the questions are written from the PDF's own text (pypdfium2), never from any tool's
+output, so no converter gets to choose what is asked. Every question must come with a quote, and a question
+whose quote is not in the text layer is thrown away: that filters invented facts. The same model answers from
+each tool's Markdown with the instruction to say UNKNOWN when the text does not contain the answer, then grades
+each answer against the reference. Grading short factual answers is an easy task for a local model; writing the
+questions is the hard one, which is why their quotes are checked mechanically.
+
+Questions are cached per document under the corpus (`corpora/arxiv/qa/<doc>.json`) and shared by every tool and
+run. Answers and grades go to `<run_dir>/qa/<tool>/<doc>.json`, which tools/bench/scoring/arxiv.py reads.
+
+Determinism: temperature 0 and a fixed seed; the model id and the server are recorded in every file. Nothing
+leaves the machine.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+from typing import Any
+
+from tools.bench.corpora import arxiv_root
+from tools.bench.schema import DocResult, read_results
+from tools.bench.scoring.arxiv import count_tokens, norm, witness
+from tools.bench.scoring.text import read_output
+
+DEFAULT_URL = "http://localhost:1234/v1"
+DEFAULT_MODEL = "openai/gpt-oss-20b"
+CONTEXT_TOKENS = 32_768
+"""Context the model is loaded with; the document is cut to DOC_TOKENS so prompt and answer fit."""
+DOC_TOKENS = 24_000
+QUESTIONS_WANTED = 6
+QUESTIONS_KEPT = 5
+SEED = 20261013
+UNKNOWN = "UNKNOWN"
+
+GENERATE_PROMPT = """You are writing a reading-comprehension test for a scientific paper. Below is the paper's text.
+
+Write {n} question/answer pairs that check whether a reader has the paper's content. Rules:
+- Each answer is a specific fact stated explicitly in the text: a number with its unit, a name, a term, a short
+  phrase. Answers are at most 12 words.
+- Spread the questions over the whole paper: at most one from the abstract, at least two from the second half,
+  and at least one about a numeric result. If the paper has a table, ask one question whose answer is a value
+  in it.
+- Do not ask about figures, images or anything that needs a picture to answer. Do not ask about the authors,
+  the venue or the date.
+- Each pair carries a "quote": the exact sentence or table row from the text that contains the answer, copied
+  verbatim.
+
+Reply with a JSON array only, no prose: [{{"question": "...", "answer": "...", "quote": "..."}}, ...]
+
+PAPER TEXT:
+{text}"""
+
+ANSWER_PROMPT = """Answer each question using only the document below. Reply with the fact asked for, in at most
+12 words, no explanation. If the document does not contain the information, reply exactly {unknown}.
+
+Reply with a JSON array of strings only, one answer per question, in order.
+
+QUESTIONS:
+{questions}
+
+DOCUMENT:
+{text}"""
+
+GRADE_PROMPT = """You are grading short answers against reference answers. For each item decide whether the
+candidate answer states the same fact as the reference: numbers must agree (rounding and unit conversion are
+fine), names and terms must refer to the same thing, extra correct detail is fine, and "{unknown}" or a missing
+answer is wrong.
+
+Reply with a JSON array of booleans only, one per item, in order.
+
+ITEMS:
+{items}"""
+
+
+class Client:
+    """A minimal OpenAI-compatible chat client (standard library only)."""
+
+    def __init__(self, base_url: str, model: str) -> None:
+        self.base_url = base_url.rstrip("/")
+        self.model = model
+
+    def models(self) -> list[str]:
+        with urllib.request.urlopen(f"{self.base_url}/models", timeout=30) as resp:  # noqa: S310 (local server)
+            data = json.load(resp)
+        return [str(m.get("id")) for m in data.get("data", [])]
+
+    def chat(self, prompt: str, *, max_tokens: int) -> str:
+        body = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0,
+            "seed": SEED,
+            "max_tokens": max_tokens,
+            "reasoning_effort": "low",
+        }
+        req = urllib.request.Request(  # noqa: S310 (local server)
+            f"{self.base_url}/chat/completions",
+            data=json.dumps(body).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=1800) as resp:  # noqa: S310 (local server)
+            data = json.load(resp)
+        return str(data["choices"][0]["message"].get("content") or "")
+
+
+_FENCE = re.compile(r"^```[a-zA-Z]*\s*|\s*```$", re.M)
+
+
+def _note(exc: Exception) -> None:
+    """A reply that was not the JSON asked for; the call is retried once."""
+    print(f"qa: retrying after {type(exc).__name__}: {str(exc)[:120]}", file=sys.stderr, flush=True)
+
+
+def parse_json_array(text: str) -> list[Any]:
+    """The first JSON array in a reply (code fences and chatter around it ignored)."""
+    cleaned = _FENCE.sub("", text.strip())
+    start, end = cleaned.find("["), cleaned.rfind("]")
+    if start < 0 or end <= start:
+        raise ValueError(f"no JSON array in reply: {text[:200]!r}")
+    value = json.loads(cleaned[start : end + 1])
+    if not isinstance(value, list):
+        raise ValueError("reply is not a JSON array")
+    return value
+
+
+def cut_tokens(text: str, limit: int) -> str:
+    """The longest prefix of `text` within `limit` o200k tokens (cut at a line end)."""
+    if count_tokens(text) <= limit:
+        return text
+    lo, hi = 0, len(text)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if count_tokens(text[:mid]) <= limit:
+            lo = mid
+        else:
+            hi = mid - 1
+    cut = text[:lo]
+    nl = cut.rfind("\n")
+    return cut[:nl] if nl > lo // 2 else cut
+
+
+def validate_questions(raw: list[Any], text: str) -> list[dict[str, str]]:
+    """Keep pairs whose quote really occurs in the text layer (whitespace and case folded)."""
+    haystack = norm(text)
+    kept: list[dict[str, str]] = []
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        q, a, quote = (str(item.get(k, "")).strip() for k in ("question", "answer", "quote"))
+        if not (q and a and quote) or len(a.split()) > 16:
+            continue
+        if norm(quote) not in haystack:
+            continue
+        kept.append({"question": q, "answer": a, "quote": quote})
+        if len(kept) == QUESTIONS_KEPT:
+            break
+    return kept
+
+
+def qa_dir() -> Path:
+    return arxiv_root() / "qa"
+
+
+def _docs(run_dir: Path) -> list[dict[str, Any]]:
+    docs: list[dict[str, Any]] = json.loads((run_dir / "docs.json").read_text(encoding="utf-8"))["documents"]
+    return docs
+
+
+def generate(client: Client, run_dir: Path, workers: int) -> int:
+    docs = _docs(run_dir)
+    qa_dir().mkdir(parents=True, exist_ok=True)
+
+    def one(doc: dict[str, Any]) -> str:
+        path = qa_dir() / f"{doc['id']}.json"
+        if path.exists():
+            return f"{doc['id']}: cached ({len(json.loads(path.read_text(encoding='utf-8'))['questions'])} questions)"
+        text = cut_tokens(witness(doc["id"], Path(doc["input"])).text, DOC_TOKENS)
+        kept: list[dict[str, str]] = []
+        for _attempt in range(2):
+            reply = client.chat(GENERATE_PROMPT.format(n=QUESTIONS_WANTED, text=text), max_tokens=6000)
+            try:
+                kept = validate_questions(parse_json_array(reply), text)
+            except (ValueError, json.JSONDecodeError) as exc:
+                _note(exc)
+                continue
+            if len(kept) >= 3:
+                break
+        record = {"model": client.model, "server": client.base_url, "doc": doc["id"], "questions": kept}
+        path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
+        return f"{doc['id']}: {len(kept)} questions"
+
+    with ThreadPoolExecutor(workers) as pool:
+        for line in pool.map(one, docs):
+            print(line, flush=True)
+    return 0
+
+
+def _questions(doc_id: str) -> list[dict[str, str]]:
+    path = qa_dir() / f"{doc_id}.json"
+    if not path.exists():
+        return []
+    items: list[dict[str, str]] = json.loads(path.read_text(encoding="utf-8"))["questions"]
+    return items
+
+
+def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int) -> int:
+    results = [r for r in read_results(run_dir / "results.jsonl") if tools is None or r.tool in tools]
+    results = [r for r in results if r.status != "unsupported"]
+
+    def one(r: DocResult) -> str:
+        path = run_dir / "qa" / r.tool / f"{r.doc_id}.json"
+        if path.exists() and all("answer" in it for it in json.loads(path.read_text(encoding="utf-8"))["items"]):
+            return f"{r.tool} {r.doc_id}: cached"
+        questions = _questions(r.doc_id)
+        if not questions:
+            return f"{r.tool} {r.doc_id}: no questions"
+        md = read_output(r, run_dir)
+        answers: list[str]
+        if r.status != "ok" or not md.strip():
+            answers = [UNKNOWN] * len(questions)
+        else:
+            listed = "\n".join(f"{i + 1}. {q['question']}" for i, q in enumerate(questions))
+            prompt = ANSWER_PROMPT.format(unknown=UNKNOWN, questions=listed, text=cut_tokens(md, DOC_TOKENS))
+            answers = []
+            for _attempt in range(2):
+                try:
+                    got = parse_json_array(client.chat(prompt, max_tokens=3000))
+                except (ValueError, json.JSONDecodeError) as exc:
+                    _note(exc)
+                    continue
+                answers = [str(a) if a is not None else UNKNOWN for a in got][: len(questions)]
+                if len(answers) == len(questions):
+                    break
+            if len(answers) != len(questions):
+                answers = (answers + [UNKNOWN] * len(questions))[: len(questions)]
+        items = [{**q, "answer_given": a} for q, a in zip(questions, answers, strict=True)]
+        record = {"model": client.model, "server": client.base_url, "tool": r.tool, "doc": r.doc_id, "items": items}
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
+        return f"{r.tool} {r.doc_id}: {sum(a != UNKNOWN for a in answers)}/{len(answers)} answered"
+
+    with ThreadPoolExecutor(workers) as pool:
+        for line in pool.map(one, results):
+            print(line, flush=True)
+    return 0
+
+
+def grade(client: Client, run_dir: Path, tools: list[str] | None, workers: int) -> int:
+    files = sorted((run_dir / "qa").glob("*/*.json")) if (run_dir / "qa").exists() else []
+    if tools is not None:
+        files = [f for f in files if f.parent.name in tools]
+
+    def one(path: Path) -> str:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        items = record["items"]
+        if all("correct" in it for it in items):
+            return f"{record['tool']} {record['doc']}: cached"
+        pending = [it for it in items if "answer_given" in it]
+        verdicts: list[bool] = []
+        shortcut = [it["answer_given"].strip() == UNKNOWN or not it["answer_given"].strip() for it in pending]
+        to_grade = [it for it, s in zip(pending, shortcut, strict=True) if not s]
+        graded: list[bool] = []
+        if to_grade:
+            listed = "\n".join(
+                f"{i + 1}. question: {it['question']}\n   reference: {it['answer']}\n   candidate: {it['answer_given']}"
+                for i, it in enumerate(to_grade)
+            )
+            prompt = GRADE_PROMPT.format(unknown=UNKNOWN, items=listed)
+            for _attempt in range(2):
+                try:
+                    got = parse_json_array(client.chat(prompt, max_tokens=2000))
+                except (ValueError, json.JSONDecodeError) as exc:
+                    _note(exc)
+                    continue
+                graded = [bool(v) for v in got][: len(to_grade)]
+                if len(graded) == len(to_grade):
+                    break
+            if len(graded) != len(to_grade):
+                graded = (graded + [False] * len(to_grade))[: len(to_grade)]
+        it_graded = iter(graded)
+        verdicts = [False if s else next(it_graded) for s in shortcut]
+        for it, v in zip(pending, verdicts, strict=True):
+            it["correct"] = v
+        record["grader"] = client.model
+        path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
+        return f"{record['tool']} {record['doc']}: {sum(verdicts)}/{len(verdicts)} correct"
+
+    with ThreadPoolExecutor(workers) as pool:
+        for line in pool.map(one, files):
+            print(line, flush=True)
+    return 0
+
+
+def ensure_model(client: Client, workers: int) -> None:
+    """Load the model into LM Studio (`lms`) with the context length this pipeline needs, unless it is up."""
+    try:
+        if client.model in client.models():
+            return
+    except (urllib.error.URLError, OSError):
+        pass
+    lms = shutil.which("lms") or str(Path.home() / ".lmstudio" / "bin" / ("lms.exe" if os.name == "nt" else "lms"))
+    if not Path(lms).exists():
+        raise SystemExit(f"{client.base_url} is not serving {client.model} and lms is not installed to load it")
+    subprocess.run([lms, "server", "start"], check=False, capture_output=True)
+    subprocess.run(
+        [
+            lms,
+            "load",
+            client.model,
+            "--gpu",
+            "max",
+            "--context-length",
+            str(CONTEXT_TOKENS),
+            "--parallel",
+            str(workers),
+            "--identifier",
+            client.model,
+            "-y",
+        ],
+        check=True,
+    )
+    if client.model not in client.models():
+        raise SystemExit(f"{client.model} did not come up on {client.base_url}")
+
+
+def main(
+    step: str,
+    corpus: str,
+    run_dir: Path,
+    tools: list[str] | None,
+    *,
+    model: str | None,
+    base_url: str | None,
+    workers: int,
+) -> int:
+    if corpus != "arxiv":
+        print(f"qa: no witness text for corpus {corpus}", file=sys.stderr)
+        return 2
+    if not (run_dir / "docs.json").exists():
+        print(f"qa: no run under {run_dir} (run the corpus first)", file=sys.stderr)
+        return 1
+    client = Client(
+        base_url or os.environ.get("EZMD_BENCH_LLM_URL", DEFAULT_URL),
+        model or os.environ.get("EZMD_BENCH_LLM_MODEL", DEFAULT_MODEL),
+    )
+    ensure_model(client, workers)
+    steps = ("generate", "answer", "grade") if step == "all" else (step,)
+    rc = 0
+    for s in steps:
+        if s == "generate":
+            rc = rc or generate(client, run_dir, workers)
+        elif s == "answer":
+            rc = rc or answer(client, run_dir, tools, workers)
+        else:
+            rc = rc or grade(client, run_dir, tools, workers)
+    return rc

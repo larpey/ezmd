@@ -19,9 +19,11 @@ from typing import Any
 from tools.bench.config import RESULTS_DIR, cache_dir, load_tools
 from tools.bench.hardware import describe
 from tools.bench.schema import SCHEMA_VERSION, DocResult, read_results
+from tools.bench.scoring.text import is_ezmd
 from tools.bench.stats import paired_diff_ci, percentile
 
-EZMD_TOOLS = ("ezmd", "ezmd-docs")
+EZMD_TOOLS = ("ezmd", "ezmd-docs", "ezmd-main", "ezmd-main-compact", "ezmd-main-rag")
+"""Rows that are ezmd (verdicts are computed for each against the best non-ezmd tool)."""
 MIN_N = 5
 """A competitor needs at least this many scored documents in a category to count as its best, and a verdict
 needs this many documents both tools scored."""
@@ -32,6 +34,12 @@ CATEGORY_LABELS = {
     "omnidoc-table": "PDF, OmniDocBench tables (TEDS)",
     "omnidoc-formula": "PDF, OmniDocBench display formulas (1 - edit distance; CDM off)",
     "web-articles": "Web articles, ScrapingHub AEB (article-body F1)",
+    "arxiv-qa": "arXiv papers, answer accuracy (local-model QA over the converted text)",
+    "arxiv-text-recall": "arXiv papers, text recall (share of the PDF text layer's words kept)",
+    "arxiv-silent-loss": "arXiv papers, silent loss (over 5% of words lost with no warning raised; lower is better)",
+    "arxiv-outline-recall": "arXiv papers, outline recall (PDF bookmarks found as headings)",
+    "arxiv-tokens-per-page": "arXiv papers, o200k tokens per page (lower is better)",
+    "arxiv-answers-per-10k-tokens": "arXiv papers, correct answers per 10k tokens of converted text",
 }
 
 
@@ -61,9 +69,7 @@ def _verdict(cat_scores: dict[str, Any], ezmd: str, higher: bool = True) -> dict
     if not mine or mine.get("value") is None:
         return None
     rivals = {
-        t: s
-        for t, s in cat_scores.items()
-        if t not in EZMD_TOOLS and s.get("value") is not None and s.get("n", 0) >= MIN_N
+        t: s for t, s in cat_scores.items() if not is_ezmd(t) and s.get("value") is not None and s.get("n", 0) >= MIN_N
     }
     if not rivals:
         return None
@@ -80,7 +86,10 @@ def _verdict(cat_scores: dict[str, Any], ezmd: str, higher: bool = True) -> dict
     if len(common) >= MIN_N:
         diff, (lo, hi) = paired_diff_ci([a[k] for k in common], [b[k] for k in common])
         out.update({"paired_n": len(common), "paired_diff": round(diff, 4), "paired_ci": [round(lo, 4), round(hi, 4)]})
-        out["verdict"] = "leads" if lo > 0 else "trails" if hi < 0 else "ties"
+        if higher:
+            out["verdict"] = "leads" if lo > 0 else "trails" if hi < 0 else "ties"
+        else:
+            out["verdict"] = "leads" if hi < 0 else "trails" if lo > 0 else "ties"
     else:
         out["verdict"] = f"not comparable (fewer than {MIN_N} shared documents)"
     return out
@@ -94,7 +103,7 @@ def _categories(corpus: str, scores: dict[str, Any], results: list[DocResult]) -
     cats: dict[str, dict[str, Any]] = defaultdict(dict)
     for tool, s in scores["tools"].items():
         rs = by_tool.get(tool, [])
-        if corpus == "omnidoc":
+        if corpus in ("omnidoc", "arxiv"):
             for cat, v in s["categories"].items():
                 cats[cat][tool] = {**v, "speed": _speed(rs)}
         elif corpus == "olmocr":
@@ -163,6 +172,7 @@ def write_report(date: str) -> int:
         "tools": {},
         "scorecard": {},
         "verdicts": {},
+        "directions": {},
     }
     versions: dict[str, str] = {}
     startup: dict[str, dict[str, float]] = {}
@@ -178,12 +188,15 @@ def write_report(date: str) -> int:
         }
         versions.update(_versions(results))
         startup[corpus] = _startup(run_dir)
+        directions: dict[str, bool] = scores.get("category_direction", {})
         for cat, rows in _categories(corpus, scores, results).items():
+            higher = directions.get(cat, bool(scores.get("higher_is_better", True)))
+            report["directions"][cat] = higher
             report["scorecard"][cat] = {
                 t: {k: v for k, v in row.items() if k != "per_doc"} for t, row in sorted(rows.items())
             }
             if not cat.startswith("fixtures"):  # self-graded: scores only, no leads/trails claims
-                report["verdicts"][cat] = {e: _verdict(rows, e) for e in EZMD_TOOLS if e in rows}
+                report["verdicts"][cat] = {e: _verdict(rows, e, higher) for e in EZMD_TOOLS if e in rows}
     for name, tool in tools.items():
         freeze = tool.venv / "freeze.txt"
         report["tools"][name] = {
@@ -240,7 +253,12 @@ def render_markdown(report: dict[str, Any]) -> str:
             "| tool | metric [95% CI] | n | fail | cov | s/doc med | s/doc p95 | RSS MB med | RSS MB peak |",
             "|---|---|---|---|---|---|---|---|---|",
         ]
-        ranked = sorted(rows.items(), key=lambda kv: -(kv[1]["value"] if kv[1]["value"] is not None else -1))
+        higher = report.get("directions", {}).get(cat, True)
+        missing = -1.0 if higher else float("inf")
+        ranked = sorted(
+            rows.items(),
+            key=lambda kv: (kv[1]["value"] if kv[1]["value"] is not None else missing) * (-1 if higher else 1),
+        )
         skipped = sorted(t for t, r in ranked if not r["speed"]["attempted"])
         for tool, row in ranked:
             sp = row["speed"]
@@ -254,7 +272,7 @@ def render_markdown(report: dict[str, Any]) -> str:
                 if ci
                 else f"{row['value']:.3f}"
             )
-            mark = "*" if tool in EZMD_TOOLS else ""
+            mark = "*" if is_ezmd(tool) else ""
             fail = "n/a" if sp["failure_rate"] is None else f"{sp['failure_rate']:.1%}"
             lines.append(
                 f"| {tool}{mark} | {metric} | {row['n']} | {fail} | {sp['attempted']}/{sp['total']} | "
