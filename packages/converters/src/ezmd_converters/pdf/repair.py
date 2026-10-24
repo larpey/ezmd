@@ -153,11 +153,13 @@ def _content_gone(contents: object, warned: frozenset[int]) -> bool:
 
 
 def _resources(
-    res: object, *, depth: int, seen: set[tuple[int, int]]
+    res: object, *, depth: int, seen: set[tuple[int, int]], holder: tuple[int, int] | None = None
 ) -> Iterator[tuple[str, tuple[int, int] | None, str, object]]:
     """(category, owner, name, object) for every font and XObject a resource dictionary declares, following form
-    XObjects' own resources a few levels down. `owner` is the object number of the /Font or /XObject dictionary
-    holding the entry when that dictionary is indirect (and so may be shared between pages), else None."""
+    XObjects' own resources a few levels down. `owner` identifies the dictionary holding the entry so that one
+    shared between pages counts once and two forms' direct dictionaries stay distinct: the /Font or /XObject
+    dictionary's object number when indirect, else the resource dictionary's, else `holder`, the form XObject
+    the direct dictionary sits in (None for the page's own direct dictionary)."""
     if not isinstance(res, Dictionary):
         return
     groups = _entries(res)
@@ -165,7 +167,7 @@ def _resources(
         group = groups.get(category)
         if not isinstance(group, Dictionary):
             continue
-        owner = group.objgen if group.is_indirect else (res.objgen if res.is_indirect else None)
+        owner = group.objgen if group.is_indirect else (res.objgen if res.is_indirect else holder)
         for name, obj in _entries(group).items():
             yield category, owner, name, obj
             if category == "/XObject" and depth < _FORM_DEPTH and isinstance(obj, Stream):
@@ -174,7 +176,7 @@ def _resources(
                     continue
                 if og is not None:
                     seen.add(og)
-                yield from _resources(_entries(obj).get("/Resources"), depth=depth + 1, seen=seen)
+                yield from _resources(_entries(obj).get("/Resources"), depth=depth + 1, seen=seen, holder=og)
 
 
 def _entries(obj: Dictionary | Stream) -> dict[str, object]:

@@ -51,6 +51,29 @@ trailer << /Root 1 0 R >>
 """
 
 
+# One page draws two form XObjects, each with its own direct resource dictionary whose /F1 is gone: two losses.
+_FORMS = b"""%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Contents 6 0 R
+  /Resources << /XObject << /Fm1 30 0 R /Fm2 31 0 R >> >> >> endobj
+6 0 obj << /Length 18 >>
+stream
+/Fm1 Do /Fm2 Do
+endstream
+endobj
+30 0 obj << /Type /XObject /Subtype /Form /BBox [0 0 100 100] /Resources << /Font << /F1 97 0 R >> >> /Length 0 >>
+stream
+endstream
+endobj
+31 0 obj << /Type /XObject /Subtype /Form /BBox [0 0 100 100] /Resources << /Font << /F1 96 0 R >> >> /Length 0 >>
+stream
+endstream
+endobj
+trailer << /Root 1 0 R >>
+"""
+
+
 def _open(tmp_path: Path, data: bytes) -> pikepdf.Pdf:
     path = tmp_path / "damaged.pdf"
     path.write_bytes(data)
@@ -80,6 +103,13 @@ def test_shared_resources_count_a_missing_font_once_and_a_font_cycle_ends(tmp_pa
         found = assess(pdf)
     assert found.fonts_damaged == 1  # /F1 is gone once, not once per page; the self-referencing /F2 is intact
     assert found.pages_content_damaged == ()
+
+
+def test_two_forms_with_their_own_missing_font_are_two_losses(tmp_path: Path) -> None:
+    with _open(tmp_path, _FORMS) as pdf:
+        found = assess(pdf)
+    assert found.fonts_damaged == 2
+    assert found.pages_figures_missing == ()  # the forms themselves are present, only their fonts are gone
 
 
 def test_cut_stream_named_by_qpdf_counts_as_damaged(tmp_path: Path) -> None:
