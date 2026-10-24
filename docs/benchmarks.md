@@ -272,7 +272,9 @@ reference flags 803 pages for 28 that lost text; the text-mapping subset flags 3
 its program or map loses. So on the 30-paper sample the five repaired truncated files all carry the located
 detail; the one that lost over 5% of its words (`2402.18566`, 91% kept) names page 1, whose second content
 stream is gone, and 16 damaged fonts, and the message says the text set in them may be incomplete on pages it
-cannot pinpoint. Silent loss stays at 0 of 30 and recall is unchanged.
+cannot pinpoint. On the held-out split, 44 of the 46 repaired files carry located detail (42 count fonts, 18 name
+pages that lost a figure, 2 name pages that lost their content stream), and the one that lost over 5%
+(`2605.03112`) names page 6 and 27 fonts. Silent loss stays at 0 of 30 and 0 of 237, and recall is unchanged.
 
 Caveats: ten papers per kind is enough to see the pattern and not enough for narrow intervals; the 5% line is
 the same for a dropped page and an OCR error, which is deliberate (the reader downstream cannot tell them apart)

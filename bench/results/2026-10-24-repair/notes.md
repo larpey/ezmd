@@ -8,13 +8,19 @@ form XObject that is gone (`pages_figures_missing`), and a count of fonts that l
 (`fonts_damaged`). The scorer (`tools/bench/scoring/damaged.py`) gains `located_when_lost`: of the repaired files
 that lost over 5% of their words, the share whose warning carries any of the three.
 
-`damaged-scores.json` is the scorer's output for the 30-paper damaged sample, `ezmd-main` only.
+`damaged-scores.json` is the scorer's output for the 30-paper damaged sample, `damaged-scores-heldout.json` for
+the 237 damaged copies of the 79 held-out papers (`run --split heldout`), `ezmd-main` only.
 
 ## Result
 
-| build | silent loss | trunc: repaired and converted / refused loudly | located when lost | trunc recall | page accuracy |
-|---|---|---|---|---|---|
-| ezmd main (this branch) | 0 of 30 | 5 / 5 | 1 of 1 | 0.486 | 1.00 (20 image variants) |
+| split | silent loss | trunc: repaired and converted / refused loudly | repaired files with located detail | located when lost | trunc recall | page accuracy |
+|---|---|---|---|---|---|---|
+| sample | 0 of 30 | 5 / 5 | 5 of 5 | 1 of 1 | 0.486 | 1.00 (20 image variants) |
+| held out | 0 of 237 | 46 / 33 | 44 of 46 | 1 of 1 | 0.572 | 1.00 (158 image variants) |
+
+Held out: of the 46 repaired files, 42 count damaged fonts, 18 name pages that lost a figure or form, 2 name pages
+that lost their content stream, and 2 locate nothing (the cut fell in objects no page draws). The one file that lost
+over 5% of its words, `2605.03112` (94.7% kept), names page 6 as having lost a figure and 27 damaged fonts.
 
 - All five repaired truncated files carry located detail. The one that lost over 5% of its words, `2402.18566`
   (91% kept), names page 1, whose second content stream (the arXiv stamp) is gone, and 16 damaged fonts. The words
