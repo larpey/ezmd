@@ -7,6 +7,7 @@ sources, revisions and licenses). The ezmd fixture corpus is read in place from 
 from __future__ import annotations
 
 import gzip
+import hashlib
 import json
 import random
 import tomllib
@@ -196,6 +197,10 @@ def arxiv(sample: int | None = ARXIV_SAMPLE) -> list[Doc]:
         if not path.exists():
             missing.append(str(entry["id"]))
             continue
+        want = entry.get("sha256")
+        if want and hashlib.sha256(path.read_bytes()).hexdigest() != want:
+            # arXiv replaces PDFs (new versions, regenerated files); other bytes are another corpus.
+            raise ValueError(f"arxiv: {path.name} does not match the sha256 the manifest pins; refetch it")
         meta = {"title": entry["title"], "license": entry["license"], "year": entry.get("year")}
         docs.append(Doc("arxiv", str(entry["id"]).replace(".", "_"), path, _slug(entry["set"]), meta))
     if missing:

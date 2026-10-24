@@ -153,6 +153,7 @@ def _check_digest(pdf: Path, entry: dict[str, object]) -> None:
         return
     got = hashlib.sha256(pdf.read_bytes()).hexdigest()
     if got != want:
+        pdf.unlink()  # never leave bytes on disk that `arxiv()` could mistake for the pinned paper
         raise RuntimeError(f"arxiv: {pdf.name} has sha256 {got[:12]}..., the manifest pins {str(want)[:12]}...")
 
 
