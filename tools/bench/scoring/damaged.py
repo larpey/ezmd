@@ -44,6 +44,26 @@ def warned_pages(result: DocResult, run_dir: Path) -> set[int] | None:
     return pages
 
 
+LOCATED_KEYS = ("pages_content_damaged", "pages_figures_missing", "fonts_damaged")
+"""`file_repaired` detail keys that place or count a loss, beyond saying the file was repaired."""
+
+
+def located_loss(result: DocResult, run_dir: Path) -> bool | None:
+    """Whether ezmd's `file_repaired` warning located anything (a page whose content stream or figure is gone, or a
+    count of damaged fonts); None for a tool without a warning channel or a result without the warning."""
+    if not is_ezmd(result.tool) or not result.output:
+        return None
+    path = run_dir / (result.output + ".warnings.json")
+    if not path.exists():
+        return None
+    repaired = [
+        w for w in json.loads(path.read_text(encoding="utf-8")).get("warnings", []) if w.get("kind") == "file_repaired"
+    ]
+    if not repaired:
+        return None
+    return any(any(k in (w.get("detail") or {}) for k in LOCATED_KEYS) for w in repaired)
+
+
 def page_accuracy(warned: set[int] | None, damaged: Sequence[int], textless: Sequence[int] = ()) -> float | None:
     """Jaccard overlap of the pages a warning names with the pages that have no text: the damaged ones plus
     any the intact paper never had text on (full-page figures), which a correct warning also names."""
@@ -74,6 +94,8 @@ def score_doc(result: DocResult, run_dir: Path, doc: dict[str, Any]) -> dict[str
     )
     out["lost"] = float(lost)
     out["declared"] = None if declared is None else float(declared)
+    located = located_loss(result, run_dir) if ok else None
+    out["located"] = None if located is None else float(located)
     out["failed"] = float(not ok)
     out["tokens"] = float(count_tokens(md)) if ok else None
     return out
@@ -112,11 +134,17 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
             cats[cat] = {**summarize(list(values.values())), "per_doc": values}
         lost = [v for v in per_doc.values() if v["lost"]]
         declared_when_lost = [v["declared"] for v in lost if v["declared"] is not None]
+        located_when_lost = [v["located"] for v in lost if v["located"] is not None]
         secondary = {
             "lost_rate": {"value": round(len(lost) / len(per_doc), 4)},
             "failed_rate": {"value": round(sum(v["failed"] for v in per_doc.values()) / len(per_doc), 4)},
             "declared_when_lost": {
                 "value": round(sum(declared_when_lost) / len(declared_when_lost), 4) if declared_when_lost else None
+            },
+            # Of the repaired files that lost text, the share whose warning said where (or in which fonts).
+            "located_when_lost": {
+                "value": round(sum(located_when_lost) / len(located_when_lost), 4) if located_when_lost else None,
+                "n": len(located_when_lost),
             },
         }
         tools[tool] = {
