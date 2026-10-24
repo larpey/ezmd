@@ -4,6 +4,10 @@ All notable changes are generated from Conventional Commits. This project uses s
 
 ## [Unreleased]
 
+### Documentation
+- The README says what is true today: ezmd reports what it couldn't convert. "No silent loss" returns when a
+  published benchmark measures it. The opening paragraph is in plain language.
+
 ## [0.1.1] - 2026-10-23
 
 A security release. No code changes; it rebuilds the packages and Docker images on fixed dependencies.
