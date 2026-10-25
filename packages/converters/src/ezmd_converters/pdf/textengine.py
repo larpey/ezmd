@@ -71,10 +71,11 @@ def heading_sources(layer: TextLayer, info: PdfInfo, popts: PdfOptions, skip: se
 def text_document(doc: Document, path: str, info: PdfInfo, popts: PdfOptions, options: ConvertOptions) -> None:
     """Fill `doc` with blocks from the text layer of the sanitized PDF at `path`."""
     layer = read_text_layer(path, info, options)
-    running = set() if popts.keep_running_headers else running_lines(layer.pages)
-    # Lettering inside figure forms is kept apart from the page's text: it is never a heading, a title, a table
-    # or part of a paragraph; each figure's lettering becomes one paragraph where the figure sits.
+    # Lettering inside figure forms is kept apart from the page's text: it is never a heading, a title, a table,
+    # part of a paragraph or a running header (the same axis title at the foot of a figure on several pages is
+    # not furniture); each figure's lettering becomes one paragraph where the figure sits.
     lettering = {ln.order for p in layer.pages for ln in p.lines if 0 <= ln.figure < len(p.figures)}
+    running = set() if popts.keep_running_headers else running_lines(layer.pages) - lettering
     hidden = running | lettering
     headings = heading_sources(layer, info, popts, hidden)
     if doc.metadata.title is None:

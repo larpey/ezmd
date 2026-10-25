@@ -280,9 +280,12 @@ def _href_at(links: list[tuple[Rect, str]], cx: float, cy: float) -> str | None:
 OBJECT_DEPTH = 4
 """How many levels of nested form XObjects are read for images and figures."""
 FIGURE_MIN_GRAPHICS = 3
-"""A form XObject with at least this many path or image objects, and some text, is a figure: an included plot or
-diagram whose lettering (axis ticks, legend, panel labels) is drawn with the graphics. A form with fewer is a
-logo or a framed text box and its text stays on the page."""
+"""A form XObject with at least this many shapes (images, or paths wider and taller than `RULE_PT`), and some text,
+is a figure: an included plot or diagram whose lettering (axis ticks, legend, panel labels) is drawn with the
+graphics. A form with fewer is a logo, a framed text box or a ruled table (rules are thin paths), and its text
+stays on the page."""
+RULE_PT = 2.0
+"""A path no wider or no taller than this is a rule (a table line, an axis, a frame edge), not a shape."""
 PROSE_LINE_CHARS = 40
 """A form whose text lines are mostly this long or longer is an included page or a text box, not a figure, and
 its lines go back to the page. Lettering (ticks, legend entries, labels) is short."""
@@ -344,8 +347,12 @@ def figure_forms(
         while top.container is not None:
             top = top.container
         form = forms.setdefault(ctypes.cast(top.raw, ctypes.c_void_p).value or 0, _Form(top))
-        if obj.type in (pdfium_c.FPDF_PAGEOBJ_PATH, pdfium_c.FPDF_PAGEOBJ_IMAGE):
+        if obj.type == pdfium_c.FPDF_PAGEOBJ_IMAGE:
             form.graphics += 1
+        elif obj.type == pdfium_c.FPDF_PAGEOBJ_PATH:
+            x0, y0, x1, y1 = _page_bounds(obj)
+            if x1 - x0 > RULE_PT and y1 - y0 > RULE_PT:
+                form.graphics += 1
         elif obj.type == pdfium_c.FPDF_PAGEOBJ_TEXT:
             form.text.append(ctypes.cast(obj.raw, ctypes.c_void_p).value or 0)
     boxes: list[Rect] = []
@@ -597,7 +604,13 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
             em = max(last.size, g.size, 1.0)
             gap = g.along[0] - last.along[1]
             backwards = g.along[1] < last.along[0] - 0.5 * em
-            split = g.turn != last.turn or not _same_line(last, g, em) or gap > GAP_EM * em or backwards
+            split = (
+                g.turn != last.turn
+                or g.figure != last.figure  # a figure's edge label next to page text on the same baseline
+                or not _same_line(last, g, em)
+                or gap > GAP_EM * em
+                or backwards
+            )
             if split or (broken and not _script_join(last, g, gap, em)):
                 flush()
         elif broken:

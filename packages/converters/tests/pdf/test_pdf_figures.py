@@ -43,22 +43,29 @@ def _pdf_with_form(
     body: Sequence[TextOp] = BODY,
     matrix: Sequence[float] = (1, 0, 0, 1, 100, 400),
     bbox: Sequence[float] = (0, 0, 300, 200),
+    rules: int = 0,
+    pages: int = 1,
 ) -> Path:
-    """A one-page PDF whose page content draws `body` and places a form XObject holding `graphics` filled
-    rectangles and `lettering`, through `matrix`."""
-    pdf = new_pdf([body])
-    page = pdf.pages[0]
+    """A PDF whose pages draw `body` and place a form XObject holding `graphics` filled rectangles, `rules`
+    thin horizontal lines and `lettering`, through `matrix`."""
+    pdf = new_pdf([body] * pages)
     ops: list[tuple[list[object], str]] = []
     for k in range(graphics):
         ops += [([10 + 30 * k, 30, 20, 60 + 10 * k], "re"), ([], "f")]
+    for k in range(rules):
+        ops += [([5, 15 + 12 * k], "m"), ([140, 15 + 12 * k], "l"), ([], "S")]
     form = pikepdf.Stream(pdf, pikepdf.unparse_content_stream(ops) + b"\n" + content(lettering))
     form.Type = Name.XObject
     form.Subtype = Name.Form
     form.BBox = Array(list(bbox))
-    form.Resources = Dictionary(Font=page.Resources.Font)
-    page.Resources.XObject = Dictionary(Fx=pdf.make_indirect(form))
+    form.Resources = Dictionary(Font=pdf.pages[0].Resources.Font)
+    form_ref = pdf.make_indirect(form)
     placed = pikepdf.unparse_content_stream([(list(matrix), "cm"), ([Name("/Fx")], "Do")])
-    page.Contents = pdf.make_indirect(pikepdf.Stream(pdf, page.Contents.read_bytes() + b"\nq\n" + placed + b"\nQ\n"))
+    for page in pdf.pages:
+        page.Resources.XObject = Dictionary(Fx=form_ref)
+        page.Contents = pdf.make_indirect(
+            pikepdf.Stream(pdf, page.Contents.read_bytes() + b"\nq\n" + placed + b"\nQ\n")
+        )
     return save(pdf, path)
 
 
@@ -94,6 +101,34 @@ def test_a_form_with_little_graphics_keeps_its_text_on_the_page(tmp_path: Path) 
     assert "pdf_figure_text_blocks" not in doc.metadata.extra
     tables = [b for b in doc.blocks if isinstance(b, Table)]
     assert len(tables) == 1 and tables[0].n_rows == 2 and tables[0].n_cols == 3  # the two rows of cells, as before
+
+
+def test_a_ruled_table_placed_as_a_form_is_still_a_table(tmp_path: Path) -> None:
+    """Rules are thin paths and do not count as graphics, so a table included as its own PDF keeps its rows."""
+    doc = convert_path(_pdf_with_form(tmp_path / "ruled.pdf", graphics=0, rules=5))
+    assert not [b for b in doc.blocks if isinstance(b, Paragraph) and FIGURE_TEXT_ATTR in b.attrs]
+    tables = [b for b in doc.blocks if isinstance(b, Table)]
+    assert len(tables) == 1 and tables[0].n_rows == 2 and tables[0].n_cols == 3
+
+
+def test_lettering_at_the_foot_of_every_page_is_not_a_running_footer(tmp_path: Path) -> None:
+    """The same axis title at the bottom of a figure on several pages stays with its figure."""
+    path = _pdf_with_form(tmp_path / "foot.pdf", graphics=4, matrix=(1, 0, 0, 1, 100, 0), pages=3)
+    doc = convert_path(path)
+    figs = [b for b in doc.blocks if isinstance(b, Paragraph) and FIGURE_TEXT_ATTR in b.attrs]
+    assert len(figs) == 3
+    assert all(spans_text(b.spans).endswith("Training Steps") for b in figs)
+
+
+def test_page_text_on_a_lettering_baseline_stays_page_text(tmp_path: Path) -> None:
+    """A word of body text right after a figure's edge label on the same baseline is split from it."""
+    lettering = [*LETTERING, (288, 20, "1.5", 6, False)]  # ends near the form's right edge, page x about 398
+    body = [*BODY, (402, 420, "beside", 6, False)]  # 4 pt further on the same baseline: one line without the split
+    doc = convert_path(_pdf_with_form(tmp_path / "edge.pdf", graphics=5, lettering=lettering, body=body))
+    figs = [b for b in doc.blocks if isinstance(b, Paragraph) and FIGURE_TEXT_ATTR in b.attrs]
+    assert len(figs) == 1 and "beside" not in spans_text(figs[0].spans) and "1.5" in spans_text(figs[0].spans)
+    prose = " ".join(spans_text(b.spans) for b in doc.blocks if isinstance(b, Paragraph) and b not in figs)
+    assert "beside" in prose and "1.5" not in prose
 
 
 def test_an_included_page_is_not_a_figure(tmp_path: Path) -> None:
