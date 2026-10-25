@@ -11,7 +11,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
-from ezmd_converters.pdf.textlayer import Line, PageText, Run
+from ezmd_converters.pdf.textlayer import Line, PageText, Rect, Run
 
 MARGIN_ZONE = 0.08
 """Top and bottom share of the page height where running headers and footers live."""
@@ -241,8 +241,41 @@ def detect_tables(lines: list[Line]) -> tuple[list[TableGrid], list[Line]]:
 
 
 @dataclass(slots=True)
+class FigureText:
+    """The lettering of one figure form (axis ticks, legend entries, panel labels): its lines read row by row,
+    left to right, with the form's displayed box."""
+
+    page: int
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+    lines: list[Line]
+    order: int
+
+
+def figure_texts(lines: list[Line], boxes: Sequence[Rect]) -> tuple[list[FigureText], list[Line]]:
+    """Split off the lines drawn inside figure forms (`Line.figure` indexes `boxes`), one group per figure in
+    row-major order, so they are neither read as tables nor joined into the page's paragraphs. Returns
+    (figures, the lines on the page itself)."""
+    groups: dict[int, list[Line]] = {}
+    rest: list[Line] = []
+    for ln in lines:
+        if 0 <= ln.figure < len(boxes):
+            groups.setdefault(ln.figure, []).append(ln)
+        else:
+            rest.append(ln)
+    figures: list[FigureText] = []
+    for k, group in sorted(groups.items()):
+        ordered = [ln for row in _rows(group) for ln in row]
+        x0, y0, x1, y1 = boxes[k]
+        figures.append(FigureText(ordered[0].page, x0, y0, x1, y1, ordered, min(ln.order for ln in ordered)))
+    return figures, rest
+
+
+@dataclass(slots=True)
 class Item:
-    """A positioned unit to order: a text line, a table, or an image."""
+    """A positioned unit to order: a text line, a table, a figure's lettering, or an image."""
 
     x0: float
     y0: float
@@ -251,6 +284,7 @@ class Item:
     order: int
     line: Line | None = None
     table: TableGrid | None = None
+    figure: FigureText | None = None
     image: tuple[float, float, float, float] | None = None
     column: int = 0
     extra: dict[str, str] = field(default_factory=dict)

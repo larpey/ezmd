@@ -1,6 +1,8 @@
 """Read the text layer of a PDF with pypdfium2 (BSD-3-Clause / Apache-2.0): characters with boxes, font
 size, weight, marked-content ids, and link targets, grouped into `Line`s (runs of glyphs on one baseline
-without a column-sized gap). Also measures per-page image coverage for the scan classifier.
+without a column-sized gap). Also measures per-page image coverage for the scan classifier, and finds the
+figures drawn as form XObjects (an included plot: paths and the text of its axes, legend and labels in one
+form) so their lettering can be kept apart from the page's prose.
 
 Coordinates are converted to the displayed page (honoring `/Rotate`) with the origin at the top left.
 """
@@ -8,9 +10,12 @@ Coordinates are converted to the displayed page (honoring `/Rotate`) with the or
 from __future__ import annotations
 
 import ctypes
+import dataclasses
 import math
 import unicodedata
+from collections import Counter
 from dataclasses import dataclass, field
+from typing import Any
 
 import pypdfium2 as pdfium  # type: ignore[import-untyped]
 import pypdfium2.raw as pdfium_c  # type: ignore[import-untyped]
@@ -55,6 +60,9 @@ class Line:
     turn: int = 0
     """Reading direction in counter-clockwise quarter turns (0: upright; 1: runs up the page, like an arXiv
     margin stamp or a rotated table)."""
+    figure: int = -1
+    """Index into `PageText.figures` of the figure form this line is drawn inside (axis ticks, legend entries,
+    panel labels), -1 for text on the page itself."""
 
     @property
     def text(self) -> str:
@@ -77,6 +85,8 @@ class PageText:
     unmapped: int = 0
     """Glyphs the font maps to U+FFFD (no text known); kept in the text so the gap is visible."""
     image_boxes: list[Rect] = field(default_factory=list)
+    figures: list[Rect] = field(default_factory=list)
+    """Displayed boxes of the figure forms on the page, indexed by `Line.figure`."""
 
 
 _LIGATURE_LO, _LIGATURE_HI = chr(0xFB00), chr(0xFB06)
@@ -119,6 +129,8 @@ class _Glyph:
     """Extent across it, increasing towards the next line."""
     base: float = 0.0
     """Baseline (the glyph origin) on the `across` axis."""
+    figure: int = -1
+    """Index of the figure form the glyph's text object is drawn inside, -1 on the page itself."""
 
 
 _HYPHEN_CODES = frozenset({0x02, 0xAD})
@@ -183,12 +195,18 @@ LIGATURE_LETTERS = frozenset("fil")
 one glyph, not a font that doubles every character."""
 
 
-def _font_flags(
-    textpage: pdfium.PdfTextPage, index: int, cache: dict[int, tuple[bool, int, str]]
-) -> tuple[bool, int, str]:
-    """(bold, mcid, font name) for the text object that owns character `index`; cached per object."""
+def _text_object(textpage: pdfium.PdfTextPage, index: int) -> tuple[Any, int]:
+    """The text object that owns character `index` and its handle value, the same value `page.get_objects()`
+    reports for that object (so a character can be matched to the form it is drawn in)."""
     obj = pdfium_c.FPDFText_GetTextObject(textpage.raw, index)
-    key = ctypes.cast(obj, ctypes.c_void_p).value or 0
+    return obj, ctypes.cast(obj, ctypes.c_void_p).value or 0
+
+
+def _font_flags(
+    textpage: pdfium.PdfTextPage, index: int, obj: Any, key: int, cache: dict[int, tuple[bool, int, str]]
+) -> tuple[bool, int, str]:
+    """(bold, mcid, font name) for the text object `obj` (handle value `key`) that owns character `index`;
+    cached per object."""
     hit = cache.get(key)
     if hit is not None:
         return hit
@@ -259,18 +277,120 @@ def _href_at(links: list[tuple[Rect, str]], cx: float, cy: float) -> str | None:
     return None
 
 
+OBJECT_DEPTH = 4
+"""How many levels of nested form XObjects are read for images and figures."""
+FIGURE_MIN_GRAPHICS = 3
+"""A form XObject with at least this many shapes (images, or paths wider and taller than `RULE_PT`), and some text,
+is a figure: an included plot or diagram whose lettering (axis ticks, legend, panel labels) is drawn with the
+graphics. A form with fewer is a logo, a framed text box or a ruled table (rules are thin paths), and its text
+stays on the page."""
+RULE_PT = 2.0
+"""A path no wider or no taller than this is a rule (a table line, an axis, a frame edge), not a shape."""
+PROSE_LINE_CHARS = 40
+"""A form whose text lines are mostly this long or longer is an included page or a text box, not a figure, and
+its lines go back to the page. Lettering (ticks, legend entries, labels) is short."""
+
+
+def _page_bounds(obj: Any) -> tuple[float, float, float, float]:
+    """`obj`'s bounds in PDF page space. pdfium reports an object nested in a form XObject in the form's own
+    space, so each enclosing form's matrix is applied on the way out."""
+    left, bottom, right, top = obj.get_bounds()
+    pts = [(left, bottom), (right, bottom), (left, top), (right, top)]
+    cont = obj.container
+    while cont is not None:
+        m = cont.get_matrix()
+        pts = [(m.a * x + m.c * y + m.e, m.b * x + m.d * y + m.f) for x, y in pts]
+        cont = cont.container
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def _clip(box: Rect, tf: _Transform) -> Rect | None:
+    pw, ph = tf.size
+    x0, y0, x1, y1 = max(0.0, box[0]), max(0.0, box[1]), min(pw, box[2]), min(ph, box[3])
+    return (x0, y0, x1, y1) if x1 > x0 and y1 > y0 else None
+
+
 def _image_coverage(page: pdfium.PdfPage, tf: _Transform) -> tuple[float, list[Rect]]:
     boxes: list[Rect] = []
     area = 0.0
     pw, ph = tf.size
-    for obj in page.get_objects(filter=(pdfium_c.FPDF_PAGEOBJ_IMAGE,), max_depth=3):
-        left, bottom, right, top = obj.get_bounds()
-        x0, y0, x1, y1 = tf.box(left, bottom, right, top)
-        x0, y0, x1, y1 = max(0.0, x0), max(0.0, y0), min(pw, x1), min(ph, y1)
-        if x1 > x0 and y1 > y0:
-            boxes.append((x0, y0, x1, y1))
-            area += (x1 - x0) * (y1 - y0)
+    for obj in page.get_objects(filter=(pdfium_c.FPDF_PAGEOBJ_IMAGE,), max_depth=OBJECT_DEPTH):
+        box = _clip(tf.box(*_page_bounds(obj)), tf)
+        if box is not None:
+            boxes.append(box)
+            area += (box[2] - box[0]) * (box[3] - box[1])
     return (min(1.0, area / (pw * ph)) if pw and ph else 0.0), boxes
+
+
+@dataclass(slots=True)
+class _Form:
+    top: Any
+    graphics: int = 0
+    text: list[int] = field(default_factory=list)
+    """Handle values of the text objects drawn in the form."""
+
+
+def figure_forms(
+    page: pdfium.PdfPage, tf: _Transform, chars_on_page: dict[int, int]
+) -> tuple[list[Rect], dict[int, int]]:
+    """The figure forms of a page: (displayed box per figure, text-object handle -> figure index). A top-level form
+    XObject counts as a figure when it holds at least `FIGURE_MIN_GRAPHICS` paths or images and some text whose
+    objects the text page knows (`chars_on_page`: characters per text-object handle). Forms whose text reads as
+    prose are demoted once the lines exist (`demote_prose_forms`)."""
+    forms: dict[int, _Form] = {}
+    for obj in page.get_objects(max_depth=OBJECT_DEPTH):
+        if obj.level == 0:
+            continue
+        top = obj
+        while top.container is not None:
+            top = top.container
+        form = forms.setdefault(ctypes.cast(top.raw, ctypes.c_void_p).value or 0, _Form(top))
+        if obj.type == pdfium_c.FPDF_PAGEOBJ_IMAGE:
+            form.graphics += 1
+        elif obj.type == pdfium_c.FPDF_PAGEOBJ_PATH:
+            x0, y0, x1, y1 = _page_bounds(obj)
+            if x1 - x0 > RULE_PT and y1 - y0 > RULE_PT:
+                form.graphics += 1
+        elif obj.type == pdfium_c.FPDF_PAGEOBJ_TEXT:
+            form.text.append(ctypes.cast(obj.raw, ctypes.c_void_p).value or 0)
+    boxes: list[Rect] = []
+    owners: dict[int, int] = {}
+    for form in forms.values():
+        if form.graphics < FIGURE_MIN_GRAPHICS or not any(chars_on_page.get(k, 0) for k in form.text):
+            continue
+        box = _clip(tf.box(*form.top.get_bounds()), tf)
+        if box is None:
+            continue
+        for k in form.text:
+            owners[k] = len(boxes)
+        boxes.append(box)
+    return boxes, owners
+
+
+def demote_prose_forms(lines: list[Line]) -> list[Line]:
+    """Return `lines` with the figure index cleared on every form whose lines are mostly `PROSE_LINE_CHARS` long
+    or longer: an included page or a framed text box drawn with a few rules, not a plot."""
+    lengths: dict[int, list[int]] = {}
+    for ln in lines:
+        if ln.figure >= 0:
+            lengths.setdefault(ln.figure, []).append(len(ln.text))
+    prose = {k for k, v in lengths.items() if sorted(v)[len(v) // 2] >= PROSE_LINE_CHARS}
+    if not prose:
+        return lines
+    return [dataclasses.replace(ln, figure=-1) if ln.figure in prose else ln for ln in lines]
+
+
+def _chars_per_object(textpage: pdfium.PdfTextPage) -> dict[int, int]:
+    """Non-space characters per text-object handle on the text page."""
+    out: dict[int, int] = {}
+    for i in range(textpage.count_chars()):
+        code = pdfium_c.FPDFText_GetUnicode(textpage.raw, i)
+        if 0 < code < 0x110000 and not chr(code).isspace():
+            _obj, key = _text_object(textpage, i)
+            out[key] = out.get(key, 0) + 1
+    return out
 
 
 def read_page(
@@ -286,13 +406,14 @@ def read_page(
         image_fraction, image_boxes = _image_coverage(page, tf)
         textpage = page.get_textpage()
         try:
-            glyphs, private = _glyphs(textpage, tf, links)
+            figures, owners = figure_forms(page, tf, _chars_per_object(textpage))
+            glyphs, private = _glyphs(textpage, tf, links, owners)
             unmapped = sum(1 for g in glyphs if g is not None and g.ch == "\ufffd")
         finally:
             textpage.close()
     finally:
         page.close()
-    lines = _lines(_compose_accents(glyphs), index + 1, order_base, stats)
+    lines = demote_prose_forms(_lines(_compose_accents(glyphs), index + 1, order_base, stats))
     chars = sum(1 for g in glyphs if g is not None and not g.ch.isspace())
     return PageText(
         number=index + 1,
@@ -304,13 +425,15 @@ def read_page(
         private_use=private,
         unmapped=unmapped,
         image_boxes=image_boxes,
+        figures=figures,
     )
 
 
 def _glyphs(
-    textpage: pdfium.PdfTextPage, tf: _Transform, links: list[tuple[Rect, str]]
+    textpage: pdfium.PdfTextPage, tf: _Transform, links: list[tuple[Rect, str]], owners: dict[int, int]
 ) -> tuple[list[_Glyph | None], int]:
-    """Glyphs in content order; None marks a line break pdfium generated."""
+    """Glyphs in content order; None marks a line break pdfium generated. `owners` maps the text objects drawn
+    inside a figure form to the figure's index."""
     out: list[_Glyph | None] = []
     cache: dict[int, tuple[bool, int, str]] = {}
     repeats: list[tuple[int, str, str]] = []
@@ -347,14 +470,16 @@ def _glyphs(
             continue  # an unpaired UTF-16 half (a leftover of a doubled 𝜓) carries no character
         left, bottom, right, top = textpage.get_charbox(i, loose=False)
         box = tf.box(left, bottom, right, top)
-        bold, mcid, font = _font_flags(textpage, i, cache)
+        obj, key = _text_object(textpage, i)
+        bold, mcid, font = _font_flags(textpage, i, obj, key, cache)
         last = out[-1] if out else None
         if last is not None and (last.x0, last.y0, last.x1, last.y1) == box and _fold(ch) == last.ch:
             repeats.append((len(out), font, last.ch))
         size, turn, origin = _size_and_frame(textpage, i, tf, box)
         href = _href_at(links, (left + right) / 2, (bottom + top) / 2) if links else None
+        figure = owners.get(key, -1)
         for c in _fold(ch):
-            out.append(_placed(_Glyph(c, *box, size, bold, mcid, href), turn, origin))
+            out.append(_placed(_Glyph(c, *box, size, bold, mcid, href, figure=figure), turn, origin))
     return _drop_doubled(out, repeats), private
 
 
@@ -395,7 +520,20 @@ def _compose_accents(glyphs: list[_Glyph | None]) -> list[_Glyph | None]:
         assert b is not None
         composed = unicodedata.normalize("NFC", b.ch + mark)
         out[j] = _Glyph(
-            composed, b.x0, b.y0, b.x1, b.y1, b.size, b.bold, b.mcid, b.href, b.turn, b.along, b.across, b.base
+            composed,
+            b.x0,
+            b.y0,
+            b.x1,
+            b.y1,
+            b.size,
+            b.bold,
+            b.mcid,
+            b.href,
+            b.turn,
+            b.along,
+            b.across,
+            b.base,
+            b.figure,
         )
         drop.add(k)
         for n in (k - 1, k + 1):  # pdfium puts a space on each side of the interrupting accent
@@ -444,6 +582,7 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
                     order=order_base + len(lines),
                     mcids={g.mcid for g in ink if g.mcid >= 0},
                     turn=ink[0].turn,
+                    figure=Counter(g.figure for g in ink).most_common(1)[0][0],
                 )
             )
         cur.clear()
@@ -465,7 +604,13 @@ def _lines(glyphs: list[_Glyph | None], page: int, order_base: int, stats: Clean
             em = max(last.size, g.size, 1.0)
             gap = g.along[0] - last.along[1]
             backwards = g.along[1] < last.along[0] - 0.5 * em
-            split = g.turn != last.turn or not _same_line(last, g, em) or gap > GAP_EM * em or backwards
+            split = (
+                g.turn != last.turn
+                or g.figure != last.figure  # a figure's edge label next to page text on the same baseline
+                or not _same_line(last, g, em)
+                or gap > GAP_EM * em
+                or backwards
+            )
             if split or (broken and not _script_join(last, g, gap, em)):
                 flush()
         elif broken:

@@ -23,7 +23,7 @@ from ezmd.ir import (
     TableCell,
 )
 from ezmd_converters.pdf.headings import HeadingSources
-from ezmd_converters.pdf.layout import Item, TableGrid
+from ezmd_converters.pdf.layout import FigureText, Item, TableGrid
 from ezmd_converters.pdf.textlayer import Line, Run
 
 _BULLETS = "".join(chr(c) for c in (0x2022, 0x25E6, 0x25AA, 0x2023, 0x2219, 0x00B7, 0x25CF, 0x25A0, 0x2013, 0x2043))
@@ -32,6 +32,9 @@ _NUMBERED = re.compile(r"^(\d{1,3}|[a-z])[.)]\s+")
 _HYPHEN_END = re.compile(r"([A-Za-z]+)-$")
 _WORD_START = re.compile(r"^([a-z]+)")
 _WORDS = re.compile(r"[A-Za-z]+")
+
+FIGURE_TEXT_ATTR = "pdf_figure_text"
+"""`Paragraph.attrs` key on a paragraph that holds one figure's lettering; the value is the number of lines."""
 
 
 @dataclass(slots=True)
@@ -194,6 +197,9 @@ class Assembler:
             if it.table is not None:
                 self.flush()
                 self._append_table(self._table(it.table))
+            elif it.figure is not None:
+                self.flush()
+                self.blocks.append(self._figure(it.figure))
             elif it.line is not None:
                 self._line(it.line)
         self.flush()
@@ -376,6 +382,22 @@ class Assembler:
             header_rows=1 if t.header else 0,
             provenance=_prov(self.source, self._geom, t.x0, t.y0, t.x1, t.y1, self.engine),
             attrs={"pdf_table": "heuristic"},
+        )
+
+    def _figure(self, f: FigureText) -> Paragraph:
+        """One figure's lettering as a single paragraph, in reading order, where the figure sits: the text of a
+        chart that cannot be read as data (docs/internal/spec/part3.md, chart fallback). Never a table, a heading
+        or part of the surrounding prose."""
+        runs: list[Run] = []
+        for ln in f.lines:
+            if runs:
+                text, href, script = runs[-1]
+                runs[-1] = (text + " ", href, script)
+            runs.extend(ln.runs)
+        return Paragraph(
+            spans=_spans(runs),
+            provenance=_prov(self.source, self._geom, f.x0, f.y0, f.x1, f.y1, self.engine),
+            attrs={FIGURE_TEXT_ATTR: str(len(f.lines))},
         )
 
     @staticmethod
