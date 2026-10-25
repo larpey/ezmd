@@ -1,25 +1,25 @@
 # Status
 
-Last updated: 2026-10-14 by agent
-Current phase: 1
-Current task: v0.1.0 pre-release test pass; rc5 candidate on `fix/rc5` awaiting owner review; Phase 2 not started
-Overall: 32 / 85 tasks done
+Last updated: 2026-10-25 by agent
+Current phase: 1 closed (G1 passed); Phase 2 not started, design direction to be set by the owner
+Current task: benchmark loop P4-B03 (pulled forward, D-0060): whole-paper QA with questions drawn from the whole text layer, figure lettering emitted as tables, token gap against Docling
+Overall: 33 / 85 tasks done
 
 ## Phases
 | Phase | Name | State | Tasks done | Tag |
 |---|---|---|---|---|
 | 0 | Foundation | done | 13/13 | v0.0.1 |
-| 1 | Permissive core, CLI, library, MCP, UI v1, compose | in_progress | 19/19 | gate G1 pending |
+| 1 | Permissive core, CLI, library, MCP, UI v1, compose | done | 19/19 | v0.1.0 (2026-10-16), v0.1.1 (2026-10-23) |
 | 2 | Media | pending | 0/13 | |
 | 3 | Social, chat, fetch chains, fetch node, extension | pending | 0/13 | |
-| 4 | Public instance launch | pending | 0/12 | |
+| 4 | Public instance launch | pending (benchmark tasks pulled forward) | 2/16 | |
 | 5 | Persona verticals and integrations | pending | 0/11 | |
 
 ## Gates
 | Gate | Status | Date | Evidence |
 |---|---|---|---|
 | G0 | passed | 2026-10-08 | CI run 37819863068 green on Linux/macOS/Windows; core coverage 91%, all packages 85.6% (Linux container); 13/13 tasks |
-| G1 | blocked on owner | 2026-10-14 | Done: 19/19 P1 tasks; 94 fixtures pass; CI + integration green. Published pre-releases: PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc4 (rc2, rc3 earlier); `@ezmd/sdk` 0.1.0-rc.3 on npm (npm trusted publisher configured, validated by the first CI publish). Claude Desktop check passed with `uvx ezmd-mcp==0.1.0rc3` (converted a DOCX from Documents). Pre-0.1.0 test pass on rc4: install surfaces (pip/uv/uvx on 3.12/3.13, Windows and Linux), self-hosted stack (bootstrap, smoke, backup/restore, upgrade), a red team (30/30 SSRF variants blocked; findings fixed: anonymous dedup across IPs, admission race, IPv6 /64 identity, Cache-Control/Vary, LibreOffice linked-content fetch), and a competitive baseline (bench branch `task/p4-b01-bench-harness`). Fixes are on `fix/rc5` (D-0044 to D-0071); its stack retest passes. Owner steps left: review and merge the rc5 PR, tag v0.1.0-rc5 and approve; after rc5, bump to 0.1.0 (`--npm`), tag and approve. |
+| G1 | passed | 2026-10-16 | v0.1.0 released to PyPI (`ezmd`, `ezmd-converters`, `ezmd-mcp`), npm (`@ezmd/sdk`), GHCR, the MCP registry (`io.github.larpey/ezmd`) and GitHub releases; v0.1.1 followed on 2026-10-23 (#16). Fixture pass 94/94; integration and Playwright green; Claude Desktop check recorded below; docs site live. Pre-release record: 19/19 P1 tasks; 94 fixtures pass; CI + integration green. Published pre-releases: PyPI `ezmd`, `ezmd-converters`, `ezmd-mcp` 0.1.0rc4 (rc2, rc3 earlier); `@ezmd/sdk` 0.1.0-rc.3 on npm (npm trusted publisher configured, validated by the first CI publish). Claude Desktop check passed with `uvx ezmd-mcp==0.1.0rc3` (converted a DOCX from Documents). Pre-0.1.0 test pass on rc4: install surfaces (pip/uv/uvx on 3.12/3.13, Windows and Linux), self-hosted stack (bootstrap, smoke, backup/restore, upgrade), a red team (30/30 SSRF variants blocked; findings fixed: anonymous dedup across IPs, admission race, IPv6 /64 identity, Cache-Control/Vary, LibreOffice linked-content fetch), and a competitive baseline (bench branch `task/p4-b01-bench-harness`). Fixes are on `fix/rc5` (D-0044 to D-0071); its stack retest passes. Owner steps left: review and merge the rc5 PR, tag v0.1.0-rc5 and approve; after rc5, bump to 0.1.0 (`--npm`), tag and approve. |
 | G2 | open | | |
 | G3 | open | | |
 | G4 | open | | |
@@ -96,9 +96,9 @@ Overall: 32 / 85 tasks done
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | pending | |  |
 | P4-T10 | Production cutover: DNS, Cloudflare rules applied, Origin CA, Pi connected, uptime check, backups to off-box storage verified by a restore drill | pending | |  |
 | P4-B01 | Competitive benchmark harness (isolated competitor containers, pinned versions) | done | | tools/bench, `make bench`; pulled forward before v0.1.0 (D-0060) |
-| P4-B02 | Benchmark corpora and metrics, per-category scorecards | in_progress | | baseline subset 2026-10-13: olmOCR-Bench, OmniDocBench, AEB, fixtures (bench/results/2026-10-13); LLM-QA, self-generated sets, Marker pending |
-| P4-B03 | Iterate to win on the held-out split (benchmark gate, D-0032) | pending | |  |
-| P4-B04 | Publish docs/benchmarks.md with full results | pending | |  |
+| P4-B02 | Benchmark corpora and metrics, per-category scorecards | done | 4e26941 | page benchmarks 2026-10-13 (olmOCR-Bench, OmniDocBench, web articles, fixtures; `bench/results/2026-10-13`); whole-paper `arxiv` corpus (109 CC BY papers, 30 sampled, 79 held out) with text and LaTeX-source recall, silent loss, outline recall, tokens per page, local-model QA (#22); `arxiv-damaged` with a held-out split (#24); Claude token counts and PDF-upload cost (`tools/bench/tokens.py`). Not done: self-generated sets for DOCX/PPTX/XLSX/email/EPUB/code/data; Marker and Unstructured need Docker on the bench machine |
+| P4-B03 | Iterate to win on the held-out split (benchmark gate, D-0032) | in_progress | fa1d5cf | loops so far: text-layer PDF engine (#19), paragraph assembly, headerless tables, chunk markers (#22), `file_repaired` with page detail (#23, #24, #25: damaged silent loss 1/30 -> 0/30 sample, 0/237 held out). Standing per category in "Open owner decisions" below |
+| P4-B04 | Publish docs/benchmarks.md with full results | in_progress | fa1d5cf | page live with method, versions, hardware, held-out section, whole-paper tables, speed and memory; updated after every loop. Final when B03 closes |
 | P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run benchmark story, Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | pending | |  |
 | P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | pending | |  |
 | P5-T01 | Finance mode: bank statement and invoice tables with per-row page references, totals reconciliation (rows sum to ending minus beginning balance), sign and date normalization, CSV and JSON sidecars, confidence flags; `--mode finance` | pending | |  |
@@ -129,10 +129,26 @@ converter depended on it and closed an anonymous residential-fetch pivot into th
 Known gaps carried into Phase 1: PyPI/npm publish (human gate); ezmd[server] extra and library `convert()`
 public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, share target (later phases).
 
+## Open owner decisions
+- **The benchmark gate as written cannot pass before Phase 2.** D-0032 requires the default install to tie or beat the
+  best competitor in every category on the held-out split. Standing on 2026-10-24 (`docs/benchmarks.md`):
+  whole papers: tie on answer accuracy, best text recall, the only tool with zero silent loss, fastest; behind MinerU on
+  outline recall (0.786 vs 0.874) and behind Docling on tokens per page (1,158 vs 930 o200k). Damaged files: wins
+  (0/237 silent on the held-out split). Web articles: second to Trafilatura, which ezmd's web converter is built on.
+  Page benchmarks: far behind the layout-model tools (olmOCR-Bench 0.335 vs MinerU 0.797; OmniDocBench tables 0.179 vs
+  0.847). Those tools run layout models and OCR, which the default install does not ship until Phase 2. Options for the
+  owner: (a) hold the gate and make Phase 2 OCR and a layout path part of the default install; (b) exempt the page
+  benchmarks under the gate's license clause once `ezmd[docs]` matches Docling (it does not yet); (c) narrow the gate to
+  the whole-document categories, where ezmd competes, and publish the page benchmarks as context. Record the choice in
+  DECISIONS.md.
+- **Phase 2 design direction**: owner to set it (discussion planned for 2026-10-25) before P2 tasks start.
+
 ## Blocked on human
 - (resolved 2026-10-08) GitHub token lacked the `workflow` scope; owner approved device login from phone.
-- First publish of `ezmd` to PyPI and `@ezmd/sdk` to npm (irreversible name claim). Publishing is off until the owner: creates GitHub environments `release` (required reviewers, tags `v*`) and `testpypi`; adds PyPI and TestPyPI trusted publishers for ezmd, ezmd-converters, ezmd-mcp (workflow release.yml); creates the npm `@ezmd` scope with trusted publishing; sets repo variable `EZMD_PUBLISH_ENABLED=true` (D-0034).
+- (resolved 2026-10-16) First publish to PyPI and npm: environments, trusted publishers, the `@ezmd` scope and
+  `EZMD_PUBLISH_ENABLED` were set up by the owner; v0.1.0 published through release.yml (D-0034).
 - Public instance (Hetzner VPS, domain, Cloudflare) and the Raspberry Pi fetch node are Phase 3/4; the owner has a Pi available (2026-10-08).
+- Marker and Unstructured benchmark rows need Docker Desktop running on the bench machine.
 
 ## Experimental converters
 | Converter | Reason | Fixture score | Doc link |
