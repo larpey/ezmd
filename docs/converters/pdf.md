@@ -44,7 +44,11 @@ type is something else, at lower confidence). Chain: `documents.docling_pdf` the
 Characters (box, font size, weight/name for bold, marked-content id, link target) are grouped into lines; a
 horizontal gap over 1.2 em splits a baseline (columns, cells). Coordinates honor `/Rotate` and the crop box.
 Then: running headers/footers (lines in the top/bottom 8 percent whose digit-normalized text repeats on at least
-half the pages) are removed with `removed_running_header_footer`; tables are detected best-effort (two or more
+half the pages) are removed with `removed_running_header_footer`; the lettering of figures drawn as form
+XObjects (an included plot: its axis ticks, legend and labels share a form with three or more paths or images,
+and its lines are short) becomes one paragraph per figure where the figure sits, with
+`attrs.pdf_figure_text` holding the line count, and never a table, heading or title (a form whose lines read
+as prose, an included page, is treated as page text); tables are detected best-effort (two or more
 consecutive rows of short cells in consistent columns; bold first row is the header); column gutters are found
 by the x position crossed by the fewest lines, and full-width lines split the page into bands read left column
 then right column (`reading_order_uncertain` when the content stream was interleaved); lines are joined into
@@ -101,7 +105,9 @@ engine and, without the `docs` extra, fails with the install command.
 
 - Text-layer engine: tables are heuristic (no ruling lines, no merged cells, no tables spanning pages /
   `table_rejoined`); headings come only from tree/outline/size (bold body-size headings are paragraphs);
-  footnotes, equations, figures, and captions are plain paragraphs; internal `/Dest` links are dropped.
+  footnotes, equations, figures, and captions are plain paragraphs; a figure drawn straight onto the page (TikZ,
+  pgfplots) is not recognised, so its lettering is read as text and can form tables; internal `/Dest` links are
+  dropped.
 - No image extraction (`Image` blocks) in either engine yet; `pdf.images` is accepted but ignored.
 - `pdf.page_range`, `pdf.academic` (DOI/arXiv/citations), `pdf.forms=inline`, and embedded-file conversion as
   child documents are not implemented; embedded files are removed by sanitization (part1 8.2 wins over part2

@@ -17,6 +17,7 @@ from ezmd_converters.pdf.layout import (
     Item,
     body_font_size,
     detect_tables,
+    figure_texts,
     interleaved,
     order_items,
     running_lines,
@@ -71,19 +72,27 @@ def text_document(doc: Document, path: str, info: PdfInfo, popts: PdfOptions, op
     """Fill `doc` with blocks from the text layer of the sanitized PDF at `path`."""
     layer = read_text_layer(path, info, options)
     running = set() if popts.keep_running_headers else running_lines(layer.pages)
-    headings = heading_sources(layer, info, popts, running)
+    # Lettering inside figure forms is kept apart from the page's text: it is never a heading, a title, a table
+    # or part of a paragraph; each figure's lettering becomes one paragraph where the figure sits.
+    lettering = {ln.order for p in layer.pages for ln in p.lines if 0 <= ln.figure < len(p.figures)}
+    hidden = running | lettering
+    headings = heading_sources(layer, info, popts, hidden)
     if doc.metadata.title is None:
-        doc.metadata.title = page_title(layer.pages, headings.body, running)
-    all_lines = [ln for p in layer.pages for ln in p.lines if ln.order not in running]
+        doc.metadata.title = page_title(layer.pages, headings.body, hidden)
+    all_lines = [ln for p in layer.pages for ln in p.lines if ln.order not in hidden]
     asm = Assembler(doc.metadata.source, "pdfium", headings, vocabulary(all_lines), popts.dehyphenate)
     rep = classify(layer.pages, popts)
     uncertain: list[int] = []
     ocr_missing: list[int] = []
+    figure_count = 0
     for p in layer.pages:
         lines = [ln for ln in p.lines if ln.order not in running]
+        figures, lines = figure_texts(lines, p.figures)
+        figure_count += len(figures)
         tables, rest = detect_tables(lines)
         items = [Item(ln.x0, ln.y0, ln.x1, ln.y1, ln.order, line=ln) for ln in rest]
         items += [Item(t.x0, t.y0, t.x1, t.y1, t.order, table=t) for t in tables]
+        items += [Item(f.x0, f.y0, f.x1, f.y1, f.order, figure=f) for f in figures]
         ordered, columns = order_items(items, 0.0, p.width)
         if columns and interleaved(ordered):
             uncertain.append(p.number)
@@ -98,6 +107,8 @@ def text_document(doc: Document, path: str, info: PdfInfo, popts: PdfOptions, op
             else:
                 asm.blocks.extend(blocks)
     doc.blocks.extend(asm.blocks)
+    if figure_count:
+        doc.metadata.extra["pdf_figure_text_blocks"] = figure_count
     _warnings(doc, layer, running, headings, info, uncertain)
     scan_warnings(doc, rep, popts, ocr_missing)
 

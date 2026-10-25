@@ -46,6 +46,14 @@ All notable changes are generated from Conventional Commits. This project uses s
   repaired arXiv papers the pages with a damaged font and the pages that lost words barely overlap.
 - PDF (text-layer engine): rotated margin text such as an arXiv stamp is no longer taken as the title or a
   heading, and a notice set in heading-sized type is a paragraph, not three headings.
+- PDF (text-layer engine): the lettering of a figure (axis ticks, legend entries, panel labels) no longer comes
+  out as tables and stray paragraphs. A figure included as a form XObject keeps its text objects together with
+  its paths, so the engine reads each such form (three or more paths or images, short lines) as one figure and
+  emits its lettering as a single paragraph where the figure sits, tagged `attrs.pdf_figure_text` with the line
+  count; the lines take no part in table detection, heading planning or the title. On a plot-heavy arXiv paper
+  this turns 103 tables into 18, the real ones. Figures drawn straight onto the page (TikZ) are unchanged.
+  Image boxes of images nested in forms are now placed on the page correctly (they were in the form's own
+  coordinates).
 - PDF: outline bookmarks match numbered headings ("3.1 Encoder" for the bookmark "Encoder"), each bookmark is
   used once, and figure labels that repeat a section title stay labels. Without an outline, bold numbered
   lines such as "3.1 Encoder and Decoder Stacks" become headings at their numbering depth.
