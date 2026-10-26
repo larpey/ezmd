@@ -131,6 +131,14 @@ def _categories(corpus: str, scores: dict[str, Any], results: list[DocResult]) -
                 "speed": _speed(rs),
                 "secondary": s["secondary"],
             }
+        elif corpus in ("govdocs1", "ccgov", "media"):
+            sec = {k: v for k, v in s["secondary"].items() if k != "clusters"}
+            cats[f"{corpus}-clean"][tool] = {
+                **s["primary"],
+                "per_doc": s["per_doc"],
+                "speed": _speed(rs),
+                "secondary": sec,
+            }
         else:
             for fam, v in s["categories"].items():
                 fam_docs = {d: x for d, x in s["per_doc"].items() if d.startswith(f"{fam}__")}

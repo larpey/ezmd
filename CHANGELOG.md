@@ -29,6 +29,19 @@ All notable changes are generated from Conventional Commits. This project uses s
   the pass cleanly and the caches resume it; runs of one non-ASCII character are squeezed before an output is
   sent (a 764-character run broke the server's tokenizer); a correctly escaped `\\` in a reply is kept; the
   score summary names each tool's own primary metric.
+- Benchmark harness: a `govdocs1` corpus, the ten official Govdocs1 threads (about 9,900 everyday files from
+  .gov servers across some twenty formats), scored on outcome because no ground truth exists: an output, a
+  declared refusal, or a bug (an undeclared exception, a timeout, a worker crash). `score` writes the clean rate
+  and `clusters.md`, the bugs grouped by exception class and the frame that raised (a new `where` field in
+  results.jsonl, filled by the worker from the traceback) with sample files. `run --workers N` converts N shards
+  at once. The first pass over the pilot is where the everyday-documents coverage work (#28 to #33) starts:
+  `bench/results/2026-10-26-pilot/`, clean rate 0.9941 over 9,875 files, 58 bugs from one defect and seven
+  more in the declared refusals. `score` also runs a structural smell scorer over every output (empty, control
+  characters, lone bullets, bullet headings, truncated-then-repeated headings, replacement characters,
+  mojibake, repeated lines, character runs, mostly-empty tables, shrunk text, injection flags) and writes
+  `smells.md`. Two more corpora cover what Govdocs1 cannot: `ccgov`, modern files of every document type from
+  Common Crawl's .gov, .mil and .edu hosts (`tools/bench/cc.py`), and `media`, images, audio, video and EPUB
+  from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`).
 
 ### Changed
 - `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
