@@ -29,6 +29,9 @@ FAMILIES = frozenset(
 CONVERSION_FAILED = "conversion_failed"
 EXPERIMENTAL_DISABLED = "experimental_disabled"
 UNSUPPORTED_MEDIA_TYPE = "unsupported_media_type"
+TEXT_FLOOR = "text.plain"
+"""The converter under every text-like input: the last member of the data chains and the registry's answer
+when no converter claims a type whose bytes read as text."""
 """No converter handles the detected type, or the type is refused (executables)."""
 EXTRA_REQUIRED = "extra_required"
 """Every converter that could handle the input needs an optional extra that is not installed."""
@@ -256,6 +259,26 @@ class ConverterRegistry:
                 out.append(conv)
         return out
 
+    @staticmethod
+    def _reads_as_text(ref: InputRef) -> bool:
+        from ezmd.detect import _sample, looks_like_text
+
+        if not ref.has_body:
+            return False
+        try:
+            sample, _ = _sample(ref)
+        except OSError:
+            return False
+        return looks_like_text(sample)
+
+    def _text_floor(self, ref: InputRef) -> Converter | None:
+        """The plain-text converter when no converter claims the type but the bytes read as text (SQL scripts,
+        property lists, DTDs, notebooks of unmapped types): "no converter" is only ever said of binary input."""
+        reg = self._regs.get(TEXT_FLOOR)
+        if reg is None or reg.import_error:
+            return None
+        return reg.converter if self._reads_as_text(ref) else None
+
     def _ranked(self, ref: InputRef) -> list[tuple[float, Converter]]:
         mime = ref.detected.mime if ref.detected else None
         chain = self.chain_for(mime) if mime else None
@@ -267,6 +290,10 @@ class ConverterRegistry:
                     log.info("chain for %s skips unavailable converter %s", mime, cid)
                     continue
                 score = reg.converter.can_handle(ref)
+                if score <= 0 and cid == TEXT_FLOOR and self._reads_as_text(ref):
+                    # The text floor at the end of a data chain: it does not claim application/yaml, but a
+                    # YAML look-alike that fails to parse is still a text file.
+                    score = 0.01
                 if score > 0:
                     ordered.append((score, reg.converter))
             if ordered:
@@ -306,16 +333,21 @@ class ConverterRegistry:
             cands = self.candidates(ref, options)
             if not cands and not options.experimental and self._ranked(ref):
                 raise _experimental_disabled(ref)
+        read_as_text = False
         if not cands:
             blocked = self.unavailable_for(ref) if converter_id is None else []
             if blocked:
                 raise _unavailable_error(ref, blocked)
-            raise ConversionError(
-                f"no converter for {ref.display} (mime={ref.detected.mime if ref.detected else None})",
-                user_message="This file type is not supported yet.",
-                retryable_with_fallback=False,
-                code=UNSUPPORTED_MEDIA_TYPE,
-            )
+            floor = self._text_floor(ref) if converter_id is None else None
+            if floor is None:
+                raise ConversionError(
+                    f"no converter for {ref.display} (mime={ref.detected.mime if ref.detected else None})",
+                    user_message="This file type is not supported yet.",
+                    retryable_with_fallback=False,
+                    code=UNSUPPORTED_MEDIA_TYPE,
+                )
+            cands = [(0.01, floor)]
+            read_as_text = True
         tried: list[str] = []
         last: Exception | None = None
         empty: tuple[int, Converter, Document] | None = None
@@ -351,10 +383,10 @@ class ConverterRegistry:
                 last = ConversionError(f"{conv.id} produced an empty document")
                 log.info("converter %s produced empty document for %s; trying next", conv.id, ref.display)
                 continue
-            return self._result(ref, conv, doc, i, tried, time.monotonic() - t0)
+            return self._result(ref, conv, doc, i, tried, time.monotonic() - t0, read_as_text=read_as_text)
         if empty is not None:
             i, conv, doc = empty
-            return self._result(ref, conv, doc, i, tried, 0.0)
+            return self._result(ref, conv, doc, i, tried, 0.0, read_as_text=read_as_text)
         msg = f"all converters failed for {ref.display}: tried {tried}; last error: {last}"
         user = last.user_message if isinstance(last, ConversionError) else "Conversion failed."
         code = last.code if isinstance(last, ConversionError) else CONVERSION_FAILED
@@ -362,7 +394,13 @@ class ConverterRegistry:
 
     @staticmethod
     def _result(
-        ref: InputRef, conv: Converter, doc: Document, index: int, tried: list[str], seconds: float
+        ref: InputRef,
+        conv: Converter,
+        doc: Document,
+        index: int,
+        tried: list[str],
+        seconds: float,
+        read_as_text: bool = False,
     ) -> ConversionResult:
         if not doc.finalized:
             doc.finalize()
@@ -376,6 +414,16 @@ class ConverterRegistry:
                     severity="info",
                     message=f"Primary converter failed; used {conv.id}.",
                     detail={"tried": ",".join(tried)},
+                )
+            )
+        if read_as_text:
+            mime = ref.detected.mime if ref.detected else None
+            pipeline_warnings.append(
+                Warning(
+                    kind=WarningKind.UNKNOWN_TYPE_READ_AS_TEXT,
+                    severity="warning",
+                    message=f"No converter for {mime}; the content is text and was read as plain text.",
+                    detail={"mime": mime},
                 )
             )
         if conv.experimental:

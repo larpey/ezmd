@@ -26,6 +26,14 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Readable text is never refused as "no converter" or "binary". Three rules: a type verdict of
+  `application/octet-stream` on bytes that read as text (a Magika label with no MIME type, such as a Protein
+  Data Bank file) becomes `text/plain`; when no converter claims a type whose bytes read as text (SQL scripts,
+  property lists, DTDs, Mathematica notebooks), the registry reads the file as plain text and says so with the
+  new `unknown_type_read_as_text` warning; and every text-based data chain (CSV, JSON, YAML, TOML, XML) ends in
+  plain text, so a YAML or XML look-alike that does not parse comes through as text with `engine_fallback`
+  instead of failing. Usenet articles (`message/news`) go to the email converter. About 600 files of the
+  2026-10-26 corpus runs.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers

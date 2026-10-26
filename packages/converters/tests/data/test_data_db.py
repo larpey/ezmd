@@ -178,9 +178,10 @@ def test_connection_string_text_body() -> None:
 def test_family_registration_and_chains() -> None:
     ids = {c.id for c in family.converters()}
     assert {"data.csv", "data.json", "data.yaml", "data.toml", "data.xml", "data.sqlite", "data.parquet"} <= ids
-    assert set(family.CHAINS["text/csv"]) == {"data.csv"}
+    assert family.CHAINS["text/csv"] == ["data.csv", "text.plain"]  # the text floor closes every text chain
     for chain in family.CHAINS.values():
-        assert set(chain) <= ids
+        assert set(chain) <= ids | {"text.plain"}
+    assert all(chain[-1] == "text.plain" for mime, chain in family.CHAINS.items() if "sqlite" not in mime)
 
 
 @pytest.mark.parametrize(
