@@ -183,6 +183,10 @@ def smells(
             src = input_text_length(input_bytes)
             if src >= 200 and len(compact) < ratio * src:
                 found.append("shrunk")
-    if sidecar and any("injection" in str(w.get("kind", "")) for w in sidecar.get("warnings", [])):
+    if sidecar and (
+        str(sidecar.get("injection_risk") or "") in ("high", "medium")
+        or any("injection" in str(w.get("kind", "")) for w in sidecar.get("warnings", []))
+        or any("injection" in str(w) for w in sidecar.get("render_warnings", []))
+    ):
         found.append("injection")
     return found

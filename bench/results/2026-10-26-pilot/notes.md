@@ -93,6 +93,20 @@ full that drops rows surprises. The reported smells need reading before they mea
 line in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);
 a shrunk HTML page is often navigation.
 
+## Injection false positives
+
+The smell scorer's `injection` smell read the sidecar's document warnings, which do not carry the
+render-time `injection_suspected` warning, so it reported nothing; the worker now records the frontmatter's
+`injection_risk` in the sidecar. Read from the frontmatter directly: 255 of the 7,945 outputs (3.2%) are
+`injection_risk: high`, 115 medium, 148 low, on a 2009 corpus of public documents with no prompt injection in
+it. A rescan of the flagged outputs with the scanner (ezmd's own markers excluded) attributes the highs to
+`act as a` in prose (217 findings, #30), `rm -rf` in build logs and changelogs (84, half inside code fences),
+`<Document>` roots of KML files taken for delimiter spoofing (63), "run the command" and "call the function"
+in software documentation (39), "forward the ... to" in contracts (18), "pretend to be" in prose (9), and the
+accumulation of low and medium heuristics (`flooding` on tables, `imperative_cluster` on manuals) reaching
+the `high` threshold on their own (2,057 and 330 findings). The modern snapshot shows the same families at
+3.5% high (`bench/results/2026-10-26-ccgov-a/`).
+
 ## What this says
 
 - **The crash gate is nearly clean on the first pass.** No undeclared exception reached the worker, no worker

@@ -69,6 +69,9 @@ def test_reported_smells() -> None:
     assert smell.smells(CLEAN + "\n" + table, "pdf") == ["empty_table"]
     side = {"truncated": False, "warnings": [{"kind": "prompt_injection_suspected"}]}
     assert smell.smells(CLEAN, "pdf", side) == ["injection"]
+    assert smell.smells(CLEAN, "pdf", {"truncated": False, "warnings": [], "injection_risk": "high"}) == ["injection"]
+    assert smell.smells(CLEAN, "pdf", {"truncated": False, "warnings": [], "injection_risk": "low"}) == []
+    assert smell.smells(CLEAN, "pdf", {"warnings": [], "render_warnings": ["injection_suspected"]}) == ["injection"]
 
 
 def test_shrunk_applies_to_text_like_inputs_only() -> None:

@@ -52,6 +52,15 @@ JavaScript and YAML files, which is why that rule now counts glyph bullets only)
 354 and `empty_table` 146, both mostly the macro-enabled workbooks (125 and 119), which are large sparse
 sheets rendered row by row and the same shape as the three timeouts.
 
+## Injection false positives
+
+220 of the 6,223 outputs with a risk line (3.5%) are `injection_risk: high`, 399 medium, 50 low. The rescan
+attributes the highs to `rm -rf` in scripts, build logs and package specs (206 findings, 175 inside code
+fences), the `flooding` and `imperative_cluster` heuristics accumulating on data listings and manuals (543
+and 649), `act as a` in prose (27), long HTML comments (36), "run the command" (11), a sentence starting
+`System:` (9), and XML `<Document>` roots (7). Same families as the Govdocs1 pilot, with the modern corpus
+adding more code and logs.
+
 ## What this says
 
 - **The modern long tail refuses cleanly.** No undeclared exception in 10,452 files of 243 types, and
