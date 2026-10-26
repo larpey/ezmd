@@ -26,6 +26,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- A scanned page whose only text is its printer's stamp or footer is reported as a page without text. The
+  running-header pass removed the stamp and the page counted as text-bearing because the raw text layer was
+  not empty, so two Govdocs1 pilot files (2026-10-26) came out with no body and no `pages_without_text`
+  warning. The scan classifier now counts a page's text after the running lines are taken out.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers

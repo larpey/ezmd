@@ -111,12 +111,19 @@ class ScanReport:
     to_ocr: list[int] = field(default_factory=list)
 
 
-def classify(pages: Sequence[PageText], popts: PdfOptions) -> ScanReport:
-    """docs/internal/spec/part2.md 1c step 4, applied to every page (cheap with pdfium) instead of a 12-page sample."""
+def classify(pages: Sequence[PageText], popts: PdfOptions, running: set[int] | None = None) -> ScanReport:
+    """docs/internal/spec/part2.md 1c step 4, applied to every page (cheap with pdfium) instead of a 12-page sample.
+
+    `running` is the set of line orders the running-header pass removes: a scanned page whose only text is
+    its stamp or footer has no text once the stamp goes, and must be reported as such rather than come out
+    silently empty (two Govdocs1 pilot files, 2026-10-26)."""
     rep = ScanReport()
     for p in pages:
         unusable = p.chars and p.private_use > 0.05 * p.chars
         chars = 0 if unusable else p.chars
+        if running and chars:
+            furniture = sum(len(ln.text) for ln in p.lines if ln.order in running)
+            chars = max(0, chars - furniture)
         if chars >= 200 and p.image_fraction < 0.9:
             mode = "born_digital"
         elif chars < NO_TEXT_CHARS and p.image_fraction > 0.5:
