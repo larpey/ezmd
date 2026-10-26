@@ -49,6 +49,13 @@ All notable changes are generated from Conventional Commits. This project uses s
   (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
+### Changed
+- LibreOffice conversions initialise a user profile once per process and copy it for every later file,
+  instead of initialising a throwaway profile from scratch each time. Each file still gets its own writable,
+  disposable copy with macros, active content and link updates disabled. A legacy `.doc`, `.xls` or `.ppt`
+  cost about 13 seconds on the 2026-10-26 Govdocs1 pilot (86% of the run's time); after the first file it is
+  the conversion itself plus the copy.
+
 ### Fixed
 - Readable text is never refused as "no converter" or "binary". Three rules: a type verdict of
   `application/octet-stream` on bytes that read as text (a Magika label with no MIME type, such as a Protein
