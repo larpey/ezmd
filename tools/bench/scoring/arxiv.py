@@ -220,6 +220,10 @@ class QaScore:
     tail_asked: int
     cut: bool
     """The tool's output did not fit the answering model's context and was cut before it was sent."""
+    head_correct: int = 0
+    """Correct answers to questions whose evidence lies in the first half; a question without a segment (an
+    older question file) is in neither half and counts in `correct`/`asked` only."""
+    head_asked: int = 0
 
     @property
     def accuracy(self) -> float:
@@ -248,13 +252,17 @@ def qa_scores(result: DocResult, run_dir: Path) -> QaScore | None:
     graded = [it for it in record.get("items", []) if "correct" in it]
     if not graded:
         return None
-    tail = [it for it in graded if in_second_half(it)]
+    halves = [in_second_half(it) for it in graded]
+    tail = [it for it, h in zip(graded, halves, strict=True) if h]
+    head = [it for it, h in zip(graded, halves, strict=True) if h is False]
     return QaScore(
         correct=sum(1 for it in graded if it["correct"]),
         asked=len(graded),
         tail_correct=sum(1 for it in tail if it["correct"]),
         tail_asked=len(tail),
         cut=bool(record.get("cut")),
+        head_correct=sum(1 for it in head if it["correct"]),
+        head_asked=len(head),
     )
 
 
@@ -288,6 +296,8 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
         "qa_correct": None if qa is None else float(qa.correct),
         "qa_tail_asked": None if qa is None else float(qa.tail_asked),
         "qa_tail_correct": None if qa is None else float(qa.tail_correct),
+        "qa_head_asked": None if qa is None else float(qa.head_asked),
+        "qa_head_correct": None if qa is None else float(qa.head_correct),
         "qa_cut": None if qa is None else float(qa.cut),
         "lost": float(lost),
         "declared": None if declared is None else float(declared),
@@ -313,7 +323,7 @@ def _qa_pooled(per_doc: dict[str, dict[str, float | None]]) -> dict[str, dict[st
 
     asked, correct = total("qa_asked"), total("qa_correct")
     tail_asked, tail_correct = total("qa_tail_asked"), total("qa_tail_correct")
-    head_asked, head_correct = asked - tail_asked, correct - tail_correct
+    head_asked, head_correct = total("qa_head_asked"), total("qa_head_correct")  # unlocated questions in neither
     return {
         "qa_questions": {"value": asked, "n": len(docs)},
         "qa_pooled_accuracy": {"value": round(correct / asked, 4) if asked else None, "n": asked},

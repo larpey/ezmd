@@ -246,9 +246,14 @@ def segments(text: str, size: int = SEGMENT_TOKENS) -> list[Segment]:
     return out
 
 
-def answer_budget(context: int) -> int:
-    """Document tokens that fit a request in a model loaded with `context`."""
-    return max(1, context - PROMPT_RESERVE)
+ANSWER_MAX_TOKENS = 3_000
+"""Reply tokens requested for an answer set; part of what the document's budget must leave free."""
+
+
+def answer_budget(context: int, overhead: int = 0) -> int:
+    """Document tokens that fit a request in a model loaded with `context`: the context less the prompt around
+    the document and the reply (`overhead`, measured per request) and PROMPT_RESERVE as the margin."""
+    return max(1, context - PROMPT_RESERVE - overhead)
 
 
 QUOTE_WORDS_FOUND = 0.8
@@ -301,16 +306,36 @@ def _docs(run_dir: Path) -> list[dict[str, Any]]:
     return docs
 
 
-def cached_questions(path: Path) -> int | None:
-    """How many questions a cached file holds when it was written under the current scheme and has at least
-    one question per segment on average; None when it must be generated again."""
+def cached_questions(path: Path, segs: list[Segment]) -> tuple[dict[str, Any], list[Segment]] | None:
+    """The cached question file when it was written under the current scheme, and the segments of the current
+    text it has nothing for (neither a question nor a recorded empty attempt): those are generated again and
+    added. None when the file is missing or from another scheme and must be generated whole."""
     if not path.exists():
         return None
     record = json.loads(path.read_text(encoding="utf-8"))
-    have = len(record.get("questions", []))
-    if record.get("scheme") != SCHEME or have < int(record.get("segments", 1)):
+    if record.get("scheme") != SCHEME:
         return None
-    return have
+    total = segs[-1].end
+    questions = record.get("questions", [])
+    if any(q.get("segment", {}).get("of") != total for q in questions):
+        return None  # written from another text layer (a different pypdfium2, a re-fetched PDF): all new
+    covered = {(q["segment"]["from"], q["segment"]["to"]) for q in questions}
+    covered |= {(e["from"], e["to"]) for e in record.get("empty", [])}
+    return record, [seg for seg in segs if (seg.start, seg.end) not in covered]
+
+
+def segment_questions(client: Client, seg: Segment, index: int, parts: int) -> list[dict[str, str]]:
+    """Up to QUESTIONS_KEPT grounded questions for one segment, two attempts; empty when the model gave none."""
+    for _attempt in range(2):
+        prompt = GENERATE_PROMPT.format(n=QUESTIONS_WANTED, part=index + 1, parts=parts, text=seg.text)
+        try:
+            kept = validate_questions(parse_json_array(client.chat(prompt, max_tokens=2000)), seg.text)
+        except (ValueError, json.JSONDecodeError) as exc:
+            _note(exc)
+            continue
+        if kept:
+            return kept
+    return []
 
 
 def generate_questions(client: Client, text: str) -> tuple[list[dict[str, Any]], int]:
@@ -320,17 +345,7 @@ def generate_questions(client: Client, text: str) -> tuple[list[dict[str, Any]],
     total = segs[-1].end
     out: list[dict[str, Any]] = []
     for i, seg in enumerate(segs):
-        kept: list[dict[str, str]] = []
-        for _attempt in range(2):
-            prompt = GENERATE_PROMPT.format(n=QUESTIONS_WANTED, part=i + 1, parts=len(segs), text=seg.text)
-            try:
-                kept = validate_questions(parse_json_array(client.chat(prompt, max_tokens=2000)), seg.text)
-            except (ValueError, json.JSONDecodeError) as exc:
-                _note(exc)
-                continue
-            if kept:
-                break
-        out.extend({**q, "segment": seg.where(total)} for q in kept)
+        out.extend({**q, "segment": seg.where(total)} for q in segment_questions(client, seg, i, len(segs)))
     return out, len(segs)
 
 
@@ -340,20 +355,46 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
 
     def one(doc: dict[str, Any]) -> str:
         path = qa_dir() / f"{doc['id']}.json"
-        have = cached_questions(path)
-        if have is not None:
-            return f"{doc['id']}: cached ({have} questions)"
-        questions, parts = generate_questions(client, witness(doc["id"], Path(doc["input"])).text)
+        text = witness(doc["id"], Path(doc["input"])).text
+        segs = segments(text, SEGMENT_TOKENS)
+        total = segs[-1].end
+        cached = cached_questions(path, segs)
+        if cached is not None and not cached[1]:
+            return f"{doc['id']}: cached ({len(cached[0]['questions'])} questions)"
+        if cached is None:
+            questions: list[dict[str, Any]] = []
+            empty: list[dict[str, int]] = []
+            todo = segs
+        else:
+            # The file is current but some segment has nothing (a run that stopped partway, or a text layer
+            # that changed): ask about those segments only, so the paper's tail is never silently absent.
+            questions = list(cached[0]["questions"])
+            empty = list(cached[0].get("empty", []))
+            todo = cached[1]
+        added = 0
+        for seg in todo:
+            kept = segment_questions(client, seg, segs.index(seg), len(segs))
+            questions.extend({**q, "segment": seg.where(total)} for q in kept)
+            added += len(kept)
+            if not kept:
+                empty.append(seg.where(total))  # recorded, so the next pass does not ask this segment again
+        questions.sort(key=lambda q: q["segment"]["from"])
         record = {
             "model": client.model,
             "server": client.base_url,
             "scheme": SCHEME,
             "doc": doc["id"],
-            "segments": parts,
+            "segments": len(segs),
             "questions": questions,
+            "empty": empty,
         }
         path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
-        return f"{doc['id']}: {len(questions)} questions over {parts} segments"
+        what = f"{len(questions)} questions over {len(segs)} segments"
+        return (
+            f"{doc['id']}: {what}"
+            if cached is None
+            else f"{doc['id']}: {what} ({added} added for {len(todo)} segments)"
+        )
 
     with ThreadPoolExecutor(workers) as pool:
         for line in pool.map(one, docs):
@@ -369,6 +410,16 @@ def _questions(doc_id: str) -> list[dict[str, Any]]:
     return items
 
 
+def answered(record: dict[str, Any], questions: list[dict[str, Any]]) -> bool:
+    """Whether an answer record is current: every item answered, no failed attempt, and the same questions in
+    the same order as the question file holds now (a regenerated question file must not read an older record
+    as cached; the reference `answer` is in every item, so its presence says nothing)."""
+    items = record.get("items", [])
+    if "failed" in record or not items or not all("answer_given" in it for it in items):
+        return False
+    return [it.get("question") for it in items] == [q.get("question") for q in questions]
+
+
 RUN_CAP = 32
 """A run of one non-ASCII character longer than this is squeezed to this many before the text is sent: the
 server's tokenizer failed ("Failed to process regex", HTTP 400) on a 764-character run of one CJK character that
@@ -381,10 +432,11 @@ def squeeze_runs(text: str) -> str:
     return _LONG_RUN.sub(lambda m: m.group(1) * RUN_CAP, text)
 
 
-def document_text(md: str, context: int) -> tuple[str, bool]:
-    """The output as the model sees it: whole when it fits the context, else cut. Returns (text, cut)."""
+def document_text(md: str, context: int, overhead: int = 0) -> tuple[str, bool]:
+    """The output as the model sees it: whole when it fits the context next to `overhead` tokens of prompt and
+    reply, else cut. Returns (text, cut)."""
     md = squeeze_runs(md)
-    budget = answer_budget(context)
+    budget = answer_budget(context, overhead)
     if count_tokens(md) <= budget:
         return md, False
     return cut_tokens(md, budget), True
@@ -396,48 +448,56 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int,
 
     def one(r: DocResult) -> str:
         path = run_dir / "qa" / r.tool / f"{r.doc_id}.json"
-        if path.exists() and all("answer" in it for it in json.loads(path.read_text(encoding="utf-8"))["items"]):
-            return f"{r.tool} {r.doc_id}: cached"
         questions = _questions(r.doc_id)
+        if path.exists() and answered(json.loads(path.read_text(encoding="utf-8")), questions):
+            return f"{r.tool} {r.doc_id}: cached"
         if not questions:
             return f"{r.tool} {r.doc_id}: no questions"
         md = strip_data_uris(read_output(r, run_dir))
         answers: list[str]
         cut = False
+        failed: str | None = None
         if r.status != "ok" or not md.strip():
             answers = [UNKNOWN] * len(questions)
         else:
             # Like the verdicts, answers are cached by the exact text the model saw: a sampled model answers the
             # same text differently on another day, and a tool whose output did not change between two runs
             # must score the same in both.
-            text, cut = document_text(md, context)
+            listed = "\n".join(f"{i + 1}. {q['question']}" for i, q in enumerate(questions))
+            overhead = (
+                count_tokens(ANSWER_PROMPT.format(unknown=UNKNOWN, questions=listed, text="")) + ANSWER_MAX_TOKENS
+            )
+            text, cut = document_text(md, context, overhead)
             hit = cached_answers(r.doc_id, questions, text)
             if hit is not None:
                 answers = hit
             else:
-                listed = "\n".join(f"{i + 1}. {q['question']}" for i, q in enumerate(questions))
                 prompt = ANSWER_PROMPT.format(unknown=UNKNOWN, questions=listed, text=text)
                 answers = []
                 for _attempt in range(2):
                     try:
-                        got = parse_json_array(client.chat(prompt, max_tokens=3000))
+                        got = parse_json_array(client.chat(prompt, max_tokens=ANSWER_MAX_TOKENS))
                     except (ValueError, json.JSONDecodeError) as exc:
                         _note(exc)
                         continue
                     except urllib.error.HTTPError as exc:
                         if exc.code != 400:
                             raise
-                        # The server refused this text (its tokenizer, not the context): this document fails
-                        # for this tool and the pass goes on; a server that stopped answering is an OSError.
-                        reason = exc.read().decode("utf-8", "replace")[:120]
-                        return f"{r.tool} {r.doc_id}: FAILED, the server refused the text ({reason})"
+                        # The server refused this text (its tokenizer, not the context); a server that stopped
+                        # answering is an OSError and ends the pass.
+                        failed = "the server refused the text: " + exc.read().decode("utf-8", "replace")[:120]
+                        break
                     answers = [str(a) if a is not None else UNKNOWN for a in got][: len(questions)]
                     if len(answers) == len(questions):
                         break
-                if len(answers) != len(questions):
-                    # Not written: a padded record would be cached as answered and graded as wrong.
-                    return f"{r.tool} {r.doc_id}: FAILED, the model returned {len(answers)} of {len(questions)} answers"
-                store_answers(r.doc_id, questions, text, answers, client.model)
+                if failed is None and len(answers) != len(questions):
+                    failed = f"the model returned {len(answers)} of {len(questions)} answers"
+                if failed is None:
+                    store_answers(r.doc_id, questions, text, answers, client.model)
+                else:
+                    # A failed attempt counts: the record answers UNKNOWN to everything (wrong when graded) and
+                    # says why, and the next pass tries this document again instead of reading it as cached.
+                    answers = [UNKNOWN] * len(questions)
         items = [{**q, "answer_given": a} for q, a in zip(questions, answers, strict=True)]
         record = {
             "model": client.model,
@@ -448,8 +508,12 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int,
             "cut": cut,
             "items": items,
         }
+        if failed is not None:
+            record["failed"] = failed
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
+        if failed is not None:
+            return f"{r.tool} {r.doc_id}: FAILED, {failed}"
         note = " (output cut to fit the context)" if cut else ""
         return f"{r.tool} {r.doc_id}: {sum(a != UNKNOWN for a in answers)}/{len(answers)} answered{note}"
 

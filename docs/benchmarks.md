@@ -125,9 +125,9 @@ same grader, same machine:
 | pymupdf4llm 1.28.2 | 0.677 [0.558, 0.788] | 0.582 [0.456, 0.711] |
 | **ezmd main, compact** | 0.564 [0.425, 0.695] | 0.453 [0.306, 0.608] |
 
-Compact's cut costs 0.22 of accuracy over the whole paper (paired against the full profile's run of the same
-papers: -0.223 [-0.324, -0.136] against MarkItDown, the best competitor row) and 0.26 on second-half questions.
-That is the number the first table could not show. The full profile ties MarkItDown, Docling and MinerU on the
+Compact's cut costs 0.22 of accuracy over the whole paper (0.564 against the full profile's 0.780 on the same
+papers and questions) and 0.26 on second-half questions; against MarkItDown, the best competitor row, the paired
+difference is -0.223 [-0.324, -0.136]. That is the number the first table could not show. The full profile ties MarkItDown, Docling and MinerU on the
 paired test (-0.006 [-0.070, +0.051] against MarkItDown), and 0.1.0 to main is a real gain for the text-layer
 engine on the same questions (0.698 to 0.780). The figure-lettering fix of #27, measured the same way on the
 same papers (`bench/results/2026-10-25-figtext/compare.md`), leaves accuracy where it was (full -0.004 [-0.013,

@@ -3,11 +3,14 @@ scorer's second-half view of the results. No model needed."""
 
 from __future__ import annotations
 
+import io
 import json
 import re
 import sys
+import urllib.error
 from itertools import pairwise
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -86,15 +89,64 @@ def test_generate_questions_asks_every_segment_and_records_where_the_evidence_is
     assert sum(1 for q in questions if arxiv.in_second_half(q)) >= 1
 
 
-def test_question_files_from_an_older_scheme_are_generated_again(tmp_path: Path) -> None:
+def _question_for(seg: qa.Segment, total: int) -> dict[str, object]:
+    return {"question": f"q{seg.start}", "answer": "a", "quote": "x", "segment": seg.where(total)}
+
+
+def test_question_files_are_reused_per_segment_and_older_schemes_are_generated_again(tmp_path: Path) -> None:
+    segs = qa.segments(TEXT, 200)
+    total = segs[-1].end
     path = tmp_path / "q.json"
+    assert qa.cached_questions(tmp_path / "missing.json", segs) is None
     path.write_text(json.dumps({"questions": [{"question": "q"}] * 5}), encoding="utf-8")  # no scheme
-    assert qa.cached_questions(path) is None
-    path.write_text(json.dumps({"scheme": qa.SCHEME, "segments": 4, "questions": [{"question": "q"}] * 3}))
-    assert qa.cached_questions(path) is None  # fewer than one per segment
-    path.write_text(json.dumps({"scheme": qa.SCHEME, "segments": 4, "questions": [{"question": "q"}] * 4}))
-    assert qa.cached_questions(path) == 4
-    assert qa.cached_questions(tmp_path / "missing.json") is None
+    assert qa.cached_questions(path, segs) is None
+    stale = {
+        "scheme": qa.SCHEME,
+        "segments": 2,
+        "questions": [{**_question_for(segs[0], total), "segment": {"from": 0, "to": 200, "of": 999}}],
+    }
+    path.write_text(json.dumps(stale), encoding="utf-8")
+    assert qa.cached_questions(path, segs) is None  # another text layer: everything is written again
+    partial = {"scheme": qa.SCHEME, "segments": len(segs), "questions": [_question_for(segs[0], total)]}
+    path.write_text(json.dumps(partial), encoding="utf-8")
+    record, missing = qa.cached_questions(path, segs)  # type: ignore[misc]
+    assert record == partial and missing == segs[1:]  # the other segments are asked about, not the whole file
+    settled = {
+        **partial,
+        "empty": [s.where(total) for s in segs[2:]],
+        "questions": [_question_for(s, total) for s in segs[:2]],
+    }
+    path.write_text(json.dumps(settled), encoding="utf-8")
+    assert qa.cached_questions(path, segs) == (settled, [])  # a segment that yielded nothing is not asked again
+
+
+def test_generate_completes_a_question_file_for_its_missing_segments(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(qa, "SEGMENT_TOKENS", 200)
+    monkeypatch.setenv("EZMD_BENCH_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setattr(qa, "witness", lambda doc_id, path: SimpleNamespace(text=TEXT))
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "docs.json").write_text(
+        json.dumps({"documents": [{"id": "2601_00001", "input": "x.pdf"}]}), encoding="utf-8"
+    )
+    segs = qa.segments(TEXT, 200)
+    total = segs[-1].end
+    qa.qa_dir().mkdir(parents=True, exist_ok=True)
+    path = qa.qa_dir() / "2601_00001.json"
+    path.write_text(
+        json.dumps({"scheme": qa.SCHEME, "segments": len(segs), "questions": [_question_for(segs[0], total)]}),
+        encoding="utf-8",
+    )
+    writer = _Writer()
+    assert qa.generate(writer, run, 1) == 0  # type: ignore[arg-type]
+    assert writer.parts == [(i + 1, len(segs)) for i in range(1, len(segs))]  # the first segment was not asked again
+    record = json.loads(path.read_text(encoding="utf-8"))
+    assert [q["segment"]["from"] for q in record["questions"]] == [s.start for s in segs]
+    assert record["questions"][0]["question"] == "q0" and record["empty"] == []
+    writer.parts.clear()
+    assert qa.generate(writer, run, 1) == 0 and writer.parts == []  # complete now: cached
 
 
 class _Reader:
@@ -145,17 +197,49 @@ def _run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, md: str) -> Path:
 def test_answer_sends_the_whole_output_and_marks_a_cut(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     run = _run(tmp_path, monkeypatch, TEXT)
     reader = _Reader()
-    qa.answer(reader, run, None, 1, context=qa.PROMPT_RESERVE + 10_000)  # type: ignore[arg-type]
+    room = qa.PROMPT_RESERVE + qa.ANSWER_MAX_TOKENS  # what the budget keeps free beyond the question prompt
+    qa.answer(reader, run, None, 1, context=room + 10_000)  # type: ignore[arg-type]
     record = json.loads((run / "qa" / "ezmd-main" / "2601_00001.json").read_text(encoding="utf-8"))
-    assert record["cut"] is False and record["context"] == qa.PROMPT_RESERVE + 10_000
+    assert record["cut"] is False and record["context"] == room + 10_000
     assert reader.seen[-1] == TEXT
     assert record["items"][0]["segment"] == {"from": 0, "to": 400, "of": 400}
     (run / "qa" / "ezmd-main" / "2601_00001.json").unlink()
-    qa.answer(reader, run, None, 1, context=qa.PROMPT_RESERVE + 300)  # type: ignore[arg-type]
+    qa.answer(reader, run, None, 1, context=room + 300)  # type: ignore[arg-type]
     record = json.loads((run / "qa" / "ezmd-main" / "2601_00001.json").read_text(encoding="utf-8"))
     assert record["cut"] is True
-    assert TEXT.startswith(reader.seen[-1]) and arxiv.count_tokens(reader.seen[-1]) <= 300
+    sent = reader.seen[-1]
+    assert TEXT.startswith(sent) and 0 < arxiv.count_tokens(sent) < 300  # the question prompt and reply come off
     assert qa.document_text("short", 50_000) == ("short", False)
+    assert qa.answer_budget(10_000, overhead=1_000) == 10_000 - qa.PROMPT_RESERVE - 1_000
+
+
+def test_a_refused_or_short_reply_is_recorded_as_a_failed_attempt_and_retried(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = _run(tmp_path, monkeypatch, TEXT)
+    path = run / "qa" / "ezmd-main" / "2601_00001.json"
+
+    class _Refuser:
+        model, base_url = "fake", "http://x"
+
+        def chat(self, prompt: str, **_: object) -> str:
+            raise urllib.error.HTTPError(
+                "http://x", 400, "Bad Request", None, io.BytesIO(b'{"error":"Failed to process regex"}')
+            )  # type: ignore[arg-type]
+
+    assert qa.answer(_Refuser(), run, None, 1) == 0  # type: ignore[arg-type]
+    record = json.loads(path.read_text(encoding="utf-8"))
+    assert record["failed"].startswith("the server refused the text") and "process regex" in record["failed"]
+    assert [it["answer_given"] for it in record["items"]] == [qa.UNKNOWN]  # counted as asked and wrong
+    assert not qa.answered(record, qa._questions("2601_00001"))  # and tried again next pass
+    reader = _Reader()
+    qa.answer(reader, run, None, 1)  # type: ignore[arg-type]
+    record = json.loads(path.read_text(encoding="utf-8"))
+    assert "failed" not in record and record["items"][0]["answer_given"] == "14" and reader.seen
+    assert qa.answered(record, qa._questions("2601_00001"))
+    # A regenerated question file makes the record stale even though every item is answered.
+    assert not qa.answered(record, [{"question": "How many pallets, in total?", "answer": "14"}])
+    assert not qa.answered({"items": [{"question": "How many?", "answer": "14"}]}, qa._questions("2601_00001"))
 
 
 def test_a_long_run_of_one_character_is_squeezed_before_the_text_is_sent() -> None:
@@ -179,15 +263,31 @@ def test_scorer_splits_accuracy_by_where_the_evidence_lies() -> None:
     ]
     assert [arxiv.in_second_half(it) for it in items] == [False, False, True, True, True, None]
     per_doc = {
-        "d1": {"qa_asked": 6.0, "qa_correct": 4.0, "qa_tail_asked": 3.0, "qa_tail_correct": 1.0, "qa_cut": 1.0},
-        "d2": {"qa_asked": 4.0, "qa_correct": 4.0, "qa_tail_asked": 2.0, "qa_tail_correct": 2.0, "qa_cut": 0.0},
+        "d1": {
+            "qa_asked": 6.0,
+            "qa_correct": 4.0,
+            "qa_tail_asked": 3.0,
+            "qa_tail_correct": 1.0,
+            "qa_head_asked": 2.0,  # the unlocated sixth question is in neither half
+            "qa_head_correct": 2.0,
+            "qa_cut": 1.0,
+        },
+        "d2": {
+            "qa_asked": 4.0,
+            "qa_correct": 3.0,
+            "qa_tail_asked": 2.0,
+            "qa_tail_correct": 2.0,
+            "qa_head_asked": 2.0,
+            "qa_head_correct": 1.0,
+            "qa_cut": 0.0,
+        },
         "d3": {"qa_asked": None},
     }
     pooled = arxiv._qa_pooled(per_doc)
     assert pooled["qa_questions"] == {"value": 10, "n": 2}
-    assert pooled["qa_pooled_accuracy"] == {"value": 0.8, "n": 10}
+    assert pooled["qa_pooled_accuracy"] == {"value": 0.7, "n": 10}
     assert pooled["qa_second_half"] == {"value": 0.6, "n": 5}
-    assert pooled["qa_first_half"] == {"value": 1.0, "n": 5}
+    assert pooled["qa_first_half"] == {"value": 0.75, "n": 4}  # not (7 - 3) / (10 - 5): the unlocated one is out
     assert pooled["qa_outputs_cut"] == {"value": 1, "n": 2}
 
 
@@ -206,7 +306,9 @@ def test_qa_scores_read_the_segments_and_the_cut_flag(tmp_path: Path) -> None:
     (run / "qa" / "ezmd-main" / "2601_00001.json").write_text(json.dumps(record), encoding="utf-8")
     result = DocResult("arxiv", "2601_00001", "c", "ezmd-main", "1", "ok", output="ezmd-main/2601_00001.md")
     score = arxiv.qa_scores(result, run)
-    assert score == arxiv.QaScore(correct=2, asked=3, tail_correct=1, tail_asked=2, cut=True)
+    assert score == arxiv.QaScore(
+        correct=2, asked=3, tail_correct=1, tail_asked=2, cut=True, head_correct=1, head_asked=1
+    )
     assert score.accuracy == pytest.approx(2 / 3) and score.tail_accuracy == pytest.approx(0.5)
     other = DocResult("arxiv", "2601_00002", "c", "ezmd-main", "1", "ok", output="ezmd-main/2601_00002.md")
     assert arxiv.qa_scores(other, run) is None
