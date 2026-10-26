@@ -26,6 +26,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- The OOXML package guard no longer rejects real documents as zip bombs: the per-member compression limit is
+  1000:1 instead of 100:1. Deflate tops out near 1032:1, so a run of one byte is still refused, while
+  generated slide and sheet XML (100:1 to 300:1) and EMF vector images (up to 730:1) pass; the total
+  uncompressed cap and the declared-size check still bound every package. Six Govdocs1 files converted
+  through LibreOffice and six native `.docx`/`.pptx` files in the modern corpus were refused with
+  `package rejected ... compression ratio` on 2026-10-26.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
