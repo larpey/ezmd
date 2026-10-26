@@ -795,7 +795,7 @@ The `squid.conf` is in 4.12.1. In public mode the workers are moved off the `egr
 #### 4.9.5 `deploy/docker-compose.pi.yml`
 
 ```yaml
-# Fetch node for a Raspberry Pi 4/5 (arm64) at the owner's home.
+# Fetch node for a Raspberry Pi 4/5 (arm64) at my home.
 # Outbound only. Reaches the instance over Tailscale. No ports published. No secrets baked into the image.
 name: ezmd-fetch-node
 services:
@@ -1291,11 +1291,11 @@ Upgrade policy for self-hosters, documented in `docs/self-host.md`: patch versio
 
 ### 4.10 Public instance runbook
 
-Phase: 4. This is `docs/ops/runbook.md`. Everything here is executed by the owner, not by the agent, except where marked "agent": the agent writes the configuration files, scripts, and docs; the owner creates accounts and pays bills. The agent must produce every file referenced so the owner's work is clicking and pasting.
+Phase: 4. This is `docs/ops/runbook.md`. Everything here is executed by me, not by the agent, except where marked "agent": the agent writes the configuration files, scripts, and docs; I create accounts and pay bills. The agent must produce every file referenced so my work is clicking and pasting.
 
 #### 4.10.1 Hetzner provisioning
 
-1. Create a Hetzner Cloud project `ezmd-public`. Server: location Ashburn (`ash`), type dedicated-vCPU CCX33 (8 vCPU, 32 GB) or the 8-core/16 GB dedicated option available at order time; Ubuntu 24.04; add the owner's SSH key at creation; enable IPv4 and IPv6; attach to a Hetzner Cloud Firewall `ezmd-edge` with inbound rules: TCP 22 from the owner's Tailscale subnet only (after Tailscale is up; initially from the owner's current IP), TCP 80, TCP 443, UDP 443 from Cloudflare IP ranges only (paste both lists), and nothing else. Outbound: allow all.
+1. Create a Hetzner Cloud project `ezmd-public`. Server: location Ashburn (`ash`), type dedicated-vCPU CCX33 (8 vCPU, 32 GB) or the 8-core/16 GB dedicated option available at order time; Ubuntu 24.04; add my SSH key at creation; enable IPv4 and IPv6; attach to a Hetzner Cloud Firewall `ezmd-edge` with inbound rules: TCP 22 from my Tailscale subnet only (after Tailscale is up; initially from my current IP), TCP 80, TCP 443, UDP 443 from Cloudflare IP ranges only (paste both lists), and nothing else. Outbound: allow all.
 2. Attach a 100 GB volume `ezmd-blobs` mounted at `/var/lib/docker/volumes` is not needed; use the server's local NVMe (80+ GB). Enable Hetzner backups only if the budget allows (20% surcharge); otherwise rely on `backup.sh` plus off-box copy (step 4).
 3. First login as root, run `bootstrap.sh --domain ezmd.<domain> --email <email> --public --media`. The script handles ufw, fail2ban, unattended-upgrades, sshd, Docker, and the stack.
 4. Off-box backup: install `rclone`, configure a Backblaze B2 or Hetzner Storage Box remote, and add to `ezmd-backup.service` an `ExecStartPost=rclone copy /var/backups/ezmd remote:ezmd-backups --max-age 2d`. Backups contain `.env` with secrets, so the bucket must be private and the rclone config mode 600.
@@ -1317,20 +1317,20 @@ Phase: 4. This is `docs/ops/runbook.md`. Everything here is executed by the owne
 5. Cache rules: "Cache static": `(http.request.uri.path matches "^/(assets|icons|models)/")` eligible for cache, edge TTL 1 month, respect origin `immutable`. "Bypass API": `(http.request.uri.path contains "/v1/")` bypass cache. Default: cache nothing else (results must never be cached at the edge; Part 3 sets `Cache-Control: private, no-store` on `/v1/*`, and this rule is the second line).
 6. Configuration rules: disable Rocket Loader, Email Obfuscation, and Mirage for the zone (they inject scripts and break CSP). Turn off "Browser Integrity Check" exceptions; keep it on by default.
 7. Security settings: Bot Fight Mode on (free), "Challenge Passage" 30 minutes, Security Level Medium.
-8. Notifications: enable "Origin error rate alert" and "SSL certificate expiry" to the owner's email.
+8. Notifications: enable "Origin error rate alert" and "SSL certificate expiry" to my email.
 9. Record the Cloudflare account email, zone ID, and Turnstile widget ID in the private ops notes (not in the repo).
 
 #### 4.10.3 Fetch node: Pi image build and first boot
 
-The fetch node runs `apps/fetch-node` on a Raspberry Pi 4 (4 GB) or Pi 5 at the owner's home. It claims fetch jobs from the instance over Tailscale, performs the platform fetch (captions first, then yt-dlp audio-only with the bgutil PO-token provider on the home residential IP), and uploads the small result (caption JSON or Opus audio) to the instance. Users never learn the home IP: the instance reaches the Pi only through Tailscale, the Pi has no published ports, and the Pi's HTTP calls to platforms carry no user-identifying data (the job carries only the target URL).
+The fetch node runs `apps/fetch-node` on a Raspberry Pi 4 (4 GB) or Pi 5 at my home. It claims fetch jobs from the instance over Tailscale, performs the platform fetch (captions first, then yt-dlp audio-only with the bgutil PO-token provider on the home residential IP), and uploads the small result (caption JSON or Opus audio) to the instance. Users never learn the home IP: the instance reaches the Pi only through Tailscale, the Pi has no published ports, and the Pi's HTTP calls to platforms carry no user-identifying data (the job carries only the target URL).
 
 Image build (agent writes `deploy/pi/build.sh` and `deploy/pi/cloud-init.yaml`):
 
-1. Use Raspberry Pi OS Lite 64-bit (Debian 12 based) via `rpi-imager` CLI or the official image URL. Customize with `cloud-init` style `user-data` (Pi OS supports `firstrun.sh`; the script generates it): hostname `ezmd-pi`, user `ezmd` with the owner's SSH public key, password login disabled, Wi-Fi off (Ethernet only), locale, timezone.
+1. Use Raspberry Pi OS Lite 64-bit (Debian 12 based) via `rpi-imager` CLI or the official image URL. Customize with `cloud-init` style `user-data` (Pi OS supports `firstrun.sh`; the script generates it): hostname `ezmd-pi`, user `ezmd` with my SSH public key, password login disabled, Wi-Fi off (Ethernet only), locale, timezone.
 2. `firstrun.sh` installs Docker (`get.docker.com`), Tailscale, `unattended-upgrades`, enables `fail2ban` (SSH only), sets `dtoverlay=disable-wifi,disable-bt` in `/boot/firmware/config.txt`, mounts `/tmp` as tmpfs 1.5 GB, configures `journald` with `SystemMaxUse=200M`, and writes `/opt/ezmd-fetch/docker-compose.yml` (the pi compose from 4.9.5) and an empty `.env.pi` with mode 600.
-3. Nothing secret is in the image. On first boot the owner SSHes in (over LAN), runs `sudo tailscale up --advertise-tags=tag:ezmd-pi --ssh`, authenticates in the browser, then fills `.env.pi` with `EZMD_FETCH_NODE_TOKEN` (generated on the VPS with `docker compose exec api ezmd fetch-node token --node-id pi-home`, which also appends it to `EZMD_FETCH_NODE_TOKENS` on the VPS) and `EZMD_FETCH_NODE_INSTANCE=http://ezmd-vps:8080` (Tailscale MagicDNS name; the API's internal port is reachable via Tailscale because `tailscaled` on the VPS exposes it through `tailscale serve --bg --tcp 8080 tcp://127.0.0.1:8080`, which is itself allowed only by ACL from `tag:ezmd-pi`). Note: the API container publishes 8080 only to `127.0.0.1` on the VPS for this purpose; add `ports: ["127.0.0.1:8080:8080"]` to the `api` service in `docker-compose.public.yml`.
+3. Nothing secret is in the image. On first boot I SSH in (over LAN), runs `sudo tailscale up --advertise-tags=tag:ezmd-pi --ssh`, authenticates in the browser, then fills `.env.pi` with `EZMD_FETCH_NODE_TOKEN` (generated on the VPS with `docker compose exec api ezmd fetch-node token --node-id pi-home`, which also appends it to `EZMD_FETCH_NODE_TOKENS` on the VPS) and `EZMD_FETCH_NODE_INSTANCE=http://ezmd-vps:8080` (Tailscale MagicDNS name; the API's internal port is reachable via Tailscale because `tailscaled` on the VPS exposes it through `tailscale serve --bg --tcp 8080 tcp://127.0.0.1:8080`, which is itself allowed only by ACL from `tag:ezmd-pi`). Note: the API container publishes 8080 only to `127.0.0.1` on the VPS for this purpose; add `ports: ["127.0.0.1:8080:8080"]` to the `api` service in `docker-compose.public.yml`.
 4. `docker compose up -d` on the Pi. Verify with `docker compose logs -f fetch-node` that it reports "claimed 0 jobs, polling" and that the VPS `/admin/fetch-nodes` (admin token) lists `pi-home` as online.
-5. Optional cookies: if the owner wants to supply a YouTube cookies file for the Pi (self-host rule applies here too, since the public instance's own fetch policy still forbids YouTube unless a fetch node is online and the owner has accepted the risk in `docs/internal/DECISIONS.md`), place it at `/opt/ezmd-fetch/cookies.txt` mode 600. Default: no cookies; captions and public audio only.
+5. Optional cookies: if I want to supply a YouTube cookies file for the Pi (self-host rule applies here too, since the public instance's own fetch policy still forbids YouTube unless a fetch node is online and I have accepted the risk in `docs/internal/DECISIONS.md`), place it at `/opt/ezmd-fetch/cookies.txt` mode 600. Default: no cookies; captions and public audio only.
 6. Power: a UPS HAT is optional; the node is best-effort. When it is offline the instance's capabilities report `fetch_node: offline` and URL fetches for the disabled sources return `fetch_blocked_by_platform` with the extension suggestion, which is the designed degraded mode.
 
 #### 4.10.4 Tailscale ACLs
@@ -1356,7 +1356,7 @@ In the tailnet policy file (agent writes `deploy/tailscale/policy.hujson`):
 }
 ```
 
-The VPS node runs `tailscale serve` for 8080 restricted by this ACL; the Pi node never serves. Enable key expiry disabled on both tagged nodes (tagged nodes do not expire by default). Turn on tailnet lock if the owner has a second signing device; otherwise document the risk.
+The VPS node runs `tailscale serve` for 8080 restricted by this ACL; the Pi node never serves. Enable key expiry disabled on both tagged nodes (tagged nodes do not expire by default). Turn on tailnet lock if I have a second signing device; otherwise document the risk.
 
 #### 4.10.5 Monitoring
 
@@ -1375,7 +1375,7 @@ The VPS node runs `tailscale serve` for 8080 restricted by this ACL; the Pi node
    - `JobFailureRate`: failed/total over 30 m > 20% with total > 20, warning.
 4. Uptime: an external check (UptimeRobot free, or Cloudflare's health check if on a paid plan) on `https://ezmd.<domain>/healthz` every 5 minutes, email and Discord on failure. This catches Cloudflare-side and DNS problems the internal stack cannot see.
 5. Discord: a private channel with the webhook; alertmanager's Discord receiver (native since 0.25). Keep the webhook URL in `.env` only.
-6. Weekly digest: a small `ezmd admin report --week` command prints jobs by type, top warning codes, fetch block rate, p95 durations, cost estimate, and is run by a systemd timer that posts it to the Discord channel. This is the owner's main feedback loop and the input for the sponsor application.
+6. Weekly digest: a small `ezmd admin report --week` command prints jobs by type, top warning codes, fetch block rate, p95 durations, cost estimate, and is run by a systemd timer that posts it to the Discord channel. This is my main feedback loop and the input for the sponsor application.
 
 #### 4.10.6 Log retention and redaction
 
@@ -1400,7 +1400,7 @@ Capacity on the 8-core box with the compose limits above (api 1 core, worker-def
 - Media: at 4x realtime and concurrency 1, the media worker clears 4 audio hours per wall hour, i.e. 16 fifteen-minute clips per hour. A queue of 20 clips means an hour's wait, which is the `MediaQueueWait` alert threshold rationale.
 - When to add Groq: the trigger is p95 media queue wait above 10 minutes for three days in a week, or more than 60 media jobs per day. At that point set `EZMD_GROQ_API_KEY` and `EZMD_GROQ_OFFLOAD_MIN_S=300`: clips over 5 minutes go to Groq, short clips stay local. Cost at 100 fifteen-minute clips a day is 25 audio hours, i.e. $1 per day, $30 per month, far cheaper than a GPU box. Groq is a sub-processor, so enabling it requires updating the Privacy page (the draft includes the clause, commented out) and the capabilities response (`asr_offload: groq`), and the UI shows "Transcribed with a hosted provider" in the warnings panel as an info-level notice for those jobs. Diarization is not available via Groq; such jobs lose speaker labels, reported as `warning: diarization_unavailable_offload`.
 - Cost tracking: `ezmd admin report` sums Groq seconds billed (from the job table) and multiplies by the configured rate, adds the fixed monthly server cost from `EZMD_COST_SERVER_MONTHLY`, and prints cost per 1,000 jobs. The weekly Discord digest includes it. Hetzner bandwidth is 20 TB included; expected egress is text, under 50 GB per month; an alert fires at 5 TB per month measured by `node_network_transmit_bytes_total`.
-- Sponsor application: once the instance shows 30 days of data (jobs per day, unique daily IPs, bandwidth, CPU hours), the owner applies to Hetzner's open source program, Cloudflare's Project Alexandria or OSS sponsorship, and GitHub Sponsors (organization tier). The `docs/ops/sponsor-pack.md` template is generated by `ezmd admin report --sponsor-pack` with the numbers filled in. Until a sponsor exists, the footer shows the "Support" link to GitHub Sponsors with the text "Nothing is gated; this keeps the public instance running." Donations alone are not expected to cover the box; the budget ceiling at which the owner downgrades the public instance to documents-and-web-only (media profile off) is written in `docs/internal/DECISIONS.md` and defaults to $80 per month of unsponsored spend.
+- Sponsor application: once the instance shows 30 days of data (jobs per day, unique daily IPs, bandwidth, CPU hours), I apply to Hetzner's open source program, Cloudflare's Project Alexandria or OSS sponsorship, and GitHub Sponsors (organization tier). The `docs/ops/sponsor-pack.md` template is generated by `ezmd admin report --sponsor-pack` with the numbers filled in. Until a sponsor exists, the footer shows the "Support" link to GitHub Sponsors with the text "Nothing is gated; this keeps the public instance running." Donations alone are not expected to cover the box; the budget ceiling at which I downgrade the public instance to documents-and-web-only (media profile off) is written in `docs/internal/DECISIONS.md` and defaults to $80 per month of unsponsored spend.
 
 ### 4.11 Abuse prevention
 
@@ -1441,13 +1441,13 @@ Keys live in `keys.json` in cobalt's shape, loaded on start and on `SIGHUP` or `
 ]
 ```
 
-Free keys are issued by the owner on request (a form on the docs site that opens a GitHub issue template; no automated issuance in v1 so there is no signup system to abuse). Keys are UUIDv4; the API stores only a SHA-256 of the key in the usage table.
+Free keys are issued by me on request (a form on the docs site that opens a GitHub issue template; no automated issuance in v1 so there is no signup system to abuse). Keys are UUIDv4; the API stores only a SHA-256 of the key in the usage table.
 
 #### 4.11.2 Turnstile JWT flow and the self-host alternative
 
 1. The web UI loads the Turnstile widget only when `capabilities.challenge == "turnstile"`. On URL submit it obtains a token, posts it to `POST /v1/challenge`, and the API verifies with Cloudflare's siteverify (through the egress proxy) and returns a JWT signed with `EZMD_SECRET_KEY`, TTL 120 s, bound to the hashed client IP and a nonce. `POST /v1/convert` with a URL source requires the JWT in `X-Ezmd-Challenge`. One JWT is good for up to 5 convert calls (so multi-URL paste works) and is then revoked in Redis.
 2. ALTCHA for self-hosters who do not want Cloudflare: when `EZMD_ALTCHA_HMAC_KEY` is set and Turnstile is not, `capabilities.challenge == "altcha"`, `GET /v1/challenge/altcha` returns an ALTCHA challenge (SHA-256, `maxnumber` from `EZMD_ALTCHA_MAX_NUMBER`), the `altcha` web component (MIT, 34 kB, vendored into `apps/web`) solves it in the browser in 1 to 3 s, and `POST /v1/challenge` accepts the ALTCHA payload in place of a Turnstile token and issues the same JWT. Anubis is documented as a reverse-proxy option in front of Caddy for operators who want site-wide proof-of-work; the project does not integrate it in code. The docs state plainly that proof-of-work blocks low-effort scrapers only and that API keys plus per-IP concurrency are the real controls.
-3. Clients without a browser (CLI, SDK, Shortcut, MCP remote) cannot solve a challenge; they use an API key, or on the public instance fall into the `client` allowance: the API recognizes `client: ios-shortcut` and `User-Agent: ezmd-cli/*` and permits URL fetches without a JWT at a tighter per-IP limit (5 per 10 minutes). This is an explicit, documented soft spot; if abused, the owner flips `EZMD_CLIENT_ALLOWANCE=off` and those clients need keys.
+3. Clients without a browser (CLI, SDK, Shortcut, MCP remote) cannot solve a challenge; they use an API key, or on the public instance fall into the `client` allowance: the API recognizes `client: ios-shortcut` and `User-Agent: ezmd-cli/*` and permits URL fetches without a JWT at a tighter per-IP limit (5 per 10 minutes). This is an explicit, documented soft spot; if abused, I flip `EZMD_CLIENT_ALLOWANCE=off` and those clients need keys.
 
 #### 4.11.3 Queue fairness
 
@@ -1469,8 +1469,8 @@ Free keys are issued by the owner on request (a form on the docs site that opens
 #### 4.11.5 Blocklist and source policy
 
 1. `EZMD_DISABLED_SOURCES` disables platform adapters by name; the public instance ships with `youtube,tiktok,instagram,x,facebook` disabled for direct fetch (fetch-node and extension paths remain). Each disabled source returns `fetch_blocked_by_policy` with the UI's suggestion text.
-2. A pattern blocklist `deploy/blocklist.txt` (one regex per line, hot-reloaded) refuses URLs by pattern: known abuse targets (e.g. login pages, `/wp-login.php`, `/xmlrpc.php`, `/.env`), file-sharing hosts that have asked to be excluded, and anything the owner adds after an incident. Matches return 400 with `url_blocked_by_policy` and are counted in metrics.
-3. User-agent and ASN heuristics: requests from known cloud ASNs with no API key are allowed but get `concurrency 1` and `requests 10 per 60 s` (half the anonymous allowance). ASN lookup via a bundled MaxMind GeoLite2-ASN database only if the owner accepts its license; otherwise skip this control (default: skipped; the Cloudflare `cf.client.bot` rule covers the worst of it).
+2. A pattern blocklist `deploy/blocklist.txt` (one regex per line, hot-reloaded) refuses URLs by pattern: known abuse targets (e.g. login pages, `/wp-login.php`, `/xmlrpc.php`, `/.env`), file-sharing hosts that have asked to be excluded, and anything I add after an incident. Matches return 400 with `url_blocked_by_policy` and are counted in metrics.
+3. User-agent and ASN heuristics: requests from known cloud ASNs with no API key are allowed but get `concurrency 1` and `requests 10 per 60 s` (half the anonymous allowance). ASN lookup via a bundled MaxMind GeoLite2-ASN database only if I accept its license; otherwise skip this control (default: skipped; the Cloudflare `cf.client.bot` rule covers the worst of it).
 4. Takedown blocklist: URLs or content hashes received through the DMCA process are added to `deploy/blocklist.txt` with a comment and date.
 
 #### 4.11.6 Incident response checklist
@@ -1481,11 +1481,11 @@ Free keys are issued by the owner on request (a form on the docs site that opens
 2. Triage in 15 minutes: `ezmd admin top --last 1h` prints top hashed IPs, keys, source hosts, and client strings by job count and CPU seconds. Identify the pattern.
 3. Contain: for an IP or key, `ezmd admin block --ip-hash H --hours 24` or `ezmd admin keys disable NAME`; for a source host, add a regex to `blocklist.txt`; for a flood, enable Cloudflare "Under Attack" mode for the zone (interactive challenge on every request) for up to an hour; for a runaway job, `ezmd admin jobs kill ID`; for disk, `ezmd admin reap --now`.
 4. If the abuse is media-bound, temporarily set `EZMD_ANON_MAX_DURATION_S=300` and restart the API (no job loss; workers keep running).
-5. If a platform or rights holder contacts the owner: acknowledge within 2 business days from the DMCA mailbox, disable the specific source or URL pattern immediately while reviewing, follow the takedown process (4.13.3), and record the event in the private incident log with date, request, action, and outcome.
+5. If a platform or rights holder contacts me: acknowledge within 2 business days from the DMCA mailbox, disable the specific source or URL pattern immediately while reviewing, follow the takedown process (4.13.3), and record the event in the private incident log with date, request, action, and outcome.
 6. If Hetzner sends an abuse ticket: respond within their deadline (usually 24 h), include what was done, and keep the ticket ID in the log.
 7. Recover: remove temporary blocks after 24 to 72 hours unless repeated; return Cloudflare to normal security level; post a one-line note in the Discord channel.
 8. Learn: if the incident revealed a missing control, open an issue tagged `abuse` with the proposed change; if it was a false positive on legitimate users, adjust the limit and note the change in CHANGELOG under "Operations".
-9. Escalate to the human (this is the trigger for the agent, in the autonomous build, to stop and write a report rather than act): any legal correspondence, any Hetzner or Cloudflare account action, any event that would require spending money, any data exposure suspicion.
+9. Escalate to me (this is the trigger for the agent, in the autonomous build, to stop and write a report rather than act): any legal correspondence, any Hetzner or Cloudflare account action, any event that would require spending money, any data exposure suspicion.
 
 ### 4.12 Security hardening
 
@@ -1493,7 +1493,7 @@ Phase: 1 for container hardening and CI scanning; Phase 4 for the VPS and Pi che
 
 #### 4.12.1 VPS checklist
 
-Applied by `bootstrap.sh` where marked (B), by the owner where marked (O), verified by `ezmd admin audit-host` (a script that checks each item and prints OK/FAIL; agent writes it in `deploy/audit-host.sh`):
+Applied by `bootstrap.sh` where marked (B), by me where marked (O), verified by `ezmd admin audit-host` (a script that checks each item and prints OK/FAIL; agent writes it in `deploy/audit-host.sh`):
 
 1. (B) SSH: key-only, no password, no root password login, `MaxAuthTries 4`, no agent or X11 forwarding. (O) After Tailscale: close port 22 at the Hetzner firewall and use Tailscale SSH.
 2. (B) ufw: default deny inbound, allow 22 (until closed), 80, 443 TCP and UDP. (B) `DOCKER-USER` chain restricts 80/443 to Cloudflare ranges in public mode; a weekly timer `ezmd-cfips.timer` refreshes the ranges from `cloudflare.com/ips-v4` and `ips-v6`.
@@ -1559,8 +1559,8 @@ The app-level SSRF guard remains the primary control (it resolves once, pins the
 | Server | Malicious document exploits a parser (PDF, image, Office, archive) | Each engine in a subprocess with rlimits and seccomp; read-only root FS; non-root; tmpfs scratch; Trivy-scanned base images; Pillow pixel cap; archive bomb limits |
 | Server | Resource exhaustion (CPU, disk, memory) by many or large jobs | Rate limits, per-IP concurrency, size and duration caps, per-job wall time, container memory limits, tmpfs sizing, DiskLow alert, reaper |
 | Server | SSH brute force, unpatched OS | Key-only SSH behind Tailscale, fail2ban, unattended-upgrades, ufw, Cloudflare-only on 80/443 |
-| Owner's home network | Exposure of the home IP through the fetch node | Pi is outbound-only; reaches the VPS over Tailscale only; no ports published; users never receive a URL that resolves to the Pi; media fetched by the Pi is uploaded to the VPS, never served from the Pi |
-| Owner's home network | Compromise of the Pi pivoting to the LAN | Pi on its own VLAN or guest network (documented recommendation); container hardened; no secrets beyond its own token; ACL prevents the VPS from initiating to the Pi |
+| My home network | Exposure of the home IP through the fetch node | Pi is outbound-only; reaches the VPS over Tailscale only; no ports published; users never receive a URL that resolves to the Pi; media fetched by the Pi is uploaded to the VPS, never served from the Pi |
+| My home network | Compromise of the Pi pivoting to the LAN | Pi on its own VLAN or guest network (documented recommendation); container hardened; no secrets beyond its own token; ACL prevents the VPS from initiating to the Pi |
 | Platform relations | Datacenter-IP scraping of YouTube and others from the VPS | Public instance disables direct platform fetch; fetch moves to the Pi, extension, or Shortcut on the user's own IP; captions-first strategy minimizes media transfer |
 | Legal posture | DMCA or ToS complaints | Published agent and process; no content retention past 24 h; no re-serving of media; `DISABLED_SOURCES` to turn off any platform on request; blocklist for specific URLs; incident log |
 | API keys | Leak and misuse | Keys stored hashed; per-key IP and user-agent allowlists; per-key limits; `expires`; usage visible in `ezmd admin keys usage`; rotation by issuing a new key |
@@ -1573,7 +1573,7 @@ The app-level SSRF guard remains the primary control (it resolves once, pins the
 
 ### 4.13 Legal and policy pages
 
-Phase: 4 (must exist before the public launch; the pages are static routes in `apps/web` at `/terms`, `/privacy`, `/dmca`, `/acceptable-use`, served from `apps/web/src/legal/*.md` through the same Markdown renderer). Self-hosters get them with placeholders and a note that they are responsible for their own instance's terms. The draft text below is plain English and short. The owner must read it before launch; the agent must not change the substance without flagging it. Replace `OPERATOR`, `JURISDICTION`, and `DMCA_EMAIL` from `.env`.
+Phase: 4 (must exist before the public launch; the pages are static routes in `apps/web` at `/terms`, `/privacy`, `/dmca`, `/acceptable-use`, served from `apps/web/src/legal/*.md` through the same Markdown renderer). Self-hosters get them with placeholders and a note that they are responsible for their own instance's terms. The draft text below is plain English and short. I must read it before launch; the agent must not change the substance without flagging it. Replace `OPERATOR`, `JURISDICTION`, and `DMCA_EMAIL` from `.env`.
 
 #### 4.13.1 Terms of Service (draft)
 
@@ -1633,7 +1633,7 @@ Phase: 4 (must exist before the public launch; the pages are static routes in `a
 >
 > **Platform operators.** If you run a platform and want ezmd's public instance to stop fetching from your domain, write to the same address; we will add your domain to the refusal list within 2 business days without requiring a legal notice. The self-hosted software remains available under the Apache-2.0 license and we do not control what others run.
 
-The owner must register the DMCA agent with the US Copyright Office (small fee, online form) before launch; the runbook includes that step. Internal process: `docs/ops/takedown.md` describes the mailbox, the 2-day SLA, the blocklist edit, the incident log entry, and the escalation to counsel if a notice concerns the software rather than a specific use.
+I must register the DMCA agent with the US Copyright Office (small fee, online form) before launch; the runbook includes that step. Internal process: `docs/ops/takedown.md` describes the mailbox, the 2-day SLA, the blocklist edit, the incident log entry, and the escalation to counsel if a notice concerns the software rather than a specific use.
 
 #### 4.13.4 Platform ToS stance (published in docs and summarized on the Acceptable Use page)
 
@@ -1804,7 +1804,7 @@ Written in `fixtures/README.md` and enforced by a CI check over `manifest.yaml`:
 1. Every fixture has `origin` (one of `synthetic`, `cc0`, `cc-by`, `cc-by-sa`, `apache`, `mit`, `public-domain`, `own-work`) and `source` (a URL or "generated by `fixtures/gen/<script>`"). CC-BY and CC-BY-SA fixtures carry the attribution in `manifest.yaml` and in a `CREDITS.md` the docs render.
 2. No fixture may contain commercial media, platform content (no real YouTube, TikTok, Instagram, X material, even short), copyrighted books or articles, or real personal data. Social adapter fixtures are recorded responses with ids, names, and text replaced by generated values.
 3. Media fixtures are generated with open TTS (Piper, MIT) from public-domain or synthetic text, or are CC0 recordings (e.g. LibriVox excerpts, which are public domain, with the reader credited). Noise is added synthetically.
-4. Images are rendered from synthetic documents or drawn with scripts; handwriting fixtures come from CC-licensed datasets with their license noted, or from the owner's own hand.
+4. Images are rendered from synthetic documents or drawn with scripts; handwriting fixtures come from CC-licensed datasets with their license noted, or from my own hand.
 5. Chat exports are generated by `fixtures/gen/chat.py` from a seed with fake names and timestamps.
 6. The CI check fails if a fixture lacks `origin`, if `origin` is not on the list, or if a file in `fixtures/` is not in the manifest.
 7. Fixtures over 5 MB are stored with Git LFS; the total corpus stays under 500 MB.
@@ -2255,7 +2255,7 @@ jobs:
           generate_release_notes: true
 ```
 
-Release procedure (`docs/contributing/releasing.md`): bump versions in `packages/core/pyproject.toml`, `packages/mcp/pyproject.toml`, `packages/sdk-ts/package.json`, `apps/extension/manifest.json` with `scripts/bump_version.py X.Y.Z` (which also moves the CHANGELOG "Unreleased" section under the new version with the date), commit, tag `vX.Y.Z`, push the tag. Trusted publishing is configured on PyPI for both packages pointing at this workflow and the `release` environment; the environment requires the owner's approval for the first release of each major. Versions follow SemVer; the API path `/v1` changes only on a major.
+Release procedure (`docs/contributing/releasing.md`): bump versions in `packages/core/pyproject.toml`, `packages/mcp/pyproject.toml`, `packages/sdk-ts/package.json`, `apps/extension/manifest.json` with `scripts/bump_version.py X.Y.Z` (which also moves the CHANGELOG "Unreleased" section under the new version with the date), commit, tag `vX.Y.Z`, push the tag. Trusted publishing is configured on PyPI for both packages pointing at this workflow and the `release` environment; the environment requires my approval for the first release of each major. Versions follow SemVer; the API path `/v1` changes only on a major.
 
 #### 4.15.5 Dependency updates (`.github/renovate.json`)
 
@@ -2446,7 +2446,7 @@ Goal: the free instance is live, protected, lawful, observable, and cheap.
 | P4-T08 | Staging instance on a small Hetzner box using the full public overlay; k6 load run at target rates; 72-hour soak with synthetic traffic | P4-T01..T05 | thresholds pass; no alert false positives during soak; memory stable |
 | P4-T09 | Red-team pass: SSRF through every fetch path including the fetch node and the extension upload, bomb files through every converter, rate-limit bypass attempts (header spoofing, IPv6 rotation within a /64, key sharing), JWT replay, path traversal, CSP bypass attempts, metrics and admin exposure; findings fixed or recorded in SECURITY-EXCEPTIONS.md with expiry | P4-T08 | report in `docs/ops/redteam-<date>.md`; no open high findings |
 | P4-T10 | Production cutover: DNS, Cloudflare rules applied, Origin CA, Pi connected, uptime check, backups to off-box storage verified by a restore drill | P4-T07, P4-T09 | `https://ezmd.<domain>/healthz` ok; restore drill recorded |
-| P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run benchmark story, Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | P4-T10 | drafts in `docs/launch/` reviewed by the owner |
+| P4-T11 | Launch content: README "Try it" live, docs FAQ on platform blocking, Show HN draft with the shadow-run benchmark story, Product Hunt not planned (research shows weak signal), r/LocalLLaMA and r/ObsidianMD posts drafted; MCP registry entry verified in Claude Desktop and Cursor | P4-T10 | drafts in `docs/launch/` reviewed by me |
 | P4-T12 | Sponsor pack generator and applications drafted (Hetzner OSS, Cloudflare OSS, GitHub Sponsors org tier) to be sent after 30 days of data | P4-T04 | `ezmd admin report --sponsor-pack` produces the document |
 
 Launch checklist (every line must be checked and dated in docs/internal/STATUS.md before DNS cutover):
@@ -2535,14 +2535,14 @@ Current task: P2-T05 (in progress)
 ## Fixture scorecard (latest nightly)
 exact: 61/61, threshold: 52/54 (96.3%), media: 12/13, ocr: 7/9
 
-## Blockers and human decisions needed
+## Blockers and decisions needed from me
 - Hetzner GPU not in budget; media stays CPU (decision D-014)
 
 ## Known limitations (running list, becomes part of the final report)
 - Old scans under 150 dpi produce `ocr_confidence_low` on most pages
 ```
 
-Rules: one commit per task that touches docs/internal/STATUS.md with message `status: P2-T05 done`; never mark a task done with failing tests; if blocked, write the blocker and move to the next unblocked task in the same phase; never skip a gate; if a gate cannot pass, write why under Blockers and stop for the human.
+Rules: one commit per task that touches docs/internal/STATUS.md with message `status: P2-T05 done`; never mark a task done with failing tests; if blocked, write the blocker and move to the next unblocked task in the same phase; never skip a gate; if a gate cannot pass, write why under Blockers and stop for me.
 
 #### 4.17.9 Final completion report
 
@@ -2555,25 +2555,25 @@ When G4 passes (or when the agent must stop because a gate cannot pass), write `
 5. Public instance: capacity measured, limits in force, current sponsor status, 30-day traffic if available.
 6. Cost estimate: monthly server, Cloudflare, domain, Groq at observed volume, Pi power; projected at 10x traffic; the budget ceiling and the downgrade plan.
 7. Next steps: the Phase 5 items ranked by evidence from the weekly digests, plus any P1 to P4 debt.
-8. Decisions needed from the human: a short numbered list.
+8. Decisions needed from me: a short numbered list.
 
 ### 4.18 Risk register
 
-Each risk has an owner (agent or human), a mitigation built into the plan, and an escalation trigger: the condition under which the agent stops acting on its own and writes the issue to docs/internal/STATUS.md under "Blockers and human decisions needed" for the human.
+Each risk has an owner (agent or me), a mitigation built into the plan, and an escalation trigger: the condition under which the agent stops acting on its own and writes the issue to docs/internal/STATUS.md under "Blockers and decisions needed from me".
 
 | # | Risk | Likelihood | Impact | Mitigation | Escalation trigger |
 |---|---|---|---|---|---|
-| 1 | Platform blocking of datacenter fetches (YouTube, TikTok, Instagram, X) makes URL conversion fail for the most common user intent | High, continuous | High | Captions-first chain; direct platform fetch off on the public box; fetch node on residential IP; extension and share sheet on the user's IP; explicit `fetch_blocked_by_platform` warning with the three fixes; `FetchBlockedSpike` alert | Fetch-node success rate below 50% for 7 days, or a platform contacts the owner |
+| 1 | Platform blocking of datacenter fetches (YouTube, TikTok, Instagram, X) makes URL conversion fail for the most common user intent | High, continuous | High | Captions-first chain; direct platform fetch off on the public box; fetch node on residential IP; extension and share sheet on the user's IP; explicit `fetch_blocked_by_platform` warning with the three fixes; `FetchBlockedSpike` alert | Fetch-node success rate below 50% for 7 days, or a platform contacts me |
 | 2 | yt-dlp breakage cadence (extractor changes every few weeks, JS runtime and PO-token churn) | High | Medium | yt-dlp pinned but auto-bumped by Renovate at any time; nightly canary on release lag and extractor self-tests; adapter data file for mirror chains hot-swappable; fetch node auto-updates via Watchtower | Canary fails for 14 days with no upstream fix, or a fix needs a new system dependency on the Pi |
 | 3 | CPU saturation on the 8-core box from media jobs | Medium | Medium | Duration cap 15 min, concurrency 1 per IP, media sub-queues, Groq offload trigger at p95 wait over 10 min for 3 days, `CpuSaturated` and `MediaQueueWait` alerts, downgrade plan to documents-only | Groq offload would exceed the budget ceiling, or alerts persist after offload |
-| 4 | Legal takedown or cease-and-desist (DMCA, platform ToS, a Hamburg-style ruling against downloaders) | Low to medium | High | No retention past 24 h, text output only, no media re-serving, DMCA agent registered, 2-day takedown SLA, `DISABLED_SOURCES`, blocklist, no commercial media in fixtures or examples, platform stance published | Any legal correspondence at all: the agent never answers it; the human does |
+| 4 | Legal takedown or cease-and-desist (DMCA, platform ToS, a Hamburg-style ruling against downloaders) | Low to medium | High | No retention past 24 h, text output only, no media re-serving, DMCA agent registered, 2-day takedown SLA, `DISABLED_SOURCES`, blocklist, no commercial media in fixtures or examples, platform stance published | Any legal correspondence at all: the agent never answers it; I do |
 | 5 | License drift in dependencies or model weights (a dep flips to AGPL or BUSL, a model is RAIL) | Medium | High for commercial users | License allowlist CI on every PR for Python, Node, and models; `nonfree` isolation test; model registry with SPDX and gate; Renovate PRs fail on license change | A core dependency with no permissive alternative changes license |
 | 6 | Model download sizes and first-run slowness (gigabytes of weights; Pi and laptop users) | High | Medium | Core install with no torch; extras opt-in; `models pull` with size shown first; `model-init` in compose; `doctor` explains; whisper `small` default on CPU; in-browser Whisper for small files; `models export` for air-gap | None; this is a product constraint, not a decision point |
-| 7 | Pi offline (power, ISP, Tailscale, SD card failure) | High, intermittent | Low | Designed degraded mode: capabilities report `fetch_node: offline`, URL fetches for platform sources fail fast with the extension suggestion; `FetchNodeOffline` alert downgraded to info after week one; tmpfs-only writes to spare the SD card; Watchtower keeps it current | Offline more than 7 consecutive days (the human decides whether to replace hardware or drop the node) |
+| 7 | Pi offline (power, ISP, Tailscale, SD card failure) | High, intermittent | Low | Designed degraded mode: capabilities report `fetch_node: offline`, URL fetches for platform sources fail fast with the extension suggestion; `FetchNodeOffline` alert downgraded to info after week one; tmpfs-only writes to spare the SD card; Watchtower keeps it current | Offline more than 7 consecutive days (I decide whether to replace hardware or drop the node) |
 | 8 | Cloudflare dependency (Turnstile, proxy, WAF; terms or free-tier changes) | Low | Medium | ALTCHA implemented and tested as a drop-in challenge; Caddy handles TLS itself; Cloudflare-only firewall rule is a script toggle; runbook has a "run without Cloudflare" section (open 80/443, switch `TRUST_PROXY_HEADER`, enable ALTCHA, accept reduced DDoS protection) | Cloudflare free tier no longer covers Turnstile or proxying for the zone |
 | 9 | Abuse (scrapers using the instance as a proxy, bulk media floods, key sharing) | High | Medium | cobalt-derived limits, per-IP concurrency, daily budgets, Turnstile JWT, keys with IP and UA pinning, Cloudflare bot rules, blocklist, incident checklist, admin tooling | Hetzner abuse ticket, bandwidth over 5 TB per month, or an incident needing a spend decision |
 | 10 | Fixture copyright (a contributor adds real platform content or a copyrighted document) | Medium | Medium | Provenance manifest required by CI; allowed origins list; no real platform content rule; LFS size cap; CREDITS page; PR template question; council review on fixtures | A takedown about fixtures, or a contributor disputes a removal |
 | 11 | Scope creep (60-plus input types, five interfaces, verticals) | High | Medium | Phases with hard gates; Phase 5 is demand-ranked by the weekly digest; converter matrix marks Experimental honestly; "stub plus warning" is an acceptable v1 for long-tail types; the agent must not start a Phase N+1 task before gate N | The agent finds itself more than 30% over the phase's task count or a gate is 2 weeks late |
-| 12 | Maintainer burnout (one owner, free public instance, platform churn, support load) | High over 12 months | High | Automation: Renovate auto-merge, nightly canaries, alerts only for actionable conditions, weekly digest instead of dashboards, documented runbook so a second maintainer can step in, budget ceiling and downgrade plan so the box can shrink without shame, "Support" link and sponsor applications, issue templates that route platform-blocking complaints to the FAQ | The weekly digest shows more than 5 hours of operator time in a week for 3 weeks, or the owner says so |
+| 12 | Maintainer burnout (one person, free public instance, platform churn, support load) | High over 12 months | High | Automation: Renovate auto-merge, nightly canaries, alerts only for actionable conditions, weekly digest instead of dashboards, documented runbook so a second maintainer can step in, budget ceiling and downgrade plan so the box can shrink without shame, "Support" link and sponsor applications, issue templates that route platform-blocking complaints to the FAQ | The weekly digest shows more than 5 hours of operator time in a week for 3 weeks, or I say so |
 
 Every escalation trigger that fires during the autonomous build is written to docs/internal/STATUS.md immediately, with the risk number, what was observed, what the agent did within its authority, and the decision needed. The agent continues with unblocked work in the same phase; it does not pass a gate while a trigger is open.

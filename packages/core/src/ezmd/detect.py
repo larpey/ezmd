@@ -234,6 +234,9 @@ _ALIASES: dict[str, str] = {
     "application/vnd.sqlite3": "application/vnd.sqlite3",
     "application/x-parquet": "application/vnd.apache.parquet",
     "application/vnd.apache.parquet": "application/vnd.apache.parquet",
+    # libmagic's name for a message whose first line is a MIME header ("MIME entity"): the libmagic answer
+    # outranks the extension, so without this an .eml that starts with Content-Type has no converter.
+    "application/x-mimearchive": "message/rfc822",
 }
 
 # Magika labels whose mime we override (Magika reports generic or legacy mimes for these).
