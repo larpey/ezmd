@@ -269,9 +269,18 @@ def pull(
     """Download every manifest row not yet in `pulled.jsonl`. A file named STOP in the root stops the run
     cleanly between files. Returns counts."""
     done = read_pulled(root)
-    todo = [r for r in read_manifests(root) if r["digest"] not in done]
-    if limit is not None:
-        todo = todo[:limit]
+
+    def todo() -> Iterator[dict[str, Any]]:
+        # Streamed, so a restart starts pulling at once instead of parsing the whole manifest first.
+        n = 0
+        for r in read_manifests(root):
+            if r["digest"] in done:
+                continue
+            yield r
+            n += 1
+            if limit is not None and n >= limit:
+                return
+
     log_path = root / "pulled.jsonl"
     fail_path = root / "failed.jsonl"
     lock = threading.Lock()
@@ -319,10 +328,16 @@ def pull(
                 counts["refusals"] = refused
 
     with ThreadPoolExecutor(workers) as pool:
-        for i in range(0, len(todo), 2000):  # bounded batches: the manifest has hundreds of thousands of rows
-            if stop.exists():
-                break
-            list(pool.map(one, todo[i : i + 2000]))
+        batch: list[dict[str, Any]] = []
+        for row in todo():
+            batch.append(row)
+            if len(batch) == 500:  # bounded batches: the manifest has hundreds of thousands of rows
+                list(pool.map(one, batch))
+                batch = []
+                if stop.exists():
+                    break
+        if batch and not stop.exists():
+            list(pool.map(one, batch))
     print(f"ccgov: {counts}", flush=True)
     return counts
 
