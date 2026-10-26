@@ -9897,7 +9897,7 @@
   "python": "3.13.16",
   "ram_gb": 95.1
  },
- "notes": "## What this run is\n\nThe first pass of the everyday-documents coverage work: ezmd main (d078ebb, the 0.1.1 release plus #25 and\n#27) over the ten official Govdocs1 threads, 9,875 files across 43 extensions as a .gov crawler named them in\n2009, with no ground truth. The question is not how good the Markdown is but whether each conversion ends the\nway the contract says: an output, a declared refusal (`ConversionError`, `UnsupportedMediaType`,\n`InputTooLarge`), or a bug (any other exception, a timeout, a dead worker). `tools/bench/scoring/corpus.py`\nscores that outcome and clusters the failures by exception class and the frame that raised, which is the list\na fix pass works from (`clusters.md` under the run; the clusters below are copied from it).\n\n## Run conditions\n\n- Corpus: `govdocs1` (`bench/CORPORA.md`), the ten threads extracted flat by `fetch --only govdocs1` from a\n  copy on a local drive (`EZMD_GOVDOCS1`); 9,875 files, 2.9 GB. Every file was attempted whatever its type.\n- Tool: `ezmd-main` only, eight worker processes (`run --workers 8`), 120-second limit per file, raised to\n  240 seconds for the reruns below. LibreOffice 26.8.1 extracted to a user folder (no system install) and\n  passed through `LIBREOFFICE_PATH`; the first pass ran without it and refused every legacy Office file, so\n  those 1,900 results were dropped and redone with it in place. The 89 results whose error wrapped another\n  exception were redone twice more, after the registry started chaining the cause and after the worker's\n  frame picker was fixed, so `results.jsonl` holds one record per file from the same code.\n- Scoring: `score --corpus govdocs1`, clean rate with a bootstrap interval over the per-document outcomes.\n- 30,539 seconds of conversion in total, 64 minutes of wall time for the first pass. Per type (median, p95,\n  max seconds): doc 13.2 / 16.0 / 120 (LibreOffice's throwaway profile costs about 12 s per file), xls\n  13.3 / 26.3 / 74, ppt 13.2 / 15.3 / 24, pdf 0.41 / 3.9 / 45, txt 0.09 / 0.9 / 145, html 0.08 / 0.6 / 21.\n\n## Results\n\nClean rate 0.9941 [0.9926, 0.9955] over 9,875 files: 7,945 outputs, 1,872 declared refusals, 58 bugs.\n\n| type | n | ok | declared | bug | what the refusals are |\n|---|---|---|---|---|---|\n| pdf | 2,378 | 2,377 | 0 | 1 | heading level 7 in a tagged PDF |\n| html | 2,116 | 2,112 | 4 | 0 | XHTML routed to the XML parser (3), one binary |\n| jpg, gif, png | 1,461 | 0 | 1,461 | 0 | no image converter before Phase 2 |\n| doc | 797 | 735 | 5 | 57 | Word heading levels 7 to 9; two LibreOffice targets wrong; one package guard |\n| txt | 788 | 778 | 10 | 0 | YAML/XML look-alikes with no text fallback (6), labelled binary (2), 175 MB cap (1) |\n| xls | 584 | 584 | 0 | 0 | |\n| ppt, pps | 512 | 491 | 21 | 0 | container verdict `cdfv2` (3), package guard (5), LibreOffice (2), the rest declared |\n| xml | 353 | 308 | 45 | 0 | RDF/XML has no converter (37), malformed XML with no fallback (7), plist (1) |\n| ps, eps | 248 | 2 | 246 | 0 | PostScript is not claimed; the two \"ok\" are gzip files misnamed .ps |\n| csv, gz, log, kml, rtf, docx, xlsx, pptx, zip, ... | 450 | 448 | 2 | 0 | |\n| swf, dbase3, unk, kmz, wp, sql, fm, pub, dwf, ... | 188 | 101 | 87 | 0 | unclaimed formats refused; `unk` files by content |\n\nFailure clusters (bugs first), from `clusters.md`:\n\n| kind | n | class | where | types |\n|---|---|---|---|---|\n| bug | 57 | `ValidationError` | `ezmd_converters/office/docx_walker.py:232 _main_block` | doc |\n| bug | 1 | `ValidationError` | `ezmd_converters/pdf/assemble.py:238 _line` (the structure-tree level from `headings.py`, unclamped) | pdf |\n| declared | 6 | `ConversionError` | OOXML package guard: a member over the 100:1 compression ratio, in a package LibreOffice itself wrote | ppt 5, doc 1 |\n| declared | 6 | `ConversionError` | `data.yaml` / `data.xml` parse failure on a `.txt`, no fallback to text | txt |\n| declared | 7 | `ConversionError` | malformed XML (`junk after document element`, `not well-formed`, bad character reference), no fallback | xml |\n| declared | 3 | `ConversionError` | XHTML sent to `data.xml` (libmagic says `application/xml`, Magika's `html` below threshold) | html |\n| declared | 5 | `ConversionError` | LibreOffice given the wrong target (Magika's `xls`/`ppt` guess outranks libmagic's `msword`), or `cdfv2` refused | doc 3, ppt 3 |\n| declared | 3 | `ConversionError` | printable ASCII labelled `proteindb` by Magika becomes `application/octet-stream` and is refused | txt 2, tmp 1 |\n| declared | 38 | `ConversionError` | `application/rdf+xml` and `application/x-plist`: XML dialects with no converter | xml |\n| declared | 1 | `ConversionError` | LibreOffice over its 180 s limit | doc |\n| declared | 1,461 | `ConversionError` | `no converter for` an image type | jpg, gif, png |\n| declared | 246 | `ConversionError` | PostScript | ps, eps |\n| declared | 34 | `UnsupportedMediaType` | `refusing executable input (application/x-shockwave-flash)` | swf |\n\nNot in the table: the 4 MB plain-text file (`088753`, an ASCII raster grid) that timed out at 120 s in the\nfirst pass and converted in 145 s with the higher limit. The profile puts 150 of its 160 seconds in\n`escape_inline`, which runs markdown-it's inline parser over the file's single four-million-character\nparagraph; that is a defect whatever the limit.\n\n## Smells of the outputs (`smells.md`)\n\nThe structural smell scorer (`tools/bench/scoring/smell.py`) read every one of the 7,945 outputs. Gated-clean\nrate 0.9359 [0.9303, 0.9415]: 509 outputs carry at least one of the smells no release should ship with.\n\n| smell | gate | n | mostly | what it is |\n|---|---|---|---|---|\n| lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |\n| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |\n| heading_bullet | gated | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |\n| heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |\n| empty | gated | 2 | pdf 2 | an output with no text |\n| repeated_lines | reported | 464 | pdf 158, xml 93, xls 68 | one line eight times running or forty times in all |\n| empty_table | reported | 353 | pdf 234, xls 71 | a pipe table with more than half its cells empty |\n| shrunk | reported | 147 | html 64, txt 36, csv 24 | text under 5% of the input's (2% for HTML) |\n| mojibake, char_run, replacement_chars | reported | 45 | pdf, html | encoding damage |\n\nThe two slide-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet\nheadings in 60 (the latter is reported rather than gated: a physics paper's `1.3.1 \u2022 Georg Gamow` is faithful).\nReading the samples found two more contract breaks. The `full` profile truncated a `.txt` read as CSV\n(`001452`) with `truncated: true` in the frontmatter and no warning at all, so a consumer that reads warnings\nsees a complete document; and two PDFs (`834623`, `855409`) came out with no body and only `engine_fallback`\nand `removed_running_header_footer` warnings, no `pages_without_text` or `extraction_empty`, which is the\nsilent-empty case the converter contract forbids. `truncated_full` is otherwise a policy question: the full\nprofile caps rows and bytes on spreadsheets, CSV and text and says so in the metadata, but a profile named\nfull that drops rows surprises. The reported smells need reading before they mean anything: the most repeated\nline in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);\na shrunk HTML page is often navigation.\n\n## What this says\n\n- **The crash gate is nearly clean on the first pass.** No undeclared exception reached the worker, no worker\n  died, and the 58 bugs are one defect: a heading level over 6 (Word's Heading 7 to 9, a tagged PDF's H7)\n  handed to an IR field that refuses it. It had hidden as a declared error because the registry wrapped it;\n  chaining the cause (this PR) is what made it count.\n- **The declared refusals hold the rest of the defects.** Reading each cluster found seven more: the single\n  huge paragraph in the renderer, three detection faults (an unmapped Magika label beating text evidence,\n  XHTML taken for XML, a container verdict beating the extension for OLE files), a missing plain-text fallback\n  for content-sniffed data types, `+xml` dialects with no converter, and the package guard rejecting\n  LibreOffice's own output. Filed as #ISSUES.\n- **Legacy Office is the expensive third.** doc, xls and ppt are 19% of the files and 86% of the conversion\n  time, at 13 seconds each, almost all of it LibreOffice starting with a throwaway profile. A persistent\n  profile per worker (still macro-free) would cut that to about a second and is the single largest speed\n  item in the pilot.\n- **Outcome is the floor, not the measure.** 7,945 outputs were written and nothing here says whether they\n  are right: the two \"ok\" PostScript files are gzip archives listed as members, and every HTML page counts\n  the same whether Trafilatura kept the article or the navigation. The smell scorer (empty or near-empty\n  output, output far smaller than the text layer, replacement characters, repeated lines, runs of one\n  character, mostly-empty tables, injection flags on clean documents) is the next step on this corpus and\n  on `ccgov`, the modern-types corpus pulled from Common Crawl the same day.\n",
+ "notes": "## What this run is\n\nThe first pass of the everyday-documents coverage work: ezmd main (d078ebb, the 0.1.1 release plus #25 and\n#27) over the ten official Govdocs1 threads, 9,875 files across 43 extensions as a .gov crawler named them in\n2009, with no ground truth. The question is not how good the Markdown is but whether each conversion ends the\nway the contract says: an output, a declared refusal (`ConversionError`, `UnsupportedMediaType`,\n`InputTooLarge`), or a bug (any other exception, a timeout, a dead worker). `tools/bench/scoring/corpus.py`\nscores that outcome and clusters the failures by exception class and the frame that raised, which is the list\na fix pass works from (`clusters.md` under the run; the clusters below are copied from it).\n\n## Run conditions\n\n- Corpus: `govdocs1` (`bench/CORPORA.md`), the ten threads extracted flat by `fetch --only govdocs1` from a\n  copy on a local drive (`EZMD_GOVDOCS1`); 9,875 files, 2.9 GB. Every file was attempted whatever its type.\n- Tool: `ezmd-main` only, eight worker processes (`run --workers 8`), 120-second limit per file, raised to\n  240 seconds for the reruns below. LibreOffice 26.8.1 extracted to a user folder (no system install) and\n  passed through `LIBREOFFICE_PATH`; the first pass ran without it and refused every legacy Office file, so\n  those 1,900 results were dropped and redone with it in place. The 89 results whose error wrapped another\n  exception were redone twice more, after the registry started chaining the cause and after the worker's\n  frame picker was fixed, so `results.jsonl` holds one record per file from the same code.\n- Scoring: `score --corpus govdocs1`, clean rate with a bootstrap interval over the per-document outcomes.\n- 30,539 seconds of conversion in total, 64 minutes of wall time for the first pass. Per type (median, p95,\n  max seconds): doc 13.2 / 16.0 / 120 (LibreOffice's throwaway profile costs about 12 s per file), xls\n  13.3 / 26.3 / 74, ppt 13.2 / 15.3 / 24, pdf 0.41 / 3.9 / 45, txt 0.09 / 0.9 / 145, html 0.08 / 0.6 / 21.\n\n## Results\n\nClean rate 0.9941 [0.9926, 0.9955] over 9,875 files: 7,945 outputs, 1,872 declared refusals, 58 bugs.\n\n| type | n | ok | declared | bug | what the refusals are |\n|---|---|---|---|---|---|\n| pdf | 2,378 | 2,377 | 0 | 1 | heading level 7 in a tagged PDF |\n| html | 2,116 | 2,112 | 4 | 0 | XHTML routed to the XML parser (3), one binary |\n| jpg, gif, png | 1,461 | 0 | 1,461 | 0 | no image converter before Phase 2 |\n| doc | 797 | 735 | 5 | 57 | Word heading levels 7 to 9; two LibreOffice targets wrong; one package guard |\n| txt | 788 | 778 | 10 | 0 | YAML/XML look-alikes with no text fallback (6), labelled binary (2), 175 MB cap (1) |\n| xls | 584 | 584 | 0 | 0 | |\n| ppt, pps | 512 | 491 | 21 | 0 | container verdict `cdfv2` (3), package guard (5), LibreOffice (2), the rest declared |\n| xml | 353 | 308 | 45 | 0 | RDF/XML has no converter (37), malformed XML with no fallback (7), plist (1) |\n| ps, eps | 248 | 2 | 246 | 0 | PostScript is not claimed; the two \"ok\" are gzip files misnamed .ps |\n| csv, gz, log, kml, rtf, docx, xlsx, pptx, zip, ... | 450 | 448 | 2 | 0 | |\n| swf, dbase3, unk, kmz, wp, sql, fm, pub, dwf, ... | 188 | 101 | 87 | 0 | unclaimed formats refused; `unk` files by content |\n\nFailure clusters (bugs first), from `clusters.md`:\n\n| kind | n | class | where | types |\n|---|---|---|---|---|\n| bug | 57 | `ValidationError` | `ezmd_converters/office/docx_walker.py:232 _main_block` | doc |\n| bug | 1 | `ValidationError` | `ezmd_converters/pdf/assemble.py:238 _line` (the structure-tree level from `headings.py`, unclamped) | pdf |\n| declared | 6 | `ConversionError` | OOXML package guard: a member over the 100:1 compression ratio, in a package LibreOffice itself wrote | ppt 5, doc 1 |\n| declared | 6 | `ConversionError` | `data.yaml` / `data.xml` parse failure on a `.txt`, no fallback to text | txt |\n| declared | 7 | `ConversionError` | malformed XML (`junk after document element`, `not well-formed`, bad character reference), no fallback | xml |\n| declared | 3 | `ConversionError` | XHTML sent to `data.xml` (libmagic says `application/xml`, Magika's `html` below threshold) | html |\n| declared | 5 | `ConversionError` | LibreOffice given the wrong target (Magika's `xls`/`ppt` guess outranks libmagic's `msword`), or `cdfv2` refused | doc 3, ppt 3 |\n| declared | 3 | `ConversionError` | printable ASCII labelled `proteindb` by Magika becomes `application/octet-stream` and is refused | txt 2, tmp 1 |\n| declared | 38 | `ConversionError` | `application/rdf+xml` and `application/x-plist`: XML dialects with no converter | xml |\n| declared | 1 | `ConversionError` | LibreOffice over its 180 s limit | doc |\n| declared | 1,461 | `ConversionError` | `no converter for` an image type | jpg, gif, png |\n| declared | 246 | `ConversionError` | PostScript | ps, eps |\n| declared | 34 | `UnsupportedMediaType` | `refusing executable input (application/x-shockwave-flash)` | swf |\n\nNot in the table: the 4 MB plain-text file (`088753`, an ASCII raster grid) that timed out at 120 s in the\nfirst pass and converted in 145 s with the higher limit. The profile puts 150 of its 160 seconds in\n`escape_inline`, which runs markdown-it's inline parser over the file's single four-million-character\nparagraph; that is a defect whatever the limit.\n\n## Smells of the outputs (`smells.md`)\n\nThe structural smell scorer (`tools/bench/scoring/smell.py`) read every one of the 7,945 outputs. Gated-clean\nrate 0.9395 [0.9340, 0.9450]: 481 outputs carry at least one of the smells no release should ship with.\n\n| smell | gate | n | mostly | what it is |\n|---|---|---|---|---|\n| lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |\n| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |\n| heading_bullet | reported | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |\n| heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |\n| empty | gated | 2 | pdf 2 | an output with no text |\n| repeated_lines | reported | 464 | pdf 158, xml 93, xls 68 | one line eight times running or forty times in all |\n| empty_table | reported | 353 | pdf 234, xls 71 | a pipe table with more than half its cells empty |\n| shrunk | reported | 147 | html 64, txt 36, csv 24 | text under 5% of the input's (2% for HTML) |\n| mojibake, char_run, replacement_chars | reported | 45 | pdf, html | encoding damage |\n\nThe two slide-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet\nheadings in 60 (the latter is reported rather than gated: a physics paper's `1.3.1 \u2022 Georg Gamow` is faithful).\nReading the samples found two more contract breaks. The `full` profile truncated a `.txt` read as CSV\n(`001452`) with `truncated: true` in the frontmatter and no warning at all, so a consumer that reads warnings\nsees a complete document; and two PDFs (`834623`, `855409`) came out with no body and only `engine_fallback`\nand `removed_running_header_footer` warnings, no `pages_without_text` or `extraction_empty`, which is the\nsilent-empty case the converter contract forbids. `truncated_full` is otherwise a policy question: the full\nprofile caps rows and bytes on spreadsheets, CSV and text and says so in the metadata, but a profile named\nfull that drops rows surprises. The reported smells need reading before they mean anything: the most repeated\nline in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);\na shrunk HTML page is often navigation.\n\n## What this says\n\n- **The crash gate is nearly clean on the first pass.** No undeclared exception reached the worker, no worker\n  died, and the 58 bugs are one defect: a heading level over 6 (Word's Heading 7 to 9, a tagged PDF's H7)\n  handed to an IR field that refuses it. It had hidden as a declared error because the registry wrapped it;\n  chaining the cause (this PR) is what made it count.\n- **The declared refusals hold the rest of the defects.** Reading each cluster found seven more: the single\n  huge paragraph in the renderer, three detection faults (an unmapped Magika label beating text evidence,\n  XHTML taken for XML, a container verdict beating the extension for OLE files), a missing plain-text fallback\n  for content-sniffed data types, `+xml` dialects with no converter, and the package guard rejecting\n  LibreOffice's own output. Filed as #ISSUES.\n- **Legacy Office is the expensive third.** doc, xls and ppt are 19% of the files and 86% of the conversion\n  time, at 13 seconds each, almost all of it LibreOffice starting with a throwaway profile. A persistent\n  profile per worker (still macro-free) would cut that to about a second and is the single largest speed\n  item in the pilot.\n- **Outcome is the floor, not the measure.** 7,945 outputs were written and nothing here says whether they\n  are right: the two \"ok\" PostScript files are gzip archives listed as members, and every HTML page counts\n  the same whether Trafilatura kept the article or the navigation. The smell scorer (empty or near-empty\n  output, output far smaller than the text layer, replacement characters, repeated lines, runs of one\n  character, mostly-empty tables, injection flags on clean documents) is the next step on this corpus and\n  on `ccgov`, the modern-types corpus pulled from Common Crawl the same day.\n",
  "schema": 1,
  "scorecard": {
   "govdocs1-clean": {
@@ -10097,10 +10097,10 @@
      "seconds_total": 30476.5,
      "smells": {
       "gated_clean_ci": [
-       0.9340465701699182,
-       0.9449968533668974
+       0.9405915670232851,
+       0.9514159848961611
       ],
-      "gated_clean_rate": 0.9394587791063562,
+      "gated_clean_rate": 0.9458779106356199,
       "n": 7945,
       "per_doc": {
        "000578": [
@@ -10165,9 +10165,6 @@
        "013097": [
         "lone_bullet"
        ],
-       "013853": [
-        "lone_bullet"
-       ],
        "014235": [
         "heading_bullet"
        ],
@@ -10226,9 +10223,6 @@
        "035988": [
         "repeated_lines"
        ],
-       "036058": [
-        "lone_bullet"
-       ],
        "036437": [
         "repeated_lines"
        ],
@@ -10275,9 +10269,6 @@
        ],
        "049118": [
         "repeated_lines"
-       ],
-       "049971": [
-        "lone_bullet"
        ],
        "050617": [
         "lone_bullet",
@@ -10338,7 +10329,6 @@
         "heading_bullet"
        ],
        "063740": [
-        "lone_bullet",
         "repeated_lines",
         "empty_table"
        ],
@@ -10403,7 +10393,6 @@
         "shrunk"
        ],
        "079385": [
-        "lone_bullet",
         "empty_table"
        ],
        "079619": [
@@ -10426,9 +10415,6 @@
        "082066": [
         "repeated_lines"
        ],
-       "082632": [
-        "lone_bullet"
-       ],
        "083390": [
         "shrunk"
        ],
@@ -10448,9 +10434,6 @@
        ],
        "087271": [
         "empty_table"
-       ],
-       "088084": [
-        "lone_bullet"
        ],
        "088729": [
         "lone_bullet",
@@ -10476,9 +10459,6 @@
        "097601": [
         "repeated_lines"
        ],
-       "098975": [
-        "lone_bullet"
-       ],
        "099267": [
         "empty_table"
        ],
@@ -10487,9 +10467,6 @@
        ],
        "100149": [
         "repeated_lines"
-       ],
-       "101769": [
-        "lone_bullet"
        ],
        "102575": [
         "lone_bullet"
@@ -10577,7 +10554,6 @@
         "lone_bullet"
        ],
        "121504": [
-        "lone_bullet",
         "repeated_lines",
         "empty_table"
        ],
@@ -10694,14 +10670,10 @@
         "lone_bullet",
         "heading_bullet"
        ],
-       "146058": [
-        "lone_bullet"
-       ],
        "146109": [
         "empty_table"
        ],
        "146358": [
-        "lone_bullet",
         "repeated_lines",
         "empty_table"
        ],
@@ -10731,9 +10703,6 @@
        "148256": [
         "empty_table"
        ],
-       "149997": [
-        "lone_bullet"
-       ],
        "150311": [
         "repeated_lines"
        ],
@@ -10752,7 +10721,6 @@
         "empty_table"
        ],
        "151711": [
-        "lone_bullet",
         "repeated_lines",
         "empty_table"
        ],
@@ -10854,7 +10822,6 @@
         "repeated_lines"
        ],
        "169900": [
-        "lone_bullet",
         "repeated_lines"
        ],
        "172226": [
@@ -10916,9 +10883,6 @@
        "181786": [
         "mojibake",
         "empty_table"
-       ],
-       "181928": [
-        "lone_bullet"
        ],
        "183237": [
         "lone_bullet",
@@ -10990,9 +10954,6 @@
        ],
        "194911": [
         "heading_repeated"
-       ],
-       "196182": [
-        "lone_bullet"
        ],
        "196493": [
         "lone_bullet"
@@ -11152,9 +11113,6 @@
        "236347": [
         "repeated_lines"
        ],
-       "236422": [
-        "lone_bullet"
-       ],
        "236725": [
         "repeated_lines"
        ],
@@ -11176,12 +11134,6 @@
        ],
        "242310": [
         "shrunk"
-       ],
-       "242843": [
-        "lone_bullet"
-       ],
-       "243598": [
-        "lone_bullet"
        ],
        "243616": [
         "repeated_lines"
@@ -11257,9 +11209,6 @@
         "repeated_lines",
         "empty_table"
        ],
-       "262573": [
-        "lone_bullet"
-       ],
        "262580": [
         "lone_bullet"
        ],
@@ -11315,7 +11264,6 @@
         "lone_bullet"
        ],
        "273549": [
-        "lone_bullet",
         "empty_table"
        ],
        "273925": [
@@ -11334,9 +11282,6 @@
        ],
        "278775": [
         "heading_bullet"
-       ],
-       "278883": [
-        "lone_bullet"
        ],
        "279838": [
         "empty_table"
@@ -11469,9 +11414,6 @@
        "308633": [
         "repeated_lines"
        ],
-       "308834": [
-        "lone_bullet"
-       ],
        "309159": [
         "lone_bullet"
        ],
@@ -11565,17 +11507,11 @@
        "332068": [
         "repeated_lines"
        ],
-       "332543": [
-        "lone_bullet"
-       ],
        "332662": [
         "lone_bullet"
        ],
        "333773": [
         "empty_table"
-       ],
-       "334038": [
-        "lone_bullet"
        ],
        "334329": [
         "repeated_lines",
@@ -11704,9 +11640,6 @@
        "364187": [
         "empty_table"
        ],
-       "365145": [
-        "lone_bullet"
-       ],
        "365402": [
         "lone_bullet"
        ],
@@ -11719,7 +11652,6 @@
         "empty_table"
        ],
        "367959": [
-        "lone_bullet",
         "empty_table"
        ],
        "372132": [
@@ -11831,7 +11763,6 @@
         "heading_bullet"
        ],
        "400240": [
-        "lone_bullet",
         "mojibake"
        ],
        "400571": [
@@ -11907,9 +11838,6 @@
        ],
        "415620": [
         "empty_table"
-       ],
-       "416282": [
-        "lone_bullet"
        ],
        "420448": [
         "lone_bullet"
@@ -12073,7 +12001,6 @@
         "shrunk"
        ],
        "461643": [
-        "lone_bullet",
         "empty_table"
        ],
        "462816": [
@@ -12305,9 +12232,6 @@
         "truncated_full",
         "shrunk"
        ],
-       "516074": [
-        "lone_bullet"
-       ],
        "517164": [
         "empty_table"
        ],
@@ -12387,7 +12311,6 @@
         "shrunk"
        ],
        "531025": [
-        "lone_bullet",
         "empty_table"
        ],
        "531122": [
@@ -12531,9 +12454,6 @@
        "562783": [
         "repeated_lines"
        ],
-       "563572": [
-        "lone_bullet"
-       ],
        "563868": [
         "repeated_lines"
        ],
@@ -12547,17 +12467,11 @@
         "lone_bullet",
         "empty_table"
        ],
-       "569514": [
-        "lone_bullet"
-       ],
        "570403": [
         "truncated_full"
        ],
        "570543": [
         "repeated_lines"
-       ],
-       "571809": [
-        "lone_bullet"
        ],
        "574578": [
         "repeated_lines",
@@ -12610,7 +12524,6 @@
         "repeated_lines"
        ],
        "582938": [
-        "lone_bullet",
         "repeated_lines"
        ],
        "583400": [
@@ -12622,14 +12535,10 @@
        "584466": [
         "heading_bullet"
        ],
-       "585266": [
-        "lone_bullet"
-       ],
        "585581": [
         "repeated_lines"
        ],
        "585698": [
-        "lone_bullet",
         "empty_table"
        ],
        "586736": [
@@ -12705,9 +12614,6 @@
        ],
        "598877": [
         "truncated_full"
-       ],
-       "599062": [
-        "lone_bullet"
        ],
        "599068": [
         "repeated_lines"
@@ -12903,7 +12809,6 @@
         "empty_table"
        ],
        "625653": [
-        "lone_bullet",
         "repeated_lines"
        ],
        "626547": [
@@ -13070,7 +12975,6 @@
         "lone_bullet"
        ],
        "655494": [
-        "lone_bullet",
         "repeated_lines"
        ],
        "655876": [
@@ -13117,9 +13021,6 @@
        ],
        "671720": [
         "repeated_lines"
-       ],
-       "671915": [
-        "lone_bullet"
        ],
        "672560": [
         "truncated_full",
@@ -13190,9 +13091,6 @@
        "693959": [
         "heading_bullet",
         "repeated_lines"
-       ],
-       "694472": [
-        "lone_bullet"
        ],
        "695198": [
         "lone_bullet",
@@ -13329,9 +13227,6 @@
        "748993": [
         "repeated_lines"
        ],
-       "749112": [
-        "lone_bullet"
-       ],
        "749649": [
         "repeated_lines"
        ],
@@ -13339,7 +13234,6 @@
         "repeated_lines"
        ],
        "750039": [
-        "lone_bullet",
         "empty_table"
        ],
        "751447": [
@@ -13348,9 +13242,6 @@
        ],
        "751776": [
         "repeated_lines"
-       ],
-       "753208": [
-        "lone_bullet"
        ],
        "755207": [
         "empty_table"
@@ -13740,7 +13631,6 @@
         "repeated_lines"
        ],
        "869491": [
-        "lone_bullet",
         "heading_bullet"
        ],
        "869981": [
@@ -13958,9 +13848,6 @@
         "lone_bullet",
         "heading_bullet"
        ],
-       "936450": [
-        "lone_bullet"
-       ],
        "939506": [
         "repeated_lines"
        ],
@@ -14077,9 +13964,6 @@
        "982217": [
         "repeated_lines"
        ],
-       "982594": [
-        "lone_bullet"
-       ],
        "983151": [
         "mojibake"
        ],
@@ -14131,9 +14015,6 @@
        "997934": [
         "replacement_chars",
         "char_run"
-       ],
-       "999213": [
-        "lone_bullet"
        ],
        "999404": [
         "empty_table"
@@ -14224,22 +14105,16 @@
        },
        "lone_bullet": {
         "categories": {
-         "doc": 2,
-         "html": 1,
-         "java": 2,
-         "pdf": 302,
-         "ppt": 2,
-         "txt": 5,
-         "unk": 1,
-         "xml": 3
+         "pdf": 265,
+         "ppt": 2
         },
-        "count": 318,
+        "count": 267,
         "samples": [
          "001961",
          "012975",
          "013097",
-         "013853",
-         "014522"
+         "014522",
+         "014819"
         ]
        },
        "mojibake": {

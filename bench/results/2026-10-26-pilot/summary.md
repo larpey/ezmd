@@ -73,13 +73,13 @@ paragraph; that is a defect whatever the limit.
 ## Smells of the outputs (`smells.md`)
 
 The structural smell scorer (`tools/bench/scoring/smell.py`) read every one of the 7,945 outputs. Gated-clean
-rate 0.9359 [0.9303, 0.9415]: 509 outputs carry at least one of the smells no release should ship with.
+rate 0.9395 [0.9340, 0.9450]: 481 outputs carry at least one of the smells no release should ship with.
 
 | smell | gate | n | mostly | what it is |
 |---|---|---|---|---|
 | lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |
 | truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |
-| heading_bullet | gated | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |
+| heading_bullet | reported | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |
 | heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |
 | empty | gated | 2 | pdf 2 | an output with no text |
 | repeated_lines | reported | 464 | pdf 158, xml 93, xls 68 | one line eight times running or forty times in all |
