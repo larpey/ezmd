@@ -306,7 +306,7 @@ def adapter_timeout(adapter: FetchAdapter, req: FetchRequest) -> float:
     return base
 ```
 
-The `HealthStore` implementation is a Redis hash per adapter (`ezmd:adapter_health:<name>`), shared by all workers and by the fetch nodes (nodes report their own adapter outcomes in the upload payload so the VPS reorders node-side chains too; the node receives the current ordering in the claim response). Health is also exported at `GET /v1/admin/adapters` for the owner.
+The `HealthStore` implementation is a Redis hash per adapter (`ezmd:adapter_health:<name>`), shared by all workers and by the fetch nodes (nodes report their own adapter outcomes in the upload payload so the VPS reorders node-side chains too; the node receives the current ordering in the claim response). Health is also exported at `GET /v1/admin/adapters` for me.
 
 Chains, in static priority order. Each line names the adapter class, the mechanism, and what it provides.
 

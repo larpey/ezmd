@@ -54,10 +54,53 @@ uv run python -m tools.bench run --corpus arxiv-damaged --split heldout --tools 
 The held-out split of `arxiv-damaged` is the damaged copies of the 79 arXiv papers outside the 30-paper sample,
 never used to find or fix a converter fault, so a fix found on the ten sampled papers is confirmed there (#23).
 
-`qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
-`EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
-never from a tool's output, and each must quote the sentence that answers it; a quote that is not in the text
-layer drops the question. Questions are cached under the corpus and shared by every tool and run, and so are
+The `govdocs1` corpus is the everyday-documents pilot: the ten official Govdocs1 threads (digitalcorpora.org,
+about 1,000 files each across some twenty formats, named by the type the crawler saw). There is no ground
+truth, so the scorer (`tools/bench/scoring/corpus.py`) grades the outcome: an output written, a declared
+refusal (`ConversionError`, `UnsupportedMediaType`, `InputTooLarge`), or a bug (any other exception, a timeout,
+a worker crash). The primary metric is the clean rate; `clusters.md` under the run groups the bugs by exception
+class and the frame that raised (`where` in results.jsonl, the innermost frame of ezmd's own code) and the
+declared errors by message shape, each with sample document ids. Every file is attempted whatever its type,
+because a clean refusal of a format ezmd does not claim is part of the contract. `--workers N` runs N worker
+processes over round-robin shards of the corpus; `EZMD_GOVDOCS1` points at a copy on another drive.
+
+```bash
+EZMD_GOVDOCS1=D:/corpora/govdocs1 uv run python -m tools.bench fetch --only govdocs1   # ten zips, extracted flat
+uv run python -m tools.bench run --corpus govdocs1 --tools ezmd-main --workers 8 --timeout 120 --date D
+uv run python -m tools.bench score --corpus govdocs1 --date D                             # clean rate + clusters.md
+```
+
+`score` also runs the structural smell scorer (`tools/bench/scoring/smell.py`) over every output and writes
+`smells.md`: per smell, how many outputs show it, by type, with samples. The gated smells (`empty`,
+`control_chars`, `lone_bullet`, `heading_bullet`, `heading_repeated`, `truncated_full`) are the shapes no
+release should ship with; the reported ones (`shrunk`, `replacement_chars`, `mojibake`, `repeated_lines`,
+`char_run`, `empty_table`, `injection`) have legitimate causes and are read, not gated. The gated-clean rate
+is in the scores under `secondary.smells`.
+
+Two more outcome corpora cover what Govdocs1 cannot. `ccgov` (`tools/bench/cc.py`) is modern everyday files
+from Common Crawl, .gov, .mil and .edu hosts, every document type the crawl detected (OOXML, ODF, RTF, EPUB,
+JSON, CSV, Markdown, subtitles, email, notebooks) in full and HTML and PDF as seeded samples, one capture per
+content digest, pulled by HTTP range request from the public WARC files with the payload digest verified.
+The manifest is built with DuckDB from the index slices that hold those hosts (`EZMD_CC_INDEX`, the crawl in
+`EZMD_CC_CRAWL`); the pull resumes from `pulled.jsonl` and a file named `STOP` in the root stops it between
+files. `media` (`tools/bench/media.py`) is images, audio and video from Wikimedia Commons by `filemime`
+search, EPUB from Project Gutenberg, MP3 chapters from LibriVox and audio and video from NASA, the types no
+crawl holds. Both are cache-only like every other corpus.
+
+```bash
+EZMD_CCGOV=D:/corpora/ccgov EZMD_CC_INDEX=D:/corpora/cc-index/CC-MAIN-2026-43 uv run python -m tools.bench fetch --only ccgov
+EZMD_MEDIA=D:/corpora/media uv run python -m tools.bench fetch --only media
+uv run python -m tools.bench run --corpus ccgov --tools ezmd-main --workers 8 --timeout 120 --date D
+```
+
+`qa` loads `openai/gpt-oss-20b` through `lms` with a 131k context (`--context` lowers it on a smaller GPU) unless
+`--model`/`--base-url` (or `EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are
+written from the text layer, never from a tool's output, two per 8,000-token segment of it so that a paper's
+tail is asked about as much as its abstract, and each must quote the sentence that answers it; a quote that is
+not in its segment drops the question, and every question records where in the paper its evidence lies. The
+answering model reads each tool's whole output (an output longer than the context is cut, and the answer record
+says so), and the scorer reports accuracy on questions from the second half of the papers as its own category.
+Questions are cached under the corpus and shared by every tool and run, and so are
 the grader's verdicts, keyed by document, question and answer text: a sampled model grades the same answer
 differently on another day, which would read as a change in accuracy between two runs that produced the same
 answers. `qa seed --date D` puts an already graded run's verdicts in that cache; `qa ungrade --date D` drops a

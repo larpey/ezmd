@@ -351,16 +351,18 @@ def run_tool(
     timeout: float = DEFAULT_TIMEOUT,
     pandoc: Path | None = None,
     launch: Launch | None = None,
+    shard: int | None = None,
 ) -> Iterator[DocResult]:
     """Convert every document the tool supports; yields (and appends to results.jsonl) one result per doc.
 
     Documents already recorded for this tool in `run_dir/results.jsonl` are skipped, so an interrupted run
-    resumes where it stopped."""
+    resumes where it stopped. `shard` names the log files of one of several parallel loops."""
     results_path = run_dir / "results.jsonl"
     done = {(r.tool, r.doc_id) for r in read_results(results_path)}
     worker: Worker | None = None
-    log = run_dir / "logs" / f"{tool.name}.log"
-    meta_path = run_dir / "logs" / f"{tool.name}.startup.jsonl"
+    suffix = "" if shard is None else f".{shard}"
+    log = run_dir / "logs" / f"{tool.name}{suffix}.log"
+    meta_path = run_dir / "logs" / f"{tool.name}{suffix}.startup.jsonl"
     version = ""
     try:
         for doc in docs:
@@ -424,4 +426,50 @@ def _result(
     data = reply.data
     if data.get("ok"):
         return make("ok", output=dst.relative_to(run_dir).as_posix(), chars=int(data.get("chars", 0)))
-    return make("error", error_class=str(data.get("error_class")), error=str(data.get("error", ""))[:2000])
+    where, cause = data.get("where"), data.get("cause")
+    return make(
+        "error",
+        error_class=str(data.get("error_class")),
+        error=str(data.get("error", ""))[:2000],
+        where=str(where) if where else None,
+        cause=str(cause) if cause else None,
+    )
+
+
+def run_tool_parallel(
+    tool: Tool,
+    docs: list[Doc],
+    run_dir: Path,
+    workers: int,
+    *,
+    timeout: float = DEFAULT_TIMEOUT,
+    pandoc: Path | None = None,
+    launch: Launch | None = None,
+) -> Iterator[DocResult]:
+    """`run_tool` over `workers` round-robin shards of the documents at once, one worker process each; results
+    arrive as they finish. One shard is plain `run_tool`."""
+    if workers <= 1:
+        yield from run_tool(tool, docs, run_dir, timeout=timeout, pandoc=pandoc, launch=launch)
+        return
+    shards = [docs[i::workers] for i in range(workers)]
+    results: queue.Queue[DocResult | None] = queue.Queue()
+
+    def drain(index: int, shard: list[Doc]) -> None:
+        try:
+            for r in run_tool(tool, shard, run_dir, timeout=timeout, pandoc=pandoc, launch=launch, shard=index):
+                results.put(r)
+        finally:
+            results.put(None)
+
+    threads = [threading.Thread(target=drain, args=(i, s), daemon=True) for i, s in enumerate(shards)]
+    for t in threads:
+        t.start()
+    open_shards = len(threads)
+    while open_shards:
+        item = results.get()
+        if item is None:
+            open_shards -= 1
+        else:
+            yield item
+    for t in threads:
+        t.join()

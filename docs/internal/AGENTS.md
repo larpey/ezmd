@@ -54,7 +54,7 @@ The spec was written under the codename "anymd"; the project was first named int
 - Never commit secrets. `deploy/env.example` lists every env var with a comment.
 - Research step and approach note before every converter or integration.
 - Council (3 reviewers) for architectural decisions and failing converters. Red team before public-facing phases.
-- Do not ask the human unless the decision is irreversible and externally costly.
+- Do not ask me unless the decision is irreversible and externally costly.
 
 ## Spec pointer
 The authoritative specification is `docs/internal/spec/part1.md` to `docs/internal/spec/part4.md`. When this file and the spec disagree, the spec wins; log the disagreement in docs/internal/DECISIONS.md and fix this file.
