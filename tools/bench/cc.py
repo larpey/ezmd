@@ -22,13 +22,12 @@ from __future__ import annotations
 import base64
 import gzip
 import hashlib
+import http.client
 import json
 import os
 import re
 import threading
 import time
-import urllib.error
-import urllib.request
 from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -87,7 +86,7 @@ def _sql(template: str, **values: str) -> str:
 def build_manifest(index_dir: Path, crawl: str, root: Path) -> Path:
     """One capture per content digest from the downloaded index slices, document types in full, HTML and PDF as
     seeded samples, ordered rarest type first so a pull stopped early still has the variety."""
-    import duckdb
+    import duckdb  # type: ignore[import-not-found]  # only for the manifest step
 
     out = root / f"manifest.{crawl}.jsonl"
     root.mkdir(parents=True, exist_ok=True)
@@ -195,24 +194,47 @@ class Throttle:
             self._until = max(self._until, time.monotonic() + min(300, 20 * (attempt + 1)))
 
 
+_local = threading.local()
+DATA_HOST = "data.commoncrawl.org"
+REQUEST_TIMEOUT = 60.0
+
+
+def _connection(fresh: bool = False) -> http.client.HTTPSConnection:
+    """One keep-alive connection per thread: a new TLS handshake per range request is what wedged the first
+    pull (eight threads, thousands of short-lived connections)."""
+    conn = getattr(_local, "conn", None)
+    if conn is None or fresh:
+        if conn is not None:
+            conn.close()
+        conn = http.client.HTTPSConnection(DATA_HOST, timeout=REQUEST_TIMEOUT)
+        _local.conn = conn
+    return conn
+
+
 def fetch_record(row: dict[str, Any], throttle: Throttle, attempts: int = 6) -> bytes:
-    url = DATA_URL + str(row["warc"])
+    path = "/" + str(row["warc"])
     start, length = int(row["offset"]), int(row["length"])
     headers = {"User-Agent": USER_AGENT, "Range": f"bytes={start}-{start + length - 1}"}
-    req = urllib.request.Request(url, headers=headers)  # noqa: S310 - https, one fixed host
+    fresh = False
     for attempt in range(attempts):
         throttle.wait()
+        conn = _connection(fresh)
+        fresh = True
         try:
-            with urllib.request.urlopen(req, timeout=120) as resp:  # noqa: S310 - https, fixed host
-                return resp.read()
-        except urllib.error.HTTPError as exc:
-            if exc.code in (403, 429, 503):
-                throttle.refuse(attempt)
-                continue
-            raise
-        except (urllib.error.URLError, TimeoutError, OSError):
+            conn.request("GET", path, headers=headers)
+            resp = conn.getresponse()
+            data = resp.read()
+        except (http.client.HTTPException, TimeoutError, OSError):
             time.sleep(5 * (attempt + 1))
-    raise RuntimeError(f"gave up after {attempts} refusals: {url}")
+            continue
+        if resp.status in (200, 206):
+            fresh = False
+            return data
+        if resp.status in (403, 429, 503):
+            throttle.refuse(attempt)
+            continue
+        raise RuntimeError(f"HTTP {resp.status} for {path} bytes={start}-{start + length - 1}")
+    raise RuntimeError(f"gave up after {attempts} attempts: {path}")
 
 
 def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int = 500) -> dict[str, int]:
@@ -265,7 +287,10 @@ def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int 
             print(f"ccgov: {n} pulled, {failed} failed, {refused} refusals, {rate:.1f}/s", flush=True)
 
     with ThreadPoolExecutor(workers) as pool:
-        list(pool.map(one, todo))
+        for i in range(0, len(todo), 2000):  # bounded batches: the manifest has hundreds of thousands of rows
+            if stop.exists():
+                break
+            list(pool.map(one, todo[i : i + 2000]))
     print(f"ccgov: {counts}", flush=True)
     return counts
 
