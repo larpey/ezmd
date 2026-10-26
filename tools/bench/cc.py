@@ -177,7 +177,7 @@ def cc_digest(body: bytes) -> str:
 
 
 RATE_PER_SECOND = 10.0
-RATE_MIN = 2.0
+RATE_MIN = 1.0
 """Requests per second across all workers, adapted as Common Crawl answers: a 403 cuts the rate by a tenth
 and pauses everyone two seconds; two hundred clean requests raise it a tenth, up to the start value. The
 first pulls at a fixed 18 to 30 per second were refused for minutes at a time."""
