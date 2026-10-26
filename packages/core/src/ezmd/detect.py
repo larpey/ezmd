@@ -188,6 +188,8 @@ _ALIASES: dict[str, str] = {
     "image/jpg": "image/jpeg",
     "application/x-zip-compressed": "application/zip",
     "text/x-csv": "text/csv",
+    "application/x-plist": "application/xml",
+    "application/xml-dtd": "application/xml",
     "application/csv": "text/csv",
     "application/x-pdf": "application/pdf",
     "inode/x-empty": EMPTY_MIME,
@@ -216,11 +218,19 @@ _MAGIKA_LABEL_MIMES: dict[str, str] = {
 }
 
 
+_XML_DIALECT_KEEP = frozenset({"application/xhtml+xml", "image/svg+xml"})
+"""`+xml` types with a converter or a meaning of their own; every other `+xml` dialect (RDF, GPX, KML, Atom,
+RSS, MathML, ISO 19115, SMIL, ...) is XML to ezmd and takes the XML converter's chain (RFC 7303)."""
+
+
 def normalize_mime(mime: str | None) -> str | None:
     if mime is None:
         return None
     m = mime.split(";", 1)[0].strip().lower()
-    return _ALIASES.get(m, m) or None
+    m = _ALIASES.get(m, m)
+    if m.endswith("+xml") and m not in _XML_DIALECT_KEEP:
+        return "application/xml"
+    return m or None
 
 
 def extension_mime(name: str) -> str | None:
@@ -415,6 +425,18 @@ def _magika_guess(sample: bytes) -> tuple[str | None, str | None, float]:
     return label, mime, score
 
 
+XHTML = "application/xhtml+xml"
+_HTML_ROOT = re.compile(rb"<html[\s>]|DTD XHTML", re.I)
+
+
+def _looks_like_xhtml(sample: bytes, label: str | None, ext_mime: str | None) -> bool:
+    """An XML document that is a web page: Magika's `html` label at any confidence, an HTML extension, or an
+    `<html` root or XHTML doctype in the first 8 KB."""
+    if label == "html" or ext_mime in ("text/html", XHTML):
+        return True
+    return _HTML_ROOT.search(sample[:8192]) is not None
+
+
 RFC822 = "message/rfc822"
 _HEADER_LINE = re.compile(rb"[!-9;-~]{1,76}:[ \t]")
 _MAIL_EVIDENCE = re.compile(rb"(?i)(message-id|received|mime-version|return-path):")
@@ -487,6 +509,9 @@ class MagicDetector:
             mime, confidence = mg_mime, score
         else:
             mime, confidence = OCTET, 0.0
+        if mime == "application/xml" and _looks_like_xhtml(sample, label, ext_mime):
+            # libmagic answers XML for any file with an XML prologue; an XHTML page is a web page.
+            mime, confidence = XHTML, 0.9
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
             # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).

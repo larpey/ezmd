@@ -26,6 +26,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- XML dialects convert as XML and XHTML converts as a web page. Any `+xml` type without a converter of its
+  own (RDF, GPX, KML, Atom, RSS, MathML, ISO 19115, SMIL, ...), property lists and DTDs now take the XML
+  converter's chain instead of "no converter"; an XML document with an `<html` root, an XHTML doctype, an HTML
+  extension or Magika's `html` label is `application/xhtml+xml` and goes to the web converters instead of
+  failing in the XML parser. 37 RDF files and 3 XHTML pages in the Govdocs1 pilot and thousands of feed and
+  KML files in the modern corpus (2026-10-26).
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
