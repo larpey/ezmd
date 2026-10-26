@@ -37,6 +37,8 @@ def score_corpus(corpus: str, run_dir: Path, tools: list[str] | None) -> int:
         from tools.bench.scoring.arxiv import score
     elif corpus == "arxiv-damaged":
         from tools.bench.scoring.damaged import score
+    elif corpus in ("govdocs1", "ccgov", "media"):
+        from tools.bench.scoring.corpus import score
     else:
         print(f"no scorer for corpus {corpus}")
         return 2
@@ -51,8 +53,9 @@ def score_corpus(corpus: str, run_dir: Path, tools: list[str] | None) -> int:
     path.write_text(json.dumps(scores, indent=1, sort_keys=True), encoding="utf-8")
     for tool, s in sorted(scores["tools"].items()):
         p = s["primary"]
+        metric = s.get("metric", scores["metric"])
         if p["value"] is None:
-            print(f"{tool:14s} {scores['metric']}: n/a")
+            print(f"{tool:14s} {metric}: n/a")
             continue
-        print(f"{tool:14s} {scores['metric']}={p['value']:.4f} CI=[{p['ci'][0]:.4f}, {p['ci'][1]:.4f}] n={p['n']}")
+        print(f"{tool:14s} {metric}={p['value']:.4f} CI=[{p['ci'][0]:.4f}, {p['ci'][1]:.4f}] n={p['n']}")
     return 0
