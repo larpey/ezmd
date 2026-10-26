@@ -81,11 +81,17 @@ rate 0.9359 [0.9303, 0.9415]: 509 outputs carry at least one of the smells no re
 | shrunk | reported | 147 | html 64, txt 36, csv 24 | text under 5% of the input's (2% for HTML) |
 | mojibake, char_run, replacement_chars | reported | 45 | pdf, html | encoding damage |
 
-The two course-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet
-headings in 60. `truncated_full` is a policy question rather than a converter bug: the full profile caps rows
-and bytes on spreadsheets, CSV and text, and says so in the metadata, but a profile named full that drops
-rows surprises. The reported smells need reading before they mean anything: a repeated line is a running
-header the PDF path missed or a legitimate table column; a shrunk HTML page is often navigation.
+The two slide-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet
+headings in 60 (the latter is reported rather than gated: a physics paper's `1.3.1 • Georg Gamow` is faithful).
+Reading the samples found two more contract breaks. The `full` profile truncated a `.txt` read as CSV
+(`001452`) with `truncated: true` in the frontmatter and no warning at all, so a consumer that reads warnings
+sees a complete document; and two PDFs (`834623`, `855409`) came out with no body and only `engine_fallback`
+and `removed_running_header_footer` warnings, no `pages_without_text` or `extraction_empty`, which is the
+silent-empty case the converter contract forbids. `truncated_full` is otherwise a policy question: the full
+profile caps rows and bytes on spreadsheets, CSV and text and says so in the metadata, but a profile named
+full that drops rows surprises. The reported smells need reading before they mean anything: the most repeated
+line in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);
+a shrunk HTML page is often navigation.
 
 ## What this says
 
