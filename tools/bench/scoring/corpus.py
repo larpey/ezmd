@@ -50,6 +50,8 @@ failed ... last error: 1 validation error for Heading"), not a parser's refusal.
 SAMPLES = 5
 _DIGITS = re.compile(r"\d+")
 _QUOTED = re.compile(r"'[^']*'|\"[^\"]*\"")
+_FOR_NAME = re.compile(r"for \S+")
+"""`no converter for 000578.pdf (...)`, `all converters failed for <digest>.xpt: ...`: the name is not the cause."""
 
 
 def outcome(r: DocResult) -> str:
@@ -63,7 +65,7 @@ def outcome(r: DocResult) -> str:
 def message_shape(error: str | None, width: int = 80) -> str:
     """The first line of a message with numbers and quoted names blanked, so one cause is one key."""
     first = (error or "").splitlines()[0] if error else ""
-    return _DIGITS.sub("#", _QUOTED.sub("'…'", first))[:width]
+    return _DIGITS.sub("#", _QUOTED.sub("'…'", _FOR_NAME.sub("for …", first)))[:width]
 
 
 def bug_key(r: DocResult) -> tuple[str, str]:
