@@ -489,3 +489,25 @@ def test_contents_entries_and_overlong_lines_are_not_headings() -> None:
     lines = [entry, long, head, *(_body(k, 200 + 12 * k) for k in range(3, 13))]
     src = plan_headings([_page(lines)], 10.0, [], set())
     assert [src.level(entry), src.level(long), src.level(head)] == [None, None, 1]
+
+
+def test_structure_tree_level_above_six_clamps() -> None:
+    """A tagged PDF's H7 reached the IR unclamped and failed validation (one Govdocs1 pilot file)."""
+    from ezmd_converters.pdf.headings import HeadingSources
+    from ezmd_converters.pdf.textlayer import Line
+
+    sources = HeadingSources(struct={(0, 5): 7, (0, 6): 2}, use_struct=True)
+
+    def line(y: float, text: str, order: int, mcid: int) -> Line:
+        runs = [(text, None, None)]
+        return Line(page=1, x0=72, y0=y, x1=300, y1=y + 12, size=12, bold=False, runs=runs, order=order, mcids={mcid})
+
+    deep = line(700, "Deep heading", 1, 5)
+    plain = line(680, "Second level", 2, 6)
+    assert sources.level(deep) == 6
+    assert sources.level(plain) == 2
+    # Bookmarks nest as deep as the author likes; the real file had a seven-deep outline.
+    from ezmd_converters.pdf.headings import heading_key
+
+    bookmarked = HeadingSources(outline_any={heading_key("Deep bookmark")[0]: 7})
+    assert bookmarked.level(line(660, "Deep bookmark", 3, 9)) == 6
