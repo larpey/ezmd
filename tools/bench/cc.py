@@ -175,23 +175,34 @@ def cc_digest(body: bytes) -> str:
     return base64.b32encode(hashlib.sha1(body).digest()).decode("ascii")  # noqa: S324 - Common Crawl's own digest
 
 
-class Throttle:
-    """A global pause every worker respects when Common Crawl answers 403 or 503."""
+RATE_PER_SECOND = 12.0
+"""Requests per second across all workers. Common Crawl answers 403 above some rate per address; the first
+pulls ran at 18 to 30 per second for a few thousand files and were then refused for minutes at a time."""
 
-    def __init__(self) -> None:
+
+class Throttle:
+    """A token bucket every worker draws from, plus a global pause when Common Crawl answers 403 or 503."""
+
+    def __init__(self, rate: float = RATE_PER_SECOND) -> None:
         self._until = 0.0
         self._lock = threading.Lock()
+        self._rate = rate
+        self._next = time.monotonic()
         self.refusals = 0
 
     def wait(self) -> None:
-        delay = self._until - time.monotonic()
+        with self._lock:
+            now = time.monotonic()
+            slot = max(self._next, now, self._until)
+            self._next = slot + 1.0 / self._rate
+        delay = slot - now
         if delay > 0:
             time.sleep(delay)
 
     def refuse(self, attempt: int) -> None:
         with self._lock:
             self.refusals += 1
-            self._until = max(self._until, time.monotonic() + min(300, 20 * (attempt + 1)))
+            self._until = max(self._until, time.monotonic() + min(60, 10 * (attempt + 1)))
 
 
 _local = threading.local()
@@ -239,7 +250,7 @@ def fetch_record(row: dict[str, Any], throttle: Throttle, attempts: int = 6) -> 
     raise RuntimeError(f"gave up after {attempts} attempts: {path}")
 
 
-def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int = 500) -> dict[str, int]:
+def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int = 200) -> dict[str, int]:
     """Download every manifest row not yet in `pulled.jsonl`. A file named STOP in the root stops the run
     cleanly between files. Returns counts."""
     done = read_pulled(root)
@@ -250,7 +261,7 @@ def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int 
     fail_path = root / "failed.jsonl"
     lock = threading.Lock()
     throttle = Throttle()
-    counts = {"pulled": 0, "failed": 0, "mismatch": 0, "skipped": len(done)}
+    counts = {"pulled": 0, "failed": 0, "mismatch": 0, "skipped": len(done), "refusals": 0}
     stop = root / "STOP"
     t0 = time.monotonic()
 
@@ -287,6 +298,8 @@ def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int 
             rate = n / (time.monotonic() - t0)
             failed, refused = counts["failed"], throttle.refusals
             print(f"ccgov: {n} pulled, {failed} failed, {refused} refusals, {rate:.1f}/s", flush=True)
+            with lock:
+                counts["refusals"] = refused
 
     with ThreadPoolExecutor(workers) as pool:
         for i in range(0, len(todo), 2000):  # bounded batches: the manifest has hundreds of thousands of rows
