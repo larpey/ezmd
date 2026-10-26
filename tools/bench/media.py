@@ -15,6 +15,7 @@ workers, back-off on 429 and 503).
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
 import os
@@ -330,6 +331,13 @@ def fetch_nasa(root: Path | None = None, per_type: int = NASA_PER_TYPE) -> None:
         _parallel(todo, work, workers=3, label=f"nasa {media_type}")
 
 
+def doc_id(source: str, item_id: str) -> str:
+    """Unique and file-system safe: Commons titles sanitized and cut to 80 characters collide (a first run
+    recorded 2,584 results under 2,521 ids), so the full id's hash is appended."""
+    digest = hashlib.sha1(item_id.encode("utf-8")).hexdigest()[:8]  # noqa: S324 - a name, not a secret
+    return f"{source}__{_SAFE.sub('_', item_id)[:80]}__{digest}"
+
+
 def media(sample: int | None = None) -> list[Doc]:
     """Every pulled file; category = `<source>-<mime>`."""
     from tools.bench.corpora import _sample
@@ -341,9 +349,7 @@ def media(sample: int | None = None) -> list[Doc]:
         path = root / str(rec["path"])
         if path.is_file():
             category = f"{rec['source']}-{str(rec['mime']).replace('/', '-')}"
-            docs.append(
-                Doc("media", f"{rec['source']}__{_SAFE.sub('_', str(rec['id']))[:100]}", path, category, dict(rec))
-            )
+            docs.append(Doc("media", doc_id(str(rec["source"]), str(rec["id"])), path, category, dict(rec)))
     if not docs:
         raise FileNotFoundError(f"media: nothing pulled under {root}; run `python -m tools.bench fetch --only media`")
     docs.sort(key=lambda d: d.id)
