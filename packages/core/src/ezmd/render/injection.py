@@ -228,7 +228,7 @@ def scan(
         findings.append(f)
     prose = _CODE_FENCE.sub("", text)
     for family, sev, pat in _structural():
-        if chat and family == "system_prompt_line":
+        if chat and family in ("system_prompt_line", "system_prompt_word"):
             continue
         for m in pat.finditer(prose):
             findings.append(Finding(family, sev, -1, _snippet(prose, m.start()), "body", pat.pattern[:60]))
@@ -273,15 +273,26 @@ def scan(
     return _score(findings)
 
 
+HEURISTIC_FAMILIES = frozenset({"flooding", "imperative_cluster", "long_html_comment", "shell_mention"})
+HEURISTIC_CAP = 3.0
+"""The accumulation heuristics (a repeated sentence, an imperative paragraph, a long comment, a quoted shell
+command) describe tables, manuals, scripts and logs as often as attacks: together they reach medium at most."""
+
+
 def _score(findings: list[Finding]) -> InjectionReport:
     score = 0.0
+    heuristic = 0.0
     for f in findings:
         w = SEV_WEIGHT[f.severity]
         if f.location == "code":
             w *= 0.5
         elif f.location == "hidden":
             w *= 2
-        score += w
+        if f.family in HEURISTIC_FAMILIES:
+            heuristic += w
+        else:
+            score += w
+    score += min(heuristic, HEURISTIC_CAP)
     risk: Risk
     if any(f.severity == "high" and f.location != "code" for f in findings) or score >= 6:
         risk = "high"

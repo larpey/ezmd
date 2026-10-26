@@ -31,8 +31,14 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
         (
             r"you are now (a|an|the) ",
             r"from now on,? (you|act|respond)",
-            r"act as (if you (are|were)|an? )(?!result|example|reference)",
-            r"pretend (to be|you are)",
+            # "act as" and "pretend" need the model as addressee: ordinary prose says a membrane "acts as a
+            # barrier" and a network "can act as a bus" (one government document in forty, 2026-10-26 sweep).
+            r"(you (must|should|will|can|are to|need to|have to) |please |now |always )act as (if you (are|were)|an? )",
+            r"act as (if you (are|were) )?(the |an? )?(ai|assistant|model|chatbot|system|language model|helpful|"
+            r"unrestricted|different|new|evil|jailbroken|developer|admin|root)\b",
+            r"(you (must|should|will|can|are to|need to) |please |now )pretend (to be|you are)",
+            r"pretend (to be|you are) (an? )?(ai|assistant|model|chatbot|system|different|new|unrestricted|evil|"
+            r"human)\b",
             r"new (persona|identity|role):",
         ),
     ),
@@ -59,18 +65,32 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
     "exfiltration": (
         "high",
         (
+            # Not plain "data": contracts and procedures forward data to offices all day.
             r"(send|post|upload|transmit|forward|email) (the |your |this |all )?(conversation|context|system prompt|"
-            r"api key|credentials|secrets?|tokens?|data) to",
+            r"api key|credentials|secrets?|tokens?|chat history|user data) to",
             r"!\[[^\]]*\]\(https?://[^)]*\?(q|data|c|p)=",
         ),
     ),
     "tool_abuse": (
         "high",
         (
-            r"(call|invoke|run|execute) (the )?(tool|function|command|shell|bash|terminal)\b",
+            # Software documentation says "run the command" and "call the function" to its human reader; an
+            # order to a model names the model's tools or frames the shell command as something to execute.
+            r"(call|invoke|run|execute|use) (your|the (available|provided|given)) (tools?|functions?)\b",
+            r"(call|invoke) (the |a )?(tool|function) (named|called) ",
+            r"(you (must|should|will|need to) |please |now )(run|execute|type) (`|\")?(rm -rf|sudo|curl|wget|cat /etc)",
+            r"(you (must|should|will|need to) |please |now )(read|cat|print|open|reveal) "
+            r"(~/|/etc/|\.env\b|id_rsa|secrets)",
+            r"\b(tool_call|function_call)\s*[:(]",
+        ),
+    ),
+    "shell_mention": (
+        "low",
+        (
+            # A shell command on its own is content: build logs, changelogs, package specs and bug reports
+            # quote `rm -rf` and `cat /etc/passwd` without addressing anyone.
             r"\brm -rf\b",
             r"(read|cat|print|open) (~/|/etc/|\.env\b|id_rsa|secrets)",
-            r"\b(tool_call|function_call)\s*[:(]",
         ),
     ),
     "secrecy": (
@@ -91,7 +111,9 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
     "delimiter_spoof": (
         "high",
         (
-            r"</?\s*(untrusted_content|document|document_content|system|instructions|context)\s*>",
+            # ezmd's own fence and the chat-template tags only: `<Document>` is KML's root element and
+            # `<context>`/`<instructions>` are ordinary XML (70 government files in the 2026-10-26 sweep).
+            r"</?\s*(untrusted_content|document_content|system_prompt|system)\s*>",
             r"^-{3}\s*\n\s*title:",
             r"(^|\s)-{3}\s+title:\s",
             r"<!-- ?(chunk|/chunk|page|ezmd)\b",
@@ -101,6 +123,10 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
 
 #: Patterns checked against the original (non-normalized) code-stripped text only.
 STRUCTURAL: dict[str, tuple[Severity, tuple[str, ...]]] = {
-    "exfiltration_fetch": ("high", (r"\b(curl|wget)\s+https?://",)),
-    "system_prompt_line": ("high", (r"^\s*\[?(system|assistant)\]?:\s",)),
+    # A fetch in prose is a script or a README as often as an exfiltration: low, so it needs company.
+    "exfiltration_fetch": ("low", (r"\b(curl|wget)\s+https?://",)),
+    # "System: To administer a national network ..." starts a sentence in ordinary prose; the bracketed and
+    # tagged forms are the transcript shapes that stay high, the bare word is a hint.
+    "system_prompt_line": ("high", (r"^\s*(\[(system|assistant)\]|<(system|assistant)>):?\s",)),
+    "system_prompt_word": ("low", (r"^\s*(system|assistant):\s",)),
 }

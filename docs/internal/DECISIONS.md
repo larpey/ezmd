@@ -714,3 +714,34 @@ Decision: a top-level form XObject that holds at least three path or image objec
 Alternatives: geometry (text inside or near clusters of paths) catches figures drawn straight onto the page too, but a shaded table, a treemap and a bar chart look alike to it and axis ticks sit outside the plot's paths; rejected for now, so TikZ and pgfplots figures are unchanged (docs/converters/pdf.md known limitations). Dropping the lettering with a warning: smaller output, but it is text the paper shows and the spec's fallback keeps it. An `Image` placeholder block: the renderer prints an image reference, and the engine has no image to refer to; figures on demand are Phase 2.
 Consequences: pdfium reports a nested object's bounds in its form's own space; `_page_bounds` applies the enclosing matrices, which also corrects the image boxes of nested images that the scan classifier measures. Five tests on a synthetic PDF with a form XObject (`packages/converters/tests/pdf/test_pdf_figures.py`). The lettering paragraph still costs tokens; whether the `compact` profile should drop paragraphs tagged `pdf_figure_text` is a profile decision left open.
 Council: not convened (heuristic scoped to one engine, measured on the benchmark sample before and after).
+
+## D-0075: Injection patterns need the model as addressee; accumulation heuristics cap at medium
+
+Date: 2026-10-26. Status: accepted.
+
+Context: The corpus sweep of 2026-10-26 (bench/results/2026-10-26-pilot/ and bench/results/2026-10-26-ccgov-a/)
+rescanned every flagged output: 3.2% of the 7,945 Govdocs1 outputs and 3.5% of the 6,223 modern government
+outputs were `injection_risk: high`, on corpora with no prompt injection in them. The findings were "act as a
+buffer" and "pretend to be" in prose, `rm -rf` and `cat /etc/...` in build logs and package specs, KML's
+`<Document>` root taken for delimiter spoofing, "run the command" in software documentation, "forward the data
+to" in contracts, a sentence beginning "System:", and long tables and manuals whose low and medium heuristics
+(`flooding`, `imperative_cluster`) summed past the `high` threshold on their own. A flag on one government
+document in thirty is noise a consumer learns to ignore.
+
+Decision: The spec table (part3 section 18) stands as the catalogue of families, with these changes to the
+patterns and the scoring. `role_hijack`'s "act as" and "pretend" need a second-person or imperative frame or
+a model-like object. `tool_abuse` needs the model's tools named (`your tools`, `the available functions`) or a
+shell command framed as an order (`please run rm -rf`); a shell command or a `curl` on its own is a new low
+`shell_mention` finding. `exfiltration` drops plain "data" from its objects. `delimiter_spoof` matches ezmd's
+own fence (`untrusted_content`), `document_content` and the chat tags, not generic XML element names. The
+bare `System:` line start is low; `[system]:` and `<system>` stay high. The accumulation heuristics
+(`flooding`, `imperative_cluster`, `long_html_comment`, `shell_mention`) contribute at most 3 points together,
+so they reach `medium`, never `high`, by themselves.
+
+Alternatives rejected: keeping the spec's patterns and lowering the `high` threshold (a single high pattern
+still flags prose); an allowlist of known-good phrases (does not generalise); scanning only hidden text (loses
+the visible attacks the fixtures cover).
+
+Consequences: `packages/core/tests/render/test_injection_false_positives.py` carries the sweep's shapes as
+negatives and nine attacks as positives. The corpus smell `injection` (tools/bench/scoring/smell.py) is the
+regression measure: the high rate on the two corpora is the number to watch after any pattern change.

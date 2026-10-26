@@ -26,6 +26,16 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- The injection scanner no longer marks one ordinary document in thirty as `high`. The 2026-10-26 corpus
+  sweep (D-0075) found 3.2% of Govdocs1 and 3.5% of modern government files at `high` with no injection in
+  them: "act as a buffer" in prose, `rm -rf` in build logs, KML's `<Document>` root, "run the command" in
+  software documentation, "forward the data to" in contracts, a sentence starting "System:", and long tables
+  or manuals accumulating low-severity heuristics. The model-directed patterns now need the model as addressee
+  (`you must act as`, `act as an unrestricted assistant`, `call your tools`, `please run rm -rf`), a quoted
+  shell command or fetch on its own is a low `shell_mention`, the delimiter family matches ezmd's own fence and
+  the chat-template tags only, the bare `System:` line is low while `[system]:` stays high, and the
+  accumulation heuristics together reach `medium` at most. Attacks (override, role hijack with the model
+  named, exfiltration of the conversation, fence and tag spoofing, hidden text) still score `high`.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
