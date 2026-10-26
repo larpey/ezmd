@@ -175,26 +175,30 @@ def cc_digest(body: bytes) -> str:
     return base64.b32encode(hashlib.sha1(body).digest()).decode("ascii")  # noqa: S324 - Common Crawl's own digest
 
 
-RATE_PER_SECOND = 12.0
-"""Requests per second across all workers. Common Crawl answers 403 above some rate per address; the first
-pulls ran at 18 to 30 per second for a few thousand files and were then refused for minutes at a time."""
+RATE_PER_SECOND = 10.0
+RATE_MIN = 1.0
+"""Requests per second across all workers, adapted as Common Crawl answers: a 403 cuts the rate by a fifth
+and pauses everyone two seconds; five hundred clean requests raise it a tenth, up to the start value. The
+first pulls at a fixed 18 to 30 per second were refused for minutes at a time."""
 
 
 class Throttle:
-    """A token bucket every worker draws from, plus a global pause when Common Crawl answers 403 or 503."""
+    """A token bucket every worker draws from, with an additive-increase, multiplicative-decrease rate."""
 
     def __init__(self, rate: float = RATE_PER_SECOND) -> None:
         self._until = 0.0
         self._lock = threading.Lock()
-        self._rate = rate
+        self._ceiling = rate
+        self.rate = rate
         self._next = time.monotonic()
+        self._clean = 0
         self.refusals = 0
 
     def wait(self) -> None:
         with self._lock:
             now = time.monotonic()
             slot = max(self._next, now, self._until)
-            self._next = slot + 1.0 / self._rate
+            self._next = slot + 1.0 / self.rate
         delay = slot - now
         if delay > 0:
             time.sleep(delay)
@@ -202,7 +206,16 @@ class Throttle:
     def refuse(self, attempt: int) -> None:
         with self._lock:
             self.refusals += 1
-            self._until = max(self._until, time.monotonic() + min(60, 10 * (attempt + 1)))
+            self._clean = 0
+            self.rate = max(RATE_MIN, self.rate * 0.8)
+            self._until = max(self._until, time.monotonic() + 2.0 + attempt)
+
+    def success(self) -> None:
+        with self._lock:
+            self._clean += 1
+            if self._clean >= 500:
+                self._clean = 0
+                self.rate = min(self._ceiling, self.rate * 1.1)
 
 
 _local = threading.local()
@@ -241,7 +254,7 @@ def fetch_record(row: dict[str, Any], throttle: Throttle, attempts: int = 6) -> 
             time.sleep(1 + attempt)
             continue
         if resp.status in (200, 206):
-            fresh = False
+            throttle.success()
             return data
         if resp.status in (403, 429, 503):
             throttle.refuse(attempt)
@@ -297,7 +310,9 @@ def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int 
         if n % log_every == 0:
             rate = n / (time.monotonic() - t0)
             failed, refused = counts["failed"], throttle.refusals
-            print(f"ccgov: {n} pulled, {failed} failed, {refused} refusals, {rate:.1f}/s", flush=True)
+            limit = throttle.rate
+            msg = f"ccgov: {n} pulled, {failed} failed, {refused} refusals, {rate:.1f}/s, limit {limit:.1f}/s"
+            print(msg, flush=True)
             with lock:
                 counts["refusals"] = refused
 
