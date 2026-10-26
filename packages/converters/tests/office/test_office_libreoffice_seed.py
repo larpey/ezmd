@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import SimpleNamespace
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 import pytest
 
@@ -16,9 +18,8 @@ def _fake_soffice(calls: list[dict[str, object]]):  # type: ignore[no-untyped-de
     """Stands in for `sandbox.run`: initialises the profile the way soffice does, writes the output."""
 
     def run(argv: list[str], **kw: object) -> SimpleNamespace:
-        profile = Path(argv[[a.startswith("-env:UserInstallation=") for a in argv].index(True)].split("=", 1)[1][8:])
-        if profile.as_posix().startswith("/") and not profile.exists():  # file:///C:/... on Windows
-            profile = Path(profile.as_posix().lstrip("/"))
+        uri = next(a for a in argv if a.startswith("-env:UserInstallation=")).split("=", 1)[1]
+        profile = Path(url2pathname(urlparse(uri).path))  # file:///tmp/x on POSIX, file:///C:/x on Windows
         marker = profile / "user" / "initialised.txt"
         calls.append({"seeded": marker.exists(), "profile": profile})
         marker.parent.mkdir(parents=True, exist_ok=True)
