@@ -25,6 +25,7 @@ class WarningKind(StrEnum):
     ENCODING_UNCERTAIN = "encoding_uncertain"
     MULTILINGUAL_CONTENT = "multilingual_content"
     ENGINE_FALLBACK = "engine_fallback"
+    UNKNOWN_TYPE_READ_AS_TEXT = "unknown_type_read_as_text"
     ENGINE_FAILED = "engine_failed"
     CONVERTER_FAILED = "converter_failed"
     EXTRACTION_EMPTY = "extraction_empty"
@@ -270,6 +271,9 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.ENGINE_FALLBACK, "warning", "core",
              "The preferred engine failed and a fallback engine produced the output.",
              "Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name."),
+    CodeSpec(WarningKind.UNKNOWN_TYPE_READ_AS_TEXT, "warning", "core",
+             "No converter claims the detected type, but the content is text, so it was read as plain text.",
+             "If the file is a known format under another name, rename it or pick a converter with --converter."),
     CodeSpec(WarningKind.ENGINE_FAILED, "error", "core",
              "The conversion engine crashed or was killed and produced no output.",
              "Retry with another engine via --engine family=name, or report the file with a fixture."),

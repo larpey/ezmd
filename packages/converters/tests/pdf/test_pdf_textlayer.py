@@ -434,3 +434,16 @@ def test_text_running_up_an_upright_page_keeps_whole_lines(tmp_path: Path) -> No
         "Table 1. Anticonvulsant activity in mice",
         "Rotorod test and protective index",
     ]
+
+
+def test_pages_whose_only_text_is_furniture_are_pages_without_text(tmp_path: Path) -> None:
+    """A scan whose text layer holds only the printer's stamp on every page: the running-footer pass removes
+    the stamp, and the document must say its pages have no text instead of coming out silently empty (two
+    Govdocs1 pilot files, 2026-10-26)."""
+    stamp = "VerDate 11-MAY-2000 13:12 Feb 27, 2002 Jkt 077687 PO 00000 Frm 01279 Fmt 6602 Sfmt 6602"
+    pdf = new_pdf([[(72, 30, stamp, 8, False)], [(72, 30, stamp, 8, False)], [(72, 30, stamp, 8, False)]])
+    doc = convert_path(save(pdf, tmp_path / "stamped.pdf"), {"pdf.ocr": "off"})
+    kinds = [str(w.kind) for w in doc.warnings]
+    assert "removed_running_header_footer" in kinds
+    assert "pages_without_text" in kinds, kinds
+    assert doc.metadata.extra["pdf_pages_without_text"] == "1,2,3"

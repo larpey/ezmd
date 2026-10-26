@@ -49,6 +49,13 @@ All notable changes are generated from Conventional Commits. This project uses s
   (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
+### Changed
+- LibreOffice conversions initialise a user profile once per process and copy it for every later file,
+  instead of initialising a throwaway profile from scratch each time. Each file still gets its own writable,
+  disposable copy with macros, active content and link updates disabled. A legacy `.doc`, `.xls` or `.ppt`
+  cost about 13 seconds on the 2026-10-26 Govdocs1 pilot (86% of the run's time); after the first file it is
+  the conversion itself plus the copy.
+
 ### Fixed
 - Legacy and modern Office containers are typed by their strongest evidence. For an OLE2 file, libmagic's
   stream-name verdict (`application/msword`, `vnd.ms-excel`, ...) now beats a Magika guess, and a generic
@@ -57,6 +64,31 @@ All notable changes are generated from Conventional Commits. This project uses s
   An Excel binary workbook (`.xlsb`, a package with `xl/workbook.bin`) is recognised as such and goes to
   LibreOffice instead of failing in openpyxl. 29 refused Office files, 7 wrong targets and 25 `.xlsb`
   failures in the 2026-10-26 corpus runs.
+- Readable text is never refused as "no converter" or "binary". Three rules: a type verdict of
+  `application/octet-stream` on bytes that read as text (a Magika label with no MIME type, such as a Protein
+  Data Bank file) becomes `text/plain`; when no converter claims a type whose bytes read as text (SQL scripts,
+  property lists, DTDs, Mathematica notebooks), the registry reads the file as plain text and says so with the
+  new `unknown_type_read_as_text` warning; and every text-based data chain (CSV, JSON, YAML, TOML, XML) ends in
+  plain text, so a YAML or XML look-alike that does not parse comes through as text with `engine_fallback`
+  instead of failing. Usenet articles (`message/news`) go to the email converter. About 600 files of the
+  2026-10-26 corpus runs.
+- A scanned page whose only text is its printer's stamp or footer is reported as a page without text. The
+  running-header pass removed the stamp and the page counted as text-bearing because the raw text layer was
+  not empty, so two Govdocs1 pilot files (2026-10-26) came out with no body and no `pages_without_text`
+  warning. The scan classifier now counts a page's text after the running lines are taken out.
+- A huge single paragraph no longer stalls the renderer: `escape_inline` runs markdown-it's inline parser
+  only on spans up to 64,000 characters and the regex check beyond that. A 4 MB ASCII grid file spent 150 of
+  its 160 seconds in that parser in the 2026-10-26 Govdocs1 pilot and timed out at the 120-second limit.
+- The OOXML package guard no longer rejects real documents as zip bombs: the per-member compression limit is
+  1000:1 instead of 100:1. Deflate tops out near 1032:1, so a run of one byte is still refused, while
+  generated slide and sheet XML (100:1 to 300:1) and EMF vector images (up to 730:1) pass; the total
+  uncompressed cap and the declared-size check still bound every package. Six Govdocs1 files converted
+  through LibreOffice and six native `.docx`/`.pptx` files in the modern corpus were refused with
+  `package rejected ... compression ratio` on 2026-10-26.
+- A heading level above 6 no longer fails the conversion: Word's Heading 7 to 9 (and an outline level that
+  deep) and a tagged PDF's `H7` become level 6, as Markdown has six levels. Before, the IR refused the level
+  and the document did not convert at all: 58 of 9,875 Govdocs1 files and 21 of 3,295 modern `.docx` files in
+  the corpus runs of 2026-10-26.
 - Detection: libmagic's `application/x-mimearchive` (a message whose first line is a MIME header) is an email,
   so such an `.eml` reaches the email converter instead of "no converter"; the libmagic answer outranks the
   extension, which is why newer libmagic builds on CI made `test_html_only_body_and_inline_cid_image` fail.

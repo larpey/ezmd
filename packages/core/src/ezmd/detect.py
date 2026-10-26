@@ -419,6 +419,22 @@ def import_magic() -> Any:
         return importlib.import_module("magic")
 
 
+_PRINTABLE_SHARE = 0.97
+
+
+def looks_like_text(sample: bytes) -> bool:
+    """Whether bytes read as text: no NUL, and either valid UTF-8 or almost entirely printable Latin-1. The
+    floor under every type verdict: a file this returns True for is never "binary" to ezmd."""
+    if not sample or b"\x00" in sample:
+        return False
+    try:
+        text = sample.decode("utf-8")
+    except UnicodeDecodeError:
+        text = sample.decode("latin-1")
+    printable = sum(1 for ch in text if ch.isprintable() or ch in "\t\n\r\x0c")
+    return printable / len(text) >= _PRINTABLE_SHARE
+
+
 def _sample(ref: InputRef) -> tuple[bytes, int]:
     """Head plus tail sample and total size, without reading more than HEAD+TAIL bytes."""
     if ref.data is not None:
@@ -533,6 +549,10 @@ class MagicDetector:
         if mime == _XLSX and b"xl/workbook.bin" in sample:
             # An Excel binary workbook is the same package with .bin parts; openpyxl cannot read it, LibreOffice can.
             mime, confidence = XLSB, max(confidence, 0.9)
+        if mime == OCTET and ((lm or "").startswith("text/") or looks_like_text(sample)):
+            # A Magika label with no MIME type (proteindb and other niche text formats) is not evidence of
+            # binary content; printable text is text, whatever it is called.
+            mime, confidence = "text/plain", 0.6
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
             # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).

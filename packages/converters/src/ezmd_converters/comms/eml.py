@@ -15,7 +15,8 @@ from ezmd_converters.comms.model import ParsedMessage
 from ezmd_converters.comms.options import read_options
 from ezmd_converters.comms.parse_eml import EmailParseError, parse_message_bytes
 
-EML_MIMES = ("message/rfc822", "message/global")
+EML_MIMES = ("message/rfc822", "message/global", "message/news")
+"""A Usenet article (`message/news`) is an RFC 5322 message with a few extra headers."""
 EML_EXTS = (".eml", ".mht.eml", ".emlx")
 DEFAULT_MAX_BYTES = 200 * 1024 * 1024
 """One message: the largest attachment cap (100 MB) plus base64 overhead and the body."""

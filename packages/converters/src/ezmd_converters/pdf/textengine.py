@@ -82,7 +82,7 @@ def text_document(doc: Document, path: str, info: PdfInfo, popts: PdfOptions, op
         doc.metadata.title = page_title(layer.pages, headings.body, hidden)
     all_lines = [ln for p in layer.pages for ln in p.lines if ln.order not in hidden]
     asm = Assembler(doc.metadata.source, "pdfium", headings, vocabulary(all_lines), popts.dehyphenate)
-    rep = classify(layer.pages, popts)
+    rep = classify(layer.pages, popts, running)
     uncertain: list[int] = []
     ocr_missing: list[int] = []
     figure_count = 0
