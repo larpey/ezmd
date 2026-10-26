@@ -88,6 +88,26 @@ def _json(url: str) -> Any:
     return json.loads(_get(url, timeout=60).decode("utf-8"))
 
 
+def _json_post(url: str, params: dict[str, str], attempts: int = 6) -> Any:
+    """A MediaWiki query by POST: fifty file titles do not fit in a URL."""
+    data = urllib.parse.urlencode(params).encode("utf-8")
+    req = urllib.request.Request(url, data=data, headers={"User-Agent": USER_AGENT})  # noqa: S310 - https API
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:  # noqa: S310 - https API URL
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            if exc.code in (429, 503, 502, 500) and attempt < attempts - 1:
+                time.sleep(10 * (attempt + 1))
+                continue
+            raise
+        except (urllib.error.URLError, TimeoutError, OSError):
+            if attempt == attempts - 1:
+                raise
+            time.sleep(5 * (attempt + 1))
+    raise RuntimeError(url)
+
+
 class Log:
     """`pulled.jsonl`: one line per file on disk, keyed by (source, id)."""
 
@@ -181,18 +201,15 @@ def commons_listing(mime: str, want: int) -> Iterator[dict[str, Any]]:
             return
         offset += len(hits)
         titles = "|".join(str(h["title"]) for h in hits)
-        info = _json(
-            COMMONS_API
-            + "?"
-            + urllib.parse.urlencode(
-                {
-                    "action": "query",
-                    "prop": "imageinfo",
-                    "iiprop": "url|size|mime|sha1",
-                    "titles": titles,
-                    "format": "json",
-                }
-            )
+        info = _json_post(
+            COMMONS_API,
+            {
+                "action": "query",
+                "prop": "imageinfo",
+                "iiprop": "url|size|mime|sha1",
+                "titles": titles,
+                "format": "json",
+            },
         )
         for page in info.get("query", {}).get("pages", {}).values():
             for ii in page.get("imageinfo", []):
