@@ -53,6 +53,16 @@ All notable changes are generated from Conventional Commits. This project uses s
 - A huge single paragraph no longer stalls the renderer: `escape_inline` runs markdown-it's inline parser
   only on spans up to 64,000 characters and the regex check beyond that. A 4 MB ASCII grid file spent 150 of
   its 160 seconds in that parser in the 2026-10-26 Govdocs1 pilot and timed out at the 120-second limit.
+- The OOXML package guard no longer rejects real documents as zip bombs: the per-member compression limit is
+  1000:1 instead of 100:1. Deflate tops out near 1032:1, so a run of one byte is still refused, while
+  generated slide and sheet XML (100:1 to 300:1) and EMF vector images (up to 730:1) pass; the total
+  uncompressed cap and the declared-size check still bound every package. Six Govdocs1 files converted
+  through LibreOffice and six native `.docx`/`.pptx` files in the modern corpus were refused with
+  `package rejected ... compression ratio` on 2026-10-26.
+- A heading level above 6 no longer fails the conversion: Word's Heading 7 to 9 (and an outline level that
+  deep) and a tagged PDF's `H7` become level 6, as Markdown has six levels. Before, the IR refused the level
+  and the document did not convert at all: 58 of 9,875 Govdocs1 files and 21 of 3,295 modern `.docx` files in
+  the corpus runs of 2026-10-26.
 - Detection: libmagic's `application/x-mimearchive` (a message whose first line is a MIME header) is an email,
   so such an `.eml` reaches the email converter instead of "no converter"; the libmagic answer outranks the
   extension, which is why newer libmagic builds on CI made `test_html_only_body_and_inline_cid_image` fail.

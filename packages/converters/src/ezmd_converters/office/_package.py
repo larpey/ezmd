@@ -3,7 +3,7 @@
 Before any parser sees a package:
 
 - archive limits: at most 10,000 entries, total uncompressed size under `EZMD_ARCHIVE_MAX_BYTES`
-  (default 500 MB), no entry above a 100:1 compression ratio (entries over 1 MB), no encrypted entries;
+  (default 500 MB), no entry over 1 MB above a 1000:1 compression ratio, no encrypted entries;
   members with absolute paths or `..` components are ignored (nothing is ever extracted to disk).
 - active content is removed and recorded as `removed_script_or_macro`: `vbaProject.bin`, `vbaData.xml`,
   ActiveX parts, embedded OLE `.bin` objects, and external relationships of type oleObject, attachedTemplate,
@@ -28,7 +28,11 @@ from ezmd.registry import ConversionError
 from ezmd_converters.archives.backends import zip_directory_problem
 
 MAX_ENTRIES = 10_000
-MAX_RATIO = 100
+MAX_RATIO = 1000
+"""Per-member compression ratio above which a package is a bomb. Deflate tops out near 1032:1 (a run of one
+byte), so only such content exceeds this. Real parts go far past the old 100:1: generated slide and sheet XML
+sits between 100:1 and 300:1, and EMF vector images reached 730:1 in the 2026-10-26 corpus runs. The total
+uncompressed cap and the declared-size check on extraction are the bounds that matter."""
 RATIO_MIN_BYTES = 1024 * 1024
 DEFAULT_MAX_TOTAL = 500 * 1024 * 1024
 
