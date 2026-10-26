@@ -26,6 +26,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Detection: libmagic's `application/x-mimearchive` (a message whose first line is a MIME header) is an email,
+  so such an `.eml` reaches the email converter instead of "no converter"; the libmagic answer outranks the
+  extension, which is why newer libmagic builds on CI made `test_html_only_body_and_inline_cid_image` fail.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
