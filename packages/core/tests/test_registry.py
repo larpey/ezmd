@@ -118,6 +118,14 @@ def test_all_fail_reports_tried_ids_and_last_user_message() -> None:
     assert "text.a" in str(ei.value) and "text.b" in str(ei.value)
     assert ei.value.user_message == "Nope."
     assert ei.value.retryable_with_fallback is False
+    assert isinstance(ei.value.__cause__, ConversionError) and str(ei.value.__cause__) == "nope"
+
+
+def test_all_fail_chains_a_converter_crash_as_the_cause() -> None:
+    """The last converter's own exception stays reachable, so a caller can tell a parser's refusal from a bug."""
+    with pytest.raises(ConversionError) as ei:
+        registry(Fake("text.a", 0.9, behavior="crash")).convert(ref(), ConvertOptions())
+    assert isinstance(ei.value.__cause__, RuntimeError) and str(ei.value.__cause__) == "engine bug"
 
 
 def test_empty_with_warnings_is_last_resort() -> None:
