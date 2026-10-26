@@ -43,16 +43,15 @@ COMMONS_MIMES = {
     "image/png": 3000,
     "image/jpeg": 3000,
     "image/gif": 2000,
-    "image/bmp": 500,
     "image/vnd.djvu": 300,
-    "audio/ogg": 300,
-    "audio/x-flac": 150,
+    "application/ogg": 300,
+    "audio/flac": 100,
+    "audio/x-flac": 100,
     "audio/wav": 150,
     "audio/midi": 200,
     "audio/mpeg": 300,
     "audio/webm": 100,
     "video/webm": 200,
-    "video/ogg": 100,
 }
 IMAGE_MAX_BYTES = 20 * 2**20
 AV_MAX_BYTES = 60 * 2**20
@@ -159,29 +158,49 @@ def _ext(url: str, mime: str) -> str:
 
 
 def commons_listing(mime: str, want: int) -> Iterator[dict[str, Any]]:
-    """`allimages` by MIME, oldest first, with size and sha1; stops after `want` usable entries."""
+    """Files of one MIME type through CirrusSearch (`filemime:`; the `allimages` MIME filter is disabled on
+    Commons), oldest-indexed first, with URL, size, MIME and sha1 from `imageinfo`; stops after `want` usable
+    entries. Search offsets stop at 10,000, which bounds one type at that many candidates."""
     limit = IMAGE_MAX_BYTES if mime.startswith("image/") else AV_MAX_BYTES
-    params: dict[str, str] = {
-        "action": "query",
-        "list": "allimages",
-        "aimime": mime,
-        "ailimit": "500",
-        "aiprop": "url|size|mime|sha1",
-        "format": "json",
-    }
+    offset = 0
     seen = 0
-    while seen < want:
+    while seen < want and offset < 10_000:
+        params = {
+            "action": "query",
+            "list": "search",
+            "srnamespace": "6",
+            "srsearch": f"filemime:{mime}",
+            "srlimit": "50",
+            "sroffset": str(offset),
+            "srprop": "",
+            "format": "json",
+        }
         data = _json(COMMONS_API + "?" + urllib.parse.urlencode(params))
-        for img in data.get("query", {}).get("allimages", []):
-            if int(img.get("size", 0)) <= limit and img.get("mime") == mime:
-                seen += 1
-                yield img
-                if seen >= want:
-                    return
-        cont = data.get("continue", {}).get("aicontinue")
-        if not cont:
+        hits = data.get("query", {}).get("search", [])
+        if not hits:
             return
-        params["aicontinue"] = cont
+        offset += len(hits)
+        titles = "|".join(str(h["title"]) for h in hits)
+        info = _json(
+            COMMONS_API
+            + "?"
+            + urllib.parse.urlencode(
+                {
+                    "action": "query",
+                    "prop": "imageinfo",
+                    "iiprop": "url|size|mime|sha1",
+                    "titles": titles,
+                    "format": "json",
+                }
+            )
+        )
+        for page in info.get("query", {}).get("pages", {}).values():
+            for ii in page.get("imageinfo", []):
+                if int(ii.get("size", 0)) <= limit and ii.get("mime") == mime:
+                    seen += 1
+                    yield {"name": str(page["title"]).removeprefix("File:"), "url": ii["url"], "sha1": ii.get("sha1")}
+                    if seen >= want:
+                        return
         time.sleep(0.5)
 
 
