@@ -142,6 +142,29 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
   the whole-document categories, where ezmd competes, and publish the page benchmarks as context. Record the choice in
   DECISIONS.md.
 - **Phase 2 design direction**: owner to set it (discussion planned for 2026-10-25) before P2 tasks start.
+- **Coverage: the corpora are papers, and everyday documents found six bugs in an afternoon.** On 2026-10-25 the owner
+  converted a course folder (a syllabus PDF, two slide-deck PDFs, three PPTX decks with notes) with 0.1.1. No word was
+  lost, but: PPTX pictures are never written (#31) and `image_dir` is unreachable from the CLI and library (#32);
+  bulleted large-font slide lines become headings and a long joined heading repeats its text (#33); a small bullet glyph
+  on its own baseline becomes a paragraph (#28); a running footer's text survives when it appears once at a page top
+  (#29); `act as a bus` in a speaker note scores `role_hijack` high (#30). Why they got past: every fixture and every
+  benchmark document is an academic paper or a book page (one body size, bullets at text size, footers that repeat),
+  image extraction was never run end to end from the CLI, injection patterns were tested on positives only, and the
+  metrics (recall, QA accuracy, tokens) do not move for structure errors when every word is present. Owner's direction
+  (2026-10-25): a corpus an order of magnitude larger, tens of thousands of files across formats and domains, chosen
+  indiscriminately. Proposal for the Phase 2 discussion: (1) Govdocs1 (digitalcorpora.org: 986,278 files, about 488 GB,
+  harvested from .gov servers across some twenty formats, freely redistributable per the project) as the base, a seeded
+  20,000 for ezmd and a seeded 1,000 for the slower competitors; slide decks, syllabi, memos and forms from OER and
+  agency sources on top, since Govdocs1 predates modern PPTX; CC-MAIN-2021-31-PDF-UNTRUNCATED (about 8 million PDFs,
+  8 TB, SafeDocs) only for sampled PDF stress. (2) Metrics that need no ground truth, because none exists at that
+  scale: crash and timeout rate per format, text recall against the file's own text layer, silent loss, and a
+  structural "smell" scorer (lone bullet paragraphs, headings that start with a bullet, consecutive duplicate text,
+  image links that do not resolve, running-header text inside body text, injection flags on documents known clean),
+  reported per format and domain and gated at zero; model QA stays on sampled subsets. (3) Cross-format contract
+  tests (every converter that emits an `Image` writes its bytes when `image_dir` is set) and an injection
+  false-positive sweep over every corpus output as a CI test. (4) A dogfooding step in the release checklist: a folder
+  of real documents converted and read before a tag. Needs the owner's go for the download (tens of GB) and a
+  roadmap slot; nothing started.
 
 ## Blocked on human
 - (resolved 2026-10-08) GitHub token lacked the `workflow` scope; owner approved device login from phone.
