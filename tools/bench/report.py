@@ -35,6 +35,7 @@ CATEGORY_LABELS = {
     "omnidoc-formula": "PDF, OmniDocBench display formulas (1 - edit distance; CDM off)",
     "web-articles": "Web articles, ScrapingHub AEB (article-body F1)",
     "arxiv-qa": "arXiv papers, answer accuracy (local-model QA over the converted text)",
+    "arxiv-qa-second-half": "arXiv papers, answer accuracy on questions whose evidence is in the paper's second half",
     "arxiv-text-recall": "arXiv papers, text recall (share of the PDF text layer's words kept)",
     "arxiv-silent-loss": "arXiv papers, silent loss (over 5% of words lost with no warning raised; lower is better)",
     "arxiv-outline-recall": "arXiv papers, outline recall (PDF bookmarks found as headings)",
