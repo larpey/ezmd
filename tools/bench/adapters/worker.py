@@ -171,6 +171,27 @@ ADAPTERS: dict[str, Callable[[], tuple[str, Convert]]] = {
 }
 
 
+def failure_site(exc: BaseException, own: str = "ezmd") -> str:
+    """`path:line function` of the frame that raised: the innermost frame inside the tool's own code (a path
+    component starting with `own`) when there is one, else the innermost frame of all. Paths are cut at
+    `site-packages` or `src` so the same site reads the same on every machine."""
+    frames = traceback.extract_tb(exc.__traceback__)
+    if not frames:
+        return ""
+    chosen = frames[-1]
+    for frame in reversed(frames):
+        parts = Path(frame.filename).parts
+        if any(p.startswith(own) for p in parts):
+            chosen = frame
+            break
+    parts = Path(chosen.filename).parts
+    for marker in ("site-packages", "src"):
+        if marker in parts:
+            parts = parts[parts.index(marker) + 1 :]
+            break
+    return f"{'/'.join(parts)}:{chosen.lineno} {chosen.name}"
+
+
 def _protocol_stream() -> object:
     """Duplicate the real stdout for protocol messages and send fd 1 (and sys.stdout) to stderr."""
     proto_fd = os.dup(1)
@@ -236,6 +257,7 @@ def main() -> int:
                     "seconds": time.perf_counter() - t0,
                     "error_class": type(exc).__name__,
                     "error": str(exc)[:2000],
+                    "where": failure_site(exc),
                 }
             )
     return 0

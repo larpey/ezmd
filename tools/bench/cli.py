@@ -1,7 +1,7 @@
 """`python -m tools.bench <command>`.
 
 install  [--tools a,b] [--force]          create competitor environments under the cache directory
-run      --corpus NAME [--tools a,b] [--sample N | --split heldout] [--timeout S] [--date YYYY-MM-DD]
+run      --corpus NAME [--tools a,b] [--sample N | --split heldout] [--timeout S] [--workers N] [--date YYYY-MM-DD]
 score    --corpus NAME [--date ...]       score raw outputs (per-document scores.jsonl)
 report   [--date ...]                     aggregate into bench/results/<date>/results.json + summary.md
 qa       generate|answer|grade|all --corpus NAME [--date ...] [--tools a,b]   local-model QA (tools/bench/qa.py)
@@ -28,11 +28,17 @@ def run_dir(date: str, corpus: str) -> Path:
 
 
 def cmd_run(
-    corpus: str, tools: list[str] | None, sample: int | None, timeout: float, date: str, split: str = "sample"
+    corpus: str,
+    tools: list[str] | None,
+    sample: int | None,
+    timeout: float,
+    date: str,
+    split: str = "sample",
+    workers: int = 1,
 ) -> int:
     from tools.bench.corpora import CORPORA, heldout
     from tools.bench.install import binary_path
-    from tools.bench.runner import run_tool
+    from tools.bench.runner import run_tool_parallel
 
     all_tools = load_tools()
     names = tools or list(all_tools)
@@ -69,7 +75,7 @@ def cmd_run(
         tool = all_tools[name]
         pandoc = binary_path(tool) if tool.kind == "binary" else None
         counts: dict[str, int] = {}
-        for r in run_tool(tool, docs, out, timeout=timeout, pandoc=pandoc):
+        for r in run_tool_parallel(tool, list(docs), out, workers, timeout=timeout, pandoc=pandoc):
             counts[r.status] = counts.get(r.status, 0) + 1
             if r.status in ("error", "timeout", "crash"):
                 print(f"  {name} {r.doc_id}: {r.status} {r.error_class}: {(r.error or '')[:160]}", flush=True)
@@ -93,6 +99,9 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--sample", type=int, default=None)
             p.add_argument("--timeout", type=float, default=300.0)
             p.add_argument("--split", choices=("sample", "heldout"), default="sample")
+            p.add_argument(
+                "--workers", type=int, default=1, help="parallel worker processes per tool (CPU-bound tools only)"
+            )
     p = sub.add_parser("fetch", help="download corpora and set up the official scorers")
     p.add_argument("--only")
     p = sub.add_parser("compare", help="ezmd before/after on the same documents")
@@ -142,7 +151,7 @@ def main(argv: list[str] | None = None) -> int:
 
         return fetch(_names(args.only))
     if args.cmd == "run":
-        return cmd_run(args.corpus, _names(args.tools), args.sample, args.timeout, args.date, args.split)
+        return cmd_run(args.corpus, _names(args.tools), args.sample, args.timeout, args.date, args.split, args.workers)
     if args.cmd == "score":
         from tools.bench.scoring import score_corpus
 

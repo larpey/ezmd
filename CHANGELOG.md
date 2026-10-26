@@ -18,6 +18,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   silent loss, a repaired truncated file (#23). First results in `bench/results/2026-10-24/` and
   `docs/benchmarks.md`. `run --corpus arxiv-damaged --split heldout` damages the 79 held-out papers the same
   way; the #23 fix is confirmed there (`bench/results/2026-10-24-heldout/`: 0 of 237 silent, 0.1.0 1 of 237).
+- Benchmark harness: a `govdocs1` corpus, the ten official Govdocs1 threads (about 9,900 everyday files from
+  .gov servers across some twenty formats), scored on outcome because no ground truth exists: an output, a
+  declared refusal, or a bug (an undeclared exception, a timeout, a worker crash). `score` writes the clean rate
+  and `clusters.md`, the bugs grouped by exception class and the frame that raised (a new `where` field in
+  results.jsonl, filled by the worker from the traceback) with sample files. `run --workers N` converts N shards
+  at once. The first pass over the pilot is where the everyday-documents coverage work (#28 to #33) starts.
 
 ### Changed
 - `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the

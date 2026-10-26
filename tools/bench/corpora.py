@@ -9,6 +9,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import os
 import random
 import tomllib
 from collections import defaultdict
@@ -251,6 +252,45 @@ def arxiv_damaged(sample: int | None = DAMAGED_SAMPLE) -> list[Doc]:
     return docs
 
 
+GOVDOCS1_THREADS = 10
+"""Govdocs1 (digitalcorpora.org) publishes ten mutually exclusive subsets of about 1,000 files, thread0.zip to
+thread9.zip, for when a few distinct sets are more useful than the million files. They are the pilot of the
+everyday-documents coverage work: every file is attempted, whatever its type, and the outcome is what is
+scored (tools/bench/scoring/corpus.py), since no ground truth exists."""
+GOVDOCS1_URL = "https://downloads.digitalcorpora.org/corpora/files/govdocs1/threads/thread{n}.zip"
+
+
+def govdocs1_root() -> Path:
+    """`EZMD_GOVDOCS1` points at a copy on another drive; the default is the corpus cache."""
+    return Path(os.environ.get("EZMD_GOVDOCS1", corpora_dir() / "govdocs1"))
+
+
+def govdocs1_thread_dir(n: int) -> Path:
+    return govdocs1_root() / "threads" / str(n)
+
+
+def govdocs1(sample: int | None = None) -> list[Doc]:
+    """Every file of the ten threads; category = the file's extension (Govdocs1 names files by the type the
+    crawler saw, so a mislabelled file is part of the variety). `--sample N` is a seeded draw over all ten."""
+    docs: list[Doc] = []
+    missing: list[int] = []
+    for n in range(GOVDOCS1_THREADS):
+        folder = govdocs1_thread_dir(n)
+        if not folder.is_dir():
+            missing.append(n)
+            continue
+        for path in sorted(p for p in folder.iterdir() if p.is_file()):
+            category = path.suffix.lower().lstrip(".") or "none"
+            docs.append(Doc("govdocs1", path.stem, path, category, {"thread": n, "bytes": path.stat().st_size}))
+    if missing:
+        raise FileNotFoundError(
+            f"govdocs1: threads {missing} are not under {govdocs1_root() / 'threads'}; "
+            "run `python -m tools.bench fetch --only govdocs1`"
+        )
+    docs.sort(key=lambda d: d.id)
+    return _sample(docs, sample)
+
+
 CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "smoke": smoke,
     "fixtures": fixtures,
@@ -259,6 +299,7 @@ CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "web": web,
     "arxiv": arxiv,
     "arxiv-damaged": arxiv_damaged,
+    "govdocs1": govdocs1,
 }
 
 

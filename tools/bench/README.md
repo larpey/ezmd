@@ -54,6 +54,22 @@ uv run python -m tools.bench run --corpus arxiv-damaged --split heldout --tools 
 The held-out split of `arxiv-damaged` is the damaged copies of the 79 arXiv papers outside the 30-paper sample,
 never used to find or fix a converter fault, so a fix found on the ten sampled papers is confirmed there (#23).
 
+The `govdocs1` corpus is the everyday-documents pilot: the ten official Govdocs1 threads (digitalcorpora.org,
+about 1,000 files each across some twenty formats, named by the type the crawler saw). There is no ground
+truth, so the scorer (`tools/bench/scoring/corpus.py`) grades the outcome: an output written, a declared
+refusal (`ConversionError`, `UnsupportedMediaType`, `InputTooLarge`), or a bug (any other exception, a timeout,
+a worker crash). The primary metric is the clean rate; `clusters.md` under the run groups the bugs by exception
+class and the frame that raised (`where` in results.jsonl, the innermost frame of ezmd's own code) and the
+declared errors by message shape, each with sample document ids. Every file is attempted whatever its type,
+because a clean refusal of a format ezmd does not claim is part of the contract. `--workers N` runs N worker
+processes over round-robin shards of the corpus; `EZMD_GOVDOCS1` points at a copy on another drive.
+
+```bash
+EZMD_GOVDOCS1=D:/corpora/govdocs1 uv run python -m tools.bench fetch --only govdocs1   # ten zips, extracted flat
+uv run python -m tools.bench run --corpus govdocs1 --tools ezmd-main --workers 8 --timeout 120 --date D
+uv run python -m tools.bench score --corpus govdocs1 --date D                             # clean rate + clusters.md
+```
+
 `qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
 `EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
 never from a tool's output, and each must quote the sentence that answers it; a quote that is not in the text
