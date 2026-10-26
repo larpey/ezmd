@@ -56,7 +56,14 @@ def _ezmd() -> tuple[str, Convert]:
             for w in result.conversion.document.warnings
         ]
         truncated = bool(result.frontmatter.get("truncated"))
-        sidecar = {"profile": profile, "truncated": truncated, "warnings": warnings}
+        # Render-time warnings (injection_suspected among them) live in the frontmatter, not the document.
+        sidecar = {
+            "profile": profile,
+            "truncated": truncated,
+            "warnings": warnings,
+            "render_warnings": [str(w) for w in result.frontmatter.get("warnings") or []],
+            "injection_risk": result.frontmatter.get("injection_risk"),
+        }
         _SIDECARS[str(path)] = json.dumps(sidecar, ensure_ascii=False)
         return str(result.markdown)
 
@@ -171,6 +178,42 @@ ADAPTERS: dict[str, Callable[[], tuple[str, Convert]]] = {
 }
 
 
+def failure_site(exc: BaseException, own: str = "ezmd") -> str:
+    """`path:line function` of the frame that raised: the innermost frame inside the tool's own code (a path
+    component starting with `own`) when there is one, else the innermost frame of all. Paths are cut at
+    `site-packages` or `src` so the same site reads the same on every machine."""
+    frames = traceback.extract_tb(exc.__traceback__)
+    if not frames:
+        return ""
+
+    def short(filename: str) -> tuple[str, ...]:
+        # Only the path inside the environment counts: the venv itself may be named after the tool.
+        parts = Path(filename).parts
+        for marker in ("site-packages", "src"):
+            if marker in parts:
+                return parts[parts.index(marker) + 1 :]
+        return parts[-2:]
+
+    chosen = frames[-1]
+    for frame in reversed(frames):
+        if short(frame.filename)[0].startswith(own):
+            chosen = frame
+            break
+    return f"{'/'.join(short(chosen.filename))}:{chosen.lineno} {chosen.name}"
+
+
+def failure_info(exc: BaseException) -> dict[str, object]:
+    """The error fields of a failed job. A declared error raised `from` another (ezmd's registry wraps the last
+    converter's exception) reports that cause's class and site, which is where the fault is."""
+    cause = exc.__cause__
+    return {
+        "error_class": type(exc).__name__,
+        "error": str(exc)[:2000],
+        "where": failure_site(cause if cause is not None else exc),
+        "cause": type(cause).__name__ if cause is not None else None,
+    }
+
+
 def _protocol_stream() -> object:
     """Duplicate the real stdout for protocol messages and send fd 1 (and sys.stdout) to stderr."""
     proto_fd = os.dup(1)
@@ -229,15 +272,7 @@ def main() -> int:
             send({"id": job["id"], "ok": True, "seconds": time.perf_counter() - t0, "chars": len(text)})
         except Exception as exc:
             traceback.print_exc()
-            send(
-                {
-                    "id": job["id"],
-                    "ok": False,
-                    "seconds": time.perf_counter() - t0,
-                    "error_class": type(exc).__name__,
-                    "error": str(exc)[:2000],
-                }
-            )
+            send({"id": job["id"], "ok": False, "seconds": time.perf_counter() - t0, **failure_info(exc)})
     return 0
 
 

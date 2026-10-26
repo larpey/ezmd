@@ -106,6 +106,7 @@ def test_url_without_body() -> None:
 
 def test_helpers() -> None:
     assert normalize_mime("Text/X-Markdown; charset=utf-8") == "text/markdown"
+    assert normalize_mime("application/x-mimearchive") == "message/rfc822"  # libmagic's "MIME entity"
     assert extension_mime("x.DOCX") is not None
     assert extension_mime("noext") is None
     assert is_executable("application/x-dosexec") and not is_executable("text/plain")

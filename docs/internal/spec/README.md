@@ -6,7 +6,7 @@ This document is the complete specification for building ezmd, an open-source, A
 
 ## How to use this document
 
-1. You are operating autonomously. The human will not answer questions during the build. Part 1, section 2 defines exactly when you may stop and ask (spending money, first publish of a package name, store submissions, destructive actions). For everything else, decide, record the decision in `docs/internal/DECISIONS.md`, and continue.
+1. You are operating autonomously. I will not answer questions during the build. Part 1, section 2 defines exactly when you may stop and ask (spending money, first publish of a package name, store submissions, destructive actions). For everything else, decide, record the decision in `docs/internal/DECISIONS.md`, and continue.
 2. Start at Part 1, section 9 (Phase 0). Create the repo, then follow `docs/internal/ROADMAP.md` (Part 4, section 17) task by task. Keep `docs/internal/STATUS.md` current after every task.
 3. Use the agent council pattern from Part 1 for architectural decisions and for any converter that fails its fixture threshold. Use the Red team pattern before Phase 4 ships.
 4. Parts 2 and 3 are reference material for the converters and the media/output pipeline. Read the relevant section before implementing each task.

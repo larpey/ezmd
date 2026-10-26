@@ -390,7 +390,8 @@ class ConverterRegistry:
         msg = f"all converters failed for {ref.display}: tried {tried}; last error: {last}"
         user = last.user_message if isinstance(last, ConversionError) else "Conversion failed."
         code = last.code if isinstance(last, ConversionError) else CONVERSION_FAILED
-        raise ConversionError(msg, user_message=user, retryable_with_fallback=False, code=code)
+        # Chained, so a caller (and the benchmark worker) can tell a parser's refusal from a converter crash.
+        raise ConversionError(msg, user_message=user, retryable_with_fallback=False, code=code) from last
 
     @staticmethod
     def _result(
