@@ -9,6 +9,7 @@ crawled. Images, audio and video are not in Common Crawl at all; those come from
 Layout under `EZMD_CCGOV` (default `<cache>/corpora/ccgov`):
 
     manifest.<crawl>.jsonl   one capture per content digest (url, tld, mime, digest, warc, offset, length, ...)
+    manifest.0-priority.jsonl   optional: rows to pull first (same columns); manifests are read in name order
     pulled.jsonl             append-only log of files on disk (resume state): digest, path, bytes, url, tld, mime
     files/<mime slug>/<dd>/<digest>.<ext>   the payloads, named by digest, with the publisher's extension
 
@@ -271,11 +272,15 @@ def pull(
     done = read_pulled(root)
 
     def todo() -> Iterator[dict[str, Any]]:
-        # Streamed, so a restart starts pulling at once instead of parsing the whole manifest first.
+        # Streamed, so a restart starts pulling at once instead of parsing the whole manifest first. A digest
+        # listed in two manifests (a priority manifest ahead of the crawl's) is pulled once.
         n = 0
+        seen: set[str] = set()
         for r in read_manifests(root):
-            if r["digest"] in done:
+            digest = str(r["digest"])
+            if digest in done or digest in seen:
                 continue
+            seen.add(digest)
             yield r
             n += 1
             if limit is not None and n >= limit:
