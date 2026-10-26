@@ -26,6 +26,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Running headers that sit below the margin zone are removed. The PDF path only looked in the top and bottom
+  8% of the page, so a court opinion's case name 17% below the top edge stayed in the body 73 times in the
+  Govdocs1 pilot (2026-10-26). A line that repeats at the same position on most pages within the top or
+  bottom quarter is furniture now; the same text once in the body (a quotation) stays. A further copy of a
+  known running text inside a margin zone, however rare (#29's footer sentence at the top of one page), is
+  removed too.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
