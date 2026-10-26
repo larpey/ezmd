@@ -196,7 +196,9 @@ class Throttle:
 
 _local = threading.local()
 DATA_HOST = "data.commoncrawl.org"
-REQUEST_TIMEOUT = 60.0
+REQUEST_TIMEOUT = 20.0
+"""A fresh connection to data.commoncrawl.org sometimes hangs before the first byte; dropping it after 20 s and
+reconnecting costs far less than waiting (the range itself arrives in well under a second)."""
 
 
 def _connection(fresh: bool = False) -> http.client.HTTPSConnection:
@@ -225,7 +227,7 @@ def fetch_record(row: dict[str, Any], throttle: Throttle, attempts: int = 6) -> 
             resp = conn.getresponse()
             data = resp.read()
         except (http.client.HTTPException, TimeoutError, OSError):
-            time.sleep(5 * (attempt + 1))
+            time.sleep(1 + attempt)
             continue
         if resp.status in (200, 206):
             fresh = False

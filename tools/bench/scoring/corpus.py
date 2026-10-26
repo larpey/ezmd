@@ -15,12 +15,15 @@ both are written to `<run_dir>/clusters.md` with sample documents: the list a fi
 
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 from tools.bench.schema import DocResult
+from tools.bench.scoring import smell
+from tools.bench.scoring.text import read_output
 from tools.bench.stats import bootstrap_ci
 
 DECLARED = frozenset({"ConversionError", "UnsupportedMediaType", "InputTooLarge"})
@@ -125,6 +128,60 @@ def _tool_scores(results: list[DocResult]) -> dict[str, Any]:
     }
 
 
+def _inputs(run_dir: Path) -> dict[str, Path]:
+    """Document id to input path, from the run's manifest (`docs.json`), for the smells that compare sizes."""
+    manifest = run_dir / "docs.json"
+    if not manifest.exists():
+        return {}
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    return {str(d["id"]): Path(str(d["input"])) for d in data.get("documents", [])}
+
+
+def _sidecar(run_dir: Path, r: DocResult) -> dict[str, Any] | None:
+    if not r.output:
+        return None
+    path = run_dir / (r.output + ".warnings.json")
+    if not path.exists():
+        return None
+    data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    return data
+
+
+def smell_scores(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
+    """Smells of every ok output of one tool: counts per smell, per type, samples, and the gated-clean rate
+    (ok outputs with none of the gated smells over all ok outputs)."""
+    inputs = _inputs(run_dir)
+    per_doc: dict[str, list[str]] = {}
+    for r in results:
+        if r.status != "ok" or not r.output or not (run_dir / r.output).is_file():
+            continue
+        md = read_output(r, run_dir)
+        side = _sidecar(run_dir, r)
+        src = inputs.get(r.doc_id)
+        data = src.read_bytes() if src is not None and src.is_file() and src.stat().st_size <= 64 * 2**20 else None
+        profile = str(side.get("profile", "full")) if side else "full"
+        per_doc[r.doc_id] = smell.smells(md, r.category, side, data, profile=profile)
+    by_smell: dict[str, Counter[str]] = defaultdict(Counter)
+    samples: dict[str, list[str]] = defaultdict(list)
+    cats = {r.doc_id: r.category for r in results}
+    for doc_id, found in sorted(per_doc.items()):
+        for name in found:
+            by_smell[name][cats[doc_id]] += 1
+            if len(samples[name]) < SAMPLES:
+                samples[name].append(doc_id)
+    gated_clean = [0.0 if set(found) & smell.GATED else 1.0 for found in per_doc.values()]
+    return {
+        "n": len(per_doc),
+        "gated_clean_rate": (sum(gated_clean) / len(gated_clean)) if gated_clean else None,
+        "gated_clean_ci": list(bootstrap_ci(gated_clean)) if gated_clean else None,
+        "smells": {
+            name: {"count": sum(c.values()), "categories": dict(c.most_common()), "samples": samples[name]}
+            for name, c in sorted(by_smell.items(), key=lambda kv: -sum(kv[1].values()))
+        },
+        "per_doc": {d: f for d, f in per_doc.items() if f},
+    }
+
+
 def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
     tools: dict[str, list[DocResult]] = defaultdict(list)
     for r in results:
@@ -135,8 +192,30 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         "higher_is_better": True,
         "tools": {name: _tool_scores(rs) for name, rs in tools.items()},
     }
+    for name, rs in tools.items():
+        scores["tools"][name]["secondary"]["smells"] = smell_scores(rs, run_dir)
     (run_dir / "clusters.md").write_text(clusters_markdown(scores), encoding="utf-8", newline="\n")
+    (run_dir / "smells.md").write_text(smells_markdown(scores), encoding="utf-8", newline="\n")
     return scores
+
+
+def smells_markdown(scores: dict[str, Any]) -> str:
+    lines = [f"# {scores['corpus']}: structural smells of the outputs", ""]
+    for tool, s in sorted(scores["tools"].items()):
+        sm = s["secondary"]["smells"]
+        rate = sm["gated_clean_rate"]
+        ci = sm["gated_clean_ci"]
+        head = f"## {tool}\n\n{sm['n']} outputs"
+        if rate is not None and ci:
+            gated = "`, `".join(sorted(smell.GATED))
+            head += f"; gated-clean rate {rate:.4f} [{ci[0]:.4f}, {ci[1]:.4f}] (no `{gated}`)"
+        lines += [head + ".", "", "| smell | gate | n | types | samples |", "|---|---|---|---|---|"]
+        for name, info in sm["smells"].items():
+            types = ", ".join(f"{k} {v}" for k, v in list(info["categories"].items())[:8])
+            gate = "gated" if name in smell.GATED else "reported"
+            lines.append(f"| {name} | {gate} | {info['count']} | {types} | {', '.join(info['samples'])} |")
+        lines.append("")
+    return "\n".join(lines)
 
 
 def clusters_markdown(scores: dict[str, Any]) -> str:
