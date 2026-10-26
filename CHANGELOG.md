@@ -44,12 +44,58 @@ All notable changes are generated from Conventional Commits. This project uses s
   from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`).
 
 ### Changed
+- LibreOffice conversions initialise a user profile once per process and copy it for every later file,
+  instead of initialising a throwaway profile from scratch each time. Each file still gets its own writable,
+  disposable copy with macros, active content and link updates disabled. A legacy `.doc`, `.xls` or `.ppt`
+  cost about 13 seconds on the 2026-10-26 Govdocs1 pilot (86% of the run's time); after the first file it is
+  the conversion itself plus the copy.
 - `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
   content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
   (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- The injection scanner no longer marks one ordinary document in thirty as `high`. The 2026-10-26 corpus
+  sweep (D-0075) found 3.2% of Govdocs1 and 3.5% of modern government files at `high` with no injection in
+  them: "act as a buffer" in prose, `rm -rf` in build logs, KML's `<Document>` root, "run the command" in
+  software documentation, "forward the data to" in contracts, a sentence starting "System:", and long tables
+  or manuals accumulating low-severity heuristics. The model-directed patterns now need the model as addressee
+  (`you must act as`, `act as an unrestricted assistant`, `call your tools`, `please run rm -rf`), a quoted
+  shell command or fetch on its own is a low `shell_mention`, the delimiter family matches ezmd's own fence and
+  the chat-template tags only, the bare `System:` line is low while `[system]:` stays high, and the
+  accumulation heuristics together reach `medium` at most. Attacks (override, role hijack with the model
+  named, exfiltration of the conversation, fence and tag spoofing, hidden text) still score `high`.
+- Running headers that sit below the margin zone are removed. The PDF path only looked in the top and bottom
+  8% of the page, so a court opinion's case name 17% below the top edge stayed in the body 73 times in the
+  Govdocs1 pilot (2026-10-26). A line that repeats at the same position on most pages within the top or
+  bottom quarter is furniture now; the same text once in the body (a quotation) stays. A further copy of a
+  known running text inside a margin zone, however rare (#29's footer sentence at the top of one page), is
+  removed too.
+- XML dialects convert as XML and XHTML converts as a web page. Any `+xml` type without a converter of its
+  own (RDF, GPX, KML, Atom, RSS, MathML, ISO 19115, SMIL, ...), property lists and DTDs now take the XML
+  converter's chain instead of "no converter"; an XML document with an `<html` root, an XHTML doctype, an HTML
+  extension or Magika's `html` label is `application/xhtml+xml` and goes to the web converters instead of
+  failing in the XML parser. 37 RDF files and 3 XHTML pages in the Govdocs1 pilot and thousands of feed and
+  KML files in the modern corpus (2026-10-26).
+- Legacy and modern Office containers are typed by their strongest evidence. For an OLE2 file, libmagic's
+  stream-name verdict (`application/msword`, `vnd.ms-excel`, ...) now beats a Magika guess, and a generic
+  `application/cdfv2` or `vnd.ms-office` verdict resolves from the extension (`.doc`, `.ppt`, `.msg`, `.vsd`)
+  or Magika's label instead of leaving the file with "no converter" or sending LibreOffice the wrong target.
+  An Excel binary workbook (`.xlsb`, a package with `xl/workbook.bin`) is recognised as such and goes to
+  LibreOffice instead of failing in openpyxl. 29 refused Office files, 7 wrong targets and 25 `.xlsb`
+  failures in the 2026-10-26 corpus runs.
+- Readable text is never refused as "no converter" or "binary". Three rules: a type verdict of
+  `application/octet-stream` on bytes that read as text (a Magika label with no MIME type, such as a Protein
+  Data Bank file) becomes `text/plain`; when no converter claims a type whose bytes read as text (SQL scripts,
+  property lists, DTDs, Mathematica notebooks), the registry reads the file as plain text and says so with the
+  new `unknown_type_read_as_text` warning; and every text-based data chain (CSV, JSON, YAML, TOML, XML) ends in
+  plain text, so a YAML or XML look-alike that does not parse comes through as text with `engine_fallback`
+  instead of failing. Usenet articles (`message/news`) go to the email converter. About 600 files of the
+  2026-10-26 corpus runs.
+- A scanned page whose only text is its printer's stamp or footer is reported as a page without text. The
+  running-header pass removed the stamp and the page counted as text-bearing because the raw text layer was
+  not empty, so two Govdocs1 pilot files (2026-10-26) came out with no body and no `pages_without_text`
+  warning. The scan classifier now counts a page's text after the running lines are taken out.
 - A huge single paragraph no longer stalls the renderer: `escape_inline` runs markdown-it's inline parser
   only on spans up to 64,000 characters and the regex check beyond that. A 4 MB ASCII grid file spent 150 of
   its 160 seconds in that parser in the 2026-10-26 Govdocs1 pilot and timed out at the 120-second limit.
