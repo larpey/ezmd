@@ -163,11 +163,12 @@ class Styles:
         return "Normal"
 
     def heading_level(self, sid: str | None) -> int | None:
-        """`Heading N` names to N, `Title` to 1, otherwise an outline level k (0-based) through basedOn to k+1."""
+        """`Heading N` names to N, `Title` to 1, otherwise an outline level k (0-based) through basedOn to k+1.
+        Word has nine levels and Markdown six: 7 to 9 become 6, as the outline path already did."""
         for s in self.chain(sid):
             m = _HEADING_NAME.match(s.name)
             if m:
-                return int(m.group(1))
+                return min(6, int(m.group(1)))
             if s.name.lower() == "title":
                 return 1
             if s.outline_lvl is not None and s.outline_lvl < 9:

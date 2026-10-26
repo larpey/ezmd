@@ -23,7 +23,7 @@ loaded or unavailable with the reason, and `ezmd doctor` for system programs suc
 | `archives.sevenzip` | archives | sevenzip | `application/x-7z-compressed` | extra `7z` | Beta | 0 | 0.85 | [archives](archives.md) |
 | `code.repo_pack` | code | repo_pack | `application/gzip`, `application/x-compressed-tar`, `application/x-gzip` and 3 more | default | Beta | 4 | 0.99 | [code](code.md) |
 | `code.source_file` | code | source_file | `text/x-python`, `application/typescript`, `text/x-typescript` and 40 more | default | Beta | 7 | 0.99 | [code](code.md) |
-| `comms.eml` | comms | eml | `message/rfc822`, `message/global` | default | Beta | 7 | 0.97 | [comms](comms.md) |
+| `comms.eml` | comms | eml | `message/rfc822`, `message/global`, `message/news` | default | Beta | 7 | 0.97 | [comms](comms.md) |
 | `comms.mbox` | comms | mbox | `application/mbox`, `application/x-mbox` | default | Beta | 1 | 0.97 | [comms](comms.md) |
 | `comms.msg` | comms | msg | `application/vnd.ms-outlook`, `application/x-msg` | default | Beta | 1 | 0.97 | [comms](comms.md) |
 | `comms.msg_extract` | comms | msg_extract | (by URL) | extra `nonfree` | Beta | 0 | 0.85 | [comms](comms.md) |
@@ -69,13 +69,13 @@ tried (`ezmd.chains`).
 | `application/epub+zip` | `documents.epub` then `archives.archive` |
 | `application/gzip` | `archives.archive` |
 | `application/javascript` | `code.source_file` then `text.plain` |
-| `application/json` | `data.json` |
-| `application/jsonl` | `data.json` |
+| `application/json` | `data.json` then `text.plain` |
+| `application/jsonl` | `data.json` then `text.plain` |
 | `application/mbox` | `comms.mbox` |
 | `application/msword` | `documents.libreoffice` |
 | `application/pdf` | `documents.docling_pdf` then `documents.pdfium_text` |
 | `application/rtf` | `documents.libreoffice` then `documents.rtf` |
-| `application/toml` | `data.toml` |
+| `application/toml` | `data.toml` then `text.plain` |
 | `application/typescript` | `code.source_file` then `text.plain` |
 | `application/vnd.apache.parquet` | `data.parquet` |
 | `application/vnd.apple.keynote` | `documents.iwork` |
@@ -108,7 +108,7 @@ tried (`ezmd.chains`).
 | `application/x-bzip2` | `archives.archive` |
 | `application/x-gzip` | `archives.archive` |
 | `application/x-ipynb+json` | `documents.ipynb` |
-| `application/x-ndjson` | `data.json` |
+| `application/x-ndjson` | `data.json` then `text.plain` |
 | `application/x-parquet` | `data.parquet` |
 | `application/x-powershell` | `code.source_file` then `text.plain` |
 | `application/x-ruby` | `code.source_file` then `text.plain` |
@@ -120,18 +120,19 @@ tried (`ezmd.chains`).
 | `application/x-tcl` | `code.source_file` then `text.plain` |
 | `application/x-xz` | `archives.archive` |
 | `application/xhtml+xml` | `web.trafilatura` then `web.rules` then `web.html_raw` |
-| `application/xml` | `data.xml` |
-| `application/yaml` | `data.yaml` |
+| `application/xml` | `data.xml` then `text.plain` |
+| `application/yaml` | `data.yaml` then `text.plain` |
 | `message/global` | `comms.eml` |
+| `message/news` | `comms.eml` |
 | `message/rfc822` | `comms.mbox` then `comms.eml` |
 | `text/coffeescript` | `code.source_file` then `text.plain` |
-| `text/csv` | `data.csv` |
+| `text/csv` | `data.csv` then `text.plain` |
 | `text/html` | `web.trafilatura` then `web.rules` then `web.html_raw` |
 | `text/javascript` | `code.source_file` then `text.plain` |
 | `text/markdown` | `text.markdown_passthrough` then `text.plain` |
 | `text/plain` | `text.plain` |
 | `text/rtf` | `documents.libreoffice` then `documents.rtf` |
-| `text/tab-separated-values` | `data.csv` |
+| `text/tab-separated-values` | `data.csv` then `text.plain` |
 | `text/vbscript` | `code.source_file` then `text.plain` |
 | `text/x-asm` | `code.source_file` then `text.plain` |
 | `text/x-c` | `code.source_file` then `text.plain` |
@@ -172,7 +173,7 @@ tried (`ezmd.chains`).
 - `archives.sevenzip`: `application/x-7z-compressed`
 - `code.repo_pack`: `application/gzip`, `application/x-compressed-tar`, `application/x-gzip`, `application/x-tar`, `application/zip`, `text/x-uri`
 - `code.source_file`: `text/x-python`, `application/typescript`, `text/x-typescript`, `application/javascript`, `text/javascript`, `text/x-golang`, `text/x-go`, `application/x-rust`, `text/x-rust`, `text/x-c`, `text/x-h`, `text/x-java`, `application/x-ruby`, `text/x-ruby`, `text/x-php`, `text/x-shellscript`, `application/x-sh`, `text/x-swift`, `application/x-scala`, `text/x-perl`, `text/x-groovy`, `text/x-julia`, `text/x-lisp`, `text/x-clojure`, `text/coffeescript`, `application/x-powershell`, `text/x-msdos-batch`, `text/x-asm`, `text/x-proto`, `text/x-objcsrc`, `text/x-r`, `text/x-matlab`, `text/x-pascal`, `text/x-erlang`, `text/zig`, `application/x-tcl`, `text/x-verilog`, `text/x-vhdl`, `text/x-cmake`, `text/x-makefile`, `text/x-dockerfile`, `text/x-hcl`, `text/vbscript`
-- `comms.eml`: `message/rfc822`, `message/global`
+- `comms.eml`: `message/rfc822`, `message/global`, `message/news`
 - `comms.mbox`: `application/mbox`, `application/x-mbox`
 - `comms.msg`: `application/vnd.ms-outlook`, `application/x-msg`
 - `comms.msg_extract`: none; it claims inputs by URL pattern
