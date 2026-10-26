@@ -26,6 +26,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- A huge single paragraph no longer stalls the renderer: `escape_inline` runs markdown-it's inline parser
+  only on spans up to 64,000 characters and the regex check beyond that. A 4 MB ASCII grid file spent 150 of
+  its 160 seconds in that parser in the 2026-10-26 Govdocs1 pilot and timed out at the 120-second limit.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
