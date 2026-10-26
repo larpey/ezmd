@@ -27,6 +27,7 @@ REPORTED = frozenset(
 """Smells worth a look; some have legitimate causes (a navigation-only page shrinks, a scan has no text)."""
 
 MIN_CHARS = 20
+PARSE_MAX_CHARS = 2_000_000
 SHRINK_RATIO = 0.05
 """Output text shorter than this share of the input's text is `shrunk` (text-like inputs only)."""
 TEXT_LIKE = frozenset({"txt", "text", "md", "markdown", "csv", "tsv", "json", "xml", "yaml", "yml", "log", "rtf"})
@@ -139,7 +140,8 @@ def smells(
     slug; `sidecar` is ezmd's `<output>.warnings.json`; `input_bytes` enables `shrunk` for text-like inputs."""
     found: list[str] = []
     lines = _lines(md)
-    text = markdown_to_text(md) if md.strip() else ""
+    # markdown-it is not linear on a huge single paragraph; past the cap the raw text is close enough for size.
+    text = md if len(md) > PARSE_MAX_CHARS else markdown_to_text(md) if md.strip() else ""
     compact = " ".join(text.split())
     if len(compact) < MIN_CHARS:
         found.append("empty")

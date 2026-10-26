@@ -70,6 +70,29 @@ uv run python -m tools.bench run --corpus govdocs1 --tools ezmd-main --workers 8
 uv run python -m tools.bench score --corpus govdocs1 --date D                             # clean rate + clusters.md
 ```
 
+`score` also runs the structural smell scorer (`tools/bench/scoring/smell.py`) over every output and writes
+`smells.md`: per smell, how many outputs show it, by type, with samples. The gated smells (`empty`,
+`control_chars`, `lone_bullet`, `heading_bullet`, `heading_repeated`, `truncated_full`) are the shapes no
+release should ship with; the reported ones (`shrunk`, `replacement_chars`, `mojibake`, `repeated_lines`,
+`char_run`, `empty_table`, `injection`) have legitimate causes and are read, not gated. The gated-clean rate
+is in the scores under `secondary.smells`.
+
+Two more outcome corpora cover what Govdocs1 cannot. `ccgov` (`tools/bench/cc.py`) is modern everyday files
+from Common Crawl, .gov, .mil and .edu hosts, every document type the crawl detected (OOXML, ODF, RTF, EPUB,
+JSON, CSV, Markdown, subtitles, email, notebooks) in full and HTML and PDF as seeded samples, one capture per
+content digest, pulled by HTTP range request from the public WARC files with the payload digest verified.
+The manifest is built with DuckDB from the index slices that hold those hosts (`EZMD_CC_INDEX`, the crawl in
+`EZMD_CC_CRAWL`); the pull resumes from `pulled.jsonl` and a file named `STOP` in the root stops it between
+files. `media` (`tools/bench/media.py`) is images, audio and video from Wikimedia Commons by `filemime`
+search, EPUB from Project Gutenberg, MP3 chapters from LibriVox and audio and video from NASA, the types no
+crawl holds. Both are cache-only like every other corpus.
+
+```bash
+EZMD_CCGOV=D:/corpora/ccgov EZMD_CC_INDEX=D:/corpora/cc-index/CC-MAIN-2026-43 uv run python -m tools.bench fetch --only ccgov
+EZMD_MEDIA=D:/corpora/media uv run python -m tools.bench fetch --only media
+uv run python -m tools.bench run --corpus ccgov --tools ezmd-main --workers 8 --timeout 120 --date D
+```
+
 `qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
 `EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
 never from a tool's output, and each must quote the sentence that answers it; a quote that is not in the text
