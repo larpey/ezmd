@@ -31,6 +31,7 @@ leaves the machine.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -250,10 +251,22 @@ ANSWER_MAX_TOKENS = 3_000
 """Reply tokens requested for an answer set; part of what the document's budget must leave free."""
 
 
+MIN_DOCUMENT_TOKENS = 500
+"""A context that leaves fewer document tokens than this next to the question prompt and the reply is a
+configuration error (`--context` too small), refused before any record is written: a one-token document with a
+complete answer set would otherwise be stored as a current record."""
+
+
 def answer_budget(context: int, overhead: int = 0) -> int:
     """Document tokens that fit a request in a model loaded with `context`: the context less the prompt around
     the document and the reply (`overhead`, measured per request) and PROMPT_RESERVE as the margin."""
     return max(1, context - PROMPT_RESERVE - overhead)
+
+
+def text_fingerprint(text: str) -> str:
+    """Identifies the text layer a question file was written from, so a changed text (another pypdfium2, a
+    re-fetched PDF) with the same token count is not read as the same."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
 QUOTE_WORDS_FOUND = 0.8
@@ -306,19 +319,25 @@ def _docs(run_dir: Path) -> list[dict[str, Any]]:
     return docs
 
 
-def cached_questions(path: Path, segs: list[Segment]) -> tuple[dict[str, Any], list[Segment]] | None:
-    """The cached question file when it was written under the current scheme, and the segments of the current
-    text it has nothing for (neither a question nor a recorded empty attempt): those are generated again and
-    added. None when the file is missing or from another scheme and must be generated whole."""
+def cached_questions(
+    path: Path, segs: list[Segment], fingerprint: str | None = None
+) -> tuple[dict[str, Any], list[Segment]] | None:
+    """The cached question file when it was written under the current scheme from this text (`fingerprint`,
+    checked when the file carries one; older files are checked by their token count), and the segments of the
+    current text it has nothing for (neither a question nor a recorded empty attempt): those are generated again
+    and added. None when the file is missing, from another scheme or from another text, and must be generated
+    whole."""
     if not path.exists():
         return None
     record = json.loads(path.read_text(encoding="utf-8"))
     if record.get("scheme") != SCHEME:
         return None
+    if fingerprint is not None and record.get("text") not in (None, fingerprint):
+        return None  # written from another text layer: all new
     total = segs[-1].end
     questions = record.get("questions", [])
     if any(q.get("segment", {}).get("of") != total for q in questions):
-        return None  # written from another text layer (a different pypdfium2, a re-fetched PDF): all new
+        return None  # a file without a fingerprint, from a text of another length: all new
     covered = {(q["segment"]["from"], q["segment"]["to"]) for q in questions}
     covered |= {(e["from"], e["to"]) for e in record.get("empty", [])}
     return record, [seg for seg in segs if (seg.start, seg.end) not in covered]
@@ -358,7 +377,8 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
         text = witness(doc["id"], Path(doc["input"])).text
         segs = segments(text, SEGMENT_TOKENS)
         total = segs[-1].end
-        cached = cached_questions(path, segs)
+        fingerprint = text_fingerprint(text)
+        cached = cached_questions(path, segs, fingerprint)
         if cached is not None and not cached[1]:
             return f"{doc['id']}: cached ({len(cached[0]['questions'])} questions)"
         if cached is None:
@@ -384,6 +404,7 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
             "server": client.base_url,
             "scheme": SCHEME,
             "doc": doc["id"],
+            "text": fingerprint,
             "segments": len(segs),
             "questions": questions,
             "empty": empty,
@@ -410,12 +431,15 @@ def _questions(doc_id: str) -> list[dict[str, Any]]:
     return items
 
 
-def answered(record: dict[str, Any], questions: list[dict[str, Any]]) -> bool:
-    """Whether an answer record is current: every item answered, no failed attempt, and the same questions in
-    the same order as the question file holds now (a regenerated question file must not read an older record
-    as cached; the reference `answer` is in every item, so its presence says nothing)."""
+def answered(record: dict[str, Any], questions: list[dict[str, Any]], context: int | None = None) -> bool:
+    """Whether an answer record is current: every item answered, no failed attempt, written for the same
+    context when one is given (its `cut` flag and answers belong to the context it was made with), and the
+    same questions in the same order as the question file holds now (a regenerated question file must not read
+    an older record as cached; the reference `answer` is in every item, so its presence says nothing)."""
     items = record.get("items", [])
     if "failed" in record or not items or not all("answer_given" in it for it in items):
+        return False
+    if context is not None and record.get("context") != context:
         return False
     return [it.get("question") for it in items] == [q.get("question") for q in questions]
 
@@ -449,7 +473,7 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int,
     def one(r: DocResult) -> str:
         path = run_dir / "qa" / r.tool / f"{r.doc_id}.json"
         questions = _questions(r.doc_id)
-        if path.exists() and answered(json.loads(path.read_text(encoding="utf-8")), questions):
+        if path.exists() and answered(json.loads(path.read_text(encoding="utf-8")), questions, context):
             return f"{r.tool} {r.doc_id}: cached"
         if not questions:
             return f"{r.tool} {r.doc_id}: no questions"
@@ -467,6 +491,11 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int,
             overhead = (
                 count_tokens(ANSWER_PROMPT.format(unknown=UNKNOWN, questions=listed, text="")) + ANSWER_MAX_TOKENS
             )
+            if answer_budget(context, overhead) < MIN_DOCUMENT_TOKENS:
+                raise SystemExit(
+                    f"a {context}-token context leaves under {MIN_DOCUMENT_TOKENS} tokens for the document next to "
+                    f"{len(questions)} questions and a {ANSWER_MAX_TOKENS}-token reply; raise --context"
+                )
             text, cut = document_text(md, context, overhead)
             hit = cached_answers(r.doc_id, questions, text)
             if hit is not None:
