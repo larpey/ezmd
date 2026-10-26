@@ -24,6 +24,8 @@ from pathlib import Path
 from tools.bench.config import BENCH_DIR, cache_dir, venv_python
 from tools.bench.corpora import (
     AEB_REVISION,
+    GOVDOCS1_THREADS,
+    GOVDOCS1_URL,
     OLMOCR_REVISION,
     OMNIDOC_GT_REVISION,
     OMNIDOC_PDF_REVISION,
@@ -32,6 +34,7 @@ from tools.bench.corpora import (
     arxiv_root,
     arxiv_source_dir,
     corpora_dir,
+    govdocs1_root,
     omnidoc_root,
 )
 from tools.bench.runner import docker_exe
@@ -186,12 +189,77 @@ def fetch_arxiv_source() -> None:
         time.sleep(3)
 
 
+def fetch_govdocs1() -> None:
+    """The ten Govdocs1 threads: each zip is downloaded once (about 300 MB) and its files extracted flat into
+    `threads/<n>/` by basename (the zips nest them under the first three digits). A thread whose folder exists
+    is left alone, so a copy made by hand on another drive (`EZMD_GOVDOCS1`) is used as it is."""
+    import urllib.request
+    import zipfile
+
+    threads = govdocs1_root() / "threads"
+    threads.mkdir(parents=True, exist_ok=True)
+    for n in range(GOVDOCS1_THREADS):
+        folder = threads / str(n)
+        if folder.is_dir():
+            continue
+        archive = threads / f"thread{n}.zip"
+        if not archive.exists() or archive.stat().st_size == 0:
+            url = GOVDOCS1_URL.format(n=n)  # an https template; only the thread number varies
+            req = urllib.request.Request(url, headers={"User-Agent": "ezmd-bench/1 (https://github.com/larpey/ezmd)"})  # noqa: S310
+            with urllib.request.urlopen(req, timeout=600) as resp, archive.open("wb") as out:  # noqa: S310
+                shutil.copyfileobj(resp, out)
+            print(f"govdocs1: thread{n}.zip ({archive.stat().st_size // 2**20} MB)", flush=True)
+        staging = threads / f"{n}.partial"
+        if staging.exists():
+            shutil.rmtree(staging)
+        staging.mkdir()
+        count = 0
+        with zipfile.ZipFile(archive) as z:
+            for info in z.infolist():
+                if info.is_dir():
+                    continue
+                name = Path(info.filename).name
+                with z.open(info) as src, (staging / name).open("wb") as dst:
+                    shutil.copyfileobj(src, dst)
+                count += 1
+        _rename_when_released(staging, folder)
+        print(f"govdocs1: thread {n}: {count} files", flush=True)
+
+
+def _rename_when_released(src: Path, dst: Path, attempts: int = 10) -> None:
+    """Windows refuses to rename a folder while the search indexer or a scanner still holds a file it just
+    wrote; the handle goes away within seconds."""
+    for attempt in range(attempts):
+        try:
+            src.rename(dst)
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(1 + attempt)
+
+
+def fetch_ccgov() -> None:
+    from tools.bench.cc import fetch_ccgov as run
+
+    run()
+
+
+def fetch_media() -> None:
+    from tools.bench.media import fetch_media as run
+
+    run()
+
+
 FETCHERS = {
     "olmocr": fetch_olmocr,
     "omnidoc": fetch_omnidoc,
     "web": fetch_web,
     "arxiv": fetch_arxiv,
     "arxiv-source": fetch_arxiv_source,
+    "govdocs1": fetch_govdocs1,
+    "ccgov": fetch_ccgov,
+    "media": fetch_media,
 }
 
 
