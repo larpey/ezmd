@@ -884,6 +884,11 @@
       "truncated_max_tokens"
     ]
   },
+  "unknown_type_read_as_text": {
+    "severity": "warning",
+    "suggestion": "If the file is a known format under another name, rename it or pick a converter with --converter.",
+    "aliases": []
+  },
   "unmapped_glyphs": {
     "severity": "warning",
     "suggestion": "Check the listed pages against the PDF; re-export with embedded ToUnicode maps, or use OCR on them.",

@@ -10,6 +10,7 @@ Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings
 | `encoding_uncertain` | warning | core | Text encoding was detected with low confidence; characters may be garbled. | Re-save the file as UTF-8 or pass the source encoding in options. |
 | `multilingual_content` | info | core | The document contains substantial text in more than one language. | Pass --lang to pin the primary language if downstream tools need a single one. |
 | `engine_fallback` | warning | core | The preferred engine failed and a fallback engine produced the output. | Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name. |
+| `unknown_type_read_as_text` | warning | core | No converter claims the detected type, but the content is text, so it was read as plain text. | If the file is a known format under another name, rename it or pick a converter with --converter. |
 | `engine_failed` | error | core | The conversion engine crashed or was killed and produced no output. | Retry with another engine via --engine family=name, or report the file with a fixture. |
 | `converter_failed` | error | core | The converter raised an error and produced no usable output. | Check the sidecar for the error detail, try another engine, or report the file. |
 | `extraction_empty` | error | core | Conversion finished but produced no text. | If the source is scanned or image-only, enable OCR; otherwise confirm the file is not empty. |

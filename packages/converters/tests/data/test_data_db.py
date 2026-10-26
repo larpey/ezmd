@@ -181,7 +181,8 @@ def test_family_registration_and_chains() -> None:
     assert family.CHAINS["text/csv"] == ["data.csv", "text.plain"]  # the text floor closes every text chain
     for chain in family.CHAINS.values():
         assert set(chain) <= ids | {"text.plain"}
-    assert all(chain[-1] == "text.plain" for mime, chain in family.CHAINS.items() if "sqlite" not in mime)
+    binary = ("sqlite", "parquet")
+    assert all(chain[-1] == "text.plain" for mime, chain in family.CHAINS.items() if not any(b in mime for b in binary))
 
 
 @pytest.mark.parametrize(
