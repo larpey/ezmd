@@ -26,6 +26,13 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Legacy and modern Office containers are typed by their strongest evidence. For an OLE2 file, libmagic's
+  stream-name verdict (`application/msword`, `vnd.ms-excel`, ...) now beats a Magika guess, and a generic
+  `application/cdfv2` or `vnd.ms-office` verdict resolves from the extension (`.doc`, `.ppt`, `.msg`, `.vsd`)
+  or Magika's label instead of leaving the file with "no converter" or sending LibreOffice the wrong target.
+  An Excel binary workbook (`.xlsb`, a package with `xl/workbook.bin`) is recognised as such and goes to
+  LibreOffice instead of failing in openpyxl. 29 refused Office files, 7 wrong targets and 25 `.xlsb`
+  failures in the 2026-10-26 corpus runs.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
