@@ -1,0 +1,1781 @@
+{
+ "before": "2026-10-24-whole",
+ "after": "2026-10-25-figtext",
+ "categories": {
+  "arxiv-answers-per-10k-tokens": {
+   "ezmd-main": {
+    "before": {
+     "value": 1.8931,
+     "ci": [
+      1.6019,
+      2.1837
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1.9159,
+     "ci": [
+      1.6234,
+      2.2161
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0228,
+     "ci": [
+      -0.0055,
+      0.0531
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 1.5764,
+      "diff": 0.3395,
+      "ci": [
+       0.103,
+       0.5818
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 2.1124,
+      "diff": -0.1965,
+      "ci": [
+       -0.4511,
+       0.0702
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 1.7337,
+      "diff": 0.1821,
+      "ci": [
+       -0.0619,
+       0.4259
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1.8427,
+      "diff": 0.0732,
+      "ci": [
+       -0.1721,
+       0.331
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 2.173,
+     "ci": [
+      1.6475,
+      2.7123
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 2.1805,
+     "ci": [
+      1.659,
+      2.7376
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0076,
+     "ci": [
+      -0.106,
+      0.14
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 1.5764,
+      "diff": 0.6041,
+      "ci": [
+       0.1786,
+       1.0954
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 2.1124,
+      "diff": 0.0681,
+      "ci": [
+       -0.3935,
+       0.5887
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 1.7337,
+      "diff": 0.4468,
+      "ci": [
+       0.0432,
+       0.907
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 1.8427,
+      "diff": 0.3379,
+      "ci": [
+       -0.0881,
+       0.8378
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1.6344,
+     "ci": [
+      1.3811,
+      1.9053
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1.6804,
+     "ci": [
+      1.4159,
+      1.9551
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.046,
+     "ci": [
+      0.0162,
+      0.0813
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 1.5764,
+      "diff": 0.104,
+      "ci": [
+       -0.123,
+       0.327
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 2.1124,
+      "diff": -0.432,
+      "ci": [
+       -0.6772,
+       -0.1709
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1.7337,
+      "diff": -0.0534,
+      "ci": [
+       -0.282,
+       0.1875
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1.8427,
+      "diff": -0.1623,
+      "ci": [
+       -0.3997,
+       0.0954
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   }
+  },
+  "arxiv-claude-tokens-per-page": {
+   "ezmd-main": {
+    "before": {
+     "value": 1681.3867,
+     "ci": [
+      1483.5031,
+      1896.6814
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": null,
+     "ci": null,
+     "n": 0
+    },
+    "after_minus_before": null,
+    "vs": {
+     "markitdown": {
+      "value": 2112.2867
+     },
+     "docling": {
+      "value": 1414.3759
+     },
+     "mineru": {
+      "value": 1738.2739
+     },
+     "pymupdf4llm": {
+      "value": 1590.48
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 1111.53,
+     "ci": [
+      878.5503,
+      1331.7701
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": null,
+     "ci": null,
+     "n": 0
+    },
+    "after_minus_before": null,
+    "vs": {
+     "markitdown": {
+      "value": 2112.2867
+     },
+     "docling": {
+      "value": 1414.3759
+     },
+     "mineru": {
+      "value": 1738.2739
+     },
+     "pymupdf4llm": {
+      "value": 1590.48
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1974.96,
+     "ci": [
+      1738.3993,
+      2239.92
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": null,
+     "ci": null,
+     "n": 0
+    },
+    "after_minus_before": null,
+    "vs": {
+     "markitdown": {
+      "value": 2112.2867
+     },
+     "docling": {
+      "value": 1414.3759
+     },
+     "mineru": {
+      "value": 1738.2739
+     },
+     "pymupdf4llm": {
+      "value": 1590.48
+     }
+    }
+   }
+  },
+  "arxiv-outline-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.7877,
+     "ci": [
+      0.701,
+      0.8648
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.0019,
+     "ci": [
+      0.0,
+      0.0057
+     ],
+     "n": 24,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.0104,
+      "diff": 0.7773,
+      "ci": [
+       0.6904,
+       0.8531
+      ],
+      "n": 24,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.844,
+      "diff": -0.0563,
+      "ci": [
+       -0.1075,
+       -0.0072
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.0862,
+      "ci": [
+       -0.1267,
+       -0.0473
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.0551,
+      "ci": [
+       -0.0973,
+       -0.0139
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.571,
+     "ci": [
+      0.4706,
+      0.6638
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.5887,
+     "ci": [
+      0.4926,
+      0.6772
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.0177,
+     "ci": [
+      0.0019,
+      0.036
+     ],
+     "n": 24,
+     "verdict": "beats"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.0104,
+      "diff": 0.5783,
+      "ci": [
+       0.4827,
+       0.669
+      ],
+      "n": 24,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.844,
+      "diff": -0.2552,
+      "ci": [
+       -0.3499,
+       -0.1732
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.2851,
+      "ci": [
+       -0.3901,
+       -0.1944
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.2541,
+      "ci": [
+       -0.3644,
+       -0.1634
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.7858,
+     "ci": [
+      0.698,
+      0.863
+     ],
+     "n": 24
+    },
+    "after": {
+     "value": 0.7877,
+     "ci": [
+      0.701,
+      0.8648
+     ],
+     "n": 24
+    },
+    "after_minus_before": {
+     "diff": 0.0019,
+     "ci": [
+      0.0,
+      0.0057
+     ],
+     "n": 24,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.0104,
+      "diff": 0.7773,
+      "ci": [
+       0.6904,
+       0.8531
+      ],
+      "n": 24,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.844,
+      "diff": -0.0563,
+      "ci": [
+       -0.1075,
+       -0.0072
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.8739,
+      "diff": -0.0862,
+      "ci": [
+       -0.1267,
+       -0.0473
+      ],
+      "n": 24,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.8428,
+      "diff": -0.0551,
+      "ci": [
+       -0.0973,
+       -0.0139
+      ],
+      "n": 24,
+      "verdict": "trails"
+     }
+    }
+   }
+  },
+  "arxiv-qa": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.78,
+     "ci": [
+      0.6914,
+      0.8619
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7759,
+     "ci": [
+      0.6897,
+      0.8589
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -0.0042,
+     "ci": [
+      -0.0125,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.7866,
+      "diff": -0.0107,
+      "ci": [
+       -0.0728,
+       0.0474
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 0.7581,
+      "diff": 0.0178,
+      "ci": [
+       -0.0903,
+       0.1166
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.753,
+      "diff": 0.0229,
+      "ci": [
+       -0.0783,
+       0.1257
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.6766,
+      "diff": 0.0993,
+      "ci": [
+       0.0188,
+       0.188
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.5641,
+     "ci": [
+      0.4246,
+      0.6948
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.5772,
+     "ci": [
+      0.4341,
+      0.7091
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0131,
+     "ci": [
+      0.0,
+      0.0345
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.7866,
+      "diff": -0.2094,
+      "ci": [
+       -0.3117,
+       -0.1169
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "docling": {
+      "value": 0.7581,
+      "diff": -0.1809,
+      "ci": [
+       -0.2981,
+       -0.0732
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.753,
+      "diff": -0.1758,
+      "ci": [
+       -0.2865,
+       -0.0706
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.6766,
+      "diff": -0.0994,
+      "ci": [
+       -0.1911,
+       -0.0139
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.7612,
+     "ci": [
+      0.6685,
+      0.8442
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7686,
+     "ci": [
+      0.6771,
+      0.8483
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0073,
+     "ci": [
+      -0.0048,
+      0.0226
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.7866,
+      "diff": -0.018,
+      "ci": [
+       -0.0782,
+       0.047
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 0.7581,
+      "diff": 0.0105,
+      "ci": [
+       -0.1054,
+       0.1163
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.753,
+      "diff": 0.0156,
+      "ci": [
+       -0.0866,
+       0.1163
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.6766,
+      "diff": 0.092,
+      "ci": [
+       0.0124,
+       0.1815
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-qa-second-half": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.7155,
+     "ci": [
+      0.6033,
+      0.8147
+     ],
+     "n": 29
+    },
+    "after": {
+     "value": 0.7098,
+     "ci": [
+      0.5991,
+      0.8046
+     ],
+     "n": 29
+    },
+    "after_minus_before": {
+     "diff": -0.0057,
+     "ci": [
+      -0.0172,
+      0.0
+     ],
+     "n": 29,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.7529,
+      "diff": -0.0431,
+      "ci": [
+       -0.1178,
+       0.0316
+      ],
+      "n": 29,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 0.7069,
+      "diff": 0.0029,
+      "ci": [
+       -0.1207,
+       0.1264
+      ],
+      "n": 29,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.6839,
+      "diff": 0.0259,
+      "ci": [
+       -0.1034,
+       0.1495
+      ],
+      "n": 29,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.5819,
+      "diff": 0.125,
+      "ci": [
+       0.0259,
+       0.2284
+      ],
+      "n": 29,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.4526,
+     "ci": [
+      0.306,
+      0.6078
+     ],
+     "n": 29
+    },
+    "after": {
+     "value": 0.4698,
+     "ci": [
+      0.319,
+      0.625
+     ],
+     "n": 29
+    },
+    "after_minus_before": {
+     "diff": 0.0172,
+     "ci": [
+      0.0,
+      0.0517
+     ],
+     "n": 29,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.7529,
+      "diff": -0.283,
+      "ci": [
+       -0.444,
+       -0.1278
+      ],
+      "n": 29,
+      "verdict": "trails"
+     },
+     "docling": {
+      "value": 0.7069,
+      "diff": -0.2371,
+      "ci": [
+       -0.3922,
+       -0.0862
+      ],
+      "n": 29,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.6839,
+      "diff": -0.2141,
+      "ci": [
+       -0.3649,
+       -0.0776
+      ],
+      "n": 29,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.5819,
+      "diff": -0.1149,
+      "ci": [
+       -0.2414,
+       0.0
+      ],
+      "n": 29,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.7055,
+     "ci": [
+      0.6034,
+      0.8003
+     ],
+     "n": 29
+    },
+    "after": {
+     "value": 0.7011,
+     "ci": [
+      0.5948,
+      0.7974
+     ],
+     "n": 29
+    },
+    "after_minus_before": {
+     "diff": -0.0043,
+     "ci": [
+      -0.0302,
+      0.0216
+     ],
+     "n": 29,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.7529,
+      "diff": -0.0517,
+      "ci": [
+       -0.1379,
+       0.0431
+      ],
+      "n": 29,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 0.7069,
+      "diff": -0.0057,
+      "ci": [
+       -0.1322,
+       0.1208
+      ],
+      "n": 29,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.6839,
+      "diff": 0.0172,
+      "ci": [
+       -0.0948,
+       0.1293
+      ],
+      "n": 29,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.5819,
+      "diff": 0.1164,
+      "ci": [
+       0.0129,
+       0.2256
+      ],
+      "n": 29,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-silent-loss": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.9,
+      "diff": -0.9,
+      "ci": [
+       -1.0,
+       -0.8
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.9,
+      "diff": -0.9,
+      "ci": [
+       -1.0,
+       -0.8
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.9,
+      "diff": -0.9,
+      "ci": [
+       -1.0,
+       -0.8
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.1,
+      "diff": -0.1,
+      "ci": [
+       -0.2,
+       0.0
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "mineru": {
+      "value": 0.1333,
+      "diff": -0.1333,
+      "ci": [
+       -0.2667,
+       -0.0333
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.1667,
+      "diff": -0.1667,
+      "ci": [
+       -0.3,
+       -0.0667
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-source-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.9465,
+     "ci": [
+      0.9153,
+      0.9737
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.9465,
+     "ci": [
+      0.9153,
+      0.9737
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      -0.0,
+      0.0001
+     ],
+     "n": 27,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.6164,
+      "diff": 0.3301,
+      "ci": [
+       0.2337,
+       0.437
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.9426,
+      "diff": 0.0039,
+      "ci": [
+       0.0018,
+       0.0063
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": 0.0029,
+      "ci": [
+       -0.0006,
+       0.0072
+      ],
+      "n": 27,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": 0.0115,
+      "ci": [
+       0.0045,
+       0.0193
+      ],
+      "n": 27,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.7144,
+     "ci": [
+      0.6263,
+      0.8011
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.7196,
+     "ci": [
+      0.6321,
+      0.8054
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": 0.0053,
+     "ci": [
+      0.0007,
+      0.011
+     ],
+     "n": 27,
+     "verdict": "beats"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.6164,
+      "diff": 0.1032,
+      "ci": [
+       -0.032,
+       0.2432
+      ],
+      "n": 27,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 0.9426,
+      "diff": -0.223,
+      "ci": [
+       -0.317,
+       -0.1333
+      ],
+      "n": 27,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": -0.224,
+      "ci": [
+       -0.3178,
+       -0.1357
+      ],
+      "n": 27,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": -0.2154,
+      "ci": [
+       -0.3074,
+       -0.13
+      ],
+      "n": 27,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.9458,
+     "ci": [
+      0.9146,
+      0.9731
+     ],
+     "n": 27
+    },
+    "after": {
+     "value": 0.9459,
+     "ci": [
+      0.9146,
+      0.9732
+     ],
+     "n": 27
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      -0.0,
+      0.0001
+     ],
+     "n": 27,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.6164,
+      "diff": 0.3294,
+      "ci": [
+       0.2314,
+       0.436
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.9426,
+      "diff": 0.0033,
+      "ci": [
+       0.0016,
+       0.0052
+      ],
+      "n": 27,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9436,
+      "diff": 0.0023,
+      "ci": [
+       -0.0021,
+       0.0073
+      ],
+      "n": 27,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 0.935,
+      "diff": 0.0108,
+      "ci": [
+       0.0038,
+       0.0184
+      ],
+      "n": 27,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-text-recall": {
+   "ezmd-main": {
+    "before": {
+     "value": 0.9917,
+     "ci": [
+      0.9885,
+      0.9945
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      -0.0,
+      0.0
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.6769,
+      "diff": 0.3149,
+      "ci": [
+       0.2286,
+       0.4149
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.9776,
+      "diff": 0.0142,
+      "ci": [
+       0.0079,
+       0.0204
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": 0.023,
+      "ci": [
+       0.0168,
+       0.0292
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": 0.0191,
+      "ci": [
+       0.009,
+       0.0319
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 0.7233,
+     "ci": [
+      0.6154,
+      0.8198
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.7334,
+     "ci": [
+      0.6297,
+      0.8278
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0102,
+     "ci": [
+      0.0007,
+      0.0251
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.6769,
+      "diff": 0.0566,
+      "ci": [
+       -0.0829,
+       0.1931
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "docling": {
+      "value": 0.9776,
+      "diff": -0.2442,
+      "ci": [
+       -0.348,
+       -0.1519
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": -0.2354,
+      "ci": [
+       -0.3388,
+       -0.1419
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": -0.2393,
+      "ci": [
+       -0.3424,
+       -0.1486
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 0.9918,
+     "ci": [
+      0.9886,
+      0.9946
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 0.0,
+     "ci": [
+      -0.0,
+      0.0001
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 0.6769,
+      "diff": 0.3149,
+      "ci": [
+       0.2286,
+       0.4149
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 0.9776,
+      "diff": 0.0142,
+      "ci": [
+       0.008,
+       0.0204
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 0.9688,
+      "diff": 0.023,
+      "ci": [
+       0.0168,
+       0.0292
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 0.9727,
+      "diff": 0.0191,
+      "ci": [
+       0.0089,
+       0.0319
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   }
+  },
+  "arxiv-tokens-per-page": {
+   "ezmd-main": {
+    "before": {
+     "value": 1140.0867,
+     "ci": [
+      996.0019,
+      1300.6994
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1121.2933,
+     "ci": [
+      977.7325,
+      1283.986
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -18.7933,
+     "ci": [
+      -32.8313,
+      -7.2461
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 1440.58,
+      "diff": -319.2867,
+      "ci": [
+       -448.4167,
+       -201.3077
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 930.1,
+      "diff": 191.1933,
+      "ci": [
+       131.6544,
+       260.2613
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1226.1433,
+      "diff": -104.85,
+      "ci": [
+       -205.3307,
+       -19.6182
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": 66.34,
+      "ci": [
+       -3.372,
+       142.4205
+      ],
+      "n": 30,
+      "verdict": "ties"
+     }
+    }
+   },
+   "ezmd-main-compact": {
+    "before": {
+     "value": 736.1933,
+     "ci": [
+      580.3895,
+      887.1163
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 758.6733,
+     "ci": [
+      592.839,
+      922.3793
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": 22.48,
+     "ci": [
+      -11.9552,
+      75.7441
+     ],
+     "n": 30,
+     "verdict": "ties"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 1440.58,
+      "diff": -681.9067,
+      "ci": [
+       -898.8031,
+       -502.4534
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 930.1,
+      "diff": -171.4267,
+      "ci": [
+       -309.5986,
+       -45.6653
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "mineru": {
+      "value": 1226.1433,
+      "diff": -467.47,
+      "ci": [
+       -684.5747,
+       -301.399
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": -296.28,
+      "ci": [
+       -469.9609,
+       -150.8861
+      ],
+      "n": 30,
+      "verdict": "beats"
+     }
+    }
+   },
+   "ezmd-main-rag": {
+    "before": {
+     "value": 1294.6233,
+     "ci": [
+      1133.5622,
+      1479.412
+     ],
+     "n": 30
+    },
+    "after": {
+     "value": 1272.6933,
+     "ci": [
+      1114.6464,
+      1460.3844
+     ],
+     "n": 30
+    },
+    "after_minus_before": {
+     "diff": -21.93,
+     "ci": [
+      -38.5507,
+      -8.2727
+     ],
+     "n": 30,
+     "verdict": "beats"
+    },
+    "vs": {
+     "markitdown": {
+      "value": 1440.58,
+      "diff": -167.8867,
+      "ci": [
+       -297.3095,
+       -45.0711
+      ],
+      "n": 30,
+      "verdict": "beats"
+     },
+     "docling": {
+      "value": 930.1,
+      "diff": 342.5933,
+      "ci": [
+       267.5948,
+       428.1479
+      ],
+      "n": 30,
+      "verdict": "trails"
+     },
+     "mineru": {
+      "value": 1226.1433,
+      "diff": 46.55,
+      "ci": [
+       -52.2008,
+       144.6453
+      ],
+      "n": 30,
+      "verdict": "ties"
+     },
+     "pymupdf4llm": {
+      "value": 1054.9533,
+      "diff": 217.74,
+      "ci": [
+       137.3032,
+       311.4058
+      ],
+      "n": 30,
+      "verdict": "trails"
+     }
+    }
+   }
+  }
+ },
+ "directions": {
+  "arxiv-answers-per-10k-tokens": true,
+  "arxiv-claude-tokens-per-page": false,
+  "arxiv-outline-recall": true,
+  "arxiv-qa": true,
+  "arxiv-qa-second-half": true,
+  "arxiv-silent-loss": false,
+  "arxiv-source-recall": true,
+  "arxiv-text-recall": true,
+  "arxiv-tokens-per-page": false
+ }
+}

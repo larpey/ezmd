@@ -184,6 +184,9 @@ def test_parse_json_array_tolerates_fences_and_chatter() -> None:
     assert qa.parse_json_array('[{"question": "q"}]') == [{"question": "q"}]
     tex = '[{"answer": "\\alpha = 1", "quote": "the \\sigma term\\n"}]'
     assert qa.parse_json_array(tex) == [{"answer": "\\alpha = 1", "quote": "the \\sigma term\n"}]
+    # A command the model escaped correctly next to one it did not: the pair must stay a pair (it became three
+    # backslashes once, and every answer of a MinerU output was lost to "Invalid \\escape").
+    assert qa.parse_json_array('["1 - \\\\frac{1}{2}\\\\sum_a", "\\alpha"]') == ["1 - \\frac{1}{2}\\sum_a", "\\alpha"]
     with pytest.raises(ValueError):
         qa.parse_json_array("no array here")
     with pytest.raises(ValueError):
@@ -201,7 +204,7 @@ def test_validate_questions_drops_pairs_whose_quote_is_not_in_the_text() -> None
         {"question": "Long answer", "answer": " ".join(["w"] * 20), "quote": "Training took 3 days on 8 GPUs."},
         "not a dict",
     ]
-    kept = qa.validate_questions(raw, text)
+    kept = qa.validate_questions(raw, text, limit=5)
     assert [k["answer"] for k in kept] == ["92.4%", "3 days", "8 GPUs"]
 
 
