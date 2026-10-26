@@ -93,10 +93,14 @@ EZMD_MEDIA=D:/corpora/media uv run python -m tools.bench fetch --only media
 uv run python -m tools.bench run --corpus ccgov --tools ezmd-main --workers 8 --timeout 120 --date D
 ```
 
-`qa` loads `openai/gpt-oss-20b` through `lms` with a 32k context unless `--model`/`--base-url` (or
-`EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are written from the text layer,
-never from a tool's output, and each must quote the sentence that answers it; a quote that is not in the text
-layer drops the question. Questions are cached under the corpus and shared by every tool and run, and so are
+`qa` loads `openai/gpt-oss-20b` through `lms` with a 131k context (`--context` lowers it on a smaller GPU) unless
+`--model`/`--base-url` (or `EZMD_BENCH_LLM_MODEL`/`EZMD_BENCH_LLM_URL`) point it elsewhere. Questions are
+written from the text layer, never from a tool's output, two per 8,000-token segment of it so that a paper's
+tail is asked about as much as its abstract, and each must quote the sentence that answers it; a quote that is
+not in its segment drops the question, and every question records where in the paper its evidence lies. The
+answering model reads each tool's whole output (an output longer than the context is cut, and the answer record
+says so), and the scorer reports accuracy on questions from the second half of the papers as its own category.
+Questions are cached under the corpus and shared by every tool and run, and so are
 the grader's verdicts, keyed by document, question and answer text: a sampled model grades the same answer
 differently on another day, which would read as a change in accuracy between two runs that produced the same
 answers. `qa seed --date D` puts an already graded run's verdicts in that cache; `qa ungrade --date D` drops a

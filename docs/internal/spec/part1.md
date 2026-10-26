@@ -2,7 +2,7 @@
 
 ## Part 1: Mission, operating rules, foundation
 
-This document is written for an autonomous coding agent. You are the sole engineer on this project. You will build it end to end without a human in the loop. Read all four parts before writing code. Part 1 (this file) defines the mission, how you operate, the core domain model, the converter and renderer interfaces, the job system and API contract, the security baseline, and Phase 0. Part 2 covers converter families. Part 3 covers the exact Markdown output format and profiles. Part 4 covers the fetch node, extension, MCP server, deployment, and the public instance.
+This document is written for an autonomous coding agent. You are the sole engineer on this project. You will build it end to end without me in the loop. Read all four parts before writing code. Part 1 (this file) defines the mission, how you operate, the core domain model, the converter and renderer interfaces, the job system and API contract, the security baseline, and Phase 0. Part 2 covers converter families. Part 3 covers the exact Markdown output format and profiles. Part 4 covers the fetch node, extension, MCP server, deployment, and the public instance.
 
 Fixed decisions that all parts share are restated in section 1.3. Do not relitigate them.
 
@@ -31,7 +31,7 @@ The project is done when every item below is true. Do not report completion befo
 
 ### 1.3 Fixed decisions (shared by all four parts)
 
-- Working codename: **ezmd**. Python package `ezmd`, CLI `ezmd`, Docker image `ezmd`. The first task in docs/internal/ROADMAP.md is a name availability check (PyPI, npm, GitHub org, `.dev` and `.com` domain). If the name is taken on PyPI or npm, you pick another short name, record it in docs/internal/DECISIONS.md, and perform a global rename before any other task. Domain availability is informational only; do not purchase a domain (that is externally costly and requires the human).
+- Working codename: **ezmd**. Python package `ezmd`, CLI `ezmd`, Docker image `ezmd`. The first task in docs/internal/ROADMAP.md is a name availability check (PyPI, npm, GitHub org, `.dev` and `.com` domain). If the name is taken on PyPI or npm, you pick another short name, record it in docs/internal/DECISIONS.md, and perform a global rename before any other task. Domain availability is informational only; do not purchase a domain (that is externally costly and requires me).
 - License: Apache-2.0 for everything in the repo. Default-install dependencies and weights must be one of: MIT, Apache-2.0, BSD-2/3, ISC, PSF, MPL-2.0 (unmodified), CC-BY-4.0. Forbidden in defaults: AGPL, GPL (any version), LGPL for statically linked code, SSPL, BSL, OpenRAIL-M and variants, CC-BY-NC, Qwen Research License, MinerU license, and any "custom terms" license. Forbidden licenses may appear only as clearly named optional extras (`pip install ezmd[chandra]`, `ezmd[pymupdf]`) that print the license name and a one-line summary on first use. CI enforces this with an allowlist in `tools/license_allowlist.toml`.
 - Stack: Python 3.12 for core, converters, API, workers. TypeScript for the web UI (React + Vite, static build served by the API), the browser extension (MV3), and a thin JS SDK. FastAPI for HTTP. Redis + RQ for the job queue. SQLite by default for job metadata with a Postgres option via `EZMD_DATABASE_URL`. Local filesystem for blobs by default with S3-compatible (MinIO) option via `EZMD_BLOB_URL`. Magika + libmagic for content-type detection. uv for Python packaging, pnpm for JS. Docker Compose for self-host. Everything runs CPU-only by default; GPU is optional acceleration.
 - Monorepo layout:
@@ -52,7 +52,7 @@ ezmd/
   docs/internal/DECISIONS.md, docs/internal/ROADMAP.md, docs/internal/STATUS.md, docs/internal/AGENTS.md
 ```
 
-- Architecture: the public VPS (Hetzner Ashburn) runs API, UI, queue, and converters. A Raspberry Pi at the owner's home runs `apps/fetch-node`, connects outbound-only to the VPS over Tailscale, polls the `fetch_residential` queue for jobs that need a residential IP (TikTok, YouTube, Instagram, etc.), downloads, extracts audio with ffmpeg, and uploads the audio back. The VPS never exposes the Pi. Fallback chain when no fetch node is online: platform captions endpoints, then mirror/embed endpoints, then yt-dlp with a PO-token sidecar, then `needs_user_action` asking the user to upload the file or use the extension.
+- Architecture: the public VPS (Hetzner Ashburn) runs API, UI, queue, and converters. A Raspberry Pi at my home runs `apps/fetch-node`, connects outbound-only to the VPS over Tailscale, polls the `fetch_residential` queue for jobs that need a residential IP (TikTok, YouTube, Instagram, etc.), downloads, extracts audio with ffmpeg, and uploads the audio back. The VPS never exposes the Pi. Fallback chain when no fetch node is online: platform captions endpoints, then mirror/embed endpoints, then yt-dlp with a PO-token sidecar, then `needs_user_action` asking the user to upload the file or use the extension.
 - Output: Markdown with YAML frontmatter, four profiles, optional JSON sidecar. Part 3 is authoritative for format.
 - Public instance: no accounts, no retention beyond 24 hours, per-IP rate limits, Cloudflare Turnstile (invisible) for link fetches, size and duration caps.
 
@@ -73,7 +73,7 @@ You run this loop until the definition of done is met.
 7. Update docs/internal/STATUS.md (state `done`, last commit hash, metrics), commit, merge to `main` with a fast-forward or squash merge, delete the branch.
 8. Go to step 1.
 
-Stop and ask the human only when a decision is both irreversible and externally costly. The exhaustive list of such decisions: spending money (buying a domain, upgrading a server plan, paying for an API), publishing a package name to PyPI or npm for the first time (name squatting is irreversible), publishing a browser extension to a store, deleting data that is not reproducible from the repo, and sending any email or message to a third party. For everything else, decide, log the decision in docs/internal/DECISIONS.md with rationale and the alternatives you rejected, and move on. If you are blocked on a human decision, write it in docs/internal/STATUS.md under `## Blocked on human`, mark the task `blocked`, and continue with other unblocked tasks. Only when nothing is unblocked do you stop and write the report.
+Stop and ask me only when a decision is both irreversible and externally costly. The exhaustive list of such decisions: spending money (buying a domain, upgrading a server plan, paying for an API), publishing a package name to PyPI or npm for the first time (name squatting is irreversible), publishing a browser extension to a store, deleting data that is not reproducible from the repo, and sending any email or message to a third party. For everything else, decide, log the decision in docs/internal/DECISIONS.md with rationale and the alternatives you rejected, and move on. If you are blocked on a decision of mine, write it in docs/internal/STATUS.md under `## Blocked on me`, mark the task `blocked`, and continue with other unblocked tasks. Only when nothing is unblocked do you stop and write the report.
 
 ### 2.2 docs/internal/DECISIONS.md format
 
@@ -216,7 +216,7 @@ Commit conventions. Conventional Commits: `feat(converters/documents): add DOCX 
 
 Branch strategy. Trunk-based. `main` is always green. Feature branches `task/<phase>-<task-id>-<slug>` are merged by you after gates pass (squash merge, commit message is the task summary). No long-lived branches. If a task takes more than one day, merge intermediate working slices behind a feature flag rather than keeping the branch open.
 
-Releases. Tag `v0.0.x` after each phase completes (Phase 0 is `v0.0.1`). Tag `v0.1.0` when the definition of done is met. Tags are annotated, the message is the phase summary from docs/internal/STATUS.md, and the CI release workflow builds and publishes the Python package (to TestPyPI for `v0.0.x`, to PyPI for `v0.1.0` and later, the first PyPI publish is a human-gated decision), Docker images to GHCR, and the extension zip as a release asset. A changelog is generated from conventional commits into `CHANGELOG.md`.
+Releases. Tag `v0.0.x` after each phase completes (Phase 0 is `v0.0.1`). Tag `v0.1.0` when the definition of done is met. Tags are annotated, the message is the phase summary from docs/internal/STATUS.md, and the CI release workflow builds and publishes the Python package (to TestPyPI for `v0.0.x`, to PyPI for `v0.1.0` and later, the first PyPI publish is gated on me), Docker images to GHCR, and the extension zip as a release asset. A changelog is generated from conventional commits into `CHANGELOG.md`.
 
 ### 2.7 Time and budget awareness
 
@@ -248,7 +248,7 @@ Overall: 14 / 87 tasks done
 | P1-T07 | 1 | PDF converter (Docling + pypdfium2 fallback) | in_progress | P1-T02 | | heading 0.91 table 0.78 text 0.96 overall 0.86 | council iter 1 on tables |
 ...
 
-## Blocked on human
+## Blocked on me
 - (none)
 
 ## Experimental converters
@@ -264,7 +264,7 @@ Task states: `pending`, `in_progress`, `done`, `blocked`, `shipped-experimental`
 
 ### 2.9 Final report
 
-When the definition of done is met, replace the top of docs/internal/STATUS.md with a `## Final report` section containing: one paragraph summary; a table of every converter with its family, engine, fixture score, threshold, and experimental flag; the public instance URL and the smoke test output; the list of human-gated decisions that were made or are still waiting; the list of experimental converters and dropped tasks with reasons; total commits, tests, and fixture count; the five highest-risk areas you would want a human to look at first; and the suggested next five tasks. Then stop.
+When the definition of done is met, replace the top of docs/internal/STATUS.md with a `## Final report` section containing: one paragraph summary; a table of every converter with its family, engine, fixture score, threshold, and experimental flag; the public instance URL and the smoke test output; the list of decisions gated on me that were made or are still waiting; the list of experimental converters and dropped tasks with reasons; total commits, tests, and fixture count; the five highest-risk areas you would want me to look at first; and the suggested next five tasks. Then stop.
 
 ---
 
@@ -325,7 +325,7 @@ Convert anything to LLM-ready Markdown. Apache-2.0. Python 3.12 core, TypeScript
 - Never commit secrets. `.env.example` lists every env var with a comment.
 - Research step and approach note before every converter or integration.
 - Council (3 reviewers) for architectural decisions and failing converters. Red team before public-facing phases.
-- Do not ask the human unless the decision is irreversible and externally costly.
+- Do not ask me unless the decision is irreversible and externally costly.
 
 ## Spec pointer
 The authoritative specification is `docs/internal/spec/part1.md` to `docs/internal/spec/part4.md`. When this file and the spec disagree, the spec wins; log the disagreement in docs/internal/DECISIONS.md and fix this file.
@@ -2326,10 +2326,10 @@ Each task below lists acceptance criteria. Mark tasks `done` in docs/internal/ST
 
 1. `.github/workflows/ci.yml`: on push to `main` and on PRs: matrix for Python 3.12 on ubuntu-latest; steps: uv sync, pnpm install, ruff, mypy, license check, pip-audit, pnpm audit, unit tests, fixture tests, web build and tests, docker build of all images (no push), compose smoke on the runner. Cache uv and pnpm stores and the Magika model.
 2. `.github/workflows/nightly.yml`: rebuild images, run goldens, run `pip-audit`/`pnpm audit`, open an issue on failure.
-3. `.github/workflows/release.yml`: on tag `v*`: build and push multi-arch images to GHCR (`ghcr.io/<org>/ezmd-api`, `ezmd-worker`, `ezmd-fetch-node` from Part 4), build the Python package with `uv build` and publish to TestPyPI for `v0.0.*` (PyPI for `v0.1.0+` is behind a manual environment approval, which is the human gate), attach the extension zip (from Part 4) and `CHANGELOG.md` section as release notes.
+3. `.github/workflows/release.yml`: on tag `v*`: build and push multi-arch images to GHCR (`ghcr.io/<org>/ezmd-api`, `ezmd-worker`, `ezmd-fetch-node` from Part 4), build the Python package with `uv build` and publish to TestPyPI for `v0.0.*` (PyPI for `v0.1.0+` is behind a manual environment approval, which is my gate), attach the extension zip (from Part 4) and `CHANGELOG.md` section as release notes.
 4. `tools/license_check.py`, `tools/license_check.mjs`, `tools/license_allowlist.toml`, `tools/license_overrides.toml`, `tools/audit_ignore.toml`.
 5. Dependabot config for pip, npm, docker, and GitHub Actions, weekly.
-6. Acceptance: CI green on `main`; a test tag `v0.0.1-rc1` on a branch triggers the release workflow through the image build step successfully (publishing steps may be dry-run with `if: false` until the human gate is cleared, logged in docs/internal/STATUS.md under Blocked on human).
+6. Acceptance: CI green on `main`; a test tag `v0.0.1-rc1` on a branch triggers the release workflow through the image build step successfully (publishing steps may be dry-run with `if: false` until I clear the gate, logged in docs/internal/STATUS.md under Blocked on me).
 
 ### P0-T13 Docs skeleton and Phase 0 close
 

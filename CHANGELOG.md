@@ -18,6 +18,17 @@ All notable changes are generated from Conventional Commits. This project uses s
   silent loss, a repaired truncated file (#23). First results in `bench/results/2026-10-24/` and
   `docs/benchmarks.md`. `run --corpus arxiv-damaged --split heldout` damages the 79 held-out papers the same
   way; the #23 fix is confirmed there (`bench/results/2026-10-24-heldout/`: 0 of 237 silent, 0.1.0 1 of 237).
+  The QA questions are written per 8,000-token segment of the text layer (two each) and record where their
+  evidence lies, and the answering model reads each tool's whole output in a 131k context, so a converter that
+  cuts a paper's tail is measured; the first version wrote five questions from the first 24,000 tokens, which
+  145 of 148 times fell inside what the `compact` profile kept. The scorer adds `arxiv-qa-second-half`
+  (accuracy on questions whose evidence is in the paper's second half) and pooled first-half/second-half
+  accuracy as secondary statistics. Result (`bench/results/2026-10-24-whole/`): the compact profile's cut costs
+  0.22 of answer accuracy over the whole paper (0.564 against 0.780 for the full profile) and 0.26 on second-half
+  questions; the full profile ties MarkItDown, Docling and MinerU. Harness fixes on the way: a server error ends
+  the pass cleanly and the caches resume it; runs of one non-ASCII character are squeezed before an output is
+  sent (a 764-character run broke the server's tokenizer); a correctly escaped `\\` in a reply is kept; the
+  score summary names each tool's own primary metric.
 - Benchmark harness: a `govdocs1` corpus, the ten official Govdocs1 threads (about 9,900 everyday files from
   .gov servers across some twenty formats), scored on outcome because no ground truth exists: an output, a
   declared refusal, or a bug (an undeclared exception, a timeout, a worker crash). `score` writes the clean rate
@@ -39,6 +50,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Detection: libmagic's `application/x-mimearchive` (a message whose first line is a MIME header) is an email,
+  so such an `.eml` reaches the email converter instead of "no converter"; the libmagic answer outranks the
+  extension, which is why newer libmagic builds on CI made `test_html_only_body_and_inline_cid_image` fail.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
