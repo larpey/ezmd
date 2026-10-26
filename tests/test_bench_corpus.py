@@ -91,7 +91,7 @@ def test_failure_site_ignores_the_environment_path() -> None:
             return exc.__traceback__
         return None
 
-    tb = fake_tb(r"C:\cache\venvs\ezmd-main\Lib\site-packages\pydantic\main.py")
+    tb = fake_tb("/cache/venvs/ezmd-main/lib/site-packages/pydantic/main.py")  # a POSIX path parses everywhere
     exc = KeyError("x")
     exc.__traceback__ = tb
     assert failure_site(exc, own="ezmd") == "pydantic/main.py:1 <module>"

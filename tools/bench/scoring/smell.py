@@ -19,12 +19,22 @@ from typing import Any
 
 from tools.bench.scoring.text import markdown_to_text
 
-GATED = frozenset({"empty", "control_chars", "lone_bullet", "heading_bullet", "heading_repeated", "truncated_full"})
+GATED = frozenset({"empty", "control_chars", "lone_bullet", "heading_repeated", "truncated_full"})
 """Smells no release should ship with: zero of each is the gate."""
 REPORTED = frozenset(
-    {"shrunk", "replacement_chars", "mojibake", "repeated_lines", "char_run", "empty_table", "injection"}
+    {
+        "heading_bullet",
+        "shrunk",
+        "replacement_chars",
+        "mojibake",
+        "repeated_lines",
+        "char_run",
+        "empty_table",
+        "injection",
+    }
 )
-"""Smells worth a look; some have legitimate causes (a navigation-only page shrinks, a scan has no text)."""
+"""Smells worth a look; some have legitimate causes (a navigation-only page shrinks, a scan has no text, a
+numbered heading in a physics paper really does read "1.3.1 • Georg Gamow")."""
 
 MIN_CHARS = 20
 PARSE_MAX_CHARS = 2_000_000

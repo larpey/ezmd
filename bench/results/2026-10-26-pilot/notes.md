@@ -64,6 +64,29 @@ first pass and converted in 145 s with the higher limit. The profile puts 150 of
 `escape_inline`, which runs markdown-it's inline parser over the file's single four-million-character
 paragraph; that is a defect whatever the limit.
 
+## Smells of the outputs (`smells.md`)
+
+The structural smell scorer (`tools/bench/scoring/smell.py`) read every one of the 7,945 outputs. Gated-clean
+rate 0.9359 [0.9303, 0.9415]: 509 outputs carry at least one of the smells no release should ship with.
+
+| smell | gate | n | mostly | what it is |
+|---|---|---|---|---|
+| lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |
+| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |
+| heading_bullet | gated | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |
+| heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |
+| empty | gated | 2 | pdf 2 | an output with no text |
+| repeated_lines | reported | 464 | pdf 158, xml 93, xls 68 | one line eight times running or forty times in all |
+| empty_table | reported | 353 | pdf 234, xls 71 | a pipe table with more than half its cells empty |
+| shrunk | reported | 147 | html 64, txt 36, csv 24 | text under 5% of the input's (2% for HTML) |
+| mojibake, char_run, replacement_chars | reported | 45 | pdf, html | encoding damage |
+
+The two course-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet
+headings in 60. `truncated_full` is a policy question rather than a converter bug: the full profile caps rows
+and bytes on spreadsheets, CSV and text, and says so in the metadata, but a profile named full that drops
+rows surprises. The reported smells need reading before they mean anything: a repeated line is a running
+header the PDF path missed or a legitimate table column; a shrunk HTML page is often navigation.
+
 ## What this says
 
 - **The crash gate is nearly clean on the first pass.** No undeclared exception reached the worker, no worker
