@@ -52,7 +52,7 @@ Failure clusters (bugs first), from `clusters.md`:
 | kind | n | class | where | types |
 |---|---|---|---|---|
 | bug | 57 | `ValidationError` | `ezmd_converters/office/docx_walker.py:232 _main_block` | doc |
-| bug | 1 | `ValidationError` | `ezmd_converters/pdf/headings.py` (structure-tree level, unclamped) | pdf |
+| bug | 1 | `ValidationError` | `ezmd_converters/pdf/assemble.py:238 _line` (the structure-tree level from `headings.py`, unclamped) | pdf |
 | declared | 6 | `ConversionError` | OOXML package guard: a member over the 100:1 compression ratio, in a package LibreOffice itself wrote | ppt 5, doc 1 |
 | declared | 6 | `ConversionError` | `data.yaml` / `data.xml` parse failure on a `.txt`, no fallback to text | txt |
 | declared | 7 | `ConversionError` | malformed XML (`junk after document element`, `not well-formed`, bad character reference), no fallback | xml |
@@ -69,6 +69,35 @@ Not in the table: the 4 MB plain-text file (`088753`, an ASCII raster grid) that
 first pass and converted in 145 s with the higher limit. The profile puts 150 of its 160 seconds in
 `escape_inline`, which runs markdown-it's inline parser over the file's single four-million-character
 paragraph; that is a defect whatever the limit.
+
+## Smells of the outputs (`smells.md`)
+
+The structural smell scorer (`tools/bench/scoring/smell.py`) read every one of the 7,945 outputs. Gated-clean
+rate 0.9359 [0.9303, 0.9415]: 509 outputs carry at least one of the smells no release should ship with.
+
+| smell | gate | n | mostly | what it is |
+|---|---|---|---|---|
+| lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |
+| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |
+| heading_bullet | gated | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |
+| heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |
+| empty | gated | 2 | pdf 2 | an output with no text |
+| repeated_lines | reported | 464 | pdf 158, xml 93, xls 68 | one line eight times running or forty times in all |
+| empty_table | reported | 353 | pdf 234, xls 71 | a pipe table with more than half its cells empty |
+| shrunk | reported | 147 | html 64, txt 36, csv 24 | text under 5% of the input's (2% for HTML) |
+| mojibake, char_run, replacement_chars | reported | 45 | pdf, html | encoding damage |
+
+The two slide-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet
+headings in 60 (the latter is reported rather than gated: a physics paper's `1.3.1 • Georg Gamow` is faithful).
+Reading the samples found two more contract breaks. The `full` profile truncated a `.txt` read as CSV
+(`001452`) with `truncated: true` in the frontmatter and no warning at all, so a consumer that reads warnings
+sees a complete document; and two PDFs (`834623`, `855409`) came out with no body and only `engine_fallback`
+and `removed_running_header_footer` warnings, no `pages_without_text` or `extraction_empty`, which is the
+silent-empty case the converter contract forbids. `truncated_full` is otherwise a policy question: the full
+profile caps rows and bytes on spreadsheets, CSV and text and says so in the metadata, but a profile named
+full that drops rows surprises. The reported smells need reading before they mean anything: the most repeated
+line in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);
+a shrunk HTML page is often navigation.
 
 ## What this says
 

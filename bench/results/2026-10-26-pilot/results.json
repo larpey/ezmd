@@ -9897,7 +9897,7 @@
   "python": "3.13.16",
   "ram_gb": 95.1
  },
- "notes": "## What this run is\n\nThe first pass of the everyday-documents coverage work: ezmd main (d078ebb, the 0.1.1 release plus #25 and\n#27) over the ten official Govdocs1 threads, 9,875 files across 43 extensions as a .gov crawler named them in\n2009, with no ground truth. The question is not how good the Markdown is but whether each conversion ends the\nway the contract says: an output, a declared refusal (`ConversionError`, `UnsupportedMediaType`,\n`InputTooLarge`), or a bug (any other exception, a timeout, a dead worker). `tools/bench/scoring/corpus.py`\nscores that outcome and clusters the failures by exception class and the frame that raised, which is the list\na fix pass works from (`clusters.md` under the run; the clusters below are copied from it).\n\n## Run conditions\n\n- Corpus: `govdocs1` (`bench/CORPORA.md`), the ten threads extracted flat by `fetch --only govdocs1` from a\n  copy on a local drive (`EZMD_GOVDOCS1`); 9,875 files, 2.9 GB. Every file was attempted whatever its type.\n- Tool: `ezmd-main` only, eight worker processes (`run --workers 8`), 120-second limit per file, raised to\n  240 seconds for the reruns below. LibreOffice 26.8.1 extracted to a user folder (no system install) and\n  passed through `LIBREOFFICE_PATH`; the first pass ran without it and refused every legacy Office file, so\n  those 1,900 results were dropped and redone with it in place. The 89 results whose error wrapped another\n  exception were redone twice more, after the registry started chaining the cause and after the worker's\n  frame picker was fixed, so `results.jsonl` holds one record per file from the same code.\n- Scoring: `score --corpus govdocs1`, clean rate with a bootstrap interval over the per-document outcomes.\n- 30,539 seconds of conversion in total, 64 minutes of wall time for the first pass. Per type (median, p95,\n  max seconds): doc 13.2 / 16.0 / 120 (LibreOffice's throwaway profile costs about 12 s per file), xls\n  13.3 / 26.3 / 74, ppt 13.2 / 15.3 / 24, pdf 0.41 / 3.9 / 45, txt 0.09 / 0.9 / 145, html 0.08 / 0.6 / 21.\n\n## Results\n\nClean rate 0.9941 [0.9926, 0.9955] over 9,875 files: 7,945 outputs, 1,872 declared refusals, 58 bugs.\n\n| type | n | ok | declared | bug | what the refusals are |\n|---|---|---|---|---|---|\n| pdf | 2,378 | 2,377 | 0 | 1 | heading level 7 in a tagged PDF |\n| html | 2,116 | 2,112 | 4 | 0 | XHTML routed to the XML parser (3), one binary |\n| jpg, gif, png | 1,461 | 0 | 1,461 | 0 | no image converter before Phase 2 |\n| doc | 797 | 735 | 5 | 57 | Word heading levels 7 to 9; two LibreOffice targets wrong; one package guard |\n| txt | 788 | 778 | 10 | 0 | YAML/XML look-alikes with no text fallback (6), labelled binary (2), 175 MB cap (1) |\n| xls | 584 | 584 | 0 | 0 | |\n| ppt, pps | 512 | 491 | 21 | 0 | container verdict `cdfv2` (3), package guard (5), LibreOffice (2), the rest declared |\n| xml | 353 | 308 | 45 | 0 | RDF/XML has no converter (37), malformed XML with no fallback (7), plist (1) |\n| ps, eps | 248 | 2 | 246 | 0 | PostScript is not claimed; the two \"ok\" are gzip files misnamed .ps |\n| csv, gz, log, kml, rtf, docx, xlsx, pptx, zip, ... | 450 | 448 | 2 | 0 | |\n| swf, dbase3, unk, kmz, wp, sql, fm, pub, dwf, ... | 188 | 101 | 87 | 0 | unclaimed formats refused; `unk` files by content |\n\nFailure clusters (bugs first), from `clusters.md`:\n\n| kind | n | class | where | types |\n|---|---|---|---|---|\n| bug | 57 | `ValidationError` | `ezmd_converters/office/docx_walker.py:232 _main_block` | doc |\n| bug | 1 | `ValidationError` | `ezmd_converters/pdf/headings.py` (structure-tree level, unclamped) | pdf |\n| declared | 6 | `ConversionError` | OOXML package guard: a member over the 100:1 compression ratio, in a package LibreOffice itself wrote | ppt 5, doc 1 |\n| declared | 6 | `ConversionError` | `data.yaml` / `data.xml` parse failure on a `.txt`, no fallback to text | txt |\n| declared | 7 | `ConversionError` | malformed XML (`junk after document element`, `not well-formed`, bad character reference), no fallback | xml |\n| declared | 3 | `ConversionError` | XHTML sent to `data.xml` (libmagic says `application/xml`, Magika's `html` below threshold) | html |\n| declared | 5 | `ConversionError` | LibreOffice given the wrong target (Magika's `xls`/`ppt` guess outranks libmagic's `msword`), or `cdfv2` refused | doc 3, ppt 3 |\n| declared | 3 | `ConversionError` | printable ASCII labelled `proteindb` by Magika becomes `application/octet-stream` and is refused | txt 2, tmp 1 |\n| declared | 38 | `ConversionError` | `application/rdf+xml` and `application/x-plist`: XML dialects with no converter | xml |\n| declared | 1 | `ConversionError` | LibreOffice over its 180 s limit | doc |\n| declared | 1,461 | `ConversionError` | `no converter for` an image type | jpg, gif, png |\n| declared | 246 | `ConversionError` | PostScript | ps, eps |\n| declared | 34 | `UnsupportedMediaType` | `refusing executable input (application/x-shockwave-flash)` | swf |\n\nNot in the table: the 4 MB plain-text file (`088753`, an ASCII raster grid) that timed out at 120 s in the\nfirst pass and converted in 145 s with the higher limit. The profile puts 150 of its 160 seconds in\n`escape_inline`, which runs markdown-it's inline parser over the file's single four-million-character\nparagraph; that is a defect whatever the limit.\n\n## What this says\n\n- **The crash gate is nearly clean on the first pass.** No undeclared exception reached the worker, no worker\n  died, and the 58 bugs are one defect: a heading level over 6 (Word's Heading 7 to 9, a tagged PDF's H7)\n  handed to an IR field that refuses it. It had hidden as a declared error because the registry wrapped it;\n  chaining the cause (this PR) is what made it count.\n- **The declared refusals hold the rest of the defects.** Reading each cluster found seven more: the single\n  huge paragraph in the renderer, three detection faults (an unmapped Magika label beating text evidence,\n  XHTML taken for XML, a container verdict beating the extension for OLE files), a missing plain-text fallback\n  for content-sniffed data types, `+xml` dialects with no converter, and the package guard rejecting\n  LibreOffice's own output. Filed as #ISSUES.\n- **Legacy Office is the expensive third.** doc, xls and ppt are 19% of the files and 86% of the conversion\n  time, at 13 seconds each, almost all of it LibreOffice starting with a throwaway profile. A persistent\n  profile per worker (still macro-free) would cut that to about a second and is the single largest speed\n  item in the pilot.\n- **Outcome is the floor, not the measure.** 7,945 outputs were written and nothing here says whether they\n  are right: the two \"ok\" PostScript files are gzip archives listed as members, and every HTML page counts\n  the same whether Trafilatura kept the article or the navigation. The smell scorer (empty or near-empty\n  output, output far smaller than the text layer, replacement characters, repeated lines, runs of one\n  character, mostly-empty tables, injection flags on clean documents) is the next step on this corpus and\n  on `ccgov`, the modern-types corpus pulled from Common Crawl the same day.\n",
+ "notes": "## What this run is\n\nThe first pass of the everyday-documents coverage work: ezmd main (d078ebb, the 0.1.1 release plus #25 and\n#27) over the ten official Govdocs1 threads, 9,875 files across 43 extensions as a .gov crawler named them in\n2009, with no ground truth. The question is not how good the Markdown is but whether each conversion ends the\nway the contract says: an output, a declared refusal (`ConversionError`, `UnsupportedMediaType`,\n`InputTooLarge`), or a bug (any other exception, a timeout, a dead worker). `tools/bench/scoring/corpus.py`\nscores that outcome and clusters the failures by exception class and the frame that raised, which is the list\na fix pass works from (`clusters.md` under the run; the clusters below are copied from it).\n\n## Run conditions\n\n- Corpus: `govdocs1` (`bench/CORPORA.md`), the ten threads extracted flat by `fetch --only govdocs1` from a\n  copy on a local drive (`EZMD_GOVDOCS1`); 9,875 files, 2.9 GB. Every file was attempted whatever its type.\n- Tool: `ezmd-main` only, eight worker processes (`run --workers 8`), 120-second limit per file, raised to\n  240 seconds for the reruns below. LibreOffice 26.8.1 extracted to a user folder (no system install) and\n  passed through `LIBREOFFICE_PATH`; the first pass ran without it and refused every legacy Office file, so\n  those 1,900 results were dropped and redone with it in place. The 89 results whose error wrapped another\n  exception were redone twice more, after the registry started chaining the cause and after the worker's\n  frame picker was fixed, so `results.jsonl` holds one record per file from the same code.\n- Scoring: `score --corpus govdocs1`, clean rate with a bootstrap interval over the per-document outcomes.\n- 30,539 seconds of conversion in total, 64 minutes of wall time for the first pass. Per type (median, p95,\n  max seconds): doc 13.2 / 16.0 / 120 (LibreOffice's throwaway profile costs about 12 s per file), xls\n  13.3 / 26.3 / 74, ppt 13.2 / 15.3 / 24, pdf 0.41 / 3.9 / 45, txt 0.09 / 0.9 / 145, html 0.08 / 0.6 / 21.\n\n## Results\n\nClean rate 0.9941 [0.9926, 0.9955] over 9,875 files: 7,945 outputs, 1,872 declared refusals, 58 bugs.\n\n| type | n | ok | declared | bug | what the refusals are |\n|---|---|---|---|---|---|\n| pdf | 2,378 | 2,377 | 0 | 1 | heading level 7 in a tagged PDF |\n| html | 2,116 | 2,112 | 4 | 0 | XHTML routed to the XML parser (3), one binary |\n| jpg, gif, png | 1,461 | 0 | 1,461 | 0 | no image converter before Phase 2 |\n| doc | 797 | 735 | 5 | 57 | Word heading levels 7 to 9; two LibreOffice targets wrong; one package guard |\n| txt | 788 | 778 | 10 | 0 | YAML/XML look-alikes with no text fallback (6), labelled binary (2), 175 MB cap (1) |\n| xls | 584 | 584 | 0 | 0 | |\n| ppt, pps | 512 | 491 | 21 | 0 | container verdict `cdfv2` (3), package guard (5), LibreOffice (2), the rest declared |\n| xml | 353 | 308 | 45 | 0 | RDF/XML has no converter (37), malformed XML with no fallback (7), plist (1) |\n| ps, eps | 248 | 2 | 246 | 0 | PostScript is not claimed; the two \"ok\" are gzip files misnamed .ps |\n| csv, gz, log, kml, rtf, docx, xlsx, pptx, zip, ... | 450 | 448 | 2 | 0 | |\n| swf, dbase3, unk, kmz, wp, sql, fm, pub, dwf, ... | 188 | 101 | 87 | 0 | unclaimed formats refused; `unk` files by content |\n\nFailure clusters (bugs first), from `clusters.md`:\n\n| kind | n | class | where | types |\n|---|---|---|---|---|\n| bug | 57 | `ValidationError` | `ezmd_converters/office/docx_walker.py:232 _main_block` | doc |\n| bug | 1 | `ValidationError` | `ezmd_converters/pdf/assemble.py:238 _line` (the structure-tree level from `headings.py`, unclamped) | pdf |\n| declared | 6 | `ConversionError` | OOXML package guard: a member over the 100:1 compression ratio, in a package LibreOffice itself wrote | ppt 5, doc 1 |\n| declared | 6 | `ConversionError` | `data.yaml` / `data.xml` parse failure on a `.txt`, no fallback to text | txt |\n| declared | 7 | `ConversionError` | malformed XML (`junk after document element`, `not well-formed`, bad character reference), no fallback | xml |\n| declared | 3 | `ConversionError` | XHTML sent to `data.xml` (libmagic says `application/xml`, Magika's `html` below threshold) | html |\n| declared | 5 | `ConversionError` | LibreOffice given the wrong target (Magika's `xls`/`ppt` guess outranks libmagic's `msword`), or `cdfv2` refused | doc 3, ppt 3 |\n| declared | 3 | `ConversionError` | printable ASCII labelled `proteindb` by Magika becomes `application/octet-stream` and is refused | txt 2, tmp 1 |\n| declared | 38 | `ConversionError` | `application/rdf+xml` and `application/x-plist`: XML dialects with no converter | xml |\n| declared | 1 | `ConversionError` | LibreOffice over its 180 s limit | doc |\n| declared | 1,461 | `ConversionError` | `no converter for` an image type | jpg, gif, png |\n| declared | 246 | `ConversionError` | PostScript | ps, eps |\n| declared | 34 | `UnsupportedMediaType` | `refusing executable input (application/x-shockwave-flash)` | swf |\n\nNot in the table: the 4 MB plain-text file (`088753`, an ASCII raster grid) that timed out at 120 s in the\nfirst pass and converted in 145 s with the higher limit. The profile puts 150 of its 160 seconds in\n`escape_inline`, which runs markdown-it's inline parser over the file's single four-million-character\nparagraph; that is a defect whatever the limit.\n\n## Smells of the outputs (`smells.md`)\n\nThe structural smell scorer (`tools/bench/scoring/smell.py`) read every one of the 7,945 outputs. Gated-clean\nrate 0.9359 [0.9303, 0.9415]: 509 outputs carry at least one of the smells no release should ship with.\n\n| smell | gate | n | mostly | what it is |\n|---|---|---|---|---|\n| lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |\n| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |\n| heading_bullet | gated | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |\n| heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |\n| empty | gated | 2 | pdf 2 | an output with no text |\n| repeated_lines | reported | 464 | pdf 158, xml 93, xls 68 | one line eight times running or forty times in all |\n| empty_table | reported | 353 | pdf 234, xls 71 | a pipe table with more than half its cells empty |\n| shrunk | reported | 147 | html 64, txt 36, csv 24 | text under 5% of the input's (2% for HTML) |\n| mojibake, char_run, replacement_chars | reported | 45 | pdf, html | encoding damage |\n\nThe two slide-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet\nheadings in 60 (the latter is reported rather than gated: a physics paper's `1.3.1 \u2022 Georg Gamow` is faithful).\nReading the samples found two more contract breaks. The `full` profile truncated a `.txt` read as CSV\n(`001452`) with `truncated: true` in the frontmatter and no warning at all, so a consumer that reads warnings\nsees a complete document; and two PDFs (`834623`, `855409`) came out with no body and only `engine_fallback`\nand `removed_running_header_footer` warnings, no `pages_without_text` or `extraction_empty`, which is the\nsilent-empty case the converter contract forbids. `truncated_full` is otherwise a policy question: the full\nprofile caps rows and bytes on spreadsheets, CSV and text and says so in the metadata, but a profile named\nfull that drops rows surprises. The reported smells need reading before they mean anything: the most repeated\nline in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);\na shrunk HTML page is often navigation.\n\n## What this says\n\n- **The crash gate is nearly clean on the first pass.** No undeclared exception reached the worker, no worker\n  died, and the 58 bugs are one defect: a heading level over 6 (Word's Heading 7 to 9, a tagged PDF's H7)\n  handed to an IR field that refuses it. It had hidden as a declared error because the registry wrapped it;\n  chaining the cause (this PR) is what made it count.\n- **The declared refusals hold the rest of the defects.** Reading each cluster found seven more: the single\n  huge paragraph in the renderer, three detection faults (an unmapped Magika label beating text evidence,\n  XHTML taken for XML, a container verdict beating the extension for OLE files), a missing plain-text fallback\n  for content-sniffed data types, `+xml` dialects with no converter, and the package guard rejecting\n  LibreOffice's own output. Filed as #ISSUES.\n- **Legacy Office is the expensive third.** doc, xls and ppt are 19% of the files and 86% of the conversion\n  time, at 13 seconds each, almost all of it LibreOffice starting with a throwaway profile. A persistent\n  profile per worker (still macro-free) would cut that to about a second and is the single largest speed\n  item in the pilot.\n- **Outcome is the floor, not the measure.** 7,945 outputs were written and nothing here says whether they\n  are right: the two \"ok\" PostScript files are gzip archives listed as members, and every HTML page counts\n  the same whether Trafilatura kept the article or the navigation. The smell scorer (empty or near-empty\n  output, output far smaller than the text layer, replacement characters, repeated lines, runs of one\n  character, mostly-empty tables, injection flags on clean documents) is the next step on this corpus and\n  on `ccgov`, the modern-types corpus pulled from Common Crawl the same day.\n",
  "schema": 1,
  "scorecard": {
   "govdocs1-clean": {
@@ -10095,6 +10095,4260 @@
      "declared": 1872,
      "ok": 7945,
      "seconds_total": 30476.5,
+     "smells": {
+      "gated_clean_ci": [
+       0.9340465701699182,
+       0.9449968533668974
+      ],
+      "gated_clean_rate": 0.9394587791063562,
+      "n": 7945,
+      "per_doc": {
+       "000578": [
+        "repeated_lines"
+       ],
+       "000816": [
+        "empty_table"
+       ],
+       "001330": [
+        "shrunk"
+       ],
+       "001452": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "001836": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "001961": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "003082": [
+        "empty_table"
+       ],
+       "004157": [
+        "empty_table"
+       ],
+       "004862": [
+        "repeated_lines"
+       ],
+       "007249": [
+        "empty_table"
+       ],
+       "007317": [
+        "truncated_full"
+       ],
+       "008042": [
+        "empty_table"
+       ],
+       "009006": [
+        "repeated_lines"
+       ],
+       "011443": [
+        "empty_table"
+       ],
+       "012117": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "012373": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "012819": [
+        "repeated_lines"
+       ],
+       "012975": [
+        "lone_bullet"
+       ],
+       "013097": [
+        "lone_bullet"
+       ],
+       "013853": [
+        "lone_bullet"
+       ],
+       "014235": [
+        "heading_bullet"
+       ],
+       "014460": [
+        "empty_table"
+       ],
+       "014522": [
+        "lone_bullet"
+       ],
+       "014819": [
+        "lone_bullet"
+       ],
+       "018532": [
+        "empty_table"
+       ],
+       "019089": [
+        "truncated_full"
+       ],
+       "021624": [
+        "lone_bullet"
+       ],
+       "021978": [
+        "shrunk"
+       ],
+       "022118": [
+        "repeated_lines"
+       ],
+       "025309": [
+        "lone_bullet"
+       ],
+       "026522": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "026599": [
+        "lone_bullet"
+       ],
+       "028509": [
+        "lone_bullet"
+       ],
+       "029241": [
+        "truncated_full"
+       ],
+       "029928": [
+        "lone_bullet"
+       ],
+       "031211": [
+        "empty_table"
+       ],
+       "031392": [
+        "lone_bullet"
+       ],
+       "033426": [
+        "repeated_lines"
+       ],
+       "035988": [
+        "repeated_lines"
+       ],
+       "036058": [
+        "lone_bullet"
+       ],
+       "036437": [
+        "repeated_lines"
+       ],
+       "036971": [
+        "lone_bullet"
+       ],
+       "038557": [
+        "empty_table"
+       ],
+       "039485": [
+        "empty_table"
+       ],
+       "039928": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "040170": [
+        "empty_table"
+       ],
+       "040192": [
+        "lone_bullet"
+       ],
+       "040538": [
+        "lone_bullet"
+       ],
+       "043795": [
+        "empty_table"
+       ],
+       "044436": [
+        "repeated_lines"
+       ],
+       "044655": [
+        "repeated_lines"
+       ],
+       "045318": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "045698": [
+        "repeated_lines"
+       ],
+       "047672": [
+        "lone_bullet"
+       ],
+       "049118": [
+        "repeated_lines"
+       ],
+       "049971": [
+        "lone_bullet"
+       ],
+       "050617": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "050739": [
+        "empty_table"
+       ],
+       "052528": [
+        "lone_bullet"
+       ],
+       "052986": [
+        "empty_table"
+       ],
+       "053422": [
+        "repeated_lines"
+       ],
+       "053500": [
+        "lone_bullet"
+       ],
+       "054018": [
+        "lone_bullet"
+       ],
+       "054363": [
+        "empty_table"
+       ],
+       "055262": [
+        "heading_bullet"
+       ],
+       "055572": [
+        "lone_bullet"
+       ],
+       "056146": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "058414": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "058613": [
+        "shrunk"
+       ],
+       "058723": [
+        "lone_bullet"
+       ],
+       "060949": [
+        "lone_bullet"
+       ],
+       "061960": [
+        "shrunk"
+       ],
+       "061998": [
+        "empty_table"
+       ],
+       "062499": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "063740": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "064064": [
+        "repeated_lines"
+       ],
+       "064373": [
+        "lone_bullet"
+       ],
+       "064452": [
+        "lone_bullet"
+       ],
+       "064463": [
+        "lone_bullet"
+       ],
+       "065326": [
+        "lone_bullet"
+       ],
+       "066726": [
+        "repeated_lines"
+       ],
+       "066972": [
+        "repeated_lines"
+       ],
+       "067785": [
+        "lone_bullet"
+       ],
+       "069089": [
+        "empty_table"
+       ],
+       "069116": [
+        "repeated_lines"
+       ],
+       "070067": [
+        "empty_table"
+       ],
+       "070077": [
+        "lone_bullet"
+       ],
+       "071182": [
+        "empty_table"
+       ],
+       "071798": [
+        "heading_repeated"
+       ],
+       "071942": [
+        "empty_table"
+       ],
+       "072512": [
+        "repeated_lines"
+       ],
+       "073927": [
+        "lone_bullet"
+       ],
+       "074125": [
+        "repeated_lines"
+       ],
+       "074145": [
+        "repeated_lines"
+       ],
+       "075926": [
+        "shrunk"
+       ],
+       "079385": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "079619": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "079696": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "080369": [
+        "empty_table"
+       ],
+       "081079": [
+        "repeated_lines"
+       ],
+       "081318": [
+        "repeated_lines"
+       ],
+       "082066": [
+        "repeated_lines"
+       ],
+       "082632": [
+        "lone_bullet"
+       ],
+       "083390": [
+        "shrunk"
+       ],
+       "083918": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "084031": [
+        "repeated_lines"
+       ],
+       "085320": [
+        "repeated_lines"
+       ],
+       "085462": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "087271": [
+        "empty_table"
+       ],
+       "088084": [
+        "lone_bullet"
+       ],
+       "088729": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "089672": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "090643": [
+        "replacement_chars"
+       ],
+       "090822": [
+        "repeated_lines"
+       ],
+       "095835": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "096300": [
+        "repeated_lines"
+       ],
+       "097601": [
+        "repeated_lines"
+       ],
+       "098975": [
+        "lone_bullet"
+       ],
+       "099267": [
+        "empty_table"
+       ],
+       "099659": [
+        "repeated_lines"
+       ],
+       "100149": [
+        "repeated_lines"
+       ],
+       "101769": [
+        "lone_bullet"
+       ],
+       "102575": [
+        "lone_bullet"
+       ],
+       "103660": [
+        "repeated_lines"
+       ],
+       "104707": [
+        "repeated_lines"
+       ],
+       "105186": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "105914": [
+        "lone_bullet"
+       ],
+       "106426": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "106794": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "109301": [
+        "empty_table"
+       ],
+       "111338": [
+        "lone_bullet"
+       ],
+       "111807": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "112007": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "114481": [
+        "mojibake"
+       ],
+       "115424": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "116602": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "116647": [
+        "repeated_lines"
+       ],
+       "116689": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "116806": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "117349": [
+        "empty_table"
+       ],
+       "117650": [
+        "repeated_lines"
+       ],
+       "118370": [
+        "empty_table"
+       ],
+       "119864": [
+        "empty_table"
+       ],
+       "120196": [
+        "repeated_lines"
+       ],
+       "120652": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "120965": [
+        "truncated_full"
+       ],
+       "121336": [
+        "lone_bullet"
+       ],
+       "121504": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "122259": [
+        "empty_table"
+       ],
+       "122266": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "122496": [
+        "repeated_lines"
+       ],
+       "122722": [
+        "repeated_lines"
+       ],
+       "123235": [
+        "repeated_lines"
+       ],
+       "123304": [
+        "repeated_lines"
+       ],
+       "123779": [
+        "lone_bullet"
+       ],
+       "123884": [
+        "empty_table"
+       ],
+       "124192": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "124229": [
+        "lone_bullet"
+       ],
+       "125658": [
+        "truncated_full"
+       ],
+       "126807": [
+        "repeated_lines"
+       ],
+       "127186": [
+        "lone_bullet"
+       ],
+       "127451": [
+        "empty_table"
+       ],
+       "127725": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "127912": [
+        "repeated_lines"
+       ],
+       "131213": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "131997": [
+        "empty_table"
+       ],
+       "132795": [
+        "heading_repeated"
+       ],
+       "132835": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "133668": [
+        "shrunk"
+       ],
+       "134296": [
+        "lone_bullet"
+       ],
+       "134921": [
+        "shrunk"
+       ],
+       "136929": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "139709": [
+        "shrunk"
+       ],
+       "140622": [
+        "lone_bullet"
+       ],
+       "140770": [
+        "lone_bullet"
+       ],
+       "141775": [
+        "repeated_lines"
+       ],
+       "141890": [
+        "repeated_lines"
+       ],
+       "142012": [
+        "char_run"
+       ],
+       "142413": [
+        "empty_table"
+       ],
+       "143406": [
+        "truncated_full"
+       ],
+       "143879": [
+        "lone_bullet"
+       ],
+       "145129": [
+        "empty_table"
+       ],
+       "145731": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "146058": [
+        "lone_bullet"
+       ],
+       "146109": [
+        "empty_table"
+       ],
+       "146358": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "146469": [
+        "repeated_lines"
+       ],
+       "146680": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "146979": [
+        "lone_bullet"
+       ],
+       "147013": [
+        "lone_bullet"
+       ],
+       "147835": [
+        "lone_bullet"
+       ],
+       "148097": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "148181": [
+        "empty_table"
+       ],
+       "148256": [
+        "empty_table"
+       ],
+       "149997": [
+        "lone_bullet"
+       ],
+       "150311": [
+        "repeated_lines"
+       ],
+       "150864": [
+        "lone_bullet",
+        "mojibake",
+        "empty_table"
+       ],
+       "151259": [
+        "repeated_lines"
+       ],
+       "151501": [
+        "empty_table"
+       ],
+       "151524": [
+        "empty_table"
+       ],
+       "151711": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "151955": [
+        "empty_table"
+       ],
+       "151988": [
+        "shrunk"
+       ],
+       "152070": [
+        "lone_bullet"
+       ],
+       "152860": [
+        "replacement_chars",
+        "char_run"
+       ],
+       "153210": [
+        "truncated_full"
+       ],
+       "153568": [
+        "empty_table"
+       ],
+       "154754": [
+        "empty_table"
+       ],
+       "154760": [
+        "lone_bullet"
+       ],
+       "155586": [
+        "repeated_lines"
+       ],
+       "156439": [
+        "truncated_full"
+       ],
+       "156471": [
+        "repeated_lines"
+       ],
+       "157055": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "159325": [
+        "heading_repeated"
+       ],
+       "159533": [
+        "heading_repeated"
+       ],
+       "159663": [
+        "lone_bullet"
+       ],
+       "159764": [
+        "repeated_lines"
+       ],
+       "160126": [
+        "repeated_lines"
+       ],
+       "160826": [
+        "empty_table"
+       ],
+       "162138": [
+        "repeated_lines"
+       ],
+       "163059": [
+        "repeated_lines"
+       ],
+       "163159": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "163946": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "164624": [
+        "empty_table"
+       ],
+       "165421": [
+        "heading_bullet"
+       ],
+       "166590": [
+        "lone_bullet"
+       ],
+       "166784": [
+        "empty_table"
+       ],
+       "167083": [
+        "empty_table"
+       ],
+       "167086": [
+        "repeated_lines"
+       ],
+       "167836": [
+        "empty_table"
+       ],
+       "167878": [
+        "repeated_lines"
+       ],
+       "168952": [
+        "repeated_lines"
+       ],
+       "169900": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "172226": [
+        "repeated_lines"
+       ],
+       "173126": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "174130": [
+        "repeated_lines"
+       ],
+       "174505": [
+        "repeated_lines"
+       ],
+       "176152": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "176615": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "176763": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "176977": [
+        "mojibake"
+       ],
+       "177167": [
+        "repeated_lines"
+       ],
+       "177939": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "178557": [
+        "lone_bullet"
+       ],
+       "179158": [
+        "empty_table",
+        "shrunk"
+       ],
+       "179218": [
+        "lone_bullet"
+       ],
+       "179475": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "180547": [
+        "repeated_lines"
+       ],
+       "180639": [
+        "empty_table"
+       ],
+       "181786": [
+        "mojibake",
+        "empty_table"
+       ],
+       "181928": [
+        "lone_bullet"
+       ],
+       "183237": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "183595": [
+        "repeated_lines"
+       ],
+       "184435": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "185121": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "185621": [
+        "repeated_lines"
+       ],
+       "185851": [
+        "lone_bullet"
+       ],
+       "185868": [
+        "empty_table"
+       ],
+       "186371": [
+        "truncated_full"
+       ],
+       "186957": [
+        "empty_table"
+       ],
+       "186990": [
+        "lone_bullet"
+       ],
+       "188321": [
+        "lone_bullet"
+       ],
+       "188879": [
+        "lone_bullet"
+       ],
+       "189167": [
+        "empty_table"
+       ],
+       "190957": [
+        "empty_table"
+       ],
+       "191104": [
+        "empty_table"
+       ],
+       "191364": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "192628": [
+        "repeated_lines"
+       ],
+       "192719": [
+        "repeated_lines"
+       ],
+       "192893": [
+        "lone_bullet"
+       ],
+       "193336": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "194842": [
+        "empty_table"
+       ],
+       "194911": [
+        "heading_repeated"
+       ],
+       "196182": [
+        "lone_bullet"
+       ],
+       "196493": [
+        "lone_bullet"
+       ],
+       "196884": [
+        "lone_bullet"
+       ],
+       "198435": [
+        "empty_table"
+       ],
+       "198524": [
+        "heading_bullet",
+        "repeated_lines"
+       ],
+       "202149": [
+        "repeated_lines"
+       ],
+       "204418": [
+        "repeated_lines"
+       ],
+       "205109": [
+        "heading_repeated"
+       ],
+       "206172": [
+        "replacement_chars"
+       ],
+       "206287": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "207032": [
+        "heading_bullet",
+        "empty_table"
+       ],
+       "207034": [
+        "empty_table"
+       ],
+       "207203": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "207297": [
+        "repeated_lines"
+       ],
+       "207342": [
+        "lone_bullet",
+        "heading_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "208689": [
+        "empty_table"
+       ],
+       "208852": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "209321": [
+        "heading_repeated"
+       ],
+       "209610": [
+        "truncated_full"
+       ],
+       "211609": [
+        "shrunk"
+       ],
+       "212386": [
+        "empty_table"
+       ],
+       "212881": [
+        "lone_bullet"
+       ],
+       "213613": [
+        "empty_table"
+       ],
+       "215332": [
+        "shrunk"
+       ],
+       "215366": [
+        "empty_table"
+       ],
+       "215704": [
+        "repeated_lines"
+       ],
+       "217643": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "218817": [
+        "repeated_lines"
+       ],
+       "219308": [
+        "shrunk"
+       ],
+       "219808": [
+        "repeated_lines"
+       ],
+       "220614": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "223633": [
+        "lone_bullet"
+       ],
+       "224168": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "224910": [
+        "repeated_lines"
+       ],
+       "225280": [
+        "lone_bullet"
+       ],
+       "225652": [
+        "empty_table"
+       ],
+       "226768": [
+        "repeated_lines"
+       ],
+       "227321": [
+        "lone_bullet"
+       ],
+       "227684": [
+        "shrunk"
+       ],
+       "227831": [
+        "empty_table"
+       ],
+       "228657": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "229569": [
+        "repeated_lines"
+       ],
+       "229774": [
+        "lone_bullet"
+       ],
+       "230196": [
+        "repeated_lines"
+       ],
+       "231076": [
+        "shrunk"
+       ],
+       "233707": [
+        "shrunk"
+       ],
+       "235276": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "235644": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "236347": [
+        "repeated_lines"
+       ],
+       "236422": [
+        "lone_bullet"
+       ],
+       "236725": [
+        "repeated_lines"
+       ],
+       "236896": [
+        "repeated_lines"
+       ],
+       "238377": [
+        "lone_bullet"
+       ],
+       "239705": [
+        "shrunk"
+       ],
+       "240651": [
+        "lone_bullet"
+       ],
+       "240742": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "242310": [
+        "shrunk"
+       ],
+       "242843": [
+        "lone_bullet"
+       ],
+       "243598": [
+        "lone_bullet"
+       ],
+       "243616": [
+        "repeated_lines"
+       ],
+       "243864": [
+        "lone_bullet"
+       ],
+       "244589": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "244612": [
+        "repeated_lines"
+       ],
+       "247546": [
+        "empty_table"
+       ],
+       "247635": [
+        "repeated_lines"
+       ],
+       "247889": [
+        "shrunk"
+       ],
+       "247891": [
+        "replacement_chars"
+       ],
+       "247973": [
+        "lone_bullet"
+       ],
+       "248920": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "249193": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "251600": [
+        "repeated_lines"
+       ],
+       "252092": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "252572": [
+        "empty_table"
+       ],
+       "252706": [
+        "shrunk"
+       ],
+       "253863": [
+        "shrunk"
+       ],
+       "253888": [
+        "repeated_lines"
+       ],
+       "254331": [
+        "repeated_lines"
+       ],
+       "256677": [
+        "lone_bullet"
+       ],
+       "260338": [
+        "lone_bullet"
+       ],
+       "260435": [
+        "lone_bullet"
+       ],
+       "260976": [
+        "empty_table"
+       ],
+       "261790": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "262573": [
+        "lone_bullet"
+       ],
+       "262580": [
+        "lone_bullet"
+       ],
+       "264056": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "264755": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "265310": [
+        "empty_table"
+       ],
+       "265886": [
+        "empty_table"
+       ],
+       "265921": [
+        "truncated_full"
+       ],
+       "267203": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "267759": [
+        "empty_table"
+       ],
+       "267768": [
+        "empty_table"
+       ],
+       "269161": [
+        "lone_bullet"
+       ],
+       "271280": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "272308": [
+        "empty_table"
+       ],
+       "272545": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "273139": [
+        "shrunk"
+       ],
+       "273180": [
+        "repeated_lines"
+       ],
+       "273548": [
+        "lone_bullet"
+       ],
+       "273549": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "273925": [
+        "lone_bullet"
+       ],
+       "275880": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "277671": [
+        "repeated_lines"
+       ],
+       "278329": [
+        "heading_bullet",
+        "empty_table"
+       ],
+       "278775": [
+        "heading_bullet"
+       ],
+       "278883": [
+        "lone_bullet"
+       ],
+       "279838": [
+        "empty_table"
+       ],
+       "280105": [
+        "mojibake"
+       ],
+       "282294": [
+        "shrunk"
+       ],
+       "282386": [
+        "empty_table"
+       ],
+       "282739": [
+        "repeated_lines"
+       ],
+       "285413": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "285919": [
+        "empty_table"
+       ],
+       "286133": [
+        "empty_table"
+       ],
+       "286720": [
+        "empty_table"
+       ],
+       "286945": [
+        "mojibake"
+       ],
+       "287056": [
+        "truncated_full"
+       ],
+       "287765": [
+        "empty_table"
+       ],
+       "288760": [
+        "lone_bullet"
+       ],
+       "289917": [
+        "repeated_lines"
+       ],
+       "290223": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "291550": [
+        "lone_bullet"
+       ],
+       "292541": [
+        "repeated_lines"
+       ],
+       "293175": [
+        "lone_bullet"
+       ],
+       "293249": [
+        "empty_table"
+       ],
+       "294039": [
+        "empty_table"
+       ],
+       "294374": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "294854": [
+        "lone_bullet"
+       ],
+       "295309": [
+        "lone_bullet"
+       ],
+       "295768": [
+        "shrunk"
+       ],
+       "296081": [
+        "lone_bullet"
+       ],
+       "297730": [
+        "repeated_lines"
+       ],
+       "298005": [
+        "lone_bullet"
+       ],
+       "298685": [
+        "empty_table"
+       ],
+       "302177": [
+        "repeated_lines"
+       ],
+       "302300": [
+        "shrunk"
+       ],
+       "302587": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "302821": [
+        "repeated_lines"
+       ],
+       "303224": [
+        "lone_bullet"
+       ],
+       "303791": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "304163": [
+        "mojibake"
+       ],
+       "304713": [
+        "lone_bullet"
+       ],
+       "305371": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "306224": [
+        "repeated_lines"
+       ],
+       "306344": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "306840": [
+        "shrunk"
+       ],
+       "308633": [
+        "repeated_lines"
+       ],
+       "308834": [
+        "lone_bullet"
+       ],
+       "309159": [
+        "lone_bullet"
+       ],
+       "309495": [
+        "heading_bullet"
+       ],
+       "310990": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "312673": [
+        "empty_table"
+       ],
+       "312772": [
+        "empty_table"
+       ],
+       "313060": [
+        "lone_bullet"
+       ],
+       "313087": [
+        "lone_bullet"
+       ],
+       "314195": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "314704": [
+        "lone_bullet"
+       ],
+       "315149": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "315574": [
+        "lone_bullet"
+       ],
+       "315640": [
+        "empty_table"
+       ],
+       "316735": [
+        "repeated_lines"
+       ],
+       "318061": [
+        "lone_bullet"
+       ],
+       "319535": [
+        "repeated_lines"
+       ],
+       "320248": [
+        "lone_bullet"
+       ],
+       "320270": [
+        "repeated_lines"
+       ],
+       "320457": [
+        "lone_bullet"
+       ],
+       "320590": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "320787": [
+        "repeated_lines"
+       ],
+       "320794": [
+        "empty_table"
+       ],
+       "321157": [
+        "repeated_lines"
+       ],
+       "321929": [
+        "lone_bullet"
+       ],
+       "323419": [
+        "heading_bullet"
+       ],
+       "323801": [
+        "lone_bullet"
+       ],
+       "323915": [
+        "lone_bullet"
+       ],
+       "324318": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "331332": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "332068": [
+        "repeated_lines"
+       ],
+       "332543": [
+        "lone_bullet"
+       ],
+       "332662": [
+        "lone_bullet"
+       ],
+       "333773": [
+        "empty_table"
+       ],
+       "334038": [
+        "lone_bullet"
+       ],
+       "334329": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "334768": [
+        "empty_table"
+       ],
+       "334917": [
+        "repeated_lines"
+       ],
+       "335687": [
+        "shrunk"
+       ],
+       "336650": [
+        "truncated_full"
+       ],
+       "337344": [
+        "repeated_lines"
+       ],
+       "338473": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "339094": [
+        "replacement_chars"
+       ],
+       "339222": [
+        "shrunk"
+       ],
+       "339772": [
+        "repeated_lines"
+       ],
+       "339952": [
+        "heading_repeated"
+       ],
+       "340278": [
+        "empty_table"
+       ],
+       "340736": [
+        "empty_table"
+       ],
+       "341015": [
+        "lone_bullet"
+       ],
+       "341191": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "341695": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "344805": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "345265": [
+        "lone_bullet"
+       ],
+       "346298": [
+        "repeated_lines"
+       ],
+       "348092": [
+        "shrunk"
+       ],
+       "348357": [
+        "lone_bullet"
+       ],
+       "348508": [
+        "empty_table"
+       ],
+       "348842": [
+        "repeated_lines"
+       ],
+       "351737": [
+        "lone_bullet"
+       ],
+       "352606": [
+        "lone_bullet"
+       ],
+       "353264": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "353651": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "354820": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "354968": [
+        "repeated_lines"
+       ],
+       "355169": [
+        "shrunk"
+       ],
+       "357826": [
+        "repeated_lines"
+       ],
+       "358098": [
+        "shrunk"
+       ],
+       "358917": [
+        "shrunk"
+       ],
+       "360243": [
+        "repeated_lines"
+       ],
+       "360767": [
+        "empty_table"
+       ],
+       "361608": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "362920": [
+        "repeated_lines"
+       ],
+       "363200": [
+        "lone_bullet"
+       ],
+       "364187": [
+        "empty_table"
+       ],
+       "365145": [
+        "lone_bullet"
+       ],
+       "365402": [
+        "lone_bullet"
+       ],
+       "365695": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "365751": [
+        "empty_table"
+       ],
+       "367959": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "372132": [
+        "lone_bullet"
+       ],
+       "374770": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "374977": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "375147": [
+        "empty_table"
+       ],
+       "376763": [
+        "shrunk"
+       ],
+       "379214": [
+        "lone_bullet"
+       ],
+       "379900": [
+        "lone_bullet"
+       ],
+       "382287": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "383171": [
+        "empty_table"
+       ],
+       "384888": [
+        "repeated_lines"
+       ],
+       "385477": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "385718": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "386073": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "386734": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "391073": [
+        "shrunk"
+       ],
+       "391118": [
+        "repeated_lines"
+       ],
+       "391652": [
+        "empty_table"
+       ],
+       "391662": [
+        "empty_table"
+       ],
+       "391691": [
+        "lone_bullet"
+       ],
+       "392144": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "393448": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "393683": [
+        "repeated_lines"
+       ],
+       "393986": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "393994": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "395126": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "395934": [
+        "replacement_chars"
+       ],
+       "397068": [
+        "shrunk"
+       ],
+       "397692": [
+        "heading_bullet"
+       ],
+       "397956": [
+        "char_run"
+       ],
+       "398165": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "399632": [
+        "heading_bullet"
+       ],
+       "400240": [
+        "lone_bullet",
+        "mojibake"
+       ],
+       "400571": [
+        "char_run"
+       ],
+       "402399": [
+        "heading_repeated"
+       ],
+       "402536": [
+        "repeated_lines"
+       ],
+       "403023": [
+        "lone_bullet"
+       ],
+       "403051": [
+        "empty_table"
+       ],
+       "404624": [
+        "heading_repeated"
+       ],
+       "405299": [
+        "replacement_chars",
+        "mojibake",
+        "char_run"
+       ],
+       "405370": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "405375": [
+        "empty_table"
+       ],
+       "405833": [
+        "repeated_lines"
+       ],
+       "406733": [
+        "replacement_chars"
+       ],
+       "408099": [
+        "lone_bullet"
+       ],
+       "408393": [
+        "repeated_lines"
+       ],
+       "408499": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "408785": [
+        "repeated_lines"
+       ],
+       "409982": [
+        "truncated_full"
+       ],
+       "410368": [
+        "lone_bullet"
+       ],
+       "413339": [
+        "empty_table"
+       ],
+       "413419": [
+        "heading_repeated"
+       ],
+       "413994": [
+        "repeated_lines"
+       ],
+       "415147": [
+        "heading_bullet"
+       ],
+       "415432": [
+        "lone_bullet"
+       ],
+       "415620": [
+        "empty_table"
+       ],
+       "416282": [
+        "lone_bullet"
+       ],
+       "420448": [
+        "lone_bullet"
+       ],
+       "421259": [
+        "repeated_lines"
+       ],
+       "422297": [
+        "repeated_lines"
+       ],
+       "423299": [
+        "mojibake"
+       ],
+       "423681": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "425118": [
+        "empty_table"
+       ],
+       "425201": [
+        "repeated_lines"
+       ],
+       "426558": [
+        "lone_bullet"
+       ],
+       "427170": [
+        "mojibake"
+       ],
+       "427367": [
+        "shrunk"
+       ],
+       "427761": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "430863": [
+        "repeated_lines"
+       ],
+       "431313": [
+        "empty_table"
+       ],
+       "431765": [
+        "shrunk"
+       ],
+       "432269": [
+        "lone_bullet"
+       ],
+       "432300": [
+        "repeated_lines"
+       ],
+       "434082": [
+        "empty_table"
+       ],
+       "435260": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "436110": [
+        "repeated_lines"
+       ],
+       "436494": [
+        "lone_bullet",
+        "replacement_chars"
+       ],
+       "436876": [
+        "empty_table"
+       ],
+       "437260": [
+        "empty_table"
+       ],
+       "437945": [
+        "lone_bullet"
+       ],
+       "437946": [
+        "repeated_lines"
+       ],
+       "437997": [
+        "repeated_lines"
+       ],
+       "438503": [
+        "truncated_full"
+       ],
+       "439571": [
+        "repeated_lines"
+       ],
+       "440419": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "443634": [
+        "empty_table"
+       ],
+       "444014": [
+        "truncated_full"
+       ],
+       "444560": [
+        "repeated_lines"
+       ],
+       "444977": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "445099": [
+        "lone_bullet",
+        "heading_bullet",
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "445118": [
+        "repeated_lines"
+       ],
+       "445671": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "447924": [
+        "empty_table"
+       ],
+       "449683": [
+        "empty_table"
+       ],
+       "451266": [
+        "lone_bullet"
+       ],
+       "452097": [
+        "shrunk"
+       ],
+       "452107": [
+        "repeated_lines"
+       ],
+       "452176": [
+        "lone_bullet"
+       ],
+       "454454": [
+        "lone_bullet"
+       ],
+       "455135": [
+        "empty_table"
+       ],
+       "455348": [
+        "empty_table"
+       ],
+       "458399": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "458549": [
+        "repeated_lines"
+       ],
+       "458854": [
+        "repeated_lines"
+       ],
+       "459314": [
+        "shrunk"
+       ],
+       "460256": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "461643": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "462816": [
+        "repeated_lines"
+       ],
+       "462900": [
+        "heading_bullet"
+       ],
+       "463752": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "464188": [
+        "repeated_lines"
+       ],
+       "464262": [
+        "repeated_lines"
+       ],
+       "465944": [
+        "repeated_lines"
+       ],
+       "467213": [
+        "heading_bullet"
+       ],
+       "467847": [
+        "lone_bullet",
+        "char_run"
+       ],
+       "468330": [
+        "lone_bullet"
+       ],
+       "469079": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "469250": [
+        "lone_bullet"
+       ],
+       "469540": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "471063": [
+        "empty_table"
+       ],
+       "471947": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "473410": [
+        "empty_table"
+       ],
+       "473610": [
+        "repeated_lines"
+       ],
+       "478268": [
+        "empty_table"
+       ],
+       "478568": [
+        "truncated_full"
+       ],
+       "478797": [
+        "repeated_lines"
+       ],
+       "479262": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "480408": [
+        "lone_bullet"
+       ],
+       "480429": [
+        "lone_bullet",
+        "heading_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "481121": [
+        "repeated_lines"
+       ],
+       "482929": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "485127": [
+        "truncated_full"
+       ],
+       "486347": [
+        "heading_bullet"
+       ],
+       "487693": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "488685": [
+        "lone_bullet"
+       ],
+       "489181": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "489877": [
+        "empty_table"
+       ],
+       "489889": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "490046": [
+        "empty_table"
+       ],
+       "490103": [
+        "heading_repeated"
+       ],
+       "490197": [
+        "empty_table"
+       ],
+       "490206": [
+        "lone_bullet"
+       ],
+       "490777": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "491158": [
+        "lone_bullet"
+       ],
+       "491357": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "491376": [
+        "repeated_lines"
+       ],
+       "492585": [
+        "empty_table"
+       ],
+       "493710": [
+        "repeated_lines"
+       ],
+       "497460": [
+        "shrunk"
+       ],
+       "499644": [
+        "repeated_lines"
+       ],
+       "501032": [
+        "empty_table"
+       ],
+       "501343": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "503096": [
+        "lone_bullet"
+       ],
+       "503430": [
+        "repeated_lines"
+       ],
+       "503783": [
+        "empty_table"
+       ],
+       "504720": [
+        "lone_bullet"
+       ],
+       "505091": [
+        "lone_bullet",
+        "heading_bullet",
+        "repeated_lines"
+       ],
+       "505452": [
+        "repeated_lines"
+       ],
+       "505944": [
+        "empty_table"
+       ],
+       "506047": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "508446": [
+        "empty_table"
+       ],
+       "508637": [
+        "repeated_lines"
+       ],
+       "508885": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "508935": [
+        "repeated_lines"
+       ],
+       "509303": [
+        "empty_table"
+       ],
+       "509821": [
+        "empty_table"
+       ],
+       "510229": [
+        "repeated_lines"
+       ],
+       "510434": [
+        "heading_repeated"
+       ],
+       "510575": [
+        "empty_table"
+       ],
+       "510972": [
+        "repeated_lines"
+       ],
+       "510992": [
+        "truncated_full"
+       ],
+       "511909": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "512164": [
+        "lone_bullet"
+       ],
+       "512872": [
+        "heading_bullet"
+       ],
+       "512887": [
+        "lone_bullet"
+       ],
+       "513591": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "516074": [
+        "lone_bullet"
+       ],
+       "517164": [
+        "empty_table"
+       ],
+       "517453": [
+        "empty_table"
+       ],
+       "517742": [
+        "empty_table"
+       ],
+       "517894": [
+        "lone_bullet"
+       ],
+       "518499": [
+        "repeated_lines"
+       ],
+       "519573": [
+        "heading_bullet"
+       ],
+       "519780": [
+        "lone_bullet"
+       ],
+       "520650": [
+        "repeated_lines"
+       ],
+       "520936": [
+        "lone_bullet"
+       ],
+       "520945": [
+        "repeated_lines",
+        "char_run"
+       ],
+       "523619": [
+        "repeated_lines"
+       ],
+       "525295": [
+        "repeated_lines"
+       ],
+       "526599": [
+        "heading_bullet"
+       ],
+       "526913": [
+        "repeated_lines"
+       ],
+       "527044": [
+        "repeated_lines"
+       ],
+       "527296": [
+        "repeated_lines"
+       ],
+       "527648": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "527718": [
+        "repeated_lines"
+       ],
+       "527876": [
+        "repeated_lines"
+       ],
+       "528192": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "528354": [
+        "repeated_lines"
+       ],
+       "529336": [
+        "replacement_chars"
+       ],
+       "529965": [
+        "repeated_lines"
+       ],
+       "530158": [
+        "lone_bullet"
+       ],
+       "530572": [
+        "shrunk"
+       ],
+       "531025": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "531122": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "532591": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "532651": [
+        "lone_bullet"
+       ],
+       "533233": [
+        "repeated_lines"
+       ],
+       "534396": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "535519": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "535677": [
+        "empty_table"
+       ],
+       "535695": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "535855": [
+        "lone_bullet"
+       ],
+       "536534": [
+        "empty_table"
+       ],
+       "536860": [
+        "heading_bullet"
+       ],
+       "537015": [
+        "repeated_lines"
+       ],
+       "537486": [
+        "lone_bullet"
+       ],
+       "539209": [
+        "repeated_lines"
+       ],
+       "539450": [
+        "lone_bullet"
+       ],
+       "539918": [
+        "repeated_lines"
+       ],
+       "543450": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "543464": [
+        "repeated_lines"
+       ],
+       "546009": [
+        "lone_bullet"
+       ],
+       "546580": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "546634": [
+        "empty_table"
+       ],
+       "547647": [
+        "empty_table"
+       ],
+       "548333": [
+        "repeated_lines"
+       ],
+       "550187": [
+        "repeated_lines"
+       ],
+       "551077": [
+        "empty_table"
+       ],
+       "552122": [
+        "repeated_lines"
+       ],
+       "553231": [
+        "empty_table"
+       ],
+       "553456": [
+        "shrunk"
+       ],
+       "553931": [
+        "repeated_lines"
+       ],
+       "553972": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "554978": [
+        "lone_bullet"
+       ],
+       "555929": [
+        "repeated_lines"
+       ],
+       "556176": [
+        "repeated_lines"
+       ],
+       "557730": [
+        "repeated_lines"
+       ],
+       "558330": [
+        "repeated_lines"
+       ],
+       "558487": [
+        "shrunk"
+       ],
+       "558988": [
+        "repeated_lines"
+       ],
+       "559027": [
+        "repeated_lines"
+       ],
+       "559556": [
+        "repeated_lines"
+       ],
+       "559913": [
+        "repeated_lines"
+       ],
+       "559981": [
+        "repeated_lines"
+       ],
+       "561054": [
+        "mojibake"
+       ],
+       "561789": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "562783": [
+        "repeated_lines"
+       ],
+       "563572": [
+        "lone_bullet"
+       ],
+       "563868": [
+        "repeated_lines"
+       ],
+       "564164": [
+        "lone_bullet"
+       ],
+       "566082": [
+        "shrunk"
+       ],
+       "567056": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "569514": [
+        "lone_bullet"
+       ],
+       "570403": [
+        "truncated_full"
+       ],
+       "570543": [
+        "repeated_lines"
+       ],
+       "571809": [
+        "lone_bullet"
+       ],
+       "574578": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "574858": [
+        "repeated_lines"
+       ],
+       "576100": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "577531": [
+        "shrunk"
+       ],
+       "578481": [
+        "shrunk"
+       ],
+       "580732": [
+        "shrunk"
+       ],
+       "580820": [
+        "repeated_lines"
+       ],
+       "581224": [
+        "repeated_lines"
+       ],
+       "581811": [
+        "repeated_lines"
+       ],
+       "581898": [
+        "repeated_lines"
+       ],
+       "582060": [
+        "repeated_lines"
+       ],
+       "582341": [
+        "shrunk"
+       ],
+       "582601": [
+        "repeated_lines"
+       ],
+       "582707": [
+        "repeated_lines"
+       ],
+       "582771": [
+        "repeated_lines"
+       ],
+       "582906": [
+        "repeated_lines"
+       ],
+       "582938": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "583400": [
+        "repeated_lines"
+       ],
+       "584332": [
+        "char_run"
+       ],
+       "584466": [
+        "heading_bullet"
+       ],
+       "585266": [
+        "lone_bullet"
+       ],
+       "585581": [
+        "repeated_lines"
+       ],
+       "585698": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "586736": [
+        "repeated_lines"
+       ],
+       "587499": [
+        "repeated_lines"
+       ],
+       "587612": [
+        "empty_table"
+       ],
+       "587660": [
+        "repeated_lines"
+       ],
+       "587771": [
+        "repeated_lines"
+       ],
+       "588041": [
+        "empty_table"
+       ],
+       "589582": [
+        "empty_table"
+       ],
+       "589593": [
+        "shrunk"
+       ],
+       "590130": [
+        "repeated_lines"
+       ],
+       "590619": [
+        "empty_table"
+       ],
+       "592365": [
+        "empty_table"
+       ],
+       "592978": [
+        "repeated_lines"
+       ],
+       "593309": [
+        "repeated_lines"
+       ],
+       "593439": [
+        "empty_table"
+       ],
+       "594204": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "594220": [
+        "repeated_lines"
+       ],
+       "594256": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "595848": [
+        "truncated_full"
+       ],
+       "596043": [
+        "truncated_full"
+       ],
+       "596850": [
+        "repeated_lines"
+       ],
+       "597120": [
+        "truncated_full"
+       ],
+       "597387": [
+        "empty_table"
+       ],
+       "597714": [
+        "truncated_full"
+       ],
+       "598877": [
+        "truncated_full"
+       ],
+       "599062": [
+        "lone_bullet"
+       ],
+       "599068": [
+        "repeated_lines"
+       ],
+       "599104": [
+        "repeated_lines"
+       ],
+       "599203": [
+        "repeated_lines"
+       ],
+       "599253": [
+        "truncated_full"
+       ],
+       "599474": [
+        "shrunk"
+       ],
+       "599897": [
+        "repeated_lines"
+       ],
+       "600294": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "600761": [
+        "empty_table"
+       ],
+       "600848": [
+        "shrunk"
+       ],
+       "601415": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "602026": [
+        "empty_table"
+       ],
+       "602210": [
+        "truncated_full"
+       ],
+       "602277": [
+        "empty_table"
+       ],
+       "602736": [
+        "empty_table"
+       ],
+       "603133": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "603615": [
+        "repeated_lines"
+       ],
+       "605175": [
+        "repeated_lines"
+       ],
+       "605480": [
+        "shrunk"
+       ],
+       "605536": [
+        "empty_table"
+       ],
+       "605556": [
+        "shrunk"
+       ],
+       "605819": [
+        "repeated_lines"
+       ],
+       "606713": [
+        "empty_table"
+       ],
+       "607051": [
+        "empty_table"
+       ],
+       "607261": [
+        "replacement_chars",
+        "char_run"
+       ],
+       "607698": [
+        "repeated_lines"
+       ],
+       "608106": [
+        "repeated_lines"
+       ],
+       "608146": [
+        "lone_bullet"
+       ],
+       "608173": [
+        "lone_bullet"
+       ],
+       "608683": [
+        "repeated_lines"
+       ],
+       "609204": [
+        "truncated_full"
+       ],
+       "609826": [
+        "repeated_lines"
+       ],
+       "610086": [
+        "truncated_full",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "611190": [
+        "heading_repeated"
+       ],
+       "611235": [
+        "repeated_lines"
+       ],
+       "611658": [
+        "replacement_chars"
+       ],
+       "611659": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "611818": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "612799": [
+        "repeated_lines"
+       ],
+       "612925": [
+        "empty_table"
+       ],
+       "613552": [
+        "truncated_full"
+       ],
+       "614237": [
+        "truncated_full"
+       ],
+       "614862": [
+        "repeated_lines"
+       ],
+       "614946": [
+        "repeated_lines"
+       ],
+       "615708": [
+        "truncated_full"
+       ],
+       "615992": [
+        "lone_bullet"
+       ],
+       "617426": [
+        "truncated_full"
+       ],
+       "617923": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "618332": [
+        "truncated_full"
+       ],
+       "618538": [
+        "repeated_lines"
+       ],
+       "619841": [
+        "lone_bullet",
+        "char_run",
+        "empty_table"
+       ],
+       "620963": [
+        "empty_table"
+       ],
+       "622273": [
+        "repeated_lines"
+       ],
+       "623166": [
+        "repeated_lines"
+       ],
+       "623509": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "623963": [
+        "repeated_lines"
+       ],
+       "624020": [
+        "truncated_full"
+       ],
+       "624048": [
+        "repeated_lines"
+       ],
+       "624333": [
+        "lone_bullet"
+       ],
+       "624995": [
+        "repeated_lines"
+       ],
+       "625420": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "625653": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "626547": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "626765": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "627695": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "629445": [
+        "shrunk"
+       ],
+       "630298": [
+        "heading_bullet"
+       ],
+       "631982": [
+        "repeated_lines"
+       ],
+       "632515": [
+        "empty_table"
+       ],
+       "633282": [
+        "repeated_lines"
+       ],
+       "633461": [
+        "repeated_lines"
+       ],
+       "633975": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "634585": [
+        "repeated_lines",
+        "char_run"
+       ],
+       "635676": [
+        "lone_bullet"
+       ],
+       "636167": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "636297": [
+        "repeated_lines"
+       ],
+       "636389": [
+        "repeated_lines"
+       ],
+       "637057": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "637598": [
+        "truncated_full"
+       ],
+       "637752": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "637787": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "637845": [
+        "repeated_lines"
+       ],
+       "639797": [
+        "repeated_lines"
+       ],
+       "640024": [
+        "truncated_full"
+       ],
+       "640042": [
+        "repeated_lines"
+       ],
+       "642002": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "642108": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "642316": [
+        "repeated_lines"
+       ],
+       "642327": [
+        "truncated_full"
+       ],
+       "643964": [
+        "repeated_lines"
+       ],
+       "644497": [
+        "empty_table"
+       ],
+       "644535": [
+        "lone_bullet"
+       ],
+       "644536": [
+        "repeated_lines"
+       ],
+       "644663": [
+        "repeated_lines"
+       ],
+       "645120": [
+        "empty_table"
+       ],
+       "646030": [
+        "repeated_lines"
+       ],
+       "646211": [
+        "repeated_lines"
+       ],
+       "646620": [
+        "repeated_lines"
+       ],
+       "647251": [
+        "repeated_lines"
+       ],
+       "647374": [
+        "empty_table"
+       ],
+       "647406": [
+        "repeated_lines"
+       ],
+       "648609": [
+        "shrunk"
+       ],
+       "648660": [
+        "mojibake",
+        "empty_table"
+       ],
+       "648922": [
+        "repeated_lines"
+       ],
+       "649998": [
+        "repeated_lines"
+       ],
+       "651056": [
+        "empty_table"
+       ],
+       "651327": [
+        "repeated_lines"
+       ],
+       "651841": [
+        "repeated_lines"
+       ],
+       "652512": [
+        "repeated_lines"
+       ],
+       "653163": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "653457": [
+        "truncated_full"
+       ],
+       "653792": [
+        "lone_bullet"
+       ],
+       "655494": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "655876": [
+        "repeated_lines"
+       ],
+       "657600": [
+        "empty_table"
+       ],
+       "660580": [
+        "repeated_lines"
+       ],
+       "661241": [
+        "truncated_full",
+        "empty_table"
+       ],
+       "661660": [
+        "lone_bullet"
+       ],
+       "662117": [
+        "truncated_full"
+       ],
+       "663583": [
+        "truncated_full"
+       ],
+       "664195": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "664445": [
+        "truncated_full"
+       ],
+       "670288": [
+        "lone_bullet"
+       ],
+       "670393": [
+        "repeated_lines"
+       ],
+       "671129": [
+        "heading_repeated"
+       ],
+       "671692": [
+        "repeated_lines"
+       ],
+       "671720": [
+        "repeated_lines"
+       ],
+       "671915": [
+        "lone_bullet"
+       ],
+       "672560": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "675458": [
+        "empty_table"
+       ],
+       "676436": [
+        "shrunk"
+       ],
+       "676465": [
+        "repeated_lines"
+       ],
+       "677302": [
+        "lone_bullet"
+       ],
+       "677790": [
+        "repeated_lines"
+       ],
+       "678314": [
+        "heading_bullet",
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "678658": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "682335": [
+        "repeated_lines"
+       ],
+       "682451": [
+        "repeated_lines"
+       ],
+       "684504": [
+        "repeated_lines"
+       ],
+       "686496": [
+        "repeated_lines"
+       ],
+       "687432": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "687445": [
+        "lone_bullet"
+       ],
+       "689573": [
+        "lone_bullet"
+       ],
+       "689836": [
+        "repeated_lines"
+       ],
+       "690308": [
+        "lone_bullet"
+       ],
+       "690803": [
+        "char_run",
+        "empty_table"
+       ],
+       "692325": [
+        "empty_table"
+       ],
+       "693445": [
+        "heading_bullet"
+       ],
+       "693959": [
+        "heading_bullet",
+        "repeated_lines"
+       ],
+       "694472": [
+        "lone_bullet"
+       ],
+       "695198": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "695384": [
+        "empty_table"
+       ],
+       "695431": [
+        "heading_bullet"
+       ],
+       "696420": [
+        "repeated_lines"
+       ],
+       "697111": [
+        "empty_table"
+       ],
+       "699131": [
+        "empty_table"
+       ],
+       "699265": [
+        "empty_table"
+       ],
+       "700743": [
+        "lone_bullet"
+       ],
+       "702556": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "703055": [
+        "empty_table"
+       ],
+       "703098": [
+        "empty_table"
+       ],
+       "704975": [
+        "repeated_lines"
+       ],
+       "706675": [
+        "repeated_lines"
+       ],
+       "707034": [
+        "repeated_lines"
+       ],
+       "709798": [
+        "repeated_lines"
+       ],
+       "710118": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "711066": [
+        "repeated_lines"
+       ],
+       "712867": [
+        "shrunk"
+       ],
+       "714776": [
+        "empty_table"
+       ],
+       "715244": [
+        "repeated_lines"
+       ],
+       "715509": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "718257": [
+        "repeated_lines"
+       ],
+       "722213": [
+        "repeated_lines"
+       ],
+       "727315": [
+        "heading_bullet"
+       ],
+       "732028": [
+        "truncated_full"
+       ],
+       "732756": [
+        "shrunk"
+       ],
+       "734366": [
+        "repeated_lines"
+       ],
+       "734775": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "734789": [
+        "repeated_lines"
+       ],
+       "735070": [
+        "repeated_lines"
+       ],
+       "735218": [
+        "lone_bullet"
+       ],
+       "736177": [
+        "repeated_lines"
+       ],
+       "736412": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "738909": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "742102": [
+        "lone_bullet"
+       ],
+       "742129": [
+        "repeated_lines"
+       ],
+       "743064": [
+        "repeated_lines"
+       ],
+       "746124": [
+        "lone_bullet"
+       ],
+       "746856": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "747289": [
+        "lone_bullet"
+       ],
+       "748565": [
+        "repeated_lines"
+       ],
+       "748993": [
+        "repeated_lines"
+       ],
+       "749112": [
+        "lone_bullet"
+       ],
+       "749649": [
+        "repeated_lines"
+       ],
+       "749737": [
+        "repeated_lines"
+       ],
+       "750039": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "751447": [
+        "char_run",
+        "empty_table"
+       ],
+       "751776": [
+        "repeated_lines"
+       ],
+       "753208": [
+        "lone_bullet"
+       ],
+       "755207": [
+        "empty_table"
+       ],
+       "757097": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "758332": [
+        "repeated_lines"
+       ],
+       "758458": [
+        "repeated_lines"
+       ],
+       "759045": [
+        "truncated_full"
+       ],
+       "759201": [
+        "repeated_lines"
+       ],
+       "759402": [
+        "repeated_lines"
+       ],
+       "760177": [
+        "shrunk"
+       ],
+       "760518": [
+        "truncated_full"
+       ],
+       "765755": [
+        "repeated_lines"
+       ],
+       "768018": [
+        "empty_table"
+       ],
+       "769069": [
+        "repeated_lines"
+       ],
+       "769424": [
+        "repeated_lines"
+       ],
+       "772864": [
+        "empty_table"
+       ],
+       "773506": [
+        "lone_bullet"
+       ],
+       "774130": [
+        "repeated_lines"
+       ],
+       "774288": [
+        "empty_table"
+       ],
+       "774665": [
+        "lone_bullet"
+       ],
+       "774975": [
+        "empty_table"
+       ],
+       "775737": [
+        "empty_table"
+       ],
+       "775983": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "776236": [
+        "repeated_lines"
+       ],
+       "776870": [
+        "repeated_lines"
+       ],
+       "777811": [
+        "lone_bullet"
+       ],
+       "779864": [
+        "empty_table"
+       ],
+       "780156": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "780265": [
+        "heading_bullet"
+       ],
+       "780371": [
+        "empty_table"
+       ],
+       "781323": [
+        "lone_bullet"
+       ],
+       "783081": [
+        "lone_bullet"
+       ],
+       "783451": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "785043": [
+        "truncated_full"
+       ],
+       "785407": [
+        "repeated_lines"
+       ],
+       "785840": [
+        "repeated_lines"
+       ],
+       "785923": [
+        "repeated_lines"
+       ],
+       "787124": [
+        "repeated_lines"
+       ],
+       "787568": [
+        "lone_bullet"
+       ],
+       "788482": [
+        "empty_table"
+       ],
+       "788497": [
+        "truncated_full"
+       ],
+       "788584": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "789695": [
+        "lone_bullet"
+       ],
+       "791634": [
+        "shrunk"
+       ],
+       "791734": [
+        "truncated_full"
+       ],
+       "792711": [
+        "lone_bullet"
+       ],
+       "793052": [
+        "heading_repeated"
+       ],
+       "794465": [
+        "empty_table"
+       ],
+       "794619": [
+        "repeated_lines"
+       ],
+       "794757": [
+        "repeated_lines"
+       ],
+       "795358": [
+        "empty_table"
+       ],
+       "795755": [
+        "repeated_lines"
+       ],
+       "798604": [
+        "empty_table"
+       ],
+       "798796": [
+        "lone_bullet"
+       ],
+       "799188": [
+        "empty_table"
+       ],
+       "800617": [
+        "repeated_lines"
+       ],
+       "801619": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "801729": [
+        "repeated_lines"
+       ],
+       "802203": [
+        "repeated_lines"
+       ],
+       "806308": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "808101": [
+        "repeated_lines"
+       ],
+       "808873": [
+        "empty_table"
+       ],
+       "810515": [
+        "repeated_lines"
+       ],
+       "811583": [
+        "truncated_full"
+       ],
+       "812078": [
+        "empty_table"
+       ],
+       "812619": [
+        "repeated_lines"
+       ],
+       "814024": [
+        "lone_bullet"
+       ],
+       "814293": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "814298": [
+        "repeated_lines"
+       ],
+       "814727": [
+        "empty_table"
+       ],
+       "816410": [
+        "empty_table"
+       ],
+       "816823": [
+        "repeated_lines"
+       ],
+       "817062": [
+        "shrunk"
+       ],
+       "817191": [
+        "empty_table"
+       ],
+       "818085": [
+        "truncated_full"
+       ],
+       "818743": [
+        "shrunk"
+       ],
+       "821017": [
+        "empty_table"
+       ],
+       "823405": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "823574": [
+        "repeated_lines"
+       ],
+       "825788": [
+        "empty_table"
+       ],
+       "826550": [
+        "repeated_lines"
+       ],
+       "828124": [
+        "lone_bullet"
+       ],
+       "828364": [
+        "repeated_lines"
+       ],
+       "828920": [
+        "repeated_lines"
+       ],
+       "829987": [
+        "lone_bullet",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "830022": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "830377": [
+        "repeated_lines"
+       ],
+       "830384": [
+        "heading_repeated"
+       ],
+       "830621": [
+        "repeated_lines"
+       ],
+       "834277": [
+        "empty_table"
+       ],
+       "834623": [
+        "empty"
+       ],
+       "838043": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "838062": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "838644": [
+        "empty_table"
+       ],
+       "839122": [
+        "repeated_lines"
+       ],
+       "840310": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "840483": [
+        "empty_table"
+       ],
+       "841816": [
+        "lone_bullet"
+       ],
+       "842977": [
+        "empty_table"
+       ],
+       "843429": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "844744": [
+        "truncated_full"
+       ],
+       "846011": [
+        "repeated_lines"
+       ],
+       "846535": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "849127": [
+        "empty_table"
+       ],
+       "849365": [
+        "empty_table"
+       ],
+       "853779": [
+        "empty_table"
+       ],
+       "854053": [
+        "empty_table"
+       ],
+       "855409": [
+        "empty"
+       ],
+       "855607": [
+        "repeated_lines"
+       ],
+       "856305": [
+        "empty_table"
+       ],
+       "856567": [
+        "lone_bullet"
+       ],
+       "856577": [
+        "empty_table"
+       ],
+       "857400": [
+        "empty_table"
+       ],
+       "858131": [
+        "lone_bullet"
+       ],
+       "858339": [
+        "heading_repeated"
+       ],
+       "859264": [
+        "repeated_lines"
+       ],
+       "859489": [
+        "repeated_lines",
+        "shrunk"
+       ],
+       "860839": [
+        "repeated_lines"
+       ],
+       "862554": [
+        "repeated_lines"
+       ],
+       "863755": [
+        "truncated_full"
+       ],
+       "864353": [
+        "repeated_lines"
+       ],
+       "866042": [
+        "repeated_lines"
+       ],
+       "867029": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "869149": [
+        "repeated_lines"
+       ],
+       "869491": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "869981": [
+        "lone_bullet"
+       ],
+       "871745": [
+        "lone_bullet"
+       ],
+       "873386": [
+        "truncated_full"
+       ],
+       "873419": [
+        "empty_table"
+       ],
+       "874339": [
+        "shrunk"
+       ],
+       "874376": [
+        "empty_table"
+       ],
+       "874578": [
+        "repeated_lines"
+       ],
+       "875049": [
+        "repeated_lines"
+       ],
+       "875959": [
+        "lone_bullet",
+        "heading_bullet",
+        "repeated_lines"
+       ],
+       "876280": [
+        "lone_bullet"
+       ],
+       "876347": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "880430": [
+        "shrunk"
+       ],
+       "881990": [
+        "lone_bullet"
+       ],
+       "882671": [
+        "empty_table"
+       ],
+       "886823": [
+        "empty_table"
+       ],
+       "888486": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "889218": [
+        "truncated_full"
+       ],
+       "891159": [
+        "repeated_lines"
+       ],
+       "892080": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "892264": [
+        "lone_bullet"
+       ],
+       "894298": [
+        "repeated_lines"
+       ],
+       "895478": [
+        "empty_table"
+       ],
+       "895977": [
+        "lone_bullet"
+       ],
+       "896185": [
+        "empty_table"
+       ],
+       "897609": [
+        "heading_bullet",
+        "empty_table"
+       ],
+       "899902": [
+        "repeated_lines"
+       ],
+       "900720": [
+        "lone_bullet",
+        "heading_bullet",
+        "empty_table"
+       ],
+       "901409": [
+        "empty_table"
+       ],
+       "901488": [
+        "lone_bullet"
+       ],
+       "903806": [
+        "truncated_full",
+        "repeated_lines"
+       ],
+       "905232": [
+        "lone_bullet"
+       ],
+       "905660": [
+        "shrunk"
+       ],
+       "905675": [
+        "repeated_lines"
+       ],
+       "905955": [
+        "empty_table"
+       ],
+       "907866": [
+        "repeated_lines"
+       ],
+       "908004": [
+        "empty_table"
+       ],
+       "909153": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "909820": [
+        "lone_bullet"
+       ],
+       "910854": [
+        "repeated_lines"
+       ],
+       "911219": [
+        "shrunk"
+       ],
+       "911392": [
+        "repeated_lines"
+       ],
+       "911442": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "912532": [
+        "empty_table"
+       ],
+       "912686": [
+        "empty_table"
+       ],
+       "912768": [
+        "empty_table"
+       ],
+       "914715": [
+        "empty_table"
+       ],
+       "914887": [
+        "repeated_lines"
+       ],
+       "915054": [
+        "empty_table"
+       ],
+       "916587": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "920931": [
+        "empty_table"
+       ],
+       "921878": [
+        "heading_bullet",
+        "repeated_lines"
+       ],
+       "923605": [
+        "mojibake",
+        "repeated_lines",
+        "empty_table"
+       ],
+       "924013": [
+        "empty_table"
+       ],
+       "924420": [
+        "lone_bullet"
+       ],
+       "926174": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "926214": [
+        "repeated_lines"
+       ],
+       "926626": [
+        "empty_table"
+       ],
+       "926769": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "926772": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "928202": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "930617": [
+        "repeated_lines"
+       ],
+       "931017": [
+        "repeated_lines"
+       ],
+       "933424": [
+        "repeated_lines"
+       ],
+       "934736": [
+        "repeated_lines"
+       ],
+       "935803": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "936450": [
+        "lone_bullet"
+       ],
+       "939506": [
+        "repeated_lines"
+       ],
+       "939888": [
+        "repeated_lines"
+       ],
+       "940861": [
+        "repeated_lines"
+       ],
+       "941154": [
+        "repeated_lines"
+       ],
+       "942542": [
+        "repeated_lines"
+       ],
+       "945294": [
+        "repeated_lines"
+       ],
+       "945446": [
+        "empty_table"
+       ],
+       "946128": [
+        "lone_bullet"
+       ],
+       "947972": [
+        "lone_bullet",
+        "repeated_lines"
+       ],
+       "950572": [
+        "empty_table"
+       ],
+       "950708": [
+        "empty_table"
+       ],
+       "953637": [
+        "repeated_lines"
+       ],
+       "955082": [
+        "lone_bullet"
+       ],
+       "955380": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "956386": [
+        "empty_table"
+       ],
+       "957467": [
+        "repeated_lines"
+       ],
+       "958372": [
+        "lone_bullet"
+       ],
+       "958559": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "959832": [
+        "lone_bullet"
+       ],
+       "960973": [
+        "empty_table"
+       ],
+       "964246": [
+        "empty_table"
+       ],
+       "964429": [
+        "lone_bullet"
+       ],
+       "966483": [
+        "shrunk"
+       ],
+       "966947": [
+        "lone_bullet"
+       ],
+       "968580": [
+        "lone_bullet",
+        "empty_table"
+       ],
+       "971097": [
+        "repeated_lines"
+       ],
+       "971499": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "973607": [
+        "repeated_lines"
+       ],
+       "973728": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "974777": [
+        "repeated_lines"
+       ],
+       "974831": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "975296": [
+        "repeated_lines"
+       ],
+       "975448": [
+        "empty_table"
+       ],
+       "976442": [
+        "mojibake",
+        "empty_table"
+       ],
+       "980872": [
+        "empty_table"
+       ],
+       "982217": [
+        "repeated_lines"
+       ],
+       "982594": [
+        "lone_bullet"
+       ],
+       "983151": [
+        "mojibake"
+       ],
+       "983831": [
+        "empty_table"
+       ],
+       "984255": [
+        "lone_bullet"
+       ],
+       "985166": [
+        "lone_bullet",
+        "heading_bullet"
+       ],
+       "985639": [
+        "repeated_lines"
+       ],
+       "985878": [
+        "empty_table"
+       ],
+       "986829": [
+        "char_run"
+       ],
+       "991739": [
+        "empty_table"
+       ],
+       "994025": [
+        "shrunk"
+       ],
+       "995310": [
+        "repeated_lines",
+        "empty_table"
+       ],
+       "995812": [
+        "truncated_full",
+        "shrunk"
+       ],
+       "996339": [
+        "lone_bullet"
+       ],
+       "996813": [
+        "mojibake"
+       ],
+       "997526": [
+        "empty_table"
+       ],
+       "997664": [
+        "lone_bullet"
+       ],
+       "997934": [
+        "replacement_chars",
+        "char_run"
+       ],
+       "999213": [
+        "lone_bullet"
+       ],
+       "999404": [
+        "empty_table"
+       ],
+       "999617": [
+        "repeated_lines"
+       ],
+       "999653": [
+        "repeated_lines"
+       ]
+      },
+      "smells": {
+       "char_run": {
+        "categories": {
+         "doc": 2,
+         "gz": 2,
+         "html": 2,
+         "pdf": 3,
+         "txt": 2,
+         "unk": 1,
+         "xls": 3
+        },
+        "count": 15,
+        "samples": [
+         "142012",
+         "152860",
+         "397956",
+         "400571",
+         "405299"
+        ]
+       },
+       "empty": {
+        "categories": {
+         "pdf": 2
+        },
+        "count": 2,
+        "samples": [
+         "834623",
+         "855409"
+        ]
+       },
+       "empty_table": {
+        "categories": {
+         "doc": 16,
+         "html": 28,
+         "pdf": 234,
+         "ppt": 2,
+         "xls": 71,
+         "xml": 2
+        },
+        "count": 353,
+        "samples": [
+         "000816",
+         "001961",
+         "003082",
+         "004157",
+         "007249"
+        ]
+       },
+       "heading_bullet": {
+        "categories": {
+         "pdf": 60
+        },
+        "count": 60,
+        "samples": [
+         "014235",
+         "055262",
+         "062499",
+         "079619",
+         "116602"
+        ]
+       },
+       "heading_repeated": {
+        "categories": {
+         "doc": 9,
+         "html": 7,
+         "rtf": 1,
+         "text": 1
+        },
+        "count": 18,
+        "samples": [
+         "071798",
+         "132795",
+         "159325",
+         "159533",
+         "194911"
+        ]
+       },
+       "lone_bullet": {
+        "categories": {
+         "doc": 2,
+         "html": 1,
+         "java": 2,
+         "pdf": 302,
+         "ppt": 2,
+         "txt": 5,
+         "unk": 1,
+         "xml": 3
+        },
+        "count": 318,
+        "samples": [
+         "001961",
+         "012975",
+         "013097",
+         "013853",
+         "014522"
+        ]
+       },
+       "mojibake": {
+        "categories": {
+         "doc": 1,
+         "html": 4,
+         "pdf": 10,
+         "txt": 1,
+         "xml": 1
+        },
+        "count": 17,
+        "samples": [
+         "114481",
+         "150864",
+         "176977",
+         "181786",
+         "280105"
+        ]
+       },
+       "repeated_lines": {
+        "categories": {
+         "csv": 10,
+         "doc": 28,
+         "gz": 3,
+         "html": 38,
+         "kml": 3,
+         "kmz": 5,
+         "log": 7,
+         "pdf": 158,
+         "ppt": 4,
+         "rtf": 1,
+         "sgml": 1,
+         "text": 1,
+         "txt": 40,
+         "unk": 4,
+         "xls": 68,
+         "xml": 93
+        },
+        "count": 464,
+        "samples": [
+         "000578",
+         "004862",
+         "009006",
+         "012373",
+         "012819"
+        ]
+       },
+       "replacement_chars": {
+        "categories": {
+         "doc": 1,
+         "fits": 1,
+         "gz": 1,
+         "html": 1,
+         "pdf": 3,
+         "text": 1,
+         "tmp": 1,
+         "txt": 1,
+         "unk": 3
+        },
+        "count": 13,
+        "samples": [
+         "090643",
+         "152860",
+         "206172",
+         "247891",
+         "339094"
+        ]
+       },
+       "shrunk": {
+        "categories": {
+         "csv": 24,
+         "html": 64,
+         "log": 12,
+         "rtf": 1,
+         "text": 3,
+         "txt": 36,
+         "xml": 7
+        },
+        "count": 147,
+        "samples": [
+         "001330",
+         "001452",
+         "001836",
+         "012117",
+         "021978"
+        ]
+       },
+       "truncated_full": {
+        "categories": {
+         "csv": 24,
+         "html": 5,
+         "log": 13,
+         "pdf": 7,
+         "txt": 41,
+         "unk": 1,
+         "xls": 51,
+         "xml": 2
+        },
+        "count": 144,
+        "samples": [
+         "001452",
+         "001836",
+         "007317",
+         "012117",
+         "019089"
+        ]
+       }
+      }
+     },
      "status": {
       "error": 1930,
       "ok": 7945
