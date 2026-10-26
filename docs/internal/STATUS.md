@@ -126,7 +126,7 @@ the FastAPI/RQ API with SSE, rate limits, dedup, fetch-node endpoints and purge;
 the multi-stage Docker image set and hardened compose stack (non-root, read-only, seccomp, no worker egress); CI,
 nightly and release workflows; the MkDocs site. The close council (D-0017) changed the contract before any
 converter depended on it and closed an anonymous residential-fetch pivot into my LAN.
-Known gaps carried into Phase 1: PyPI/npm publish (human gate); ezmd[server] extra and library `convert()`
+Known gaps carried into Phase 1: PyPI/npm publish (gated on me); ezmd[server] extra and library `convert()`
 public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, share target (later phases).
 
 ## Decisions I still owe
