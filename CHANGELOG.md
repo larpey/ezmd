@@ -44,17 +44,27 @@ All notable changes are generated from Conventional Commits. This project uses s
   from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`).
 
 ### Changed
-- `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
-  content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
-  (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
-  the marker reads it from the frontmatter `content_hash` or the sidecar.
 - LibreOffice conversions initialise a user profile once per process and copy it for every later file,
   instead of initialising a throwaway profile from scratch each time. Each file still gets its own writable,
   disposable copy with macros, active content and link updates disabled. A legacy `.doc`, `.xls` or `.ppt`
   cost about 13 seconds on the 2026-10-26 Govdocs1 pilot (86% of the run's time); after the first file it is
   the conversion itself plus the copy.
+- `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
+  content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
+  (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
+  the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- The injection scanner no longer marks one ordinary document in thirty as `high`. The 2026-10-26 corpus
+  sweep (D-0075) found 3.2% of Govdocs1 and 3.5% of modern government files at `high` with no injection in
+  them: "act as a buffer" in prose, `rm -rf` in build logs, KML's `<Document>` root, "run the command" in
+  software documentation, "forward the data to" in contracts, a sentence starting "System:", and long tables
+  or manuals accumulating low-severity heuristics. The model-directed patterns now need the model as addressee
+  (`you must act as`, `act as an unrestricted assistant`, `call your tools`, `please run rm -rf`), a quoted
+  shell command or fetch on its own is a low `shell_mention`, the delimiter family matches ezmd's own fence and
+  the chat-template tags only, the bare `System:` line is low while `[system]:` stays high, and the
+  accumulation heuristics together reach `medium` at most. Attacks (override, role hijack with the model
+  named, exfiltration of the conversation, fence and tag spoofing, hidden text) still score `high`.
 - Running headers that sit below the margin zone are removed. The PDF path only looked in the top and bottom
   8% of the page, so a court opinion's case name 17% below the top edge stayed in the body 73 times in the
   Govdocs1 pilot (2026-10-26). A line that repeats at the same position on most pages within the top or
