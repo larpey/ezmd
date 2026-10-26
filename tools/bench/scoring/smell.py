@@ -50,7 +50,8 @@ REPEAT_MIN_CHARS = 12
 CHAR_RUN = 200
 TABLE_EMPTY_SHARE = 0.5
 TABLE_MIN_CELLS = 12
-_BULLET = "•◦▪▫●○■□–—‣⁃-*"
+_BULLET = "•◦▪▫●○■□‣⁃"
+"""Glyph bullets only: a lone `-` or `*` is ordinary in source code and Markdown."""
 _LONE_BULLET = re.compile(rf"^\s*[{re.escape(_BULLET)}]\s*$")
 _HEADING = re.compile(r"^(#{1,6})\s+(.*\S)\s*$")
 _HEADING_BULLET = re.compile(rf"^#{{1,6}}\s+(?:\d+(?:\.\d+)*\s+)?[{re.escape('•◦▪▫●○■□‣⁃')}]")
