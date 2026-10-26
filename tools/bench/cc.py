@@ -263,7 +263,9 @@ def fetch_record(row: dict[str, Any], throttle: Throttle, attempts: int = 6) -> 
     raise RuntimeError(f"gave up after {attempts} attempts: {path}")
 
 
-def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int = 200) -> dict[str, int]:
+def pull(
+    root: Path, workers: int = 4, limit: int | None = None, log_every: int = 200, rate: float = RATE_PER_SECOND
+) -> dict[str, int]:
     """Download every manifest row not yet in `pulled.jsonl`. A file named STOP in the root stops the run
     cleanly between files. Returns counts."""
     done = read_pulled(root)
@@ -273,7 +275,7 @@ def pull(root: Path, workers: int = 6, limit: int | None = None, log_every: int 
     log_path = root / "pulled.jsonl"
     fail_path = root / "failed.jsonl"
     lock = threading.Lock()
-    throttle = Throttle()
+    throttle = Throttle(rate)
     counts = {"pulled": 0, "failed": 0, "mismatch": 0, "skipped": len(done), "refusals": 0}
     stop = root / "STOP"
     t0 = time.monotonic()
@@ -345,11 +347,13 @@ def ccgov(sample: int | None = None) -> list[Doc]:
 
 def fetch_ccgov() -> None:
     """`fetch --only ccgov`: build the manifest when an index directory is given (`EZMD_CC_INDEX`, with the
-    crawl name in `EZMD_CC_CRAWL`) and no manifest exists yet, then pull. `EZMD_CCGOV_WORKERS` sets the threads."""
+    crawl name in `EZMD_CC_CRAWL`) and no manifest exists yet, then pull. `EZMD_CCGOV_WORKERS` sets the threads,
+    `EZMD_CCGOV_RATE` the starting requests per second (Common Crawl refuses a few concurrent fast clients)."""
     root = ccgov_root()
     index_dir = os.environ.get("EZMD_CC_INDEX")
     if index_dir and not list(root.glob("manifest.*.jsonl")):
         crawl = os.environ.get("EZMD_CC_CRAWL", "CC-MAIN-2026-43")
         print(f"ccgov: manifest from {index_dir} ({crawl}) ...", flush=True)
         build_manifest(Path(index_dir), crawl, root)
-    pull(root, workers=int(os.environ.get("EZMD_CCGOV_WORKERS", "6")))
+    rate = float(os.environ.get("EZMD_CCGOV_RATE", str(RATE_PER_SECOND)))
+    pull(root, workers=int(os.environ.get("EZMD_CCGOV_WORKERS", "4")), rate=rate)
