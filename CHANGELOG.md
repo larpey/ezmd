@@ -48,8 +48,6 @@ All notable changes are generated from Conventional Commits. This project uses s
   content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
   (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
   the marker reads it from the frontmatter `content_hash` or the sidecar.
-
-### Changed
 - LibreOffice conversions initialise a user profile once per process and copy it for every later file,
   instead of initialising a throwaway profile from scratch each time. Each file still gets its own writable,
   disposable copy with macros, active content and link updates disabled. A legacy `.doc`, `.xls` or `.ppt`
