@@ -49,6 +49,39 @@ def test_running_lines_need_repeats_in_margins() -> None:
     assert running_lines(pages[:1]) == set()
 
 
+def test_running_header_below_the_margin_zone_is_still_a_header() -> None:
+    """A court opinion carries its case name 17% below the top edge on every page, outside the 8% margin zone;
+    the Govdocs1 pilot kept it 73 times (file 000578). A line that repeats at the same place on most pages is
+    furniture wherever the margin puts it; the same text once in the body (a quotation) is not."""
+    header = "REDDING v. SAFFORD UNIFIED SCHOOL DIST."
+    pages = []
+    for n in range(1, 13):
+        lines = [
+            _line(n, 186, 792 * 0.17, header, n * 10),
+            _line(n, 72, 300, f"Body paragraph {n} of the opinion.", n * 10 + 1),
+            _line(n, 72, 320, f"More body text {n}.", n * 10 + 2),
+        ]
+        if n == 3:
+            lines.append(_line(n, 100, 500, header, n * 10 + 3))  # quoted mid-page, once
+        pages.append(PageText(n, 612, 792, lines, 300, 0.0))
+    running = running_lines(pages)
+    assert running == {n * 10 for n in range(1, 13)}, running
+
+
+def test_running_footer_text_seen_once_in_the_other_margin_is_removed_too() -> None:
+    """The footer sentence appears once more at the top of one page (#29): already known furniture."""
+    footer = "The schedule is subject to change."
+    pages = []
+    for n in range(1, 5):
+        lines = [_line(n, 72, 300, f"Body {n}", n * 10 + 1), _line(n, 186, 760, footer, n * 10 + 2)]
+        if n == 2:
+            lines.append(_line(n, 186, 30, footer, n * 10 + 3))  # once, in the top margin
+            lines.append(_line(n, 72, 400, footer, n * 10 + 4))  # once, in the body: stays
+        pages.append(PageText(n, 612, 792, lines, 300, 0.0))
+    running = running_lines(pages)
+    assert running == {12, 22, 32, 42, 23}, running
+
+
 def test_detect_tables_and_prose_rows() -> None:
     rows = [("Name", "Qty"), ("Bolts", "12"), ("Nuts", "40")]
     lines = [

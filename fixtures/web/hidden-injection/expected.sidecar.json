@@ -370,9 +370,9 @@
       "hidden": true,
       "location": "hidden",
       "offset": -1,
-      "pattern": "system_prompt_line",
-      "regex": "^\\s*\\[?(system|assistant)\\]?:\\s",
-      "severity": "high",
+      "pattern": "system_prompt_word",
+      "regex": "^\\s*(system|assistant):\\s",
+      "severity": "medium",
       "snippet": "System: "
     },
     {
@@ -515,9 +515,9 @@
       "block_id": null,
       "count": null,
       "detail": {
-        "families": "encoding, override, system_prompt_line",
+        "families": "encoding, override, system_prompt_word",
         "risk": "high",
-        "score": 63.0
+        "score": 57.0
       },
       "kind": "injection_suspected",
       "message": "The content contains text that looks like instructions to an AI system (high risk).",

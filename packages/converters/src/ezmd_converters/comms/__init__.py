@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 CHAINS: dict[str, list[str]] = {
     "message/rfc822": ["comms.mbox", "comms.eml"],
     "message/global": ["comms.eml"],
+    "message/news": ["comms.eml"],
     "application/mbox": ["comms.mbox"],
     "application/vnd.ms-outlook": ["comms.msg", "comms.msg_extract"],
 }
