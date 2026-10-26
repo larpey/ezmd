@@ -119,7 +119,7 @@ def test_question_files_are_reused_per_segment_and_older_schemes_are_generated_a
     path.write_text(json.dumps(settled), encoding="utf-8")
     assert qa.cached_questions(path, segs) == (settled, [])  # a segment that yielded nothing is not asked again
     fp = qa.text_fingerprint(TEXT)
-    assert qa.cached_questions(path, segs, fp) == (settled, [])  # no fingerprint in an older file: token count rules
+    assert qa.cached_questions(path, segs, fp) is None  # no fingerprint in the file: not trusted, written again
     path.write_text(json.dumps({**settled, "text": fp}), encoding="utf-8")
     assert qa.cached_questions(path, segs, fp) == ({**settled, "text": fp}, [])
     assert qa.cached_questions(path, segs, qa.text_fingerprint(TEXT + " ")) is None  # same length, other text
@@ -141,7 +141,14 @@ def test_generate_completes_a_question_file_for_its_missing_segments(
     qa.qa_dir().mkdir(parents=True, exist_ok=True)
     path = qa.qa_dir() / "2601_00001.json"
     path.write_text(
-        json.dumps({"scheme": qa.SCHEME, "segments": len(segs), "questions": [_question_for(segs[0], total)]}),
+        json.dumps(
+            {
+                "scheme": qa.SCHEME,
+                "text": qa.text_fingerprint(TEXT),
+                "segments": len(segs),
+                "questions": [_question_for(segs[0], total)],
+            }
+        ),
         encoding="utf-8",
     )
     writer = _Writer()

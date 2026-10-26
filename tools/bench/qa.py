@@ -322,22 +322,22 @@ def _docs(run_dir: Path) -> list[dict[str, Any]]:
 def cached_questions(
     path: Path, segs: list[Segment], fingerprint: str | None = None
 ) -> tuple[dict[str, Any], list[Segment]] | None:
-    """The cached question file when it was written under the current scheme from this text (`fingerprint`,
-    checked when the file carries one; older files are checked by their token count), and the segments of the
-    current text it has nothing for (neither a question nor a recorded empty attempt): those are generated again
-    and added. None when the file is missing, from another scheme or from another text, and must be generated
-    whole."""
+    """The cached question file when it was written under the current scheme from this text (`fingerprint`
+    must match the file's `text` exactly when given; a file without one is written again), and the segments of
+    the current text it has nothing for (neither a question nor a recorded empty attempt): those are generated
+    again and added. None when the file is missing, from another scheme or from another text, and must be
+    generated whole."""
     if not path.exists():
         return None
     record = json.loads(path.read_text(encoding="utf-8"))
     if record.get("scheme") != SCHEME:
         return None
-    if fingerprint is not None and record.get("text") not in (None, fingerprint):
-        return None  # written from another text layer: all new
+    if fingerprint is not None and record.get("text") != fingerprint:
+        return None  # written from another text layer, or before files carried a fingerprint: all new
     total = segs[-1].end
     questions = record.get("questions", [])
     if any(q.get("segment", {}).get("of") != total for q in questions):
-        return None  # a file without a fingerprint, from a text of another length: all new
+        return None  # the same text cannot segment differently; a file that does is not trusted
     covered = {(q["segment"]["from"], q["segment"]["to"]) for q in questions}
     covered |= {(e["from"], e["to"]) for e in record.get("empty", [])}
     return record, [seg for seg in segs if (seg.start, seg.end) not in covered]

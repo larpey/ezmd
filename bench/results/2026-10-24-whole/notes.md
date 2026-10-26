@@ -45,7 +45,9 @@ tools that did not change, and replaces the question set and the answering step:
   one request at a time, temperature 0, seed 20261013, reasoning effort low.
 - Questions are cached under the corpus (`segments-8k`) and shared by every tool row; answers are cached by
   the exact text the model saw and verdicts by (document, question, answer text), as before, so a tool whose
-  output did not change scores the same in every run.
+  output did not change scores the same in every run. The question files were written before they carried a
+  fingerprint of the text layer; the 30 files were stamped afterwards with the fingerprint of the same text
+  (segment count and token totals matched for all 30), so they are the files later passes reuse.
 - The same model grades. UNKNOWN and empty answers are wrong without a model call.
 
 ## Results
