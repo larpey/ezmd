@@ -72,7 +72,7 @@ rate 0.9395 [0.9340, 0.9450]: 481 outputs carry at least one of the smells no re
 | smell | gate | n | mostly | what it is |
 |---|---|---|---|---|
 | lone_bullet | gated | 318 | pdf 302 | a bullet glyph on a line of its own (#28), in one PDF of every eight |
-| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (row and size caps on data files) |
+| truncated_full | gated | 144 | xls 51, txt 41, csv 24, log 13 | the `full` profile set `truncated` (table sampling and size caps on data files, warned as `table_sampled`) |
 | heading_bullet | reported | 60 | pdf 60 | a heading that starts with a bullet glyph (#33) |
 | heading_repeated | gated | 18 | doc 9, html 7 | a heading cut with `...` and repeated as the next paragraph (#33) |
 | empty | gated | 2 | pdf 2 | an output with no text |
@@ -83,13 +83,15 @@ rate 0.9395 [0.9340, 0.9450]: 481 outputs carry at least one of the smells no re
 
 The two slide-deck shapes (#28, #33) are not deck quirks: lone bullets appear in 302 of 2,377 PDFs and bullet
 headings in 60 (the latter is reported rather than gated: a physics paper's `1.3.1 • Georg Gamow` is faithful).
-Reading the samples found two more contract breaks. The `full` profile truncated a `.txt` read as CSV
-(`001452`) with `truncated: true` in the frontmatter and no warning at all, so a consumer that reads warnings
-sees a complete document; and two PDFs (`834623`, `855409`) came out with no body and only `engine_fallback`
-and `removed_running_header_footer` warnings, no `pages_without_text` or `extraction_empty`, which is the
-silent-empty case the converter contract forbids. `truncated_full` is otherwise a policy question: the full
-profile caps rows and bytes on spreadsheets, CSV and text and says so in the metadata, but a profile named
-full that drops rows surprises. The reported smells need reading before they mean anything: the most repeated
+Reading the samples found one more contract break and one reporting gap. Two PDFs (`834623`, `855409`) came
+out with no body and only `engine_fallback` and `removed_running_header_footer` warnings, no
+`pages_without_text` or `extraction_empty`, which is the silent-empty case the converter contract forbids.
+The `.txt` read as CSV (`001452`) that the `full` profile sampled to 25 of 2,500 rows does carry
+`table_sampled` in its frontmatter; the bench sidecar had recorded only the converter's warnings, not the
+renderer's, which is why it looked unwarned (the worker now records both). `truncated_full` is a policy
+question: the full profile samples large tables and says so, but a profile named full that drops rows
+surprises, and the "full data in tables/table-01.csv" it points at is a file the CLI and library never
+write. The reported smells need reading before they mean anything: the most repeated
 line in `000578` is a court case name 73 times, a running header the PDF path did not strip (#29's family);
 a shrunk HTML page is often navigation.
 

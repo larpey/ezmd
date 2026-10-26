@@ -45,8 +45,7 @@ that cannot read the format ending the attempt when a later converter would have
 ## Smells of the 6,225 outputs (`smells.md`)
 
 Gated-clean rate 0.9716 [0.9672, 0.9754]. `truncated_full` 169 (tab-separated text 52, xlsm 47, GeoPackage
-36, SQLite 7: data files hitting the full profile's row caps, flagged but, as in the pilot, not always
-warned); `empty` 4 (Illustrator files read as PDF, nothing extracted, no warning); `heading_repeated` 4;
+36, SQLite 7: data files the full profile samples, flagged and warned as `table_sampled`); `empty` 4 (Illustrator files read as PDF, nothing extracted, no warning); `heading_repeated` 4;
 `lone_bullet` 0 once the smell stopped counting a lone `*` or `-` in source code (it had flagged 135 C,
 JavaScript and YAML files, which is why that rule now counts glyph bullets only). Reported: `repeated_lines`
 354 and `empty_table` 146, both mostly the macro-enabled workbooks (125 and 119), which are large sparse
