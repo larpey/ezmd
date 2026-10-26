@@ -434,3 +434,49 @@ def test_text_running_up_an_upright_page_keeps_whole_lines(tmp_path: Path) -> No
         "Table 1. Anticonvulsant activity in mice",
         "Rotorod test and protective index",
     ]
+
+
+def test_running_header_below_the_margin_zone_is_still_a_header() -> None:
+    """A court opinion carries its case name 17% below the top edge on every page, outside the 8% margin zone;
+    the Govdocs1 pilot kept it 73 times (file 000578). A line that repeats at the same place on most pages is
+    furniture wherever the margin puts it; the same text once in the body (a quotation) is not."""
+    header = "REDDING v. SAFFORD UNIFIED SCHOOL DIST."
+    pages = []
+    for n in range(1, 13):
+        lines = [
+            _line(n, 186, 792 * 0.17, header, n * 10),
+            _line(n, 72, 300, f"Body paragraph {n} of the opinion.", n * 10 + 1),
+            _line(n, 72, 320, f"More body text {n}.", n * 10 + 2),
+        ]
+        if n == 3:
+            lines.append(_line(n, 100, 500, header, n * 10 + 3))  # quoted mid-page, once
+        pages.append(PageText(n, 612, 792, lines, 300, 0.0))
+    running = running_lines(pages)
+    assert running == {n * 10 for n in range(1, 13)}, running
+
+
+def test_running_footer_text_seen_once_in_the_other_margin_is_removed_too() -> None:
+    """The footer sentence appears once more at the top of one page (#29): already known furniture."""
+    footer = "The schedule is subject to change."
+    pages = []
+    for n in range(1, 5):
+        lines = [_line(n, 72, 300, f"Body {n}", n * 10 + 1), _line(n, 186, 760, footer, n * 10 + 2)]
+        if n == 2:
+            lines.append(_line(n, 186, 30, footer, n * 10 + 3))  # once, in the top margin
+            lines.append(_line(n, 72, 400, footer, n * 10 + 4))  # once, in the body: stays
+        pages.append(PageText(n, 612, 792, lines, 300, 0.0))
+    running = running_lines(pages)
+    assert running == {12, 22, 32, 42, 23}, running
+
+
+def test_pages_whose_only_text_is_furniture_are_pages_without_text(tmp_path: Path) -> None:
+    """A scan whose text layer holds only the printer's stamp on every page: the running-footer pass removes
+    the stamp, and the document must say its pages have no text instead of coming out silently empty (two
+    Govdocs1 pilot files, 2026-10-26)."""
+    stamp = "VerDate 11-MAY-2000 13:12 Feb 27, 2002 Jkt 077687 PO 00000 Frm 01279 Fmt 6602 Sfmt 6602"
+    pdf = new_pdf([[(72, 30, stamp, 8, False)], [(72, 30, stamp, 8, False)], [(72, 30, stamp, 8, False)]])
+    doc = convert_path(save(pdf, tmp_path / "stamped.pdf"), {"pdf.ocr": "off"})
+    kinds = [str(w.kind) for w in doc.warnings]
+    assert "removed_running_header_footer" in kinds
+    assert "pages_without_text" in kinds, kinds
+    assert doc.metadata.extra["pdf_pages_without_text"] == "1,2,3"

@@ -15,6 +15,9 @@ from ezmd_converters.pdf.textlayer import Line, PageText, Rect, Run
 
 MARGIN_ZONE = 0.08
 """Top and bottom share of the page height where running headers and footers live."""
+WIDE_ZONE = 0.25
+"""Share of the page height a running header may sit in when the margin is large; there it must also repeat
+at the same position to count (see `running_lines`)."""
 HEADING_RATIO = 1.15
 """A line whose font size is at least this multiple of the body size is a heading candidate."""
 TABLE_CELL_CHARS = 30
@@ -38,23 +41,49 @@ def norm_text(text: str) -> str:
 
 
 def running_lines(pages: Sequence[PageText]) -> set[int]:
-    """`Line.order` values of running headers/footers: lines in the top or bottom margin zone whose
-    normalized text (digits collapsed, so page numbers match) repeats on at least half the pages (min 2)."""
+    """`Line.order` values of running headers/footers.
+
+    Two rules. In the top or bottom margin zone (`MARGIN_ZONE`), a line whose normalized text (digits
+    collapsed, so page numbers match) repeats on at least half the pages (min 2) is furniture. In the wider
+    band (`WIDE_ZONE`), where a large margin can put a header, the text must also repeat at the same place
+    (y and x within a line height) on at least half the pages (min 3): a court opinion's case name 17% below
+    the top edge on every page is a header; the same name quoted once mid-page is not. Any further copy of a
+    known running text inside a margin zone is furniture too, however rarely it appears there."""
     if len(pages) < 2:
         return set()
     seen: dict[str, set[int]] = {}
     where: dict[str, list[int]] = {}
+    placed_seen: dict[tuple[str, str, int, int], set[int]] = {}
+    placed_where: dict[tuple[str, str, int, int], list[int]] = {}
     for p in pages:
         for ln in p.lines:
+            zone = "T:" if ln.y1 <= p.height / 2 else "B:"
             if ln.y1 <= p.height * MARGIN_ZONE or ln.y0 >= p.height * (1 - MARGIN_ZONE):
-                key = ("T:" if ln.y1 <= p.height / 2 else "B:") + norm_key(ln.text)
+                key = zone + norm_key(ln.text)
                 seen.setdefault(key, set()).add(p.number)
                 where.setdefault(key, []).append(ln.order)
+            elif ln.y1 <= p.height * WIDE_ZONE or ln.y0 >= p.height * (1 - WIDE_ZONE):
+                step = max(ln.size, 1.0)
+                placed = (zone, norm_key(ln.text), round(ln.y0 / step), round(ln.x0 / step))
+                placed_seen.setdefault(placed, set()).add(p.number)
+                placed_where.setdefault(placed, []).append(ln.order)
     need = max(2, math.ceil(len(pages) * 0.5))
     out: set[int] = set()
+    texts: set[str] = set()
     for key, pgs in seen.items():
         if len(pgs) >= need:
             out.update(where[key])
+            texts.add(key[2:])
+    for placed, pgs in placed_seen.items():
+        if len(pgs) >= max(3, need):
+            out.update(placed_where[placed])
+            texts.add(placed[1])
+    if texts:
+        for p in pages:
+            for ln in p.lines:
+                in_margin = ln.y1 <= p.height * MARGIN_ZONE or ln.y0 >= p.height * (1 - MARGIN_ZONE)
+                if in_margin and norm_key(ln.text) in texts:
+                    out.add(ln.order)
     return out
 
 

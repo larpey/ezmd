@@ -207,8 +207,10 @@ class HeadingSources:
         return min(base + depth - 1, 6)
 
     def _count(self, source: str, lvl: int | None) -> int | None:
+        """Every level leaves through here: bookmarks and structure tags can nest deeper than Markdown's six."""
         if lvl is not None:
             self.used[source] = self.used.get(source, 0) + 1
+            return min(lvl, 6)
         return lvl
 
 

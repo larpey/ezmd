@@ -88,9 +88,15 @@ def _md() -> Any:
     return MarkdownIt("commonmark")
 
 
+PARSE_MAX_CHARS = 64_000
+"""Above this, the regex check stands in for markdown-it: its inline tokenizer is not linear on one huge run of
+text (a 4 MB single-paragraph grid file spent 150 of its 160 seconds here, 2026-10-26 pilot), and a span that
+long is data, not prose with markup to protect."""
+
+
 def _forms_markup(text: str) -> bool:
     md = _md()
-    if md is None:
+    if md is None or len(text) > PARSE_MAX_CHARS:
         return bool(_FALLBACK_MARKUP.search(text))
     tokens = md.parseInline(text)
     for tok in tokens:

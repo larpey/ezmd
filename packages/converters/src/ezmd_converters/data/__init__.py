@@ -15,14 +15,16 @@ if TYPE_CHECKING:
 PARQUET_MIMES = ("application/vnd.apache.parquet", "application/x-parquet")
 
 CHAINS: dict[str, list[str]] = {
-    "text/csv": ["data.csv"],
-    "text/tab-separated-values": ["data.csv"],
-    "application/json": ["data.json"],
-    "application/jsonl": ["data.json"],
-    "application/x-ndjson": ["data.json"],
-    "application/yaml": ["data.yaml"],
-    "application/toml": ["data.toml"],
-    "application/xml": ["data.xml"],
+    # Every text-based data chain ends in plain text: a file that looks like YAML or XML to the detector and
+    # does not parse is still a readable text file, not a failed conversion.
+    "text/csv": ["data.csv", "text.plain"],
+    "text/tab-separated-values": ["data.csv", "text.plain"],
+    "application/json": ["data.json", "text.plain"],
+    "application/jsonl": ["data.json", "text.plain"],
+    "application/x-ndjson": ["data.json", "text.plain"],
+    "application/yaml": ["data.yaml", "text.plain"],
+    "application/toml": ["data.toml", "text.plain"],
+    "application/xml": ["data.xml", "text.plain"],
     "application/vnd.sqlite3": ["data.sqlite"],
     "application/x-sqlite3": ["data.sqlite"],
     "application/vnd.apache.parquet": ["data.parquet"],
