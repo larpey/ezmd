@@ -235,7 +235,7 @@ def fetch_commons(root: Path | None = None, mimes: dict[str, int] | None = None)
             log.save("commons", str(img["name"]), str(img["url"]), mime, data, _ext(str(img["url"]), mime))
 
         print(f"commons {mime}: {have} on disk, {len(jobs)} to pull", flush=True)
-        _parallel(jobs, work, workers=4, label=f"commons {mime}")
+        _parallel(jobs, work, workers=2, label=f"commons {mime}")  # Commons answers 429 above this
 
 
 def fetch_gutenberg(root: Path | None = None, count: int = GUTENBERG_EPUBS) -> None:

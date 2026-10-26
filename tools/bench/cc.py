@@ -176,9 +176,9 @@ def cc_digest(body: bytes) -> str:
 
 
 RATE_PER_SECOND = 10.0
-RATE_MIN = 1.0
-"""Requests per second across all workers, adapted as Common Crawl answers: a 403 cuts the rate by a fifth
-and pauses everyone two seconds; five hundred clean requests raise it a tenth, up to the start value. The
+RATE_MIN = 2.0
+"""Requests per second across all workers, adapted as Common Crawl answers: a 403 cuts the rate by a tenth
+and pauses everyone two seconds; two hundred clean requests raise it a tenth, up to the start value. The
 first pulls at a fixed 18 to 30 per second were refused for minutes at a time."""
 
 
@@ -207,13 +207,13 @@ class Throttle:
         with self._lock:
             self.refusals += 1
             self._clean = 0
-            self.rate = max(RATE_MIN, self.rate * 0.8)
+            self.rate = max(RATE_MIN, self.rate * 0.9)
             self._until = max(self._until, time.monotonic() + 2.0 + attempt)
 
     def success(self) -> None:
         with self._lock:
             self._clean += 1
-            if self._clean >= 500:
+            if self._clean >= 200:
                 self._clean = 0
                 self.rate = min(self._ceiling, self.rate * 1.1)
 
