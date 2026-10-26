@@ -25,6 +25,25 @@ from tools.bench.stats import bootstrap_ci
 
 DECLARED = frozenset({"ConversionError", "UnsupportedMediaType", "InputTooLarge"})
 """ezmd's documented failure classes (`ezmd.registry.ConversionError` and its subclasses, `ezmd.inputs`)."""
+BUG_CAUSES = frozenset(
+    {
+        "AssertionError",
+        "AttributeError",
+        "IndexError",
+        "KeyError",
+        "MemoryError",
+        "NameError",
+        "NotImplementedError",
+        "OverflowError",
+        "RecursionError",
+        "TypeError",
+        "UnboundLocalError",
+        "ValidationError",
+        "ZeroDivisionError",
+    }
+)
+"""A declared error raised from one of these is a converter crash the registry wrapped ("all converters
+failed ... last error: 1 validation error for Heading"), not a parser's refusal."""
 SAMPLES = 5
 _DIGITS = re.compile(r"\d+")
 _QUOTED = re.compile(r"'[^']*'|\"[^\"]*\"")
@@ -33,7 +52,7 @@ _QUOTED = re.compile(r"'[^']*'|\"[^\"]*\"")
 def outcome(r: DocResult) -> str:
     if r.status == "ok":
         return "ok"
-    if r.status == "error" and r.error_class in DECLARED:
+    if r.status == "error" and r.error_class in DECLARED and r.cause not in BUG_CAUSES:
         return "declared"
     return "bug"
 
@@ -47,7 +66,7 @@ def message_shape(error: str | None, width: int = 80) -> str:
 def bug_key(r: DocResult) -> tuple[str, str]:
     if r.status in ("timeout", "crash"):
         return (r.status, r.error_class or "")
-    return (r.error_class or "", r.where or message_shape(r.error))
+    return (r.cause or r.error_class or "", r.where or message_shape(r.error))
 
 
 def cluster(results: list[DocResult]) -> list[dict[str, Any]]:

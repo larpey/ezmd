@@ -14,7 +14,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))  # tools/ is not an installed package
 
 from tools.bench import corpora  # noqa: E402
-from tools.bench.adapters.worker import failure_site  # noqa: E402
+from tools.bench.adapters.worker import failure_info, failure_site  # noqa: E402
 from tools.bench.config import Tool  # noqa: E402
 from tools.bench.runner import Launch, run_tool_parallel  # noqa: E402
 from tools.bench.schema import Doc, DocResult, append_result, read_results  # noqa: E402
@@ -77,6 +77,28 @@ def test_failure_site_prefers_the_tools_own_frame() -> None:
         assert failure_site(exc, own="nothing-matches").endswith(" raw_decode")
 
 
+def test_failure_info_reports_the_wrapped_cause() -> None:
+    def crash() -> None:
+        raise IndexError("list index out of range")
+
+    def wrap() -> None:
+        try:
+            crash()
+        except Exception as exc:
+            raise ValueError("all converters failed: last error: list index out of range") from exc
+
+    try:
+        wrap()
+    except ValueError as exc:
+        info = failure_info(exc)
+    assert info["error_class"] == "ValueError" and info["cause"] == "IndexError"
+    assert str(info["where"]).endswith(" crash")
+    try:
+        crash()
+    except IndexError as exc:
+        assert failure_info(exc)["cause"] is None
+
+
 def test_where_round_trips_and_old_records_still_load(tmp_path: Path) -> None:
     r = _result("d", "error", error_class="KeyError", error="'x'", where="ezmd/a.py:1 f")
     path = tmp_path / "results.jsonl"
@@ -117,22 +139,44 @@ def test_outcomes_and_clusters(tmp_path: Path) -> None:
         _result("000006", "error", "ppt", error_class="KeyError", error="'A'", where="ezmd_converters/pdf/x.py:10 f"),
         _result("000007", "timeout", error_class="Timeout", error="exceeded 120s"),
         _result("000008", "crash", "doc", error_class="WorkerExited", error="worker process exited"),
+        _result(
+            "000009",
+            "error",
+            error_class="ConversionError",
+            error="all converters failed for 000009.pdf: tried ['documents.pdfium_text']; last error: 1 validation",
+            where="ezmd_converters/pdf/assemble.py:238 _line",
+            cause="ValidationError",
+        ),
+        _result(
+            "000010",
+            "error",
+            "txt",
+            error_class="ConversionError",
+            error="all converters failed for 000010.txt: tried ['data.yaml']; last error: invalid YAML",
+            where="ezmd_converters/data/yaml_conv.py:40 convert",
+            cause="YAMLError",
+        ),
     ]
     assert [scoring.outcome(r) for r in results[:3]] == ["ok", "declared", "declared"]
-    assert {scoring.outcome(r) for r in results[4:]} == {"bug"}
+    assert {scoring.outcome(r) for r in results[4:9]} == {"bug"}
+    assert scoring.outcome(results[9]) == "declared"
     clusters = scoring.cluster(results)
     assert [(c["kind"], c["count"]) for c in clusters] == [
         ("bug", 2),
         ("bug", 1),
         ("bug", 1),
+        ("bug", 1),
         ("declared", 2),
+        ("declared", 1),
         ("declared", 1),
     ]
     assert clusters[0]["where"] == "ezmd_converters/pdf/x.py:10 f" and clusters[0]["categories"] == {"pdf": 1, "ppt": 1}
-    assert clusters[3]["message"] == "LibreOffice exit # on '…'" and clusters[3]["samples"] == ["000003", "000004"]
+    wrapped = [c for c in clusters if c["error_class"] == "ValidationError"]
+    assert len(wrapped) == 1 and wrapped[0]["where"] == "ezmd_converters/pdf/assemble.py:238 _line"
+    assert clusters[4]["message"] == "LibreOffice exit # on '…'" and clusters[4]["samples"] == ["000003", "000004"]
     scores = scoring.score(results, tmp_path)
     tool = scores["tools"]["ezmd-main"]
     assert scores["metric"] == "clean_rate" and tool["primary"]["value"] == pytest.approx(0.5)
-    assert tool["secondary"]["bug"] == 4 and tool["secondary"]["categories"]["pdf"] == {"n": 3, "ok": 1, "bug": 2}
+    assert tool["secondary"]["bug"] == 5 and tool["secondary"]["categories"]["pdf"] == {"n": 4, "ok": 1, "bug": 3}
     md = (tmp_path / "clusters.md").read_text(encoding="utf-8")
-    assert "| pdf | 3 | 1 | 0 | 2 |" in md and "`ezmd_converters/pdf/x.py:10 f`" in md
+    assert "| pdf | 4 | 1 | 0 | 3 |" in md and "`ezmd_converters/pdf/x.py:10 f`" in md

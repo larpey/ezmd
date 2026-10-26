@@ -426,12 +426,13 @@ def _result(
     data = reply.data
     if data.get("ok"):
         return make("ok", output=dst.relative_to(run_dir).as_posix(), chars=int(data.get("chars", 0)))
-    where = data.get("where")
+    where, cause = data.get("where"), data.get("cause")
     return make(
         "error",
         error_class=str(data.get("error_class")),
         error=str(data.get("error", ""))[:2000],
         where=str(where) if where else None,
+        cause=str(cause) if cause else None,
     )
 
 

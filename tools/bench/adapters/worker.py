@@ -192,6 +192,18 @@ def failure_site(exc: BaseException, own: str = "ezmd") -> str:
     return f"{'/'.join(parts)}:{chosen.lineno} {chosen.name}"
 
 
+def failure_info(exc: BaseException) -> dict[str, object]:
+    """The error fields of a failed job. A declared error raised `from` another (ezmd's registry wraps the last
+    converter's exception) reports that cause's class and site, which is where the fault is."""
+    cause = exc.__cause__
+    return {
+        "error_class": type(exc).__name__,
+        "error": str(exc)[:2000],
+        "where": failure_site(cause if cause is not None else exc),
+        "cause": type(cause).__name__ if cause is not None else None,
+    }
+
+
 def _protocol_stream() -> object:
     """Duplicate the real stdout for protocol messages and send fd 1 (and sys.stdout) to stderr."""
     proto_fd = os.dup(1)
@@ -250,16 +262,7 @@ def main() -> int:
             send({"id": job["id"], "ok": True, "seconds": time.perf_counter() - t0, "chars": len(text)})
         except Exception as exc:
             traceback.print_exc()
-            send(
-                {
-                    "id": job["id"],
-                    "ok": False,
-                    "seconds": time.perf_counter() - t0,
-                    "error_class": type(exc).__name__,
-                    "error": str(exc)[:2000],
-                    "where": failure_site(exc),
-                }
-            )
+            send({"id": job["id"], "ok": False, "seconds": time.perf_counter() - t0, **failure_info(exc)})
     return 0
 
 

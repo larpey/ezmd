@@ -42,6 +42,8 @@ class DocResult:
     where: str | None = None
     """The frame that raised, `path:line function`, innermost frame of the tool's own code when there is one:
     what a crash cluster is keyed on."""
+    cause: str | None = None
+    """Class of the exception a declared error was raised from (ezmd's registry wraps the converter's)."""
 
     def __post_init__(self) -> None:
         if self.status not in STATUSES:
