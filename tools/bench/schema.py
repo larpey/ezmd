@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import json
+import threading
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
 
 SCHEMA_VERSION = 1
+_APPEND = threading.Lock()
+"""Parallel shards of one run append to the same results file."""
 STATUSES = ("ok", "error", "timeout", "crash", "unsupported")
 """ok: output written. error: the tool raised. timeout: killed after the per-document limit. crash: the worker
 process died. unsupported: the tool does not claim the input format, so it was not attempted."""
@@ -36,6 +39,11 @@ class DocResult:
     error_class: str | None = None
     error: str | None = None
     chars: int | None = None
+    where: str | None = None
+    """The frame that raised, `path:line function`, innermost frame of the tool's own code when there is one:
+    what a crash cluster is keyed on."""
+    cause: str | None = None
+    """Class of the exception a declared error was raised from (ezmd's registry wraps the converter's)."""
 
     def __post_init__(self) -> None:
         if self.status not in STATUSES:
@@ -71,5 +79,5 @@ def read_results(path: Path) -> list[DocResult]:
 
 def append_result(path: Path, result: DocResult) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8", newline="\n") as fh:
+    with _APPEND, path.open("a", encoding="utf-8", newline="\n") as fh:
         fh.write(result.to_json() + "\n")
