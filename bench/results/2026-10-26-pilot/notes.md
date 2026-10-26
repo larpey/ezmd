@@ -46,7 +46,7 @@ Failure clusters (bugs first), from `clusters.md`:
 | kind | n | class | where | types |
 |---|---|---|---|---|
 | bug | 57 | `ValidationError` | `ezmd_converters/office/docx_walker.py:232 _main_block` | doc |
-| bug | 1 | `ValidationError` | `ezmd_converters/pdf/headings.py` (structure-tree level, unclamped) | pdf |
+| bug | 1 | `ValidationError` | `ezmd_converters/pdf/assemble.py:238 _line` (the structure-tree level from `headings.py`, unclamped) | pdf |
 | declared | 6 | `ConversionError` | OOXML package guard: a member over the 100:1 compression ratio, in a package LibreOffice itself wrote | ppt 5, doc 1 |
 | declared | 6 | `ConversionError` | `data.yaml` / `data.xml` parse failure on a `.txt`, no fallback to text | txt |
 | declared | 7 | `ConversionError` | malformed XML (`junk after document element`, `not well-formed`, bad character reference), no fallback | xml |
