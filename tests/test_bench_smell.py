@@ -43,6 +43,8 @@ def test_empty_and_control_characters() -> None:
 def test_the_course_deck_shapes() -> None:
     lone = CLEAN + "\nSome question text?\n\n●\n\nNext question?\n"
     assert smell.smells(lone, "pdf") == ["lone_bullet"]
+    code = CLEAN + "\n```\n/*\n *\n * comment\n */\n-\n```\n"
+    assert smell.smells(code, "c") == []  # a lone `*` or `-` is ordinary in source code
     bullet_heading = CLEAN + "\n### 4.1 ● What information does the record need?\n"
     assert smell.smells(bullet_heading, "pdf") == ["heading_bullet"]
     long = "Describe the sequence of events when a running process is interrupted by a timer and the scheduler"

@@ -50,7 +50,7 @@ failed ... last error: 1 validation error for Heading"), not a parser's refusal.
 SAMPLES = 5
 _DIGITS = re.compile(r"\d+")
 _QUOTED = re.compile(r"'[^']*'|\"[^\"]*\"")
-_FOR_NAME = re.compile(r"for \S+")
+_FOR_NAME = re.compile(r"\bfor \S+")
 """`no converter for 000578.pdf (...)`, `all converters failed for <digest>.xpt: ...`: the name is not the cause."""
 
 
