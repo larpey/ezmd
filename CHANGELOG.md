@@ -26,6 +26,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- A heading level above 6 no longer fails the conversion: Word's Heading 7 to 9 (and an outline level that
+  deep) and a tagged PDF's `H7` become level 6, as Markdown has six levels. Before, the IR refused the level
+  and the document did not convert at all: 58 of 9,875 Govdocs1 files and 21 of 3,295 modern `.docx` files in
+  the corpus runs of 2026-10-26.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
   `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
