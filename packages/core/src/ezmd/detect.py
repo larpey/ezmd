@@ -506,14 +506,14 @@ class MagicDetector:
             mime, confidence = mg_mime, score
         else:
             mime, confidence = OCTET, 0.0
-        if mime == OCTET and ((lm or "").startswith("text/") or looks_like_text(sample)):
-            # A Magika label with no MIME type (proteindb and other niche text formats) is not evidence of
-            # binary content; printable text is text, whatever it is called.
-            mime, confidence = "text/plain", 0.6
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
             # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
             mime, confidence = RFC822, max(confidence, 0.9)
+        if mime == OCTET and ((lm or "").startswith("text/") or looks_like_text(sample)):
+            # A Magika label with no MIME type (proteindb and other niche text formats) is not evidence of
+            # binary content; printable text is text, whatever it is called.
+            mime, confidence = "text/plain", 0.6
         return Detected(
             mime=mime,
             extension=ext,
