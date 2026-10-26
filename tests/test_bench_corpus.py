@@ -75,6 +75,26 @@ def test_failure_site_prefers_the_tools_own_frame() -> None:
         json.loads("{")
     except json.JSONDecodeError as exc:
         assert failure_site(exc, own="nothing-matches").endswith(" raw_decode")
+        # A venv named after the tool (".../venvs/ezmd-main/Lib/site-packages/json/decoder.py") is not the
+        # tool's own code: the match is on the path inside the environment.
+        assert "venvs" not in failure_site(exc, own="venvs")
+
+
+def test_failure_site_ignores_the_environment_path() -> None:
+    import types
+
+    def fake_tb(filename: str) -> types.TracebackType | None:
+        code = compile("raise KeyError('x')", filename, "exec")
+        try:
+            exec(code, {})  # a frame with a chosen filename, nothing else
+        except KeyError as exc:
+            return exc.__traceback__
+        return None
+
+    tb = fake_tb(r"C:\cache\venvs\ezmd-main\Lib\site-packages\pydantic\main.py")
+    exc = KeyError("x")
+    exc.__traceback__ = tb
+    assert failure_site(exc, own="ezmd") == "pydantic/main.py:1 <module>"
 
 
 def test_failure_info_reports_the_wrapped_cause() -> None:

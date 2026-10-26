@@ -178,18 +178,21 @@ def failure_site(exc: BaseException, own: str = "ezmd") -> str:
     frames = traceback.extract_tb(exc.__traceback__)
     if not frames:
         return ""
+
+    def short(filename: str) -> tuple[str, ...]:
+        # Only the path inside the environment counts: the venv itself may be named after the tool.
+        parts = Path(filename).parts
+        for marker in ("site-packages", "src"):
+            if marker in parts:
+                return parts[parts.index(marker) + 1 :]
+        return parts[-2:]
+
     chosen = frames[-1]
     for frame in reversed(frames):
-        parts = Path(frame.filename).parts
-        if any(p.startswith(own) for p in parts):
+        if short(frame.filename)[0].startswith(own):
             chosen = frame
             break
-    parts = Path(chosen.filename).parts
-    for marker in ("site-packages", "src"):
-        if marker in parts:
-            parts = parts[parts.index(marker) + 1 :]
-            break
-    return f"{'/'.join(parts)}:{chosen.lineno} {chosen.name}"
+    return f"{'/'.join(short(chosen.filename))}:{chosen.lineno} {chosen.name}"
 
 
 def failure_info(exc: BaseException) -> dict[str, object]:

@@ -239,6 +239,12 @@ def _rename_when_released(src: Path, dst: Path, attempts: int = 10) -> None:
             time.sleep(1 + attempt)
 
 
+def fetch_ccgov() -> None:
+    from tools.bench.cc import fetch_ccgov as run
+
+    run()
+
+
 FETCHERS = {
     "olmocr": fetch_olmocr,
     "omnidoc": fetch_omnidoc,
@@ -246,6 +252,7 @@ FETCHERS = {
     "arxiv": fetch_arxiv,
     "arxiv-source": fetch_arxiv_source,
     "govdocs1": fetch_govdocs1,
+    "ccgov": fetch_ccgov,
 }
 
 
