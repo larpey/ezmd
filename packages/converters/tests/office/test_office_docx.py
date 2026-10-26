@@ -237,3 +237,42 @@ def test_hidden_text_is_scanned_and_kept_out_of_frontmatter(fixture_bytes: Calla
         assert "hidden_text" not in extra  # type: ignore[operator]
         assert "IGNORE PREVIOUS INSTRUCTIONS" not in out.markdown
         assert out.frontmatter.get("injection_risk") != "none"
+
+
+def test_heading_levels_above_six_clamp_to_six(run: Run) -> None:
+    """Word has nine heading levels; Markdown has six. Heading 7 to 9 used to reach the IR as 7 to 9 and fail its
+    validation, so the document did not convert at all (58 files in the Govdocs1 pilot, 21 modern .docx)."""
+    ns = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
+    styles = (
+        f"<w:styles {ns}>"
+        '<w:style w:type="paragraph" w:styleId="Heading7"><w:name w:val="heading 7"/></w:style>'
+        '<w:style w:type="paragraph" w:styleId="Heading9"><w:name w:val="heading 9"/></w:style>'
+        '<w:style w:type="paragraph" w:styleId="Deep"><w:name w:val="Deep"/>'
+        '<w:pPr><w:outlineLvl w:val="8"/></w:pPr></w:style>'
+        "</w:styles>"
+    )
+    body = (
+        f"<w:document {ns}><w:body>"
+        '<w:p><w:pPr><w:pStyle w:val="Heading7"/></w:pPr><w:r><w:t>Seventh level</w:t></w:r></w:p>'
+        '<w:p><w:pPr><w:pStyle w:val="Heading9"/></w:pPr><w:r><w:t>Ninth level</w:t></w:r></w:p>'
+        '<w:p><w:pPr><w:pStyle w:val="Deep"/></w:pPr><w:r><w:t>Outline level nine</w:t></w:r></w:p>'
+        "<w:p><w:r><w:t>Body text under them.</w:t></w:r></w:p>"
+        "</w:body></w:document>"
+    )
+    rels = (
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Target="styles.xml" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles"/>'
+        "</Relationships>"
+    )
+    data = _zip(
+        {
+            "[Content_Types].xml": "<Types/>",
+            "word/document.xml": body,
+            "word/styles.xml": styles,
+            "word/_rels/document.xml.rels": rels,
+        }
+    )
+    doc = run(DocxConverter(), data, "deep.docx")
+    headings = [(b.level, "".join(s.text for s in b.spans)) for b in doc.blocks if isinstance(b, Heading)]
+    assert headings == [(6, "Seventh level"), (6, "Ninth level"), (6, "Outline level nine")]
