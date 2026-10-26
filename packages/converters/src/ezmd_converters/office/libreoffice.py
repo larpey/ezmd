@@ -15,10 +15,12 @@ through to the next converter (striprtf for RTF) or reports why nothing came out
 
 from __future__ import annotations
 
+import atexit
 import logging
 import os
 import shutil
 import tempfile
+import threading
 from pathlib import Path
 
 from ezmd.context import Limits
@@ -211,6 +213,50 @@ def _missing(ref: InputRef) -> Document:
     return doc.finalize()
 
 
+_seed_lock = threading.Lock()
+_seed: tuple[str, Path] | None = None
+"""(soffice path, profile directory): a profile LibreOffice initialised once in this process, copied for every
+later conversion. Initialising a profile from scratch costs about 12 seconds per file (the whole cost of a
+legacy Office conversion in the 2026-10-26 Govdocs1 pilot: 13 seconds each, 86% of the run); copying one
+costs a fraction of a second, and each file still gets its own writable, disposable copy."""
+
+
+def _fresh_profile(profile: Path) -> None:
+    (profile / "user").mkdir(parents=True)
+    (profile / "user" / "registrymodifications.xcu").write_text(_XCU, encoding="utf-8", newline="\n")
+
+
+def _profile_for(root: Path, soffice: str) -> tuple[Path, bool]:
+    """A writable per-file profile under `root`: a copy of the initialised seed when one exists (True), else a
+    fresh profile with our settings that this run will initialise (False)."""
+    profile = root / "profile"
+    with _seed_lock:
+        seed = _seed
+    if seed is not None and seed[0] == soffice and seed[1].is_dir():
+        try:
+            shutil.copytree(seed[1], profile)
+            return profile, True
+        except OSError:
+            shutil.rmtree(profile, ignore_errors=True)
+    _fresh_profile(profile)
+    return profile, False
+
+
+def _keep_seed(profile: Path, soffice: str) -> None:
+    """After a conversion initialised a fresh profile, keep a copy as the seed for the rest of the process."""
+    global _seed
+    with _seed_lock:
+        if _seed is not None and _seed[0] == soffice:
+            return
+        try:
+            keep = Path(tempfile.mkdtemp(prefix="ezmd-lo-seed-"))
+            shutil.copytree(profile, keep / "profile")
+        except OSError:
+            return
+        atexit.register(shutil.rmtree, keep, ignore_errors=True)
+        _seed = (soffice, keep / "profile")
+
+
 def _run(soffice: str, ref: InputRef, target: str, timeout: int) -> bytes:
     with tempfile.TemporaryDirectory(prefix="ezmd-lo-") as tmp:
         root = Path(tmp)
@@ -218,9 +264,7 @@ def _run(soffice: str, ref: InputRef, target: str, timeout: int) -> bytes:
         suffix = suffix if suffix[1:].isalnum() and len(suffix) <= 6 else ".bin"
         src = root / f"input{suffix}"
         src.write_bytes(ref.read())
-        profile = root / "profile"
-        (profile / "user").mkdir(parents=True)
-        (profile / "user" / "registrymodifications.xcu").write_text(_XCU, encoding="utf-8", newline="\n")
+        profile, seeded = _profile_for(root, soffice)
         outdir = root / "out"
         outdir.mkdir()
         argv = [
@@ -251,6 +295,8 @@ def _run(soffice: str, ref: InputRef, target: str, timeout: int) -> bytes:
                 f"LibreOffice exited with {result.returncode} and wrote no {target}",
                 user_message="LibreOffice could not convert this file.",
             )
+        if not seeded:
+            _keep_seed(profile, soffice)
         return produced.read_bytes()
 
 

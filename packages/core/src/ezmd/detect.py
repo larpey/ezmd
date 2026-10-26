@@ -101,10 +101,47 @@ _CONTAINER_SIGNATURES: dict[str, Callable[[bytes], bool]] = {
 """Magic bytes for Magika's archive labels. Magika labels 1 MiB of one repeated byte `iso` at 0.9986; when
 libmagic disagrees with a container label, the label stands only if its signature is present."""
 
+_OLE_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+_OLE_APPLICATIONS = frozenset(
+    {
+        "application/msword",
+        "application/vnd.ms-excel",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.ms-outlook",
+        "application/vnd.visio",
+        "application/vnd.ms-publisher",
+        "application/vnd.ms-project",
+        "application/vnd.ms-works",
+    }
+)
+"""What an OLE2 container can hold. libmagic names the application from the stream names, which is the
+strongest evidence there is; a generic `application/cdfv2` or `application/vnd.ms-office` is only "some OLE
+file" and must not outrank the extension or Magika's label."""
+XLSB = "application/vnd.ms-excel.sheet.binary.macroenabled.12"
+
+
+def _ole_verdict(
+    sample: bytes, libmagic: str | None, magika: str | None, score: float, ext_mime: str | None
+) -> tuple[str, float] | None:
+    """The type of an OLE2 container, or None when nothing names the application (the generic verdict stands)."""
+    if not sample.startswith(_OLE_MAGIC):
+        return None
+    if libmagic in _OLE_APPLICATIONS:
+        return libmagic, 0.9
+    if ext_mime in _OLE_APPLICATIONS:
+        return ext_mime, 0.7
+    if magika in _OLE_APPLICATIONS and score >= MAGIKA_THRESHOLD:
+        return magika, score
+    return None
+
+
 # Extension -> mime for types the stdlib table lacks or gets wrong across platforms.
 _EXTENSION_MIMES: dict[str, str] = {
     ".md": "text/markdown",
     ".markdown": "text/markdown",
+    ".msg": "application/vnd.ms-outlook",
+    ".vsd": "application/vnd.visio",
+    ".vsdx": "application/vnd.visio",
     # Only some systems' mime.types list .mbox (Ubuntu's does; Windows and slim images do not).
     ".mbox": "application/mbox",
     ".mdx": "text/markdown",
@@ -188,6 +225,8 @@ _ALIASES: dict[str, str] = {
     "image/jpg": "image/jpeg",
     "application/x-zip-compressed": "application/zip",
     "text/x-csv": "text/csv",
+    "application/x-plist": "application/xml",
+    "application/xml-dtd": "application/xml",
     "application/csv": "text/csv",
     "application/x-pdf": "application/pdf",
     "inode/x-empty": EMPTY_MIME,
@@ -219,11 +258,19 @@ _MAGIKA_LABEL_MIMES: dict[str, str] = {
 }
 
 
+_XML_DIALECT_KEEP = frozenset({"application/xhtml+xml", "image/svg+xml"})
+"""`+xml` types with a converter or a meaning of their own; every other `+xml` dialect (RDF, GPX, KML, Atom,
+RSS, MathML, ISO 19115, SMIL, ...) is XML to ezmd and takes the XML converter's chain (RFC 7303)."""
+
+
 def normalize_mime(mime: str | None) -> str | None:
     if mime is None:
         return None
     m = mime.split(";", 1)[0].strip().lower()
-    return _ALIASES.get(m, m) or None
+    m = _ALIASES.get(m, m)
+    if m.endswith("+xml") and m not in _XML_DIALECT_KEEP:
+        return "application/xml"
+    return m or None
 
 
 def extension_mime(name: str) -> str | None:
@@ -382,6 +429,22 @@ def import_magic() -> Any:
         return importlib.import_module("magic")
 
 
+_PRINTABLE_SHARE = 0.97
+
+
+def looks_like_text(sample: bytes) -> bool:
+    """Whether bytes read as text: no NUL, and either valid UTF-8 or almost entirely printable Latin-1. The
+    floor under every type verdict: a file this returns True for is never "binary" to ezmd."""
+    if not sample or b"\x00" in sample:
+        return False
+    try:
+        text = sample.decode("utf-8")
+    except UnicodeDecodeError:
+        text = sample.decode("latin-1")
+    printable = sum(1 for ch in text if ch.isprintable() or ch in "\t\n\r\x0c")
+    return printable / len(text) >= _PRINTABLE_SHARE
+
+
 def _sample(ref: InputRef) -> tuple[bytes, int]:
     """Head plus tail sample and total size, without reading more than HEAD+TAIL bytes."""
     if ref.data is not None:
@@ -416,6 +479,18 @@ def _magika_guess(sample: bytes) -> tuple[str | None, str | None, float]:
         return label, None, score
     mime = _MAGIKA_LABEL_MIMES.get(label) or normalize_mime(str(out.mime_type))
     return label, mime, score
+
+
+XHTML = "application/xhtml+xml"
+_HTML_ROOT = re.compile(rb"<html[\s>]|DTD XHTML", re.I)
+
+
+def _looks_like_xhtml(sample: bytes, label: str | None, ext_mime: str | None) -> bool:
+    """An XML document that is a web page: Magika's `html` label at any confidence, an HTML extension, or an
+    `<html` root or XHTML doctype in the first 8 KB."""
+    if label == "html" or ext_mime in ("text/html", XHTML):
+        return True
+    return _HTML_ROOT.search(sample[:8192]) is not None
 
 
 RFC822 = "message/rfc822"
@@ -476,7 +551,10 @@ class MagicDetector:
             mg_mime = None  # a container label without the container's signature
         mime: str
         confidence: float
-        if mg_mime is not None and score >= MAGIKA_THRESHOLD:
+        ole = _ole_verdict(sample, lm, mg_mime, score, ext_mime)
+        if ole is not None:
+            mime, confidence = ole
+        elif mg_mime is not None and score >= MAGIKA_THRESHOLD:
             mime, confidence = mg_mime, score
         elif lm is not None and ext_mime is not None and lm == ext_mime:
             mime, confidence = lm, 1.0
@@ -490,6 +568,16 @@ class MagicDetector:
             mime, confidence = mg_mime, score
         else:
             mime, confidence = OCTET, 0.0
+        if mime == "application/xml" and _looks_like_xhtml(sample, label, ext_mime):
+            # libmagic answers XML for any file with an XML prologue; an XHTML page is a web page.
+            mime, confidence = XHTML, 0.9
+        if mime == _XLSX and b"xl/workbook.bin" in sample:
+            # An Excel binary workbook is the same package with .bin parts; openpyxl cannot read it, LibreOffice can.
+            mime, confidence = XLSB, max(confidence, 0.9)
+        if mime == OCTET and ((lm or "").startswith("text/") or looks_like_text(sample)):
+            # A Magika label with no MIME type (proteindb and other niche text formats) is not evidence of
+            # binary content; printable text is text, whatever it is called.
+            mime, confidence = "text/plain", 0.6
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
             # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
