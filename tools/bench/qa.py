@@ -13,8 +13,17 @@ each tool's Markdown with the instruction to say UNKNOWN when the text does not 
 each answer against the reference. Grading short factual answers is an easy task for a local model; writing the
 questions is the hard one, which is why their quotes are checked mechanically.
 
+Why segments: asked for questions over a whole paper, a model takes most of them from the first pages, so a
+converter that drops the tail (ezmd's `compact` profile cuts at 16k tokens) is barely measured. The text layer
+is therefore split into SEGMENT_TOKENS-token segments and each segment is asked for its own questions, whose
+quotes must be grounded in that segment; every question records where in the paper its evidence lies
+(`segment: {from, to, of}` in text-layer tokens), and the scorer reports accuracy over the second half of the
+papers separately. The answering model then reads each tool's whole output: the context is CONTEXT_TOKENS and
+an output that does not fit is cut, which the answer record says (`cut`).
+
 Questions are cached per document under the corpus (`corpora/arxiv/qa/<doc>.json`) and shared by every tool and
-run. Answers and grades go to `<run_dir>/qa/<tool>/<doc>.json`, which tools/bench/scoring/arxiv.py reads.
+run; a file written under an older scheme (`scheme`) is generated again. Answers and grades go to
+`<run_dir>/qa/<tool>/<doc>.json`, which tools/bench/scoring/arxiv.py reads.
 
 Determinism: temperature 0 and a fixed seed; the model id and the server are recorded in every file. Nothing
 leaves the machine.
@@ -31,6 +40,7 @@ import sys
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -41,35 +51,46 @@ from tools.bench.scoring.text import read_output
 
 DEFAULT_URL = "http://localhost:1234/v1"
 DEFAULT_MODEL = "openai/gpt-oss-20b"
-CONTEXT_TOKENS = 32_768
-"""Context each request needs; the document is cut to DOC_TOKENS so prompt and answer fit. llama.cpp shares
-one KV cache between parallel requests, so the model is loaded with CONTEXT_TOKENS times the worker count."""
-DOC_TOKENS = 24_000
+CONTEXT_TOKENS = 131_072
+"""Context the model is loaded with by default (gpt-oss-20b's maximum): the longest output of the 30-paper
+sample is 104k tokens, so every tool's whole output fits. llama.cpp shares one KV cache between parallel
+requests, so the model is loaded with the context times the worker count; `--context` lowers it on a smaller
+GPU, and outputs that do not fit are cut and marked."""
+PROMPT_RESERVE = 4_096
+"""Context kept free of the document for the prompt, the questions and the reply."""
+SEGMENT_TOKENS = 8_000
+"""Questions are written per segment of this many text-layer tokens (about three pages), so the tail of a
+paper is asked about as much as its abstract."""
 MODEL_TTL_SECONDS = 4 * 3600
 """LM Studio unloads the model after this long idle; a run keeps it busy, the next morning does not."""
-QUESTIONS_WANTED = 6
-QUESTIONS_KEPT = 5
-MIN_QUESTIONS = 3
-"""A paper with fewer valid questions than this is generated again on the next run."""
+QUESTIONS_WANTED = 3
+"""Asked per segment."""
+QUESTIONS_KEPT = 2
+"""Kept per segment, so a 25-page paper gets about eight questions and a 75-page paper about sixteen."""
+SCHEME = "segments-8k"
+"""Written into every question file; a file from another scheme is generated again."""
 SEED = 20261013
 UNKNOWN = "UNKNOWN"
 
-GENERATE_PROMPT = """You are writing a reading-comprehension test for a scientific paper. Below is the paper's text.
+GENERATE_PROMPT = """You are writing a reading-comprehension test for a scientific paper. Below is part {part} of
+{parts} of the paper's text.
 
-Write {n} question/answer pairs that check whether a reader has the paper's content. Rules:
+Write {n} question/answer pairs that check whether a reader has the content of this part. Rules:
 - Each answer is a specific fact stated explicitly in the text: a number with its unit, a name, a term, a short
   phrase. Answers are at most 12 words.
-- Spread the questions over the whole paper: at most one from the abstract, at least two from the second half,
-  and at least one about a numeric result. If the paper has a table, ask one question whose answer is a value
-  in it.
+- Prefer facts a reader of the whole paper is expected to know: results, definitions, methods, settings. Ask at
+  least one question about a numeric result if this part states one, and if it has a table, ask one question
+  whose answer is a value in it.
+- Each question must make sense on its own to a reader who has the whole paper: name the quantity, method or
+  object asked about; never write "this section", "the table above" or "the excerpt".
 - Do not ask about figures, images or anything that needs a picture to answer. Do not ask about the authors,
-  the venue or the date.
+  the venue, the date or the reference list.
 - Each pair carries a "quote": the exact sentence or table row from the text that contains the answer, copied
   verbatim.
 
 Reply with a JSON array only, no prose: [{{"question": "...", "answer": "...", "quote": "..."}}, ...]
 
-PAPER TEXT:
+PART {part} OF {parts}:
 {text}"""
 
 ANSWER_PROMPT = """Answer each question using only the document below. Reply with the fact asked for, in at most
@@ -126,7 +147,13 @@ class Client:
 
 
 _FENCE = re.compile(r"^```[a-zA-Z]*\s*|\s*```$", re.M)
-_BAD_ESCAPE = re.compile(r"\\(?![\\\"/bfnrtu])")
+_BAD_ESCAPE = re.compile(r"\\\\|\\(?![\\\"/bfnrtu])")
+"""An escaped backslash (kept as it is) or a backslash that starts no JSON escape (doubled). Matching the pair
+first keeps `\\\\sum` (a TeX command the model escaped correctly) from becoming three backslashes."""
+
+
+def _fix_escapes(body: str) -> str:
+    return _BAD_ESCAPE.sub(lambda m: "\\\\", body)  # a pair stays a pair, a lone backslash becomes one
 
 
 def _note(exc: Exception) -> None:
@@ -146,7 +173,7 @@ def parse_json_array(text: str) -> list[Any]:
     except json.JSONDecodeError:
         # Models copy TeX into quotes as written (\alpha, \Delta): a backslash that starts no JSON escape is a
         # literal backslash.
-        value = json.loads(_BAD_ESCAPE.sub(r"\\\\", body))
+        value = json.loads(_fix_escapes(body))
     if not isinstance(value, list):
         raise ValueError("reply is not a JSON array")
     return value
@@ -166,6 +193,62 @@ def cut_tokens(text: str, limit: int) -> str:
     cut = text[:lo]
     nl = cut.rfind("\n")
     return cut[:nl] if nl > lo // 2 else cut
+
+
+@dataclass(frozen=True, slots=True)
+class Segment:
+    start: int
+    """Token offset of the segment's first line in the whole text."""
+    end: int
+    text: str
+
+    def where(self, total: int) -> dict[str, int]:
+        return {"from": self.start, "to": self.end, "of": total}
+
+
+def segments(text: str, size: int = SEGMENT_TOKENS) -> list[Segment]:
+    """The text in consecutive pieces of at most `size` o200k tokens, cut at line ends (a single line longer
+    than `size` is cut inside). A trailing piece shorter than a quarter of `size` joins the one before it, so a
+    paper's last lines are asked about with their context rather than alone."""
+    if not text:
+        return [Segment(0, 0, "")]
+    pieces: list[tuple[int, list[str]]] = []  # (tokens, lines)
+    tokens = 0
+    lines: list[str] = []
+    for line in text.split("\n"):
+        n = count_tokens(line + "\n")
+        if n > size:
+            if lines:
+                pieces.append((tokens, lines))
+                tokens, lines = 0, []
+            rest = line
+            while rest:
+                part = cut_tokens(rest, size) or rest[: max(1, len(rest) // 2)]
+                pieces.append((count_tokens(part), [part]))
+                rest = rest[len(part) :]
+            continue
+        if tokens + n > size and lines:
+            pieces.append((tokens, lines))
+            tokens, lines = 0, []
+        tokens += n
+        lines.append(line)
+    if lines or not pieces:
+        pieces.append((tokens, lines))
+    if len(pieces) > 1 and pieces[-1][0] < size // 4:
+        tail_tokens, tail_lines = pieces.pop()
+        head_tokens, head_lines = pieces.pop()
+        pieces.append((head_tokens + tail_tokens, head_lines + tail_lines))
+    out: list[Segment] = []
+    start = 0
+    for n, ls in pieces:
+        out.append(Segment(start, start + n, "\n".join(ls)))
+        start += n
+    return out
+
+
+def answer_budget(context: int) -> int:
+    """Document tokens that fit a request in a model loaded with `context`."""
+    return max(1, context - PROMPT_RESERVE)
 
 
 QUOTE_WORDS_FOUND = 0.8
@@ -190,8 +273,8 @@ def grounded(quote: str, answer: str, text_words: set[str], haystack: str) -> bo
     return sum(1 for w in qwords if w in text_words) / len(qwords) >= QUOTE_WORDS_FOUND
 
 
-def validate_questions(raw: list[Any], text: str) -> list[dict[str, str]]:
-    """Keep pairs that are grounded in the text layer (see `grounded`), at most QUESTIONS_KEPT."""
+def validate_questions(raw: list[Any], text: str, limit: int = QUESTIONS_KEPT) -> list[dict[str, str]]:
+    """Keep pairs that are grounded in `text` (see `grounded`), at most `limit`."""
     haystack = norm(text)
     text_words = set(TOKEN.findall(haystack))
     kept: list[dict[str, str]] = []
@@ -204,7 +287,7 @@ def validate_questions(raw: list[Any], text: str) -> list[dict[str, str]]:
         if not grounded(quote, a, text_words, haystack):
             continue
         kept.append({"question": q, "answer": a, "quote": quote})
-        if len(kept) == QUESTIONS_KEPT:
+        if len(kept) == limit:
             break
     return kept
 
@@ -218,30 +301,59 @@ def _docs(run_dir: Path) -> list[dict[str, Any]]:
     return docs
 
 
+def cached_questions(path: Path) -> int | None:
+    """How many questions a cached file holds when it was written under the current scheme and has at least
+    one question per segment on average; None when it must be generated again."""
+    if not path.exists():
+        return None
+    record = json.loads(path.read_text(encoding="utf-8"))
+    have = len(record.get("questions", []))
+    if record.get("scheme") != SCHEME or have < int(record.get("segments", 1)):
+        return None
+    return have
+
+
+def generate_questions(client: Client, text: str) -> tuple[list[dict[str, Any]], int]:
+    """Questions for one paper, QUESTIONS_KEPT per SEGMENT_TOKENS-token segment of its text, each recording
+    where its evidence lies. Returns (questions, number of segments)."""
+    segs = segments(text, SEGMENT_TOKENS)
+    total = segs[-1].end
+    out: list[dict[str, Any]] = []
+    for i, seg in enumerate(segs):
+        kept: list[dict[str, str]] = []
+        for _attempt in range(2):
+            prompt = GENERATE_PROMPT.format(n=QUESTIONS_WANTED, part=i + 1, parts=len(segs), text=seg.text)
+            try:
+                kept = validate_questions(parse_json_array(client.chat(prompt, max_tokens=2000)), seg.text)
+            except (ValueError, json.JSONDecodeError) as exc:
+                _note(exc)
+                continue
+            if kept:
+                break
+        out.extend({**q, "segment": seg.where(total)} for q in kept)
+    return out, len(segs)
+
+
 def generate(client: Client, run_dir: Path, workers: int) -> int:
     docs = _docs(run_dir)
     qa_dir().mkdir(parents=True, exist_ok=True)
 
     def one(doc: dict[str, Any]) -> str:
         path = qa_dir() / f"{doc['id']}.json"
-        if path.exists():
-            have = len(json.loads(path.read_text(encoding="utf-8"))["questions"])
-            if have >= MIN_QUESTIONS:
-                return f"{doc['id']}: cached ({have} questions)"
-        text = cut_tokens(witness(doc["id"], Path(doc["input"])).text, DOC_TOKENS)
-        kept: list[dict[str, str]] = []
-        for _attempt in range(2):
-            reply = client.chat(GENERATE_PROMPT.format(n=QUESTIONS_WANTED, text=text), max_tokens=4000)
-            try:
-                kept = validate_questions(parse_json_array(reply), text)
-            except (ValueError, json.JSONDecodeError) as exc:
-                _note(exc)
-                continue
-            if len(kept) >= MIN_QUESTIONS:
-                break
-        record = {"model": client.model, "server": client.base_url, "doc": doc["id"], "questions": kept}
+        have = cached_questions(path)
+        if have is not None:
+            return f"{doc['id']}: cached ({have} questions)"
+        questions, parts = generate_questions(client, witness(doc["id"], Path(doc["input"])).text)
+        record = {
+            "model": client.model,
+            "server": client.base_url,
+            "scheme": SCHEME,
+            "doc": doc["id"],
+            "segments": parts,
+            "questions": questions,
+        }
         path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
-        return f"{doc['id']}: {len(kept)} questions"
+        return f"{doc['id']}: {len(questions)} questions over {parts} segments"
 
     with ThreadPoolExecutor(workers) as pool:
         for line in pool.map(one, docs):
@@ -249,15 +361,36 @@ def generate(client: Client, run_dir: Path, workers: int) -> int:
     return 0
 
 
-def _questions(doc_id: str) -> list[dict[str, str]]:
+def _questions(doc_id: str) -> list[dict[str, Any]]:
     path = qa_dir() / f"{doc_id}.json"
     if not path.exists():
         return []
-    items: list[dict[str, str]] = json.loads(path.read_text(encoding="utf-8"))["questions"]
+    items: list[dict[str, Any]] = json.loads(path.read_text(encoding="utf-8"))["questions"]
     return items
 
 
-def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int) -> int:
+RUN_CAP = 32
+"""A run of one non-ASCII character longer than this is squeezed to this many before the text is sent: the
+server's tokenizer failed ("Failed to process regex", HTTP 400) on a 764-character run of one CJK character that
+MinerU read off a table's rules. Such a run carries nothing a question could ask about."""
+
+_LONG_RUN = re.compile(rf"([^\x00-\x7f])\1{{{RUN_CAP},}}")
+
+
+def squeeze_runs(text: str) -> str:
+    return _LONG_RUN.sub(lambda m: m.group(1) * RUN_CAP, text)
+
+
+def document_text(md: str, context: int) -> tuple[str, bool]:
+    """The output as the model sees it: whole when it fits the context, else cut. Returns (text, cut)."""
+    md = squeeze_runs(md)
+    budget = answer_budget(context)
+    if count_tokens(md) <= budget:
+        return md, False
+    return cut_tokens(md, budget), True
+
+
+def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int, context: int = CONTEXT_TOKENS) -> int:
     results = [r for r in read_results(run_dir / "results.jsonl") if tools is None or r.tool in tools]
     results = [r for r in results if r.status != "unsupported"]
 
@@ -270,13 +403,14 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
             return f"{r.tool} {r.doc_id}: no questions"
         md = strip_data_uris(read_output(r, run_dir))
         answers: list[str]
+        cut = False
         if r.status != "ok" or not md.strip():
             answers = [UNKNOWN] * len(questions)
         else:
             # Like the verdicts, answers are cached by the exact text the model saw: a sampled model answers the
             # same text differently on another day, and a tool whose output did not change between two runs
             # must score the same in both.
-            text = cut_tokens(md, DOC_TOKENS)
+            text, cut = document_text(md, context)
             hit = cached_answers(r.doc_id, questions, text)
             if hit is not None:
                 answers = hit
@@ -290,6 +424,13 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
                     except (ValueError, json.JSONDecodeError) as exc:
                         _note(exc)
                         continue
+                    except urllib.error.HTTPError as exc:
+                        if exc.code != 400:
+                            raise
+                        # The server refused this text (its tokenizer, not the context): this document fails
+                        # for this tool and the pass goes on; a server that stopped answering is an OSError.
+                        reason = exc.read().decode("utf-8", "replace")[:120]
+                        return f"{r.tool} {r.doc_id}: FAILED, the server refused the text ({reason})"
                     answers = [str(a) if a is not None else UNKNOWN for a in got][: len(questions)]
                     if len(answers) == len(questions):
                         break
@@ -298,10 +439,19 @@ def answer(client: Client, run_dir: Path, tools: list[str] | None, workers: int)
                     return f"{r.tool} {r.doc_id}: FAILED, the model returned {len(answers)} of {len(questions)} answers"
                 store_answers(r.doc_id, questions, text, answers, client.model)
         items = [{**q, "answer_given": a} for q, a in zip(questions, answers, strict=True)]
-        record = {"model": client.model, "server": client.base_url, "tool": r.tool, "doc": r.doc_id, "items": items}
+        record = {
+            "model": client.model,
+            "server": client.base_url,
+            "tool": r.tool,
+            "doc": r.doc_id,
+            "context": context,
+            "cut": cut,
+            "items": items,
+        }
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(record, indent=1, ensure_ascii=False), encoding="utf-8", newline="\n")
-        return f"{r.tool} {r.doc_id}: {sum(a != UNKNOWN for a in answers)}/{len(answers)} answered"
+        note = " (output cut to fit the context)" if cut else ""
+        return f"{r.tool} {r.doc_id}: {sum(a != UNKNOWN for a in answers)}/{len(answers)} answered{note}"
 
     with ThreadPoolExecutor(workers) as pool:
         for line in pool.map(one, results):
@@ -341,7 +491,7 @@ def store_answers(doc_id: str, questions: list[dict[str, str]], text: str, answe
     path.write_text(json.dumps(record, ensure_ascii=False), encoding="utf-8", newline="\n")
 
 
-def seed_answers(run_dir: Path, tools: list[str] | None) -> int:
+def seed_answers(run_dir: Path, tools: list[str] | None, context: int = CONTEXT_TOKENS) -> int:
     """Put the answers of an already answered run into the cache (keyed by the text the model saw), where no
     answer for that text exists yet. Returns the number of documents added."""
     added = 0
@@ -360,7 +510,8 @@ def seed_answers(run_dir: Path, tools: list[str] | None) -> int:
         md = strip_data_uris(read_output(r, run_dir))
         if not md.strip():
             continue
-        text = cut_tokens(md, DOC_TOKENS)
+        record = json.loads(path.read_text(encoding="utf-8"))
+        text, _cut = document_text(md, int(record.get("context", context)))
         if cached_answers(r.doc_id, questions, text) is None:
             store_answers(r.doc_id, questions, text, [str(it["answer_given"]) for it in items], "seeded")
             added += 1
@@ -521,11 +672,11 @@ def loaded_context(lms: str, model: str) -> int | None:
     return None
 
 
-def ensure_model(client: Client, workers: int) -> None:
-    """Have LM Studio serve the model with at least CONTEXT_TOKENS of context. `/v1/models` lists every model on
-    disk, loaded or not, and a request to an unloaded one makes LM Studio load it with its default 4k context,
-    which this pipeline's prompts overflow; so the loaded context is checked with `lms ps` and the model is
-    reloaded when it is missing or too small."""
+def ensure_model(client: Client, workers: int, context: int = CONTEXT_TOKENS) -> None:
+    """Have LM Studio serve the model with at least `context` tokens of context per worker. `/v1/models` lists
+    every model on disk, loaded or not, and a request to an unloaded one makes LM Studio load it with its
+    default 4k context, which this pipeline's prompts overflow; so the loaded context is checked with `lms ps`
+    and the model is reloaded when it is missing or too small."""
     lms = _lms()
     if lms is None:
         try:
@@ -536,11 +687,11 @@ def ensure_model(client: Client, workers: int) -> None:
             pass
         raise SystemExit(f"{client.base_url} is not serving {client.model} and lms is not installed to load it")
     subprocess.run([lms, "server", "start"], check=False, capture_output=True)
-    needed = CONTEXT_TOKENS * workers
-    context = loaded_context(lms, client.model)
-    if context is not None and context >= needed:
+    needed = context * workers
+    have = loaded_context(lms, client.model)
+    if have is not None and have >= needed:
         return
-    if context is not None:
+    if have is not None:
         subprocess.run([lms, "unload", client.model], check=False, capture_output=True)
     subprocess.run(
         [
@@ -561,9 +712,9 @@ def ensure_model(client: Client, workers: int) -> None:
         ],
         check=True,
     )
-    context = loaded_context(lms, client.model)
-    if context is None or context < needed:
-        raise SystemExit(f"{client.model} did not come up with a {needed}-token context (got {context})")
+    have = loaded_context(lms, client.model)
+    if have is None or have < needed:
+        raise SystemExit(f"{client.model} did not come up with a {needed}-token context (got {have})")
 
 
 def main(
@@ -575,6 +726,7 @@ def main(
     model: str | None,
     base_url: str | None,
     workers: int,
+    context: int = CONTEXT_TOKENS,
 ) -> int:
     if corpus != "arxiv":
         print(f"qa: no witness text for corpus {corpus}", file=sys.stderr)
@@ -583,7 +735,7 @@ def main(
         print(f"qa: no run under {run_dir} (run the corpus first)", file=sys.stderr)
         return 1
     if step == "seed":  # no model needed
-        seed_answers(run_dir, tools)
+        seed_answers(run_dir, tools, context)
         seed_grades(run_dir, tools)
         return 0
     if step == "ungrade":
@@ -593,14 +745,18 @@ def main(
         base_url or os.environ.get("EZMD_BENCH_LLM_URL", DEFAULT_URL),
         model or os.environ.get("EZMD_BENCH_LLM_MODEL", DEFAULT_MODEL),
     )
-    ensure_model(client, workers)
+    ensure_model(client, workers, context)
     steps = ("generate", "answer", "grade") if step == "all" else (step,)
     rc = 0
-    for s in steps:
-        if s == "generate":
-            rc = rc or generate(client, run_dir, workers)
-        elif s == "answer":
-            rc = rc or answer(client, run_dir, tools, workers)
-        else:
-            rc = rc or grade(client, run_dir, tools, workers)
+    try:
+        for s in steps:
+            if s == "generate":
+                rc = rc or generate(client, run_dir, workers)
+            elif s == "answer":
+                rc = rc or answer(client, run_dir, tools, workers, context)
+            else:
+                rc = rc or grade(client, run_dir, tools, workers)
+    except OSError as exc:  # the server stopped answering (a timeout is an OSError): stop, the caches resume
+        print(f"qa: {client.base_url} stopped answering ({exc}); nothing partial was written, rerun to resume")
+        return 1
     return rc

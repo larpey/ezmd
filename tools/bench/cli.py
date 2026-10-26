@@ -116,7 +116,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--model", default=None, help="model id on the local OpenAI-compatible server")
     p.add_argument("--base-url", default=None, help="default http://localhost:1234/v1 (LM Studio)")
     p.add_argument(
-        "--workers", type=int, default=1, help="parallel requests; the model is loaded with 32k context each"
+        "--workers", type=int, default=1, help="parallel requests; the model is loaded with --context tokens each"
+    )
+    p.add_argument(
+        "--context",
+        type=int,
+        default=None,
+        help="context the model is loaded with (default 131072, gpt-oss-20b's maximum, which fits every output "
+        "of the sample whole; an output that does not fit is cut and the answer record says so)",
     )
     p = sub.add_parser("tokens", help="exact Claude token counts of each output (Anthropic count_tokens, free)")
     p.add_argument("--corpus", required=True)
@@ -152,6 +159,7 @@ def main(argv: list[str] | None = None) -> int:
 
         return write_report(args.date)
     if args.cmd == "qa":
+        from tools.bench.qa import CONTEXT_TOKENS
         from tools.bench.qa import main as qa
 
         return qa(
@@ -162,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
             model=args.model,
             base_url=args.base_url,
             workers=args.workers,
+            context=args.context or CONTEXT_TOKENS,
         )
     if args.cmd == "smoke":
         from tools.bench.report import write_report

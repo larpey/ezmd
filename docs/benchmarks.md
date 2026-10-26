@@ -47,7 +47,9 @@ gets from the converted file, with the PDF itself as the witness, so the compari
 
 - **Answer accuracy.** A local model (gpt-oss-20b through LM Studio) wrote five questions per paper from the PDF's
   own text layer, never from a converter's output, each backed by a quote checked against the text layer. The same
-  model answered the 148 questions from each tool's Markdown and graded the answers against the references.
+  model answered the 148 questions from each tool's Markdown and graded the answers against the references. The
+  whole-paper rerun below asks two questions per 8,000-token segment of the text layer instead (176 questions) and
+  lets the model read each tool's whole output.
 - **Text recall.** The share of the text layer's word occurrences present in the output.
 - **Source recall.** The same share against the paper's LaTeX source (the arXiv e-print, turned into plain text
   with math, preamble, labels and link targets removed). The source is the one witness no converter's extractor
@@ -102,14 +104,34 @@ mind on 20 of 1,119 answers in this run alone. The same cache holds the model's 
 saw, so a tool whose output does not change between runs scores the same in both (the answers themselves proved
 deterministic: 148 of 148 identical on a re-run over the same text).
 
-One limit of the metric to know before reading the compact row: the local model's context fixes a window of
-24,000 o200k tokens, so questions are written from the first 24,000 tokens of the text layer and every tool's
-output is cut there before it is sent. The compact profile stops at 16,000 tokens and dropped the tail of 19 of
-the 30 papers (half of a paper's words on average, 13% kept at worst), yet 145 of the 148 questions have their
-evidence inside what compact kept, and the 15 answers on which full and compact disagree go nine to six with the
-evidence present in both. So the score does not say that compact's cut is cheap; it says the questions do not
-reach the part it cut. Measuring that cost needs questions drawn from the whole paper, which is harness work
-still to do.
+One limit of that table to know before reading the compact row: the questions were written from the first
+24,000 tokens of each paper and every output was cut there before it was sent, because the model ran with a
+24,000-token window. The compact profile stops at 16,000 tokens and dropped the tail of 19 of the 30 papers (half
+of a paper's words on average), yet 145 of the 148 questions had their evidence inside what compact kept. The
+rerun of 2026-10-25 (`bench/results/2026-10-24-whole/`) removes that limit: two questions per 8,000-token segment
+of the text layer (176 over the 30 papers), the model reading each tool's whole output in a 131,072-token
+context, and a second column for the questions whose evidence is in the second half of the paper. Same outputs,
+same grader, same machine:
+
+| tool | answer accuracy, whole paper | on second-half questions |
+|---|---|---|
+| **ezmd [docs]** (Docling engine) | 0.808 [0.723, 0.881] | 0.741 [0.634, 0.841] |
+| MarkItDown 0.1.8 | 0.787 [0.688, 0.870] | 0.753 [0.642, 0.858] |
+| **ezmd main, full** | 0.780 [0.691, 0.862] | 0.716 [0.603, 0.815] |
+| **ezmd main, rag** | 0.761 [0.668, 0.844] | 0.706 [0.603, 0.800] |
+| Docling 2.138.0 | 0.758 [0.667, 0.839] | 0.707 [0.595, 0.810] |
+| MinerU 4.0.12 | 0.753 [0.657, 0.835] | 0.684 [0.573, 0.793] |
+| **ezmd 0.1.0** | 0.698 [0.577, 0.805] | 0.621 [0.483, 0.750] |
+| pymupdf4llm 1.28.2 | 0.677 [0.558, 0.788] | 0.582 [0.456, 0.711] |
+| **ezmd main, compact** | 0.564 [0.425, 0.695] | 0.453 [0.306, 0.608] |
+
+Compact's cut costs 0.22 of accuracy over the whole paper (paired against the full profile's run of the same
+papers: -0.223 [-0.324, -0.136] against MarkItDown, the best competitor row) and 0.26 on second-half questions.
+That is the number the first table could not show. The full profile ties MarkItDown, Docling and MinerU on the
+paired test (-0.006 [-0.070, +0.051] against MarkItDown), and 0.1.0 to main is a real gain for the text-layer
+engine on the same questions (0.698 to 0.780). The figure-lettering fix of #27, measured the same way on the
+same papers (`bench/results/2026-10-25-figtext/compare.md`), leaves accuracy where it was (full -0.004 [-0.013,
++0.000]) and trims 19 o200k tokens per page.
 
 What it says, with the paired tests over the same 30 papers (`bench/results/2026-10-24/summary.md`):
 

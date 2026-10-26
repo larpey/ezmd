@@ -211,16 +211,51 @@ def declared_loss(result: DocResult, run_dir: Path) -> bool | None:
     return bool(data.get("truncated")) or bool(kinds & LOSS_KINDS)
 
 
-def qa_scores(result: DocResult, run_dir: Path) -> tuple[int, int] | None:
-    """(correct, asked) from tools/bench/qa.py's graded file, when it exists for this tool and document."""
+@dataclass(frozen=True, slots=True)
+class QaScore:
+    correct: int
+    asked: int
+    tail_correct: int
+    """Correct answers to questions whose evidence lies in the second half of the paper's text layer."""
+    tail_asked: int
+    cut: bool
+    """The tool's output did not fit the answering model's context and was cut before it was sent."""
+
+    @property
+    def accuracy(self) -> float:
+        return self.correct / self.asked
+
+    @property
+    def tail_accuracy(self) -> float | None:
+        return self.tail_correct / self.tail_asked if self.tail_asked else None
+
+
+def in_second_half(item: dict[str, Any]) -> bool | None:
+    """Whether a question's evidence lies in the second half of the text layer (by the midpoint of the segment
+    it was written from); None for a question written without a segment (an older question file)."""
+    seg = item.get("segment")
+    if not isinstance(seg, dict) or not seg.get("of"):
+        return None
+    return (float(seg.get("from", 0)) + float(seg.get("to", 0))) / 2 >= float(seg["of"]) / 2
+
+
+def qa_scores(result: DocResult, run_dir: Path) -> QaScore | None:
+    """What tools/bench/qa.py's graded file says for this tool and document, None when there is none."""
     path = run_dir / "qa" / result.tool / f"{result.doc_id}.json"
     if not path.exists():
         return None
-    items = json.loads(path.read_text(encoding="utf-8")).get("items", [])
-    graded = [it for it in items if "correct" in it]
+    record = json.loads(path.read_text(encoding="utf-8"))
+    graded = [it for it in record.get("items", []) if "correct" in it]
     if not graded:
         return None
-    return sum(1 for it in graded if it["correct"]), len(graded)
+    tail = [it for it in graded if in_second_half(it)]
+    return QaScore(
+        correct=sum(1 for it in graded if it["correct"]),
+        asked=len(graded),
+        tail_correct=sum(1 for it in tail if it["correct"]),
+        tail_asked=len(tail),
+        cut=bool(record.get("cut")),
+    )
 
 
 def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict[str, float | None]:
@@ -244,10 +279,16 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
         "arxiv-outline-recall": outline_recall(w.bookmarks, headings_of(md) if ok else []),
         "arxiv-tokens-per-page": round(tokens / w.pages, 1) if tokens is not None and w.pages else None,
         "arxiv-claude-tokens-per-page": round(claude / w.pages, 1) if claude is not None and w.pages else None,
-        "arxiv-qa": None if qa is None else round(qa[0] / qa[1], 4),
+        "arxiv-qa": None if qa is None else round(qa.accuracy, 4),
+        "arxiv-qa-second-half": None if qa is None or qa.tail_accuracy is None else round(qa.tail_accuracy, 4),
         "arxiv-answers-per-10k-tokens": (
-            round(qa[0] / tokens * 10_000, 3) if qa is not None and tokens else (0.0 if qa is not None else None)
+            round(qa.correct / tokens * 10_000, 3) if qa is not None and tokens else (0.0 if qa is not None else None)
         ),
+        "qa_asked": None if qa is None else float(qa.asked),
+        "qa_correct": None if qa is None else float(qa.correct),
+        "qa_tail_asked": None if qa is None else float(qa.tail_asked),
+        "qa_tail_correct": None if qa is None else float(qa.tail_correct),
+        "qa_cut": None if qa is None else float(qa.cut),
         "lost": float(lost),
         "declared": None if declared is None else float(declared),
         "tokens": None if tokens is None else float(tokens),
@@ -262,6 +303,24 @@ def score_doc(result: DocResult, run_dir: Path, inputs: dict[str, Path]) -> dict
 def _mean(values: list[float | None]) -> float | None:
     kept = [v for v in values if v is not None]
     return round(sum(kept) / len(kept), 4) if kept else None
+
+
+def _qa_pooled(per_doc: dict[str, dict[str, float | None]]) -> dict[str, dict[str, Any]]:
+    docs = [v for v in per_doc.values() if v.get("qa_asked") is not None]
+
+    def total(key: str) -> int:
+        return int(sum(float(v[key] or 0) for v in docs))
+
+    asked, correct = total("qa_asked"), total("qa_correct")
+    tail_asked, tail_correct = total("qa_tail_asked"), total("qa_tail_correct")
+    head_asked, head_correct = asked - tail_asked, correct - tail_correct
+    return {
+        "qa_questions": {"value": asked, "n": len(docs)},
+        "qa_pooled_accuracy": {"value": round(correct / asked, 4) if asked else None, "n": asked},
+        "qa_first_half": {"value": round(head_correct / head_asked, 4) if head_asked else None, "n": head_asked},
+        "qa_second_half": {"value": round(tail_correct / tail_asked, 4) if tail_asked else None, "n": tail_asked},
+        "qa_outputs_cut": {"value": total("qa_cut"), "n": len(docs)},
+    }
 
 
 def _mean_ratio(per_doc: dict[str, dict[str, float | None]], key: str, inputs: dict[str, Path]) -> float | None:
@@ -282,6 +341,7 @@ def _inputs(run_dir: Path) -> dict[str, Path]:
 
 CATEGORIES = (
     "arxiv-qa",
+    "arxiv-qa-second-half",
     "arxiv-text-recall",
     "arxiv-source-recall",
     "arxiv-silent-loss",
@@ -313,6 +373,10 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         lost = [v["lost"] for v in per_doc.values()]
         refs = [v["text_layer_source_recall"] for v in per_doc.values() if v["text_layer_source_recall"] is not None]
         secondary = {
+            # Answer accuracy pooled over questions rather than averaged over papers (the categories average over
+            # papers), split by where the question's evidence lies: a converter that cuts a paper's tail shows
+            # in the second half. `qa_outputs_cut` counts documents whose output did not fit the model's context.
+            **_qa_pooled(per_doc),
             # The same for every tool: the raw pdfium text layer's own recall against the LaTeX source, the
             # reference to read arxiv-source-recall by.
             "text_layer_source_recall": {"value": round(sum(refs) / len(refs), 4) if refs else None},
@@ -344,6 +408,9 @@ def score(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         primary_cat = "arxiv-qa" if cats["arxiv-qa"]["n"] else "arxiv-text-recall"
         tools[tool] = {
             "primary": {k: cats[primary_cat][k] for k in ("value", "ci", "n")},
+            # Named per tool: a tool whose answers were not graded falls back to text recall, and the summary must
+            # not print that number under the other tools' label.
+            "metric": "qa_accuracy" if primary_cat == "arxiv-qa" else "text_recall",
             "categories": cats,
             "per_doc": cats[primary_cat]["per_doc"],
             "secondary": secondary,
