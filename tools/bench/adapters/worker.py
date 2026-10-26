@@ -56,7 +56,14 @@ def _ezmd() -> tuple[str, Convert]:
             for w in result.conversion.document.warnings
         ]
         truncated = bool(result.frontmatter.get("truncated"))
-        sidecar = {"profile": profile, "truncated": truncated, "warnings": warnings}
+        # Render-time warnings (injection_suspected among them) live in the frontmatter, not the document.
+        sidecar = {
+            "profile": profile,
+            "truncated": truncated,
+            "warnings": warnings,
+            "render_warnings": [str(w) for w in result.frontmatter.get("warnings") or []],
+            "injection_risk": result.frontmatter.get("injection_risk"),
+        }
         _SIDECARS[str(path)] = json.dumps(sidecar, ensure_ascii=False)
         return str(result.markdown)
 
