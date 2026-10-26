@@ -532,6 +532,9 @@ class MagicDetector:
         ole = _ole_verdict(sample, lm, mg_mime, score, ext_mime)
         if ole is not None:
             mime, confidence = ole
+        elif sample.startswith(b"PK\x03\x04") and b"xl/workbook.bin" in sample:
+            # An Excel binary workbook is an OOXML package with .bin parts; openpyxl cannot read it, LibreOffice can.
+            mime, confidence = XLSB, 0.9
         elif mg_mime is not None and score >= MAGIKA_THRESHOLD:
             mime, confidence = mg_mime, score
         elif lm is not None and ext_mime is not None and lm == ext_mime:
@@ -546,17 +549,14 @@ class MagicDetector:
             mime, confidence = mg_mime, score
         else:
             mime, confidence = OCTET, 0.0
-        if mime == _XLSX and b"xl/workbook.bin" in sample:
-            # An Excel binary workbook is the same package with .bin parts; openpyxl cannot read it, LibreOffice can.
-            mime, confidence = XLSB, max(confidence, 0.9)
-        if mime == OCTET and ((lm or "").startswith("text/") or looks_like_text(sample)):
-            # A Magika label with no MIME type (proteindb and other niche text formats) is not evidence of
-            # binary content; printable text is text, whatever it is called.
-            mime, confidence = "text/plain", 0.6
         if mime != RFC822 and (mime.startswith("text/") or mime == OCTET) and looks_like_rfc822(sample, ext):
             # An email whose body is HTML is "html"/"mht" to Magika and libmagic; its leading RFC 5322 headers
             # decide (docs/internal/spec/part2.md 9a: From:/Received:/Return-Path: in the first 2 KB).
             mime, confidence = RFC822, max(confidence, 0.9)
+        if mime == OCTET and ((lm or "").startswith("text/") or looks_like_text(sample)):
+            # A Magika label with no MIME type (proteindb and other niche text formats) is not evidence of
+            # binary content; printable text is text, whatever it is called.
+            mime, confidence = "text/plain", 0.6
         return Detected(
             mime=mime,
             extension=ext,
