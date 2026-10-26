@@ -245,6 +245,12 @@ def fetch_ccgov() -> None:
     run()
 
 
+def fetch_media() -> None:
+    from tools.bench.media import fetch_media as run
+
+    run()
+
+
 FETCHERS = {
     "olmocr": fetch_olmocr,
     "omnidoc": fetch_omnidoc,
@@ -253,6 +259,7 @@ FETCHERS = {
     "arxiv-source": fetch_arxiv_source,
     "govdocs1": fetch_govdocs1,
     "ccgov": fetch_ccgov,
+    "media": fetch_media,
 }
 
 

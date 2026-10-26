@@ -312,6 +312,15 @@ def _ccgov(sample: int | None = None) -> list[Doc]:
 CORPORA["ccgov"] = _ccgov
 
 
+def _media(sample: int | None = None) -> list[Doc]:
+    from tools.bench.media import media
+
+    return media(sample)
+
+
+CORPORA["media"] = _media
+
+
 def heldout(corpus: str) -> list[Doc]:
     """The documents of `corpus` outside its default sample: never used to develop or tune ezmd, so a score
     on them is not fitted to the published sample (D-0032 "on a held-out split")."""
