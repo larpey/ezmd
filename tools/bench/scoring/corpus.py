@@ -65,7 +65,7 @@ def outcome(r: DocResult) -> str:
 def message_shape(error: str | None, width: int = 80) -> str:
     """The first line of a message with numbers and quoted names blanked, so one cause is one key."""
     first = (error or "").splitlines()[0] if error else ""
-    return _DIGITS.sub("#", _QUOTED.sub("'…'", _FOR_NAME.sub("for …", first)))[:width]
+    return _DIGITS.sub("#", _QUOTED.sub("'…'", _FOR_NAME.sub("for <name>", first)))[:width]
 
 
 def bug_key(r: DocResult) -> tuple[str, str]:

@@ -195,7 +195,7 @@ def test_outcomes_and_clusters(tmp_path: Path) -> None:
     assert len(wrapped) == 1 and wrapped[0]["where"] == "ezmd_converters/pdf/assemble.py:238 _line"
     assert clusters[4]["message"] == "LibreOffice exit # on '…'" and clusters[4]["samples"] == ["000003", "000004"]
     shaped = scoring.message_shape("no converter for 4ZE7TVTY.xlsm (mime=application/x)")
-    assert shaped == "no converter for … (mime=application/x)"
+    assert shaped == "no converter for <name> (mime=application/x)"
     scores = scoring.score(results, tmp_path)
     tool = scores["tools"]["ezmd-main"]
     assert scores["metric"] == "clean_rate" and tool["primary"]["value"] == pytest.approx(0.5)
