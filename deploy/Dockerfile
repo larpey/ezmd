@@ -136,8 +136,12 @@ LABEL org.opencontainers.image.source="https://github.com/larpey/ezmd" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.vendor="ezmd contributors" \
       io.modelcontextprotocol.server.name="io.github.larpey/ezmd"
-# pip/ensurepip are not needed at runtime (the venv is built by uv) and only add attack surface.
+# Debian's security updates are applied at build time: the base image is pinned by digest and rebuilt
+# upstream on its own schedule, so between bumps a fixed CVE in a system library (openssl, zlib) would
+# otherwise ship in every image and fail the scan. pip/ensurepip are not needed at runtime (the venv is
+# built by uv) and only add attack surface.
 RUN apt-get update \
+ && apt-get upgrade -y --no-install-recommends \
  && apt-get install -y --no-install-recommends libmagic1 \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /usr/local/lib/python3.12/site-packages/pip /usr/local/lib/python3.12/site-packages/pip-* \

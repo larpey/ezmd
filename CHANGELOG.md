@@ -44,6 +44,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`).
 
 ### Changed
+- Container images apply Debian's security updates at build time (`apt-get upgrade` in the runtime stage):
+  the base image is pinned by digest and rebuilt upstream on its own schedule, so a fixed CVE in a system
+  library (openssl, this week) no longer ships in every image and fails the scan until the next digest bump.
 - LibreOffice conversions initialise a user profile once per process and copy it for every later file,
   instead of initialising a throwaway profile from scratch each time. Each file still gets its own writable,
   disposable copy with macros, active content and link updates disabled. A legacy `.doc`, `.xls` or `.ppt`
