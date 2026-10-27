@@ -26,6 +26,7 @@ from tools.bench.corpora import (
     AEB_REVISION,
     GOVDOCS1_THREADS,
     GOVDOCS1_URL,
+    GOVDOCS1_ZIP_URL,
     OLMOCR_REVISION,
     OMNIDOC_GT_REVISION,
     OMNIDOC_PDF_REVISION,
@@ -34,6 +35,8 @@ from tools.bench.corpora import (
     arxiv_root,
     arxiv_source_dir,
     corpora_dir,
+    govdocs1_held_archives,
+    govdocs1_held_dir,
     govdocs1_root,
     omnidoc_root,
 )
@@ -193,9 +196,6 @@ def fetch_govdocs1() -> None:
     """The ten Govdocs1 threads: each zip is downloaded once (about 300 MB) and its files extracted flat into
     `threads/<n>/` by basename (the zips nest them under the first three digits). A thread whose folder exists
     is left alone, so a copy made by hand on another drive (`EZMD_GOVDOCS1`) is used as it is."""
-    import urllib.request
-    import zipfile
-
     threads = govdocs1_root() / "threads"
     threads.mkdir(parents=True, exist_ok=True)
     for n in range(GOVDOCS1_THREADS):
@@ -203,27 +203,60 @@ def fetch_govdocs1() -> None:
         if folder.is_dir():
             continue
         archive = threads / f"thread{n}.zip"
-        if not archive.exists() or archive.stat().st_size == 0:
-            url = GOVDOCS1_URL.format(n=n)  # an https template; only the thread number varies
-            req = urllib.request.Request(url, headers={"User-Agent": "ezmd-bench/1 (https://github.com/larpey/ezmd)"})  # noqa: S310
-            with urllib.request.urlopen(req, timeout=600) as resp, archive.open("wb") as out:  # noqa: S310
-                shutil.copyfileobj(resp, out)
-            print(f"govdocs1: thread{n}.zip ({archive.stat().st_size // 2**20} MB)", flush=True)
-        staging = threads / f"{n}.partial"
-        if staging.exists():
-            shutil.rmtree(staging)
-        staging.mkdir()
-        count = 0
-        with zipfile.ZipFile(archive) as z:
-            for info in z.infolist():
-                if info.is_dir():
-                    continue
-                name = Path(info.filename).name
-                with z.open(info) as src, (staging / name).open("wb") as dst:
-                    shutil.copyfileobj(src, dst)
-                count += 1
-        _rename_when_released(staging, folder)
+        _download_once(GOVDOCS1_URL.format(n=n), archive, f"govdocs1: thread{n}.zip")
+        count = _extract_flat(archive, folder)
         print(f"govdocs1: thread {n}: {count} files", flush=True)
+
+
+def fetch_govdocs1_held() -> None:
+    """The twenty held-out archives (about 487 MB each), extracted flat into `held/<nnn>/`. A full local copy
+    of the archives under `zips/` (as `<nnn>.zip`) is used before anything is downloaded."""
+    root = govdocs1_root()
+    (root / "held").mkdir(parents=True, exist_ok=True)
+    for n in govdocs1_held_archives():
+        folder = govdocs1_held_dir(n)
+        if folder.is_dir():
+            continue
+        archive = root / "zips" / f"{n:03d}.zip"
+        if not archive.exists() or archive.stat().st_size == 0:
+            archive = root / "held" / f"{n:03d}.zip"
+            _download_once(GOVDOCS1_ZIP_URL.format(n=n), archive, f"govdocs1-held: {n:03d}.zip")
+        count = _extract_flat(archive, folder)
+        print(f"govdocs1-held: archive {n:03d}: {count} files", flush=True)
+
+
+def _download_once(url: str, archive: Path, label: str) -> None:
+    """Downloads `url` to `archive` unless it is already there and non-empty."""
+    import urllib.request
+
+    if archive.exists() and archive.stat().st_size > 0:
+        return
+    req = urllib.request.Request(url, headers={"User-Agent": "ezmd-bench/1 (https://github.com/larpey/ezmd)"})  # noqa: S310
+    with urllib.request.urlopen(req, timeout=600) as resp, archive.open("wb") as out:  # noqa: S310
+        shutil.copyfileobj(resp, out)
+    print(f"{label} ({archive.stat().st_size // 2**20} MB)", flush=True)
+
+
+def _extract_flat(archive: Path, folder: Path) -> int:
+    """Extracts every file of `archive` by basename into `folder` (Govdocs1 nests them under the first three
+    digits) through a staging folder, so an interrupted extraction never passes for a complete one."""
+    import zipfile
+
+    staging = folder.parent / f"{folder.name}.partial"
+    if staging.exists():
+        shutil.rmtree(staging)
+    staging.mkdir()
+    count = 0
+    with zipfile.ZipFile(archive) as z:
+        for info in z.infolist():
+            if info.is_dir():
+                continue
+            name = Path(info.filename).name
+            with z.open(info) as src, (staging / name).open("wb") as dst:
+                shutil.copyfileobj(src, dst)
+            count += 1
+    _rename_when_released(staging, folder)
+    return count
 
 
 def _rename_when_released(src: Path, dst: Path, attempts: int = 10) -> None:
@@ -258,6 +291,7 @@ FETCHERS = {
     "arxiv": fetch_arxiv,
     "arxiv-source": fetch_arxiv_source,
     "govdocs1": fetch_govdocs1,
+    "govdocs1-held": fetch_govdocs1_held,
     "ccgov": fetch_ccgov,
     "media": fetch_media,
 }

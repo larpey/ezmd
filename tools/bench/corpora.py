@@ -291,6 +291,53 @@ def govdocs1(sample: int | None = None) -> list[Doc]:
     return _sample(docs, sample)
 
 
+GOVDOCS1_ARCHIVES = 1000
+GOVDOCS1_HELD_ARCHIVES = 20
+GOVDOCS1_HELD_SEED = 2026
+"""The held-out split of Govdocs1: twenty of its thousand archives (000.zip to 999.zip, about 986 files each),
+drawn once by seed, minus every file that is in a thread. Nothing in it was looked at while the pilot's bugs
+were found and fixed, so a clean rate on it confirms the fixes instead of refitting them (D-0032 "on a
+held-out split"). The threads must be present so their files can be excluded."""
+GOVDOCS1_ZIP_URL = "https://downloads.digitalcorpora.org/corpora/files/govdocs1/zipfiles/{n:03d}.zip"
+
+
+def govdocs1_held_archives() -> list[int]:
+    return sorted(random.Random(GOVDOCS1_HELD_SEED).sample(range(GOVDOCS1_ARCHIVES), GOVDOCS1_HELD_ARCHIVES))
+
+
+def govdocs1_held_dir(n: int) -> Path:
+    return govdocs1_root() / "held" / f"{n:03d}"
+
+
+def govdocs1_thread_ids() -> set[str]:
+    """The ids of every file in the ten threads; raises when a thread is missing, like `govdocs1`."""
+    return {d.id for d in govdocs1()}
+
+
+def govdocs1_held(sample: int | None = None) -> list[Doc]:
+    """Every file of the twenty held-out archives that is not in a thread; category = the file's extension."""
+    thread_ids = govdocs1_thread_ids()
+    docs: list[Doc] = []
+    missing: list[int] = []
+    for n in govdocs1_held_archives():
+        folder = govdocs1_held_dir(n)
+        if not folder.is_dir():
+            missing.append(n)
+            continue
+        for path in sorted(p for p in folder.iterdir() if p.is_file()):
+            if path.stem in thread_ids:
+                continue
+            category = path.suffix.lower().lstrip(".") or "none"
+            docs.append(Doc("govdocs1-held", path.stem, path, category, {"archive": n, "bytes": path.stat().st_size}))
+    if missing:
+        raise FileNotFoundError(
+            f"govdocs1-held: archives {missing} are not under {govdocs1_root() / 'held'}; "
+            "run `python -m tools.bench fetch --only govdocs1-held`"
+        )
+    docs.sort(key=lambda d: d.id)
+    return _sample(docs, sample)
+
+
 CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "smoke": smoke,
     "fixtures": fixtures,
@@ -300,6 +347,7 @@ CORPORA: dict[str, Callable[[int | None], list[Doc]]] = {
     "arxiv": arxiv,
     "arxiv-damaged": arxiv_damaged,
     "govdocs1": govdocs1,
+    "govdocs1-held": govdocs1_held,
 }
 
 
