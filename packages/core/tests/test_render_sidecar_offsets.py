@@ -116,6 +116,68 @@ def test_a_unit_whose_trailing_whitespace_was_stripped_keeps_later_units_in_orde
         assert raw[start:end].decode() == units[i]
 
 
+def test_probe_ends_at_the_first_sentence_or_line() -> None:
+    from ezmd.render.sidecar import PROBE_CHARS, PROBE_MIN, _probe
+
+    long = " ".join(f"Sentence {k} of a paragraph." for k in range(40))
+    first = "Sentence 0 of a paragraph long enough to stand alone."
+    assert _probe(first + "\n" + long) == first
+    assert _probe(first + "  " + long) == first
+    assert _probe("Yes. " + long) == ("Yes. " + long)[:PROBE_MIN], "a short first sentence takes the next's start"
+    header = "| column alpha | column beta | column gamma |"
+    assert _probe(header + "\n|---|---|---|\n| 1 | 2 | 3 |") == header
+    assert _probe("| a | b |\n|---|---|\n| 1 | 2 |") == "| a | b |\n|---|---|\n| 1 | 2 |"[:PROBE_MIN]
+    assert _probe("x" * 500) == "x" * PROBE_CHARS
+    assert _probe("short") == "short"
+
+
+def _cut_after_first_sentence(text: str) -> tuple[str, str]:
+    first, _, rest = text.partition(". ")
+    return first + ".", rest
+
+
+def test_a_split_unit_whose_first_piece_is_one_sentence_is_found_by_it() -> None:
+    # The chunker packs an oversized unit into a partly filled chunk, so its first piece can be one sentence.
+    unit = " ".join(f"Sentence {k} of a paragraph that the chunker cut after its first one." for k in range(30))
+    first, rest = _cut_after_first_sentence(unit)
+    body = (
+        f'<!-- chunk id="c0001" -->\n**Doc**\n\nBefore ü.\n\n{first}\n<!-- /chunk -->\n\n'
+        f'<!-- chunk id="c0002" part="2/2" -->\n**Doc**\n\n{rest}\n<!-- /chunk -->\n\nAfter.\n'
+    )
+    units = ["Before ü.", unit, "After."]
+    out = locate_units(body, _units(units))
+    assert sorted(out) == [0, 2]
+    raw = body.encode()
+    for i in (0, 2):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+
+
+def test_many_split_units_with_one_sentence_first_pieces_do_not_rescan_the_body() -> None:
+    # 12,000 split units whose first piece is one sentence: a 200-character probe was found nowhere and scanned
+    # the rest of the 12 MB body for each, about 20 seconds; a probe that ends at the sentence is found at once.
+    unit = " ".join(f"Sentence {k} of a paragraph that the chunker cut after its first one." for k in range(12))
+    first, rest = _cut_after_first_sentence(unit)
+    parts: list[str] = []
+    units: list[str] = []
+    for i in range(12_000):
+        units.extend([f"Whole paragraph {i} ü.", unit])
+        parts.append(
+            f'<!-- chunk id="c{i:05d}" -->\nWhole paragraph {i} ü.\n\n{first}\n<!-- /chunk -->\n\n'
+            f'<!-- chunk id="d{i:05d}" part="2/2" -->\n{rest}\n<!-- /chunk -->'
+        )
+    body = "\n\n".join(parts) + "\n"
+    t = time.perf_counter()
+    out = locate_units(body, _units(units))
+    elapsed = time.perf_counter() - t
+    assert sorted(out) == list(range(0, 24_000, 2))
+    raw = body.encode()
+    for i in (0, 12_000, 23_998):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+    assert elapsed < 10, f"locate_units took {elapsed:.1f} s with 12,000 one-sentence first pieces"
+
+
 def test_many_split_units_do_not_rescan_the_body() -> None:
     # 4,000 paragraphs the chunker split: each used to scan the rest of the body for a text that is not there,
     # 4,000 scans of a 4 MB body. Units longer than the probe keep their head in the body, which is enough.

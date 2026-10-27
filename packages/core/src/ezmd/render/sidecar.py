@@ -20,10 +20,25 @@ __all__ = ["SIDECAR_SCHEMA", "build_sidecar", "locate_units"]
 SIDECAR_SCHEMA = "ezmd.sidecar/1"
 
 PROBE_CHARS = 200
-"""How much of a unit's head is searched for before the whole text is checked where the head is."""
+"""The most of a unit's head that is searched for before the whole text is checked where the head is."""
+
+PROBE_MIN = 40
+"""The least of it: a first sentence or line shorter than this is searched for with the start of the next."""
 
 _CHUNK_CLOSE = "\n<!-- /chunk -->"
 _WS = re.compile(r"\s+")
+_PROBE_END = re.compile(r"[.!?](?=\s)|\n")
+
+
+def _probe(text: str) -> str:
+    """The part of a unit's head to search for: its first sentence or line, at least `PROBE_MIN` and at most
+    `PROBE_CHARS` characters. The chunker's first piece of a split unit is whole sentences (prose), whole items
+    (lists) or the header and whole rows (tables), so a probe that ends at the first sentence or line is in the
+    body even when the first piece is one sentence; a probe of the first 200 characters crossed the chunk
+    marker then, was found nowhere, and cost a scan to the end of the body."""
+    m = _PROBE_END.search(text, 0, PROBE_CHARS)
+    cut = PROBE_CHARS if m is None else m.start() if m.group() == "\n" else m.end()
+    return text[: min(max(cut, PROBE_MIN), PROBE_CHARS)]
 
 
 def locate_units(body: str, units: list[Unit]) -> dict[int, tuple[int, int]]:
@@ -64,7 +79,7 @@ def _find_unit(body: str, text: str, pos: int) -> tuple[int, int | None]:
     when it is there in pieces or with its whitespace changed and the search for the next unit starts at
     `resume`, `(-1, None)` when it is nowhere. A head that matches somewhere else, inside a unit that happens
     to start the same way, is passed over and the search goes on, so a later whole copy is still found."""
-    head = text[:PROBE_CHARS]
+    head = _probe(text)
     whole = _WS.sub(" ", text)
     start = pos
     while (idx := body.find(head, start)) >= 0:
