@@ -17,23 +17,34 @@ __all__ = ["SIDECAR_SCHEMA", "build_sidecar", "locate_units"]
 
 SIDECAR_SCHEMA = "ezmd.sidecar/1"
 
+PROBE_CHARS = 200
+"""How much of a unit's head is searched for before the whole text is checked where the head is."""
+
 
 def locate_units(body: str, units: list[Unit]) -> dict[int, tuple[int, int]]:
     """Byte offsets of each unit's text inside the body, searched in order. Keyed by unit index.
 
     Linear in the body: the byte position advances with the search position and only the slice between one
     unit and the next is encoded. Re-encoding the whole prefix per unit was quadratic, and a 32 MB log with a
-    unit per line spent minutes here after a conversion of seconds (#56)."""
+    unit per line spent minutes here after a conversion of seconds (#56).
+
+    A unit the rag chunker split into pieces is not in the body whole, so the search is for its head, and the
+    whole text is checked where the head is. A split unit then costs one short search and the next search
+    starts where it begins; searching for its whole text scanned to the end of the body for every such unit.
+    A unit whose head is not in the body at all gets no offset and still costs one scan."""
     out: dict[int, tuple[int, int]] = {}
     pos = 0  # character position the next search starts from
     byte_pos = 0  # byte offset of `pos`
     for i, u in enumerate(units):
         if not u.text:
             continue
-        idx = body.find(u.text, pos)
+        idx = body.find(u.text[:PROBE_CHARS], pos)
         if idx < 0:
             continue
         byte_pos += len(body[pos:idx].encode("utf-8"))
+        pos = idx
+        if not body.startswith(u.text, idx):
+            continue
         length = len(u.text.encode("utf-8"))
         out[i] = (byte_pos, byte_pos + length)
         pos = idx + len(u.text)

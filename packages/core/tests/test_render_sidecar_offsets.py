@@ -48,3 +48,46 @@ def test_large_body_with_a_unit_per_line_is_linear() -> None:
         start, end = out[i]
         assert raw[start:end].decode() == lines[i]
     assert elapsed < 10, f"locate_units took {elapsed:.1f} s on a 1.5 MB body"
+
+
+def _split_in_body(text: str, n: int) -> str:
+    """What the rag chunker leaves in the body for a prose unit over the budget: the sentences in `n` pieces,
+    each inside its own chunk markers, so the unit's whole text is no longer in the body."""
+    sentences = text.split(" ")
+    size = max(1, len(sentences) // n)
+    pieces = [" ".join(sentences[k : k + size]) for k in range(0, len(sentences), size)]
+    marked = (f'<!-- chunk id="c{k:04d}" part="{k}/{n}" -->\n{p}\n<!-- /chunk -->' for k, p in enumerate(pieces, 1))
+    return "\n\n".join(marked)
+
+
+def test_split_units_get_no_offset_and_later_units_still_resolve() -> None:
+    long = " ".join(f"Sentence {k} of a paragraph the chunker splits because it is over the budget." for k in range(40))
+    units = ["Intro.", long, "Middle ü.", long, "Last."]
+    body = "\n\n".join(["Intro.", _split_in_body(long, 3), "Middle ü.", _split_in_body(long, 3), "Last."]) + "\n"
+    out = locate_units(body, _units(units))
+    assert sorted(out) == [0, 2, 4], "the split units get no offset; the whole ones before, between and after do"
+    raw = body.encode()
+    for i in (0, 2, 4):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+
+
+def test_many_split_units_do_not_rescan_the_body() -> None:
+    # 4,000 paragraphs the chunker split: each used to scan the rest of the body for a text that is not there,
+    # 4,000 scans of a 4 MB body. Units longer than the probe keep their head in the body, which is enough.
+    long = " ".join(f"Sentence {k} of a paragraph the chunker splits because it is over the budget." for k in range(12))
+    units: list[str] = []
+    parts: list[str] = []
+    for i in range(4_000):
+        units.extend([f"Whole paragraph {i} ü.", long])
+        parts.extend([f"Whole paragraph {i} ü.", _split_in_body(long, 2)])
+    body = "\n\n".join(parts) + "\n"
+    t = time.perf_counter()
+    out = locate_units(body, _units(units))
+    elapsed = time.perf_counter() - t
+    assert sorted(out) == list(range(0, 8_000, 2))
+    raw = body.encode()
+    for i in (0, 4_000, 7_998):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+    assert elapsed < 10, f"locate_units took {elapsed:.1f} s with 4,000 split units in a {len(body) / 1e6:.1f} MB body"
