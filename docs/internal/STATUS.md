@@ -176,9 +176,13 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
   (#37), and the bugs became the fixes #38 to #47, all merged the same day. The confirmation on `govdocs1-held`,
   twenty archives no fix was tuned on (`bench/results/2026-10-27-confirm/`): clean rate 0.9999 [0.9997, 1.0000] over
   19,519 files, the two remaining bugs timeouts on large files, legacy Office at 5 s a file instead of 13,
-  injection highs at 0.08%.
+  injection highs at 0.08%. The whole `media` corpus (`bench/results/2026-10-27-media-c/`, 20,348 files): clean
+  rate 1.0000, every raster image, audio and video file a declared refusal in 30 ms, 998 of 998 EPUBs converted;
+  but since #39 SVG falls through to the plain-text reader and 3,776 drawings come out as their escaped XML
+  source, up to 18 MB each (#55), and 12 of 998 novels score `injection_risk: high` on dialogue (#59).
   Next on this track: the smell shapes the PDF converter still shows (lone bullets, headings that start with a
-  bullet), the sixteen issue drafts from the sweep, and the audio and video pull for `media`.
+  bullet), the SVG route (#55), the fiction dialogue patterns (#59), and the live issues from the sweep (#51 to
+  #54).
 
 ## Blocked on me
 - (resolved 2026-10-08) GitHub token lacked the `workflow` scope; I approved device login from my phone.
