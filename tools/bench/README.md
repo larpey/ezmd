@@ -70,6 +70,18 @@ uv run python -m tools.bench run --corpus govdocs1 --tools ezmd-main --workers 8
 uv run python -m tools.bench score --corpus govdocs1 --date D                             # clean rate + clusters.md
 ```
 
+`govdocs1-held` is the held-out split: twenty of the thousand Govdocs1 archives (`000.zip` to `999.zip`, about
+986 files each) drawn once by seed, minus every file that is in a thread. Nothing in it was looked at while the
+pilot's bugs were found and fixed, so its clean rate confirms a batch of fixes rather than refitting them. The
+threads must be fetched first, since their files are what is excluded; a full local copy of the archives under
+`zips/` is used before anything is downloaded.
+
+```bash
+EZMD_GOVDOCS1=D:/corpora/govdocs1 uv run python -m tools.bench fetch --only govdocs1-held   # twenty zips, extracted flat
+uv run python -m tools.bench run --corpus govdocs1-held --tools ezmd-main --workers 8 --timeout 120 --date D
+uv run python -m tools.bench score --corpus govdocs1-held --date D
+```
+
 `score` also runs the structural smell scorer (`tools/bench/scoring/smell.py`) over every output and writes
 `smells.md`: per smell, how many outputs show it, by type, with samples. The gated smells (`empty`,
 `control_chars`, `lone_bullet`, `heading_bullet`, `heading_repeated`, `truncated_full`) are the shapes no

@@ -37,7 +37,7 @@ def score_corpus(corpus: str, run_dir: Path, tools: list[str] | None) -> int:
         from tools.bench.scoring.arxiv import score
     elif corpus == "arxiv-damaged":
         from tools.bench.scoring.damaged import score
-    elif corpus in ("govdocs1", "ccgov", "media"):
+    elif corpus in ("govdocs1", "govdocs1-held", "ccgov", "media"):
         from tools.bench.scoring.corpus import score
     else:
         print(f"no scorer for corpus {corpus}")

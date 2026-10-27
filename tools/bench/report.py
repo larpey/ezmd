@@ -131,7 +131,7 @@ def _categories(corpus: str, scores: dict[str, Any], results: list[DocResult]) -
                 "speed": _speed(rs),
                 "secondary": s["secondary"],
             }
-        elif corpus in ("govdocs1", "ccgov", "media"):
+        elif corpus in ("govdocs1", "govdocs1-held", "ccgov", "media"):
             sec = {k: v for k, v in s["secondary"].items() if k != "clusters"}
             cats[f"{corpus}-clean"][tool] = {
                 **s["primary"],

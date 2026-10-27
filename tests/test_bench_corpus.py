@@ -62,6 +62,52 @@ def test_govdocs1_lists_every_thread_file_by_extension(tmp_path: Path, monkeypat
     assert len(corpora.govdocs1(3)) == 3
 
 
+def test_govdocs1_held_is_twenty_seeded_archives_minus_the_threads(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("EZMD_GOVDOCS1", str(tmp_path))
+    archives = corpora.govdocs1_held_archives()
+    assert len(archives) == 20 and archives == sorted(set(archives)) and all(0 <= n < 1000 for n in archives)
+    assert archives == corpora.govdocs1_held_archives()  # the draw is fixed by the seed
+    with pytest.raises(FileNotFoundError, match="fetch --only govdocs1"):  # the threads come first
+        corpora.govdocs1_held()
+    for n in range(corpora.GOVDOCS1_THREADS):
+        (tmp_path / "threads" / str(n)).mkdir(parents=True)
+    in_thread = f"{archives[0]:03d}001"  # a file of a held archive that is also in a thread
+    (tmp_path / "threads" / "0" / f"{in_thread}.pdf").write_bytes(b"%PDF")
+    with pytest.raises(FileNotFoundError, match="fetch --only govdocs1-held"):
+        corpora.govdocs1_held()
+    for n in archives:
+        folder = tmp_path / "held" / f"{n:03d}"
+        folder.mkdir(parents=True)
+        (folder / f"{n:03d}001.pdf").write_bytes(b"%PDF")
+        (folder / f"{n:03d}002.XLS").write_bytes(b"\xd0\xcf")
+    docs = corpora.govdocs1_held()
+    assert len(docs) == 39 and in_thread not in {d.id for d in docs}
+    assert docs[0].id == f"{archives[0]:03d}002"  # the archive's first file is the one in the thread
+    assert docs[0].corpus == "govdocs1-held" and docs[0].meta == {"archive": archives[0], "bytes": 2}
+    assert {d.category for d in docs} == {"pdf", "xls"}
+    assert len(corpora.govdocs1_held(5)) == 5
+
+
+def test_extract_flat_drops_the_nesting_and_the_staging_folder(tmp_path: Path) -> None:
+    import zipfile
+
+    from tools.bench.fetch import _extract_flat
+
+    archive = tmp_path / "105.zip"
+    with zipfile.ZipFile(archive, "w") as z:
+        z.writestr("105/", "")
+        z.writestr("105/105000.pdf", "%PDF")
+        z.writestr("105/105001.txt", "hello")
+    folder = tmp_path / "held" / "105"
+    folder.parent.mkdir()
+    (folder.parent / "105.partial").mkdir()  # a leftover from an interrupted extraction is replaced
+    assert _extract_flat(archive, folder) == 2
+    assert sorted(p.name for p in folder.iterdir()) == ["105000.pdf", "105001.txt"]
+    assert (folder / "105001.txt").read_text() == "hello" and not (folder.parent / "105.partial").exists()
+
+
 def test_failure_site_prefers_the_tools_own_frame() -> None:
     def inner() -> None:
         raise KeyError("x")
