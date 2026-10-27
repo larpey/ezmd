@@ -7,6 +7,8 @@ document itself. Byte offsets (`offset_start`, `offset_end`) are relative to the
 
 from __future__ import annotations
 
+import re
+
 from ezmd.ir import RESERVED_SIDECAR_KEYS, Slide, WarningKind
 from ezmd.render.base import Chunk
 from ezmd.render.context import RenderContext, Unit
@@ -20,6 +22,9 @@ SIDECAR_SCHEMA = "ezmd.sidecar/1"
 PROBE_CHARS = 200
 """How much of a unit's head is searched for before the whole text is checked where the head is."""
 
+_CHUNK_CLOSE = "\n<!-- /chunk -->"
+_WS = re.compile(r"\s+")
+
 
 def locate_units(body: str, units: list[Unit]) -> dict[int, tuple[int, int]]:
     """Byte offsets of each unit's text inside the body, searched in order. Keyed by unit index.
@@ -29,27 +34,63 @@ def locate_units(body: str, units: list[Unit]) -> dict[int, tuple[int, int]]:
     unit per line spent minutes here after a conversion of seconds (#56).
 
     A unit the rag chunker split into pieces is not in the body whole, so the search is for its head, and the
-    whole text is checked where the head is. A split unit then costs one short search and the next search
-    starts where it begins; searching for its whole text scanned to the end of the body for every such unit.
-    A unit whose head is not in the body at all gets no offset and still costs one scan."""
+    whole text is checked where the head is (`_find_unit`). A split unit then costs one short search and the
+    next search starts after its first piece; searching for its whole text scanned to the end of the body for
+    every such unit. A unit whose head is not in the body at all gets no offset and still costs one scan."""
     out: dict[int, tuple[int, int]] = {}
     pos = 0  # character position the next search starts from
     byte_pos = 0  # byte offset of `pos`
     for i, u in enumerate(units):
         if not u.text:
             continue
-        idx = body.find(u.text[:PROBE_CHARS], pos)
+        idx, resume = _find_unit(body, u.text, pos)
         if idx < 0:
             continue
         byte_pos += len(body[pos:idx].encode("utf-8"))
         pos = idx
-        if not body.startswith(u.text, idx):
+        if resume is not None:  # the unit is here in pieces or with its whitespace changed: no offset
+            byte_pos += len(body[idx:resume].encode("utf-8"))
+            pos = resume
             continue
         length = len(u.text.encode("utf-8"))
         out[i] = (byte_pos, byte_pos + length)
         pos = idx + len(u.text)
         byte_pos += length
     return out
+
+
+def _find_unit(body: str, text: str, pos: int) -> tuple[int, int | None]:
+    """Where `text` is in the body at or after `pos`: `(index, None)` when it is there whole, `(index, resume)`
+    when it is there in pieces or with its whitespace changed and the search for the next unit starts at
+    `resume`, `(-1, None)` when it is nowhere. A head that matches somewhere else, inside a unit that happens
+    to start the same way, is passed over and the search goes on, so a later whole copy is still found."""
+    head = text[:PROBE_CHARS]
+    whole = _WS.sub(" ", text)
+    start = pos
+    while (idx := body.find(head, start)) >= 0:
+        if body.startswith(text, idx):
+            return idx, None
+        resume = _own_place(body, text, whole, idx)
+        if resume >= 0:
+            return idx, resume
+        start = idx + 1
+    return -1, None
+
+
+def _own_place(body: str, text: str, whole: str, idx: int) -> int:
+    """Where the search for the next unit resumes when the body at `idx` is this unit, not whole: the end of its
+    first chunk piece, or `idx` when it is there whole with its whitespace changed; -1 when it is something else.
+
+    The chunker cuts an oversized unit into pieces, each closed by a chunk marker, and joins split sentences
+    with a space; the renderer strips trailing whitespace from lines. So the body up to the next chunk marker,
+    or as far as the unit reaches, is the unit's text once whitespace is collapsed, and a coincidence is not."""
+    close = body.find(_CHUNK_CLOSE, idx, idx + len(text) + len(_CHUNK_CLOSE))
+    if close >= 0 and whole.startswith(_WS.sub(" ", body[idx:close])):
+        return close
+    window = _WS.sub(" ", body[idx : idx + len(text)])
+    if window.startswith(whole) or whole.startswith(window):
+        return idx
+    return -1
 
 
 def _sections(units: list[Unit], offsets: dict[int, tuple[int, int]], body_len: int) -> list[dict[str, object]]:

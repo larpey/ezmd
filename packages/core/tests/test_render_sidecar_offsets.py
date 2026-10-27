@@ -72,6 +72,50 @@ def test_split_units_get_no_offset_and_later_units_still_resolve() -> None:
         assert raw[start:end].decode() == units[i]
 
 
+def test_a_whole_unit_that_starts_like_a_split_one_is_still_found() -> None:
+    # The second unit begins with the first unit's text. The first is split, so its head is in the body but
+    # its whole text is not; the second must not stop at the first's pieces.
+    first = " ".join(f"Sentence {k} of a paragraph the chunker splits because it is over the budget." for k in range(8))
+    second = first + " And a second unit that goes on from there."
+    units = [first, second, "Last."]
+    body = "\n\n".join([_split_in_body(first, 2), second, "Last."]) + "\n"
+    out = locate_units(body, _units(units))
+    assert sorted(out) == [1, 2]
+    raw = body.encode()
+    for i in (1, 2):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+
+
+def test_a_head_that_matches_inside_a_later_unit_does_not_move_the_search() -> None:
+    # The first unit is not in the body at all, but a later unit starts with its first 250 characters. The
+    # units between keep their offsets, and the later unit its own.
+    absent = " ".join(f"Sentence {k} of a paragraph that was dropped from the body." for k in range(8))
+    later = absent[:250] + " but then it goes somewhere else entirely."
+    units = [absent, "Between ü.", later, "Last."]
+    body = "\n\n".join(["Between ü.", later, "Last."]) + "\n"
+    out = locate_units(body, _units(units))
+    assert sorted(out) == [1, 2, 3]
+    raw = body.encode()
+    for i in (1, 2, 3):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+
+
+def test_a_unit_whose_trailing_whitespace_was_stripped_keeps_later_units_in_order() -> None:
+    # The renderer strips trailing whitespace from lines, so a unit with a padded line is in the body with its
+    # whitespace changed: no offset for it, and the units after it are searched from where it is.
+    padded = " ".join(f"Sentence {k} of a long paragraph with a padded line." for k in range(6)) + "   \nand more."
+    units = [padded, "Next ü.", "Last."]
+    body = "\n\n".join([padded.replace("   \n", "\n"), "Next ü.", "Last."]) + "\n"
+    out = locate_units(body, _units(units))
+    assert sorted(out) == [1, 2]
+    raw = body.encode()
+    for i in (1, 2):
+        start, end = out[i]
+        assert raw[start:end].decode() == units[i]
+
+
 def test_many_split_units_do_not_rescan_the_body() -> None:
     # 4,000 paragraphs the chunker split: each used to scan the rest of the body for a text that is not there,
     # 4,000 scans of a 4 MB body. Units longer than the probe keep their head in the body, which is enough.
