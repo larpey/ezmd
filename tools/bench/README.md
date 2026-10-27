@@ -74,7 +74,9 @@ uv run python -m tools.bench score --corpus govdocs1 --date D                   
 986 files each) drawn once by seed, minus every file that is in a thread. Nothing in it was looked at while the
 pilot's bugs were found and fixed, so its clean rate confirms a batch of fixes rather than refitting them. The
 threads must be fetched first, since their files are what is excluded; a full local copy of the archives under
-`zips/` is used before anything is downloaded.
+`zips/` is used before anything is downloaded. A fifth of either corpus is legacy Office, which only converts
+with LibreOffice on the machine (`LIBREOFFICE_PATH` when it is not on PATH); without it those files are
+declared refusals and the clean rate is not comparable.
 
 ```bash
 EZMD_GOVDOCS1=D:/corpora/govdocs1 uv run python -m tools.bench fetch --only govdocs1-held   # twenty zips, extracted flat

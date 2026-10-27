@@ -29,6 +29,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   the pass cleanly and the caches resume it; runs of one non-ASCII character are squeezed before an output is
   sent (a 764-character run broke the server's tokenizer); a correctly escaped `\\` in a reply is kept; the
   score summary names each tool's own primary metric.
+- Benchmark harness: a `govdocs1-held` corpus, twenty of the thousand Govdocs1 archives drawn once by seed minus
+  every file that is in a thread (about 19,500 files), for confirming a batch of fixes on files that were never
+  looked at while the threads' bugs were fixed. `fetch --only govdocs1-held` extracts them from a local copy of
+  the archives or downloads them. First results in `bench/results/2026-10-27-confirm/`.
 - Benchmark harness: a `govdocs1` corpus, the ten official Govdocs1 threads (about 9,900 everyday files from
   .gov servers across some twenty formats), scored on outcome because no ground truth exists: an output, a
   declared refusal, or a bug (an undeclared exception, a timeout, a worker crash). `score` writes the clean rate

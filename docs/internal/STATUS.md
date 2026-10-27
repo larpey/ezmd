@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-10-26
+Last updated: 2026-10-27
 Current phase: 1 closed (G1 passed); Phase 2 not started; I set its design direction once the coverage work below has a shape
 Current task: benchmark loop P4-B03 (pulled forward, D-0060): whole-paper QA with questions drawn from the whole text layer, figure lettering emitted as tables, token gap against Docling
 Overall: 33 / 85 tasks done
@@ -171,6 +171,14 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
   tag. Nothing extracted or converted yet. First task once I settle its shape: a pilot over the ten official
   1,000-file Govdocs1 subsets with ezmd only (outcome per file, crash clustering by exception and top frame, then the
   smell scorer), scaled to the full corpus on the same harness, with competitors on a seeded few thousand.
+- Where that stands (2026-10-27): the pilot ran on 2026-10-26 (`bench/results/2026-10-26-pilot/`, clean rate 0.9941
+  over 9,875 files, 58 bugs, 3.2% of outputs flagged `injection_risk: high`), the ccgov and media corpora followed
+  (#37), and the bugs became the fixes #38 to #47, all merged the same day. The confirmation on `govdocs1-held`,
+  twenty archives no fix was tuned on (`bench/results/2026-10-27-confirm/`): clean rate 0.9999 [0.9997, 1.0000] over
+  19,519 files, the two remaining bugs timeouts on large files, legacy Office at 5 s a file instead of 13,
+  injection highs at 0.08%.
+  Next on this track: the smell shapes the PDF converter still shows (lone bullets, headings that start with a
+  bullet), the sixteen issue drafts from the sweep, and the audio and video pull for `media`.
 
 ## Blocked on me
 - (resolved 2026-10-08) GitHub token lacked the `workflow` scope; I approved device login from my phone.
