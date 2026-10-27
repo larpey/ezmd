@@ -19,18 +19,25 @@ SIDECAR_SCHEMA = "ezmd.sidecar/1"
 
 
 def locate_units(body: str, units: list[Unit]) -> dict[int, tuple[int, int]]:
-    """Byte offsets of each unit's text inside the body, searched in order. Keyed by unit index."""
+    """Byte offsets of each unit's text inside the body, searched in order. Keyed by unit index.
+
+    Linear in the body: the byte position advances with the search position and only the slice between one
+    unit and the next is encoded. Re-encoding the whole prefix per unit was quadratic, and a 32 MB log with a
+    unit per line spent minutes here after a conversion of seconds (#56)."""
     out: dict[int, tuple[int, int]] = {}
-    pos = 0
+    pos = 0  # character position the next search starts from
+    byte_pos = 0  # byte offset of `pos`
     for i, u in enumerate(units):
         if not u.text:
             continue
         idx = body.find(u.text, pos)
         if idx < 0:
             continue
-        start = len(body[:idx].encode("utf-8"))
-        out[i] = (start, start + len(u.text.encode("utf-8")))
+        byte_pos += len(body[pos:idx].encode("utf-8"))
+        length = len(u.text.encode("utf-8"))
+        out[i] = (byte_pos, byte_pos + length)
         pos = idx + len(u.text)
+        byte_pos += length
     return out
 
 
