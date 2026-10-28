@@ -168,9 +168,9 @@ Task: P0-T06
 Status: accepted
 Context: Skeptic review (section 2.4) accepted content fidelity of all four text goldens and raised three spec questions.
 Decision:
-- Title H1: a leading source H1 whose text equals the title is consumed as the document H1, and no shift is applied; the sidecar records the effective `heading_shift` (0 in that case, 1 only when a source H1 survives below the title). Following Part 3 14 literally would print the title twice.
+- Title H1: a leading source H1 whose text equals the title is consumed as the document H1, and no shift is applied; the ledger records the effective `heading_shift` (0 in that case, 1 only when a source H1 survives below the title). Following Part 3 14 literally would print the title twice.
 - `encoding_uncertain` follows Part 2 13.2: raised only when detection confidence is below 0.7 and the decode still contains replacement characters. A clean Latin-1/cp1252 decode is not uncertain; the plain-latin1 fixture expects no warning.
-- Invisible characters: removed from all inputs (Part 1 8.2 and Part 3 14 win over Part 2's note that non-web inputs keep zero-width characters) and reported as `removed_hidden_elements` with a count; the sidecar `counts.removed_nonprinting` includes what converters removed upstream. `removed_invisible_chars` stays in the registry for converters that want to separate the two.
+- Invisible characters: removed from all inputs (Part 1 8.2 and Part 3 14 win over Part 2's note that non-web inputs keep zero-width characters) and reported as `removed_hidden_elements` with a count; the ledger `counts.removed_nonprinting` includes what converters removed upstream. `removed_invisible_chars` stays in the registry for converters that want to separate the two.
 Consequences: goldens regenerated and accepted; all four score 1.0 at threshold 0.95. Goldens are not hand-edited.
 Council: not convened.
 
@@ -241,7 +241,7 @@ Consequences: chains still fully decide order among their own members.
 Date: 2026-10-08
 Task: P1-T09
 Status: accepted
-Decision: The CLI is a thin client over `intomd.library` (convert/batch/doctor/capabilities/version/detect/serve, config file with env and flag precedence, remote mode over REST, `--json` on failure). Interactive default profile is `compact` only when Markdown goes to a terminal; file and machine output default to `full` (part4 4.0 rule 3). Batch idempotency compares the input sha256 with the previous manifest line and the sidecar's `source_hash` (the spec's `content_hash` hashes the output, so it cannot be checked before converting). Exit code 3 = partial success (D-0017). Details and alternatives: `docs/internal/decisions/P1-T09.md`.
+Decision: The CLI is a thin client over `intomd.library` (convert/batch/doctor/capabilities/version/detect/serve, config file with env and flag precedence, remote mode over REST, `--json` on failure). Interactive default profile is `compact` only when Markdown goes to a terminal; file and machine output default to `full` (part4 4.0 rule 3). Batch idempotency compares the input sha256 with the previous manifest line and the ledger's `source_hash` (the spec's `content_hash` hashes the output, so it cannot be checked before converting). Exit code 3 = partial success (D-0017). Details and alternatives: `docs/internal/decisions/P1-T09.md`.
 Deferred: an `Options.engines` per-family preference so the config `[engines]` table applies per input (today `--engine` maps to a single forced converter).
 
 ## D-0023: API additions (P1-T10)
@@ -263,7 +263,7 @@ Pending: mount `intomd_mcp.http.build_http_app` at `/mcp` in the API behind key 
 Date: 2026-10-08
 Task: P1-T03
 Status: accepted
-Decision: `code.source_file` (about 43 code mimes, chains `[code.source_file, text.plain]`, specialist ranking per D-0021) and `code.repo_pack` (zip/tar.gz repos, GitHub URLs via a codeload FetchRequired, gitignore, budget actions, signatures-only) with Secretlint-style secret redaction that preserves source line numbering. Sizes are source bytes; `packed_bytes` reports emitted size. Goldens: 8 fixtures, Skeptic-accepted after two review rounds (line numbering, byte counts). The sidecar `redactions` list (part2 8b.4) waits for the core `Document.sidecar_extra` hook. Details: `docs/internal/decisions/P1-T03-code.md`.
+Decision: `code.source_file` (about 43 code mimes, chains `[code.source_file, text.plain]`, specialist ranking per D-0021) and `code.repo_pack` (zip/tar.gz repos, GitHub URLs via a codeload FetchRequired, gitignore, budget actions, signatures-only) with Secretlint-style secret redaction that preserves source line numbering. Sizes are source bytes; `packed_bytes` reports emitted size. Goldens: 8 fixtures, Skeptic-accepted after two review rounds (line numbering, byte counts). The ledger `redactions` list (part2 8b.4) waits for the core `Document.ledger_extra` hook. Details: `docs/internal/decisions/P1-T03-code.md`.
 
 ## D-0026: Core renderer and IR changes requested by the converter families
 Date: 2026-10-08
@@ -271,9 +271,9 @@ Task: P1-T01..P1-T06 (core support)
 Status: accepted
 Context: Skeptic reviews of the Phase 1 family goldens found defects that belong in core, not in converters.
 Decision (additive IR, schema stays "1.1"):
-- Render `Document.children` (archives, later email attachments) as `## <path>` sections after the parent body, headings shifted beneath, warnings merged with the child path, a sidecar `children` index; the child's title becomes the section heading.
+- Render `Document.children` (archives, later email attachments) as `## <path>` sections after the parent body, headings shifted beneath, warnings merged with the child path, a ledger `children` index; the child's title becomes the section heading.
 - Definition lists: `ListBlock.attrs["kind"]="definition"` renders `**term**` plus 4-space-indented definition lines.
-- `Document.sidecar_extra` for family-specific sidecar lists (e.g. code `redactions`); reserved keys rejected.
+- `Document.ledger_extra` for family-specific ledger lists (e.g. code `redactions`); reserved keys rejected.
 - `InlineSpan.change` (`insert`/`delete`, with author/id) renders in place: accepted by default, CriticMarkup on request.
 - `Metadata.slides` and `Metadata.sheets`; ` (hidden)` suffix for hidden headings/slides; slide notes under a `Notes` heading one level below the slide; `Table.attrs["header_synthesized"]`.
 - Hidden text from `removed_hidden_elements` `detail.hidden_text` is scanned for injection (findings tagged hidden) but never rendered; `counts.removed_nonprinting` reads warning detail, never element counts; `counts.furniture_removed` adds converter-reported `removed_running_header_footer` counts; `counts.links` includes inline links.
@@ -401,12 +401,12 @@ Alternatives: pin Caddy's container IP (fragile across compose networks); keep p
 Same branch: brotli decoding is bounded with `output_buffer_limit`; MCP tool calls may set only whitelisted options and may only lower `ezmd-mcp --max-*` limits; Pillow `MAX_IMAGE_PIXELS` is 50 MP (spec part1 8.2).
 Council: not convened (audit fix).
 
-## D-0041: Golden fixtures pass only with no hard invariant failure; sidecars compared
+## D-0041: Golden fixtures pass only with no hard invariant failure; ledgers compared
 Date: 2026-10-09
 Task: audit (fix-tests)
 Status: accepted
 Context: the 0.95 similarity threshold passed a leaked hidden-injection paragraph, a downgraded `injection_risk`, dropped table spans, changed totals and removed links.
-Decision: `ezmd.testing.invariants` adds exact checks against the golden (math, block counts, list nesting, table spans, link and image targets, numeric tokens by default, frontmatter warnings/injection_risk/truncated); meta.toml gains `must_contain`/`must_not_contain`; normalized `expected.sidecar.json` is compared exactly. CI gains an `extras` job (7z, data). Details: docs/internal/decisions/audit-fix-tests.md.
+Decision: `ezmd.testing.invariants` adds exact checks against the golden (math, block counts, list nesting, table spans, link and image targets, numeric tokens by default, frontmatter warnings/injection_risk/truncated); meta.toml gains `must_contain`/`must_not_contain`; normalized `expected.ledger.json` is compared exactly. CI gains an `extras` job (7z, data). Details: docs/internal/decisions/audit-fix-tests.md.
 Consequences: goldens were generated on Windows; a platform difference now fails CI and is treated as a real difference, not a reason to loosen.
 Council: not convened (audit fix).
 
@@ -547,7 +547,7 @@ Status: accepted
 Context: `ezmd batch` without `--continue-on-error` (part4 4.2.2 item 2: exit 1, stop) submitted every job to the process pool up front; jobs a worker had taken, and the pool's pre-queued call, could not be cancelled, so up to workers + 1 more files converted after the first failure, and the summary table did not show the cancelled count. `-q` hid ezmd's own bar, but Docling's model load still printed transformers' tqdm "Loading weights" bars. `ftp://host/x.pdf` was treated as a path and failed with "no such file". `-f zip` failed with "unknown format" and a list that included the unimplemented docx and srt.
 Decision: batch submits at most `workers` jobs and refills only while no failure has been seen; the rest are recorded as `cancelled`, and the table adds a `cancelled` column and a line naming `--continue-on-error`. `-q` and `--json` set `TQDM_DISABLE=1` and `HF_HUB_DISABLE_PROGRESS_BARS=1` (setdefault, so a user's value wins; batch workers inherit them). A source string `scheme://...` (scheme of two or more characters, so `C://` stays a path) that is not an existing path and not http(s) raises `netguard.SchemeNotAllowed` (a `UrlBlocked`, API code `url_blocked`, message starting `scheme 'ftp' is not allowed`, which ezmd-mcp maps to `fetch_refused_scheme`); the CLI exits 2. netguard's own scheme check raises the same class. `zip` stays an API-only download format (part4 4.2.2 lists md|txt|json|docx|srt for the CLI): `-f zip` explains that and points to `--out`, which writes the same `<name>.md` plus `<name>.ezmd.json`; an unknown format lists md, txt, json and says docx and srt come later.
 Evidence: with the bench's Docling venv and models, `ezmd convert simple-table.pdf -q` wrote 229 bytes of "Loading weights" bars to stderr before and nothing after.
-Alternatives: implement `-f zip` in the CLI (output writing, stdout refusal and batch idempotency, which reads the sidecar beside each output, would all change; deferred); cancel futures after a failure (cannot stop work a process already took).
+Alternatives: implement `-f zip` in the CLI (output writing, stdout refusal and batch idempotency, which reads the ledger beside each output, would all change; deferred); cancel futures after a failure (cannot stop work a process already took).
 Consequences: a batch run uses the pool slightly less eagerly (a new job starts only when one finishes, which is how a pool of N works anyway).
 Council: not convened (bug fixes).
 
@@ -699,10 +699,10 @@ Council: not convened (reviewer-flagged spec deviation; open to owner revision).
 Date: 2026-10-24
 Task: Benchmark follow-up (arXiv whole-paper tokens per page)
 Status: accepted
-Context: The `rag` profile wraps every chunk in `<!-- chunk id="<hash>#c0001" section="1" tokens="357" page="1" -->` ... `<!-- /chunk -->`. Over 30 arXiv papers the markers were 91,471 of 958,968 o200k tokens, 9.5% of the output, 17 tokens per marker. The 12-character hash is the same on every chunk of a document and already sits in the frontmatter and the sidecar; the token count is a property of the text any consumer can recompute.
-Decision: the marker's `id` is the chunk number within the document (`c0001`) and the `tokens` attribute is gone. `section`, `page`, `start`, `end`, `part` and `oversized` stay. The sidecar's `Chunk` records are unchanged: full id `<hash>#c0001`, token count, pages, block ids.
+Context: The `rag` profile wraps every chunk in `<!-- chunk id="<hash>#c0001" section="1" tokens="357" page="1" -->` ... `<!-- /chunk -->`. Over 30 arXiv papers the markers were 91,471 of 958,968 o200k tokens, 9.5% of the output, 17 tokens per marker. The 12-character hash is the same on every chunk of a document and already sits in the frontmatter and the ledger; the token count is a property of the text any consumer can recompute.
+Decision: the marker's `id` is the chunk number within the document (`c0001`) and the `tokens` attribute is gone. `section`, `page`, `start`, `end`, `part` and `oversized` stay. The ledger's `Chunk` records are unchanged: full id `<hash>#c0001`, token count, pages, block ids.
 Alternatives: keep the format (one token in ten of every indexed document spent on repetition); drop the closing marker too (chunks are contiguous, but the closer is what lets a consumer cut on either edge, and it is 4 tokens); move the markers out of the body entirely (then the body no longer says where a chunk starts, which is the point of the profile).
-Consequences: a consumer that parsed the hash out of the marker reads it from the frontmatter `content_hash` or the sidecar instead. `docs/output-format.md` updated. No fixture golden covers the rag body; the unit tests that pinned the old attributes change with it.
+Consequences: a consumer that parsed the hash out of the marker reads it from the frontmatter `content_hash` or the ledger instead. `docs/output-format.md` updated. No fixture golden covers the rag body; the unit tests that pinned the old attributes change with it.
 Council: not convened (output-format change measured by the benchmark; owner approved the direction in session).
 
 ## D-0074: Figure lettering is one paragraph per figure, found by the form XObject it shares with its graphics

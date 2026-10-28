@@ -1,0 +1,184 @@
+{
+  "counts": {
+    "fence_defanged": 0,
+    "furniture_removed": 0,
+    "headers_synthesized": 0,
+    "images_dropped_decorative": 0,
+    "removed_nonprinting": 0
+  },
+  "document": {
+    "blocks": [
+      {
+        "attrs": {},
+        "id": "b0001",
+        "parent_id": null,
+        "provenance": {
+          "bbox": null,
+          "char_end": null,
+          "char_start": null,
+          "confidence": null,
+          "engine": null,
+          "line_end": null,
+          "line_start": null,
+          "page_label": null,
+          "path": "/",
+          "source": "input.txt",
+          "source_id": null,
+          "source_label": null,
+          "source_page": null,
+          "time_end": null,
+          "time_start": null
+        },
+        "role": "body",
+        "spans": [
+          {
+            "change": null,
+            "change_author": null,
+            "change_id": null,
+            "footnote_ref": null,
+            "href": null,
+            "math": null,
+            "styles": [],
+            "text": "This input is a database URL connection string. ezmd does not connect to live databases, so nothing was converted. Export the data to CSV, Parquet, or SQLite and convert that file instead."
+          }
+        ],
+        "type": "paragraph"
+      }
+    ],
+    "content_hash": "sha256:d1740ea16723eaca5a440c44b2b29929974739cc839c28d21b163dc43a388d4f",
+    "converter_id": "data.connection_string",
+    "metadata": {
+      "author": null,
+      "authors": [],
+      "canonical_url": null,
+      "description": null,
+      "duration_seconds": null,
+      "encoding": null,
+      "encoding_confidence": null,
+      "extra": {},
+      "fetched": null,
+      "keywords": [],
+      "language": null,
+      "language_source": null,
+      "languages": [],
+      "license": null,
+      "mime": null,
+      "modified": null,
+      "pages": null,
+      "published": null,
+      "sheets": [],
+      "site_name": null,
+      "slides": null,
+      "source": "input.txt",
+      "source_type": "data",
+      "speakers": [],
+      "title": "Connection string refused"
+    },
+    "schema_version": "1.1",
+    "truncated": false,
+    "warnings": [
+      {
+        "block_id": null,
+        "count": null,
+        "detail": {
+          "kind": "database URL"
+        },
+        "kind": "connection_string_refused",
+        "message": "The input is a database URL connection string; live databases are not queried. Export the data to CSV, Parquet, or SQLite and convert that file.",
+        "page": null,
+        "severity": "error"
+      }
+    ]
+  },
+  "figures": [],
+  "footnotes": [],
+  "frontmatter": {
+    "content_hash": "sha256:197d79977f49182178b7766692aa161f570fed9582c5743f120b36726500b989",
+    "converted_at": "2026-01-01T00:00:00Z",
+    "converter": "data.connection_string",
+    "converter_version": "<normalized>",
+    "ezmd_version": "<normalized>",
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "injection_risk": "none",
+    "profile": "full",
+    "provenance": "block",
+    "schema_version": 1,
+    "source": "input.txt",
+    "source_hash": "sha256:adf93cfdb7ac124d2a247e513e6bd8481df2a19da8e5bffe41c294dad721d133",
+    "source_type": "data",
+    "title": "Connection string refused",
+    "tokens": {
+      "cl100k_base": 48,
+      "claude_approx": 52,
+      "o200k_base": 48
+    },
+    "truncated": false,
+    "warnings": [
+      "connection_string_refused"
+    ],
+    "word_count": 36
+  },
+  "heading_shift": 0,
+  "injection_findings": [],
+  "links": [],
+  "metrics": {
+    "counts": {
+      "code_blocks": 0,
+      "comments": 0,
+      "equations": 0,
+      "figures": 0,
+      "footnotes": 0,
+      "headings": 0,
+      "images": 0,
+      "links": 0,
+      "list_items": 0,
+      "lists": 0,
+      "page_breaks": 0,
+      "paragraphs": 1,
+      "quotes": 0,
+      "raw": 0,
+      "slides": 0,
+      "table_cells": 0,
+      "tables": 0,
+      "tracked_changes": 0,
+      "transcript_segments": 0,
+      "words": 32
+    },
+    "engine": "data.connection_string",
+    "engines_tried": [
+      "data.connection_string"
+    ],
+    "estimated_tokens": 0,
+    "input_bytes": 54
+  },
+  "profile": "full",
+  "provenance": [
+    {
+      "block_id": "b0001",
+      "path": "/",
+      "source": "input.txt",
+      "type": "paragraph"
+    }
+  ],
+  "schema": "ezmd.ledger/1",
+  "sections": [],
+  "segments": [],
+  "slides": [],
+  "speakers": [],
+  "tables": [],
+  "tokens_estimated": false,
+  "tokens_total": 275,
+  "warnings": [
+    {
+      "block_id": null,
+      "count": null,
+      "detail": {
+        "kind": "database URL"
+      },
+      "kind": "connection_string_refused",
+      "message": "The input is a database URL connection string; live databases are not queried. Export the data to CSV, Parquet, or SQLite and convert that file.",
+      "page": null,
+      "severity": "error"
+    }
+  ]
+}

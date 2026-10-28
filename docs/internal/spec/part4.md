@@ -6,7 +6,7 @@ This part covers everything a user touches (web UI, CLI, library, MCP, SDK, exte
 
 - `POST /v1/convert`, `GET /v1/jobs/{id}`, `GET /v1/jobs/{id}/events` (SSE), `GET /v1/jobs/{id}/result`, `GET /v1/capabilities`, `GET /healthz`, the fetch-node `POST /v1/fetch-node/claim` and `/upload` endpoints, and API key headers: Part 3.
 - `Result`, `Warning`, `Provenance`, `Profile` types and the frontmatter schema: Part 1.
-- Converter registry, MIME routing, engine tiers, sidecar JSON: Part 2.
+- Converter registry, MIME routing, engine tiers, ledger JSON: Part 2.
 
 Rules that apply to every section here:
 
@@ -39,8 +39,8 @@ Stack: React 18, Vite 5, TypeScript strict, Tailwind for utility styles with a s
 4. On submit call `POST /v1/convert` once per file (one job per source; the UI keeps a job list) or once for a URL/text. If the capabilities response (fetched once on load, cached in memory) says `turnstile_required_for_fetch`, render the Turnstile widget in invisible mode before the first URL submit and attach the resulting token per Part 3. Never render Turnstile for file uploads unless capabilities says so.
 5. Build `src/components/Progress.tsx`: subscribe to the job's SSE stream with `EventSource`. Map Part 3 stage names to labels: `queued` → "Waiting in queue (position N)", `fetching` → "Fetching", `detecting` → "Detecting type", `converting` → "Converting (engine name)", `transcribing` → "Transcribing (MM:SS of MM:SS)", `ocr` → "Reading images", `postprocessing` → "Formatting", `done`, `failed`. Show a determinate bar when the event carries `progress` 0..1, otherwise an indeterminate bar. On SSE error fall back to polling `GET /v1/jobs/{id}` every 2 s with backoff to 10 s.
 6. Build `src/components/ResultView.tsx` with two tabs: "Rendered" (react-markdown with GFM and rehype-sanitize; raw HTML in the Markdown is never rendered, it is shown escaped) and "Raw" (a `<pre>` with soft wrap toggle). Above the tabs: a copy button (copies raw Markdown; shows "Copied" for 1.5 s), the profile switcher, the download menu, and the token badge. The profile switcher re-requests the result with `?profile=` per Part 3 (the server re-renders from the cached intermediate within the job TTL; it does not re-convert). The token badge shows `tokens` from frontmatter with a tooltip "cl100k estimate".
-7. Download menu: `.md` (raw body with frontmatter), `.txt` (body with frontmatter stripped and Markdown syntax left intact), `.json` (sidecar), `.srt` (only when the result has `segments` from a transcript), `.docx` (server-side via `GET /v1/jobs/{id}/result?format=docx`, which Part 3 implements with pandoc; the UI hides the option if capabilities lacks `docx_export`). File name is derived from frontmatter `title` slugified, capped at 80 chars, falling back to the job id.
-8. Build `src/components/Warnings.tsx`: a panel above the result, collapsed to a single line count ("2 warnings") when there are warnings, expanded by default when any warning has severity `error`. Each warning renders `code`, `message`, and a suggested action from a local map. Required mappings: `fetch_blocked_by_platform` → "This platform blocked our server. Upload the file directly, or install the browser extension to fetch from your own connection." with a link to the extension docs; `pages_without_text` → "N pages had no text layer and OCR is off on this instance. Self-host with the `ocr` extra to read them."; `duration_cap_exceeded` → "This instance caps audio at MM:SS. The transcript covers the first MM:SS."; `injection_flagged` → "Some text looks like instructions aimed at an AI. It was kept, not removed, and is flagged in the sidecar."; `truncated` → "Output was truncated at the size cap. Download the full result or self-host."
+7. Download menu: `.md` (raw body with frontmatter), `.txt` (body with frontmatter stripped and Markdown syntax left intact), `.json` (ledger), `.srt` (only when the result has `segments` from a transcript), `.docx` (server-side via `GET /v1/jobs/{id}/result?format=docx`, which Part 3 implements with pandoc; the UI hides the option if capabilities lacks `docx_export`). File name is derived from frontmatter `title` slugified, capped at 80 chars, falling back to the job id.
+8. Build `src/components/Warnings.tsx`: a panel above the result, collapsed to a single line count ("2 warnings") when there are warnings, expanded by default when any warning has severity `error`. Each warning renders `code`, `message`, and a suggested action from a local map. Required mappings: `fetch_blocked_by_platform` → "This platform blocked our server. Upload the file directly, or install the browser extension to fetch from your own connection." with a link to the extension docs; `pages_without_text` → "N pages had no text layer and OCR is off on this instance. Self-host with the `ocr` extra to read them."; `duration_cap_exceeded` → "This instance caps audio at MM:SS. The transcript covers the first MM:SS."; `injection_flagged` → "Some text looks like instructions aimed at an AI. It was kept, not removed, and is flagged in the ledger."; `truncated` → "Output was truncated at the size cap. Download the full result or self-host."
 9. History: store the last 50 jobs in `localStorage` under `ezmd.history.v1` as `{id, title, source_kind, created_at, profile, tokens, expires_at}`. Never store result bodies in `localStorage` by default (a 2 MB transcript blows the quota on Safari); store a 200-char preview. A "Keep result on this device" toggle per item stores the full body in IndexedDB. History is a collapsible list beneath the input box, each row re-opens the result if the job is still within the server TTL, otherwise shows "Expired on the server" with the local copy if kept. A "Clear history" button wipes both stores. Wrap every storage access in try/catch and render correctly with storage unavailable.
 10. Dark mode: respect `prefers-color-scheme`, with a three-state toggle (system/light/dark) persisted to `localStorage`. Body has an explicit background in both modes. Contrast ratio 4.5:1 minimum on all text.
 11. Accessibility: every control has a visible label or `aria-label`; the drop zone is a labelled button for keyboard users; focus order is input → profile → convert → result tabs → actions; progress uses `role="status"` with `aria-live="polite"`; warnings use `role="alert"` when severity is error; result tabs follow the WAI-ARIA tabs pattern with arrow key navigation; all icon buttons have text alternatives; the app is fully operable with keyboard only and tested with VoiceOver on iOS Safari and NVDA on Firefox.
@@ -75,7 +75,7 @@ Config file `~/.config/ezmd/config.toml` (XDG on Linux, `~/Library/Application S
 profile = "full"          # full | compact | rag | agent
 format = "md"             # md | txt | json | docx | srt
 out_dir = "."             # for batch and watch
-sidecar = true            # write .json beside .md
+ledger = true            # write .json beside .md
 
 [remote]
 url = ""                  # empty = in-process
@@ -105,8 +105,8 @@ Environment variables override the file (`EZMD_PROFILE`, `EZMD_REMOTE`, `EZMD_AP
 
 #### 4.2.2 Commands
 
-1. `ezmd convert <path|url|-> [--profile P] [--out FILE|DIR] [--format md|txt|json|docx|srt] [--no-sidecar] [--engine family=name] [--lang xx] [--remote URL]`. Reads stdin when `-`. Writes to stdout when `--out` is omitted and the input is a single source; writes `<title>.md` plus sidecar into `--out DIR` when it is a directory. Shows a Rich progress bar on stderr with stage labels identical to the web UI's. Prints warnings to stderr as `WARN [code] message` after the output, and in `--json` mode includes them in the JSON object.
-2. `ezmd batch <dir|glob> --out <dir> [--recursive] [--workers N] [--profile P] [--format F] [--continue-on-error] [--manifest manifest.jsonl]`. Walks inputs, skips files whose output already exists with a matching `content_hash` in the sidecar (idempotent re-runs), converts with a process pool of `N` workers (default: CPU count minus one, max 8), writes a `manifest.jsonl` with one line per input (`path, status, out, warnings, seconds, tokens`), and prints a Rich table summary (converted, skipped, failed, total tokens). Exit code 0 only if every file converted or was skipped; 3 if any failed and `--continue-on-error` was set; 1 otherwise. Output directory mirrors the input tree.
+1. `ezmd convert <path|url|-> [--profile P] [--out FILE|DIR] [--format md|txt|json|docx|srt] [--no-ledger] [--engine family=name] [--lang xx] [--remote URL]`. Reads stdin when `-`. Writes to stdout when `--out` is omitted and the input is a single source; writes `<title>.md` plus ledger into `--out DIR` when it is a directory. Shows a Rich progress bar on stderr with stage labels identical to the web UI's. Prints warnings to stderr as `WARN [code] message` after the output, and in `--json` mode includes them in the JSON object.
+2. `ezmd batch <dir|glob> --out <dir> [--recursive] [--workers N] [--profile P] [--format F] [--continue-on-error] [--manifest manifest.jsonl]`. Walks inputs, skips files whose output already exists with a matching `content_hash` in the ledger (idempotent re-runs), converts with a process pool of `N` workers (default: CPU count minus one, max 8), writes a `manifest.jsonl` with one line per input (`path, status, out, warnings, seconds, tokens`), and prints a Rich table summary (converted, skipped, failed, total tokens). Exit code 0 only if every file converted or was skipped; 3 if any failed and `--continue-on-error` was set; 1 otherwise. Output directory mirrors the input tree.
 3. `ezmd watch <dir> --out <dir> [--profile P] [--format F]`. Uses `watchfiles`. On a new or modified file, waits `debounce_ms`, then converts and writes to `--out` mirroring the tree. Writes `.ezmd-failed/<name>.md` stub notes on failure with the warnings list, so the user's note tool sees something rather than nothing. Logs one line per event. Runs until SIGINT. Documented systemd user unit and launchd plist in docs.
 4. `ezmd serve [--host 127.0.0.1] [--port 8080] [--workers N] [--no-ui]`. Starts the FastAPI app in-process with an in-process RQ-compatible worker when Redis is absent (`EZMD_QUEUE=inline`), so `pip install ezmd && ezmd serve` gives a working single-process server for a laptop. Binds loopback by default; binding `0.0.0.0` without `EZMD_API_KEYS` set prints a red warning and requires `--i-know-this-is-public`. Prints the URL and the MCP URL.
 5. `ezmd doctor [--json]`. Checks and prints a table: Python version, `ezmd` version, installed extras, `ffmpeg` and `ffprobe` on PATH with version, `pandoc` presence, `libmagic`, Magika model present, each ASR/OCR model present in the cache with size, CUDA/ROCm/MPS availability via torch if installed, free disk in the model cache, Redis reachability if configured, `yt-dlp` version and Deno/Node presence, write access to config and cache dirs. Each row is OK, WARN, or MISSING with a one-line fix ("Install ffmpeg: apt install ffmpeg"). Exit 0 if no MISSING for the installed extras, 2 otherwise.
@@ -153,7 +153,7 @@ async def convert_async(...same signature...) -> Result: ...
 def convert_many(sources: Iterable[...], *, workers: int = 4, **kw) -> Iterator[Result]: ...
 ```
 
-`Result` is the Part 1 dataclass; the library adds convenience methods `result.markdown` (body with frontmatter), `result.body`, `result.frontmatter` (dict), `result.sidecar` (dict), `result.warnings` (list of `Warning`), `result.render(profile)` to re-render another profile from the retained intermediate representation without re-converting, `result.save(path, sidecar=True)`, `result.chunks(chunk_tokens=400, overlap=0)` for the `rag` profile, and `result.tokens`.
+`Result` is the Part 1 dataclass; the library adds convenience methods `result.markdown` (body with frontmatter), `result.body`, `result.frontmatter` (dict), `result.ledger` (dict), `result.warnings` (list of `Warning`), `result.render(profile)` to re-render another profile from the retained intermediate representation without re-converting, `result.save(path, ledger=True)`, `result.chunks(chunk_tokens=400, overlap=0)` for the `rag` profile, and `result.tokens`.
 
 `Progress` is a frozen dataclass `(stage: str, progress: float | None, message: str, detail: dict)`, emitted on the calling thread for sync and awaited in the loop for async. Stage names match Part 3's SSE events exactly, so a UI backed by the library and a UI backed by the API behave identically.
 
@@ -214,7 +214,7 @@ All tools accept `profile` (default `agent`), `max_tokens` (default 8000, max 50
 5. `list_capabilities()`: returns the capabilities object (supported types, installed extras, limits, instance name, whether fetch is allowed) so a model can decide up front whether to try a YouTube URL or ask the user to upload.
 6. `search_result(job_id, query, max_tokens?)` (Phase 2): BM25 over the result's chunks, returns matching chunks with section breadcrumbs. Lets a model find the relevant part of a 200-page document without paging through it.
 
-Resources: `ezmd://jobs/{id}` exposes the full raw Markdown as a resource for clients that support resources, and `ezmd://jobs/{id}/sidecar` the JSON. Prompts: one prompt `summarize_with_provenance` that instructs the model to cite section IDs and page markers from the result.
+Resources: `ezmd://jobs/{id}` exposes the full raw Markdown as a resource for clients that support resources, and `ezmd://jobs/{id}/ledger` the JSON. Prompts: one prompt `summarize_with_provenance` that instructs the model to cite section IDs and page markers from the result.
 
 Error handling: every tool returns `isError: false` with a `warnings` array for partial success (this is the whole point), and `isError: true` only for hard failures (unsupported type, fetch refused, size cap). Error text includes the warning code and the same suggested action strings the web UI uses, pulled from the shared map in `packages/core`.
 
@@ -294,7 +294,7 @@ const job3 = await client.convert({ text: "...", sourceHint: "text/html" });
 
 for await (const ev of client.events(job.id)) { /* {stage, progress, message} */ }
 const result = await client.result(job.id, { profile: "rag", format: "md" });          // string
-const sidecar = await client.sidecar(job.id);                                           // object
+const ledger = await client.ledger(job.id);                                           // object
 const caps = await client.capabilities();
 const done = await client.waitFor(job.id, { timeoutMs: 120000, onProgress });          // Job with status
 ```
@@ -1682,7 +1682,7 @@ fixtures/
   data/                    # csv, json, parquet, sqlite
   security/                # zip bombs, malformed pdfs, oversized headers, SSRF URL lists
   extension/               # synthetic platform pages for the extension tests
-  expected/<fixture-id>/{full,compact,rag,agent}.md + sidecar.json
+  expected/<fixture-id>/{full,compact,rag,agent}.md + ledger.json
 ```
 
 The fixture runner (`ezmd fixtures run [--update] [--only ID]`) converts every fixture with every profile and compares against `expected/` using per-fixture thresholds from `manifest.yaml`:
@@ -2312,7 +2312,7 @@ In this order, nothing else above the fold:
 - Self-host: Docker Compose (core, media, GPU, public overlay), bootstrap script, Upgrading and backups, Reverse proxy alternatives (Traefik, nginx snippets), Air-gapped install (model pulls offline via `ezmd models export`), Challenge options (Turnstile, ALTCHA, Anubis), API keys and limits, Monitoring, Hardening checklist.
 - API: REST reference (Swagger UI from `openapi.json`), Jobs and SSE, Authentication and limits, Errors and warning codes (generated table from `packages/core` warning registry: code, severity, meaning, suggested action), Fetch-node protocol.
 - Converters: Matrix with status badges (per family and format: Stable, Beta, Experimental, Planned; engine; extras needed; provenance features such as page markers, tracked changes, speaker labels; latest nightly scores), one page per family with what is preserved, known limitations, and the warnings it emits.
-- Output format spec: frontmatter schema, body conventions (headings, tables, images, transcripts, page markers, footnotes), sidecar JSON schema, `rag` chunk format, `agent` fence, stability guarantees across versions.
+- Output format spec: frontmatter schema, body conventions (headings, tables, images, transcripts, page markers, footnotes), ledger JSON schema, `rag` chunk format, `agent` fence, stability guarantees across versions.
 - Interfaces: CLI reference (generated from typer with `typer docs`), Python library, MCP server, TypeScript SDK, Browser extension, iOS Shortcut and Android share, Obsidian plugin and other integrations.
 - Fetch node: what it is, when it is needed, Pi setup, Tailscale ACLs, security properties.
 - Operations (public instance): Runbook, Abuse controls, Incident response, Capacity and cost, Sponsor pack.
@@ -2348,7 +2348,7 @@ Goal: a repo that builds, tests, and ships nothing user-visible yet.
 | ID | Task | deps | done when |
 |---|---|---|---|
 | P0-T01 | Monorepo scaffold: `packages/core`, `packages/converters/*`, `packages/mcp`, `packages/sdk-ts`, `apps/*`, `deploy/`, `fixtures/`, `docs/`; uv workspace; pnpm workspace; root `docs/internal/AGENTS.md`, `docs/internal/DECISIONS.md`, `docs/internal/ROADMAP.md`, `docs/internal/STATUS.md` | none | `uv sync --all-packages` and `pnpm install` succeed on Linux, macOS, Windows |
-| P0-T02 | Core types: `Result`, `Warning`, `Provenance`, `Profile`, `Options`, `Progress`; frontmatter schema; sidecar schema; warning code registry with suggested actions | P0-T01 | schema round-trip tests pass; registry has at least the codes named in Parts 1 to 4 |
+| P0-T02 | Core types: `Result`, `Warning`, `Provenance`, `Profile`, `Options`, `Progress`; frontmatter schema; ledger schema; warning code registry with suggested actions | P0-T01 | schema round-trip tests pass; registry has at least the codes named in Parts 1 to 4 |
 | P0-T03 | Converter registry and MIME routing with Magika plus libmagic; engine tiers; subprocess runner with rlimits | P0-T02 | a stub converter routes by MIME in tests; subprocess limits verified |
 | P0-T04 | Profile renderers `full`, `compact`, `rag`, `agent` over the intermediate representation; chunker; token estimator | P0-T02 | property tests pass; `render` idempotence test passes |
 | P0-T05 | Settings class, `.env.example` drift test, config.toml loader | P0-T01 | 4.9.6 drift test passes |
@@ -2368,7 +2368,7 @@ Goal: `pip install ezmd` converts documents, web, code, email, data, and noteboo
 | P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | G0 | web fixtures pass; injection fixture flags without altering text |
 | P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | G0 | code fixtures pass; a planted secret is redacted and warned |
 | P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | P1-T01 | email fixtures pass; attachment conversion warnings verified |
-| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | G0 | data fixtures exact-match |
+| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV file | G0 | data fixtures exact-match |
 | P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | G0 | archive bomb tests pass |
 | P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | P1-T02 | EDGAR fixture passes |
 | P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | P1-T01..T06 | 4.3.4 criteria |
@@ -2395,7 +2395,7 @@ Goal: audio, video files, images, and screen recordings convert locally with spe
 | P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `ezmd models pull/list/rm/export`; license gate | G1 | 4.2.2 item 6 criteria; model license check in CI |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | P2-T01 | media fixtures meet WER thresholds; non-speech fixture produces no hallucinated text |
 | P2-T03 | Diarization: pyannote community-1 with midpoint alignment; `exclusive` mode; `DIARIZATION` setting | P2-T02 | speaker-count fixture within tolerance |
-| P2-T04 | Transcript template and SRT/VTT output; `segments` in sidecar; `.srt` download in UI | P2-T02 | SRT fixture exact-match |
+| P2-T04 | Transcript template and SRT/VTT output; `segments` in ledger; `.srt` download in UI | P2-T02 | SRT fixture exact-match |
 | P2-T05 | OCR routing: RapidOCR (PP-OCR) CPU default, PaddleOCR-VL on GPU, zxing-cpp barcodes, Florence-2 captions optional, chart-to-table via VLM optional; page-level OCR fallback for PDFs with `pages_without_text` | P2-T01 | OCR fixtures meet CER thresholds; image-only PDF now yields text plus `ocr_confidence_low` where applicable |
 | P2-T06 | Lecture and screen-recording fusion: SSIM slide detection, per-slide OCR, ASR alignment to slide intervals | P2-T02, P2-T05 | lecture fixture produces slide headings with timestamps |
 | P2-T07 | Hosted ASR backends (Groq, Deepgram) as keyed options with the offload threshold and `diarization_unavailable_offload` warning | P2-T02 | stubbed backend tests pass; capabilities reports `asr_offload` |
@@ -2458,7 +2458,7 @@ Launch checklist (every line must be checked and dated in docs/internal/STATUS.m
 5. Turnstile verified in a real browser; ALTCHA path disabled in production.
 6. Upload cap 25 MB, duration cap 15 min, page cap 300 verified with real requests.
 7. Direct platform fetch disabled; a YouTube URL returns `fetch_blocked_by_policy` with the extension suggestion when the Pi is offline and succeeds via captions when it is online.
-8. The Pi's public IP never appears in any response, log, or header (test: convert via the Pi and inspect every header and the sidecar).
+8. The Pi's public IP never appears in any response, log, or header (test: convert via the Pi and inspect every header and the ledger).
 9. Reaper verified: a job is gone 24 hours after creation (clock-skewed test on staging).
 10. Backups run nightly and were restored once on staging.
 11. Alerts reach email and Discord (test alert fired).
@@ -2478,7 +2478,7 @@ Goal: the features that make specific professions choose ezmd. Each is independe
 
 | ID | Task | deps | done when |
 |---|---|---|---|
-| P5-T01 | Finance mode: bank statement and invoice tables with per-row page references, totals reconciliation (rows sum to ending minus beginning balance), sign and date normalization, CSV and JSON sidecars, confidence flags; `--mode finance` | G4 | finance fixtures pass with reconciliation checks |
+| P5-T01 | Finance mode: bank statement and invoice tables with per-row page references, totals reconciliation (rows sum to ending minus beginning balance), sign and date normalization, CSV and JSON ledgers, confidence flags; `--mode finance` | G4 | finance fixtures pass with reconciliation checks |
 | P5-T02 | Legal mode: page:line anchors for transcripts and pleadings, Bates numbering passthrough, verbatim guarantee (no normalization beyond whitespace, enforced by a test that diffs extracted text against the engine's raw text), matter-folder batch with an audit log JSONL | G4 | legal fixtures pass; audit log test passes |
 | P5-T03 | Accessibility output: heading hierarchy repair suggestions, alt text from captions, reading order report, scored against DAISY's twelve criteria on the accessibility fixtures | P2-T05 | score report generated; at least 10 of 12 criteria met on the fixture set |
 | P5-T04 | Research extras: LaTeX math preservation via Marker as an optional `nonfree-rail` extra with license display, DOI and citekey frontmatter from Crossref lookups (opt-in network), Zotero-friendly export | G4 | math fixture passes with the extra; license gate shows the RAIL text |

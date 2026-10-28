@@ -39,7 +39,7 @@ function fakeClient() {
   });
   const getResult = vi.fn(async (id: string, format = "md", opts: { profile?: string } = {}): Promise<unknown> => {
     const md = `---\ntitle: Doc ${id}\ntokens: 7\n---\n\n# Doc ${id} (${opts.profile ?? "default"})\n`;
-    if (format === "json") return { markdown: md, frontmatter: { title: `Doc ${id}`, tokens: { cl100k_base: 8, o200k_base: 7, claude_approx: 9 } }, sidecar: { warnings: [] }, chunks: [] } satisfies JsonResult;
+    if (format === "json") return { markdown: md, frontmatter: { title: `Doc ${id}`, tokens: { cl100k_base: 8, o200k_base: 7, claude_approx: 9 } }, ledger: { warnings: [] }, chunks: [] } satisfies JsonResult;
     return md;
   });
   const client = {

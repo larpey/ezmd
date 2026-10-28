@@ -63,7 +63,7 @@ Status: proposed
 
 - Empty pages get a stub `Paragraph` (`attrs.stub=true`) naming the reason (`empty_body_js_required` or
   `extraction_empty`) so the document is never silently empty and the fixture harness sees content.
-- The deduplicated link list is the renderer's sidecar `links` array and the compact profile's numbered
+- The deduplicated link list is the renderer's ledger `links` array and the compact profile's numbered
   `## Links` section, built from inline links; `Link` blocks are used only for embedded video iframes, to
   avoid printing every link twice. Linked PDFs go to `metadata.extra.outbound_pdfs`.
 - `hr` is dropped instead of emitting `Raw("---")`, which the renderer would print as a fenced block.

@@ -120,7 +120,7 @@ Pass these as `ConvertOptions.extra["office.<name>"]`:
 - `include_notes`
 - `infer_headings`
 - `keep_hidden`
-- `formulas`: `sidecar` (default), `inline`, `table` (adds a formulas table per region), or `off`
+- `formulas`: `ledger` (default), `inline`, `table` (adds a formulas table per region), or `off`
 - `max_rows` (10,000)
 - `max_cols` (256)
 - `max_sheets` (50)

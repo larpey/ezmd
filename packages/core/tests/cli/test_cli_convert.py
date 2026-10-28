@@ -29,7 +29,7 @@ def test_stdout_markdown_with_frontmatter(tmp_path: Path) -> None:
     assert res.stdout.startswith("---\n") and 'title: "Hello"' in res.stdout and "World." in res.stdout
 
 
-def test_out_file_and_sidecar(tmp_path: Path) -> None:
+def test_out_file_and_ledger(tmp_path: Path) -> None:
     target = tmp_path / "o" / "x.md"
     res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "--out", str(target)])
     assert res.exit_code == 0, res.output
@@ -39,10 +39,10 @@ def test_out_file_and_sidecar(tmp_path: Path) -> None:
     assert res.stdout == ""
 
 
-def test_out_dir_uses_title_and_no_sidecar(tmp_path: Path) -> None:
+def test_out_dir_uses_title_and_no_ledger(tmp_path: Path) -> None:
     outdir = tmp_path / "outdir"
     outdir.mkdir()
-    res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "--out", str(outdir), "--no-sidecar"])
+    res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "--out", str(outdir), "--no-ledger"])
     assert res.exit_code == 0, res.output
     assert (outdir / "Hello.md").is_file()
     assert not list(outdir.glob("*.ezmd.json"))
@@ -242,6 +242,6 @@ def test_zip_format_explains_itself(tmp_path: Path) -> None:
     """`zip` is the API's download bundle, not a CLI format (part4 4.2.2 lists md|txt|json|docx|srt)."""
     res = runner.invoke(app, ["convert", str(_txt(tmp_path)), "-f", "zip"])
     assert res.exit_code == 2
-    assert "API" in res.stderr and "--out" in res.stderr and "sidecar" in res.stderr
+    assert "API" in res.stderr and "--out" in res.stderr and "ledger" in res.stderr
     bad = runner.invoke(app, ["convert", str(_txt(tmp_path)), "-f", "bogus"])
     assert bad.exit_code == 2 and "expected one of md, txt, json (docx, srt come in a later release)" in bad.stderr

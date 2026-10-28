@@ -270,9 +270,9 @@ def job_result(
     "/v1/jobs/{job_id}/attachments/{path:path}",
     operation_id="getJobAttachment",
     response_class=Response,
-    summary="CSV sidecars and extracted images",
+    summary="CSV files and extracted images",
     description=(
-        "A file the conversion produced (table CSVs, extracted images), by the relative path listed in the sidecar. "
+        "A file the conversion produced (table CSVs, extracted images), by the relative path listed in the ledger. "
         "Images are served inline; everything else as an attachment with `nosniff`."
     ),
     responses={

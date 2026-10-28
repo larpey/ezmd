@@ -56,7 +56,7 @@ Every conversion comes with three things:
   map to text, a table that lost its header, content that looks like instructions to an AI. The full list
   is in [docs/warnings.md](docs/warnings.md).
 
-With `--sidecar`, a JSON file beside the Markdown records the page and position of every block, so
+With `--ledger`, a JSON file beside the Markdown records the page and position of every block, so
 answers can cite the page they came from.
 
 ## Use it from
@@ -221,9 +221,9 @@ The full list, with engines, extras, status, fixture counts and thresholds, is t
 
 One conversion renders in any of four shapes:
 
-- `full`: fidelity first; full frontmatter, numbered headings, page markers, and a JSON sidecar.
+- `full`: fidelity first; full frontmatter, numbered headings, page markers, and a JSON ledger.
 - `compact`: for pasting into a chat; minimal frontmatter, link list at the end, a 16,000-token budget.
-- `rag`: for indexing; chunk markers with breadcrumbs, and the chunks in the sidecar.
+- `rag`: for indexing; chunk markers with breadcrumbs, and the chunks in the ledger.
 - `agent`: tool output for agents; the body sits inside an untrusted-content fence.
 
 Details: [docs/output-format.md](docs/output-format.md).
@@ -255,7 +255,7 @@ default profile. The numbers, the harness and what ezmd still does badly are in
 
 - **Loss is reported.** Every dropped or degraded element ezmd detects becomes a structured warning with
   a code and a suggestion, and the benchmark above measures what still slips through.
-- **Provenance.** With the sidecar, every block records its source page and position.
+- **Provenance.** With the ledger, every block records its source page and position.
 - **Permissive by default.** The default install pulls only allowlisted licenses; anything else is an
   opt-in extra, named as such.
 - **One conversion path.** CLI, library, REST API, web UI and MCP server share it, and the Compose stack

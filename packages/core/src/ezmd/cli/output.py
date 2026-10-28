@@ -25,11 +25,11 @@ __all__ = [
     "ProgressSink",
     "err_console",
     "failure_payload",
+    "ledger_path",
     "outcome_from_result",
     "print_warnings",
     "progress_display",
     "safe_stem",
-    "sidecar_path",
     "silence_progress_bars",
     "write_outcome",
 ]
@@ -74,7 +74,7 @@ class Outcome:
     profile: str
     format: str
     frontmatter: dict[str, object] = field(default_factory=dict)
-    sidecar: dict[str, object] | None = None
+    ledger: dict[str, object] | None = None
     warnings: list[dict[str, object]] = field(default_factory=list)
     tokens: int = 0
     truncated: bool = False
@@ -107,7 +107,7 @@ def outcome_from_result(result: Any, *, source: str, profile: str, fmt: str) -> 
         profile=profile,
         format=fmt,
         frontmatter=dict(rendered.frontmatter),
-        sidecar=dict(rendered.sidecar) if rendered.sidecar is not None else None,
+        ledger=dict(rendered.ledger) if rendered.ledger is not None else None,
         warnings=[w.model_dump(mode="json") for w in rendered.warnings],
         tokens=int(rendered.tokens),
         truncated=bool(rendered.truncated),
@@ -132,7 +132,7 @@ def safe_stem(name: str, limit: int = 80) -> str:
     return cleaned
 
 
-def sidecar_path(target: Path) -> Path:
+def ledger_path(target: Path) -> Path:
     return target.with_name(target.stem + ".ezmd.json")
 
 
@@ -140,9 +140,9 @@ def _is_dir_target(out: Path) -> bool:
     return out.is_dir() or str(out).endswith(("/", "\\"))
 
 
-def write_outcome(outcome: Outcome, out: Path, *, sidecar: bool, stem: str | None = None) -> Path:
-    """Write the output to `out` (a file, or a directory to write `<title>.<ext>` into) and, when `sidecar`
-    is true, the profile produced a sidecar, and the format is not json (which embeds it), the sidecar
+def write_outcome(outcome: Outcome, out: Path, *, ledger: bool, stem: str | None = None) -> Path:
+    """Write the output to `out` (a file, or a directory to write `<title>.<ext>` into) and, when `ledger`
+    is true, the profile produced a ledger, and the format is not json (which embeds it), the ledger
     beside it. Returns the path written."""
     ext = EXTENSIONS.get(outcome.format, ".md")
     if _is_dir_target(out):
@@ -152,9 +152,9 @@ def write_outcome(outcome: Outcome, out: Path, *, sidecar: bool, stem: str | Non
         target = out
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(outcome.text, encoding="utf-8", newline="\n")
-    if sidecar and outcome.sidecar is not None and outcome.format != "json":
-        text = json.dumps(outcome.sidecar, indent=2, ensure_ascii=False) + "\n"
-        sidecar_path(target).write_text(text, encoding="utf-8", newline="\n")
+    if ledger and outcome.ledger is not None and outcome.format != "json":
+        text = json.dumps(outcome.ledger, indent=2, ensure_ascii=False) + "\n"
+        ledger_path(target).write_text(text, encoding="utf-8", newline="\n")
     return target
 
 

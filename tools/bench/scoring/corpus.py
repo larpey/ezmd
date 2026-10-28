@@ -139,7 +139,7 @@ def _inputs(run_dir: Path) -> dict[str, Path]:
     return {str(d["id"]): Path(str(d["input"])) for d in data.get("documents", [])}
 
 
-def _sidecar(run_dir: Path, r: DocResult) -> dict[str, Any] | None:
+def _ledger(run_dir: Path, r: DocResult) -> dict[str, Any] | None:
     if not r.output:
         return None
     path = run_dir / (r.output + ".warnings.json")
@@ -158,7 +158,7 @@ def smell_scores(results: list[DocResult], run_dir: Path) -> dict[str, Any]:
         if r.status != "ok" or not r.output or not (run_dir / r.output).is_file():
             continue
         md = read_output(r, run_dir)
-        side = _sidecar(run_dir, r)
+        side = _ledger(run_dir, r)
         src = inputs.get(r.doc_id)
         data = src.read_bytes() if src is not None and src.is_file() and src.stat().st_size <= 64 * 2**20 else None
         profile = str(side.get("profile", "full")) if side else "full"

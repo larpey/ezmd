@@ -192,7 +192,7 @@ class TextRenderer:
         return RenderedOutput(
             markdown=text,
             frontmatter=md.frontmatter,
-            sidecar=None,
+            ledger=None,
             chunks=[],
             attachments=md.attachments,
             tokens=self.counter.count(text),

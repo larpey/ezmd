@@ -145,7 +145,7 @@ def render_transcript_run(ctx: RenderContext, run: list[TranscriptSegment]) -> l
                 block_ids=list(para.ids),
                 time_start=para.start,
                 time_end=para.end,
-                sidecar_key=key,
+                ledger_key=key,
             )
         )
     return units

@@ -220,7 +220,7 @@ async def test_resources_and_prompt(root: Path) -> None:
         job = done.structured_content["job_id"]
         md = await client.read_resource(f"ezmd://jobs/{job}")
         assert "Findings" in md.contents[0].text
-        side = await client.read_resource(f"ezmd://jobs/{job}/sidecar")
+        side = await client.read_resource(f"ezmd://jobs/{job}/ledger")
         assert '"sections"' in side.contents[0].text
         prompt = await client.get_prompt("summarize_with_provenance", {"job_id": job})
         assert "section id" in prompt.messages[0].content.text

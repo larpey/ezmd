@@ -2,7 +2,7 @@
 
 The `data` family turns structured files into Markdown that keeps every value exactly as the source wrote
 it. Numbers are never rounded or reformatted (`1.10` stays `1.10`, a 19-digit id stays exact), and long
-cells are cut for display only, with the full value kept in the sidecar. Tables are emitted whole; the
+cells are cut for display only, with the full value kept in the ledger. Tables are emitted whole; the
 renderer then applies the table rules (pipe table up to six columns, key:value records beyond that,
 sampling past 1,000 rows) and writes the CSV attachment `tables/table-NN.csv` for wide, long or sampled
 tables.
@@ -79,7 +79,7 @@ type, record count, nesting depth). Every block carries `provenance.path`: a cel
   rows (first 100, last 20) reading only the row groups needed and at most 50 columns. Structs and lists
   render as compact JSON, decimals verbatim, zone-aware timestamps as UTC with `Z`.
 - **Connection strings** are refused: the output is a one-paragraph stub and a `connection_string_refused`
-  error. Credentials never appear in the output, the sidecar or the logs (a URL input's `source` is
+  error. Credentials never appear in the output, the ledger or the logs (a URL input's `source` is
   reduced to scheme, host and database).
 
 ## Options

@@ -22,9 +22,9 @@ def test_profiles_registry_and_distinctive_defaults() -> None:
     assert set(PROFILES) == {"full", "compact", "rag", "agent"}
     assert PROFILES["full"] is FULL and isinstance(FULL, Profile)
     assert not COMPACT.number_headings and not COMPACT.anchors and not COMPACT.page_markers
-    assert COMPACT.links == "numbered_list" and COMPACT.max_tokens == 16_000 and not COMPACT.sidecar
+    assert COMPACT.links == "numbered_list" and COMPACT.max_tokens == 16_000 and not COMPACT.ledger
     assert RAG.chunks.enabled and RAG.links == "text_only" and RAG.footnotes == "inline" and not RAG.image_comments
-    assert AGENT.untrusted_fence and AGENT.tables.csv_sidecar and AGENT.agent_salt == "deterministic"
+    assert AGENT.untrusted_fence and AGENT.tables.csv_files and AGENT.agent_salt == "deterministic"
     assert FULL.transcript.non_speech_italic and not AGENT.transcript.non_speech_italic
 
 
@@ -32,7 +32,7 @@ def test_get_profile_overrides_and_coercion() -> None:
     p = get_profile("rag", **{"chunks.chunk_tokens": "512", "number_headings": "false", "max_tokens": "none"})
     assert p.chunks.chunk_tokens == 512 and p.number_headings is False and p.max_tokens is None
     assert get_profile("compact", max_tokens="2000").max_tokens == 2000
-    assert get_profile("full", numbered_headings="0", tables_csv="yes").tables.csv_sidecar is True
+    assert get_profile("full", numbered_headings="0", tables_csv="yes").tables.csv_files is True
     assert get_profile("full", **{"transcript.paragraph_gap_seconds": "2.5"}).transcript.paragraph_gap_seconds == 2.5
     assert get_profile("full") is FULL
     with pytest.raises(ValueError, match="unknown profile option"):
@@ -226,10 +226,10 @@ def test_agent_cursor_paging() -> None:
         render(res, "full", cursor=m.group(1))
 
 
-def test_sidecar_shape() -> None:
+def test_ledger_shape() -> None:
     out = render(harbor_lane(), "full", converted_at=datetime(2026, 10, 8, tzinfo=UTC))
-    sc = out.sidecar
-    assert sc is not None and sc["schema"] == "ezmd.sidecar/1" and sc["frontmatter"] == out.frontmatter
+    sc = out.ledger
+    assert sc is not None and sc["schema"] == "ezmd.ledger/1" and sc["frontmatter"] == out.frontmatter
     for key in (
         "sections",
         "tables",
@@ -245,4 +245,4 @@ def test_sidecar_shape() -> None:
     ):
         assert key in sc
     assert "chunks" not in sc
-    assert render(harbor_lane(), "compact").sidecar is None
+    assert render(harbor_lane(), "compact").ledger is None

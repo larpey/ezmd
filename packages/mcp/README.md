@@ -28,7 +28,7 @@ uvx ezmd-mcp --transport http --port 8765      # streamable HTTP on 127.0.0.1, b
 Every result has `job_id, title, source, tokens_total, pages_total, page, next_cursor, warnings,
 frontmatter, content` (page 1 adds `sections`). The default profile is `agent` (untrusted-content fence,
 section ids); `max_tokens` defaults to 8000 and is capped at 50000. Resources `ezmd://jobs/{id}` and
-`ezmd://jobs/{id}/sidecar` expose the full Markdown and sidecar JSON; the prompt
+`ezmd://jobs/{id}/ledger` expose the full Markdown and ledger JSON; the prompt
 `summarize_with_provenance` asks the model to cite section ids and pages.
 
 See [docs/mcp.md](https://github.com/larpey/ezmd/blob/main/docs/mcp.md) for client configuration,

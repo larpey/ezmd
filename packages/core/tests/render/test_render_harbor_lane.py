@@ -13,7 +13,7 @@ from render_builders import CONVERTED_AT, harbor_lane
 from ezmd.render import render
 
 SPEC = Path(__file__).resolve().parents[4] / "docs" / "internal" / "spec" / "part3.md"
-SIDECAR = "harbor-lane-depot-report.ezmd.json"
+LEDGER = "harbor-lane-depot-report.ezmd.json"
 
 _NORMALIZE = [
     (re.compile(r'^content_hash: "sha256:[0-9a-f]{64}"$', re.M), 'content_hash: "sha256:HASH"'),
@@ -45,8 +45,8 @@ def _expected(profile: str) -> str:
 
 @pytest.mark.parametrize("profile", ["full", "compact", "rag", "agent"])
 def test_harbor_lane_matches_spec(profile: str) -> None:
-    # compact writes no sidecar, so the caller passes no sidecar path (the spec example has none)
-    options = {} if profile == "compact" else {"sidecar_path": SIDECAR}
+    # compact writes no ledger, so the caller passes no ledger path (the spec example has none)
+    options = {} if profile == "compact" else {"ledger_path": LEDGER}
     out = render(harbor_lane(), profile, converted_at=CONVERTED_AT, **options)
     assert _normalize(out.markdown) == _normalize(_expected(profile))
 
@@ -75,7 +75,7 @@ def test_harbor_lane_rag_chunks() -> None:
     assert second.time_start == pytest.approx(3.2) and second.time_end == pytest.approx(45.3)
     assert second.breadcrumb == "Harbor Lane depot report > 2 Interview with the shift lead [00:00:03 - 00:00:45]"
     assert out.frontmatter["chunks"] == 2 and out.frontmatter["chunk_tokens"] == 400
-    assert out.sidecar is not None and len(out.sidecar["chunks"]) == 2  # type: ignore[arg-type]
+    assert out.ledger is not None and len(out.ledger["chunks"]) == 2  # type: ignore[arg-type]
 
 
 def test_harbor_lane_agent_attachment_and_offsets() -> None:
@@ -84,8 +84,8 @@ def test_harbor_lane_agent_attachment_and_offsets() -> None:
     csv = out.attachments[0].data.decode()
     assert csv.splitlines()[0] == "Week,Pallets,Dock doors,Overtime hours"
     assert '"1,105"' in csv
-    assert out.sidecar is not None
-    sections = out.sidecar["sections"]
+    assert out.ledger is not None
+    sections = out.ledger["sections"]
     assert isinstance(sections, list)
     body = out.body.encode()
     for sec in sections:

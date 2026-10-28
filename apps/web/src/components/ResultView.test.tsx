@@ -8,7 +8,7 @@ const MD = "---\ntitle: Kitchen Sink\ntokens: 42\n---\n\n# Kitchen Sink\n\nSome 
 function setup(over: Partial<ResultViewProps> = {}) {
   const props: ResultViewProps = {
     markdown: MD,
-    sidecar: { schema: "ezmd.sidecar/1", warnings: [] },
+    ledger: { schema: "ezmd.ledger/1", warnings: [] },
     warnings: [{ kind: "truncated", message: "Cut at the cap." }],
     tokens: 42,
     tokenizer: "o200k_base",
@@ -54,7 +54,7 @@ describe("ResultView", () => {
     expect(rendered).toHaveAttribute("aria-selected", "true");
   });
 
-  it("makes the scrollable raw and sidecar blocks keyboard-focusable named regions", async () => {
+  it("makes the scrollable raw and ledger blocks keyboard-focusable named regions", async () => {
     setup();
     const user = userEvent.setup();
     await user.click(screen.getByRole("tab", { name: "Raw" }));
@@ -64,14 +64,14 @@ describe("ResultView", () => {
     screen.getByTestId("result-wrap").focus();
     await user.tab();
     expect(raw).toHaveFocus();
-    await user.click(screen.getByRole("tab", { name: "Sidecar JSON" }));
-    expect(screen.getByRole("region", { name: "Sidecar JSON" })).toHaveAttribute("tabindex", "0");
+    await user.click(screen.getByRole("tab", { name: "Ledger JSON" }));
+    expect(screen.getByRole("region", { name: "Ledger JSON" })).toHaveAttribute("tabindex", "0");
   });
 
-  it("shows the sidecar JSON tab", async () => {
+  it("shows the ledger JSON tab", async () => {
     setup();
-    await userEvent.setup().click(screen.getByRole("tab", { name: "Sidecar JSON" }));
-    expect(screen.getByRole("tabpanel").textContent).toContain('"schema": "ezmd.sidecar/1"');
+    await userEvent.setup().click(screen.getByRole("tab", { name: "Ledger JSON" }));
+    expect(screen.getByRole("tabpanel").textContent).toContain('"schema": "ezmd.ledger/1"');
   });
 
   it("copies raw markdown and triggers downloads and profile changes", async () => {

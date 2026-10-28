@@ -143,12 +143,12 @@ def input_text_length(data: bytes) -> int:
 def smells(
     md: str,
     category: str,
-    sidecar: dict[str, Any] | None = None,
+    ledger: dict[str, Any] | None = None,
     input_bytes: bytes | None = None,
     profile: str = "full",
 ) -> list[str]:
     """The smells of one output (frontmatter already removed). `category` is the input's extension or MIME
-    slug; `sidecar` is ezmd's `<output>.warnings.json`; `input_bytes` enables `shrunk` for text-like inputs."""
+    slug; `ledger` is ezmd's `<output>.warnings.json`; `input_bytes` enables `shrunk` for text-like inputs."""
     found: list[str] = []
     lines = _lines(md)
     # markdown-it is not linear on a huge single paragraph; past the cap the raw text is close enough for size.
@@ -164,7 +164,7 @@ def smells(
         found.append("heading_bullet")
     if repeated_headings(lines):
         found.append("heading_repeated")
-    if sidecar and sidecar.get("truncated") and profile == "full":
+    if ledger and ledger.get("truncated") and profile == "full":
         found.append("truncated_full")
     if "�" in md and md.count("�") >= max(3, len(md) // 1000):
         found.append("replacement_chars")
@@ -183,10 +183,10 @@ def smells(
             src = input_text_length(input_bytes)
             if src >= 200 and len(compact) < ratio * src:
                 found.append("shrunk")
-    if sidecar and (
-        str(sidecar.get("injection_risk") or "") in ("high", "medium")
-        or any("injection" in str(w.get("kind", "")) for w in sidecar.get("warnings", []))
-        or any("injection" in str(w) for w in sidecar.get("render_warnings", []))
+    if ledger and (
+        str(ledger.get("injection_risk") or "") in ("high", "medium")
+        or any("injection" in str(w.get("kind", "")) for w in ledger.get("warnings", []))
+        or any("injection" in str(w) for w in ledger.get("render_warnings", []))
     ):
         found.append("injection")
     return found

@@ -53,7 +53,7 @@ class Chunk:
 
 @dataclass(slots=True)
 class Attachment:
-    """A file the renderer produced alongside the Markdown (CSV sidecar for a table)."""
+    """A file the renderer produced alongside the Markdown (CSV file for a table)."""
 
     path: str
     """Relative path as referenced from the Markdown ('tables/table-03.csv')."""
@@ -66,7 +66,7 @@ class RenderedOutput:
     markdown: str
     """The complete output file (frontmatter plus body for `md`; the JSON text for `json`)."""
     frontmatter: dict[str, object]
-    sidecar: dict[str, object] | None
+    ledger: dict[str, object] | None
     chunks: list[Chunk]
     attachments: list[Attachment] = field(default_factory=list)
     tokens: int = 0

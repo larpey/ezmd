@@ -355,4 +355,4 @@ def render_image(
         "bbox": _bbox(block),
     }
     key = ("figures", ctx.side("figures", entry))
-    return Unit(text=text, kind="figure", block_ids=ids, page=page, sidecar_key=key)
+    return Unit(text=text, kind="figure", block_ids=ids, page=page, ledger_key=key)

@@ -149,7 +149,7 @@ def test_downloads_each_format(owner: httpx.Client) -> None:
     assert owner.get(url, params={"format": "docx"}).status_code == 501
 
 
-def test_warnings_reach_job_and_sidecar(owner: httpx.Client) -> None:
+def test_warnings_reach_job_and_ledger(owner: httpx.Client) -> None:
     path = _input_of("code/source-planted-secret")
     job_id = _done(owner, path.read_bytes(), path.name)
     job = owner.get(f"/v1/jobs/{job_id}").json()
@@ -157,8 +157,8 @@ def test_warnings_reach_job_and_sidecar(owner: httpx.Client) -> None:
     md = owner.get(f"/v1/jobs/{job_id}/result", params={"format": "md"})
     assert int(md.headers["x-ezmd-warnings"]) >= 1
     assert "a4e3770643c072829845a0b6c58a00aa6f78e8b5" not in md.text
-    sidecar = owner.get(f"/v1/jobs/{job_id}/result", params={"format": "json"}).json()["sidecar"]
-    codes = {w.get("code") or w.get("kind") for w in sidecar["warnings"]}
+    ledger = owner.get(f"/v1/jobs/{job_id}/result", params={"format": "json"}).json()["ledger"]
+    codes = {w.get("code") or w.get("kind") for w in ledger["warnings"]}
     assert "secret_redacted" in codes
     registry = {row["code"] for row in owner.get("/v1/warnings").json()["warnings"]}
     assert set(job["warnings"]) <= registry

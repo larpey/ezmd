@@ -4,11 +4,11 @@ No new dependencies. No new warning codes. IR schema stays `"1.1"`; every IR cha
 
 ## IR (packages/core/src/ezmd/ir.py)
 
-1. `Document.sidecar_extra: dict[str, list[dict[str, str | int | float | bool | None]]]` (default `{}`).
-   Written verbatim by the sidecar under each key. Keys in `RESERVED_SIDECAR_KEYS` (every built-in sidecar
+1. `Document.ledger_extra: dict[str, list[dict[str, str | int | float | bool | None]]]` (default `{}`).
+   Written verbatim by the ledger under each key. Keys in `RESERVED_LEDGER_KEYS` (every built-in ledger
    key plus `children`, `adapter_trace`, `engine_trace` from Part 3 section 13) raise `ValueError` in
    `finalize()` and again at render time (children are checked too, since they may not be finalized
-   by the same code path). Excluded from the sidecar `document` dump to avoid duplication.
+   by the same code path). Excluded from the ledger `document` dump to avoid duplication.
 2. `InlineSpan.change: "insert" | "delete" | None`, `change_author`, `change_id`: inline tracked changes.
    `drop` mode shows the accepted text for inline changes (dropping inserted text would lose content;
    anchored `TrackedChange` blocks keep their existing `drop` behavior).

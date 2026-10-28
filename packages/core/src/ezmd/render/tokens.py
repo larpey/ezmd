@@ -2,7 +2,7 @@
 
 Encodings load lazily on first use (never at import). When tiktoken or its BPE files are unavailable
 (air-gapped install without the cache) counts fall back to len/3.8 for Latin and len/1.6 for CJK text and
-`tokens_estimated()` reports True so the sidecar can label them.
+`tokens_estimated()` reports True so the ledger can label them.
 """
 
 from __future__ import annotations

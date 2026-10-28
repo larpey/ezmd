@@ -43,7 +43,7 @@ def test_single_h1_title_shift_clamp_and_numbering() -> None:
     assert "###### 2.1.1.1.1 d {#sec-2-1-1-1-1}" in body
     assert "\n**e**\n" in body
     assert out.frontmatter["title"] == "Doc Title"
-    sections = out.sidecar["sections"]  # type: ignore[index]
+    sections = out.ledger["sections"]  # type: ignore[index]
     pre = next(s for s in sections if s["block_id"] == _headings_chaos().document.blocks[5].id)
     assert pre["original_title"] == "3.2 Pre-numbered" and pre["original_level"] == 2
 
@@ -115,7 +115,7 @@ def test_footnotes_renumbered_and_placed_at_section_end() -> None:
     assert body.index("[^3]: Bee note.") > a_end
     assert body.rstrip().endswith("[^4]: Unreferenced.")
     assert body.count("[^1]:") == 1
-    markers = {f["number"]: f["source_marker"] for f in out.sidecar["footnotes"]}  # type: ignore[index]
+    markers = {f["number"]: f["source_marker"] for f in out.ledger["footnotes"]}  # type: ignore[index]
     assert markers == {1: "9", 2: "x", 3: "1", 4: "u"}
 
 
@@ -160,11 +160,11 @@ def test_transcript_paragraphs_labels_and_cues() -> None:
     assert "**Speaker 3** [00:00:14]: [inaudible]" in lines
     assert "**Bob** [01:01:40]: Late." in lines
     assert "**Bob** [00:00:10]: Bob here. [music]" in render(res, "agent").body
-    segs = full.sidecar["segments"]  # type: ignore[index]
+    segs = full.ledger["segments"]  # type: ignore[index]
     assert "words" in segs[0]
-    agent_segs = render(res, "agent").sidecar["segments"]  # type: ignore[index]
+    agent_segs = render(res, "agent").ledger["segments"]  # type: ignore[index]
     assert "words" not in agent_segs[0]
-    agent_doc = render(res, "agent").sidecar["document"]["blocks"]  # type: ignore[index]
+    agent_doc = render(res, "agent").ledger["document"]["blocks"]  # type: ignore[index]
     assert all("words" not in b for b in agent_doc)
 
 

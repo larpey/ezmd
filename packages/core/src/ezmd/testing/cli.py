@@ -53,7 +53,7 @@ def _score(
 @_golden_app.command()
 def _golden(
     target: Annotated[Path, typer.Argument(help="A fixture directory.")],
-    write: Annotated[bool, typer.Option("--write", help="Write expected.full.md and expected.sidecar.json.")] = False,
+    write: Annotated[bool, typer.Option("--write", help="Write expected.full.md and expected.ledger.json.")] = False,
 ) -> None:
     for fx in _fixtures(target):
         if not write:

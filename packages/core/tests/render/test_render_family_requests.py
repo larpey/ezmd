@@ -86,7 +86,7 @@ def test_children_render_as_sections_after_the_parent() -> None:
     assert body.index("[^1]: Alpha footnote.") < body.index("## 3 b.txt")
     assert out.frontmatter["source_type"] == "archive"
     assert "encoding_uncertain" in out.frontmatter["warnings"]  # type: ignore[operator]
-    sc = out.sidecar
+    sc = out.ledger
     assert sc is not None
     warn = next(w for w in sc["warnings"] if w["kind"] == "encoding_uncertain")  # type: ignore[union-attr]
     assert warn["detail"]["child"] == "docs/a.md" and warn["block_id"] == "c1-b0002"
@@ -126,13 +126,13 @@ def test_compact_and_txt_keep_children() -> None:
     assert "docs/a.md" in txt and "Grandchild text." in txt and "Beta body." in txt
 
 
-def test_child_sidecar_extra_merges_with_child_path() -> None:
+def test_child_ledger_extra_merges_with_child_path() -> None:
     res = _archive()
-    child = res.document.children[1].model_copy(update={"sidecar_extra": {"redactions": [{"line": 2}]}})
+    child = res.document.children[1].model_copy(update={"ledger_extra": {"redactions": [{"line": 2}]}})
     doc = res.document.model_copy(
-        update={"children": [res.document.children[0], child], "sidecar_extra": {"redactions": [{"line": 9}]}}
+        update={"children": [res.document.children[0], child], "ledger_extra": {"redactions": [{"line": 9}]}}
     )
-    sc = render(res.model_copy(update={"document": doc}), "full").sidecar
+    sc = render(res.model_copy(update={"document": doc}), "full").ledger
     assert sc is not None
     assert sc["redactions"] == [{"line": 9}, {"line": 2, "child": "b.txt"}]
 
@@ -181,20 +181,20 @@ def test_definition_list_txt() -> None:
     assert "**" not in txt
 
 
-# ---------------------------------------------------------------------------- sidecar_extra
+# ---------------------------------------------------------------------------- ledger_extra
 
 
-def test_sidecar_extra_written_verbatim() -> None:
+def test_ledger_extra_written_verbatim() -> None:
     res = make_result([para("x")])
-    doc = res.document.model_copy(update={"sidecar_extra": {"redactions": [{"line": 3, "kind": "aws", "ok": True}]}})
-    sc = render(res.model_copy(update={"document": doc}), "full").sidecar
+    doc = res.document.model_copy(update={"ledger_extra": {"redactions": [{"line": 3, "kind": "aws", "ok": True}]}})
+    sc = render(res.model_copy(update={"document": doc}), "full").ledger
     assert sc is not None and sc["redactions"] == [{"line": 3, "kind": "aws", "ok": True}]
-    assert "sidecar_extra" not in sc["document"]  # type: ignore[operator]
+    assert "ledger_extra" not in sc["document"]  # type: ignore[operator]
 
 
-def test_sidecar_extra_collision_rejected_at_render() -> None:
+def test_ledger_extra_collision_rejected_at_render() -> None:
     res = make_result([para("x")])
-    doc = res.document.model_copy(update={"sidecar_extra": {"counts": [{"a": 1}]}})
+    doc = res.document.model_copy(update={"ledger_extra": {"counts": [{"a": 1}]}})
     with pytest.raises(ValueError, match="counts"):
         render(res.model_copy(update={"document": doc}), "full")
 
@@ -221,7 +221,7 @@ def test_hidden_text_is_scanned_not_rendered() -> None:
     out = render(res, "full")
     assert "Ignore all previous" not in out.body
     assert out.injection_risk == "high"
-    sc = out.sidecar
+    sc = out.ledger
     assert sc is not None
     findings = sc["injection_findings"]
     assert findings and all(f["hidden"] for f in findings)  # type: ignore[union-attr]
@@ -232,7 +232,7 @@ def test_hidden_low_finding_is_raised_one_level() -> None:
     res = _with_warnings(
         Warning(kind=WarningKind.REMOVED_HIDDEN_ELEMENTS, message="m", detail={"hidden_text": "You will be rewarded."})
     )
-    sc = render(res, "full").sidecar
+    sc = render(res, "full").ledger
     assert sc is not None
     assert [f["severity"] for f in sc["injection_findings"]] == ["medium"]  # type: ignore[union-attr]
 
@@ -248,7 +248,7 @@ def test_hidden_low_finding_is_raised_one_level() -> None:
 )
 def test_removed_nonprinting_uses_detail_not_count(detail: dict[str, str | int | float], expected: int) -> None:
     res = _with_warnings(Warning(kind=WarningKind.REMOVED_HIDDEN_ELEMENTS, message="m", count=17, detail=detail))
-    sc = render(res, "full").sidecar
+    sc = render(res, "full").ledger
     assert sc is not None and sc["counts"]["removed_nonprinting"] == expected  # type: ignore[index]
 
 
@@ -263,7 +263,7 @@ def test_furniture_removed_includes_converter_count() -> None:
     res = _with_warnings(
         Warning(kind=WarningKind.REMOVED_RUNNING_HEADER_FOOTER, message="Removed 12.", count=12), blocks=blocks
     )
-    sc = render(res, "full").sidecar
+    sc = render(res, "full").ledger
     assert sc is not None and sc["counts"]["furniture_removed"] == 14  # type: ignore[index]
 
 

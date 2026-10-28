@@ -9,10 +9,10 @@ Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings
 | `content_type_mismatch` | warning | core | The server's Content-Type disagrees with the detected format. | Check the URL serves the intended file, or pass --format to force a converter. |
 | `encoding_uncertain` | warning | core | Text encoding was detected with low confidence; characters may be garbled. | Re-save the file as UTF-8 or pass the source encoding in options. |
 | `multilingual_content` | info | core | The document contains substantial text in more than one language. | Pass --lang to pin the primary language if downstream tools need a single one. |
-| `engine_fallback` | warning | core | The preferred engine failed and a fallback engine produced the output. | Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name. |
+| `engine_fallback` | warning | core | The preferred engine failed and a fallback engine produced the output. | Check engine_trace in the ledger for the failure, or pick an engine with --engine family=name. |
 | `unknown_type_read_as_text` | warning | core | No converter claims the detected type, but the content is text, so it was read as plain text. | If the file is a known format under another name, rename it or pick a converter with --converter. |
 | `engine_failed` | error | core | The conversion engine crashed or was killed and produced no output. | Retry with another engine via --engine family=name, or report the file with a fixture. |
-| `converter_failed` | error | core | The converter raised an error and produced no usable output. | Check the sidecar for the error detail, try another engine, or report the file. |
+| `converter_failed` | error | core | The converter raised an error and produced no usable output. | Check the ledger for the error detail, try another engine, or report the file. |
 | `extraction_empty` | error | core | Conversion finished but produced no text. | If the source is scanned or image-only, enable OCR; otherwise confirm the file is not empty. |
 | `size_cap` | warning | core | The input exceeded the size cap; only part of it was processed. | Split the input into smaller files, or self-host with a higher size cap. |
 | `page_cap_reached` | warning | core | The page cap was reached; remaining pages were not converted. | Convert the document in page ranges, or raise the page cap on a self-hosted instance. |
@@ -23,14 +23,14 @@ Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings
 | `extra_required` | error | core | This format needs an optional extra that is not installed. | Install the extra named in the message, e.g. pip install 'ezmd[docs]'. |
 | `experimental_converter` | info | core | The output came from an experimental converter. | Review the output closely and report problems so the converter can graduate. |
 | `unsupported_feature` | warning | core | The source uses a feature this converter does not support; it was skipped. | Export the source to a simpler format (PDF, DOCX, HTML) that keeps the feature, then reconvert. |
-| `injection_suspected` | warning | core | Text matching prompt-injection patterns was found and kept. | Treat the flagged text as untrusted and review sidecar injection_findings before using it. |
+| `injection_suspected` | warning | core | Text matching prompt-injection patterns was found and kept. | Treat the flagged text as untrusted and review ledger injection_findings before using it. |
 | `removed_hidden_elements` | info | core | Hidden elements (CSS-hidden, aria-hidden, invisible text) were removed. | Inspect the original source if the hidden content matters to you. |
 | `removed_script_or_macro` | info | core | Scripts or macros were removed and not executed. | Open the source in its native app if you need to review the macro code. |
 | `pii_columns_removed` | info | core | Columns detected as personal data were removed from tabular output. | Turn off PII column removal in data options if you are permitted to keep those columns. |
 | `nesting_flattened` | info | core | List nesting deeper than the supported depth was flattened into the deepest level kept. | No action needed; the text is complete, only the deepest indentation was merged. |
 | `image_skipped` | info | core | An image was skipped and appears only as a placeholder. | Enable image OCR or description in options if the image carries information. |
 | `image_too_large` | warning | core | An image exceeded the pixel limit and was not decoded. | Downscale the image below 50 megapixels and reconvert. |
-| `other` | warning | core | An uncategorized issue occurred; see the warning message for details. | Read the message and sidecar details; report it so a specific code can be added. |
+| `other` | warning | core | An uncategorized issue occurred; see the warning message for details. | Read the message and ledger details; report it so a specific code can be added. |
 | `encrypted_no_password` | error | pdf | The PDF is encrypted and no password was supplied. | Provide the password in the PDF options or upload an unencrypted copy. |
 | `copy_restricted_ignored` | info | pdf | The PDF's copy-restriction flag was ignored for extraction. | Make sure you have the right to extract text from this document. |
 | `pages_without_text` | warning | pdf | Some pages have no text layer; their content is missing. | Enable OCR or upload a text-layer PDF. |

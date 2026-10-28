@@ -1,7 +1,7 @@
 """ezmd.render.context: per-render mutable state and the `Unit` building block.
 
 Block renderers turn IR blocks into `Unit`s (one Markdown block each, already escaped). The assembler then
-places page markers and footnote definitions between units, the chunker groups them, and the sidecar
+places page markers and footnote definitions between units, the chunker groups them, and the ledger
 records byte offsets per unit. Units are the atoms nothing may split (figures, tables, transcript paragraphs).
 """
 
@@ -80,8 +80,8 @@ class Unit:
     table_rows: list[str] | None = None
     """For table units: caption/header lines and row lines, so the chunker can split by rows."""
     list_items: list[str] | None = None
-    sidecar_key: tuple[str, int] | None = None
-    """(sidecar list name, index) whose offsets this unit fills in."""
+    ledger_key: tuple[str, int] | None = None
+    """(ledger list name, index) whose offsets this unit fills in."""
     generated: bool = False
     """True for renderer-generated marker comments (excluded from the injection scan)."""
 
@@ -115,7 +115,7 @@ class RenderContext:
     table_count: int = 0
     figure_count: int = 0
     attachments: list[Attachment] = field(default_factory=list)
-    sidecar_lists: dict[str, list[dict[str, object]]] = field(default_factory=dict)
+    ledger_lists: dict[str, list[dict[str, object]]] = field(default_factory=dict)
     annotations: dict[str, list[str]] = field(default_factory=dict)
     truncated: bool = False
     header_synthesized: int = 0
@@ -160,7 +160,7 @@ class RenderContext:
         self.warnings.append(Warning(kind=kind, message=message, block_id=block_id, detail=dict(detail)))
 
     def side(self, name: str, entry: dict[str, object]) -> int:
-        bucket = self.sidecar_lists.setdefault(name, [])
+        bucket = self.ledger_lists.setdefault(name, [])
         bucket.append(entry)
         return len(bucket) - 1
 

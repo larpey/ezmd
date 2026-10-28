@@ -62,7 +62,7 @@ KEY_ORDER: tuple[str, ...] = (
     "untrusted_content_id",
     "chunks",
     "chunk_tokens",
-    "sidecar",
+    "ledger",
     "exports",
     "extra",
 )
@@ -113,7 +113,7 @@ _ALWAYS_QUOTE = {
     "content_hash",
     "source_hash",
     "untrusted_content_id",
-    "sidecar",
+    "ledger",
     "duration",
     "speakers",
     "tags",
@@ -163,7 +163,7 @@ class FrontmatterInputs:
     fence_id: str | None = None
     chunks: int | None = None
     chunk_tokens: int | None = None
-    sidecar_path: str | None = None
+    ledger_path: str | None = None
     exports: dict[str, object] = field(default_factory=dict)
     speakers: list[str] = field(default_factory=list)
 
@@ -265,7 +265,7 @@ def build_frontmatter(
         "untrusted_content_id": inp.fence_id,
         "chunks": inp.chunks,
         "chunk_tokens": inp.chunk_tokens,
-        "sidecar": inp.sidecar_path,
+        "ledger": inp.ledger_path,
         "exports": inp.exports or None,
         "extra": {
             k: v

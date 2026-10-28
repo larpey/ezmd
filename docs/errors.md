@@ -50,5 +50,5 @@ object (`GET /v1/jobs/{id}`) and in the SSE `failed` event.
 ## Warnings
 
 Successful conversions can still carry warnings (for example `extraction_empty` or
-`removed_hidden_elements`). They are listed in the frontmatter `warnings` key, in the sidecar with
+`removed_hidden_elements`). They are listed in the frontmatter `warnings` key, in the ledger with
 details, in the CLI's stderr, and as SSE `warning` events. See [Warning codes](warnings.md).

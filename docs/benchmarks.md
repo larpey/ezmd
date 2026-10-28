@@ -78,7 +78,7 @@ gets from the converted file, with the PDF itself as the witness, so the compari
   model the figures, tables and layout as images, which no text converter's output carries, and how well Claude
   answers from the raw PDF was not measured (it would cost about 85,000 tokens a paper). The right way to get the
   pictures back without paying for every page is a placeholder in the Markdown and the cropped figure in the
-  sidecar, fetched on demand; that is on the [roadmap](roadmap.md).
+  ledger, fetched on demand; that is on the [roadmap](roadmap.md).
 
 Paper-level columns are means over the 30 papers, except source recall (27 papers with a source) and outline recall
 (24 papers with bookmarks); answer accuracy covers the 148 questions across the 30 papers and is the one column shown
@@ -174,7 +174,7 @@ cached questions and verdicts (`bench/results/2026-10-24-fix2/compare.md` for fu
 - a damaged PDF that qpdf repairs on open carries a `file_repaired` warning (#23, the one silent loss below);
 - headerless tables render an empty header row instead of `| col_1 | col_2 |`, a marker comment and a `Columns:`
   line;
-- `rag` chunk markers carry the chunk number only; the content hash and token count stay in the sidecar (D-0073).
+- `rag` chunk markers carry the chunk number only; the content hash and token count stay in the ledger (D-0073).
 
 | profile | answer accuracy before → after | tokens per page, o200k before → after | Claude | correct answers per 10k tokens | text recall | source recall |
 |---|---|---|---|---|---|---|

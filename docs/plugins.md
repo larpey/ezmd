@@ -107,7 +107,7 @@ registered before plugins, and a plugin cannot reuse a built-in id.
 ## Fixtures
 
 Converters are tested with golden fixtures under `fixtures/<family>/<name>/`: `input.<ext>` (or
-`input.url` plus a frozen `input.html`), `expected.full.md`, `expected.sidecar.json`, and
+`input.url` plus a frozen `input.html`), `expected.full.md`, `expected.ledger.json`, and
 `meta.toml`:
 
 ```toml

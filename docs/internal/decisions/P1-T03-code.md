@@ -54,12 +54,12 @@
 - Redaction keeps the line structure: the marker is followed by as many line breaks as the secret contained.
   `metadata.extra.lines`, CodeBlock `line_end`, and `secret_redacted` locations therefore count source lines
   (Skeptic review of `source-planted-secret`).
-- Deviation from 8b step 4 (sidecar `redactions` list of file, line, rule): the renderer's sidecar has no
+- Deviation from 8b step 4 (ledger `redactions` list of file, line, rule): the renderer's ledger has no
   family-specific section and `Metadata.extra` holds scalars only, so the list currently lives in the
   `secret_redacted` warning detail (`rule.<name>` counts plus a `locations` string of `file:line`, capped at
-  200), which the sidecar already serializes. Core change needed: a sidecar hook, for example a
-  `Document.sidecar_extra: dict[str, list[dict[str, str | int]]]` (or `ConversionResult` field) that
-  `ezmd.render.sidecar` emits verbatim under its key, so the converter can publish
+  200), which the ledger already serializes. Core change needed: a ledger hook, for example a
+  `Document.ledger_extra: dict[str, list[dict[str, str | int]]]` (or `ConversionResult` field) that
+  `ezmd.render.ledger` emits verbatim under its key, so the converter can publish
   `redactions: [{file, line, rule}, ...]` without the 200-entry cap or string encoding.
 
 ## Dependencies

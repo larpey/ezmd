@@ -31,7 +31,7 @@ const job = await convertPath(ezmd, "./report.pdf", { profile: "compact" });
 ```
 
 Other calls: `events(id)` (an async iterator over progress events, falling back to polling),
-`getJob(id)`, `sidecar(id)` (block provenance), `getCapabilities()`, `warningCodes()`, and `deleteJob(id)`.
+`getJob(id)`, `ledger(id)` (block provenance), `getCapabilities()`, `warningCodes()`, and `deleteJob(id)`.
 Errors are thrown as `EzmdError`, carrying the API's error `code`, the HTTP `status`, the `requestId`, and
 `retryAfter` on 429/503.
 

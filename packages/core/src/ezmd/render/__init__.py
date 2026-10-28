@@ -3,7 +3,7 @@
     render(result, profile="full", format="md", **overrides) -> RenderedOutput
 
 `overrides` are profile options (dotted keys for nested rules, string values coerced) plus the render-time
-options `converted_at` (alias `now`), `fetched_at`, `sidecar_path` and `cursor`.
+options `converted_at` (alias `now`), `fetched_at`, `ledger_path` and `cursor`.
 """
 
 from __future__ import annotations
@@ -40,7 +40,7 @@ FORMATS: dict[str, type[MarkdownRenderer] | type[JsonRenderer] | type[TextRender
     "txt": TextRenderer,
 }
 _FORMAT_ALIASES = {"markdown": "md", "text": "txt"}
-_RENDER_OPTIONS = ("converted_at", "now", "fetched_at", "sidecar_path", "cursor")
+_RENDER_OPTIONS = ("converted_at", "now", "fetched_at", "ledger_path", "cursor")
 
 
 def _as_datetime(value: object, key: str) -> datetime | None:
@@ -75,7 +75,7 @@ def render(
     options = RenderOptions(
         converted_at=_as_datetime(opts.get("converted_at", opts.get("now")), "converted_at"),
         fetched_at=_as_datetime(opts.get("fetched_at"), "fetched_at"),
-        sidecar_path=_as_str(opts.get("sidecar_path"), "sidecar_path"),
+        ledger_path=_as_str(opts.get("ledger_path"), "ledger_path"),
         cursor=_as_str(opts.get("cursor"), "cursor"),
     )
     return FORMATS[fmt](options=options).render(result, prof)

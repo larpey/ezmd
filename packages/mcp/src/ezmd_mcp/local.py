@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any
 from ezmd_mcp.backend import JobRef
 from ezmd_mcp.errors import ToolFailure, from_exception
 from ezmd_mcp.options import LIMIT_FIELDS, TOOL_FIELDS, OperatorLimits, tool_options
-from ezmd_mcp.paging import Outline, RenderedPage, sections_from_sidecar, warning_dict
+from ezmd_mcp.paging import Outline, RenderedPage, sections_from_ledger, warning_dict
 
 if TYPE_CHECKING:
     from ezmd.library import Options, Result
@@ -147,13 +147,13 @@ class LocalBackend:
 
         def run() -> Outline:
             out = self._unpaged(job_id, profile)
-            sidecar = out.sidecar
-            if sidecar is None:  # profiles without a sidecar (compact): take the section list from `full`
-                sidecar = self._unpaged(job_id, "full").sidecar
+            ledger = out.ledger
+            if ledger is None:  # profiles without a ledger (compact): take the section list from `full`
+                ledger = self._unpaged(job_id, "full").ledger
                 full_body = str(self._unpaged(job_id, "full").body)
-                sections = sections_from_sidecar(sidecar, full_body)
+                sections = sections_from_ledger(ledger, full_body)
             else:
-                sections = sections_from_sidecar(sidecar, str(out.body))
+                sections = sections_from_ledger(ledger, str(out.body))
             return Outline(sections=sections, tokens_total=count_o200k(str(out.body)))
 
         return await asyncio.to_thread(run)
@@ -161,9 +161,9 @@ class LocalBackend:
     async def full_markdown(self, job_id: str, profile: str) -> str:
         return str((await asyncio.to_thread(self._unpaged, job_id, profile)).markdown)
 
-    async def sidecar(self, job_id: str) -> dict[str, Any]:
+    async def ledger(self, job_id: str) -> dict[str, Any]:
         out = await asyncio.to_thread(self._unpaged, job_id, "full")
-        return dict(out.sidecar or {})
+        return dict(out.ledger or {})
 
     async def capabilities(self) -> dict[str, Any]:
         from ezmd.library import capabilities

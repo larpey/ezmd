@@ -106,7 +106,7 @@ def warning_registry() -> WarningsOut:
     description=(
         "Every warning code a conversion can emit, with its default severity, a description, a suggested action, "
         "whether it means content was truncated, and the retired spellings (aliases) that normalize to it. "
-        "`JobOut.warnings`, SSE `warning` events, and the sidecar use these codes."
+        "`JobOut.warnings`, SSE `warning` events, and the ledger use these codes."
     ),
     responses=errors(),
     openapi_extra=_PUBLIC,

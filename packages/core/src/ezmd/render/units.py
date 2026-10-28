@@ -159,7 +159,7 @@ def _figure_units(ctx: RenderContext, fig: Figure, children: list[Block]) -> lis
         kind="figure",
         block_ids=[fig.id, *[i for p in parts for i in p.block_ids]],
         page=fig.provenance.source_page or parts[0].page,
-        sidecar_key=parts[0].sidecar_key,
+        ledger_key=parts[0].ledger_key,
     )
     merged.fn_refs = [r for p in parts for r in p.fn_refs]
     return [merged]

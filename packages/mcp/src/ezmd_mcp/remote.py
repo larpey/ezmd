@@ -19,7 +19,7 @@ import yaml
 from ezmd_mcp import USER_AGENT
 from ezmd_mcp.backend import JobRef
 from ezmd_mcp.errors import ToolFailure
-from ezmd_mcp.paging import Outline, RenderedPage, sections_from_sidecar, warning_dict
+from ezmd_mcp.paging import Outline, RenderedPage, sections_from_ledger, warning_dict
 
 __all__ = ["RemoteBackend", "split_frontmatter"]
 
@@ -164,15 +164,15 @@ class RemoteBackend:
         if key not in self._outlines:
             params = {"profile": profile, "format": "json", "max_tokens": "none"}
             payload = (await self._request("GET", f"/v1/jobs/{job_id}/result", params=params)).json()
-            sidecar = payload.get("sidecar") or {}
+            ledger = payload.get("ledger") or {}
             _, body = split_frontmatter(str(payload.get("markdown", "")))
-            tokens = sidecar.get("tokens_total") if isinstance(sidecar, dict) else None
+            tokens = ledger.get("tokens_total") if isinstance(ledger, dict) else None
             if not isinstance(tokens, int):
                 from ezmd_mcp.paging import count_tokens
 
                 tokens = count_tokens(body)
-            warnings = [warning_dict(w) for w in sidecar.get("warnings", []) if isinstance(w, dict)]
-            self._outlines[key] = (Outline(sections_from_sidecar(sidecar, body), tokens), warnings)
+            warnings = [warning_dict(w) for w in ledger.get("warnings", []) if isinstance(w, dict)]
+            self._outlines[key] = (Outline(sections_from_ledger(ledger, body), tokens), warnings)
             while len(self._outlines) > 64:
                 self._outlines.pop(next(iter(self._outlines)))
         return self._outlines[key]
@@ -208,11 +208,11 @@ class RemoteBackend:
         params = {"profile": profile, "format": "md", "max_tokens": "none"}
         return (await self._request("GET", f"/v1/jobs/{job_id}/result", params=params)).text
 
-    async def sidecar(self, job_id: str) -> dict[str, Any]:
+    async def ledger(self, job_id: str) -> dict[str, Any]:
         params = {"profile": "full", "format": "json"}
         payload = (await self._request("GET", f"/v1/jobs/{job_id}/result", params=params)).json()
-        sidecar = payload.get("sidecar")
-        return dict(sidecar) if isinstance(sidecar, dict) else {}
+        ledger = payload.get("ledger")
+        return dict(ledger) if isinstance(ledger, dict) else {}
 
     async def capabilities(self) -> dict[str, Any]:
         caps = (await self._request("GET", "/v1/capabilities")).json()

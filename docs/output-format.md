@@ -32,19 +32,19 @@ alphabetical) and keys with empty values are omitted unless required.
 | `injection_risk` | Always: `none`, `low`, `medium`, or `high`. |
 | `untrusted_content_id` | `agent` only. |
 | `chunks`, `chunk_tokens` | `rag` only. |
-| `sidecar`, `exports` | When files are written next to the Markdown (for example `exports.tables` for CSV sidecars). |
+| `ledger`, `exports` | When files are written next to the Markdown (for example `exports.tables` for CSV files). |
 | `extra` | `full` only: converter-specific metadata such as the detected encoding. |
 
 `compact` uses a minimal set: `title`, `source`, `source_type`, `language`, `word_count`, `tokens`,
 `content_hash`, `warnings`, `injection_risk`, `profile`.
 
-The sidecar JSON (`<name>.ezmd.json`, CLI `--sidecar`, API `format=zip`) mirrors the frontmatter
+The ledger JSON (`<name>.ezmd.json`, CLI `--ledger`, API `format=zip`) mirrors the frontmatter
 and adds per-block provenance, warnings with details, heading shifts, and, in `rag`, the chunk list.
 
-Converter-specific sidecar lists come from `Document.sidecar_extra` (`{key: [ {scalar fields} ]}`, for
+Converter-specific ledger lists come from `Document.ledger_extra` (`{key: [ {scalar fields} ]}`, for
 example the code family's `redactions`) and are written verbatim under their own top-level key. Keys that
-collide with built-in sidecar keys (`sections`, `tables`, `counts`, `children`, ...; the full list is
-`ezmd.ir.RESERVED_SIDECAR_KEYS`) are rejected with `ValueError` by `Document.finalize()` and by the
+collide with built-in ledger keys (`sections`, `tables`, `counts`, `children`, ...; the full list is
+`ezmd.ir.RESERVED_LEDGER_KEYS`) are rejected with `ValueError` by `Document.finalize()` and by the
 renderer. `counts.removed_nonprinting` adds the characters converters stripped (`removed_hidden_elements`
 detail `invisible_chars`, else `control` + `invisible` + `surrogates`; never the element `count`), and
 `counts.furniture_removed` adds the `count` of `removed_running_header_footer` warnings.
@@ -60,13 +60,13 @@ detail `invisible_chars`, else `control` + `invisible` + `surrogates`; never the
 | Numbered headings and `{#sec-N}` anchors | Yes | No | Yes | Yes |
 | Page and slide markers | Yes | No | Yes | Yes |
 | Images | `![alt](ref)` plus `<!-- image: ... -->` | Caption line only | Caption line only | `![alt](ref)` plus comment |
-| Tables | Pipe up to 6 columns and 200 rows; HTML for merged cells | Pipe up to 6 columns and 50 rows, else key:value | Same as compact | Pipe up to 200 rows; CSV sidecar for every table |
+| Tables | Pipe up to 6 columns and 200 rows; HTML for merged cells | Pipe up to 6 columns and 50 rows, else key:value | Same as compact | Pipe up to 200 rows; CSV file for every table |
 | Links | Inline | Text, with a numbered `## Links` list at the end | Text only | Inline |
 | Footnotes | End of section | End of section | Inside the chunk that references them | End of section |
 | Chunk markers | No | No | Yes | No |
 | Untrusted-content fence | No | No | No | Yes |
 | Token budget | None | `max_tokens` 16,000 | Per chunk | None |
-| Sidecar | Yes | No | Yes, with chunks | Yes |
+| Ledger | Yes | No | Yes, with chunks | Yes |
 
 Any profile field can be overridden: CLI `--opt key=value`, API `options` with dotted keys, or
 result query parameters (for example `?profile=rag&chunks.chunk_tokens=600`). Short aliases include
@@ -126,9 +126,9 @@ section headed by its path (the child's `metadata.source` after the last `!`, el
 `provenance.path`). A direct child is a top-level section (`## 3 docs/a.md {#sec-3}`), a grandchild one
 level deeper. The child's title H1 becomes that section heading; its other headings shift under it, and
 numbering, anchors and footnote numbers continue from the parent. Page markers restart inside each child
-(they are the child's own pages). Child warnings are merged into the frontmatter and sidecar with
+(they are the child's own pages). Child warnings are merged into the frontmatter and ledger with
 `detail.child = <path>`. `rag` never merges sections of different children into one chunk, and `compact`
-and `txt` keep the children too. The sidecar gains `children[]`: `{path, converter, title, block_count,
+and `txt` keep the children too. The ledger gains `children[]`: `{path, converter, title, block_count,
 depth, source_type, section_block_id}`; child blocks appear in `provenance[]` with ids prefixed `c1-`,
 `c1.2-` (grandchild), while `document` holds the parent IR only. The frontmatter `source_type` of an
 archive is `archive` (the Part 3 enum is amended with `text`, `markdown` and `archive`). Code is fenced with the source language
@@ -146,7 +146,7 @@ Non-printing and bidi control characters are removed and counted (`removed_hidde
   `full`; other profiles flatten merged cells and add `table_merged_cells_flattened`.
 - **Sampling** for very large tables: the first 20 and last 5 rows as records, an omission note, an
   exact numeric summary line, and `table_sampled`.
-- **CSV sidecars** (`tables/table-NN.csv`) for tables wider than 6 columns or longer than 50 rows,
+- **CSV files** (`tables/table-NN.csv`) for tables wider than 6 columns or longer than 50 rows,
   and for every table in `agent`. Cell strings are never reformatted.
 
 Pipe and key:value cells keep inline Markdown (`code`, **bold**, links per profile) and are never
@@ -206,9 +206,9 @@ breadcrumb:
 ```
 
 `id` numbers the chunk within the document; `page`, `start`, `end`, `part` and `oversized` attributes
-appear when they apply. The sidecar's `chunks` carry the full id (`<content hash>#c0001`, the hash being the
+appear when they apply. The ledger's `chunks` carry the full id (`<content hash>#c0001`, the hash being the
 first 12 hex characters of the IR content hash), the token count, the pages and the block ids, so a retriever
-joins on the sidecar and the markers stay short: repeating the hash and the count in every marker cost about
+joins on the ledger and the markers stay short: repeating the hash and the count in every marker cost about
 one token in ten of a rag document (D-0073).
 
 Planned: `format=jsonl` and per-chunk files, generated context lines (`context=llm`), transcript

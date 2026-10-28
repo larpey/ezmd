@@ -191,7 +191,7 @@ unexpected exceptions are logged to stderr and reported as `internal_error`.
 ### Resources and prompt
 
 - `ezmd://jobs/{id}`: the full Markdown of a job (default profile, unpaged).
-- `ezmd://jobs/{id}/sidecar`: the sidecar JSON (sections, tables, provenance, warnings).
+- `ezmd://jobs/{id}/ledger`: the ledger JSON (sections, tables, provenance, warnings).
 - Prompt `summarize_with_provenance(job_id?)`: summarize while citing section ids and page markers.
 
 Local jobs live in memory (the 32 most recent) for the life of the server process.

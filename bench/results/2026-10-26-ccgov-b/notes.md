@@ -34,7 +34,7 @@ sent to the XML parser (Perl scripts, ASX playlists, config files, Stata data) w
 
 Gated-clean rate 0.9856. `truncated_full` 197, `heading_repeated` 10, `empty` 5, `lone_bullet` 4. Reported:
 `repeated_lines` 552, `empty_table` 310, `replacement_chars` 133, `shrunk` 69, `mojibake` 24, and, now that
-the sidecar carries the frontmatter's `injection_risk`, `injection` 1,154: 7.7% of the outputs at medium or
+the ledger carries the frontmatter's `injection_risk`, `injection` 1,154: 7.7% of the outputs at medium or
 high, the false-positive families of the sweep in the two earlier runs, with code, scripts and logs adding
 `rm -rf` and `run the command` hits.
 

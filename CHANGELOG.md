@@ -50,6 +50,15 @@ All notable changes are generated from Conventional Commits. This project uses s
   file a declared refusal, 998 of 998 EPUBs converted, and SVG falling through to the plain-text reader (#55).
 
 ### Changed
+- **Breaking.** The JSON file written beside the Markdown (`<name>.ezmd.json`) is the ledger, and every
+  spelling of its old name goes with it: CLI `--ledger/--no-ledger` (was `--sidecar/--no-sidecar`),
+  `EZMD_LEDGER` (was `EZMD_SIDECAR`), the config key `defaults.ledger` and the profile field `ledger`, the
+  frontmatter key `ledger`, the file's `schema` string `ezmd.ledger/1` (was `ezmd.sidecar/1`), the API result
+  field `ledger`, the SDK type `Ledger` and `client.ledger()`, the MCP resource `ezmd://jobs/{id}/ledger`, the
+  plugin field `Document.ledger_extra` with `ezmd.ir.RESERVED_LEDGER_KEYS`, the module `ezmd.render.ledger`,
+  the profile field `tables.csv_files` (was `csv_sidecar`; the `tables_csv` override is unchanged) and the
+  fixture file `expected.ledger.json`. The file name, its contents and the Markdown are unchanged. No alias
+  is kept for the old spellings.
 - Container images apply Debian's security updates at build time (`apt-get upgrade` in the runtime stage):
   the base image is pinned by digest and rebuilt upstream on its own schedule, so a fixed CVE in a system
   library (openssl, this week) no longer ships in every image and fails the scan until the next digest bump.
@@ -59,12 +68,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   cost about 13 seconds on the 2026-10-26 Govdocs1 pilot (86% of the run's time); after the first file it is
   the conversion itself plus the copy.
 - `rag` chunk markers carry the chunk number only (`<!-- chunk id="c0001" section="1" page="1" -->`); the
-  content-hash prefix and the `tokens` attribute moved out of the body and stay in the sidecar's `chunks`
+  content-hash prefix and the `tokens` attribute moved out of the body and stay in the ledger's `chunks`
   (D-0073). On 30 arXiv papers the old markers were 9.5% of the rag output. A consumer that read the hash from
-  the marker reads it from the frontmatter `content_hash` or the sidecar.
+  the marker reads it from the frontmatter `content_hash` or the ledger.
 
 ### Fixed
-- The sidecar's byte-offset table is linear in the body. `locate_units` re-encoded the whole body prefix for
+- The ledger's byte-offset table is linear in the body. `locate_units` re-encoded the whole body prefix for
   every unit, so a 32 MB log with a unit per line spent minutes there after a conversion of seconds; the two
   timeouts of the held-out Govdocs1 run (`bench/results/2026-10-27-confirm/`, a 32 MB log and a 25 MB
   PostScript file in a gzip) now convert in under 50 seconds. A unit the rag chunker split, whose whole text is not in the body, is found by its head instead of scanning to the end of the body; 32,000 of them in a 32 MB body took 128 seconds and take 1.2 (#56).
@@ -126,7 +135,7 @@ All notable changes are generated from Conventional Commits. This project uses s
   so such an `.eml` reaches the email converter instead of "no converter"; the libmagic answer outranks the
   extension, which is why newer libmagic builds on CI made `test_html_only_body_and_inline_cid_image` fail.
 - Tables without a header row render an empty header (`|  |  |`) instead of `| col_1 | col_2 |`, with no
-  `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the sidecar still counts
+  `<!-- ezmd: header synthesized -->` comment and no `Columns: col_1, ...` line; the ledger still counts
   synthesized headers, and the key-value and sampled representations keep `col_N` as keys. On 30 arXiv papers
   the generated names and markers were 17,000 of the words ezmd emitted and Docling did not.
 - PDF (text-layer engine): paragraphs in double-spaced manuscripts are no longer one line each. The assembler
@@ -323,7 +332,7 @@ Fixes from the pre-release audit (D-0039 to D-0042).
 
 ### Tests
 - Golden checks add hard structural invariants (math, blockquotes, list nesting, table spans, links, exact
-  numbers, key frontmatter fields) and per-fixture `must_contain`/`must_not_contain`; sidecar goldens are
+  numbers, key frontmatter fields) and per-fixture `must_contain`/`must_not_contain`; ledger goldens are
   compared. CI gains an `extras` job that runs the 7z and data converters.
 
 ### Fixed

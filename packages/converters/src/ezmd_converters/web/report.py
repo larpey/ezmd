@@ -25,7 +25,7 @@ def _hidden_warnings(page: Page) -> list[Warning]:
         out.append(
             Warning(
                 kind=WarningKind.REMOVED_HIDDEN_ELEMENTS,
-                message=f"Removed {h.elements} hidden elements ({kinds}); their text is in the sidecar.",
+                message=f"Removed {h.elements} hidden elements ({kinds}); their text is in the ledger.",
                 count=h.elements,
                 detail=detail,
             )

@@ -24,7 +24,7 @@ All three share the same decoding, hygiene pass, metadata extraction, and HTML-t
   shift down one level), paragraphs with bold/italic/code/strike/underline/sup/sub and inline links.
 - Links are absolute: resolved against `<base href>` or the final URL; `javascript:` links become text;
   `mailto:` links are kept (the renderer prints them as text). In the `compact` profile the renderer turns
-  inline links into a numbered `## Links` list; the sidecar `links` array is the deduplicated link list.
+  inline links into a numbered `## Links` list; the ledger `links` array is the deduplicated link list.
 - Nested lists (ordered/unordered, `start`, mixed nesting), code blocks with the language from
   `class="language-x"`/`lang-x`, `data-lang`, highlight.js classes, or a wrapper class such as
   `highlight-python`; line-number gutters are stripped.

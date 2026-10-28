@@ -40,7 +40,7 @@ class TableRules:
     merged_cells: Literal["html", "flatten"] = "html"
     wide_fallback: Literal["kv", "transpose"] = "kv"
     """Only `kv` is implemented; `transpose` is accepted and treated as `kv`."""
-    csv_sidecar: bool = False
+    csv_files: bool = False
     """Write a CSV attachment for every table (Part 3 `tables_csv`). Wide/long/sampled tables always get one."""
     pad_columns: bool = False
     """Accepted for compatibility; the renderer never pads (padding is pure token overhead)."""
@@ -111,7 +111,7 @@ class Profile:
     untrusted_fence: bool = False
     agent_salt: Literal["deterministic", "random"] = "deterministic"
     section_ids: bool = False
-    sidecar: bool = True
+    ledger: bool = True
     include_extra_metadata: bool = False
     raw_blocks: Literal["fenced", "drop"] = "fenced"
     max_tokens: int | None = None
@@ -134,7 +134,7 @@ COMPACT = Profile(
     compact_lists=True,
     tables=TableRules(max_pipe_rows=50, merged_cells="flatten"),
     images=ImageRules(mode="caption_only"),
-    sidecar=False,
+    ledger=False,
     max_tokens=16_000,
 )
 
@@ -155,7 +155,7 @@ RAG = Profile(
 AGENT = Profile(
     name="agent",
     toc="never",
-    tables=TableRules(merged_cells="flatten", csv_sidecar=True),
+    tables=TableRules(merged_cells="flatten", csv_files=True),
     untrusted_fence=True,
     section_ids=True,
 )
@@ -166,7 +166,7 @@ _ALIASES: dict[str, str] = {
     "numbered_headings": "number_headings",
     "track_changes": "tracked_changes",
     "token_budget": "max_tokens",
-    "tables_csv": "tables.csv_sidecar",
+    "tables_csv": "tables.csv_files",
     "chunk_tokens": "chunks.chunk_tokens",
     "overlap_tokens": "chunks.overlap_tokens",
     "min_chunk_tokens": "chunks.min_chunk_tokens",

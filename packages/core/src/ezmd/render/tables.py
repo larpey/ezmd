@@ -210,7 +210,7 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
     if any(c.formula for c in table.cells):
         ctx.warn(WarningKind.FORMULAS_PRESENT, "The source contains spreadsheet formulas; cached values are shown.")
     path = f"tables/table-{number:02d}.csv"
-    wants_csv = table.n_cols > 6 or n_data > 50 or rep == "sampled" or rules.csv_sidecar
+    wants_csv = table.n_cols > 6 or n_data > 50 or rep == "sampled" or rules.csv_files
     if wants_csv:
         ctx.attachments.append(Attachment(path=path, mime="text/csv", data=_csv(grid)))
     cap_spans = table.caption or caption
@@ -222,7 +222,7 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
         line += f" ({path})"
     head = [line]
     if grid.synthesized:
-        # Counted for the sidecar; the empty header row of the pipe table (or the col_N keys of the other
+        # Counted for the ledger; the empty header row of the pipe table (or the col_N keys of the other
         # representations) already show the reader that the source had no header, so no marker per table.
         ctx.header_synthesized += 1
     if rep in ("kv", "sampled") or (table.n_cols > 4 and not grid.synthesized):
@@ -286,5 +286,5 @@ def render_table(ctx: RenderContext, table: Table, caption: list[InlineSpan] | N
         fn_refs=fn_refs,
         table_head=head_text,
         table_rows=rows,
-        sidecar_key=key,
+        ledger_key=key,
     )

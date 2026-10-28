@@ -229,7 +229,7 @@ def test_images_decorative_caption_forms_and_comment() -> None:
     res = make_result(blocks, pages=3)
     out = render(res, "full")
     assert "logo.png" not in out.body and "icon.png" not in out.body and "spacer.png" not in out.body
-    assert out.sidecar is not None and out.sidecar["counts"]["images_dropped_decorative"] == 5  # type: ignore[index]
+    assert out.ledger is not None and out.ledger["counts"]["images_dropped_decorative"] == 5  # type: ignore[index]
     assert (
         "![Chart](chart.png)\nFigure 1 (page 2): A bar chart\n<!-- image: chart.png page=2 bbox=0.10,0.20,0.50,0.80 -->"
     ) in out.body
@@ -269,7 +269,7 @@ def test_furniture_dropped_and_counted() -> None:
     out = render(res, "full")
     assert "ACME Report" not in out.body and "Page 2" not in out.body
     assert "Only once" in out.body
-    assert out.sidecar is not None and out.sidecar["counts"]["furniture_removed"] == 3  # type: ignore[index]
+    assert out.ledger is not None and out.ledger["counts"]["furniture_removed"] == 3  # type: ignore[index]
     assert "ACME Report" in render(res, "full", furniture="keep").body
 
 
@@ -294,7 +294,7 @@ def test_json_and_txt_formats() -> None:
         ]
     )
     payload = json.loads(render(res, "rag", format="json").markdown)
-    assert set(payload) == {"markdown", "frontmatter", "sidecar", "chunks"}
+    assert set(payload) == {"markdown", "frontmatter", "ledger", "chunks"}
     assert payload["chunks"] and payload["chunks"][0]["id"].endswith("#c0001")
     txt = render(res, "full", format="txt").markdown
     assert txt.startswith("Test document\n\n1 Section\n\nHello **world**")

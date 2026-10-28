@@ -61,7 +61,7 @@ def test_progress_callback_receives_events() -> None:
     assert all(isinstance(e, ezmd.Progress) for e in events)
 
 
-def test_save_writes_markdown_and_sidecar(tmp_path: Path) -> None:
+def test_save_writes_markdown_and_ledger(tmp_path: Path) -> None:
     r = ezmd.convert(TEXT, filename="notes.txt")
     out = r.save(tmp_path)
     assert out.name == "notes.md" and out.read_text(encoding="utf-8") == r.markdown

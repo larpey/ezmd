@@ -65,7 +65,7 @@ function LocalJobCard({ job, onRemove }: Pick<JobCardProps, "job" | "onRemove">)
         </button>
       </header>
       <p className="notice">Expired on the server. Showing the copy kept on this device.</p>
-      <ResultView markdown={markdown} sidecar={null} warnings={[]} profile={job.profile} profiles={[job.profile]} formats={LOCAL_FORMATS} onProfileChange={() => {}} onDownload={download} />
+      <ResultView markdown={markdown} ledger={null} warnings={[]} profile={job.profile} profiles={[job.profile]} formats={LOCAL_FORMATS} onProfileChange={() => {}} onDownload={download} />
     </article>
   );
 }
@@ -139,7 +139,7 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
     const title = result.frontmatter?.title;
     try {
       if (format === "md") saveBlob(new Blob([result.markdown], { type: "text/markdown" }), downloadName(title, job.id, "md"));
-      else if (format === "json") saveBlob(new Blob([JSON.stringify(result.sidecar ?? result, null, 2)], { type: "application/json" }), downloadName(title, job.id, "json"));
+      else if (format === "json") saveBlob(new Blob([JSON.stringify(result.ledger ?? result, null, 2)], { type: "application/json" }), downloadName(title, job.id, "json"));
       else if (format === "txt") saveBlob(new Blob([await client.getResult(job.id, "txt", { profile })], { type: "text/plain" }), downloadName(title, job.id, "txt"));
       else saveBlob(await client.getResult(job.id, "zip", { profile }), downloadName(title, job.id, "zip"));
     } catch (err) {
@@ -147,7 +147,7 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
     }
   };
 
-  const warnings = mergeWarnings(liveWarnings, result?.sidecar?.warnings);
+  const warnings = mergeWarnings(liveWarnings, result?.ledger?.warnings);
   const badge = tokenBadge(result?.frontmatter?.tokens);
   const finished = live.state === "done" || live.state === "failed" || live.state === "expired" || live.state === "needs_user_action";
 
@@ -179,7 +179,7 @@ function RemoteJobCard({ client, job, profiles, formats, onResult, onRemove, onU
       {result && (
         <ResultView
           markdown={result.markdown}
-          sidecar={result.sidecar}
+          ledger={result.ledger}
           warnings={warnings}
           tokens={badge?.count}
           tokenizer={badge?.tokenizer ?? undefined}

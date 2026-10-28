@@ -2,7 +2,7 @@
 
 Pipeline: title and heading plan -> units per block -> footnote and page-marker placement -> cursor and token
 budget -> head blocks and H1 -> (rag) chunking -> injection scan -> (agent) untrusted fence -> frontmatter
-and sidecar. The body is deterministic for a given IR, profile and options; `fetched_at`, `converted_at`
+and ledger. The body is deterministic for a given IR, profile and options; `fetched_at`, `converted_at`
 and (with `agent_salt=random`) the fence id are the only nondeterministic values.
 """
 
@@ -23,7 +23,7 @@ from ezmd.render.context import RenderContext, Unit
 from ezmd.render.frontmatter import FrontmatterInputs, build_frontmatter, dump_yaml
 from ezmd.render.headings import plan_headings, resolve_title
 from ezmd.render.injection import InjectionReport, defang, fence_id, scan, wrap_untrusted
-from ezmd.render.sidecar import build_sidecar
+from ezmd.render.ledger import build_ledger
 from ezmd.render.tokens import TiktokenCounter, count_tokens
 from ezmd.render.transcript import prepare_speakers
 from ezmd.render.units import build_units
@@ -41,7 +41,7 @@ class RenderOptions:
 
     converted_at: datetime | None = None
     fetched_at: datetime | None = None
-    sidecar_path: str | None = None
+    ledger_path: str | None = None
     cursor: str | None = None
 
 
@@ -231,16 +231,16 @@ def render_markdown(
         fence_id=fid,
         chunks=len(built.chunks) if profile.chunks.enabled else None,
         chunk_tokens=profile.chunks.chunk_tokens if profile.chunks.enabled else None,
-        sidecar_path=options.sidecar_path,
+        ledger_path=options.ledger_path,
         exports={"tables": [a.path for a in ctx.attachments]} if ctx.attachments else {},
         speakers=list(dict.fromkeys(ctx.speaker_names.values())),
     )
     fm = build_frontmatter(result, profile.name, profile.minimal_frontmatter, inputs, profile.include_extra_metadata)
     markdown = (dump_yaml(fm) if profile.frontmatter else "") + body
     counter = counter or TiktokenCounter()
-    sidecar = None
-    if profile.sidecar:
-        sidecar = build_sidecar(
+    ledger = None
+    if profile.ledger:
+        ledger = build_ledger(
             ctx,
             frontmatter=fm,
             body=body,
@@ -252,7 +252,7 @@ def render_markdown(
     return RenderedOutput(
         markdown=markdown,
         frontmatter=fm,
-        sidecar=sidecar,
+        ledger=ledger,
         chunks=built.chunks,
         attachments=list(ctx.attachments),
         tokens=counter.count(markdown),

@@ -111,7 +111,7 @@ always fails.
   `EZMD_RETENTION_HOURS`.
 - Attachments: `GET /v1/jobs/{id}/attachments/{path}` serves only files the job stored, such as table
   CSVs. Images extracted from documents are not stored yet, so their references in the Markdown and
-  sidecar return 404.
+  ledger return 404.
 
 ### Health and readiness
 

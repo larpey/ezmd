@@ -62,7 +62,7 @@ services:
 
 ## Retention
 
-The `purge` sidecar runs `python -m ezmd_api.purge --loop` (retention purge every `EZMD_PURGE_INTERVAL_S`, default 600 s, plus the fetch-node claim reaper), and the API runs with `EZMD_SCHEDULER_ENABLED=false` so the uvicorn workers do not also purge.
+The `purge` service runs `python -m ezmd_api.purge --loop` (retention purge every `EZMD_PURGE_INTERVAL_S`, default 600 s, plus the fetch-node claim reaper), and the API runs with `EZMD_SCHEDULER_ENABLED=false` so the uvicorn workers do not also purge.
 
 ## Image sizes (local build, uncompressed)
 

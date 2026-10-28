@@ -177,12 +177,12 @@ describe("results and capabilities", () => {
     expect(calls[0]!.url).toBe("/v1/jobs/job_abc/result?format=md&profile=rag");
   });
 
-  it("parses the json payload and exposes the sidecar", async () => {
-    const payload = { markdown: "# T", frontmatter: { title: "T" }, sidecar: { schema: "ezmd.sidecar/1", warnings: [] }, chunks: [] };
+  it("parses the json payload and exposes the ledger", async () => {
+    const payload = { markdown: "# T", frontmatter: { title: "T" }, ledger: { schema: "ezmd.ledger/1", warnings: [] }, chunks: [] };
     const { fn } = mockFetch(json(payload));
     const client = new EzmdClient({ fetch: fn });
     expect((await client.getResult("job_abc", "json")).frontmatter).toEqual({ title: "T" });
-    expect((await client.sidecar("job_abc"))?.schema).toBe("ezmd.sidecar/1");
+    expect((await client.ledger("job_abc"))?.schema).toBe("ezmd.ledger/1");
   });
 
   it("fetches capabilities", async () => {

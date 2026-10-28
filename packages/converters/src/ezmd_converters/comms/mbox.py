@@ -21,16 +21,16 @@ from ezmd.ir import (
     Document,
     Heading,
     InlineSpan,
+    LedgerScalar,
     Metadata,
     Provenance,
-    SidecarScalar,
     SourceType,
     Warning,
     WarningKind,
 )
 from ezmd.registry import ConversionError, ConvertOptions
 from ezmd_converters.comms.build import MessageSpec, build_message
-from ezmd_converters.comms.eml import SIDECAR_KEY, is_mbox, looks_like_message
+from ezmd_converters.comms.eml import LEDGER_KEY, is_mbox, looks_like_message
 from ezmd_converters.comms.model import ParsedMessage
 from ezmd_converters.comms.options import CommsOptions, read_options
 from ezmd_converters.comms.parse_eml import EmailParseError, parse_message_bytes
@@ -140,7 +140,7 @@ class MboxConverter:
                 options: ConvertOptions, opts: CommsOptions) -> None:  # fmt: skip
         threads = build_threads(messages)
         doc.metadata.extra["threads"] = len(threads)
-        sidecar: list[dict[str, SidecarScalar]] = []
+        ledger: list[dict[str, LedgerScalar]] = []
         done = 0
         for thread in threads:
             subject = messages[thread.root].subject or "(no subject)"
@@ -164,13 +164,13 @@ class MboxConverter:
                 doc.children.extend(built.children)
                 doc.warnings.extend(built.warnings)
                 doc.truncated = doc.truncated or msg.truncated
-                sidecar.extend(built.headers_sidecar)
+                ledger.extend(built.headers_ledger)
                 done += 1
                 options.ctx.progress("messages", done / len(messages), f"message {done} of {len(messages)}")
                 if done % PARTIAL_EVERY == 0:
                     options.ctx.publish_partial(_snapshot(doc))
-        if sidecar:
-            doc.sidecar_extra[SIDECAR_KEY] = sidecar
+        if ledger:
+            doc.ledger_extra[LEDGER_KEY] = ledger
 
     @staticmethod
     def _limits_warnings(doc: Document, read: _Read, opts: CommsOptions, max_bytes: int) -> None:

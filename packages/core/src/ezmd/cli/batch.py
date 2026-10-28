@@ -2,7 +2,7 @@
 
 Idempotency: before converting, each input's SHA-256 is compared with the previous run's record, taken
 from the previous manifest line for that input (`sha256`, plus matching profile and format) or, failing
-that, from the output's sidecar (`frontmatter.source_hash` and `profile`). A match with the output still
+that, from the output's ledger (`frontmatter.source_hash` and `profile`). A match with the output still
 present is reported as `skipped`. Conversion goes through `ezmd.convert`, in-process for one worker and
 in a process pool otherwise.
 """
@@ -28,8 +28,8 @@ from ezmd.cli.exitcodes import EXIT_FAIL, EXIT_INTERRUPTED, EXIT_OK, EXIT_PARTIA
 from ezmd.cli.output import (
     EXTENSIONS,
     err_console,
+    ledger_path,
     outcome_from_result,
-    sidecar_path,
     silence_progress_bars,
     write_outcome,
 )
@@ -54,7 +54,7 @@ class Job:
     profile: str
     format: str
     options: dict[str, object]
-    sidecar: bool
+    ledger: bool
     sha256: str
 
 
@@ -82,7 +82,7 @@ def discover(
     target: str, recursive: bool, out_dir: Path, manifest: Path, exclude: frozenset[str] = frozenset()
 ) -> tuple[Path, list[Path]]:
     """Input files (sorted) and the base directory the output tree mirrors. Dotfiles, the output tree,
-    the manifest, sidecar files, and `exclude` (previous outputs, as resolved posix paths) are never inputs."""
+    the manifest, ledger files, and `exclude` (previous outputs, as resolved posix paths) are never inputs."""
     out_root = out_dir.resolve()
     if any(c in target for c in _GLOB_CHARS):
         parts = Path(target).parts
@@ -134,8 +134,8 @@ def read_manifest(path: Path) -> dict[str, dict[str, Any]]:
     return prev
 
 
-def _sidecar_matches(target: Path, sha: str, profile: str) -> bool:
-    side = sidecar_path(target)
+def _ledger_matches(target: Path, sha: str, profile: str) -> bool:
+    side = ledger_path(target)
     if not side.is_file():
         return False
     try:
@@ -160,7 +160,7 @@ def unchanged(job: Job, prev: dict[str, Any] | None) -> bool:
         and prev.get("status") in ("converted", "partial", "skipped")
     ):
         return True
-    return job.format != "json" and _sidecar_matches(target, job.sha256, job.profile)
+    return job.format != "json" and _ledger_matches(target, job.sha256, job.profile)
 
 
 def plan(base: Path, files: list[Path], out_dir: Path, fmt: str) -> list[tuple[Path, Path]]:
@@ -197,7 +197,7 @@ def convert_job(job: Job) -> dict[str, Any]:
     try:
         result = lib.convert(job.src, profile=job.profile, options=lib.Options(**job.options))
         outcome = outcome_from_result(result, source=job.src, profile=job.profile, fmt=job.format)
-        write_outcome(outcome, Path(job.out), sidecar=job.sidecar)
+        write_outcome(outcome, Path(job.out), ledger=job.ledger)
         record.update(
             status="partial" if outcome.status == "partial" else "converted",
             warnings=outcome.warnings,
@@ -332,7 +332,7 @@ def batch(
     fmt: Annotated[str | None, typer.Option("--format", "-f", help="md | txt | json")] = None,
     keep_going: Annotated[bool, typer.Option("--continue-on-error", help="Keep going after a failure.")] = False,
     manifest: Annotated[Path | None, typer.Option("--manifest", help="[default: <out>/manifest.jsonl]")] = None,
-    sidecar: Annotated[bool | None, typer.Option("--sidecar/--no-sidecar", help="Write sidecars.")] = None,
+    ledger: Annotated[bool | None, typer.Option("--ledger/--no-ledger", help="Write ledgers.")] = None,
     opt: Annotated[list[str] | None, typer.Option("--opt", help="key=value converter or profile option.")] = None,
     as_json: Annotated[bool, typer.Option("--json", help="Summary JSON on stdout.")] = False,
     quiet: Annotated[bool, typer.Option("--quiet", "-q", help="No progress or table on stderr.")] = False,
@@ -361,13 +361,13 @@ def batch(
         raise fail(f"no such file or directory: {inputs}", as_json=as_json, source=inputs) from e
     except ValueError as e:
         raise fail(str(e), as_json=as_json, source=inputs) from e
-    write_sidecar = cfg.sidecar if sidecar is None else sidecar
+    write_ledger = cfg.ledger if ledger is None else ledger
     run = _Run(manifest_path, show=not quiet and not as_json, total=len(files))
     finished = True
     try:
         todo: list[Job] = []
         for src, target in plan(base, files, out_dir, chosen_fmt):
-            job = Job(str(src), str(target), chosen_profile, chosen_fmt, options, write_sidecar, file_sha256(src))
+            job = Job(str(src), str(target), chosen_profile, chosen_fmt, options, write_ledger, file_sha256(src))
             old = prev.get(_key(src))
             if unchanged(job, old):
                 rec = {"path": job.src, "status": "skipped", "out": job.out, "sha256": job.sha256,

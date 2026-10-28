@@ -5,7 +5,7 @@ tools. Reports what it couldn't convert. Apache-2.0.
 
 ezmd turns an input into an intermediate representation (IR) and renders it as Markdown with YAML
 frontmatter under one of four output profiles (`full`, `compact`, `rag`, `agent`), plus a JSON
-sidecar with block provenance and an explicit list of warnings. When something cannot be converted,
+ledger with block provenance and an explicit list of warnings. When something cannot be converted,
 ezmd says so in the warnings instead of dropping it quietly.
 
 !!! note "Status: 0.1"

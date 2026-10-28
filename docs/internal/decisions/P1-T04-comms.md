@@ -21,7 +21,7 @@
   `Unavailable` with `requires_extras=("nonfree",)`). Chain `application/vnd.ms-outlook -> [comms.msg,
   comms.msg_extract]`.
 - Mitigations:
-  - Header values are cut at `max_header_chars` (16 KB) everywhere: tables, sidecar, and the warning agree.
+  - Header values are cut at `max_header_chars` (16 KB) everywhere: tables, ledger, and the warning agree.
   - The MIME walk is bounded at 32 levels and 1,000 parts, and a `RecursionError` becomes a parse failure.
   - Attachments go through `ctx.convert_child` (shared deadline, depth limit), with caps of 100 MB per
     attachment, 200 attachments per message, and 5,000 messages per mailbox.
@@ -62,7 +62,7 @@
   space-stuffing), so nothing is joined. A run that keeps more than one line (verse, addresses, `Key: value`,
   `Thanks,` / `Ann`) becomes one Paragraph with `attrs["line_breaks"] = "hard"`, not one paragraph per line.
   `text.plain` keeps its source newlines byte for byte when a run is a single wrapped paragraph. No non-comms
-  golden changed in Markdown or in sidecar block text and attrs.
+  golden changed in Markdown or in ledger block text and attrs.
 - Core renderer: `Paragraph.attrs["line_breaks"] = "hard"` renders as CommonMark hard breaks (backslash at
   line end) in Markdown and as newlines in txt (`render/blocks.py`, `render/plaintext.py`, with a test). This was
   needed: span newlines otherwise collapse into spaces, which was the booking.txt reject.

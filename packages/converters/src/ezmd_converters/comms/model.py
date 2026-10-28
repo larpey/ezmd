@@ -53,7 +53,7 @@ class ParsedMessage:
     """Headers, body candidates, and attachments of one message.
 
     headers: decoded values of HEADER_FIELDS (and X-Gmail-Labels) that are present.
-    raw_headers: every header as (name, decoded value), for the sidecar and `all_headers`.
+    raw_headers: every header as (name, decoded value), for the ledger and `all_headers`.
     date: the parsed Date header (timezone-aware when the header had an offset).
     html / text: decoded body candidates; `text_flowed` / `text_delsp` record format=flowed.
     """

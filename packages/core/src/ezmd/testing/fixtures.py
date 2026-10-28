@@ -1,7 +1,7 @@
 """ezmd.testing.fixtures: discover, run, and score golden fixtures (docs/internal/spec/part1.md 2.4, part4 4.14.2).
 
 Layout: `fixtures/<family>/<name>/` with `input.<ext>` (or `input.url` plus a frozen `input.html`),
-`expected.full.md`, `expected.sidecar.json`, and `meta.toml`:
+`expected.full.md`, `expected.ledger.json`, and `meta.toml`:
 
 ```toml
 converter = "text.plain"          # required: the converter id this fixture exercises
@@ -32,13 +32,13 @@ A fixture passes when its score reaches the threshold AND it has no hard failure
 error, an unexpected error-severity warning, exceeding `max_seconds`, any `ezmd.testing.invariants` mismatch
 against the golden (math, block counts, list nesting, table spans, links, images, frontmatter `warnings`,
 `injection_risk` and `truncated`, and the numeric-token multiset when `exact_numbers` is on), a broken
-`must_contain` or `must_not_contain` entry, or a sidecar that differs from `expected.sidecar.json`.
+`must_contain` or `must_not_contain` entry, or a ledger that differs from `expected.ledger.json`.
 
 `must_contain` and `must_not_contain` are lists of TOML strings; write invisible characters as TOML escapes
 (`"\\u200b"`, `"\\U000e0069"`). List every hidden or secret payload of the input in `must_not_contain`,
 so a leak fails even when it barely moves the score.
 
-Sidecars are compared exactly after `normalize_sidecar` (`metrics` timing removed, `frontmatter` versions
+Ledgers are compared exactly after `normalize_ledger` (`metrics` timing removed, `frontmatter` versions
 replaced by a placeholder), and `write_golden` writes them normalized. `render_full` counts `tokens_total` with
 the frontmatter versions replaced by the same placeholder, so a release does not change every golden.
 """
@@ -66,11 +66,11 @@ from ezmd.testing.score import Score, parse, score
 PINNED_TIME = "2026-01-01T00:00:00Z"
 ALLOWED_ORIGINS = frozenset({"self-generated", "public-domain", "cc0", "cc-by"})
 NORMALIZED = "<normalized>"
-"""Placeholder for sidecar fields that change on every release (versions)."""
+"""Placeholder for ledger fields that change on every release (versions)."""
 VOLATILE_TIMING = ("duration_seconds", "fetch_seconds")
-"""`metrics` timing fields, removed from sidecars before they are written or compared."""
+"""`metrics` timing fields, removed from ledgers before they are written or compared."""
 VOLATILE_VERSIONS = ("converter_version", "ezmd_version")
-"""`frontmatter` version fields, replaced by NORMALIZED before sidecars are written or compared."""
+"""`frontmatter` version fields, replaced by NORMALIZED before ledgers are written or compared."""
 _VERSION_LINE = re.compile(rf"^({'|'.join(VOLATILE_VERSIONS)}): .*$", re.MULTILINE)
 
 
@@ -112,8 +112,8 @@ class Fixture:
         return self.path / "expected.full.md"
 
     @property
-    def expected_sidecar(self) -> Path:
-        return self.path / "expected.sidecar.json"
+    def expected_ledger(self) -> Path:
+        return self.path / "expected.ledger.json"
 
 
 @dataclass(slots=True)
@@ -122,7 +122,7 @@ class FixtureRun:
     threshold: float
     score: Score | None = None
     markdown: str = ""
-    sidecar: dict[str, object] | None = None
+    ledger: dict[str, object] | None = None
     seconds: float = 0.0
     hard_failures: list[str] = field(default_factory=list)
     result: ConversionResult | None = None
@@ -250,10 +250,10 @@ def _strings(fx: Fixture, key: str) -> list[str]:
     return [str(v) for v in raw]
 
 
-def normalize_sidecar(sidecar: dict[str, Any]) -> dict[str, Any]:
-    """A copy of `sidecar` without volatile fields: `metrics` timing removed, `frontmatter` versions set to
+def normalize_ledger(ledger: dict[str, Any]) -> dict[str, Any]:
+    """A copy of `ledger` without volatile fields: `metrics` timing removed, `frontmatter` versions set to
     NORMALIZED. Everything else is kept as is."""
-    out = dict(sidecar)
+    out = dict(ledger)
     metrics = out.get("metrics")
     if isinstance(metrics, dict):
         out["metrics"] = {k: v for k, v in metrics.items() if k not in VOLATILE_TIMING}
@@ -292,7 +292,7 @@ def _first_difference(expected: object, actual: object, path: str = "$") -> str 
 # PDF engines report glyph boxes with small per-platform float differences: pdfium's Windows and Linux
 # wheels differ by about 0.1 pt on a left edge and up to about 0.5 pt on a right edge (glyph advances add up
 # along a line). Provenance boxes locate text on a page, so coordinates match within 1 pt (0.35 mm);
-# everything else in the sidecar is exact.
+# everything else in the ledger is exact.
 BBOX_TOLERANCE_PT = 1.0
 
 
@@ -307,31 +307,31 @@ def _within_bbox_tolerance(path: str, expected: object, actual: object) -> bool:
     return abs(float(expected) - float(actual)) <= BBOX_TOLERANCE_PT
 
 
-def _jsonable(sidecar: dict[str, Any]) -> dict[str, Any]:
-    """The sidecar as it reads back from disk (tuples become lists, keys become strings)."""
-    loaded: dict[str, Any] = json.loads(json.dumps(sidecar, ensure_ascii=False))
+def _jsonable(ledger: dict[str, Any]) -> dict[str, Any]:
+    """The ledger as it reads back from disk (tuples become lists, keys become strings)."""
+    loaded: dict[str, Any] = json.loads(json.dumps(ledger, ensure_ascii=False))
     return loaded
 
 
-def compare_sidecar(fx: Fixture, actual: dict[str, Any]) -> list[str]:
-    """Exact comparison of the normalized sidecar with the normalized `expected.sidecar.json`."""
-    if not fx.expected_sidecar.exists():
-        return ["expected.sidecar.json missing (run ezmd-golden --write, then get Skeptic review)"]
-    expected = normalize_sidecar(json.loads(fx.expected_sidecar.read_text(encoding="utf-8")))
-    diff = _first_difference(expected, normalize_sidecar(_jsonable(actual)))
-    return [f"sidecar differs from expected.sidecar.json at {diff}"] if diff else []
+def compare_ledger(fx: Fixture, actual: dict[str, Any]) -> list[str]:
+    """Exact comparison of the normalized ledger with the normalized `expected.ledger.json`."""
+    if not fx.expected_ledger.exists():
+        return ["expected.ledger.json missing (run ezmd-golden --write, then get Skeptic review)"]
+    expected = normalize_ledger(json.loads(fx.expected_ledger.read_text(encoding="utf-8")))
+    diff = _first_difference(expected, normalize_ledger(_jsonable(actual)))
+    return [f"ledger differs from expected.ledger.json at {diff}"] if diff else []
 
 
-def evaluate(fx: Fixture, root: Path, markdown: str, sidecar: dict[str, Any] | None = None) -> Verdict:
-    """Judge a rendering against the fixture's goldens: score, invariants, the must lists and, when `sidecar`
-    is given, the sidecar. The Markdown golden must exist."""
+def evaluate(fx: Fixture, root: Path, markdown: str, ledger: dict[str, Any] | None = None) -> Verdict:
+    """Judge a rendering against the fixture's goldens: score, invariants, the must lists and, when `ledger`
+    is given, the ledger. The Markdown golden must exist."""
     expected = fx.expected_md.read_text(encoding="utf-8")
     failures = check_invariants(expected, markdown, exact_numbers=exact_numbers_for(fx, root))
     failures += check_text(
         markdown, must_contain=_strings(fx, "must_contain"), must_not_contain=_strings(fx, "must_not_contain")
     )
-    if sidecar is not None:
-        failures += compare_sidecar(fx, sidecar)
+    if ledger is not None:
+        failures += compare_ledger(fx, ledger)
     return Verdict(score=score(expected, markdown), threshold=threshold_for(fx, root), failures=tuple(failures))
 
 
@@ -371,10 +371,10 @@ def render_full(result: ConversionResult) -> tuple[str, dict[str, object] | None
     from ezmd.render import render
 
     out = render(result, "full", "md", converted_at=PINNED_TIME, fetched_at=PINNED_TIME)
-    sidecar = out.sidecar
-    if sidecar is not None and "tokens_total" in sidecar:
-        sidecar = {**sidecar, "tokens_total": version_independent_tokens(out.markdown)}
-    return out.markdown, sidecar
+    ledger = out.ledger
+    if ledger is not None and "tokens_total" in ledger:
+        ledger = {**ledger, "tokens_total": version_independent_tokens(out.markdown)}
+    return out.markdown, ledger
 
 
 def version_independent_tokens(markdown: str) -> int:
@@ -398,7 +398,7 @@ def run_fixture(fx: Fixture, root: Path) -> FixtureRun:
         return run
     run.seconds = time.monotonic() - t0
     run.result = result
-    run.markdown, run.sidecar = render_full(result)
+    run.markdown, run.ledger = render_full(result)
     max_seconds = float(fx.meta.get("max_seconds", 120))
     if run.seconds > max_seconds:
         run.hard_failures.append(f"runtime {run.seconds:.1f}s exceeds max_seconds {max_seconds}")
@@ -412,7 +412,7 @@ def run_fixture(fx: Fixture, root: Path) -> FixtureRun:
     expected = fx.expected_md.read_text(encoding="utf-8")
     if not result.document.blocks and _has_blocks(expected):
         run.hard_failures.append("document has zero blocks but the golden has content")
-    verdict = evaluate(fx, root, run.markdown, run.sidecar or {})
+    verdict = evaluate(fx, root, run.markdown, run.ledger or {})
     run.score = verdict.score
     run.hard_failures.extend(verdict.failures)
     return run
@@ -425,11 +425,11 @@ def _has_blocks(md: str) -> bool:
 
 def write_golden(fx: Fixture) -> tuple[Path, Path]:
     result = convert_fixture(fx)
-    md, sidecar = render_full(result)
+    md, ledger = render_full(result)
     fx.expected_md.write_text(md, encoding="utf-8", newline="\n")
-    fx.expected_sidecar.write_text(
-        json.dumps(normalize_sidecar(_jsonable(sidecar or {})), indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+    fx.expected_ledger.write_text(
+        json.dumps(normalize_ledger(_jsonable(ledger or {})), indent=2, sort_keys=True, ensure_ascii=False) + "\n",
         encoding="utf-8",
         newline="\n",
     )
-    return fx.expected_md, fx.expected_sidecar
+    return fx.expected_md, fx.expected_ledger

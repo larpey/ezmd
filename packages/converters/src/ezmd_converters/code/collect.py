@@ -4,7 +4,7 @@ Filters in spec order: nested `.gitignore` chains and `.ezmdignore` (pathspec gi
 file with a matching rule wins, so negations in nested files work), default excludes (VCS, vendor, build
 output, caches), credential-named files, binaries, oversize files, minified bundles and source maps, then the
 user's include/exclude globs. Lockfiles are kept but truncated to 50 lines. Counts per reason feed the
-sidecar and the tree.
+ledger and the tree.
 """
 
 from __future__ import annotations

@@ -35,7 +35,7 @@ FILE = """
 [defaults]
 profile = "rag"
 format = "txt"
-sidecar = false
+ledger = false
 [remote]
 url = "https://file.example"
 api_key = "from-file"
@@ -51,7 +51,7 @@ x = 1
 def test_file_values_and_env_overrides(tmp_path: Path) -> None:
     path = _write(tmp_path, FILE)
     cfg = load_config({"EZMD_CONFIG": str(path)})
-    assert (cfg.profile, cfg.format, cfg.sidecar, cfg.remote_url, cfg.api_key) == (
+    assert (cfg.profile, cfg.format, cfg.ledger, cfg.remote_url, cfg.api_key) == (
         "rag",
         "txt",
         False,
@@ -65,15 +65,15 @@ def test_file_values_and_env_overrides(tmp_path: Path) -> None:
         "EZMD_FORMAT": "md",
         "EZMD_REMOTE": "",
         "EZMD_API_KEY": "from-env",
-        "EZMD_SIDECAR": "yes",
+        "EZMD_LEDGER": "yes",
     }
     cfg = load_config(env)
-    assert (cfg.profile, cfg.format, cfg.sidecar, cfg.remote_url, cfg.api_key) == ("agent", "md", True, "", "from-env")
+    assert (cfg.profile, cfg.format, cfg.ledger, cfg.remote_url, cfg.api_key) == ("agent", "md", True, "", "from-env")
 
 
 @pytest.mark.parametrize(
     "text",
-    ["[defaults\nprofile=1", '[defaults]\nprofile = "tiny"', "[defaults]\nsidecar = 1", "defaults = 3"],
+    ["[defaults\nprofile=1", '[defaults]\nprofile = "tiny"', "[defaults]\nledger = 1", "defaults = 3"],
 )
 def test_invalid_config_raises(tmp_path: Path, text: str) -> None:
     with pytest.raises(ConfigError):

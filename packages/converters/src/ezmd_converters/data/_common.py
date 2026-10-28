@@ -20,7 +20,7 @@ from ezmd.registry import ConvertOptions
 MAX_CELL_CHARS = 500
 """Longer strings are shown cut with an ellipsis; the full value stays in raw_value (Part 2 10c step 6)."""
 MAX_RAW_CHARS = 100_000
-"""Upper bound on raw_value so a single huge string cannot bloat the sidecar without limit."""
+"""Upper bound on raw_value so a single huge string cannot bloat the ledger without limit."""
 ELLIPSIS = chr(0x2026)
 
 
@@ -368,7 +368,7 @@ def mark_sampled(table: Table, *, total: int | None, omitted: int | None, after_
 
     The Table holds only real rows (no marker row, so row counts, column types and the CSV attachment stay
     clean); `attrs` carry `rows_total`, `rows_omitted` and `omitted_after_row` (1-based data row after which
-    the gap falls) for renderers and the sidecar.
+    the gap falls) for renderers and the ledger.
     """
     table.attrs = {
         **table.attrs,

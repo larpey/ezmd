@@ -26,7 +26,7 @@ const UI_OVERRIDES: Readonly<Record<string, (w: EzmdWarning) => string>> = {
       ? `This instance caps audio at ${clock(cap)}. The transcript covers the first ${clock(cap)}.`
       : "This instance caps audio length. The transcript covers only the first part.";
   },
-  injection_suspected: () => "Some text looks like instructions aimed at an AI. It was kept, not removed, and is flagged in the sidecar.",
+  injection_suspected: () => "Some text looks like instructions aimed at an AI. It was kept, not removed, and is flagged in the ledger.",
   truncated: () => "Output was truncated at the size cap. Download the full result or self-host.",
 };
 
@@ -99,7 +99,7 @@ export function codesWithoutAction(codes: readonly string[], reg: WarningRegistr
   });
 }
 
-/** Merges warnings from SSE events and the sidecar, dropping exact duplicates, preserving order. */
+/** Merges warnings from SSE events and the ledger, dropping exact duplicates, preserving order. */
 export function mergeWarnings(...lists: ReadonlyArray<readonly EzmdWarning[] | undefined>): EzmdWarning[] {
   const seen = new Set<string>();
   const out: EzmdWarning[] = [];

@@ -33,7 +33,7 @@ class MapiMessage:
     attachments: list[Attachment] = field(default_factory=list)
     warnings: list[Warning] = field(default_factory=list)
     extra_headers: list[tuple[str, str]] = field(default_factory=list)
-    """Outlook-specific values worth keeping in the sidecar (importance, categories, ...)."""
+    """Outlook-specific values worth keeping in the ledger (importance, categories, ...)."""
 
 
 def _transport(text: str, opts: CommsOptions) -> ParsedMessage:

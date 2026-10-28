@@ -6,7 +6,7 @@ elements (display:none, visibility:hidden, opacity:0, zero size, off-screen posi
 declared background or transparent), elements whose class or id is a hidden pattern or is hidden by a simple
 rule in the page's own `<style>`, and 1 px tracking images. Zero-width, bidi-control, and tag characters are
 stripped from text nodes. Visible text is never rewritten. Removed text is kept (capped) so the injection
-scanner can score it and the sidecar shows it.
+scanner can score it and the ledger shows it.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from ezmd_converters.web.dom import HtmlElement, collapse, is_element, tag_of
 
 _TAG_RUN = re.compile("[" + chr(0xE0000) + "-" + chr(0xE007F) + "]+")
 HIDDEN_TEXT_CAP = 10 * 1024
-"""Bytes of removed text kept for the sidecar and the scanner (part2 5c step 8)."""
+"""Bytes of removed text kept for the ledger and the scanner (part2 5c step 8)."""
 
 _HIDDEN_TOKENS = frozenset(
     {

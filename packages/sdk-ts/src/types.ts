@@ -91,7 +91,7 @@ export interface Job {
   expires_at?: string | null;
   input: JobInput;
   profile: Profile | string;
-  /** Warning codes seen so far (full warnings are in the sidecar and the event stream). */
+  /** Warning codes seen so far (full warnings are in the ledger and the event stream). */
   warnings?: string[];
   warnings_count?: number;
   truncated?: boolean;
@@ -181,11 +181,11 @@ export interface WarningCodeInfo {
 export interface JsonResult {
   markdown: string;
   frontmatter: Record<string, unknown>;
-  sidecar: Sidecar | null;
+  ledger: Ledger | null;
   chunks: Array<Record<string, unknown>>;
 }
 
-export interface Sidecar {
+export interface Ledger {
   schema?: string;
   profile?: string;
   metrics?: Record<string, unknown>;

@@ -1,4 +1,4 @@
-import type { EzmdWarning, Profile, ResultFormat, Sidecar } from "@ezmd/sdk";
+import type { EzmdWarning, Profile, ResultFormat, Ledger } from "@ezmd/sdk";
 import { useMemo, useState } from "react";
 import { renderMarkdown } from "../lib/markdown";
 import { Tabs } from "./Tabs";
@@ -6,7 +6,7 @@ import { WarningsPanel } from "./WarningsPanel";
 
 export interface ResultViewProps {
   markdown: string;
-  sidecar: Sidecar | null;
+  ledger: Ledger | null;
   warnings: readonly EzmdWarning[];
   tokens?: number;
   /** Tokenizer behind `tokens` (e.g. o200k_base); shown as the badge tooltip. */
@@ -35,7 +35,7 @@ async function copyText(text: string): Promise<boolean> {
 }
 
 export function ResultView(props: ResultViewProps) {
-  const { markdown, sidecar, warnings, tokens, tokenizer, profile, profiles, formats, busy, onProfileChange, onDownload } = props;
+  const { markdown, ledger, warnings, tokens, tokenizer, profile, profiles, formats, busy, onProfileChange, onDownload } = props;
   const [tab, setTab] = useState("rendered");
   const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const [wrap, setWrap] = useState(true);
@@ -65,13 +65,13 @@ export function ResultView(props: ResultViewProps) {
       ),
     },
     {
-      id: "sidecar",
-      label: "Sidecar JSON",
-      content: sidecar ? (
-          <pre className="raw wrap" {...SCROLL_REGION} aria-label="Sidecar JSON">
-            {JSON.stringify(sidecar, null, 2)}
+      id: "ledger",
+      label: "Ledger JSON",
+      content: ledger ? (
+          <pre className="raw wrap" {...SCROLL_REGION} aria-label="Ledger JSON">
+            {JSON.stringify(ledger, null, 2)}
           </pre>
-        ) : <p className="muted">No sidecar for this profile.</p>,
+        ) : <p className="muted">No ledger for this profile.</p>,
     },
     { id: "warnings", label: `Warnings (${warnings.length})`, content: <WarningsPanel warnings={warnings} expanded /> },
   ];

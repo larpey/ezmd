@@ -57,7 +57,7 @@ describe("WarningsPanel", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Fix it.");
   });
 
-  it("dedupes warnings merged from SSE and the sidecar", () => {
+  it("dedupes warnings merged from SSE and the ledger", () => {
     const w = { kind: "truncated", message: "cut" };
     expect(mergeWarnings([w], [{ ...w }, { kind: "other", message: "x" }])).toHaveLength(2);
   });

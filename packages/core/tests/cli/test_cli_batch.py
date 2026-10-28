@@ -66,12 +66,12 @@ def test_second_run_skips_everything_quickly(tmp_path: Path) -> None:
     assert elapsed < 5.0, f"skip-only re-run of 101 files took {elapsed:.2f}s"  # spec: under 1 s per 100
 
 
-def test_changed_input_is_reconverted_and_sidecar_alone_skips(tmp_path: Path) -> None:
+def test_changed_input_is_reconverted_and_ledger_alone_skips(tmp_path: Path) -> None:
     src, out = _tree(tmp_path, n=2), tmp_path / "out"
     args = ["batch", str(src), "--out", str(out), "-w", "1", "--json"]
     assert runner.invoke(app, args).exit_code == 0
     (src / "note1.txt").write_text("Changed\n=======\n\nnew\n", encoding="utf-8")
-    (out / "manifest.jsonl").unlink()  # only the sidecars remain as the record of the first run
+    (out / "manifest.jsonl").unlink()  # only the ledgers remain as the record of the first run
     summary = json.loads(runner.invoke(app, args).stdout)
     assert summary["skipped"] == 1 and summary["converted"] == 1
     assert "new" in (out / "note1.md").read_text(encoding="utf-8")

@@ -166,7 +166,7 @@
   },
   "converter_failed": {
     "severity": "error",
-    "suggestion": "Check the sidecar for the error detail, try another engine, or report the file.",
+    "suggestion": "Check the ledger for the error detail, try another engine, or report the file.",
     "aliases": []
   },
   "copy_restricted_ignored": {
@@ -263,7 +263,7 @@
   },
   "engine_fallback": {
     "severity": "warning",
-    "suggestion": "Check engine_trace in the sidecar for the failure, or pick an engine with --engine family=name.",
+    "suggestion": "Check engine_trace in the ledger for the failure, or pick an engine with --engine family=name.",
     "aliases": [
       "engine_downgraded",
       "fallback_engine_used"
@@ -428,7 +428,7 @@
   },
   "injection_suspected": {
     "severity": "warning",
-    "suggestion": "Treat the flagged text as untrusted and review sidecar injection_findings before using it.",
+    "suggestion": "Treat the flagged text as untrusted and review ledger injection_findings before using it.",
     "aliases": [
       "injection_flagged",
       "injection_pattern",
@@ -609,7 +609,7 @@
   },
   "other": {
     "severity": "warning",
-    "suggestion": "Read the message and sidecar details; report it so a specific code can be added.",
+    "suggestion": "Read the message and ledger details; report it so a specific code can be added.",
     "aliases": []
   },
   "page_cap_reached": {

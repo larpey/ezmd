@@ -79,7 +79,7 @@ def test_huge_real_to_and_cc_are_cut_consistently(convert) -> None:
         assert re.fullmatch(r"(user\d+@example\.org|Copy (\d+) <c\2@example\.org>)", last), last
         total = 3000
         assert len(kept.split(", ")) + int(marker.split()[0][1:]) == total
-    assert all(len(str(e["value"])) <= 4000 for e in doc.sidecar_extra["email_headers"])
+    assert all(len(str(e["value"])) <= 4000 for e in doc.ledger_extra["email_headers"])
     w = next(w for w in doc.warnings if w.kind == WarningKind.TRUNCATED)
     assert w.count == 2 and w.detail["max_chars"] == 4000
 

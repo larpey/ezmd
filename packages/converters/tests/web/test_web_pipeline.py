@@ -128,8 +128,8 @@ def test_injection_hidden_text_flagged_and_visible_text_unchanged() -> None:
     assert WarningKind.INJECTION_SUSPECTED not in [w.kind for w in doc.warnings]  # the renderer scans it
     result = convert_ref(_ref(html, "https://b.test/f"), ConvertOptions(), converter_id="web.trafilatura")
     out = render(result, "full", "md")
-    assert out.sidecar is not None
-    findings = out.sidecar["injection_findings"]
+    assert out.ledger is not None
+    findings = out.ledger["injection_findings"]
     assert isinstance(findings, list) and any(f["hidden"] for f in findings)
     assert out.injection_risk == "high"
 

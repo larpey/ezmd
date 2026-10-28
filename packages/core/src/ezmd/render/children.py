@@ -10,10 +10,10 @@ rendering (docs/internal/spec/part2.md step 28, part3.md section D):
   not repeated; the child's other headings shift under the section (child H2 sits one level below it).
 - Child block ids are prefixed (`c1-b0003`, `c1.2-b0001` for a grandchild) so ids, footnotes, anchors
   and annotations never collide with the parent's; numbering and `{#sec-N}` anchors simply continue.
-- Child warnings are merged into the parent with `detail["child"] = <path>`; child `sidecar_extra`
+- Child warnings are merged into the parent with `detail["child"] = <path>`; child `ledger_extra`
   entries are merged under the same key with a `child` field.
 
-The original parent Document (without children) is kept for the sidecar's `document` dump.
+The original parent Document (without children) is kept for the ledger's `document` dump.
 """
 
 from __future__ import annotations
@@ -24,15 +24,15 @@ from typing import Any
 from pydantic import TypeAdapter
 
 from ezmd.ir import (
-    RESERVED_SIDECAR_KEYS,
+    RESERVED_LEDGER_KEYS,
     Block,
     ConversionResult,
     Document,
     Heading,
     InlineSpan,
+    LedgerScalar,
     Paragraph,
     Provenance,
-    SidecarScalar,
     SourceType,
     Warning,
     spans_text,
@@ -179,14 +179,14 @@ def _child_warning(w: Warning, prefix: str, path: str) -> Warning:
 class _Flat:
     blocks: list[Block] = field(default_factory=list)
     warnings: list[Warning] = field(default_factory=list)
-    extra: dict[str, list[dict[str, SidecarScalar]]] = field(default_factory=dict)
+    extra: dict[str, list[dict[str, LedgerScalar]]] = field(default_factory=dict)
     index: ChildIndex = field(default_factory=ChildIndex)
 
 
 def _check_extra(doc: Document) -> None:
-    reserved = sorted(RESERVED_SIDECAR_KEYS.intersection(doc.sidecar_extra))
+    reserved = sorted(RESERVED_LEDGER_KEYS.intersection(doc.ledger_extra))
     if reserved:
-        raise ValueError(f"sidecar_extra keys collide with built-in sidecar keys: {reserved}")
+        raise ValueError(f"ledger_extra keys collide with built-in ledger keys: {reserved}")
 
 
 def _walk(doc: Document, parts: list[str], depth: int, flat: _Flat) -> None:
@@ -222,7 +222,7 @@ def _walk(doc: Document, parts: list[str], depth: int, flat: _Flat) -> None:
             flat.blocks.append(nb)
             flat.index.block_child[nb.id] = prefix
         flat.warnings.extend(_child_warning(w, prefix, path) for w in child.warnings)
-        for key, entries in child.sidecar_extra.items():
+        for key, entries in child.ledger_extra.items():
             flat.extra.setdefault(key, []).extend({**e, "child": path} for e in entries)
         flat.index.truncated |= child.truncated
         flat.index.infos.append(
@@ -249,7 +249,7 @@ def flatten_children(result: ConversionResult) -> tuple[ConversionResult, ChildI
         return result, ChildIndex()
     flat = _Flat()
     _walk(doc, [], 1, flat)
-    extra = {k: list(v) for k, v in doc.sidecar_extra.items()}
+    extra = {k: list(v) for k, v in doc.ledger_extra.items()}
     for key, entries in flat.extra.items():
         extra.setdefault(key, []).extend(entries)
     merged = Document(
@@ -260,7 +260,7 @@ def flatten_children(result: ConversionResult) -> tuple[ConversionResult, ChildI
         converter_id=doc.converter_id,
         content_hash=doc.content_hash,
         truncated=doc.truncated or flat.index.truncated,
-        sidecar_extra=extra,
+        ledger_extra=extra,
     )
     flat.index.source = doc
     return result.model_copy(update={"document": merged}), flat.index

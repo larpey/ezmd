@@ -99,5 +99,5 @@ def test_table_column_types_drive_alignment() -> None:
     typed = Table(cells=cells, n_rows=3, n_cols=2, header_rows=1, column_types=["int", "text"], provenance=prov())
     out = render(make_result([typed]), "full").body
     assert "|---:|---|" in out
-    sidecar = render(make_result([typed]), "full").sidecar
-    assert sidecar is not None and sidecar["tables"][0]["column_types"] == ["int", "text"]  # type: ignore[index]
+    ledger = render(make_result([typed]), "full").ledger
+    assert ledger is not None and ledger["tables"][0]["column_types"] == ["int", "text"]  # type: ignore[index]

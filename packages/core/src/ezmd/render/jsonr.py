@@ -1,4 +1,4 @@
-"""ezmd.render.jsonr: the `json` format, a payload of {markdown, frontmatter, sidecar, chunks}."""
+"""ezmd.render.jsonr: the `json` format, a payload of {markdown, frontmatter, ledger, chunks}."""
 
 from __future__ import annotations
 
@@ -27,14 +27,14 @@ class JsonRenderer:
         payload = {
             "markdown": md.markdown,
             "frontmatter": md.frontmatter,
-            "sidecar": md.sidecar,
+            "ledger": md.ledger,
             "chunks": [c.to_dict() for c in md.chunks],
         }
         text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
         return RenderedOutput(
             markdown=text,
             frontmatter=md.frontmatter,
-            sidecar=md.sidecar,
+            ledger=md.ledger,
             chunks=md.chunks,
             attachments=md.attachments,
             tokens=md.tokens,

@@ -87,7 +87,7 @@ Reading the samples found one more contract break and one reporting gap. Two PDF
 out with no body and only `engine_fallback` and `removed_running_header_footer` warnings, no
 `pages_without_text` or `extraction_empty`, which is the silent-empty case the converter contract forbids.
 The `.txt` read as CSV (`001452`) that the `full` profile sampled to 25 of 2,500 rows does carry
-`table_sampled` in its frontmatter; the bench sidecar had recorded only the converter's warnings, not the
+`table_sampled` in its frontmatter; the bench ledger had recorded only the converter's warnings, not the
 renderer's, which is why it looked unwarned (the worker now records both). `truncated_full` is a policy
 question: the full profile samples large tables and says so, but a profile named full that drops rows
 surprises, and the "full data in tables/table-01.csv" it points at is a file the CLI and library never
@@ -97,9 +97,9 @@ a shrunk HTML page is often navigation.
 
 ## Injection false positives
 
-The smell scorer's `injection` smell read the sidecar's document warnings, which do not carry the
+The smell scorer's `injection` smell read the ledger's document warnings, which do not carry the
 render-time `injection_suspected` warning, so it reported nothing; the worker now records the frontmatter's
-`injection_risk` in the sidecar. Read from the frontmatter directly: 255 of the 7,945 outputs (3.2%) are
+`injection_risk` in the ledger. Read from the frontmatter directly: 255 of the 7,945 outputs (3.2%) are
 `injection_risk: high`, 115 medium, 148 low, on a 2009 corpus of public documents with no prompt injection in
 it. A rescan of the flagged outputs with the scanner (ezmd's own markers excluded) attributes the highs to
 `act as a` in prose (217 findings, #30), `rm -rf` in build logs and changelogs (84, half inside code fences),

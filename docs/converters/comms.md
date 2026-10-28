@@ -48,7 +48,7 @@ quoted contract clause.
 
 Provenance: `source_id` = Message-ID, `path` = `headers`, `body`, or `attachments` (prefixed `messages/<n>/` in a
 mailbox), and child blocks get `attachments/<n>`. The message heading carries `attrs.timestamp`. Every raw
-header goes to the sidecar under `email_headers`.
+header goes to the ledger under `email_headers`.
 
 ## Options (`--opt extra.comms.<name>=...`)
 
@@ -62,7 +62,7 @@ header goes to the sidecar under `email_headers`.
 | `max_attachment_bytes` | 100 MB | larger attachments are listed, not converted |
 | `max_attachments` | 200 | attachments converted per message |
 | `max_messages` | 5,000 | MBOX cap; also capped by `Limits.max_entries` |
-| `max_header_chars` | 16,384 | longer header values are cut at an address or word boundary with an inline `… (N more recipients truncated)` marker, in the tables and the sidecar alike |
+| `max_header_chars` | 16,384 | longer header values are cut at an address or word boundary with an inline `… (N more recipients truncated)` marker, in the tables and the ledger alike |
 | `max_parts` | 1,000 | MIME parts walked per message |
 
 ## Warnings

@@ -12,7 +12,7 @@ Fixed decisions that all parts share are restated in section 1.3. Do not relitig
 
 ### 1.1 Mission
 
-ezmd converts anything into LLM-ready Markdown: PDFs, Office documents, web pages, audio, video, social URLs, chat exports, code repositories, data files, email, notes-app exports, and specialized formats. It emits Markdown with YAML frontmatter under four output profiles (`full`, `compact`, `rag`, `agent`), an optional JSON sidecar with provenance, and an explicit warnings list so nothing is lost silently. It ships three ways: a free public instance with no accounts and no retention beyond 24 hours, a self-hostable Docker Compose stack that is identical in capability to the public instance, and an embeddable Python library plus CLI plus MCP server. Everything in the repo is Apache-2.0, and the default install pulls only permissively licensed code and model weights. The differentiators are not raw parsing quality (that is wrapped from Docling, Trafilatura, yt-dlp, faster-whisper and friends) but the things incumbents drop: heading hierarchy, tracked changes, comments, speaker labels, thread parents, page and bbox provenance on every block, spreadsheet formulas, a "what I could not read" report, token-aware profiles, and prompt-injection flagging.
+ezmd converts anything into LLM-ready Markdown: PDFs, Office documents, web pages, audio, video, social URLs, chat exports, code repositories, data files, email, notes-app exports, and specialized formats. It emits Markdown with YAML frontmatter under four output profiles (`full`, `compact`, `rag`, `agent`), an optional JSON ledger with provenance, and an explicit warnings list so nothing is lost silently. It ships three ways: a free public instance with no accounts and no retention beyond 24 hours, a self-hostable Docker Compose stack that is identical in capability to the public instance, and an embeddable Python library plus CLI plus MCP server. Everything in the repo is Apache-2.0, and the default install pulls only permissively licensed code and model weights. The differentiators are not raw parsing quality (that is wrapped from Docling, Trafilatura, yt-dlp, faster-whisper and friends) but the things incumbents drop: heading hierarchy, tracked changes, comments, speaker labels, thread parents, page and bbox provenance on every block, spreadsheet formulas, a "what I could not read" report, token-aware profiles, and prompt-injection flagging.
 
 ### 1.2 Definition of done
 
@@ -52,8 +52,8 @@ ezmd/
   docs/internal/DECISIONS.md, docs/internal/ROADMAP.md, docs/internal/STATUS.md, docs/internal/AGENTS.md
 ```
 
-- Architecture: the public VPS (Hetzner Ashburn) runs API, UI, queue, and converters. A Raspberry Pi at my home runs `apps/fetch-node`, connects outbound-only to the VPS over Tailscale, polls the `fetch_residential` queue for jobs that need a residential IP (TikTok, YouTube, Instagram, etc.), downloads, extracts audio with ffmpeg, and uploads the audio back. The VPS never exposes the Pi. Fallback chain when no fetch node is online: platform captions endpoints, then mirror/embed endpoints, then yt-dlp with a PO-token sidecar, then `needs_user_action` asking the user to upload the file or use the extension.
-- Output: Markdown with YAML frontmatter, four profiles, optional JSON sidecar. Part 3 is authoritative for format.
+- Architecture: the public VPS (Hetzner Ashburn) runs API, UI, queue, and converters. A Raspberry Pi at my home runs `apps/fetch-node`, connects outbound-only to the VPS over Tailscale, polls the `fetch_residential` queue for jobs that need a residential IP (TikTok, YouTube, Instagram, etc.), downloads, extracts audio with ffmpeg, and uploads the audio back. The VPS never exposes the Pi. Fallback chain when no fetch node is online: platform captions endpoints, then mirror/embed endpoints, then yt-dlp with a PO-token ledger, then `needs_user_action` asking the user to upload the file or use the extension.
+- Output: Markdown with YAML frontmatter, four profiles, optional JSON ledger. Part 3 is authoritative for format.
 - Public instance: no accounts, no retention beyond 24 hours, per-IP rate limits, Cloudflare Turnstile (invisible) for link fetches, size and duration caps.
 
 ---
@@ -169,7 +169,7 @@ No task is `done` until all of these pass locally and in CI:
 5. Security audit: `uv run pip-audit` and `pnpm audit --audit-level=high` report no unresolved high or critical advisories (allowlist with expiry in `tools/audit_ignore.toml` if a fix is unavailable; each entry needs a docs/internal/DECISIONS.md reference).
 6. docs/internal/STATUS.md updated with the task's state, last commit, and metrics.
 
-Fixture scoring. Each fixture is a directory `fixtures/<family>/<name>/` containing `input.<ext>` (or `input.url` with a URL and a frozen `input.html` or `input.har` snapshot so tests never hit the network), `expected.full.md`, `expected.sidecar.json`, and `meta.toml` (converter id, threshold overrides, notes on what the fixture tests). The scorer in `packages/core/ezmd/testing/score.py` computes:
+Fixture scoring. Each fixture is a directory `fixtures/<family>/<name>/` containing `input.<ext>` (or `input.url` with a URL and a frozen `input.html` or `input.har` snapshot so tests never hit the network), `expected.full.md`, `expected.ledger.json`, and `meta.toml` (converter id, threshold overrides, notes on what the fixture tests). The scorer in `packages/core/ezmd/testing/score.py` computes:
 
 - `heading_score`: F1 over (level, normalized text) pairs of headings, plus a hierarchy consistency term (fraction of expected parent-child heading relationships preserved). Weight 0.25.
 - `table_score`: for each expected table, best-match actual table by caption and shape; cell accuracy is exact-match after whitespace and number normalization; merged-cell info compared when present. Mean over tables. Weight 0.25. If no tables expected and none produced, score 1.0; if tables produced where none expected, penalize 0.1 per extra table.
@@ -335,7 +335,7 @@ The authoritative specification is `docs/internal/spec/part1.md` to `docs/intern
 
 ## 4. Core domain model (IR)
 
-The intermediate representation lives in `packages/core/ezmd/ir.py`. Every converter produces a `Document`; every renderer consumes one. The IR is Pydantic v2 so it serializes to the JSON sidecar and validates on construction. It is deliberately flat: `Document.blocks` is an ordered list, and nesting is expressed through `parent_id` and, for lists, through `ListBlock.items` with nested `ListItem.children`. Keep it this way; a deep tree makes chunking and page-anchoring harder than it needs to be.
+The intermediate representation lives in `packages/core/ezmd/ir.py`. Every converter produces a `Document`; every renderer consumes one. The IR is Pydantic v2 so it serializes to the JSON ledger and validates on construction. It is deliberately flat: `Document.blocks` is an ordered list, and nesting is expressed through `parent_id` and, for lists, through `ListBlock.items` with nested `ListItem.children`. Keep it this way; a deep tree makes chunking and page-anchoring harder than it needs to be.
 
 Design constraints you must preserve:
 
@@ -601,7 +601,7 @@ class TranscriptSegment(BlockBase):
     """Diarization label ('SPEAKER_00') or resolved name."""
     language: str | None = None
     words: list[tuple[str, float, float]] | None = None
-    """Optional word-level timings (word, start, end). Kept for the sidecar only."""
+    """Optional word-level timings (word, start, end). Kept for the ledger only."""
     kind: Literal["speech", "music", "noise", "silence", "on_screen_text", "slide_change"] = "speech"
 
 
@@ -1006,7 +1006,7 @@ Notes for implementers:
 
 - `Document.sections()` is what the `rag` chunker and the TOC generator use. Keep it stable.
 - `Provenance.source` for a web fetch is the final URL after redirects; `Metadata.canonical_url` is the `<link rel=canonical>` if present.
-- `TranscriptSegment.words` can be large. The sidecar serializer includes it only in the `full` profile; the renderer never emits it inline.
+- `TranscriptSegment.words` can be large. The ledger serializer includes it only in the `full` profile; the renderer never emits it inline.
 - `Raw` is a last resort. A converter that emits more than 10% of its blocks as `Raw` on a fixture fails the structural score and must be fixed or flagged experimental.
 
 ---
@@ -1524,7 +1524,7 @@ class TableRules:
     """None means unlimited. compact uses 50."""
     merged_cells: Literal["html", "flatten"] = "html"
     wide_fallback: Literal["kv", "transpose"] = "kv"
-    csv_sidecar: bool = True
+    csv_files: bool = True
     pad_columns: bool = False
 
 
@@ -1575,7 +1575,7 @@ class Profile:
     chunks: ChunkRules = field(default_factory=ChunkRules)
     untrusted_fence: bool = False
     section_ids: bool = False
-    sidecar: bool = True
+    ledger: bool = True
     include_extra_metadata: bool = False
     raw_blocks: Literal["fenced", "drop"] = "fenced"
     token_budget: int | None = None
@@ -1594,7 +1594,7 @@ COMPACT = Profile(
     tables=TableRules(max_pipe_rows=50, merged_cells="flatten"),
     images=ImageRules(mode="caption_only"),
     transcript=TranscriptRules(timestamps="per_paragraph"),
-    sidecar=False,
+    ledger=False,
 )
 
 RAG = Profile(
@@ -1670,7 +1670,7 @@ class Chunk:
 
 @dataclass(slots=True)
 class Attachment:
-    """A file the renderer produced alongside the Markdown (CSV sidecar for a table, extracted image)."""
+    """A file the renderer produced alongside the Markdown (CSV file for a table, extracted image)."""
 
     path: str
     """Relative path as referenced from the Markdown ('tables/table-03.csv')."""
@@ -1682,7 +1682,7 @@ class Attachment:
 class RenderedOutput:
     markdown: str
     frontmatter: dict[str, object]
-    sidecar: dict[str, object] | None
+    ledger: dict[str, object] | None
     chunks: list[Chunk]
     attachments: list[Attachment] = field(default_factory=list)
     tokens: int = 0
@@ -1726,7 +1726,7 @@ class TiktokenCounter:
 
 class MarkdownRenderer:
     """Skeleton. Phase 0 implements: frontmatter, headings, paragraphs, code blocks, lists, page markers,
-    raw blocks, warnings into frontmatter and sidecar, token count, and the agent-profile fence with a
+    raw blocks, warnings into frontmatter and ledger, token count, and the agent-profile fence with a
     placeholder salt. Part 3 fills in tables, images, transcripts, footnotes, comments, tracked changes,
     TOC, numbering, chunking, link lists, and the injection scanner."""
 
@@ -1758,11 +1758,11 @@ class MarkdownRenderer:
         else:
             parts.append(body)
             md = "\n".join(parts)
-        sidecar = self._sidecar(result, profile) if profile.sidecar else None
+        ledger = self._ledger(result, profile) if profile.ledger else None
         return RenderedOutput(
             markdown=md,
             frontmatter=fm,
-            sidecar=sidecar,
+            ledger=ledger,
             chunks=[],
             tokens=self.counter.count(md),
             truncated=result.truncated,
@@ -1837,10 +1837,10 @@ class MarkdownRenderer:
 
         return "---\n" + yaml.safe_dump(fm, sort_keys=False, allow_unicode=True, width=10_000).rstrip() + "\n---\n"
 
-    def _sidecar(self, result: ConversionResult, profile: Profile) -> dict[str, object]:
+    def _ledger(self, result: ConversionResult, profile: Profile) -> dict[str, object]:
         """Phase 0: full IR dump plus metrics. Part 3 defines the compact sections/tables/figures index."""
         return {
-            "schema": "ezmd.sidecar/1",
+            "schema": "ezmd.ledger/1",
             "profile": profile.name,
             "metrics": result.metrics.model_dump(mode="json"),
             "warnings": [w.model_dump(mode="json") for w in result.all_warnings],
@@ -1854,7 +1854,7 @@ class MarkdownRenderer:
 
 
 class JsonRenderer:
-    """Emits the sidecar structure as the primary output. Used by `format=json`."""
+    """Emits the ledger structure as the primary output. Used by `format=json`."""
 
     format = "json"
 
@@ -1862,11 +1862,11 @@ class JsonRenderer:
         import json
 
         md = MarkdownRenderer().render(result, profile)
-        payload = {"markdown": md.markdown, "frontmatter": md.frontmatter, "sidecar": md.sidecar, "chunks": [c.__dict__ for c in md.chunks]}
+        payload = {"markdown": md.markdown, "frontmatter": md.frontmatter, "ledger": md.ledger, "chunks": [c.__dict__ for c in md.chunks]}
         return RenderedOutput(
             markdown=json.dumps(payload, ensure_ascii=False, indent=2),
             frontmatter=md.frontmatter,
-            sidecar=md.sidecar,
+            ledger=md.ledger,
             chunks=md.chunks,
             tokens=md.tokens,
             truncated=md.truncated,
@@ -1959,7 +1959,7 @@ Base path `/v1`. JSON unless noted. All responses include `X-Request-Id`. Errors
 | GET | `/v1/jobs/{id}` | job id is the capability; optional API key | Job state and metadata |
 | GET | `/v1/jobs/{id}/events` | same | SSE stream of progress and state changes |
 | GET | `/v1/jobs/{id}/result` | same | Rendered output; `profile`, `format` query params |
-| GET | `/v1/jobs/{id}/attachments/{path}` | same | CSV sidecars and extracted images |
+| GET | `/v1/jobs/{id}/attachments/{path}` | same | CSV files and extracted images |
 | POST | `/v1/jobs/{id}/supply` | same | Client supplies a file or fetched media for a `needs_user_action` job |
 | DELETE | `/v1/jobs/{id}` | same | Purge now |
 | POST | `/v1/fetch-node/claim` | fetch-node secret | Claim the next residential fetch job |
@@ -2085,7 +2085,7 @@ data: {"result_url":"/v1/jobs/job_7Kx2mQp9Lw3nRt5vYb8cDe/result?profile=rag&form
 `GET /v1/jobs/{id}/result?profile=rag&format=md`:
 
 - `profile`: `full` | `compact` | `rag` | `agent` (default: the job's requested profile). Dotted overrides allowed: `chunks.chunk_tokens=512`.
-- `format`: `md` (default; `Content-Type: text/markdown; charset=utf-8`, headers `X-Markdown-Tokens`, `X-Ezmd-Truncated`, `X-Ezmd-Warnings`, `X-Ezmd-Injection-Risk`), `json` (the JsonRenderer payload: markdown, frontmatter, sidecar, chunks), `txt` (plain text body, no frontmatter), `docx` (Phase 5 in Part 2; 501 until then), `zip` (markdown plus sidecar plus attachments).
+- `format`: `md` (default; `Content-Type: text/markdown; charset=utf-8`, headers `X-Markdown-Tokens`, `X-Ezmd-Truncated`, `X-Ezmd-Warnings`, `X-Ezmd-Injection-Risk`), `json` (the JsonRenderer payload: markdown, frontmatter, ledger, chunks), `txt` (plain text body, no frontmatter), `docx` (Phase 5 in Part 2; 501 until then), `zip` (markdown plus ledger plus attachments).
 - Results for non-requested profiles are rendered on demand from the cached IR and cached per (job, profile, overrides hash) in the blob store.
 - 409 if the job is not `done`; body includes the current state.
 
@@ -2289,14 +2289,14 @@ Each task below lists acceptance criteria. Mark tasks `done` in docs/internal/ST
 ### P0-T07 Profiles, renderer skeleton, scoring
 
 1. Implement `profiles.py` and `render/base.py` per section 6 plus `render/__init__.py` exposing `render(result, profile_name, format, **overrides)`.
-2. Implement `testing/score.py` per 2.4 and the `ezmd-score` and `ezmd-golden` CLIs. `ezmd-golden --write` writes `expected.full.md` and `expected.sidecar.json` and prints a reminder that Skeptic review is required.
+2. Implement `testing/score.py` per 2.4 and the `ezmd-score` and `ezmd-golden` CLIs. `ezmd-golden --write` writes `expected.full.md` and `expected.ledger.json` and prints a reminder that Skeptic review is required.
 3. Implement the fixture pytest plugin `testing/pytest_fixtures.py` that discovers `fixtures/**/meta.toml`, parametrizes a test per fixture, converts, renders `full`, scores, and asserts the threshold from `fixtures/thresholds.toml` with `meta.toml` overrides, plus the hard-failure checks.
 4. Determinism test: render twice, compare everything after the frontmatter.
 5. Acceptance: `uv run pytest fixtures -q` passes for the three text fixtures; `ezmd-score` prints the four sub-scores and overall; mypy strict clean.
 
 ### P0-T08 CLI
 
-1. `ezmd convert <path-or-url> [--profile full] [--format md] [--out path] [--sidecar] [--converter id] [--opt key=value]...`: local conversion through the registry and renderer. URLs in Phase 0 go through netguard to a temp file and then the registry (only text types will succeed until Part 2).
+1. `ezmd convert <path-or-url> [--profile full] [--format md] [--out path] [--ledger] [--converter id] [--opt key=value]...`: local conversion through the registry and renderer. URLs in Phase 0 go through netguard to a temp file and then the registry (only text types will succeed until Part 2).
 2. `ezmd capabilities`, `ezmd detect <path>`, `ezmd version`.
 3. `ezmd serve` is a thin wrapper that runs the API with uvicorn (useful for self-host without compose).
 4. Acceptance: `ezmd convert fixtures/text/markdown-kitchen-sink/input.md --profile compact` prints Markdown with frontmatter; exit code 2 on unsupported type with the `user_message`; `--help` output is checked into `docs/cli.md` by a generator script.
@@ -2311,14 +2311,14 @@ Each task below lists acceptance criteria. Mark tasks `done` in docs/internal/ST
 
 ### P0-T10 Web UI
 
-1. `apps/web`: React 18 + Vite + TypeScript, no UI framework beyond a small CSS file (keep the dependency footprint minimal; Tailwind is acceptable if you want it). Pages: single page with a drop zone and URL field, profile selector, options drawer (max pages, OCR toggle), a job progress panel driven by SSE, a result view with tabs (Markdown rendered, raw, sidecar JSON, warnings), copy and download buttons, and a capabilities-driven list of supported inputs. Turnstile widget mounted only when `turnstile_site_key` is present in capabilities. Dark mode via `prefers-color-scheme`.
+1. `apps/web`: React 18 + Vite + TypeScript, no UI framework beyond a small CSS file (keep the dependency footprint minimal; Tailwind is acceptable if you want it). Pages: single page with a drop zone and URL field, profile selector, options drawer (max pages, OCR toggle), a job progress panel driven by SSE, a result view with tabs (Markdown rendered, raw, ledger JSON, warnings), copy and download buttons, and a capabilities-driven list of supported inputs. Turnstile widget mounted only when `turnstile_site_key` is present in capabilities. Dark mode via `prefers-color-scheme`.
 2. `packages/sdk-ts`: generated client from `docs/api/openapi.json` (`openapi-typescript` plus a 150-line hand-written wrapper with `convert()`, `waitForJob()` using SSE with polling fallback, `getResult()`). The web UI uses this SDK.
 3. Tests: Vitest unit tests for the SDK wrapper (mocked fetch and EventSource); Playwright e2e test that uploads `fixtures/text/plain-utf8/input.txt` against the running API and asserts the Markdown appears.
 4. Acceptance: `pnpm -r build` succeeds; `pnpm -r lint` and `typecheck` clean; e2e passes locally and in CI (CI runs the API with a worker and fakeredis-free real Redis service).
 
 ### P0-T11 Docker and Compose
 
-1. `deploy/Dockerfile.api` (python:3.12-slim pinned by digest, uv install, non-root, builds web UI in a node stage and copies `dist`), `deploy/Dockerfile.worker` (same base plus libmagic, ffmpeg, pandoc, bubblewrap; model pre-bake stage for Magika; non-root, read-only FS compatible), `deploy/compose.yml` (services: `caddy`, `api`, `worker-default`, `worker-media`, `worker-fetch`, `redis` with `requirepass` and no host port, `purge` as a one-shot scheduler sidecar or in-API scheduler; internal network for workers with no default egress except allowlist; volumes for SQLite and blobs; healthchecks; `mem_limit`, `pids_limit`, `cap_drop`, `read_only`, `security_opt`), `deploy/compose.gpu.yml` override (adds the NVIDIA runtime to `worker-media`, used from Part 2), `deploy/Caddyfile` (TLS automatic when `EZMD_DOMAIN` set, otherwise plain HTTP on 8080; `request_body max_size`; security headers; `/v1/fetch-node/*` restricted to the Tailscale interface address), `deploy/seccomp-worker.json`, `deploy/egress-allowlist.sh`, `deploy/smoke.sh` (waits for `/readyz`, posts a text file, polls, asserts Markdown contains the expected heading, also tests `format=json`, exits non-zero on failure; `--remote` mode skips bring-up).
+1. `deploy/Dockerfile.api` (python:3.12-slim pinned by digest, uv install, non-root, builds web UI in a node stage and copies `dist`), `deploy/Dockerfile.worker` (same base plus libmagic, ffmpeg, pandoc, bubblewrap; model pre-bake stage for Magika; non-root, read-only FS compatible), `deploy/compose.yml` (services: `caddy`, `api`, `worker-default`, `worker-media`, `worker-fetch`, `redis` with `requirepass` and no host port, `purge` as a one-shot scheduler ledger or in-API scheduler; internal network for workers with no default egress except allowlist; volumes for SQLite and blobs; healthchecks; `mem_limit`, `pids_limit`, `cap_drop`, `read_only`, `security_opt`), `deploy/compose.gpu.yml` override (adds the NVIDIA runtime to `worker-media`, used from Part 2), `deploy/Caddyfile` (TLS automatic when `EZMD_DOMAIN` set, otherwise plain HTTP on 8080; `request_body max_size`; security headers; `/v1/fetch-node/*` restricted to the Tailscale interface address), `deploy/seccomp-worker.json`, `deploy/egress-allowlist.sh`, `deploy/smoke.sh` (waits for `/readyz`, posts a text file, polls, asserts Markdown contains the expected heading, also tests `format=json`, exits non-zero on failure; `--remote` mode skips bring-up).
 2. `.env.example` lists every variable with defaults and comments. `EZMD_PUBLIC_MODE=false` by default.
 3. Acceptance: on a clean machine `docker compose -f deploy/compose.yml up --build -d && deploy/smoke.sh` passes; image sizes recorded in docs/internal/STATUS.md metrics (`api` under 400 MB, `worker` under 1.2 GB before any ML extras); `docker compose config` validates; the worker container has no route to the internet (test from inside with a curl to a public IP that must fail, included in smoke.sh).
 

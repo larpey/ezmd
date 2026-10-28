@@ -57,20 +57,20 @@ def _ezmd() -> tuple[str, Convert]:
         ]
         truncated = bool(result.frontmatter.get("truncated"))
         # Render-time warnings (injection_suspected among them) live in the frontmatter, not the document.
-        sidecar = {
+        ledger = {
             "profile": profile,
             "truncated": truncated,
             "warnings": warnings,
             "render_warnings": [str(w) for w in result.frontmatter.get("warnings") or []],
             "injection_risk": result.frontmatter.get("injection_risk"),
         }
-        _SIDECARS[str(path)] = json.dumps(sidecar, ensure_ascii=False)
+        _LEDGERS[str(path)] = json.dumps(ledger, ensure_ascii=False)
         return str(result.markdown)
 
     return metadata.version("ezmd"), convert
 
 
-_SIDECARS: dict[str, str] = {}
+_LEDGERS: dict[str, str] = {}
 """Extra JSON a tool wants written next to its output, keyed by input path (ezmd's warnings)."""
 
 
@@ -266,9 +266,9 @@ def main() -> int:
             out = Path(job["output"])
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(text, encoding="utf-8", newline="\n")
-            sidecar = _SIDECARS.pop(job["input"], None)
-            if sidecar is not None:
-                Path(str(out) + ".warnings.json").write_text(sidecar, encoding="utf-8", newline="\n")
+            ledger = _LEDGERS.pop(job["input"], None)
+            if ledger is not None:
+                Path(str(out) + ".warnings.json").write_text(ledger, encoding="utf-8", newline="\n")
             send({"id": job["id"], "ok": True, "seconds": time.perf_counter() - t0, "chars": len(text)})
         except Exception as exc:
             traceback.print_exc()

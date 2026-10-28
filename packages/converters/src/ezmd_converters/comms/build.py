@@ -17,10 +17,10 @@ from ezmd.ir import (
     Document,
     Heading,
     InlineSpan,
+    LedgerScalar,
     Paragraph,
     Provenance,
     Quote,
-    SidecarScalar,
     Table,
     TableCell,
     Warning,
@@ -34,7 +34,7 @@ from ezmd_converters.comms.body_text import REPLY_HEADER, REPLY_HISTORY, ROLE, t
 from ezmd_converters.comms.model import HEADER_FIELDS, ParsedMessage
 from ezmd_converters.comms.options import CommsOptions
 
-MAX_SIDECAR_HEADERS = 500
+MAX_LEDGER_HEADERS = 500
 ALTERNATIVE_RATIO = 0.5
 
 
@@ -43,7 +43,7 @@ class MessageBuild:
     blocks: list[Block] = field(default_factory=list)
     children: list[Document] = field(default_factory=list)
     warnings: list[Warning] = field(default_factory=list)
-    headers_sidecar: list[dict[str, SidecarScalar]] = field(default_factory=list)
+    headers_ledger: list[dict[str, LedgerScalar]] = field(default_factory=list)
     body_source: str = "none"
     body_alternatives: bool = False
     attachment_count: int = 0
@@ -185,16 +185,16 @@ def build_message(msg: ParsedMessage, spec: MessageSpec, options: ConvertOptions
         out.children.extend(result.children)
         out.warnings.extend(result.warnings)
     if opts.all_headers and msg.raw_headers:
-        rows = [(k, v[: opts.max_header_chars]) for k, v in msg.raw_headers[:MAX_SIDECAR_HEADERS]]
+        rows = [(k, v[: opts.max_header_chars]) for k, v in msg.raw_headers[:MAX_LEDGER_HEADERS]]
         out.blocks.append(
             Heading(level=min(6, spec.level + 1), spans=[InlineSpan(text="All headers")], provenance=head_prov)
         )
         out.blocks.append(_kv_table(("Header", "Value"), rows, head_prov, "all_headers", "All headers"))
-    for name, value in msg.raw_headers[:MAX_SIDECAR_HEADERS]:
-        entry: dict[str, SidecarScalar] = {"name": name, "value": value[: opts.max_header_chars]}
+    for name, value in msg.raw_headers[:MAX_LEDGER_HEADERS]:
+        entry: dict[str, LedgerScalar] = {"name": name, "value": value[: opts.max_header_chars]}
         if spec.index is not None:
             entry["message"] = spec.index
-        out.headers_sidecar.append(entry)
+        out.headers_ledger.append(entry)
     return out
 
 

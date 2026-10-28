@@ -111,7 +111,7 @@ class OfficeOptions:
     include_notes: bool = True
     infer_headings: bool = True
     keep_hidden: bool = False
-    formulas: str = "sidecar"
+    formulas: str = "ledger"
     max_rows: int = 10_000
     max_cols: int = 256
     max_sheets: int = 50
@@ -121,7 +121,7 @@ class OfficeOptions:
 
     @classmethod
     def from_options(cls, options: ConvertOptions) -> OfficeOptions:
-        formulas = _extra_str(options, "formulas", "sidecar", ("sidecar", "inline", "table", "off"))
+        formulas = _extra_str(options, "formulas", "ledger", ("ledger", "inline", "table", "off"))
         if not options.formulas:
             formulas = "off"
         return cls(

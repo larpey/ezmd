@@ -42,7 +42,7 @@ Useful variations:
 
 ```sh
 uv run ezmd convert report.pdf -p rag -o out/             # writes out/<title>.md
-uv run ezmd convert report.pdf -o report.md --sidecar      # also writes report.ezmd.json
+uv run ezmd convert report.pdf -o report.md --ledger      # also writes report.ezmd.json
 uv run ezmd convert report.pdf --json                      # one JSON object on stdout
 uv run ezmd convert report.pdf --converter documents.docling_pdf   # force a converter (docs extra)
 cat notes.txt | uv run ezmd convert -                      # stdin

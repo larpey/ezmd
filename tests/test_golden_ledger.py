@@ -1,0 +1,135 @@
+"""Ledger goldens: written without volatile fields and compared exactly by the fixture runner (audit fix)."""
+
+from __future__ import annotations
+
+import copy
+import json
+import shutil
+from pathlib import Path
+from typing import Any
+
+import pytest
+
+from ezmd.testing.fixtures import (
+    NORMALIZED,
+    Fixture,
+    discover,
+    load_meta,
+    normalize_ledger,
+    run_fixture,
+    version_independent_tokens,
+    write_golden,
+)
+
+ROOT = Path(__file__).resolve().parents[1] / "fixtures"
+SMALL = "text/plain-utf8"
+
+
+def _load(path: Path) -> dict[str, Any]:
+    data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    return data
+
+
+def _copy_fixture(tmp_path: Path, fid: str) -> tuple[Fixture, Path]:
+    root = tmp_path / "fixtures"
+    family = fid.split("/")[0]
+    shutil.copytree(ROOT / fid, root / fid)
+    shutil.copy(ROOT / "thresholds.toml", root / "thresholds.toml")
+    shutil.copy(ROOT / family / "thresholds.toml", root / family / "thresholds.toml")
+    return Fixture(path=root / fid, meta=load_meta(root / fid)), root
+
+
+def test_committed_ledgers_hold_no_volatile_fields() -> None:
+    for fx in discover(ROOT):
+        ledger = _load(fx.expected_ledger)
+        assert normalize_ledger(ledger) == ledger, f"{fx.id}: run ezmd-golden --write to normalize"
+        assert "duration_seconds" not in ledger["metrics"], fx.id
+        assert ledger["frontmatter"]["converter_version"] == NORMALIZED, fx.id
+
+
+def test_normalize_ledger_touches_only_volatile_fields() -> None:
+    raw = {
+        "metrics": {"duration_seconds": 0.25, "fetch_seconds": None, "input_bytes": 10},
+        "frontmatter": {"converter_version": "1.2.3", "ezmd_version": "1.2.3", "title": "T"},
+        "document": {"blocks": [{"type": "paragraph"}]},
+    }
+    before = copy.deepcopy(raw)
+    out = normalize_ledger(raw)
+    assert raw == before  # the input is not mutated
+    assert out == {
+        "metrics": {"input_bytes": 10},
+        "frontmatter": {"converter_version": NORMALIZED, "ezmd_version": NORMALIZED, "title": "T"},
+        "document": {"blocks": [{"type": "paragraph"}]},
+    }
+    assert normalize_ledger(out) == out
+
+
+def test_tokens_total_does_not_depend_on_the_release() -> None:
+    def md(version: str) -> str:
+        return f'---\nconverter_version: "{version}"\nezmd_version: "{version}"\ntitle: "T"\n---\n\nBody text.\n'
+
+    assert version_independent_tokens(md("0.1.0rc5")) == version_independent_tokens(md("0.1.0"))
+    assert version_independent_tokens(md("0.1.0")) == version_independent_tokens(md("12.34.56.dev7"))
+    assert version_independent_tokens(md("0.1.0")) != version_independent_tokens(md("0.1.0") + "More.\n")
+
+
+def test_unchanged_ledger_passes(tmp_path: Path) -> None:
+    fx, root = _copy_fixture(tmp_path, SMALL)
+    run = run_fixture(fx, root)
+    assert run.hard_failures == [] and run.passed
+
+
+@pytest.mark.parametrize(
+    "edit",
+    [
+        lambda s: s["document"]["blocks"][0].update(type="code"),
+        lambda s: s["warnings"].append({"kind": "injection_suspected", "severity": "warning"}),
+        lambda s: s["provenance"].pop(),
+        lambda s: s["frontmatter"].update(injection_risk="high"),
+        lambda s: s["metrics"]["counts"].update(paragraphs=99),
+    ],
+    ids=["block type", "extra warning", "provenance entry dropped", "frontmatter field", "metrics count"],
+)
+def test_ledger_difference_is_a_hard_failure(tmp_path: Path, edit: Any) -> None:
+    fx, root = _copy_fixture(tmp_path, SMALL)
+    ledger = _load(fx.expected_ledger)
+    edit(ledger)
+    fx.expected_ledger.write_text(json.dumps(ledger, indent=2), encoding="utf-8")
+    run = run_fixture(fx, root)
+    assert not run.passed
+    assert any(f.startswith("ledger differs") for f in run.hard_failures), run.hard_failures
+
+
+def test_timing_and_version_drift_is_ignored(tmp_path: Path) -> None:
+    fx, root = _copy_fixture(tmp_path, SMALL)
+    ledger = _load(fx.expected_ledger)
+    ledger["metrics"]["duration_seconds"] = 12.5
+    ledger["frontmatter"]["converter_version"] = "9.9.9"
+    ledger["frontmatter"]["ezmd_version"] = "9.9.9"
+    fx.expected_ledger.write_text(json.dumps(ledger, indent=2), encoding="utf-8")
+    assert run_fixture(fx, root).passed
+
+
+def test_write_golden_writes_a_normalized_ledger(tmp_path: Path) -> None:
+    fx, _ = _copy_fixture(tmp_path, SMALL)
+    ledger_before = fx.expected_ledger.read_text(encoding="utf-8")
+    fx.expected_ledger.unlink()
+    write_golden(fx)
+    # Byte-identical to the committed ledger, whatever the installed ezmd version and however long it took.
+    assert fx.expected_ledger.read_text(encoding="utf-8") == ledger_before
+    assert "duration_seconds" not in _load(fx.expected_ledger)["metrics"]
+
+
+def test_bbox_coordinates_match_within_tolerance_only() -> None:
+    from ezmd.testing.fixtures import BBOX_TOLERANCE_PT, _first_difference
+
+    def side(x0: float, page: int = 1) -> dict[str, Any]:
+        return {"provenance": [{"page": page, "bbox": {"x0": x0, "y0": 10.0}}]}
+
+    # pdfium's Windows and Linux wheels differ by up to about 0.5 pt on the same glyphs.
+    assert _first_difference(side(72.38), side(72.25)) is None
+    assert _first_difference(side(344.32), side(343.8)) is None
+    assert _first_difference(side(72.0), side(72.0 + BBOX_TOLERANCE_PT + 0.01)) is not None
+    # The tolerance is for bbox coordinates only: other numbers stay exact.
+    assert _first_difference(side(72.0, page=1), side(72.0, page=2)) is not None
+    assert _first_difference({"metrics": {"x0": 1.0}}, {"metrics": {"x0": 1.1}}) is not None

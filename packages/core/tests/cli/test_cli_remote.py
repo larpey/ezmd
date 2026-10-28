@@ -19,7 +19,7 @@ BASE = "https://ezmd.example"
 PAYLOAD = {
     "markdown": '---\ntitle: "Remote"\n---\n\nremote body\n',
     "frontmatter": {"title": "Remote", "tokens": 12, "truncated": False, "warnings": ["encoding_uncertain"]},
-    "sidecar": None,
+    "ledger": None,
     "chunks": [],
 }
 JOB = {"id": "job123", "state": "done", "progress": 1.0}

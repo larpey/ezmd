@@ -142,8 +142,8 @@ class Result:
         return dict(self.render().frontmatter)
 
     @property
-    def sidecar(self) -> dict[str, object] | None:
-        sc = self.render().sidecar
+    def ledger(self) -> dict[str, object] | None:
+        sc = self.render().ledger
         return dict(sc) if sc is not None else None
 
     @property
@@ -173,17 +173,17 @@ class Result:
         out = self.render("rag", "md", **overrides)
         return list(out.chunks)
 
-    def save(self, path: str | Path, *, sidecar: bool = True) -> Path:
+    def save(self, path: str | Path, *, ledger: bool = True) -> Path:
         """Write the Markdown to `path` (a file, or a directory to write `<stem>.md` into) and, when
-        `sidecar` is true and the profile has one, `<stem>.ezmd.json` beside it. Returns the .md path."""
+        `ledger` is true and the profile has one, `<stem>.ezmd.json` beside it. Returns the .md path."""
         target = Path(path)
         if target.is_dir():
             stem = Path(self.conversion.input_ref.display.split("?", 1)[0].rstrip("/")).stem or "output"
             target = target / f"{stem}.md"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(self.markdown, encoding="utf-8", newline="\n")
-        sc = self.sidecar
-        if sidecar and sc is not None:
+        sc = self.ledger
+        if ledger and sc is not None:
             side = target.with_name(target.stem + ".ezmd.json")
             side.write_text(json.dumps(sc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         return target

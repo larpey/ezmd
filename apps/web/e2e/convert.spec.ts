@@ -16,7 +16,7 @@ test("converts an uploaded Markdown file and shows the rendered result", async (
 
   await card.getByTestId("tab-raw").click();
   await expect(card.getByTestId("result-raw")).toContainText("# Kitchen Sink");
-  await card.getByTestId("tab-sidecar").click();
+  await card.getByTestId("tab-ledger").click();
   await expect(card.getByRole("tabpanel")).toContainText('"blocks"');
 });
 

@@ -1,7 +1,7 @@
 """CLI configuration: the config file (docs/internal/spec/part4.md 4.2.1), environment overrides, and precedence.
 
 Precedence, highest first: command-line flags, environment variables (`EZMD_PROFILE`, `EZMD_FORMAT`,
-`EZMD_REMOTE`, `EZMD_API_KEY`, `EZMD_SIDECAR`), the config file, built-in defaults. The file lives at
+`EZMD_REMOTE`, `EZMD_API_KEY`, `EZMD_LEDGER`), the config file, built-in defaults. The file lives at
 `EZMD_CONFIG` when set, else `%APPDATA%/ezmd/config.toml` on Windows,
 `~/Library/Application Support/ezmd/config.toml` on macOS, and `$XDG_CONFIG_HOME/ezmd/config.toml`
 (default `~/.config/ezmd/config.toml`) elsewhere. A missing default file is fine; a missing
@@ -27,7 +27,7 @@ _FALSE = ("0", "false", "no", "off")
 
 # section -> key -> accepted python types (bool is checked before int because bool subclasses int)
 _SCHEMA: dict[str, dict[str, tuple[type, ...]]] = {
-    "defaults": {"profile": (str,), "format": (str,), "out_dir": (str,), "sidecar": (bool,)},
+    "defaults": {"profile": (str,), "format": (str,), "out_dir": (str,), "ledger": (bool,)},
     "remote": {"url": (str,), "api_key": (str,)},
     "engines": {},  # free-form family = engine name strings
     "fetch": {"cookies_file": (str,), "proxy": (str,), "yt_dlp_extra_args": (list,)},
@@ -50,7 +50,7 @@ class Config:
     """None means automatic: `compact` for an interactive terminal, `full` for file or piped output."""
     format: str = "md"
     out_dir: str | None = None
-    sidecar: bool = True
+    ledger: bool = True
     remote_url: str = ""
     api_key: str = ""
     engines: dict[str, str] = field(default_factory=dict)
@@ -138,7 +138,7 @@ def check_profile(value: str, origin: str) -> str:
 _NOT_CLI_FORMATS = {
     "zip": (
         "zip is the API's download bundle (GET /v1/jobs/{id}/result?format=zip), not a CLI format; with --out the "
-        "CLI writes the same files: <name>.md and its <name>.ezmd.json sidecar"
+        "CLI writes the same files: <name>.md and its <name>.ezmd.json ledger"
     ),
 }
 
@@ -174,7 +174,7 @@ def load_config(env: Mapping[str, str] | None = None, platform: str | None = Non
     profile = check_profile(str(profile), f"{path} defaults.profile") if profile is not None else None
     fmt = check_format(str(defaults.get("format", "md")), f"{path} defaults.format")
     out_dir = defaults.get("out_dir")
-    sidecar = bool(defaults.get("sidecar", True))
+    ledger = bool(defaults.get("ledger", True))
     remote_url = str(remote.get("url", ""))
     api_key = str(remote.get("api_key", ""))
 
@@ -186,9 +186,9 @@ def load_config(env: Mapping[str, str] | None = None, platform: str | None = Non
         remote_url = env["EZMD_REMOTE"]
     if env.get("EZMD_API_KEY"):
         api_key = env["EZMD_API_KEY"]
-    env_sidecar = _env_bool(env, "EZMD_SIDECAR")
-    if env_sidecar is not None:
-        sidecar = env_sidecar
+    env_ledger = _env_bool(env, "EZMD_LEDGER")
+    if env_ledger is not None:
+        ledger = env_ledger
 
     def _num(key: str) -> float | None:
         v = limits.get(key)
@@ -204,7 +204,7 @@ def load_config(env: Mapping[str, str] | None = None, platform: str | None = Non
         profile=profile,
         format=fmt,
         out_dir=str(out_dir) if out_dir else None,
-        sidecar=sidecar,
+        ledger=ledger,
         remote_url=remote_url.strip(),
         api_key=api_key.strip(),
         engines=engines,

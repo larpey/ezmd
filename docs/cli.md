@@ -39,18 +39,18 @@ Arguments:
   SOURCE  File path, http(s) URL, or '-' for stdin.  [required]
 
 Options:
-  -p, --profile TEXT        full | compact | rag | agent [default: auto]
-  -o, --out PATH            Output file, or directory for <title>.md.
-  -f, --format TEXT         md | txt | json [default: md]
-  --sidecar / --no-sidecar  Write <name>.ezmd.json beside --out.
-  --engine TEXT             Engine as family=name, e.g. pdf=docling.
-  --converter TEXT          Force a converter id.
-  --lang TEXT               Language hint(s), e.g. en or en,de.
-  --remote TEXT             Convert on this ezmd instance.
-  --opt TEXT                key=value converter or profile option.
-  --json                    One JSON object on stdout.
-  -q, --quiet               No progress or warnings on stderr.
-  -h, --help                Show this message and exit.
+  -p, --profile TEXT      full | compact | rag | agent [default: auto]
+  -o, --out PATH          Output file, or directory for <title>.md.
+  -f, --format TEXT       md | txt | json [default: md]
+  --ledger / --no-ledger  Write <name>.ezmd.json beside --out.
+  --engine TEXT           Engine as family=name, e.g. pdf=docling.
+  --converter TEXT        Force a converter id.
+  --lang TEXT             Language hint(s), e.g. en or en,de.
+  --remote TEXT           Convert on this ezmd instance.
+  --opt TEXT              key=value converter or profile option.
+  --json                  One JSON object on stdout.
+  -q, --quiet             No progress or warnings on stderr.
+  -h, --help              Show this message and exit.
 ```
 
 ## ezmd batch
@@ -71,7 +71,7 @@ Options:
   -f, --format TEXT            md | txt | json
   --continue-on-error          Keep going after a failure.
   --manifest PATH              [default: <out>/manifest.jsonl]
-  --sidecar / --no-sidecar     Write sidecars.
+  --ledger / --no-ledger       Write ledgers.
   --opt TEXT                   key=value converter or profile option.
   --json                       Summary JSON on stdout.
   -q, --quiet                  No progress or table on stderr.

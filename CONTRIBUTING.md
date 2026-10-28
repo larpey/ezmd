@@ -110,7 +110,7 @@ becomes a fixture before it becomes a fix.
 ### Adding a fixture
 
 Each fixture is a directory `fixtures/<family>/<name>/` with `input.<ext>` (or `input.url` plus a frozen
-`input.html`, so tests never touch the network), `expected.full.md`, `expected.sidecar.json`, and
+`input.html`, so tests never touch the network), `expected.full.md`, `expected.ledger.json`, and
 `meta.toml`:
 
 ```toml

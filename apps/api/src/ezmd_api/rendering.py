@@ -131,8 +131,8 @@ def _zip(out: Any, job_id: str) -> bytes:
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr(f"{job_id}.md", str(out.markdown))
-        if getattr(out, "sidecar", None) is not None:
-            zf.writestr(f"{job_id}.json", json.dumps(out.sidecar, ensure_ascii=False, indent=2, default=str))
+        if getattr(out, "ledger", None) is not None:
+            zf.writestr(f"{job_id}.json", json.dumps(out.ledger, ensure_ascii=False, indent=2, default=str))
         for att in getattr(out, "attachments", []) or []:
             rel = safe_attachment_path(str(att.path))
             if rel is not None:

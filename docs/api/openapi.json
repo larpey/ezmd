@@ -2124,7 +2124,7 @@
     },
     "/v1/jobs/{job_id}/attachments/{path}": {
       "get": {
-        "description": "A file the conversion produced (table CSVs, extracted images), by the relative path listed in the sidecar. Images are served inline; everything else as an attachment with `nosniff`.",
+        "description": "A file the conversion produced (table CSVs, extracted images), by the relative path listed in the ledger. Images are served inline; everything else as an attachment with `nosniff`.",
         "operationId": "getJobAttachment",
         "parameters": [
           {
@@ -2225,7 +2225,7 @@
             "ApiKey": []
           }
         ],
-        "summary": "CSV sidecars and extracted images",
+        "summary": "CSV files and extracted images",
         "tags": [
           "jobs"
         ]
@@ -2730,7 +2730,7 @@
     },
     "/v1/warnings": {
       "get": {
-        "description": "Every warning code a conversion can emit, with its default severity, a description, a suggested action, whether it means content was truncated, and the retired spellings (aliases) that normalize to it. `JobOut.warnings`, SSE `warning` events, and the sidecar use these codes.",
+        "description": "Every warning code a conversion can emit, with its default severity, a description, a suggested action, whether it means content was truncated, and the retired spellings (aliases) that normalize to it. `JobOut.warnings`, SSE `warning` events, and the ledger use these codes.",
         "operationId": "listWarningCodes",
         "responses": {
           "200": {

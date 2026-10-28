@@ -194,8 +194,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * CSV sidecars and extracted images
-         * @description A file the conversion produced (table CSVs, extracted images), by the relative path listed in the sidecar. Images are served inline; everything else as an attachment with `nosniff`.
+         * CSV files and extracted images
+         * @description A file the conversion produced (table CSVs, extracted images), by the relative path listed in the ledger. Images are served inline; everything else as an attachment with `nosniff`.
          */
         get: operations["getJobAttachment"];
         put?: never;
@@ -275,7 +275,7 @@ export interface paths {
         };
         /**
          * The warning code registry
-         * @description Every warning code a conversion can emit, with its default severity, a description, a suggested action, whether it means content was truncated, and the retired spellings (aliases) that normalize to it. `JobOut.warnings`, SSE `warning` events, and the sidecar use these codes.
+         * @description Every warning code a conversion can emit, with its default severity, a description, a suggested action, whether it means content was truncated, and the retired spellings (aliases) that normalize to it. `JobOut.warnings`, SSE `warning` events, and the ledger use these codes.
          */
         get: operations["listWarningCodes"];
         put?: never;

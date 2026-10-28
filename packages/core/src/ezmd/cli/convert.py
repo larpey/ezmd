@@ -131,8 +131,8 @@ def convert(
     ] = None,
     out: Annotated[Path | None, typer.Option("--out", "-o", help="Output file, or directory for <title>.md.")] = None,
     fmt: Annotated[str | None, typer.Option("--format", "-f", help="md | txt | json [default: md]")] = None,
-    sidecar: Annotated[
-        bool | None, typer.Option("--sidecar/--no-sidecar", help="Write <name>.ezmd.json beside --out.")
+    ledger: Annotated[
+        bool | None, typer.Option("--ledger/--no-ledger", help="Write <name>.ezmd.json beside --out.")
     ] = None,
     engine: Annotated[str | None, typer.Option("--engine", help="Engine as family=name, e.g. pdf=docling.")] = None,
     converter: Annotated[str | None, typer.Option("--converter", help="Force a converter id.")] = None,
@@ -155,7 +155,7 @@ def convert(
     except ValueError as e:
         raise fail(str(e), as_json=as_json, source=source) from e
     target_remote = (remote if remote is not None else cfg.remote_url).strip()
-    write_sidecar = cfg.sidecar if sidecar is None else sidecar
+    write_ledger = cfg.ledger if ledger is None else ledger
     initial = "fetching" if source.startswith(("http://", "https://")) or target_remote else "converting"
     target: Path | None = None
     try:
@@ -165,7 +165,7 @@ def convert(
             else:
                 outcome = _run_local(source, chosen_profile, chosen_fmt, options, engine, sink)
         if out is not None:
-            target = write_outcome(outcome, out, sidecar=write_sidecar)
+            target = write_outcome(outcome, out, ledger=write_ledger)
     except KeyboardInterrupt:
         err_console().print("interrupted", markup=False)
         raise typer.Exit(EXIT_INTERRUPTED) from None

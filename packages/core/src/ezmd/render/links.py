@@ -75,7 +75,7 @@ class LinkRecord:
 
 @dataclass(slots=True)
 class LinkCollector:
-    """Collects every emitted link for the sidecar and numbers URLs for the compact `## Links` list."""
+    """Collects every emitted link for the ledger and numbers URLs for the compact `## Links` list."""
 
     records: list[LinkRecord] = field(default_factory=list)
     numbered: list[str] = field(default_factory=list)

@@ -21,7 +21,7 @@ from ezmd.warnings.codes import CODES, WarningKind, normalize_code
 __all__ = [
     "MAX_CHILD_DEPTH",
     "MAX_NEST_DEPTH",
-    "RESERVED_SIDECAR_KEYS",
+    "RESERVED_LEDGER_KEYS",
     "BBox",
     "Block",
     "BlockBase",
@@ -386,7 +386,7 @@ class TranscriptSegment(BlockBase):
     """Diarization label ('SPEAKER_00') or resolved name."""
     language: str | None = None
     words: list[tuple[str, float, float]] | None = None
-    """Optional word-level timings (word, start, end). Kept for the sidecar only."""
+    """Optional word-level timings (word, start, end). Kept for the ledger only."""
     kind: Literal["speech", "music", "noise", "silence", "on_screen_text", "slide_change"] = "speech"
 
 
@@ -661,7 +661,7 @@ MAX_CHILD_DEPTH = 8
 """Deepest allowed nesting of `Document.children` (archives cap at 3); finalize() raises beyond it."""
 
 
-RESERVED_SIDECAR_KEYS: frozenset[str] = frozenset(
+RESERVED_LEDGER_KEYS: frozenset[str] = frozenset(
     {
         "schema",
         "profile",
@@ -689,10 +689,10 @@ RESERVED_SIDECAR_KEYS: frozenset[str] = frozenset(
         "engine_trace",
     }
 )
-"""Top-level sidecar keys the renderer writes itself (plus the two Part 3 names reserved for later).
-`Document.sidecar_extra` may not use them."""
+"""Top-level ledger keys the renderer writes itself (plus the two Part 3 names reserved for later).
+`Document.ledger_extra` may not use them."""
 
-SidecarScalar = str | int | float | bool | None
+LedgerScalar = str | int | float | bool | None
 
 
 class Document(_Model):
@@ -710,9 +710,9 @@ class Document(_Model):
     converter_id: str = ""
     content_hash: str = ""
     """sha256 of the finalized plain text; set by finalize()."""
-    sidecar_extra: dict[str, list[dict[str, SidecarScalar]]] = Field(default_factory=dict)
-    """Converter-specific sidecar lists written verbatim under their own top-level keys (for example the
-    code family's `redactions`). Additive in schema 1.1; keys in RESERVED_SIDECAR_KEYS are rejected by
+    ledger_extra: dict[str, list[dict[str, LedgerScalar]]] = Field(default_factory=dict)
+    """Converter-specific ledger lists written verbatim under their own top-level keys (for example the
+    code family's `redactions`). Additive in schema 1.1; keys in RESERVED_LEDGER_KEYS are rejected by
     finalize() and by the renderer."""
     truncated: bool = False
     """True when the converter stopped early (a cap or the deadline). ConversionResult.truncated ORs this
@@ -755,9 +755,9 @@ class Document(_Model):
         nest deeper than MAX_CHILD_DEPTH."""
         if _child_depth(self) > MAX_CHILD_DEPTH:
             raise ValueError(f"Document.children nest deeper than {MAX_CHILD_DEPTH} levels")
-        reserved = sorted(RESERVED_SIDECAR_KEYS.intersection(self.sidecar_extra))
+        reserved = sorted(RESERVED_LEDGER_KEYS.intersection(self.ledger_extra))
         if reserved:
-            raise ValueError(f"sidecar_extra keys collide with built-in sidecar keys: {reserved}")
+            raise ValueError(f"ledger_extra keys collide with built-in ledger keys: {reserved}")
         self._cap_list_nesting()
         for i, b in enumerate(self.blocks, start=1):
             if not b.id:

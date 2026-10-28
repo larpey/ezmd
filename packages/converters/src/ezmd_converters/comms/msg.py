@@ -14,7 +14,7 @@ from ezmd.inputs import InputRef
 from ezmd.ir import Document, Warning, WarningKind
 from ezmd.registry import ConversionError, ConvertOptions
 from ezmd_converters.comms.build import MessageSpec, build_message
-from ezmd_converters.comms.eml import SIDECAR_KEY, message_metadata
+from ezmd_converters.comms.eml import LEDGER_KEY, message_metadata
 from ezmd_converters.comms.model import ParsedMessage
 from ezmd_converters.comms.options import CommsOptions, read_options
 
@@ -71,8 +71,8 @@ def _document(
         truncated=parsed.truncated,
     )
     doc.metadata.extra["engine"] = engine
-    if built.headers_sidecar:
-        doc.sidecar_extra[SIDECAR_KEY] = built.headers_sidecar
+    if built.headers_ledger:
+        doc.ledger_extra[LEDGER_KEY] = built.headers_ledger
     return doc.finalize()
 
 

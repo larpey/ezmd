@@ -125,7 +125,7 @@ services:
     expose: ["8000"]
     environment:
       <<: *app-env
-      # Retention runs in the `purge` sidecar, not inside every uvicorn worker process.
+      # Retention runs in the `purge` service, not inside every uvicorn worker process.
       EZMD_SCHEDULER_ENABLED: "false"
       # Client IP: uvicorn runs --no-proxy-headers (request.client is the TCP peer) and the app reads
       # X-Real-IP, which Caddy overwrites with its Cloudflare-aware {client_ip}, only from a peer on

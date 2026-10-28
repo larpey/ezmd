@@ -9,7 +9,7 @@
   silently marked current;
 - in-memory SQLite (tests, single-process dev): `create_all` is enough and Alembic is skipped.
 
-Concurrent starts (api, worker, purge) are serialized by an exclusive SQLite transaction on a sidecar lock file.
+Concurrent starts (api, worker, purge) are serialized by an exclusive SQLite transaction on a lock file beside the database.
 The operating system drops that lock when a process dies, so a crash never leaves a stale lock.
 """
 

@@ -17,7 +17,7 @@ test("downloads every offered format", async ({ page }) => {
 
   const json = await download(page, card.getByTestId("download-json"));
   expect(json.name).toMatch(/\.json$/);
-  // The compact profile has no sidecar, so the .json download is the whole JSON result.
+  // The compact profile has no ledger, so the .json download is the whole JSON result.
   const body = JSON.parse(json.body.toString("utf8")) as { markdown?: string; frontmatter?: { profile?: string } };
   expect(body.markdown).toContain("Download formats");
   expect(body.frontmatter?.profile).toBe("compact");

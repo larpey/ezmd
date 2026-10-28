@@ -228,7 +228,7 @@ def chunk_units(
                 merged_preamble=sec.merged_preamble,
             )
             chunks.append(chunk)
-            # The marker names the chunk within the document (`c0001`); the sidecar's Chunk keeps the full
+            # The marker names the chunk within the document (`c0001`); the ledger's Chunk keeps the full
             # `<content hash>#c0001` id and the token count. Repeating the hash and the count in every marker
             # was 9.5% of a rag document (D-0073).
             attrs = [f'id="c{n:04d}"']

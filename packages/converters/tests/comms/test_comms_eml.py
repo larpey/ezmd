@@ -38,7 +38,7 @@ def test_plain_message_headers_body_and_roles(convert, mk) -> None:
     assert any(isinstance(b, ListBlock) for b in doc.blocks)
     assert all(b.provenance.source_id == "<m1@example.org>" for b in doc.blocks)
     assert {b.provenance.path for b in doc.blocks} >= {"headers", "body"}
-    assert doc.sidecar_extra["email_headers"][0]["name"] == "From"
+    assert doc.ledger_extra["email_headers"][0]["name"] == "From"
 
 
 def test_strip_and_keep_quote_modes(convert, mk) -> None:

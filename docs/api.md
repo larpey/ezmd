@@ -26,7 +26,7 @@ npx -y @stoplight/spectral-cli@6.15.0 lint docs/api/openapi.json --ruleset apps/
 | GET | `/v1/jobs/{id}` | Job state and metadata |
 | GET | `/v1/jobs/{id}/events` | Server-sent events for progress and state |
 | GET | `/v1/jobs/{id}/result` | Rendered output (`profile`, `format`, and profile overrides as query parameters) |
-| GET | `/v1/jobs/{id}/attachments/{path}` | CSV table sidecars and extracted images |
+| GET | `/v1/jobs/{id}/attachments/{path}` | CSV table ledgers and extracted images |
 | POST | `/v1/jobs/{id}/supply` | Upload the file or caption JSON a `needs_user_action` job asks for |
 | DELETE | `/v1/jobs/{id}` | Delete the job and its blobs now |
 | GET | `/v1/capabilities` | Converters, profiles, formats, limits, fetch-node status |
@@ -85,7 +85,7 @@ node is online). Jobs expire after `EZMD_RETENTION_HOURS`.
 | `md` | `text/markdown; charset=utf-8` | Default |
 | `json` | `application/json` | The JSON rendering of the result |
 | `txt` | `text/plain` | Plain text |
-| `zip` | `application/zip` | Markdown, sidecar JSON, and attachments; sent as an attachment |
+| `zip` | `application/zip` | Markdown, ledger JSON, and attachments; sent as an attachment |
 | `docx` | | `501 not_implemented` (Planned) |
 
 `profile` defaults to the job's profile. Any other query parameter must be a dotted profile override

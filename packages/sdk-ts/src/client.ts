@@ -3,7 +3,7 @@ import { openStream } from "./sse.js";
 import { SDK_VERSION } from "./version.js";
 import type {
   Capabilities, ConvertInput, ConvertResponse, CreatedJob, EventSourceCtor, Job, JobEvent, JsonResult,
-  Profile, ResultFormat, Sidecar, WarningCodeInfo,
+  Profile, ResultFormat, Ledger, WarningCodeInfo,
 } from "./types.js";
 import { TERMINAL_STATES } from "./types.js";
 
@@ -190,8 +190,8 @@ export class EzmdClient {
     return res.text();
   }
 
-  async sidecar(id: string, opts: ResultOptions = {}): Promise<Sidecar | null> {
-    return (await this.getResult(id, "json", opts)).sidecar;
+  async ledger(id: string, opts: ResultOptions = {}): Promise<Ledger | null> {
+    return (await this.getResult(id, "json", opts)).ledger;
   }
 
   /** Async iterator over the job's events (spec part4 4.5.1); ends after the terminal event or on abort. */

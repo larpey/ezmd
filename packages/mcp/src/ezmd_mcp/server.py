@@ -285,10 +285,10 @@ def build_server(settings: Settings, backend: Backend) -> MCPServer[Any]:
         except Exception as e:
             raise ValueError(from_exception(e).text()) from None
 
-    @server.resource("ezmd://jobs/{job_id}/sidecar", mime_type="application/json", description="Sidecar JSON")
-    async def job_sidecar(job_id: str) -> str:
+    @server.resource("ezmd://jobs/{job_id}/ledger", mime_type="application/json", description="Ledger JSON")
+    async def job_ledger(job_id: str) -> str:
         try:
-            return json.dumps(await backend.sidecar(_check_job_id(job_id)), ensure_ascii=False, default=str)
+            return json.dumps(await backend.ledger(_check_job_id(job_id)), ensure_ascii=False, default=str)
         except ToolFailure as f:
             raise ValueError(f.text()) from None
         except Exception as e:

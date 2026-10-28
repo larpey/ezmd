@@ -103,8 +103,8 @@ CASES = [(fid, name) for fid, muts in MUTATIONS.items() for name in muts]
 
 @pytest.mark.parametrize("fid", sorted(MUTATIONS))
 def test_unmutated_golden_passes(fid: str) -> None:
-    sidecar = json.loads((ROOT / fid / "expected.sidecar.json").read_text(encoding="utf-8"))
-    verdict = evaluate(_fx(fid), ROOT, _golden(fid), sidecar)
+    ledger = json.loads((ROOT / fid / "expected.ledger.json").read_text(encoding="utf-8"))
+    verdict = evaluate(_fx(fid), ROOT, _golden(fid), ledger)
     assert verdict.failures == ()
     assert verdict.score.overall == pytest.approx(1.0)
     assert verdict.passed

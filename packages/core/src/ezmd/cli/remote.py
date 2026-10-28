@@ -187,9 +187,9 @@ def _read_source(source: str, stdin: IO[bytes] | None, max_bytes: int) -> tuple[
 
 
 def _warnings(payload: dict[str, Any]) -> list[dict[str, object]]:
-    sidecar = payload.get("sidecar")
-    if isinstance(sidecar, dict) and isinstance(sidecar.get("warnings"), list):
-        return [w for w in sidecar["warnings"] if isinstance(w, dict)]
+    ledger = payload.get("ledger")
+    if isinstance(ledger, dict) and isinstance(ledger.get("warnings"), list):
+        return [w for w in ledger["warnings"] if isinstance(w, dict)]
     from ezmd.warnings.codes import CODES, WarningKind
 
     out: list[dict[str, object]] = []
@@ -206,7 +206,7 @@ def _warnings(payload: dict[str, Any]) -> list[dict[str, object]]:
 def _outcome(source: str, payload: dict[str, Any], text: str, profile: str, fmt: str) -> Outcome:
     front = payload.get("frontmatter")
     front = dict(front) if isinstance(front, dict) else {}
-    sidecar = payload.get("sidecar")
+    ledger = payload.get("ledger")
     tokens = front.get("tokens")
     tail = source.split("?", 1)[0].rstrip("/")
     return Outcome(
@@ -215,7 +215,7 @@ def _outcome(source: str, payload: dict[str, Any], text: str, profile: str, fmt:
         profile=profile,
         format=fmt,
         frontmatter=front,
-        sidecar=dict(sidecar) if isinstance(sidecar, dict) else None,
+        ledger=dict(ledger) if isinstance(ledger, dict) else None,
         warnings=_warnings(payload),
         tokens=int(tokens) if isinstance(tokens, int) else 0,
         truncated=bool(front.get("truncated", False)),

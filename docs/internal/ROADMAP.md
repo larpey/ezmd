@@ -36,7 +36,7 @@ Goal: `pip install ezmd` converts documents, web, code, email, data, and noteboo
 | P1-T02 | Web converter: Trafilatura plus Defuddle-style rules, metadata, numbered link list, hidden-element stripping, injection scan | G0 | web fixtures pass; injection fixture flags without altering text |
 | P1-T03 | Code converter: repo and directory packing with Secretlint-style secret scan, tree, per-file tokens, signatures-only mode; GitHub URL fetch | G0 | code fixtures pass; a planted secret is redacted and warned |
 | P1-T04 | Email converters: EML, MBOX, recursive attachments; MSG via `nonfree` extra | P1-T01 | email fixtures pass; attachment conversion warnings verified |
-| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV sidecar | G0 | data fixtures exact-match |
+| P1-T05 | Data converters: CSV, TSV, JSON, YAML, TOML, XML, Parquet, SQLite with the six-column rule and CSV file | G0 | data fixtures exact-match |
 | P1-T06 | Notebook, Markdown passthrough, plain text, archives (zip, tar, 7z) with bomb limits | G0 | archive bomb tests pass |
 | P1-T07 | SEC EDGAR via edgartools; sanctioned public APIs stub (Reddit JSON, HN Algolia) behind a `social` family flag (full adapters in P3) | P1-T02 | EDGAR fixture passes |
 | P1-T08 | Python library public API (4.3): `convert`, `convert_async`, `convert_many`, `Result` helpers, lazy engine loading, `unload_models` | P1-T01..T06 | 4.3.4 criteria |
@@ -63,7 +63,7 @@ Goal: audio, video files, images, and screen recordings convert locally with spe
 | P2-T01 | Model registry (`registry.toml`) with pinned revisions, SHA-256, licenses; `ezmd models pull/list/rm/export`; license gate | G1 | 4.2.2 item 6 criteria; model license check in CI |
 | P2-T02 | ASR pipeline: ffmpeg decode to 16 kHz mono, Silero VAD, faster-whisper int8 (CPU) and Parakeet (GPU), hallucination de-loop and blocklist, sentence split, paragraphing by pause and speaker, sparse timestamps, chapters from platform markers or TreeSeg | P2-T01 | media fixtures meet WER thresholds; non-speech fixture produces no hallucinated text |
 | P2-T03 | Diarization: pyannote community-1 with midpoint alignment; `exclusive` mode; `DIARIZATION` setting | P2-T02 | speaker-count fixture within tolerance |
-| P2-T04 | Transcript template and SRT/VTT output; `segments` in sidecar; `.srt` download in UI | P2-T02 | SRT fixture exact-match |
+| P2-T04 | Transcript template and SRT/VTT output; `segments` in ledger; `.srt` download in UI | P2-T02 | SRT fixture exact-match |
 | P2-T05 | OCR routing: RapidOCR (PP-OCR) CPU default, PaddleOCR-VL on GPU, zxing-cpp barcodes, Florence-2 captions optional, chart-to-table via VLM optional; page-level OCR fallback for PDFs with `pages_without_text` | P2-T01 | OCR fixtures meet CER thresholds; image-only PDF now yields text plus `ocr_confidence_low` where applicable |
 | P2-T06 | Lecture and screen-recording fusion: SSIM slide detection, per-slide OCR, ASR alignment to slide intervals | P2-T02, P2-T05 | lecture fixture produces slide headings with timestamps |
 | P2-T07 | Hosted ASR backends (Groq, Deepgram) as keyed options with the offload threshold and `diarization_unavailable_offload` warning | P2-T02 | stubbed backend tests pass; capabilities reports `asr_offload` |
@@ -130,7 +130,7 @@ Launch checklist (every line must be checked and dated in docs/internal/STATUS.m
 5. Turnstile verified in a real browser; ALTCHA path disabled in production.
 6. Upload cap 25 MB, duration cap 15 min, page cap 300 verified with real requests.
 7. Direct platform fetch disabled; a YouTube URL returns `fetch_blocked_by_policy` with the extension suggestion when the Pi is offline and succeeds via captions when it is online.
-8. The Pi's public IP never appears in any response, log, or header (test: convert via the Pi and inspect every header and the sidecar).
+8. The Pi's public IP never appears in any response, log, or header (test: convert via the Pi and inspect every header and the ledger).
 9. Reaper verified: a job is gone 24 hours after creation (clock-skewed test on staging).
 10. Backups run nightly and were restored once on staging.
 11. Alerts reach email and Discord (test alert fired).
@@ -152,7 +152,7 @@ Goal: the features that make specific professions choose ezmd. Each is independe
 
 | ID | Task | deps | done when |
 |---|---|---|---|
-| P5-T01 | Finance mode: bank statement and invoice tables with per-row page references, totals reconciliation (rows sum to ending minus beginning balance), sign and date normalization, CSV and JSON sidecars, confidence flags; `--mode finance` | G4 | finance fixtures pass with reconciliation checks |
+| P5-T01 | Finance mode: bank statement and invoice tables with per-row page references, totals reconciliation (rows sum to ending minus beginning balance), sign and date normalization, CSV and JSON ledgers, confidence flags; `--mode finance` | G4 | finance fixtures pass with reconciliation checks |
 | P5-T02 | Legal mode: page:line anchors for transcripts and pleadings, Bates numbering passthrough, verbatim guarantee (no normalization beyond whitespace, enforced by a test that diffs extracted text against the engine's raw text), matter-folder batch with an audit log JSONL | G4 | legal fixtures pass; audit log test passes |
 | P5-T03 | Accessibility output: heading hierarchy repair suggestions, alt text from captions, reading order report, scored against DAISY's twelve criteria on the accessibility fixtures | P2-T05 | score report generated; at least 10 of 12 criteria met on the fixture set |
 | P5-T04 | Research extras: LaTeX math preservation via Marker as an optional `nonfree-rail` extra with license display, DOI and citekey frontmatter from Crossref lookups (opt-in network), Zotero-friendly export | G4 | math fixture passes with the extra; license gate shows the RAIL text |

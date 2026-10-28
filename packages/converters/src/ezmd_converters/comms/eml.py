@@ -22,7 +22,7 @@ DEFAULT_MAX_BYTES = 200 * 1024 * 1024
 """One message: the largest attachment cap (100 MB) plus base64 overhead and the body."""
 _HEADER_LINE = re.compile(rb"^[!-9;-~]{1,76}:[ \t]?", re.MULTILINE)
 _KEY_HEADERS = re.compile(rb"(?im)^(from|received|return-path|message-id|subject|date|mime-version):")
-SIDECAR_KEY = "email_headers"
+LEDGER_KEY = "email_headers"
 
 
 def looks_like_message(head: bytes) -> bool:
@@ -122,7 +122,7 @@ class EmlConverter:
             children=built.children,
             truncated=msg.truncated,
         )
-        if built.headers_sidecar:
-            doc.sidecar_extra[SIDECAR_KEY] = built.headers_sidecar
+        if built.headers_ledger:
+            doc.ledger_extra[LEDGER_KEY] = built.headers_ledger
         options.ctx.progress("done", 1.0, "converted")
         return doc.finalize()

@@ -17,7 +17,7 @@ Audio, video, images, and screen recordings convert locally: speech recognition 
 sparse timestamps, OCR for scanned documents and images, and in-browser Whisper in the web UI.
 
 Figures on demand: a figure in a PDF becomes a placeholder in the Markdown that carries its caption and a stable
-id, the cropped image goes in the sidecar with its page and position, and the MCP server gets a tool that returns
+id, the cropped image goes in the ledger with its page and position, and the MCP server gets a tool that returns
 one image when an agent asks for it. A model then pays for the two figures it needs instead of an image of every
 page, which is what uploading the PDF itself costs (the [benchmark](benchmarks.md) measures that at about 3,000
 Claude tokens a page against 1,100 to 1,700 for the converted text).

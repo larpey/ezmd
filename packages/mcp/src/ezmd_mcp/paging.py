@@ -205,13 +205,13 @@ def page_text(result: dict[str, Any], markdown: str) -> str:
     return text.rstrip("\n") + "\n\n" + footer + "\n"
 
 
-def sections_from_sidecar(sidecar: dict[str, Any] | None, body: str) -> list[dict[str, Any]]:
-    """[{id, heading, level, tokens}] from the sidecar's section offsets (UTF-8 byte offsets into `body`)."""
-    if not sidecar:
+def sections_from_ledger(ledger: dict[str, Any] | None, body: str) -> list[dict[str, Any]]:
+    """[{id, heading, level, tokens}] from the ledger's section offsets (UTF-8 byte offsets into `body`)."""
+    if not ledger:
         return []
     raw = body.encode("utf-8")
     out: list[dict[str, Any]] = []
-    for s in sidecar.get("sections", []) or []:
+    for s in ledger.get("sections", []) or []:
         if not isinstance(s, dict):
             continue
         start, end = s.get("offset_start"), s.get("offset_end")

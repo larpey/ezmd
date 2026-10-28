@@ -33,13 +33,13 @@ converting again.
 | Member | What it is |
 |---|---|
 | `markdown`, `body`, `frontmatter` | The rendered output (frontmatter plus body), the body alone, and the frontmatter as a dict |
-| `sidecar` | The JSON sidecar as a dict, or `None` for profiles without one (`compact`) |
+| `ledger` | The JSON ledger as a dict, or `None` for profiles without one (`compact`) |
 | `warnings` | A list of `ezmd.ir.Warning` (`kind`, `severity`, `message`, `page`, `block_id`, `count`, `detail`) |
 | `ok` | `False` when any warning has severity `error` (the output may still be usable) |
 | `tokens`, `truncated` | Token count and whether a token budget cut the output |
-| `render(profile, format, **overrides)` | Render another profile (`full`, `compact`, `rag`, `agent`) or format (`md`, `json`, `txt`). Returns an `ezmd.render.RenderedOutput` (not a `Result`): `markdown`, `body`, `frontmatter`, `sidecar`, `chunks`, `tokens`, `truncated`, `warnings`, `injection_risk`, `attachments` |
+| `render(profile, format, **overrides)` | Render another profile (`full`, `compact`, `rag`, `agent`) or format (`md`, `json`, `txt`). Returns an `ezmd.render.RenderedOutput` (not a `Result`): `markdown`, `body`, `frontmatter`, `ledger`, `chunks`, `tokens`, `truncated`, `warnings`, `injection_risk`, `attachments` |
 | `chunks(chunk_tokens=400, overlap=0)` | RAG chunks (`ezmd.render.Chunk`: `id`, `text`, `breadcrumb`, `tokens`, pages, `block_ids`) |
-| `save(path, sidecar=True)` | Write the Markdown to a file, or `<stem>.md` into an existing directory, plus `<stem>.ezmd.json` when the profile has a sidecar |
+| `save(path, ledger=True)` | Write the Markdown to a file, or `<stem>.md` into an existing directory, plus `<stem>.ezmd.json` when the profile has a ledger |
 | `document` | The IR `Document` (see [Output format](output-format.md)) |
 
 ```python

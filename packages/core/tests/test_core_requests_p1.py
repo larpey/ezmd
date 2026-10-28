@@ -162,16 +162,16 @@ def test_fixture_requires_skips_in_score_cli(tmp_path: Path) -> None:
     assert "SKIP" in out.output and "ezmd_no_such_module_xyz" in out.output
 
 
-def test_sidecar_extra_reserved_keys_rejected_at_finalize() -> None:
+def test_ledger_extra_reserved_keys_rejected_at_finalize() -> None:
     doc = Document(
         metadata=Metadata(source="a.py", source_type=SourceType.CODE),
-        sidecar_extra={"tables": [{"x": 1}]},
+        ledger_extra={"tables": [{"x": 1}]},
     )
     with pytest.raises(ValueError, match="tables"):
         doc.finalize()
     ok = Document(
         metadata=Metadata(source="a.py", source_type=SourceType.CODE),
-        sidecar_extra={"redactions": [{"line": 3, "kind": "aws_key"}]},
+        ledger_extra={"redactions": [{"line": 3, "kind": "aws_key"}]},
     ).finalize()
     assert ok.schema_version == "1.1"
 
