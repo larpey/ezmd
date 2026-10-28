@@ -45,7 +45,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   mojibake, repeated lines, character runs, mostly-empty tables, shrunk text, injection flags) and writes
   `smells.md`. Two more corpora cover what Govdocs1 cannot: `ccgov`, modern files of every document type from
   Common Crawl's .gov, .mil and .edu hosts (`tools/bench/cc.py`), and `media`, images, audio, video and EPUB
-  from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`).
+  from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`). First results over the
+  whole `media` corpus in `bench/results/2026-10-27-media-c/` (20,348 files): every raster image, audio and video
+  file a declared refusal, 998 of 998 EPUBs converted, and SVG falling through to the plain-text reader (#55).
 
 ### Changed
 - Container images apply Debian's security updates at build time (`apt-get upgrade` in the runtime stage):
