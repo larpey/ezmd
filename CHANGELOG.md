@@ -50,15 +50,6 @@ All notable changes are generated from Conventional Commits. This project uses s
   file a declared refusal, 998 of 998 EPUBs converted, and SVG falling through to the plain-text reader (#55).
 
 ### Changed
-- **Breaking.** The JSON file written beside the Markdown (`<name>.ezmd.json`) is the ledger, and every
-  spelling of its old name goes with it: CLI `--ledger/--no-ledger` (was `--sidecar/--no-sidecar`),
-  `EZMD_LEDGER` (was `EZMD_SIDECAR`), the config key `defaults.ledger` and the profile field `ledger`, the
-  frontmatter key `ledger`, the file's `schema` string `ezmd.ledger/1` (was `ezmd.sidecar/1`), the API result
-  field `ledger`, the SDK type `Ledger` and `client.ledger()`, the MCP resource `ezmd://jobs/{id}/ledger`, the
-  plugin field `Document.ledger_extra` with `ezmd.ir.RESERVED_LEDGER_KEYS`, the module `ezmd.render.ledger`,
-  the profile field `tables.csv_files` (was `csv_sidecar`; the `tables_csv` override is unchanged) and the
-  fixture file `expected.ledger.json`. The file name, its contents and the Markdown are unchanged. No alias
-  is kept for the old spellings.
 - Container images apply Debian's security updates at build time (`apt-get upgrade` in the runtime stage):
   the base image is pinned by digest and rebuilt upstream on its own schedule, so a fixed CVE in a system
   library (openssl, this week) no longer ships in every image and fails the scan until the next digest bump.
