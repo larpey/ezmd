@@ -238,7 +238,8 @@ def _relocate_block(block: Any, current: Path, base: Path) -> Any:
     ref = block.ref
     if not ref or ref.startswith("data:") or _URL_SCHEME.match(ref) or ref.startswith(("http://", "https://")):
         return block
-    written = current / ref
+    # Normalised lexically: on Linux `out/deep/../../img/x.png` cannot be stat-ed while `out/deep` does not exist.
+    written = Path(os.path.normpath(current / ref))
     if not written.is_file():
         return block
     return block.model_copy(update={"ref": _relative_posix(written, base)})
