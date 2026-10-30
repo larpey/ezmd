@@ -182,6 +182,13 @@ def plan(base: Path, files: list[Path], out_dir: Path, fmt: str) -> list[tuple[P
     return pairs
 
 
+def image_subdir(image_dir: Path, out_dir: Path, target: Path) -> Path:
+    """One image directory per output: `<image_dir>/<target's path under out_dir, without extension>`, so two
+    inputs whose pictures share a name (every DOCX has an `image1.png`) cannot overwrite each other."""
+    rel = target.relative_to(out_dir)
+    return image_dir / rel.parent / rel.stem
+
+
 def convert_job(job: Job) -> dict[str, Any]:
     """Convert one input and write it; never raises (runs in worker processes). Returns a manifest record."""
     import ezmd.library as lib
@@ -196,7 +203,8 @@ def convert_job(job: Job) -> dict[str, Any]:
     }
     try:
         result = lib.convert(job.src, profile=job.profile, options=lib.Options(**job.options))
-        outcome = outcome_from_result(result, source=job.src, profile=job.profile, fmt=job.format)
+        placed = result.relocate_images(Path(job.out).parent)
+        outcome = outcome_from_result(placed, source=job.src, profile=job.profile, fmt=job.format)
         write_outcome(outcome, Path(job.out), sidecar=job.sidecar)
         record.update(
             status="partial" if outcome.status == "partial" else "converted",
@@ -333,6 +341,9 @@ def batch(
     keep_going: Annotated[bool, typer.Option("--continue-on-error", help="Keep going after a failure.")] = False,
     manifest: Annotated[Path | None, typer.Option("--manifest", help="[default: <out>/manifest.jsonl]")] = None,
     sidecar: Annotated[bool | None, typer.Option("--sidecar/--no-sidecar", help="Write sidecars.")] = None,
+    image_dir: Annotated[
+        Path | None, typer.Option("--image-dir", help="Extract each input's images to PATH/<its path>/images/.")
+    ] = None,
     opt: Annotated[list[str] | None, typer.Option("--opt", help="key=value converter or profile option.")] = None,
     as_json: Annotated[bool, typer.Option("--json", help="Summary JSON on stdout.")] = False,
     quiet: Annotated[bool, typer.Option("--quiet", "-q", help="No progress or table on stderr.")] = False,
@@ -367,7 +378,12 @@ def batch(
     try:
         todo: list[Job] = []
         for src, target in plan(base, files, out_dir, chosen_fmt):
-            job = Job(str(src), str(target), chosen_profile, chosen_fmt, options, write_sidecar, file_sha256(src))
+            job_options = (
+                options
+                if image_dir is None
+                else {**options, "image_dir": str(image_subdir(image_dir, out_dir, target))}
+            )
+            job = Job(str(src), str(target), chosen_profile, chosen_fmt, job_options, write_sidecar, file_sha256(src))
             old = prev.get(_key(src))
             if unchanged(job, old):
                 rec = {"path": job.src, "status": "skipped", "out": job.out, "sha256": job.sha256,

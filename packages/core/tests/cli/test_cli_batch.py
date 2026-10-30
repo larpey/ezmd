@@ -44,6 +44,25 @@ def test_mirrors_tree_and_writes_manifest(tmp_path: Path) -> None:
     assert "converted" in res.stderr and "total tokens" in res.stderr
 
 
+DOCX_WITH_PICTURE = Path(__file__).resolve().parents[4] / "fixtures" / "office" / "docx-lists-restart" / "input.docx"
+
+
+def test_image_dir_gets_one_folder_per_input(tmp_path: Path) -> None:
+    """`--image-dir` (#32): each input's images go under `<image-dir>/<its relative stem>/images/`, so two
+    documents that both carry `image1.png` cannot overwrite each other, and links resolve from each .md."""
+    src, out, img = tmp_path / "in", tmp_path / "out", tmp_path / "img"
+    (src / "a").mkdir(parents=True)
+    (src / "a" / "guide.docx").write_bytes(DOCX_WITH_PICTURE.read_bytes())
+    (src / "guide.docx").write_bytes(DOCX_WITH_PICTURE.read_bytes())
+    args = ["batch", str(src), "--out", str(out), "--image-dir", str(img), "-r", "-w", "1", "--json"]
+    res = runner.invoke(app, args)
+    assert res.exit_code == 0, res.output
+    assert (img / "a" / "guide" / "images" / "plan.png").is_file()
+    assert (img / "guide" / "images" / "plan.png").is_file()
+    assert "](../../img/a/guide/images/plan.png)" in (out / "a" / "guide.md").read_text(encoding="utf-8")
+    assert "](../img/guide/images/plan.png)" in (out / "guide.md").read_text(encoding="utf-8")
+
+
 def test_non_recursive_skips_subdirs(tmp_path: Path) -> None:
     src, out = _tree(tmp_path), tmp_path / "out"
     res = runner.invoke(app, ["batch", str(src), "--out", str(out), "--workers", "1", "--json"])

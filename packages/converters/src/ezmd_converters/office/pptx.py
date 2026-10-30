@@ -47,6 +47,7 @@ from ezmd_converters.office._common import (
     check_size,
     clean_warning,
     confidence,
+    extract_image,
     parse_datetime,
 )
 from ezmd_converters.office._ooxml_ns import P14, P188, A, P, R, q
@@ -146,7 +147,7 @@ def convert_package(pkg: OfficePackage, source: str, options: ConvertOptions, *,
                     attrs={"role": "section"},
                 )
             )
-        _SlideReader(pkg, part, n, source, opts, stats, counts, authors, (width, height)).read(out)
+        _SlideReader(pkg, part, n, source, opts, stats, counts, authors, (width, height), options).read(out)
         doc.blocks = list(out.blocks)
         options.ctx.publish_partial(doc)
     doc.blocks = list(out.blocks)
@@ -242,9 +243,11 @@ class _SlideReader:
         counts: _Counts,
         authors: dict[str, str],
         size: tuple[float, float],
+        options: ConvertOptions,
     ) -> None:
         self.pkg, self.part, self.n, self.source = pkg, part, n, source
         self.opts, self.stats, self.counts, self.authors = opts, stats, counts, authors
+        self.options = options
         self.width, self.height = size
         self.rels = pkg.rels(part)
 
@@ -352,7 +355,9 @@ class _SlideReader:
                 return []
             ext = posixpath.splitext(rel.target)[1].lower()
             alt = clean_text(sh.descr, self.stats) if sh.descr else None
-            return [Image(ref=rel.target, alt=alt, mime=_IMAGE_MIMES.get(ext), provenance=prov)]
+            data = self.pkg.read(rel.target) if self.options.image_dir and self.pkg.has(rel.target) else None
+            ref = extract_image(self.options, data, rel.target) or rel.target
+            return [Image(ref=ref, alt=alt, mime=_IMAGE_MIMES.get(ext), provenance=prov)]
         if sh.kind == "ole":
             self.counts.ole += 1
         return []

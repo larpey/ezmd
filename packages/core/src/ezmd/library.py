@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import io
 import json
+import os
 import re
 from collections.abc import Callable, Iterable, Iterator
 from concurrent.futures import ThreadPoolExecutor
@@ -20,7 +21,7 @@ from typing import IO, TYPE_CHECKING, Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from ezmd.inputs import InputRef
-from ezmd.ir import ConversionResult, Document, Warning
+from ezmd.ir import ConversionResult, Document, Image, Warning
 from ezmd.pipeline import convert_ref
 from ezmd.registry import Converter, ConvertOptions, default_registry
 
@@ -70,6 +71,10 @@ class Options(BaseModel):
     diarize: bool = True
     languages: list[str] = Field(default_factory=list)
     extract_images: bool = True
+    image_dir: str | None = None
+    """Directory where converters write extracted images, under `<image_dir>/images/`; the Markdown links are
+    relative to it (`Result.relocate_images` and `Result.save` rebase them). None keeps the links as the
+    source's own paths (`word/media/image1.png`) and writes nothing."""
     tracked_changes: bool = True
     comments: bool = True
     formulas: bool = True
@@ -92,6 +97,7 @@ class Options(BaseModel):
             diarize=self.diarize,
             languages=list(self.languages),
             extract_images=self.extract_images,
+            image_dir=self.image_dir,
             tracked_changes=self.tracked_changes,
             comments=self.comments,
             formulas=self.formulas,
@@ -112,11 +118,31 @@ class Result:
     """A conversion result that keeps the intermediate representation, so other profiles render without
     re-converting (`result.render("compact")` equals converting with `compact` directly)."""
 
-    def __init__(self, conversion: ConversionResult, *, profile: str = "full", render: dict[str, object] | None = None):
+    def __init__(
+        self,
+        conversion: ConversionResult,
+        *,
+        profile: str = "full",
+        render: dict[str, object] | None = None,
+        link_base: str | None = None,
+    ):
         self.conversion = conversion
         self.profile = profile
+        self.link_base = link_base
+        """The directory the image links are relative to: `Options.image_dir` after a conversion that extracted
+        images, the target directory after `relocate_images`, None when nothing was extracted."""
         self._overrides = dict(render or {})
         self._cache: dict[str, RenderedOutput] = {}
+
+    def relocate_images(self, base: str | Path) -> Result:
+        """A new Result whose image links are relative to the directory `base`, so a Markdown file written
+        there finds the extracted images. Only links that name a file under `link_base` change; URLs, `data:`
+        refs and package paths that were never written stay. Returns self when nothing was extracted."""
+        if self.link_base is None:
+            return self
+        document = _relocate_document(self.conversion.document, Path(self.link_base), Path(base))
+        conversion = self.conversion.model_copy(update={"document": document})
+        return Result(conversion, profile=self.profile, render=self._overrides, link_base=str(base))
 
     def render(self, profile: str | None = None, format: str = "md", **overrides: object) -> RenderedOutput:
         """Render another profile or format from the retained IR. Returns `ezmd.render.RenderedOutput`."""
@@ -175,14 +201,16 @@ class Result:
 
     def save(self, path: str | Path, *, sidecar: bool = True) -> Path:
         """Write the Markdown to `path` (a file, or a directory to write `<stem>.md` into) and, when
-        `sidecar` is true and the profile has one, `<stem>.ezmd.json` beside it. Returns the .md path."""
+        `sidecar` is true and the profile has one, `<stem>.ezmd.json` beside it. Image links are rebased so
+        they resolve from the written file (`relocate_images`). Returns the .md path."""
         target = Path(path)
         if target.is_dir():
             stem = Path(self.conversion.input_ref.display.split("?", 1)[0].rstrip("/")).stem or "output"
             target = target / f"{stem}.md"
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(self.markdown, encoding="utf-8", newline="\n")
-        sc = self.sidecar
+        placed = self.relocate_images(target.parent)
+        target.write_text(placed.markdown, encoding="utf-8", newline="\n")
+        sc = placed.sidecar
         if sidecar and sc is not None:
             side = target.with_name(target.stem + ".ezmd.json")
             side.write_text(json.dumps(sc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
@@ -194,6 +222,34 @@ class Result:
 
 _URL_SCHEME = re.compile(r"^([A-Za-z][A-Za-z0-9+.-]+)://")
 """A URL with a scheme other than http(s) (two letters or more, so `C://dir` stays a Windows path)."""
+
+
+def _relocate_document(doc: Document, current: Path, base: Path) -> Document:
+    """`doc` with every Image ref that names a file under `current` rewritten relative to `base`; attachments
+    and archive members (`children`) are rebased the same way. Nothing is mutated."""
+    blocks = [_relocate_block(b, current, base) for b in doc.blocks]
+    children = [_relocate_document(c, current, base) for c in doc.children]
+    return doc.model_copy(update={"blocks": blocks, "children": children})
+
+
+def _relocate_block(block: Any, current: Path, base: Path) -> Any:
+    if not isinstance(block, Image):
+        return block
+    ref = block.ref
+    if not ref or ref.startswith("data:") or _URL_SCHEME.match(ref) or ref.startswith(("http://", "https://")):
+        return block
+    written = current / ref
+    if not written.is_file():
+        return block
+    return block.model_copy(update={"ref": _relative_posix(written, base)})
+
+
+def _relative_posix(path: Path, base: Path) -> str:
+    try:
+        rel = os.path.relpath(path.resolve(), base.resolve())
+    except ValueError:  # another drive on Windows: no relative path exists
+        return path.resolve().as_posix()
+    return Path(rel).as_posix()
 
 
 def _ref(source: Source, *, filename: str | None, opts: Options) -> InputRef:
@@ -263,7 +319,7 @@ def convert(
     finally:
         if not isinstance(source, InputRef):
             ref.cleanup()
-    result = Result(conversion, profile=profile, render=opts.render)
+    result = Result(conversion, profile=profile, render=opts.render, link_base=opts.image_dir)
     result.render()  # validate the profile and overrides now, not on first attribute access
     return result
 

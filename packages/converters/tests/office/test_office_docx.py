@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import zipfile
 from collections.abc import Callable
+from pathlib import Path
 
 import pytest
 
@@ -12,6 +13,7 @@ from ezmd.ir import (
     Document,
     Footnote,
     Heading,
+    Image,
     ListBlock,
     Paragraph,
     Quote,
@@ -110,6 +112,18 @@ def test_structure(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
     assert notes == {"fn-1": "1", "en-1": "i"}
     link = next(s for b in doc.blocks if isinstance(b, Paragraph) for s in b.spans if s.href)
     assert link.href == "https://example.org/ponds"
+
+
+def test_picture_written_to_image_dir(run: Run, fixture_bytes: Callable[[str], bytes], tmp_path: Path) -> None:
+    """Without `image_dir` the Image keeps its package path; with it, the bytes land under
+    `<image_dir>/images/` and the ref is that path relative to `image_dir` (the shared convention, #31)."""
+    data = fixture_bytes("docx-lists-restart")
+    plain = next(b for b in run(DocxConverter(), data, "s.docx").blocks if isinstance(b, Image))
+    assert plain.ref == "word/media/plan.png" and plain.alt and plain.alt.startswith("Site plan")
+    written = next(b for b in run(DocxConverter(), data, "s.docx", image_dir=tmp_path).blocks if isinstance(b, Image))
+    assert written.ref == "images/plan.png" and written.mime == "image/png"
+    original = OfficePackage(data, what="DOCX").read("word/media/plan.png")
+    assert (tmp_path / "images" / "plan.png").read_bytes() == original
 
 
 def test_keep_hidden_records_text(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:

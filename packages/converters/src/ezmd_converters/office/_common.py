@@ -270,6 +270,24 @@ def parse_datetime(value: str | None) -> datetime | None:
     return dt if dt.tzinfo else dt.replace(tzinfo=UTC)
 
 
+def extract_image(options: ConvertOptions, data: bytes | None, target: str) -> str | None:
+    """Write an embedded picture to `<image_dir>/images/<safe basename>` and return `images/<name>`, the ref
+    relative to `image_dir` that the EPUB, notebook and email converters also produce. None when extraction is
+    off, there is no `image_dir`, the part is missing, or the write fails (the caller then keeps the package
+    path, so the Markdown still says where the bytes live)."""
+    if not (options.extract_images and options.image_dir and data is not None):
+        return None
+    base = target.rsplit("/", 1)[-1]
+    name = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in base)[:100].lstrip(".") or "image"
+    dest = Path(options.image_dir) / "images" / name
+    try:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(data)
+    except OSError:
+        return None
+    return f"images/{name}"
+
+
 SAFE_SCHEMES = ("http://", "https://", "mailto:", "ftp://", "#")
 
 

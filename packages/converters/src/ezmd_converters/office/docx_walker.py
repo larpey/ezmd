@@ -15,7 +15,6 @@ from __future__ import annotations
 import posixpath
 import re
 from dataclasses import dataclass, field
-from pathlib import Path
 
 from lxml import etree  # type: ignore[import-untyped]
 
@@ -39,7 +38,7 @@ from ezmd.ir import (
     TrackedChange,
 )
 from ezmd.registry import ConvertOptions
-from ezmd_converters.office._common import BlockList, OfficeOptions, SpanBuilder
+from ezmd_converters.office._common import BlockList, OfficeOptions, SpanBuilder, extract_image
 from ezmd_converters.office._ooxml_ns import W14, W, local, ns_of, q
 from ezmd_converters.office._package import OfficePackage, Rel
 from ezmd_converters.office.docx_inline import Counters, InlineCollector, ParaState, Seg
@@ -566,16 +565,8 @@ class DocxWalker:
     def _image(self, target: str, alt: str | None, prov: Provenance) -> Image:
         self.stats.images += 1
         ext = posixpath.splitext(target)[1].lower()
-        ref = target
-        if self.options.extract_images and self.options.image_dir and self.pkg.has(target):
-            name = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in posixpath.basename(target))[:100]
-            dest = Path(self.options.image_dir) / name
-            try:
-                dest.parent.mkdir(parents=True, exist_ok=True)
-                dest.write_bytes(self.pkg.read(target))
-                ref = str(dest)
-            except OSError:
-                ref = target
+        data = self.pkg.read(target) if self.options.image_dir and self.pkg.has(target) else None
+        ref = extract_image(self.options, data, target) or target
         return Image(
             ref=ref, alt=clean_text(alt, self.clean) if alt else None, mime=_IMAGE_MIMES.get(ext), provenance=prov
         )

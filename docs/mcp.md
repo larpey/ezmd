@@ -143,7 +143,8 @@ the model and the model reads untrusted documents:
   `max_duration_seconds`. The ceilings are the operator's `--max-*` flags (below); a higher value, or
   `null` (unlimited), is rejected with `invalid_request`;
 - refused with `invalid_request`: `extra` (family engine settings such as archive caps), `converter`,
-  `experimental`, and any unknown key.
+  `experimental`, `image_dir` (a tool call may not choose where the server writes files), and any
+  unknown key.
 
 `allow_private_networks` is refused unless the server was started with `--allow-private-networks`,
 so a document cannot talk the model into fetching intranet URLs. `list_capabilities` reports the

@@ -39,7 +39,8 @@ converting again.
 | `tokens`, `truncated` | Token count and whether a token budget cut the output |
 | `render(profile, format, **overrides)` | Render another profile (`full`, `compact`, `rag`, `agent`) or format (`md`, `json`, `txt`). Returns an `ezmd.render.RenderedOutput` (not a `Result`): `markdown`, `body`, `frontmatter`, `sidecar`, `chunks`, `tokens`, `truncated`, `warnings`, `injection_risk`, `attachments` |
 | `chunks(chunk_tokens=400, overlap=0)` | RAG chunks (`ezmd.render.Chunk`: `id`, `text`, `breadcrumb`, `tokens`, pages, `block_ids`) |
-| `save(path, sidecar=True)` | Write the Markdown to a file, or `<stem>.md` into an existing directory, plus `<stem>.ezmd.json` when the profile has a sidecar |
+| `save(path, sidecar=True)` | Write the Markdown to a file, or `<stem>.md` into an existing directory, plus `<stem>.ezmd.json` when the profile has a sidecar; image links are rebased so they resolve from the written file |
+| `relocate_images(base)` | A new `Result` whose image links are relative to the directory `base` (see [Images](#images)) |
 | `document` | The IR `Document` (see [Output format](output-format.md)) |
 
 ```python
@@ -65,6 +66,7 @@ result = ezmd.convert("report.pdf", profile="rag", options=opts)
 | `max_seconds` | 600 | Conversion deadline |
 | `max_bytes` | 100 MiB | Input size cap |
 | `tracked_changes`, `comments`, `formulas`, `extract_images` | `True` | What document converters keep |
+| `image_dir` | `None` | Directory to extract images into (see [Images](#images)); `None` writes nothing |
 | `experimental` | `True` | Allow experimental converters |
 | `converter` | `None` | Force a converter id, e.g. `documents.docling_pdf` |
 | `allow_private_networks` | `False` | Let URL fetches reach private and loopback addresses |
@@ -74,6 +76,24 @@ result = ezmd.convert("report.pdf", profile="rag", options=opts)
 
 Media options (`ocr`, `asr_model`, `diarize`, `max_duration_seconds`) are accepted now and take effect
 when the media converters land (Phase 2).
+
+## Images
+
+Without `image_dir`, an embedded picture renders as a link to its path inside the source
+(`![Site plan](word/media/plan.png)`), which says where the bytes live but resolves to nothing on disk. With
+`image_dir` set, the DOCX, PPTX, EPUB, notebook and email converters write each picture to
+`<image_dir>/images/<name>` and the link becomes `images/<name>`, relative to `image_dir`:
+
+```python
+result = ezmd.convert("deck.pptx", options=ezmd.Options(image_dir="out"))
+result.save("out/deck.md")  # the links read images/<name> and resolve beside the file
+```
+
+`save()` rebases the links to wherever the Markdown is written, so `result.save("docs/deck.md")` with
+`image_dir="out"` writes links of the form `../out/images/<name>`. `relocate_images(base)` does the same
+without writing, for code that renders the Markdown itself. Links that point outside `image_dir` (URLs,
+`data:` images, pictures of formats that do not extract yet) are left alone. PDF pages, images and other
+formats that do not emit pictures yet keep the behaviour described on their converter pages.
 
 ## Many inputs, async
 

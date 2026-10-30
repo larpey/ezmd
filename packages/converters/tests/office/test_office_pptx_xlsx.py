@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import io
 from collections.abc import Callable
+from pathlib import Path
 
 import pytest
 
@@ -55,25 +56,56 @@ def test_pptx_options(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
     assert any(w.kind == WarningKind.SLIDE_CAP_REACHED for w in capped.warnings)
 
 
-def test_pptx_picture_alt_text(run: Run) -> None:
-    """A picture shape becomes an Image with its `descr` alt text and its media part path. python-pptx is a dev
-    dependency, so this runs in CI (it was skipped everywhere before)."""
+PNG_1X1 = bytes.fromhex(
+    "89504e470d0a1a0a0000000d4948445200000001000000010806000000"
+    "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082"
+)
+
+
+def _deck_with_picture(alt: str) -> bytes:
+    """One blank slide with a 1x1 PNG picture carrying `alt` as its description (python-pptx is a dev dependency)."""
     pptx = pytest.importorskip("pptx")
     from pptx.util import Inches
 
     prs = pptx.Presentation()
     s = prs.slides.add_slide(prs.slide_layouts[6])
-    png = bytes.fromhex(
-        "89504e470d0a1a0a0000000d4948445200000001000000010806000000"
-        "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082"
-    )
-    pic = s.shapes.add_picture(io.BytesIO(png), Inches(1), Inches(1))
-    pic._element.nvPicPr.cNvPr.set("descr", "A heron")
+    pic = s.shapes.add_picture(io.BytesIO(PNG_1X1), Inches(1), Inches(1))
+    pic._element.nvPicPr.cNvPr.set("descr", alt)
     out = io.BytesIO()
     prs.save(out)
-    doc = run(PptxConverter(), out.getvalue(), "p.pptx")
+    return out.getvalue()
+
+
+def test_pptx_picture_alt_text(run: Run) -> None:
+    """A picture shape becomes an Image with its `descr` alt text and its media part path when no image_dir is
+    set, so the link says where the bytes live in the package."""
+    doc = run(PptxConverter(), _deck_with_picture("A heron"), "p.pptx")
     img = next(b for b in doc.blocks if isinstance(b, Image))
     assert img.alt == "A heron" and img.ref.startswith("ppt/media/")
+
+
+def test_pptx_picture_written_to_image_dir(run: Run, tmp_path: Path) -> None:
+    """With `image_dir` set, the picture bytes are written under `<image_dir>/images/` and the Image points at
+    that file relative to `image_dir`, the convention the DOCX, EPUB and notebook converters use (#31)."""
+    doc = run(PptxConverter(), _deck_with_picture("A heron"), "p.pptx", image_dir=tmp_path)
+    img = next(b for b in doc.blocks if isinstance(b, Image))
+    assert img.ref.startswith("images/") and img.mime == "image/png"
+    assert (tmp_path / img.ref).read_bytes() == PNG_1X1
+
+
+def test_pptx_picture_not_written_when_extraction_off(run: Run, tmp_path: Path) -> None:
+    from ezmd.detect import detect
+    from ezmd.inputs import InputRef
+    from ezmd.registry import ConvertOptions
+
+    ref = InputRef.from_bytes(_deck_with_picture("A heron"), filename="p.pptx")
+    detect(ref)
+    try:
+        doc = PptxConverter().convert(ref, ConvertOptions(image_dir=str(tmp_path), extract_images=False))
+    finally:
+        ref.cleanup()
+    img = next(b for b in doc.blocks if isinstance(b, Image))
+    assert img.ref.startswith("ppt/media/") and not (tmp_path / "images").exists()
 
 
 def test_xlsx_fixture(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:

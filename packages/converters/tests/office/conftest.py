@@ -19,7 +19,12 @@ def _run(conv: object, data: bytes, name: str, **extra: object) -> Document:
     ref = InputRef.from_bytes(data, filename=name)
     detect(ref)
     flags = {k: extra.pop(k) for k in ("tracked_changes", "comments", "formulas") if isinstance(extra.get(k), bool)}
-    opts = ConvertOptions(extra={f"office.{k}": v for k, v in extra.items()}, **flags)  # type: ignore[arg-type]
+    image_dir = extra.pop("image_dir", None)
+    opts = ConvertOptions(
+        extra={f"office.{k}": v for k, v in extra.items()},
+        image_dir=str(image_dir) if image_dir is not None else None,
+        **flags,  # type: ignore[arg-type]
+    )
     try:
         return conv.convert(ref, opts)  # type: ignore[attr-defined, no-any-return]
     finally:

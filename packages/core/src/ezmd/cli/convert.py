@@ -21,6 +21,7 @@ from ezmd.cli.output import (
     ProgressSink,
     err_console,
     failure_payload,
+    is_dir_target,
     outcome_from_result,
     print_warnings,
     progress_display,
@@ -60,7 +61,9 @@ def auto_profile(out: Path | None, as_json: bool) -> str:
     return "compact" if out is None and not as_json and sys.stdout.isatty() else "full"
 
 
-def build_options(cfg: Config, opt: list[str], lang: str | None, converter: str | None) -> dict[str, object]:
+def build_options(
+    cfg: Config, opt: list[str], lang: str | None, converter: str | None, image_dir: Path | None = None
+) -> dict[str, object]:
     options: dict[str, object] = {}
     if cfg.max_file_mb is not None:
         options["max_bytes"] = int(cfg.max_file_mb * 1024 * 1024)
@@ -71,11 +74,28 @@ def build_options(cfg: Config, opt: list[str], lang: str | None, converter: str 
         options["languages"] = [s.strip() for s in lang.split(",") if s.strip()]
     if converter:
         options["converter"] = converter
+    if image_dir is not None:
+        options["image_dir"] = str(image_dir)
     return options
 
 
+def link_base(out: Path | None) -> Path:
+    """The directory image links are made relative to: where the Markdown lands, or the working directory
+    when it goes to stdout (a redirect puts the file there)."""
+    if out is None:
+        return Path.cwd()
+    return out if is_dir_target(out) else out.parent
+
+
 def _run_local(
-    source: str, profile: str, fmt: str, options: dict[str, object], engine: str | None, sink: ProgressSink
+    source: str,
+    profile: str,
+    fmt: str,
+    options: dict[str, object],
+    engine: str | None,
+    sink: ProgressSink,
+    *,
+    base: Path,
 ) -> Outcome:
     import ezmd.library as lib
 
@@ -93,7 +113,7 @@ def _run_local(
     )
     sink("rendering", None, "")
     display = "stdin" if source == "-" else source
-    return outcome_from_result(result, source=display, profile=profile, fmt=fmt)
+    return outcome_from_result(result.relocate_images(base), source=display, profile=profile, fmt=fmt)
 
 
 def _run_remote(
@@ -134,6 +154,7 @@ def convert(
     sidecar: Annotated[
         bool | None, typer.Option("--sidecar/--no-sidecar", help="Write <name>.ezmd.json beside --out.")
     ] = None,
+    image_dir: Annotated[Path | None, typer.Option("--image-dir", help="Extract images to PATH/images/.")] = None,
     engine: Annotated[str | None, typer.Option("--engine", help="Engine as family=name, e.g. pdf=docling.")] = None,
     converter: Annotated[str | None, typer.Option("--converter", help="Force a converter id.")] = None,
     lang: Annotated[str | None, typer.Option("--lang", help="Language hint(s), e.g. en or en,de.")] = None,
@@ -151,10 +172,12 @@ def convert(
         if chosen_fmt not in SUPPORTED_FORMATS:
             raise ConfigError(f"--format {chosen_fmt} is not yet supported; use md, txt, or json")
         chosen_profile = check_profile(profile, "--profile") if profile else cfg.profile or auto_profile(out, as_json)
-        options = build_options(cfg, opt or [], lang, converter)
+        options = build_options(cfg, opt or [], lang, converter, image_dir)
+        target_remote = (remote if remote is not None else cfg.remote_url).strip()
+        if target_remote and "image_dir" in options:
+            raise ConfigError("--image-dir needs a local conversion; a --remote instance keeps images on its side")
     except ValueError as e:
         raise fail(str(e), as_json=as_json, source=source) from e
-    target_remote = (remote if remote is not None else cfg.remote_url).strip()
     write_sidecar = cfg.sidecar if sidecar is None else sidecar
     initial = "fetching" if source.startswith(("http://", "https://")) or target_remote else "converting"
     target: Path | None = None
@@ -163,7 +186,7 @@ def convert(
             if target_remote:
                 outcome = _run_remote(source, target_remote, cfg, chosen_profile, chosen_fmt, options, engine, sink)
             else:
-                outcome = _run_local(source, chosen_profile, chosen_fmt, options, engine, sink)
+                outcome = _run_local(source, chosen_profile, chosen_fmt, options, engine, sink, base=link_base(out))
         if out is not None:
             target = write_outcome(outcome, out, sidecar=write_sidecar)
     except KeyboardInterrupt:

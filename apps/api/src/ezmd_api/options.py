@@ -39,6 +39,7 @@ SERVER_FIELDS: dict[str, str] = {
     "experimental": "instance policy (Part 2 13.7), not a client choice",
     "converter": "forcing a converter is a library/CLI feature; the API routes by detected content",
     "allow_private_networks": "SSRF guard; only EZMD_ALLOW_PRIVATE_NETWORKS may loosen it",
+    "image_dir": "a path on the worker's disk; extracted images are served from the job's blob store",
     "extra": "family-specific engine options are not exposed over HTTP yet",
     "render": "dotted profile overrides (`chunks.chunk_tokens`) are split off before validation",
 }
