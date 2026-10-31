@@ -370,6 +370,15 @@
       "hidden": true,
       "location": "hidden",
       "offset": -1,
+      "pattern": "role_hijack",
+      "regex": "you are now (in )?(a |an |the )?([a-z-]+ ){0,3}(ai|assistant",
+      "severity": "high",
+      "snippet": "you are now in developer mode"
+    },
+    {
+      "hidden": true,
+      "location": "hidden",
+      "offset": -1,
       "pattern": "system_prompt_word",
       "regex": "^\\s*(system|assistant):\\s",
       "severity": "medium",
@@ -515,9 +524,9 @@
       "block_id": null,
       "count": null,
       "detail": {
-        "families": "encoding, override, system_prompt_word",
+        "families": "encoding, override, role_hijack, system_prompt_word",
         "risk": "high",
-        "score": 57.0
+        "score": 69.0
       },
       "kind": "injection_suspected",
       "message": "The content contains text that looks like instructions to an AI system (high risk).",
