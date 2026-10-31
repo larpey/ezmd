@@ -17,7 +17,14 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
             r"ignore (all |any )?(of )?(the |your )?(previous|prior|above|earlier|preceding) "
             r"(instructions|prompts|rules|messages|directions)",
             r"disregard (all )?(the |your )?(system|previous|prior|above)",
-            r"forget (everything|all|your) (you|instructions|previous|prior)",
+            # "forget all your kindness", "I forget all rules of warfare" and "you forget your rules" are fiction
+            # (6 of 998 novels in the 2026-10-27 media run); the object has to be instructions, training or what
+            # the model was told, and "rules" only with a qualifier that points back at a prompt.
+            r"forget (everything|all|all of|any of|your) (your |the |these |those )?"
+            r"(instructions|prompts?|guidelines|training|system prompts?|previous|prior)\b",
+            r"forget (all |any |all of |any of )?(the |your |these |those )?(previous|prior|above|earlier|preceding|"
+            r"system|safety) (rules|instructions|prompts?|guidelines|messages)\b",
+            r"forget (everything|all|what) (that )?you (were|have been|'ve been) told",
             r"ignoriere (alle )?(vorherigen|bisherigen) (anweisungen|instruktionen)",
             r"ignore[zr]? (toutes )?les instructions (precedentes|précédentes)",
             r"ignora (todas )?las instrucciones anteriores",
@@ -29,23 +36,43 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
     "role_hijack": (
         "high",
         (
-            r"you are now (a|an|the) ",
-            r"from now on,? (you|act|respond)",
+            # "You are now the head of the family" is dialogue (6 of 998 novels, 2026-10-27 media run); the
+            # sentence has to name what the model becomes within a few words.
+            r"you are now (in )?(a |an |the )?([a-z-]+ ){0,3}(ai|assistant|chatbot|language model|llm|dan|"
+            r"developer mode|jailbreak|jailbroken|unrestricted|uncensored|evil)\b",
+            # "From now on you will discontinue your efforts" is a letter and "from now on only pale eyes would
+            # plant corn" is narration; an order to a model says what to do.
+            r"from now on,? (you (will |must |should |shall |are to |always |never |only )?"
+            r"(act|respond|reply|answer|ignore|pretend|be|behave|refer|speak|write|talk|obey|follow|disregard)|"
+            r"(always |never |only )?(act as|respond|answer|reply|ignore|disregard))\b",
             # "act as" and "pretend" need the model as addressee: ordinary prose says a membrane "acts as a
             # barrier" and a network "can act as a bus" (one government document in forty, 2026-10-26 sweep).
-            r"(you (must|should|will|can|are to|need to|have to) |please |now |always )act as (if you (are|were)|an? )",
-            r"act as (if you (are|were) )?(the |an? )?(ai|assistant|model|chatbot|system|language model|helpful|"
-            r"unrestricted|different|new|evil|jailbroken|developer|admin|root)\b",
-            r"(you (must|should|will|can|are to|need to) |please |now )pretend (to be|you are)",
+            # The addressee alone is dialogue too ("I take it you will act as a friend in this matter"), so the
+            # role has to be named within three words; the bare addressee form is a hint below.
+            r"(you (must|should|will|can|are to|need to|have to) |please |now |always )act as (if you (are|were)|"
+            r"(the |an? )?([a-z-]+ ){0,3}(ai|assistant|chatbot|language model|llm|model|system|terminal|persona|"
+            r"character|dan|developer mode|unrestricted|uncensored|unfiltered|evil|jailbroken|jailbreak)\b)",
+            # "assistant" is a job title and "model" an example far more often than either is a language model
+            # (6 of 13 highs in the 2026-10-27 held-out run), so those two need a qualifier only a prompt uses.
+            r"act as (if you (are|were) )?(the |an? )?(ai|chatbot|language model|llm|helpful assistant|unrestricted|"
+            r"uncensored|unfiltered|different|new|evil|jailbroken|developer|admin|root)\b",
+            r"act as if you (are|were) (the |an? )?(system|assistant|model)\b",
+            r"act as (the |an? )?(ai |unrestricted |uncensored |unfiltered |helpful |language |large language )"
+            r"(assistant|model)\b",
+            r"act as (the |an? )?(assistant|model) (that|who|which|without|with no)\b",
             r"pretend (to be|you are) (an? )?(ai|assistant|model|chatbot|system|different|new|unrestricted|evil|"
             r"human)\b",
+            # "pretend that you have not insulted me" is a duel; the thing the model is to have none of is named.
+            r"pretend (that )?you (have no (rules|restrictions|limits|limitations|guidelines|instructions|filters?|"
+            r"ethics|morals|guardrails)|are not bound|are free of|can ignore)\b",
             r"new (persona|identity|role):",
         ),
     ),
     "system_prompt": (
         "high",
         (
-            r"(system|developer) (prompt|message|instruction)s?:",
+            # "in response to the VAX operating system prompt:" is a terminal manual (2026-10-27 held-out run).
+            r"(?<!operating )(system|developer) (prompt|message|instruction)s?:",
             r"<\|im_start\|>",
             r"<\|system\|>",
             r"^#{1,6} ?(system|instruction):",
@@ -113,11 +140,26 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
         (
             # ezmd's own fence and the chat-template tags only: `<Document>` is KML's root element and
             # `<context>`/`<instructions>` are ordinary XML (70 government files in the 2026-10-26 sweep).
-            r"</?\s*(untrusted_content|document_content|system_prompt|system)\s*>",
+            # `<system>` is an element of Maven and GForge configuration (4 of 13 highs, 2026-10-27 held-out
+            # run); as a chat turn it opens a line, which `system_prompt_line` below covers.
+            r"</?\s*(untrusted_content|document_content|system_prompt)\s*>",
             r"^-{3}\s*\n\s*title:",
             r"(^|\s)-{3}\s+title:\s",
             r"<!-- ?(chunk|/chunk|page|ezmd)\b",
         ),
+    ),
+}
+
+#: The bare forms of the override and role_hijack patterns above: a second-person turn with no model-shaped
+#: noun in it. Dialogue is made of them, so each is a low hint that counts towards the accumulation cap,
+#: never `high`.
+HINTS: dict[str, tuple[str, ...]] = {
+    "override": (r"forget (all |any )?(of )?(your |the |these |those )?rules\b",),
+    "role_hijack": (
+        r"you are now (a|an|the) ",
+        r"from now on,? you\b",
+        r"(you (must|should|will|can|are to|need to|have to) |please |now |always )act as (if |the |an? )",
+        r"(you (must|should|will|can|are to|need to) |please |now )pretend (to be|you are)",
     ),
 }
 

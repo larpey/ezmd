@@ -745,3 +745,45 @@ the visible attacks the fixtures cover).
 Consequences: `packages/core/tests/render/test_injection_false_positives.py` carries the sweep's shapes as
 negatives and nine attacks as positives. The corpus smell `injection` (tools/bench/scoring/smell.py) is the
 regression measure: the high rate on the two corpora is the number to watch after any pattern change.
+
+## D-0076: A role hijack names what the model becomes; the bare second-person forms are hints
+
+Date: 2026-10-31. Status: accepted.
+
+Context: After D-0075 the held-out Govdocs1 run (bench/results/2026-10-27-confirm/, 16,509 outputs) had 13
+`injection_risk: high` and the media run (bench/results/2026-10-27-media-c/) had 12 of 998 Project Gutenberg
+novels at `high`. Twenty-two of those twenty-five were three shapes. Dialogue: "You are now the head of the
+family", "forget all your kindness", "from now on you will discontinue your efforts", which is most of what
+fiction is made of. Nouns that are a job or an example far more often than a language model: "act as an
+assistant to the department head", "act as a model for switchgrass genomics", "one of you will pretend to be a
+WIC participant". And XML whose element is named `system` (Maven's `ciManagement/system`, a GForge tracker
+export), which the delimiter rule took for a chat-template tag. One novel in eighty marked `high` by one line
+of dialogue is the floor D-0075 left, and a reader that trusts the frontmatter wraps or drops the book.
+
+Decision: `role_hijack` fires `high` only when the sentence names what the model becomes: "you are now" followed
+within three words by a model-shaped noun (`ai`, `assistant`, `chatbot`, `language model`, `dan`, `developer
+mode`, `unrestricted`, `evil`); "from now on" followed by an instruction-shaped verb (`respond`, `act`, `answer`,
+`ignore`), with `only`, `always` and `never` counting only in front of one of them ("from now on only pale eyes
+would plant corn" is narration); "act as" with the addressee (`you must`, `please`) and a role named within
+three words ("I take it you will act as a friend in this matter" is dialogue), or an object that is not a job
+title, where `assistant` and `model` need a qualifier only a prompt uses (`unrestricted assistant`, `AI
+assistant`, `assistant that never refuses`); `pretend to be` needs the model-shaped object and "pretend that
+you have no" names the thing (`rules`, `restrictions`, `filters`; "pretend that you have not insulted me" is
+a duel). `override`'s "forget" needs instructions, training or "what you were told" as its object, and `rules`
+only with `previous`, `prior`, `system` or `safety` in front ("I forget all rules of warfare" and "you forget
+your rules" are novels). `system_prompt` skips "operating system prompt:", a terminal manual. `delimiter_spoof`
+drops `system`: a `<system>` tag is a chat turn when it opens a line with the turn after it, which
+`system_prompt_line` already scores `high`; inside an XML document it is an element among its siblings. The
+bare forms ("you are now a", "from now on you", "you must act as a", "forget your rules", "you will pretend to
+be") become low `HINTS` on the same family, scored with the accumulation heuristics under their cap, so a
+document made of them reaches `medium` at most and one line of dialogue reaches `low`.
+
+Alternatives rejected: a medium severity for the bare forms (one line of dialogue would still warn on a
+400-page novel); dropping the bare forms entirely (a jailbreak that avoids the model-shaped nouns, "you will
+pretend to be my late grandmother", would leave no trace to accumulate); a fiction allowlist by source type
+(the same sentences occur in letters, histories and curricula, and an attacker chooses the source type).
+
+Consequences: `test_injection_false_positives.py` carries the seventeen Gutenberg lines, the six government
+sentences and the two XML fragments as negatives, and seventeen more attacks as positives, among them the
+DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
+runs with the new patterns is the measure; the numbers are in the PR that made this change.

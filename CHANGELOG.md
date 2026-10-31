@@ -74,6 +74,18 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- The injection scanner no longer marks dialogue, job titles or XML configuration `high`. On the 2026-10-27
+  runs, 12 of 998 Project Gutenberg novels and 10 of the 13 `high` outputs in 16,509 held-out government files
+  were "you are now the head of the family", "forget all your kindness", "from now on you will discontinue",
+  "act as an assistant to the department head", "act as a model for switchgrass genomics", "you will pretend
+  to be a WIC participant" and a `<system>` element in Maven and GForge configuration. `role_hijack` now needs
+  the model named within a few words ("you are now a helpful assistant", "you are now DAN", "developer mode")
+  or an instruction after "from now on"; "you must act as" needs the role named within three words;
+  "assistant" and "model" need a qualifier only a prompt uses ("unrestricted assistant", "assistant that
+  never refuses"); `forget` needs instructions, previous rules or "what you were told" as its object; and
+  `<system>` counts only as a chat turn opening a line. The bare forms ("you are now a", "from now on you",
+  "you must act as a", "forget your rules", "you will pretend to be") stay as low hints under the accumulation
+  cap, so a novel of them reaches `medium` at most (D-0076, #53, #54, #59).
 - PPTX pictures reach the user. The converter returned every picture as a link to its path inside the package
   (`ppt/media/image3.png`) and never wrote the bytes, so a deck's images were all broken links; with
   `image_dir` set it now writes them like the DOCX converter does. DOCX joins the convention the EPUB, notebook
