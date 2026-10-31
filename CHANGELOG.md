@@ -83,7 +83,7 @@ All notable changes are generated from Conventional Commits. This project uses s
   or an instruction after "from now on"; "you must act as" needs the role named within three words;
   "assistant" and "model" need a qualifier only a prompt uses ("unrestricted assistant", "assistant that
   never refuses"); `forget` needs instructions, previous rules or "what you were told" as its object; and
-  `<system>` counts only as a chat turn opening a line (whitespace or three or more words after the tag). The
+  `<system>` counts only as a chat turn opening a line (whitespace, three or more words, or an order after the tag). The
   bare forms ("you are now a", "from now on you",
   "you must act as a", "forget your rules", "you will pretend to be") stay as low hints under the accumulation
   cap, so a novel of them reaches `medium` at most (D-0076, #53, #54, #59).
