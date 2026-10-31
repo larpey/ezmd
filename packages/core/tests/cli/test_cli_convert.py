@@ -39,6 +39,40 @@ def test_out_file_and_sidecar(tmp_path: Path) -> None:
     assert res.stdout == ""
 
 
+DOCX_WITH_PICTURE = Path(__file__).resolve().parents[4] / "fixtures" / "office" / "docx-lists-restart" / "input.docx"
+
+
+def test_image_dir_writes_images_and_links_relative_to_out(tmp_path: Path) -> None:
+    """`--image-dir` (#32) extracts images there; the links in the written Markdown resolve from the .md."""
+    img, target = tmp_path / "img", tmp_path / "out" / "guide.md"
+    res = runner.invoke(app, ["convert", str(DOCX_WITH_PICTURE), "--image-dir", str(img), "--out", str(target)])
+    assert res.exit_code == 0, res.output
+    assert (img / "images" / "plan.png").is_file()
+    assert "](../img/images/plan.png)" in target.read_text(encoding="utf-8")
+
+
+def test_image_dir_links_are_relative_to_cwd_on_stdout(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    res = runner.invoke(app, ["convert", str(DOCX_WITH_PICTURE), "--image-dir", "pics"])
+    assert res.exit_code == 0, res.output
+    assert (tmp_path / "pics" / "images" / "plan.png").is_file()
+    assert "](pics/images/plan.png)" in res.stdout
+
+
+def test_no_image_dir_keeps_package_paths(tmp_path: Path) -> None:
+    res = runner.invoke(app, ["convert", str(DOCX_WITH_PICTURE)])
+    assert res.exit_code == 0, res.output
+    assert "](word/media/plan.png)" in res.stdout and not list(tmp_path.rglob("plan.png"))
+
+
+def test_image_dir_is_refused_with_remote(tmp_path: Path) -> None:
+    res = runner.invoke(
+        app, ["convert", str(_txt(tmp_path)), "--remote", "http://127.0.0.1:9", "--image-dir", str(tmp_path / "i")]
+    )
+    assert res.exit_code == 2
+    assert "--image-dir" in res.output and "--remote" in res.output
+
+
 def test_out_dir_uses_title_and_no_sidecar(tmp_path: Path) -> None:
     outdir = tmp_path / "outdir"
     outdir.mkdir()

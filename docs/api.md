@@ -52,8 +52,9 @@ These are the client-settable fields of the Python library's `ezmd.library.Optio
 cap on `asr_model` and at most 10 `languages`), and the worker converts through `Options`, so an
 options object that works with `ezmd.convert(..., options=...)` works over REST and the other way
 round. The remaining `Options` fields (`max_seconds`, `max_bytes`, `experimental`, `converter`,
-`allow_private_networks`, `extra`, `render`) are set by the server; sending them is `400
-invalid_request`. Omitted fields use the library defaults.
+`allow_private_networks`, `image_dir`, `extra`, `render`) are set by the server; sending them is `400
+invalid_request`. Omitted fields use the library defaults. `image_dir` is a path on the worker's own disk,
+which is why a client cannot choose it; extracted images are read from the job's attachments instead.
 
 Query parameters on `POST /v1/convert`:
 

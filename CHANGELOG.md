@@ -48,6 +48,16 @@ All notable changes are generated from Conventional Commits. This project uses s
   from Wikimedia Commons, Project Gutenberg, LibriVox and NASA (`tools/bench/media.py`). First results over the
   whole `media` corpus in `bench/results/2026-10-27-media-c/` (20,348 files): every raster image, audio and video
   file a declared refusal, 998 of 998 EPUBs converted, and SVG falling through to the plain-text reader (#55).
+- `ezmd convert --image-dir DIR` and `ezmd batch --image-dir DIR` extract embedded images, and the library's
+  `Options.image_dir` does the same for code. Pictures are written to `DIR/images/<name>` (in `batch`, under one
+  folder per input, `DIR/<its path>/images/`, so two documents' `image1.png` cannot overwrite each other) and
+  the Markdown links are made relative to the written `.md`, or to the working directory when the Markdown
+  goes to stdout, so they resolve where the file lands. The batch manifest records the image directory, so a
+  re-run that adds, changes or drops `--image-dir` converts again instead of skipping, and the image tree is
+  never discovered as input. Two parts with one basename get two files (`a.png`, `a-2.png`); identical bytes
+  under one name are written once. `Result.save()` rebases the links the same way and
+  `Result.relocate_images(base)` does it without writing. The REST API and the MCP server refuse the field,
+  as they do `converter` and `experimental`: it names a path on the server's disk (#32).
 
 ### Changed
 - Container images apply Debian's security updates at build time (`apt-get upgrade` in the runtime stage):
@@ -64,6 +74,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- PPTX pictures reach the user. The converter returned every picture as a link to its path inside the package
+  (`ppt/media/image3.png`) and never wrote the bytes, so a deck's images were all broken links; with
+  `image_dir` set it now writes them like the DOCX converter does. DOCX joins the convention the EPUB, notebook
+  and email converters already follow (`<image_dir>/images/<name>`, link `images/<name>`) instead of writing
+  into `image_dir` itself with an absolute path in the link (#31).
 - The sidecar's byte-offset table is linear in the body. `locate_units` re-encoded the whole body prefix for
   every unit, so a 32 MB log with a unit per line spent minutes there after a conversion of seconds; the two
   timeouts of the held-out Govdocs1 run (`bench/results/2026-10-27-confirm/`, a 32 MB log and a 25 MB

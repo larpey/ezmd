@@ -70,6 +70,7 @@ def test_example_values_round_trip_into_the_library() -> None:
         {"experimental": False},
         {"converter": "text.plain"},
         {"allow_private_networks": True},
+        {"image_dir": "/tmp"},
         {"max_seconds": 1},
         {"no_such_option": 1},
     ],

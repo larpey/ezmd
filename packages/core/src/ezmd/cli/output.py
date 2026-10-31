@@ -25,6 +25,7 @@ __all__ = [
     "ProgressSink",
     "err_console",
     "failure_payload",
+    "is_dir_target",
     "outcome_from_result",
     "print_warnings",
     "progress_display",
@@ -136,7 +137,8 @@ def sidecar_path(target: Path) -> Path:
     return target.with_name(target.stem + ".ezmd.json")
 
 
-def _is_dir_target(out: Path) -> bool:
+def is_dir_target(out: Path) -> bool:
+    """True when `out` names a directory: it exists as one, or ends with a path separator."""
     return out.is_dir() or str(out).endswith(("/", "\\"))
 
 
@@ -145,7 +147,7 @@ def write_outcome(outcome: Outcome, out: Path, *, sidecar: bool, stem: str | Non
     is true, the profile produced a sidecar, and the format is not json (which embeds it), the sidecar
     beside it. Returns the path written."""
     ext = EXTENSIONS.get(outcome.format, ".md")
-    if _is_dir_target(out):
+    if is_dir_target(out):
         name = stem or safe_stem(outcome.title or "") or outcome.stem
         target = out / f"{name}{ext}"
     else:

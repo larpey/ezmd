@@ -44,6 +44,56 @@ def test_mirrors_tree_and_writes_manifest(tmp_path: Path) -> None:
     assert "converted" in res.stderr and "total tokens" in res.stderr
 
 
+DOCX_WITH_PICTURE = Path(__file__).resolve().parents[4] / "fixtures" / "office" / "docx-lists-restart" / "input.docx"
+
+
+def test_image_dir_gets_one_folder_per_input(tmp_path: Path) -> None:
+    """`--image-dir` (#32): each input's images go under `<image-dir>/<its relative stem>/images/`, so two
+    documents that both carry `image1.png` cannot overwrite each other, and links resolve from each .md."""
+    src, out, img = tmp_path / "in", tmp_path / "out", tmp_path / "img"
+    (src / "a").mkdir(parents=True)
+    (src / "a" / "guide.docx").write_bytes(DOCX_WITH_PICTURE.read_bytes())
+    (src / "guide.docx").write_bytes(DOCX_WITH_PICTURE.read_bytes())
+    args = ["batch", str(src), "--out", str(out), "--image-dir", str(img), "-r", "-w", "1", "--json"]
+    res = runner.invoke(app, args)
+    assert res.exit_code == 0, res.output
+    assert (img / "a" / "guide" / "images" / "plan.png").is_file()
+    assert (img / "guide" / "images" / "plan.png").is_file()
+    assert "](../../img/a/guide/images/plan.png)" in (out / "a" / "guide.md").read_text(encoding="utf-8")
+    assert "](../img/guide/images/plan.png)" in (out / "guide.md").read_text(encoding="utf-8")
+
+
+def _one_docx(tmp_path: Path) -> tuple[Path, list[str]]:
+    src = tmp_path / "in"
+    src.mkdir()
+    (src / "guide.docx").write_bytes(DOCX_WITH_PICTURE.read_bytes())
+    return src, ["batch", str(src), "--out", str(tmp_path / "out"), "-r", "-w", "1", "--json"]
+
+
+def test_adding_or_dropping_image_dir_reconverts(tmp_path: Path) -> None:
+    """The manifest records the image directory, so a re-run that adds, keeps or drops `--image-dir` converts
+    exactly when the directory changed: the first run wrote no images, so a skip would leave none."""
+    _, plain = _one_docx(tmp_path)
+    with_images = [*plain, "--image-dir", str(tmp_path / "pics")]
+    assert json.loads(runner.invoke(app, plain).stdout)["converted"] == 1
+    first = json.loads(runner.invoke(app, with_images).stdout)
+    assert first["converted"] == 1 and first["skipped"] == 0
+    assert (tmp_path / "pics" / "guide" / "images" / "plan.png").is_file()
+    second = json.loads(runner.invoke(app, with_images).stdout)
+    assert second["skipped"] == 1 and second["converted"] == 0
+    assert json.loads(runner.invoke(app, plain).stdout)["converted"] == 1
+    assert "](word/media/plan.png)" in (tmp_path / "out" / "guide.md").read_text(encoding="utf-8")
+
+
+def test_image_tree_inside_the_inputs_is_never_an_input(tmp_path: Path) -> None:
+    src, plain = _one_docx(tmp_path)
+    with_images = [*plain, "--image-dir", str(src / "pics")]
+    assert json.loads(runner.invoke(app, with_images).stdout)["total"] == 1
+    assert (src / "pics" / "guide" / "images" / "plan.png").is_file()
+    second = json.loads(runner.invoke(app, with_images).stdout)
+    assert second["total"] == 1 and second["skipped"] == 1
+
+
 def test_non_recursive_skips_subdirs(tmp_path: Path) -> None:
     src, out = _tree(tmp_path), tmp_path / "out"
     res = runner.invoke(app, ["batch", str(src), "--out", str(out), "--workers", "1", "--json"])

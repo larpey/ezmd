@@ -43,6 +43,7 @@ Options:
   -o, --out PATH            Output file, or directory for <title>.md.
   -f, --format TEXT         md | txt | json [default: md]
   --sidecar / --no-sidecar  Write <name>.ezmd.json beside --out.
+  --image-dir PATH          Extract images to PATH/images/.
   --engine TEXT             Engine as family=name, e.g. pdf=docling.
   --converter TEXT          Force a converter id.
   --lang TEXT               Language hint(s), e.g. en or en,de.
@@ -72,6 +73,7 @@ Options:
   --continue-on-error          Keep going after a failure.
   --manifest PATH              [default: <out>/manifest.jsonl]
   --sidecar / --no-sidecar     Write sidecars.
+  --image-dir PATH             Extract each input's images to PATH/<its path>/images/.
   --opt TEXT                   key=value converter or profile option.
   --json                       Summary JSON on stdout.
   -q, --quiet                  No progress or table on stderr.

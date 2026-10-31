@@ -3,7 +3,7 @@
 Tool arguments come from the model, and the model reads untrusted documents, so a tool call must not
 widen what the operator allowed. Mirrors `ezmd_api.options`: an allowlist of output options
 (TOOL_FIELDS), a set of limits the caller may only lower (LIMIT_FIELDS, capped by the operator's
-`ezmd-mcp --max-*` flags), and everything else (`extra`, `converter`, `experimental`) refused.
+`ezmd-mcp --max-*` flags), and everything else (`extra`, `converter`, `experimental`, `image_dir`) refused.
 `allow_private_networks` keeps its own server gate in `LocalBackend`.
 """
 
@@ -56,6 +56,7 @@ SERVER_FIELDS: dict[str, str] = {
     "extra": "family engine options (archive caps, timeouts) are operator settings",
     "converter": "forcing a converter bypasses detection; not a tool-call choice",
     "experimental": "experimental converters are an operator policy",
+    "image_dir": "a tool call may not choose where the server writes files",
 }
 """Options a tool call may not set, with the reason shown in the error."""
 

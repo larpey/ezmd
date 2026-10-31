@@ -76,6 +76,37 @@ def test_chunks() -> None:
     assert chunks and all(c.tokens <= 100 or c.tokens > 0 for c in chunks)
 
 
+DOCX_WITH_PICTURE = Path(__file__).resolve().parents[3] / "fixtures" / "office" / "docx-lists-restart" / "input.docx"
+
+
+def test_image_dir_option_reaches_converters_and_links_are_relative_to_image_dir(tmp_path: Path) -> None:
+    """`Options.image_dir` is where converters write extracted images (#32); the Markdown links are relative to
+    that directory, so a .md saved there works as is."""
+    assert ezmd.Options(image_dir="img").to_convert_options().image_dir == "img"
+    assert ezmd.Options().to_convert_options().image_dir is None
+    r = ezmd.convert(DOCX_WITH_PICTURE, options=ezmd.Options(image_dir=str(tmp_path / "img")))
+    assert (tmp_path / "img" / "images" / "plan.png").is_file()
+    assert "](images/plan.png)" in r.markdown
+
+
+def test_relocate_images_rewrites_links_relative_to_a_base(tmp_path: Path) -> None:
+    r = ezmd.convert(DOCX_WITH_PICTURE, options=ezmd.Options(image_dir=str(tmp_path / "img")))
+    moved = r.relocate_images(tmp_path / "out" / "deep")
+    assert "](../../img/images/plan.png)" in moved.markdown
+    assert "](images/plan.png)" in r.markdown, "the original result is untouched"
+    assert moved.conversion.document.blocks is not r.conversion.document.blocks
+    same = moved.relocate_images(tmp_path / "img")
+    assert "](images/plan.png)" in same.markdown
+    assert ezmd.convert(TEXT, filename="r.txt").relocate_images(tmp_path).markdown.startswith("---\n")
+
+
+def test_save_relocates_image_links_beside_the_markdown(tmp_path: Path) -> None:
+    r = ezmd.convert(DOCX_WITH_PICTURE, options=ezmd.Options(image_dir=str(tmp_path / "img")))
+    out = r.save(tmp_path / "docs" / "guide.md")
+    assert "](../img/images/plan.png)" in out.read_text(encoding="utf-8")
+    assert "](images/plan.png)" in r.markdown
+
+
 def test_errors() -> None:
     with pytest.raises(FileNotFoundError):
         ezmd.convert("definitely/missing/file.txt")

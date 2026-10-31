@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import zipfile
 from collections.abc import Callable
+from pathlib import Path
 
 import pytest
 
@@ -12,6 +13,7 @@ from ezmd.ir import (
     Document,
     Footnote,
     Heading,
+    Image,
     ListBlock,
     Paragraph,
     Quote,
@@ -110,6 +112,37 @@ def test_structure(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:
     assert notes == {"fn-1": "1", "en-1": "i"}
     link = next(s for b in doc.blocks if isinstance(b, Paragraph) for s in b.spans if s.href)
     assert link.href == "https://example.org/ponds"
+
+
+def test_picture_written_to_image_dir(run: Run, fixture_bytes: Callable[[str], bytes], tmp_path: Path) -> None:
+    """Without `image_dir` the Image keeps its package path; with it, the bytes land under
+    `<image_dir>/images/` and the ref is that path relative to `image_dir` (the shared convention, #31)."""
+    data = fixture_bytes("docx-lists-restart")
+    plain = next(b for b in run(DocxConverter(), data, "s.docx").blocks if isinstance(b, Image))
+    assert plain.ref == "word/media/plan.png" and plain.alt and plain.alt.startswith("Site plan")
+    written = next(b for b in run(DocxConverter(), data, "s.docx", image_dir=tmp_path).blocks if isinstance(b, Image))
+    assert written.ref == "images/plan.png" and written.mime == "image/png"
+    original = OfficePackage(data, what="DOCX").read("word/media/plan.png")
+    assert (tmp_path / "images" / "plan.png").read_bytes() == original
+
+
+def test_extract_image_keeps_distinct_parts_distinct(tmp_path: Path) -> None:
+    """Two parts with one basename (or names that sanitise alike) get two files; the same bytes under the same
+    name are written once, so a picture reused across parts, or a re-run, does not fork its name."""
+    from ezmd.registry import ConvertOptions
+    from ezmd_converters.office._common import extract_image
+
+    opts = ConvertOptions(image_dir=str(tmp_path))
+    assert extract_image(opts, b"one", "word/media/a b.png") == "images/a_b.png"
+    assert extract_image(opts, b"two", "word/embeddings/a_b.png") == "images/a_b-2.png"
+    assert extract_image(opts, b"three", "ppt/media/a b.png") == "images/a_b-3.png"
+    assert extract_image(opts, b"one", "word/media/a b.png") == "images/a_b.png"
+    assert {p.name: p.read_bytes() for p in (tmp_path / "images").iterdir()} == {
+        "a_b.png": b"one",
+        "a_b-2.png": b"two",
+        "a_b-3.png": b"three",
+    }
+    assert extract_image(ConvertOptions(image_dir=str(tmp_path), extract_images=False), b"x", "m/x.png") is None
 
 
 def test_keep_hidden_records_text(run: Run, fixture_bytes: Callable[[str], bytes]) -> None:

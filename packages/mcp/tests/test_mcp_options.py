@@ -23,6 +23,7 @@ from ezmd_mcp.options import OperatorLimits
         {"extra": {"specialized.archive_max_total": 10**12}},
         {"converter": "text.plain"},
         {"experimental": True},
+        {"image_dir": "/tmp"},
         {"max_bytes": 10**12},
         {"max_seconds": 10**6},
         {"max_pages": 10**6},

@@ -54,7 +54,8 @@ paragraphs are inferred as headings and warned with `heading_inferred_from_forma
 - tables with `gridSpan`/`vMerge` spans, header rows, and nested tables (emitted after the outer table)
 - footnotes and endnotes
 - hyperlinks
-- images with alt text
+- images with alt text, written to `<image_dir>/images/` when `image_dir` is set (CLI `--image-dir`); without
+  it the link keeps the package path (`word/media/image1.png`)
 - captions, attached to the preceding table or image
 - quotes, code styles, and OMML equations as LaTeX (`equation_partial` when a construct has no mapping)
 - text boxes, relocated after their paragraph (`textbox_content_relocated`)
@@ -74,7 +75,8 @@ resolved state from `commentsExtended.xml`. Provenance `path` is `body[i]` and `
 - tables with merged cells
 - charts as data tables captioned `Chart: <title>`, with `attrs.chart_type`
 - SmartArt as lists (`smartart_flattened`)
-- pictures with alt text
+- pictures with alt text, written to `<image_dir>/images/` when `image_dir` is set, as for DOCX; WMF and EMF
+  pictures are written as they are, unconverted
 - speaker notes as a Paragraph with `attrs.slide_part="notes"`
 - slide comments (legacy and modern)
 
