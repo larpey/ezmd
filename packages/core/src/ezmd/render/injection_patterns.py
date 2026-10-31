@@ -182,8 +182,9 @@ STRUCTURAL: dict[str, tuple[Severity, tuple[str, ...]]] = {
         (
             r"^\s*(\[(system|assistant)\]|<(system|assistant)>):?\s",
             # Words and the blanks between them are disjoint classes, so a line of blanks cannot make the
-            # matcher backtrack (hidden text is attacker-controlled up to its 10 KiB cap).
-            r"^\s*<(system|assistant)>(?!\s)(?:[^<\s]+[ \t]+){2}[^<\s]+",
+            # matcher backtrack (hidden text is attacker-controlled up to its 10 KiB cap). The blank class is
+            # any horizontal whitespace, since this runs on the original text and a no-break space is a blank.
+            r"^\s*<(system|assistant)>(?!\s)(?:[^<\s]+[^\S\n]+){2}[^<\s]+",
         ),
     ),
     "system_prompt_word": ("low", (r"^\s*(system|assistant):\s",)),
