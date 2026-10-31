@@ -786,7 +786,7 @@ Alternatives rejected: a medium severity for the bare forms (one line of dialogu
 pretend to be my late grandmother", would leave no trace to accumulate); a fiction allowlist by source type
 (the same sentences occur in letters, histories and curricula, and an attacker chooses the source type).
 
-Consequences: `test_injection_false_positives.py` carries the twenty Gutenberg-shaped lines, the six government
-sentences and the two XML fragments as negatives, and twenty-one more attacks as positives, among them the
+Consequences: `test_injection_false_positives.py` carries the twenty-one Gutenberg-shaped lines, the six
+government sentences and the three XML fragments as negatives, and twenty-two more attacks as positives, among them the
 DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
 runs with the new patterns is the measure; the numbers are in the PR that made this change.

@@ -57,10 +57,11 @@ FAMILIES: dict[str, tuple[Severity, tuple[str, ...]]] = {
             r"character|dan|developer mode|unrestricted|uncensored|unfiltered|evil|jailbroken|jailbreak)\b",
             # "assistant" is a job title and "model" an example far more often than either is a language model
             # (6 of 13 highs in the 2026-10-27 held-out run), so those two need a qualifier only a prompt uses.
-            # "act as a new employee" and "act as a different person" are prose; "new" and "different" count
-            # only in front of a model-shaped noun.
-            r"act as (if you (are|were) )?(the |an? )?((new|different),? )?(ai|chatbot|language model|llm|"
-            r"helpful assistant|unrestricted|uncensored|unfiltered|evil|jailbroken|developer|admin|root)\b",
+            # "act as a new employee", "act as a different person" and "act as a developer for the website" are
+            # prose; "new" and "different" count only in front of a model-shaped noun, and "developer" only as
+            # the mode.
+            r"act as (if you (are|were) (in )?)?(the |an? )?((new|different),? )?(ai|chatbot|language model|llm|"
+            r"helpful assistant|unrestricted|uncensored|unfiltered|evil|jailbroken|developer mode)\b",
             r"act as if you (are|were) (the |an? )?(system|assistant|model)\b",
             r"act as (the |an? )?(ai |unrestricted |uncensored |unfiltered |helpful |language |large language )"
             r"(assistant|model)\b",
@@ -180,7 +181,9 @@ STRUCTURAL: dict[str, tuple[Severity, tuple[str, ...]]] = {
         "high",
         (
             r"^\s*(\[(system|assistant)\]|<(system|assistant)>):?\s",
-            r"^\s*<(system|assistant)>(?!\s)([^<\n]*\s){2}[^<\n]*\S",
+            # Words and the blanks between them are disjoint classes, so a line of blanks cannot make the
+            # matcher backtrack (hidden text is attacker-controlled up to its 10 KiB cap).
+            r"^\s*<(system|assistant)>(?!\s)(?:[^<\s]+[ \t]+){2}[^<\s]+",
         ),
     ),
     "system_prompt_word": ("low", (r"^\s*(system|assistant):\s",)),
