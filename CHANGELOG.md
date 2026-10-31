@@ -67,7 +67,7 @@ All notable changes are generated from Conventional Commits. This project uses s
 - The sidecar's byte-offset table is linear in the body. `locate_units` re-encoded the whole body prefix for
   every unit, so a 32 MB log with a unit per line spent minutes there after a conversion of seconds; the two
   timeouts of the held-out Govdocs1 run (`bench/results/2026-10-27-confirm/`, a 32 MB log and a 25 MB
-  PostScript file in a gzip) now convert in under 50 seconds (#56).
+  PostScript file in a gzip) now convert in under 50 seconds. A unit the rag chunker split, whose whole text is not in the body, is found by its head instead of scanning to the end of the body; 32,000 of them in a 32 MB body took 128 seconds and take 1.2 (#56).
 - The injection scanner no longer marks one ordinary document in thirty as `high`. The 2026-10-26 corpus
   sweep (D-0075) found 3.2% of Govdocs1 and 3.5% of modern government files at `high` with no injection in
   them: "act as a buffer" in prose, `rm -rf` in build logs, KML's `<Document>` root, "run the command" in
