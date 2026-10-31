@@ -355,7 +355,8 @@ class _SlideReader:
                 return []
             ext = posixpath.splitext(rel.target)[1].lower()
             alt = clean_text(sh.descr, self.stats) if sh.descr else None
-            data = self.pkg.read(rel.target) if self.options.image_dir and self.pkg.has(rel.target) else None
+            wanted = self.options.extract_images and self.options.image_dir
+            data = self.pkg.read(rel.target) if wanted and self.pkg.has(rel.target) else None
             ref = extract_image(self.options, data, rel.target) or rel.target
             return [Image(ref=ref, alt=alt, mime=_IMAGE_MIMES.get(ext), provenance=prov)]
         if sh.kind == "ole":

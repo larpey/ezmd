@@ -279,13 +279,27 @@ def extract_image(options: ConvertOptions, data: bytes | None, target: str) -> s
         return None
     base = target.rsplit("/", 1)[-1]
     name = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in base)[:100].lstrip(".") or "image"
-    dest = Path(options.image_dir) / "images" / name
+    folder = Path(options.image_dir) / "images"
     try:
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_bytes(data)
+        folder.mkdir(parents=True, exist_ok=True)
+        name = _free_name(folder, name, data)
+        if not (folder / name).is_file():
+            (folder / name).write_bytes(data)
     except OSError:
         return None
     return f"images/{name}"
+
+
+def _free_name(folder: Path, name: str, data: bytes) -> str:
+    """`name`, or `<stem>-2<ext>`, `<stem>-3<ext>`, ... when a different image already holds it. A file with
+    the same bytes keeps its name, so a picture reused across parts (or a re-run) is written once."""
+    stem, dot, ext = name.rpartition(".")
+    stem, ext = (stem, f".{ext}") if dot and stem else (name, "")
+    candidate, n = name, 1
+    while (folder / candidate).is_file() and (folder / candidate).read_bytes() != data:
+        n += 1
+        candidate = f"{stem}-{n}{ext}"
+    return candidate
 
 
 SAFE_SCHEMES = ("http://", "https://", "mailto:", "ftp://", "#")

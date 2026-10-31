@@ -565,7 +565,8 @@ class DocxWalker:
     def _image(self, target: str, alt: str | None, prov: Provenance) -> Image:
         self.stats.images += 1
         ext = posixpath.splitext(target)[1].lower()
-        data = self.pkg.read(target) if self.options.image_dir and self.pkg.has(target) else None
+        wanted = self.options.extract_images and self.options.image_dir
+        data = self.pkg.read(target) if wanted and self.pkg.has(target) else None
         ref = extract_image(self.options, data, target) or target
         return Image(
             ref=ref, alt=clean_text(alt, self.clean) if alt else None, mime=_IMAGE_MIMES.get(ext), provenance=prov

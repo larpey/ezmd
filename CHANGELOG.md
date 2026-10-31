@@ -52,7 +52,10 @@ All notable changes are generated from Conventional Commits. This project uses s
   `Options.image_dir` does the same for code. Pictures are written to `DIR/images/<name>` (in `batch`, under one
   folder per input, `DIR/<its path>/images/`, so two documents' `image1.png` cannot overwrite each other) and
   the Markdown links are made relative to the written `.md`, or to the working directory when the Markdown
-  goes to stdout, so they resolve where the file lands. `Result.save()` rebases the links the same way and
+  goes to stdout, so they resolve where the file lands. The batch manifest records the image directory, so a
+  re-run that adds, changes or drops `--image-dir` converts again instead of skipping, and the image tree is
+  never discovered as input. Two parts with one basename get two files (`a.png`, `a-2.png`); identical bytes
+  under one name are written once. `Result.save()` rebases the links the same way and
   `Result.relocate_images(base)` does it without writing. The REST API and the MCP server refuse the field,
   as they do `converter` and `experimental`: it names a path on the server's disk (#32).
 

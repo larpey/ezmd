@@ -79,11 +79,18 @@ def _within(path: Path, root: Path) -> bool:
 
 
 def discover(
-    target: str, recursive: bool, out_dir: Path, manifest: Path, exclude: frozenset[str] = frozenset()
+    target: str,
+    recursive: bool,
+    out_dir: Path,
+    manifest: Path,
+    exclude: frozenset[str] = frozenset(),
+    image_dir: Path | None = None,
 ) -> tuple[Path, list[Path]]:
-    """Input files (sorted) and the base directory the output tree mirrors. Dotfiles, the output tree,
-    the manifest, sidecar files, and `exclude` (previous outputs, as resolved posix paths) are never inputs."""
+    """Input files (sorted) and the base directory the output tree mirrors. Dotfiles, the output tree, the
+    image tree, the manifest, sidecar files, and `exclude` (previous outputs, as resolved posix paths) are
+    never inputs, so a re-run over a folder that also holds the outputs does not convert them."""
     out_root = out_dir.resolve()
+    skip_roots = [out_root] + ([image_dir.resolve()] if image_dir is not None else [])
     if any(c in target for c in _GLOB_CHARS):
         parts = Path(target).parts
         fixed = list(parts[: next(i for i, p in enumerate(parts) if any(c in p for c in _GLOB_CHARS))])
@@ -107,7 +114,7 @@ def discover(
             continue
         if resolved.as_posix() in exclude:
             continue
-        if _within(resolved, out_root) and out_root != base.resolve():
+        if any(_within(resolved, root) and root != base.resolve() for root in skip_roots):
             continue
         files.append(p)
     return base, sorted(files, key=lambda q: q.as_posix())
@@ -149,18 +156,22 @@ def _sidecar_matches(target: Path, sha: str, profile: str) -> bool:
 
 
 def unchanged(job: Job, prev: dict[str, Any] | None) -> bool:
+    """Whether the previous output can stand: same input hash, profile, format and image directory as the
+    manifest line records. A manifest line that disagrees (or records a failure) means convert again; only
+    when the manifest is gone does the sidecar stand in, and it cannot vouch for an image directory."""
     target = Path(job.out)
     if not target.is_file():
         return False
-    if (
-        prev is not None
-        and prev.get("sha256") == job.sha256
-        and prev.get("profile") == job.profile
-        and prev.get("format") == job.format
-        and prev.get("status") in ("converted", "partial", "skipped")
-    ):
-        return True
-    return job.format != "json" and _sidecar_matches(target, job.sha256, job.profile)
+    image_dir = job.options.get("image_dir")
+    if prev is not None:
+        return (
+            prev.get("sha256") == job.sha256
+            and prev.get("profile") == job.profile
+            and prev.get("format") == job.format
+            and prev.get("image_dir") == image_dir
+            and prev.get("status") in ("converted", "partial", "skipped")
+        )
+    return image_dir is None and job.format != "json" and _sidecar_matches(target, job.sha256, job.profile)
 
 
 def plan(base: Path, files: list[Path], out_dir: Path, fmt: str) -> list[tuple[Path, Path]]:
@@ -200,6 +211,7 @@ def convert_job(job: Job) -> dict[str, Any]:
         "sha256": job.sha256,
         "profile": job.profile,
         "format": job.format,
+        "image_dir": job.options.get("image_dir"),
     }
     try:
         result = lib.convert(job.src, profile=job.profile, options=lib.Options(**job.options))
@@ -367,7 +379,7 @@ def batch(
         manifest_path = manifest or out_dir / "manifest.jsonl"
         prev = read_manifest(manifest_path)
         outputs = frozenset(_key(r["out"]) for r in prev.values() if isinstance(r.get("out"), str))
-        base, files = discover(inputs, recursive, out_dir, manifest_path, outputs)
+        base, files = discover(inputs, recursive, out_dir, manifest_path, outputs, image_dir)
     except FileNotFoundError as e:
         raise fail(f"no such file or directory: {inputs}", as_json=as_json, source=inputs) from e
     except ValueError as e:
@@ -387,7 +399,7 @@ def batch(
             old = prev.get(_key(src))
             if unchanged(job, old):
                 rec = {"path": job.src, "status": "skipped", "out": job.out, "sha256": job.sha256,
-                       "profile": job.profile, "format": job.format,
+                       "profile": job.profile, "format": job.format, "image_dir": job_options.get("image_dir"),
                        "warnings": (old or {}).get("warnings", []), "seconds": 0.0,
                        "tokens": int((old or {}).get("tokens") or 0)}  # fmt: skip
                 run.add(rec)
