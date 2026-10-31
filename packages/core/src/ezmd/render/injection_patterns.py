@@ -169,7 +169,9 @@ HINTS: dict[str, tuple[str, ...]] = {
     ),
 }
 
-#: Patterns checked against the original (non-normalized) code-stripped text only.
+#: Patterns checked against the code-stripped text with only its invisible characters (zero-width, bidi
+#: and tag characters) removed: no case folding, no confusable mapping, so line starts and tags stay as
+#: written.
 STRUCTURAL: dict[str, tuple[Severity, tuple[str, ...]]] = {
     # A fetch in prose is a script or a README as often as an exfiltration: low, so it needs company.
     "exfiltration_fetch": ("low", (r"\b(curl|wget)\s+https?://",)),
