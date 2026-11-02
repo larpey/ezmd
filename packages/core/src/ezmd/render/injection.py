@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Literal
 
-from ezmd.render.injection_patterns import FAMILIES, STRUCTURAL, Severity
+from ezmd.render.injection_patterns import FAMILIES, HINTS, STRUCTURAL, Severity
 
 __all__ = [
     "FENCE_NOTE",
@@ -86,6 +86,9 @@ class Finding:
     snippet: str
     location: Location = "body"
     pattern: str = ""
+    hint: bool = False
+    """A bare form of a family's pattern (`HINTS`): scored with the accumulation heuristics, so it reaches
+    `medium` at most on its own."""
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -111,8 +114,11 @@ class InjectionReport:
 
 
 @lru_cache(maxsize=1)
-def _compiled() -> list[tuple[str, Severity, re.Pattern[str]]]:
-    return [(fam, sev, re.compile(p, re.I | re.M)) for fam, (sev, pats) in FAMILIES.items() for p in pats]
+def _compiled() -> list[tuple[str, Severity, re.Pattern[str], bool]]:
+    low: Severity = "low"
+    full = [(fam, sev, re.compile(p, re.I | re.M), False) for fam, (sev, pats) in FAMILIES.items() for p in pats]
+    hints = [(fam, low, re.compile(p, re.I | re.M), True) for fam, pats in HINTS.items() for p in pats]
+    return [*full, *hints]
 
 
 @lru_cache(maxsize=1)
@@ -151,15 +157,21 @@ def _light(text: str) -> str:
     return t.translate(_CONFUSABLES).casefold()
 
 
+def _visible(text: str) -> str:
+    """The text with its invisible characters removed and nothing else changed: the structural patterns
+    key on line starts and tags, and a zero-width space inside `<system>` must not hide the tag."""
+    return _TAGS.sub("", _BIDI.sub("", _ZERO_WIDTH.sub("", text)))
+
+
 def _scan(text: str, location: Location) -> list[Finding]:
     norm = normalize(text)
     light = _light(text)
     found: list[Finding] = []
-    for family, sev, pat in _compiled():
+    for family, sev, pat, hint in _compiled():
         for m in pat.finditer(light if family == "delimiter_spoof" else norm):
             off = min(m.start(), max(len(text) - 1, 0)) if location == "body" else -1
             snippet = _snippet(text, m.start()) if location == "body" else m.group(0)[:80]
-            found.append(Finding(family, sev, off, snippet, location, pat.pattern[:60]))
+            found.append(Finding(family, sev, off, snippet, location, pat.pattern[:60], hint))
     return found
 
 
@@ -226,7 +238,7 @@ def scan(
         if in_code(f.offset):
             f.location = "code"
         findings.append(f)
-    prose = _CODE_FENCE.sub("", text)
+    prose = _visible(_CODE_FENCE.sub("", text))
     for family, sev, pat in _structural():
         if chat and family in ("system_prompt_line", "system_prompt_word"):
             continue
@@ -244,10 +256,11 @@ def scan(
         for f in _scan(hidden_text, "hidden"):
             f.severity = _RAISE[f.severity]
             findings.append(f)
+        visible_hidden = _visible(hidden_text)
         for family, sev, pat in _structural():
             if chat and family == "system_prompt_line":
                 continue
-            for m in pat.finditer(hidden_text):
+            for m in pat.finditer(visible_hidden):
                 findings.append(Finding(family, _RAISE[sev], -1, m.group(0)[:80], "hidden", pat.pattern[:60]))
     sources: tuple[tuple[Location, str], ...] = (("body", body), ("hidden", hidden_text))
     for where, source in sources:
@@ -276,7 +289,8 @@ def scan(
 HEURISTIC_FAMILIES = frozenset({"flooding", "imperative_cluster", "long_html_comment", "shell_mention"})
 HEURISTIC_CAP = 3.0
 """The accumulation heuristics (a repeated sentence, an imperative paragraph, a long comment, a quoted shell
-command) describe tables, manuals, scripts and logs as often as attacks: together they reach medium at most."""
+command) and the bare-form hints ("you are now a", "from now on you") describe tables, manuals, scripts, logs
+and dialogue as often as attacks: together they reach medium at most."""
 
 
 def _score(findings: list[Finding]) -> InjectionReport:
@@ -288,7 +302,7 @@ def _score(findings: list[Finding]) -> InjectionReport:
             w *= 0.5
         elif f.location == "hidden":
             w *= 2
-        if f.family in HEURISTIC_FAMILIES:
+        if f.family in HEURISTIC_FAMILIES or f.hint:
             heuristic += w
         else:
             score += w
