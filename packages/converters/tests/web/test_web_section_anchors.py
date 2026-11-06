@@ -194,3 +194,27 @@ def test_an_empty_app_root_is_still_a_js_shell() -> None:
 
 def test_full_body_engine_does_not_measure_itself() -> None:
     assert str(WarningKind.EXTRACTION_DROPPED_TEXT) not in _kinds(_convert(PAGE, FullBodyConverter()))
+
+
+def _entry(n: int) -> str:
+    return f"Log entry {n}: station {n * 3 + 1} sighted {n + 7} tenders by bell number {n * 11 + 2} at the point."
+
+
+def test_list_items_inside_wrappers_are_list_items() -> None:
+    items = "".join(f"<div><div><li>{_entry(n)}</li></div></div>" for n in range(4))
+    nested = f"<ul><div><li>{_entry(4)}<ul><div><li>{_entry(5)}</li></div></ul></li></div></ul>"
+    doc = _convert(
+        f"<html><body><main><h1>M</h1><p>{PROSE}</p><ul>{items}</ul>{nested}</main></body></html>", RulesConverter()
+    )
+    text = doc.plain_text()
+    assert all(_entry(n) in text for n in range(6))
+
+
+def test_text_trafilatura_leaves_out_comes_back_from_the_rule_extractor() -> None:
+    items = "".join(f"<div><li>{_entry(n)}</li></div>" for n in range(30))
+    html = f"""<html><head><title>Manual</title></head><body><main><h1>Manual</h1><p>{PROSE}</p><p>{TENDER}</p>
+    <ul>{items}</ul></main></body></html>"""
+    doc = _convert(html, TrafilaturaConverter())
+    text = doc.plain_text()
+    assert "wick" in text and all(_entry(n) in text for n in range(30))
+    assert str(WarningKind.EXTRACTION_DROPPED_TEXT) not in _kinds(doc)

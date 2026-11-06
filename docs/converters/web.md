@@ -70,6 +70,23 @@ tag characters are stripped from text nodes.
   `injection_suspected` with `detail.location = "hidden"`. Visible text that looks like an injection stays
   verbatim in the body and is flagged by the renderer's scanner as usual.
 
+## Collapsed panels
+
+An accordion answer is hidden in the saved HTML but a reader opens it with one click, so it is content. Text with no
+way in stays removed. A panel is kept only when all of these hold:
+
+- a control points at it: `aria-controls` on the control, `aria-labelledby` on the panel, or the control is the
+  element right before it (and names no other panel);
+- the control says `aria-expanded="false"`, is a `<button>`, `<a>` or `role="button"`, has a label, and neither it nor
+  an ancestor is hidden;
+- the panel is shut by the `hidden` attribute, `display:none` or a page rule, and by nothing else: `aria-hidden`,
+  hidden classes, opacity, zero size, off-screen positioning and same-color text stay removed;
+- under half its text is links (a dropdown menu is not a panel), and the injection scanner rates it below medium.
+
+Hidden elements inside a kept panel are removed as usual. The control's label stays as plain text, in place in a
+heading. Kept panel text is also added to the hidden text, so the scanner scores it as it did when it was removed.
+`extra.collapsed_panels` counts the panels. Tabs (`aria-selected`) are not panels and stay removed.
+
 ## Section anchors
 
 Class and id patterns tell a widget from content, but sites generate ids from headings, so
@@ -86,7 +103,7 @@ ids; Trafilatura gets a copy of the tree without them. Classes still count, and 
 |---|---|
 | `removed_hidden_elements` | hidden elements or invisible characters were removed (info) |
 | `injection_suspected` | the removed hidden text matches injection patterns |
-| `engine_fallback` | Trafilatura under-extracted and the rule extractor was used |
+| `engine_fallback` | Trafilatura under-extracted, or left out 5 percent of the page text that the rule extractor keeps at least half of (`detail.dropped_chars`, `detail.rules_dropped_chars`), and the rule extractor was used |
 | `readability_fallback_full_body` | no article was found, the full body was converted (always on `web.html_raw`) |
 | `extraction_dropped_text` | a headed section lost at least 200 characters and over half its text, or at least 200 characters and 5 percent of the page are gone; the page here is the body with only structural boilerplate removed (what `web.html_raw` keeps), blocks are matched by word shingles, and blocks that are mostly links or under five words are not counted. `detail` has `page_chars`, `dropped_chars` and `sections` (up to 12 headings). Not raised on `web.html_raw` or after the full-body fallback |
 | `paywall_detected` | JSON-LD `isAccessibleForFree: false`, paywall selectors, or wall phrasing, and under 600 extracted characters; short subscribe/sign-in prompts inside paywall-marked elements are removed from the body (`detail.wall_prompts_removed`) |

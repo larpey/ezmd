@@ -200,7 +200,7 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 |---|---|---|---|
 
 ## Known limitations (running list)
-- Web: `extraction_dropped_text` reports what the section-anchor fix (D-0077) does not cover. I have not fixed the rest yet: `<ul><div><li>` list items Trafilatura skips, ids with a prefix before the slug, text inside custom elements. Stylesheet hiding still reads rules inside `@media` as unconditional and ignores later overrides.
+- Web: `extraction_dropped_text` reports what the section-anchor fix (D-0077) does not cover. I have not fixed the rest yet: ids with a prefix before the slug, tab panels, carousel items marked `aria-hidden`. Stylesheet hiding still reads rules inside `@media` as unconditional and ignores later overrides.
 - EDGAR: no XBRL statement tables yet; accession-only lookups assume the filer prefix is the CIK; CLI `--form`/`--year` deferred (library treats a bare ticker as a path).
 - shadow-run: `--timeout` relies on converters checking their deadline.
 - Web UI: no upload path for files over 8 MB yet; capabilities lack instance name, sponsor, docx export flag, and queue position.

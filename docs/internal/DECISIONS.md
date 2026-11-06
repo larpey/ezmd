@@ -825,3 +825,32 @@ element's id alone; it now needs the root to hold under SHELL_TEXT_CHARS, as doc
 Consequences: a warning, not a rewrite, for what the anchor rule does not cover. Other losses the warning surfaces
 stay as they are: list items inside a `<div>` inside a `<ul>`, which Trafilatura skips; ids with a prefix before the
 slug; text in custom elements.
+
+## D-0078: A collapsed panel is content when a reader has a way in
+
+Date: 2026-11-06. Status: proposed.
+
+Context: a saved page lost the answers of its FAQ, and the questions too. `pre_clean` removed `<div hidden>` as
+`hidden_attribute`, and `strip_boilerplate` removed the `<button>` holding the question. The hygiene rule is right for
+injected text and wrong for an accordion, which a reader opens. In a survey of 306 saved pages, hidden elements of 100
+characters or more that a control pointed at were hidden by the `hidden` attribute or a page rule. Those under
+`aria-hidden` or hidden classes were modals and menus, and elements with no control were chrome.
+
+Decision: the line is whether the page gives a reader a way in. `hygiene._Disclosure` keeps a panel when a visible,
+labelled, interactive element says `aria-expanded="false"` for it, it is shut only by `hidden`, `display:none` or a page
+rule, it is not mostly links, and `ezmd.render.injection.scan` rates it below medium. Otherwise it is removed exactly as
+before. Kept text still enters `hidden_text`, so the scanner keeps its raised severity on it, and the page says how
+many panels it kept (`extra.collapsed_panels`). The control becomes plain text so the question survives.
+
+Measuring the rest found two more causes. Items wrapped in a `<div>` inside `<ul>` were skipped by `_list`, and
+Trafilatura's article could lose over 5 percent of a long page, far above the 25 percent floor of the fallback. The
+extractor chain now compares both engines against the body when `extraction_dropped_text` would fire, and uses the rule
+extractor when it loses at most half as much. Only pages that would warn can change, so ordinary articles do not.
+
+Alternatives rejected: keeping every `hidden` element (that is the injection channel); requiring `aria-controls` (the
+reported page has a bare `aria-expanded` button before the panel); treating `hidden md:table` as visible (those tables
+have a `md:hidden` twin, so the text is already there and would print twice).
+
+Consequences: an attacker can add a control, so panel text is scanned before it is kept, and whatever the scanner rates
+below medium reaches the body, where the body scan sees it too. More text in the body lets the capped
+`imperative_cluster` heuristic reach medium on a few instruction-heavy pages (5 of 306).

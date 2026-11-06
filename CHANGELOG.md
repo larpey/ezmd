@@ -86,6 +86,16 @@ All notable changes are generated from Conventional Commits. This project uses s
 - A short server-rendered page is no longer called a JavaScript shell. Any `#root`, `#app` or `#__next` element
   counted as an empty app root, so a page with under 300 extracted characters got `empty_body_js_required` and
   exit code 3 although its text was in the output. The root must now hold under 300 characters itself.
+- Collapsed accordion and FAQ panels are kept. The hygiene pass removed any element with the `hidden` attribute,
+  `display:none` or a hiding page rule, so a page's answers disappeared while their questions, which sit in a
+  `<button>`, went with the boilerplate. A panel now counts as content when a visible, labelled, interactive
+  control says `aria-expanded="false"` for it, nothing else hides it, it is not a menu of links, and the injection
+  scanner finds nothing in it; the question stays as plain text, `extra.collapsed_panels` counts the panels, and the
+  text still goes to the scanner as hidden text (D-0078).
+- List items wrapped in `<div>`s or custom elements inside a `<ul>` are converted; the rule extractor dropped them.
+- `web.trafilatura` hands over to the rule extractor when it leaves out 5 percent of the page text and the rule
+  extractor loses at most half as much (`engine_fallback` with `detail.dropped_chars`). Across 306 saved pages this
+  took `extraction_dropped_text` from 54 pages to 20 (D-0078).
 - New warning `extraction_dropped_text`: when an extractor leaves out a headed section or 5 percent of the text
   the page body holds, the warning gives the characters lost and names the sections. It compares against the body
   with only structural boilerplate removed, so a loss from class and id rules cannot hide on both sides of the

@@ -7,6 +7,11 @@ declared background or transparent), elements whose class or id is a hidden patt
 rule in the page's own `<style>`, and 1 px tracking images. Zero-width, bidi-control, and tag characters are
 stripped from text nodes. Visible text is never rewritten. Removed text is kept (capped) so the injection
 scanner can score it and the sidecar shows it.
+
+A collapsed panel is not hidden text: a reader opens it with a visible control. `_Disclosure` keeps a panel only
+when an interactive, labelled, visible element says `aria-expanded="false"` for it, it is hidden by nothing but
+the `hidden` attribute, `display:none` or a page rule, it is not a menu of links, and the injection scanner finds
+nothing in it. Its text is still added to the hidden text, so the scanner treats it as it always did.
 """
 
 from __future__ import annotations
@@ -19,6 +24,7 @@ from dataclasses import dataclass, field
 from lxml import etree  # type: ignore[import-untyped]
 
 from ezmd.core.textclean import CleanStats, clean_text
+from ezmd.render.injection import scan
 from ezmd_converters.web.dom import HtmlElement, collapse, is_element, tag_of
 
 _TAG_RUN = re.compile("[" + chr(0xE0000) + "-" + chr(0xE007F) + "]+")
@@ -41,6 +47,12 @@ _OFFSCREEN = re.compile(
 )
 _CLIP = re.compile(r"clip\s*:\s*rect\(\s*0(px)?[\s,]+0(px)?[\s,]+0(px)?[\s,]+0(px)?\s*\)|clip-path\s*:\s*inset\(\s*50%")
 _WHITE = {"white", "#fff", "#ffffff", "rgb(255,255,255)", "rgba(255,255,255,1)", "hsl(0,0%,100%)"}
+_COLLAPSIBLE = frozenset({"hidden_attribute", "display_none", "stylesheet_hidden"})
+"""How accordions shut a panel. `aria_hidden` and the hidden classes reached no panel in a survey of 306 saved pages
+and also mark modals and screen-reader text, so they stay removed."""
+_DISPLAY_NONE = re.compile(r"display\s*:\s*none\s*(!\s*important)?\s*;?", re.I)
+MAX_PANEL_LINK_SHARE = 0.5
+_HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 _SILENT_TAGS = ("script", "style", "link", "object", "embed", "svg", "canvas", "video", "audio", "track")
 
 
@@ -49,6 +61,7 @@ class HygieneReport:
     by_type: Counter[str] = field(default_factory=Counter)
     hidden_text: list[str] = field(default_factory=list)
     chars: CleanStats = field(default_factory=CleanStats)
+    collapsed: int = 0
     _kept_bytes: int = 0
 
     @property
@@ -207,10 +220,93 @@ def _drop_math_preview(script: HtmlElement) -> None:
     _remove(prev)
 
 
+class _Disclosure:
+    """Decides which removed elements are collapsed panels (module docstring)."""
+
+    def __init__(self, root: HtmlElement, css_classes: set[str], css_ids: set[str]) -> None:
+        self.css_classes = css_classes
+        self.css_ids = css_ids
+        self.by_panel: dict[str, HtmlElement] = {}
+        self.by_id: dict[str, HtmlElement] = {}
+        self.opened: set[HtmlElement] = set()
+        for el in root.iter():
+            if is_element(el) and el.get("aria-expanded") == "false":
+                if el.get("id"):
+                    self.by_id[str(el.get("id"))] = el
+                for panel in (el.get("aria-controls") or "").split():
+                    self.by_panel[panel] = el
+
+    def _control(self, panel: HtmlElement) -> HtmlElement | None:
+        found = self.by_panel.get(panel.get("id") or "")
+        if found is not None:
+            return found
+        for label in (panel.get("aria-labelledby") or "").split():
+            if label in self.by_id:
+                return self.by_id[label]
+        prev = panel.getprevious()
+        if prev is None or not is_element(prev) or prev.get("aria-expanded") != "false":
+            return None
+        return None if prev.get("aria-controls") else prev
+
+    def _usable(self, control: HtmlElement) -> bool:
+        if control in self.opened:
+            return True
+        interactive = tag_of(control) in ("button", "a") or control.get("role") == "button"
+        label = collapse(control.text_content() or "") or (control.get("aria-label") or "").strip()
+        if not interactive or not label:
+            return False
+        node = control
+        while node is not None and is_element(node):
+            if _attr_reason(node, self.css_classes, self.css_ids) is not None:
+                return False
+            node = node.getparent()
+        return True
+
+    def opens(self, panel: HtmlElement, reason: str) -> bool:
+        """True when `panel`, removed for `reason`, is a collapsed panel. Leaves it unmarked if so."""
+        if reason not in _COLLAPSIBLE:
+            return False
+        control = self._control(panel)
+        if control is None or not self._usable(control):
+            return False
+        text = collapse(panel.text_content() or "")
+        links = sum(len(collapse(a.text_content() or "")) for a in panel.iter("a"))
+        if links >= MAX_PANEL_LINK_SHARE * len(text) or scan(text, {}).warning or not _unmark(panel):
+            return False
+        self._keep_label(control)
+        return True
+
+    def _keep_label(self, control: HtmlElement) -> None:
+        """A panel's question is its control's label, and `<button>` is boilerplate: make it plain text."""
+        if control not in self.opened:
+            self.opened.add(control)
+            parent = control.getparent()
+            in_heading = parent is not None and is_element(parent) and tag_of(parent) in _HEADINGS
+            control.tag = "span" if in_heading else "p"
+            control.attrib.clear()
+
+
+def _unmark(panel: HtmlElement) -> bool:
+    """Take the collapsed state off `panel`. False when something else hides it too (the caller then removes it).
+    Class and id go with it: page rules no longer apply, and neither extractor should read a panel's styling class
+    (`footer-gray`) as chrome."""
+    panel.attrib.pop("hidden", None)
+    style = _DISPLAY_NONE.sub("", panel.get("style") or "").strip()
+    panel.attrib.pop("style", None)
+    if style:
+        panel.set("style", style)
+    if _attr_reason(panel, set(), set()) is not None:
+        return False
+    panel.attrib.pop("class", None)
+    panel.attrib.pop("id", None)
+    return True
+
+
 def pre_clean(root: HtmlElement) -> HygieneReport:
     """Strip hidden and non-content nodes in place. Returns what was removed."""
     report = HygieneReport()
     css_classes, css_ids = stylesheet_hidden_selectors(root)
+    disclosure = _Disclosure(root, css_classes, css_ids)
     capture_math_scripts(root)
     for c in list(root.iter(etree.Comment)):
         report.record("html_comment", c.text or "")
@@ -243,6 +339,11 @@ def pre_clean(root: HtmlElement) -> HygieneReport:
                 text = child.text_content() or ""
                 if reason == "tracking_pixel":
                     text = child.get("alt") or ""
+                if disclosure.opens(child, reason):
+                    report.collapsed += 1
+                    report.keep(collapse(text))
+                    stack.append(child)
+                    continue
                 if not (reason == "aria_hidden" and _math_rendering(child)):
                     report.record(reason, text)
                 _remove(child)
