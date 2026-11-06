@@ -33,6 +33,8 @@ _HIDDEN_TOKENS = frozenset(
 )  # fmt: skip
 _VIDEO_HOSTS = re.compile(r"^https?://(www\.)?(youtube\.com|youtube-nocookie\.com|youtu\.be|player\.vimeo\.com)/", re.I)
 _CSS_RULE = re.compile(r"([^{}]+)\{([^{}]*)\}")
+_VISIBILITY_HIDDEN = re.compile(r"(?<![\w-])(?:content-)?visibility:(hidden|collapse)")
+"""The visibility property, and not `backface-visibility`, which leaves a face-on element in plain sight."""
 _SIMPLE_SELECTOR = re.compile(r"^[.#][A-Za-z0-9_-]+$")
 _OFFSCREEN = re.compile(
     r"(?:^|;)\s*(?:left|top|right|text-indent|margin-left|margin-top)\s*:\s*-\s*(\d+(?:\.\d+)?)(px|em|rem)?"
@@ -108,7 +110,7 @@ def _style_reason(el: HtmlElement) -> str | None:
         return None
     if "display:none" in st:
         return "display_none"
-    if re.search(r"visibility:(hidden|collapse)", st):
+    if _VISIBILITY_HIDDEN.search(st):
         return "visibility_hidden"
     if re.search(r"(?:^|;)opacity:0(\.0+)?(;|$)", st):
         return "opacity_zero"
@@ -144,7 +146,7 @@ def stylesheet_hidden_selectors(root: HtmlElement) -> tuple[set[str], set[str]]:
         css = re.sub(r"/\*.*?\*/", "", st.text or "", flags=re.S)
         for sel, body in _CSS_RULE.findall(css):
             b = re.sub(r"\s+", "", body.lower())
-            if "display:none" not in b and not re.search(r"visibility:hidden", b):
+            if "display:none" not in b and not _VISIBILITY_HIDDEN.search(b):
                 continue
             for s in sel.split(","):
                 s = s.strip()

@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-10-27
+Last updated: 2026-11-06
 Current phase: 1 closed (G1 passed); Phase 2 not started; I set its design direction once the coverage work below has a shape
 Current task: benchmark loop P4-B03 (pulled forward, D-0060): whole-paper QA with questions drawn from the whole text layer, figure lettering emitted as tables, token gap against Docling
 Overall: 33 / 85 tasks done
@@ -200,6 +200,7 @@ public API (P1-T08); docx/zip export formats (501 today); in-browser Whisper, sh
 |---|---|---|---|
 
 ## Known limitations (running list)
+- Web: `extraction_dropped_text` reports what the section-anchor fix (D-0077) does not cover. I have not fixed the rest yet: `<ul><div><li>` list items Trafilatura skips, ids with a prefix before the slug, text inside custom elements. Stylesheet hiding still reads rules inside `@media` as unconditional and ignores later overrides.
 - EDGAR: no XBRL statement tables yet; accession-only lookups assume the filer prefix is the CIK; CLI `--form`/`--year` deferred (library treats a bare ticker as a path).
 - shadow-run: `--timeout` relies on converters checking their deadline.
 - Web UI: no upload path for files over 8 MB yet; capabilities lack instance name, sponsor, docx export flag, and queue position.

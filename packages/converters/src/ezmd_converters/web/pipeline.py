@@ -28,8 +28,8 @@ from ezmd.ir import (
     spans_text,
 )
 from ezmd.registry import ConvertOptions
+from ezmd_converters.web import coverage, signals
 from ezmd_converters.web import meta as page_meta
-from ezmd_converters.web import signals
 from ezmd_converters.web.boilerplate import main_content, strip_boilerplate
 from ezmd_converters.web.build import Builder
 from ezmd_converters.web.dom import base_url, body_of, decode_html, parse_html, same_origin, truncate_on_tag
@@ -266,6 +266,11 @@ def build_document(ref: InputRef, options: ConvertOptions, engine: Engine, conv_
         metadata.extra["canonical_cross_origin"] = True
     doc.warnings.extend(notes)
     doc.warnings.extend(page_warnings(page, b, extracted, metadata))
+    if not any(w.kind == WarningKind.READABILITY_FALLBACK_FULL_BODY for w in notes):
+        options.ctx.check_deadline()
+        loss = coverage.dropped_text(page.body, doc.plain_text())
+        if loss is not None:
+            doc.warnings.append(loss)
     if not doc.blocks:
         doc.blocks.append(_stub(doc, page.source))
     options.ctx.progress("done", 1.0, "converted")

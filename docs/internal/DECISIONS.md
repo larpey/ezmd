@@ -791,3 +791,37 @@ Consequences: `test_injection_false_positives.py` carries the twenty-one Gutenbe
 government sentences and the three XML fragments as negatives, and twenty-two more attacks as positives, among them the
 DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
 runs with the new patterns is the measure; the numbers are in the PR that made this change.
+
+## D-0077: An id named after its heading is an anchor; extraction loss is measured against the body
+
+Date: 2026-11-06. Status: proposed.
+
+Context: a long saved page lost a whole section under `web.trafilatura` and `web.rules` and kept it under
+`web.html_raw`, with only `removed_hidden_elements` on the result. The section was
+`<section id="how-we-share-...">`: `-share-` matches `_BOILER_CLASS` in `strip_boilerplate`, and `share` matches
+Trafilatura's OVERALL_DISCARD_XPATH (`contains(@id, ...)`), so both engines removed it independently. Trafilatura's
+own output kept only the table-of-contents line. Neither check saw it: the 25 percent fallback is far from
+triggering, and `clean_chars` is measured after `strip_boilerplate`, so the section was gone from both sides of the
+ratio. `_COOKIE` applies even to the non-aggressive pass, so `id="cookies-and-..."` was lost on `web.html_raw` too.
+
+Decision: `boilerplate.section_anchors` finds elements whose id is a run of the words of their opening heading, are
+not mostly links, and sit among siblings of which at least three have ids free of the vocabulary and outnumber the
+rest. `strip_boilerplate` ignores those ids (classes still count) and `run_trafilatura` deletes them on its private
+copy of the tree. `web/coverage.py` adds `extraction_dropped_text` (warning): each leaf block of the body, with only
+structural boilerplate removed, is looked up in the extracted text by five-word shingles; a headed section that lost
+200 characters and over half its text, or a page that lost 200 characters and 5 percent, raises it with the amounts
+and the headings.
+
+Alternatives rejected: dropping id matches altogether (`id="comments"` and `id="related-posts"` are how widgets are
+marked); requiring only that an id match its heading (`<div id="related-posts"><h3>Related posts</h3>` matches, and
+blogs stack those beside `#comments`); passing `favor_recall` to Trafilatura (changes article output and does not
+touch the xpath); recovering dropped sections into the output (the same measure sees author bios and upgrade notices,
+which extraction removes on purpose, so it reports and leaves the choice to the reader).
+
+Two more false removals from the same corpus are fixed with this decision. `visibility:hidden` matched inside
+`backface-visibility:hidden`, which hid the main wrapper of 37 of 45 pages that exited 3. `spa_root` was set by a root
+element's id alone; it now needs the root to hold under SHELL_TEXT_CHARS, as docs/converters/web.md already said.
+
+Consequences: a warning, not a rewrite, for what the anchor rule does not cover. Other losses the warning surfaces
+stay as they are: list items inside a `<div>` inside a `<ul>`, which Trafilatura skips; ids with a prefix before the
+slug; text in custom elements.
