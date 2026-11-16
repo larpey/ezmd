@@ -823,3 +823,25 @@ Consequences: `test_pdf_slides.py` covers the bullet attached on its own baselin
 bullet left alone, a slide at 24 pt, a slide with a subtitle (three sizes, so the bullet rule decides), and a
 long bold run. No fixture golden changed. Not addressed: numbered agreement paragraphs ("1. The Services. The
 Services enable you ...") that are set in a heading size; they are left for a change with its own evidence.
+
+## D-0088: A bullet reaches its text across a tab stop
+
+Date: 2026-11-16. Status: accepted.
+
+Context: after D-0085 the held-out Govdocs1 run still had 132 PDF outputs with lone bullet paragraphs (2,544
+bullets). In 107 of them the bullet sat 2 to 3.7 em left of its text: word processors put the bullet at the list
+indent and tab the text to a hanging indent on the same baseline, up to half an inch away, past the 2 em
+`attach_bullets` allowed. The rest are not lists: dot marks in table cells, chart data points, a large dot after a
+line, OCR noise beside junk glyphs, and Symbol-font private-use pieces.
+
+Decision: `BULLET_REACH_EM` goes from 2 to 4.5 em, which covers a half-inch tab at 8 pt text. Every other
+condition of the merge stays (one-glyph line, vertical extent inside the text's, nearest line to the right that is
+not itself a bullet).
+
+Alternatives rejected: a fixed 36 pt reach (mixes units; small text would reach too far in ems); no limit (dot
+tables and chart markers would be merged into whatever text follows them on the line).
+
+Consequences: `test_pdf_hanging_bullets.py` (three tab-stop shapes that fail at 2 em, and a dot about 7.4 em away
+left alone). On the 132 files, lone-bullet outputs fall to 58 and total words move by 30 of 3.68 million, all from
+item text that had also been a heading and a Contents entry.
+
