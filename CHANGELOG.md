@@ -74,6 +74,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Text no longer prints twice under long headings or repeated titles. A source heading over 200 characters (a
+  numbered paragraph set in a heading style) was cut with `...` and then printed in full below; it is now a
+  paragraph, printed once. A first paragraph that is the title again is dropped like the title paragraph.
 - Headings keep the section numbers a document prints. The full profile replaced them with outline positions,
   so an agreement's "31.1 Your liability" could come out as "4.2 Your liability", and letter or roman sections
   were numbered twice ("1.2 A. General terms"). When most of a document's headings carry their own label (`31.1`,

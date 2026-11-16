@@ -166,6 +166,8 @@ def _figure_units(ctx: RenderContext, fig: Figure, children: list[Block]) -> lis
 
 
 def _heading_units(ctx: RenderContext, b: Heading) -> list[Unit]:
+    if b.id in ctx.demoted:
+        return [Unit(text=ctx.demoted[b.id], kind="prose", block_ids=[b.id], page=b.provenance.source_page)]
     info = ctx.headings[b.id]
     ctx.current_heading = info
     label = b.provenance.source_label
