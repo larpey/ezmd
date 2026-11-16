@@ -791,3 +791,40 @@ Consequences: `test_injection_false_positives.py` carries the twenty-one Gutenbe
 government sentences and the three XML fragments as negatives, and twenty-two more attacks as positives, among them the
 DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
 runs with the new patterns is the measure; the numbers are in the PR that made this change.
+
+## D-0084: Column gutters per page region, and paragraphs joined across a column or page boundary
+
+Date: 2026-11-15. Status: accepted.
+
+Context: On the agreements and privacy notices from my study set (68 born-digital PDFs), the text-layer engine
+left 1,245 mid-sentence breaks: a paragraph ending in a lowercase letter or comma followed by one that starts in
+lowercase. Three causes. The column gutter was searched over the whole page and rejected when more than a fifth
+of the lines crossed it, so a callout set beside one paragraph of full-width body text never counted as a column
+and its lines interleaved with the paragraph beside it. The assembler flushed every paragraph at the end of a
+page, so a sentence running over a page break became two paragraphs; this was most of the breaks. And a sentence
+running from the foot of one column to the top of the next failed the vertical-gap test, because the next line
+sits above the previous one.
+
+Decision: When no page-wide gutter holds, I look for one that holds in part of the page: the x position in the
+middle half that puts the most lines into bands (runs of lines between lines that cross it) with three or more
+lines on each side, each side dense (median gap under 0.8 em), the sides overlapping vertically, the band framed
+by lines that span the whole gap, and the sides' blocks not starting level row after row. Only those bands read
+left side then right; the rest of the page keeps top-to-bottom order. Across a column boundary (the next line is
+above the previous one and starts right of where it ends) or a page boundary (the first line of the next page),
+a paragraph continues when its last line ends in a lowercase letter, a comma or a broken word, fills at least 70%
+of its column, and the next line starts in lowercase in the same size, weight and direction. A paragraph taken
+over a page stays where it was, before the next page marker (as a table continued over a page does), keeps the
+first page's provenance, and lists its pages in `attrs.pdf_paragraph_pages`.
+
+Alternatives rejected: lowering the page-wide crossing threshold (single-column pages with a few short lines
+would find gutters that are not there); a full XY-cut of every page (a large change to the order of pages that
+read correctly now); joining across boundaries on lowercase alone (a label or heading at the foot of a page ends
+in a lowercase letter too, hence the fill test); reading every two-sided band column by column (the question and
+answer cells of a privacy "facts" form then read all questions, then all answers, hence the row test).
+
+Consequences: Mid-sentence breaks on the study set fall from 1,245 to 924, with no document worse and no words
+or letters lost (688,328 words before, 688,329 after). No fixture golden changed. Most of what remains is outside
+this change: list markers set on a line of their own ("ii." apart from its text), a bold sentence inside a regular
+paragraph (the weight test splits it), labels set in the left margin beside body text, and table cells the table
+heuristic misses. Tests: `test_order_items_reads_a_sidebar_between_full_width_text_column_by_column`, and the
+page and column joins in `test_pdf_paragraphs.py`.
