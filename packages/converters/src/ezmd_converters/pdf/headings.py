@@ -34,11 +34,10 @@ long and at least half the title."""
 OUTLINE_MIN_MATCHES = 3
 """The outline drives headings when at least this many of its titles (or all of them, if fewer) are found."""
 PROSE_RUN = 3
-SLIDE_BODY_SIZES = 2
-"""A page whose text above the body size comes in exactly this many sizes, the larger one a single line and
-the smaller most of the page, is a
-slide: the smaller of the two is the slide's body text."""
 """This many consecutive heading-sized, non-bold, tightly spaced lines are a paragraph, not a heading."""
+SLIDE_BODY_SIZES = 2
+"""A page whose text above the body size comes in exactly this many sizes, the larger one a single line and the
+smaller most of the page, is a slide: the smaller of the two is the slide's body text."""
 NUMBERED_MAX_WORDS = 12
 """A bold body-size line with a section number is a heading only when its title is at most this many words,
 starts with a capital, and does not end like a sentence."""
