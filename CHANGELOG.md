@@ -74,6 +74,8 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- PDF list bullets set a tab stop before their text (word processors' hanging indent) attach to the item instead
+  of standing alone as a paragraph; on held-out government PDFs, files with lone bullets fall from 132 to 58.
 - Slide-deck PDFs: a small bullet drawn on its own baseline beside larger text is attached to that text as its
   list marker, so a wrapped item is no longer split by a lone bullet paragraph and the page no longer warns of
   an uncertain reading order (#28).

@@ -373,8 +373,10 @@ BULLET_GLYPHS = "".join(
     chr(c) for c in (0x2022, 0x25E6, 0x25AA, 0x2023, 0x2219, 0x00B7, 0x25CF, 0x25A0, 0x2013, 0x2043)
 )
 """Glyphs that open a list item when they start a line."""
-BULLET_REACH_EM = 2.0
-"""A bullet sits at most this many ems (of the text beside it) left of the text."""
+BULLET_REACH_EM = 4.5
+"""A bullet sits at most this many ems (of the text beside it) left of the text. A slide puts its text about an
+em past the bullet; a word processor tabs it to the hanging indent, up to half an inch on (3.6 em at 10 pt,
+4.5 em at 8 pt). Further away, the dot is a chart marker or a table cell of its own."""
 
 
 def attach_bullets(lines: list[Line], order_base: int) -> list[Line]:
