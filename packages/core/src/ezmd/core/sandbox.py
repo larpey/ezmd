@@ -9,7 +9,9 @@ tesseract, ...) goes through `run()`:
 - a wall-clock timeout kills the process tree.
 - on POSIX, resource limits (address space, CPU, file size, process count) are applied in the child.
 - when `bwrap` (bubblewrap) is on PATH and the platform is Linux, the command runs inside it with a
-  read-only /usr, a private /tmp, all namespaces unshared, and only the working directory bound.
+  read-only /usr, a private /tmp, all namespaces unshared, and only the working directory bound (plus,
+  read-only, the install prefix of a tool that lives outside the system directories). When bwrap itself
+  cannot start the tool, `SandboxError` carries its message instead of a tool exit code.
 - ffmpeg/ffprobe invocations get `-nostdin -protocol_whitelist file,pipe` injected.
 """
 
@@ -137,11 +139,44 @@ def bwrap_available() -> bool:
     return _bwrap_ok
 
 
+_SYSTEM_RO = ("/usr", "/bin", "/lib", "/lib64", "/sbin", "/etc")
+_PREFIX_DIR_NAMES = frozenset({"bin", "sbin", "program", "libexec"})
+
+
+def _under(path: Path, roots: Sequence[str]) -> bool:
+    return any(path == Path(r) or Path(r) in path.parents for r in roots)
+
+
+def tool_binds(exe: str) -> list[Path]:
+    """Read-only binds a tool installed outside the system directories needs inside bwrap: its install
+    prefix (the parent of its bin/ or program/ directory), for the executable as named, at every symlink
+    hop as written, and fully resolved (a venv's python points at an interpreter elsewhere, through a
+    symlinked directory under uv). Without them bwrap cannot exec
+    a tool under /opt, a venv or ~/.local and exits 1. A prefix that would be / or $HOME binds only the
+    executable's own directory."""
+    home = Path.home()
+    hops = [Path(exe).absolute()]
+    while hops[-1].is_symlink() and len(hops) < 40:  # each hop as written: uv links through a symlinked dir
+        hops.append(hops[-1].parent / os.readlink(hops[-1]))
+    hops.append(Path(exe).resolve())
+    out: list[Path] = []
+    for p in dict.fromkeys(hops):
+        if _under(p, _SYSTEM_RO):
+            continue
+        d = p.parent
+        root = d.parent if d.name.lower() in _PREFIX_DIR_NAMES else d
+        if root in (Path(root.anchor), home):
+            root = d
+        if root not in out and not any(o in root.parents for o in out):
+            out.append(root)
+    return out
+
+
 def _bwrap_prefix(cwd: Path | None, extra_ro: Sequence[Path]) -> list[str]:
     bw = shutil.which("bwrap")
     assert bw is not None
     argv = [bw, "--ro-bind", "/usr", "/usr", "--tmpfs", "/tmp", "--proc", "/proc", "--dev", "/dev"]  # noqa: S108
-    for d in ("/bin", "/lib", "/lib64", "/sbin", "/etc"):
+    for d in _SYSTEM_RO[1:]:
         if Path(d).exists():
             argv += ["--ro-bind", d, d]
     for p in extra_ro:
@@ -225,7 +260,7 @@ def run(
     if use_bwrap is None:
         use_bwrap = bwrap_available()
     if use_bwrap:
-        full = [*_bwrap_prefix(cwd_path, ro_binds), *full]
+        full = [*_bwrap_prefix(cwd_path, list(dict.fromkeys([*tool_binds(exe), *ro_binds]))), *full]
         wrapped_with = "bwrap"
     posix = os.name == "posix"
     lim = limits or Limits()
@@ -276,6 +311,10 @@ def run(
     )
     if timed_out:
         raise SandboxTimeout(Path(argv[0]).name, timeout, result)
+    if wrapped_with == "bwrap" and result.returncode != 0 and result.stderr.startswith(b"bwrap: "):
+        # bubblewrap itself failed (a bind or the exec), so the tool never ran: its exit code is not the tool's
+        reason = result.stderr.splitlines()[0].decode("utf-8", "replace")
+        raise SandboxError(f"{Path(argv[0]).name} could not start in the sandbox: {reason}")
     return result
 
 

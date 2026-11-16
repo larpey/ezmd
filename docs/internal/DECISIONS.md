@@ -791,3 +791,31 @@ Consequences: `test_injection_false_positives.py` carries the twenty-one Gutenbe
 government sentences and the three XML fragments as negatives, and twenty-two more attacks as positives, among them the
 DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
 runs with the new patterns is the measure; the numbers are in the PR that made this change.
+
+## D-0079: The sandbox binds a tool's install prefix read-only
+
+Date: 2026-11-15. Status: accepted.
+
+Context: the nightly went red on 2026-11-03 when GitHub's `ubuntu-latest` became Ubuntu 26.04 with Python 3.14.
+On 24.04 runners bubblewrap could not create its namespaces, so `bwrap_available()` was false and every command
+ran unwrapped. On 26.04 the probe passes, and every sandbox test that runs the venv's python failed: the bwrap
+prefix binds only /usr, /etc, /bin, /lib, /lib64 and /sbin, so `execvp` found no interpreter, bwrap exited 1, and
+`run()` returned that as the tool's exit code with empty output. The same happens on any Linux desktop where
+bwrap works, to LibreOffice installed from its own packages under /opt and to any tool in a venv or ~/.local.
+
+Decision: when bwrap wraps a command, `tool_binds()` adds read-only binds for the executable's install prefix
+(the parent of its bin/, sbin/, program/ or libexec/ directory, else its own directory; never / or $HOME), for
+the path as named, at each symlink hop as written (uv links a venv's python through a symlinked directory) and
+fully resolved. A non-zero exit whose stderr starts with `bwrap: ` raises `SandboxError` naming bwrap's message,
+because the tool never ran.
+
+Alternatives rejected: binding the whole of /opt, /home or the venv's parent (exposes far more than the tool's
+own files); falling back to running unwrapped when the exec fails (a silent downgrade of isolation); probing with
+the real prefix so such hosts look bwrap-less (same downgrade, on the hosts where the sandbox works).
+
+Consequences: `test_sandbox.py` runs the venv interpreter under bwrap and checks a failed bind raises; checked
+on an Ubuntu 26.04 container as a non-root user with Python 3.14, where origin/main fails the same five tests as
+the nightly. The JSON extreme-nesting test accepts either outcome Python 3.14 produces (a clean error, or a parse
+on Linux's 8 MB stack followed by the existing depth clip with `depth_truncated`). opentelemetry-api moves to
+1.45.2 for CVE-2026-126360.
+
