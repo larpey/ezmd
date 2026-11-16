@@ -74,6 +74,15 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Web pages built with Adobe Experience Manager, and privacy pages with `ccpa`, `gdpr` or `consent` in their
+  class names, no longer lose most of their content to boilerplate removal. Any class or id holding one of those
+  words, or `cmp`, was taken for a cookie banner; `cmp-` prefixes every AEM component, so one bank's page lost 683 of
+  its 870 elements. Consent banners are now recognised by banner words and by the consent tools' own names.
+- Web pages keep the footnotes their text points at when the site puts them in a footer, an aside or a
+  complementary region: "Text alerts are free²" next to a footer line "2. Message and data rates may apply" now
+  gives a footnote 2 instead of losing it with the footer. Other prose of 40 words or more that boilerplate removal
+  takes from inside the article raises the new `boilerplate_prose_removed` warning with samples, so it is no longer
+  silent; the site's own footer, sidebars, dialogs, consent banners and link lists stay out without a warning.
 - `extraction_dropped_text` sees text that is not in a paragraph tag. The check counted only p, li, td, dd,
   blockquote and pre leaves, so a table drawn with divs (a privacy notice's facts table), a sentence in a span and
   a lost question heading were not page text, and losing them raised nothing. Leaf divs, sections and spans now

@@ -25,7 +25,14 @@ _BOILER_TAGS = ("nav", "aside", "form", "dialog", "button", "select", "input", "
 _BOILER_ROLES = frozenset(
     {"navigation", "banner", "contentinfo", "complementary", "search", "dialog", "alertdialog", "menu", "menubar"}
 )
-_COOKIE = re.compile(r"(^|[-_ ])(cookie|consent|gdpr|ccpa|cmp)([-_ ]|$)|cookie|consent-banner|onetrust|cookiebot", re.I)
+_COOKIE = re.compile(
+    r"cookie|(^|[-_ ])(consent|gdpr|ccpa|privacy)[-_]?(banner|bar|box|modal|popup|overlay|manager|prompt|notice-bar)"
+    r"([-_ ]|$)|onetrust|cookiebot|qc-cmp|didomi|usercentrics|truste-|osano|termly",
+    re.I,
+)
+"""Consent banners by name. Bare `consent`, `gdpr`, `ccpa` and `cmp` are not chrome: `cmp-` prefixes every Adobe
+Experience Manager component (`cmp-container`, `cmp-text`), and the others name what a privacy notice is about
+(`<section id="ccpa-rights">`, a biometric consent form). D-0082."""
 _BOILER_CLASS = re.compile(
     r"(^|[-_ ])(nav|navbar|navigation|menu|breadcrumbs?|sidebar|side-bar|widget|share|sharing|social|"
     r"related|recommended|read-next|more-stories|newsletter|subscribe-box|signup|promo|advert|ads?|ad-slot|"

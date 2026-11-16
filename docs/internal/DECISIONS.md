@@ -876,3 +876,50 @@ is a separate question about what those regions hold.
 Consequences: on the study set the warnings rise from 20 to 31 pages and unwarned own-text loss falls from 85 to
 75 pages. What remains sits in footers, asides, complementary regions, dialogs and app-store review lists.
 
+## D-0081: Notes the body points at survive chrome removal; other prose removed from the article warns
+
+Date: 2026-11-15. Status: accepted.
+
+Context: after D-0080 the pages of my privacy-notice study that still lost their own text with no warning lost it
+with the regions the structural pass removes (footer, aside, complementary, contentinfo): disclosure footers that
+the body points at with superscript numbers, and asides inside the article. My call on 2026-11-15: keep footnotes
+the body references wherever they sit; let other text in removed regions stay out but report long prose; leave
+dialogs, cookie banners and review lists out.
+
+Decision: `web/chrome.py` runs `strip_boilerplate(aggressive=False)` on an index-marked copy of the body to learn
+exactly which leaf blocks it removes. A removed block is a note when it opens with a marker (a leading `<sup>`,
+`2.`, `2)`, a superscript digit, `*`, a dagger) that the body outside removed regions also carries as a `<sup>` or a
+superscript character, and it is not inside a dialog, form or consent banner. Notes the extracted text does not
+already hold are appended as `Footnote` blocks (`attrs.source = page_chrome`), whatever engine ran. Removed blocks
+of at least 40 words inside `main`, `article` or `[role=main]` that are not notes, dialogs, forms, consent banners
+or link lists raise `boilerplate_prose_removed` with the count, the characters and the first five samples.
+
+Alternatives rejected: warning on any long prose in removed regions (it fired on 107 of the 388 study pages, almost
+all the site's own legal footer and promo cards, which repeat on every page and tell a reader nothing about this
+one); keeping whole footer regions (navigation and link lists come back with the notes); unnumbered disclosure
+footers kept as notes (nothing ties them to the page's text, and they are the same site-wide footer again).
+
+Consequences: `test_web_chrome.py`. Numbers on the study set are in the PR that made this change.
+
+## D-0082: Consent banners are recognised by name, not by the words a privacy page is about
+
+Date: 2026-11-15. Status: accepted.
+
+Context: the structural boilerplate pass removed any element whose class or id held the token `consent`, `gdpr`,
+`ccpa` or `cmp`. On a bank's page built with Adobe Experience Manager it removed 683 of 870 elements, because `cmp-`
+prefixes every AEM core component (`cmp-container`, `cmp-text`, `cmp-listpro`); the article survived only because
+Trafilatura reads the raw tree, and the rule extractor and the dropped-text check saw a page with most of its
+text gone. The other tokens name what a privacy notice is about: a `ccpa-rights` section, a GDPR notice, a
+biometric consent form.
+
+Decision: `_COOKIE` matches `cookie` anywhere, `consent`, `gdpr`, `ccpa` or `privacy` only when followed by a
+banner word (banner, bar, box, modal, popup, overlay, manager, prompt), and the consent tools by name (OneTrust,
+Cookiebot, Quantcast's `qc-cmp`, Didomi, Usercentrics, TrustArc, Osano, Termly).
+
+Alternatives rejected: keeping `cmp` but exempting `cmp-` followed by AEM component names (the list is open-ended
+and sites add their own); dropping the banner names entirely (cookie banners are the commonest chrome there is).
+
+Consequences: `test_web_consent_names.py` holds the AEM, CCPA, GDPR and consent-form cases that must stay and six
+banners that must go; against the old pattern the four keep cases fail, and two banners it missed (`qc-cmp2`,
+`privacy-banner`) were kept.
+

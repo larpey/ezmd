@@ -101,6 +101,19 @@ def _tally(body: HtmlElement, kept: set[int]) -> _Tally:
     return tally
 
 
+def shingles_of(text: str) -> set[int]:
+    return set(_shingles(words(text)))
+
+
+def holds(kept: set[int], text: str) -> bool:
+    """True when `kept` (shingles of extracted text) holds `text`. Text too short to shingle counts as held: it is
+    too short to tell, and too short to matter to the loss checks."""
+    tokens = words(text)
+    if len(tokens) < SHINGLE_WORDS:
+        return True
+    return _is_kept(tokens, kept)
+
+
 def dropped_text(body: HtmlElement, extracted: str) -> Warning | None:
     """An `extraction_dropped_text` warning when `extracted` lacks a headed section or a material share of `body`."""
     page = deepcopy(body)

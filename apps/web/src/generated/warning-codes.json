@@ -84,6 +84,11 @@
     "suggestion": "Rename the duplicate keys in the .bib file.",
     "aliases": []
   },
+  "boilerplate_prose_removed": {
+    "severity": "warning",
+    "suggestion": "Read the samples in the warning detail; convert with web.html_raw to keep the whole body.",
+    "aliases": []
+  },
   "boilerplate_removed_corpus": {
     "severity": "info",
     "suggestion": "Turn off corpus boilerplate removal in site options if you need that text.",
