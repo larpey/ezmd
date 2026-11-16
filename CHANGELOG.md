@@ -74,6 +74,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- PDF text layer: two-column text no longer interleaves, and sentences no longer split at a column or page end.
+  A gutter that holds in part of a page (a callout beside body text) now orders that band left column, then
+  right; a paragraph whose last line stops mid-sentence continues into the next column or page when it opens in
+  lowercase in the same size and weight, and a paragraph continued over a page lists its pages in
+  `attrs.pdf_paragraph_pages` (D-0084). On 68 agreements and privacy notices, mid-sentence breaks fall from
+  1,245 to 924 with no words lost.
 - The injection scanner no longer marks dialogue, job titles or XML configuration `high`. On the 2026-10-27
   runs, 12 of 998 Project Gutenberg novels and 10 of the 13 `high` outputs in 16,509 held-out government files
   were "you are now the head of the family", "forget all your kindness", "from now on you will discontinue",

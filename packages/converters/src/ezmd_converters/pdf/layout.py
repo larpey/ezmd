@@ -347,14 +347,140 @@ def _gutter(items: list[Item], lo: float, hi: float) -> tuple[float, float] | No
     return None if best is None else best[2]
 
 
+BAND_MIN_ITEMS = 3
+"""A region of a page reads as two columns when at least this many items sit on each side of its gutter."""
+BAND_DENSE_EM = 0.8
+"""...and each side is running text: the median gap between its consecutive items is at most this many ems. A
+two-column table whose labels sit one per row, a value of several lines beside each, is sparse on the label side
+and keeps reading row by row."""
+
+
+def _bands(items: list[Item], x: float) -> list[tuple[list[Item], list[Item], list[Item]]]:
+    """`items` (sorted top to bottom) cut into bands at every item that crosses the vertical line `x`. Each band is
+    (its items in order, those wholly left of `x`, those wholly right); a crossing item is a band of its own."""
+    out: list[tuple[list[Item], list[Item], list[Item]]] = []
+    cur: tuple[list[Item], list[Item], list[Item]] = ([], [], [])
+    for it in items:
+        if it.x1 <= x or it.x0 >= x:
+            cur[0].append(it)
+            (cur[1] if it.x1 <= x else cur[2]).append(it)
+            continue
+        if cur[0]:
+            out.append(cur)
+        out.append(([it], [], []))
+        cur = ([], [], [])
+    if cur[0]:
+        out.append(cur)
+    return out
+
+
+def _dense(side: list[Item]) -> bool:
+    """Consecutive items of `side` (top to bottom) follow each other at about line spacing."""
+    gaps = sorted(
+        (b.y0 - a.y1) / max(b.y1 - b.y0, 1.0) for a, b in itertools.pairwise(sorted(side, key=lambda it: it.y0))
+    )
+    return bool(gaps) and gaps[len(gaps) // 2] <= BAND_DENSE_EM
+
+
+def _block_tops(side: list[Item]) -> list[tuple[float, float]]:
+    """(top, line height) of each block of `side`: items that follow each other within an em of space."""
+    out: list[tuple[float, float]] = []
+    prev: Item | None = None
+    for it in sorted(side, key=lambda it: it.y0):
+        height = max(it.y1 - it.y0, 1.0)
+        if prev is None or it.y0 - prev.y1 > height:
+            out.append((it.y0, height))
+        prev = it
+    return out
+
+
+def _paired_rows(left: list[Item], right: list[Item]) -> bool:
+    """The two sides are the cells of a table: at least two blocks on each side and half or more of the blocks on
+    the side with fewer start level (within a line) with a block on the other side, as a question beside its answer
+    does. The paragraphs of two text columns start wherever their text takes them."""
+    a, b = _block_tops(left), _block_tops(right)
+    if len(a) > len(b):
+        a, b = b, a
+    if len(a) < 2:
+        return False
+    level = sum(1 for top, h in a if any(abs(top - other) <= 1.2 * max(h, oh) for other, oh in b))
+    return level >= 2 and 2 * level >= len(a)
+
+
+def _two_columns(left: list[Item], right: list[Item]) -> bool:
+    """A band whose two sides are both columns of running text set beside each other: enough items on each side,
+    each side dense, the sides overlapping vertically for at least half of the shorter one, and their blocks not
+    paired off row by row like table cells (`_paired_rows`)."""
+    if len(left) < BAND_MIN_ITEMS or len(right) < BAND_MIN_ITEMS or not _dense(left) or not _dense(right):
+        return False
+    if _paired_rows(left, right):
+        return False
+    l0, l1 = min(it.y0 for it in left), max(it.y1 for it in left)
+    r0, r1 = min(it.y0 for it in right), max(it.y1 for it in right)
+    return min(l1, r1) - max(l0, r0) >= 0.5 * min(l1 - l0, r1 - r0)
+
+
+def _column_bands(items: list[Item], x: float) -> list[tuple[list[Item], list[Item], list[Item], bool]]:
+    """`_bands` at `x`, each flagged when it reads as two columns: `_two_columns`, and the crossing items around
+    it span the whole gap between its sides (full-width text; a line of the right column that starts a little left
+    of `x` does not frame a band)."""
+    bands = _bands(items, x)
+    out: list[tuple[list[Item], list[Item], list[Item], bool]] = []
+    for k, (band, left, right) in enumerate(bands):
+        ok = _two_columns(left, right)
+        if ok:
+            inner, outer = max(it.x1 for it in left), min(it.x0 for it in right)
+            frame = [bands[j][0][0] for j in (k - 1, k + 1) if 0 <= j < len(bands)]
+            ok = all(it.x0 <= inner and it.x1 >= outer for it in frame)
+        out.append((band, left, right, ok))
+    return out
+
+
+def _band_gutter(items: list[Item], lo: float, hi: float) -> float | None:
+    """A gutter that holds in part of the page only: a sidebar or a two-column section between full-width text.
+    The x position in the middle half of [lo, hi] that puts the most items into two-column bands (`_two_columns`),
+    with at least 6 points clear on each side in those bands; None when no band qualifies."""
+    if len(items) < 2 * BAND_MIN_ITEMS:
+        return None
+    width = hi - lo
+    lo_mid, hi_mid = lo + 0.25 * width, lo + 0.75 * width
+    candidates = sorted({it.x1 + 0.5 for it in items} | {it.x0 - 0.5 for it in items})
+    candidates = [x for x in candidates if lo_mid <= x <= hi_mid][:400]
+    best: tuple[int, float, float] | None = None
+    for x in candidates:
+        paired = [(left, right) for _, left, right, ok in _column_bands(items, x) if ok]
+        if not paired:
+            continue
+        clear = min(min(it.x0 for it in r) - max(it.x1 for it in lf) for lf, r in paired)
+        if clear < 6.0:
+            continue
+        key = (sum(len(lf) + len(r) for lf, r in paired), clear, x)
+        if best is None or key[:2] > best[:2]:
+            best = key
+    return None if best is None else best[2]
+
+
 def order_items(items: list[Item], lo: float, hi: float, depth: int = 0) -> tuple[list[Item], bool]:
     """Top-to-bottom order; when a column gutter is found, full-width items split the page into bands and
-    each band reads left column then right column (recursively, up to three levels). Returns (ordered,
-    columns_found)."""
+    each band reads left column then right column (recursively, up to three levels). A gutter that holds only in
+    part of the page (`_band_gutter`) splits only the bands where two columns of running text stand side by side;
+    the rest of the page reads top to bottom. Returns (ordered, columns_found)."""
     items = sorted(items, key=lambda it: (it.y0, it.x0))
     gutter = _gutter(items, lo, hi) if depth < 3 else None
     if gutter is None:
-        return items, False
+        x = _band_gutter(items, lo, hi) if depth < 3 else None
+        if x is None:
+            return items, False
+        banded: list[Item] = []
+        for band, west, east, ok in _column_bands(items, x):
+            if not ok:
+                banded.extend(band)
+                continue
+            for side, a, b, col in ((west, lo, x, 1), (east, x, hi, 2)):
+                for it in side:
+                    it.column = 2 * depth + col
+                banded.extend(order_items(side, a, b, depth + 1)[0])
+        return banded, True
     out: list[Item] = []
     left: list[Item] = []
     right: list[Item] = []
