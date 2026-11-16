@@ -74,6 +74,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- `extraction_dropped_text` sees text that is not in a paragraph tag. The check counted only p, li, td, dd,
+  blockquote and pre leaves, so a table drawn with divs (a privacy notice's facts table), a sentence in a span and
+  a lost question heading were not page text, and losing them raised nothing. Leaf divs, sections and spans now
+  count, and so do headings, without counting text twice. On a 388-page set of saved privacy notices this raised
+  31 warnings where there were 20, and pages losing their own text with no warning went from 85 to 75.
 - Web pages keep sections whose id was generated from their heading. `id="how-we-share-this-log"` read as a share
   widget to both the rule extractor's patterns and Trafilatura's discard rules, so `web.trafilatura` and
   `web.rules` dropped the whole section, while the only warning on the page was about unrelated hidden elements.

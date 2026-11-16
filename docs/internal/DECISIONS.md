@@ -854,3 +854,25 @@ have a `md:hidden` twin, so the text is already there and would print twice).
 Consequences: an attacker can add a control, so panel text is scanned before it is kept, and whatever the scanner rates
 below medium reaches the body, where the body scan sees it too. More text in the body lets the capped
 `imperative_cluster` heuristic reach medium on a few instruction-heavy pages (5 of 306).
+
+## D-0080: The dropped-text check counts text wherever it sits
+
+Date: 2026-11-15. Status: accepted.
+
+Context: D-0077 added `extraction_dropped_text`, which compares the extracted text with the page by word
+shingles. It counted only p, li, dd, dt, td, th, blockquote and pre leaves. Rerunning the 388 saved pages of my
+privacy-notice study found pages that lost their own text with no warning because that text sat elsewhere: the
+definition cells of a facts table built from `divTableCell` divs, a component's sentence in a span, and the
+question headings of an FAQ list.
+
+Decision: besides those blocks, the check counts leaf containers (div, section, span, font, center, summary,
+figcaption, caption, label with no block, heading or other container inside and no counted block or span-like
+container around them) and headings, each once, with the same five-word and link-density floors.
+
+Alternatives rejected: counting every text node (inline runs inside a counted paragraph would count twice and
+skew the 5 percent rule); counting the regions the structural pass removes (footer, aside, complementary), which
+is a separate question about what those regions hold.
+
+Consequences: on the study set the warnings rise from 20 to 31 pages and unwarned own-text loss falls from 85 to
+75 pages. What remains sits in footers, asides, complementary regions, dialogs and app-store review lists.
+

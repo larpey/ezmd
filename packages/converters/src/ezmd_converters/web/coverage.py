@@ -33,8 +33,22 @@ def _shingles(tokens: list[str]) -> Iterator[int]:
     return (hash(tuple(tokens[i : i + SHINGLE_WORDS])) for i in range(len(tokens) - SHINGLE_WORDS + 1))
 
 
+_CONTAINERS = ("div", "section", "span", "font", "center", "summary", "figcaption", "caption", "label")
+"""Elements that hold text on pages built without paragraph tags: a table drawn with divs (`divTableCell`), a
+component that puts its sentence in a span. They count when no counted block or other container sits inside."""
+_NESTED = (*_BLOCKS, *_HEADINGS, "div", "section", "table", "ul", "ol", "dl")
+
+
 def _is_leaf(el: HtmlElement) -> bool:
     return next(el.iterdescendants(*_BLOCKS), None) is None
+
+
+def _is_text_container(el: HtmlElement) -> bool:
+    """A div-like leaf: none of its descendants is a block, a heading or another container, and no counted block
+    is its ancestor (so a span inside a counted `<p>` is not counted twice)."""
+    if next(el.iterdescendants(*_NESTED), None) is not None:
+        return False
+    return next(el.iterancestors(*_BLOCKS, *_HEADINGS, *_CONTAINERS[2:]), None) is None
 
 
 def _is_kept(tokens: list[str], kept: set[int]) -> bool:
@@ -70,16 +84,20 @@ class _Tally:
 
 def _tally(body: HtmlElement, kept: set[int]) -> _Tally:
     tally = _Tally()
-    for el in body.iter(*_HEADINGS, *_BLOCKS):
+    for el in body.iter(*_HEADINGS, *_BLOCKS, *_CONTAINERS):
         if not is_element(el):
             continue
-        if tag_of(el) in _HEADINGS:
-            tally.open(collapse(text_of(el)))
-        elif _is_leaf(el):
+        tag = tag_of(el)
+        if tag in _HEADINGS:
             text = collapse(text_of(el))
-            tokens = words(text)
-            if len(tokens) >= SHINGLE_WORDS and link_density(el) < MAX_ANCHOR_LINK_DENSITY:
-                tally.add(len(text), kept=_is_kept(tokens, kept))
+            tally.open(text)
+        elif (tag in _BLOCKS and _is_leaf(el)) or (tag in _CONTAINERS and _is_text_container(el)):
+            text = collapse(text_of(el))
+        else:
+            continue
+        tokens = words(text)
+        if len(tokens) >= SHINGLE_WORDS and link_density(el) < MAX_ANCHOR_LINK_DENSITY:
+            tally.add(len(text), kept=_is_kept(tokens, kept))
     return tally
 
 
