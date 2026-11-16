@@ -3,8 +3,8 @@ title: "Harbor Lane Works Bulletin"
 source: "input.pdf"
 source_type: pdf
 converter: documents.pdfium_text
-converter_version: "0.1.0rc1"
-ezmd_version: "0.1.0rc1"
+converter_version: "0.1.1"
+ezmd_version: "0.1.1"
 schema_version: 1
 profile: full
 provenance: block
@@ -13,8 +13,8 @@ converted_at: 2026-01-01T00:00:00Z
 author: "ezmd fixtures"
 pages: 3
 word_count: 161
-tokens: {o200k_base: 236, cl100k_base: 238, claude_approx: 255}
-content_hash: "sha256:ee7a13b0b1d2dd7b698b1b4762f1a8e1ca87bfc9660e25a7deab43803bf6826e"
+tokens: {o200k_base: 239, cl100k_base: 241, claude_approx: 258}
+content_hash: "sha256:89994676bbb9123649ebd4b7d43f1c7742a99581a40fa3d03dfe58735cad3c5c"
 source_hash: "sha256:1c0c86f940cbaab979819092882ae22b22ef433aa87083213f6bef2c4c5e9616"
 truncated: false
 warnings: [engine_fallback, removed_running_header_footer]
@@ -25,7 +25,7 @@ extra: {pdf_heading_source: font_size, pdf_page_modes: "born_digital=3", pdf_pag
 
 <!-- page 1 -->
 
-## 1 Channel dredging {#sec-1}
+## 1. Channel dredging {#sec-1}
 
 The channel was dredged to a depth of twelve meters.¹
 
@@ -35,7 +35,7 @@ Dredging in the outer channel removed about forty thousand cubic meters of silt 
 
 <!-- page 2 -->
 
-## 2 Breakwater repairs {#sec-2}
+## 2. Breakwater repairs {#sec-2}
 
 Armour units on the north breakwater were reset.²
 
@@ -45,7 +45,7 @@ Dredging in the outer channel removed about forty thousand cubic meters of silt 
 
 <!-- page 3 -->
 
-## 3 Navigation aids {#sec-3}
+## 3. Navigation aids {#sec-3}
 
 Two buoys were replaced with solar-powered units.³
 

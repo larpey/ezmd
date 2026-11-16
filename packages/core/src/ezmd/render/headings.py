@@ -1,7 +1,9 @@
 """ezmd.render.headings: title selection and the heading plan (docs/internal/spec/part3.md section 14, "Headings").
 
 - Exactly one H1: the title. Source headings shift down one level and are clamped to parent + 1.
-- Derived numbering (`3.2`) replaces any source numbering; anchors are `sec-3-2` (the H1 is `doc`).
+- Derived numbering (`3.2`) replaces source numbering, unless the document numbers most of its own headings, in
+  which case the printed labels stay and no numbers are added (D-0083); anchors are `sec-3-2` either way (the H1 is
+  `doc`).
 - Headings deeper than H6 become bold paragraphs. Text is one line, formatting stripped except code spans,
   no trailing punctuation except `?`, max 200 chars (the full text overflows into the next paragraph).
 """
@@ -22,6 +24,24 @@ __all__ = ["MAX_HEADING_CHARS", "heading_markdown", "plan_headings", "resolve_ti
 MAX_HEADING_CHARS = 200
 _SOURCE_NUM = re.compile(r"^\d+(?:\.\d+)*\\?\.?\s+(?=\S)")
 _TRAIL_PUNCT = re.compile(r"[.:;,!]+$")
+_SOURCE_LABEL = re.compile(
+    r"^(?:(?i:section|article|part|chapter|appendix|schedule|exhibit|annex)\s+)?"
+    r"(?:\d+(?:\.\d+)*\\?\.?|[A-Z]\\?[.)]|\([a-zA-Z0-9]{1,4}\)|[IVXLC]+\\?[.)])\s+(?=\S)"
+)
+"""A section label a document prints on its own heading: `31.1`, `6`, `A.`, `II.`, `(a)`, `Section 4`."""
+MIN_SOURCE_NUMBERED = 3
+
+
+def _numbers_its_own_headings(ctx: RenderContext, consumed: set[str]) -> bool:
+    """True when at least MIN_SOURCE_NUMBERED headings, and at least half of them, open with a section label: the
+    document numbers its own sections, so derived numbers would contradict the ones it prints (D-0083)."""
+    texts = [
+        plain_spans(ctx, b.spans).strip()
+        for b in ctx.doc.blocks
+        if isinstance(b, Heading) and b.id not in consumed and CHILD_SECTION_ATTR not in b.attrs
+    ]
+    labelled = sum(bool(_SOURCE_LABEL.match(t)) for t in texts)
+    return labelled >= MIN_SOURCE_NUMBERED and labelled * 2 >= len(texts)
 
 
 def resolve_title(ctx: RenderContext) -> str:
@@ -78,6 +98,7 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             for b in ctx.doc.blocks
         )
     )
+    derive = ctx.profile.number_headings and not _numbers_its_own_headings(ctx, consumed)
     stack: list[tuple[int, HeadingInfo]] = []
     counters = [0] * 8
     for b in ctx.doc.blocks:
@@ -90,7 +111,7 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
         original = plain_spans(ctx, b.spans)
         text = render_spans(ctx, b.spans, heading=True)
         section = CHILD_SECTION_ATTR in b.attrs
-        if ctx.profile.number_headings and not section:
+        if derive and not section:
             text = _SOURCE_NUM.sub("", text, count=1)
         if not section:
             text = _TRAIL_PUNCT.sub("", text).strip()
@@ -107,14 +128,14 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             number = ".".join(str(counters[i]) for i in range(2, level + 1))
             anchor = "sec-" + number.replace(".", "-")
         parents = [info for _, info in stack]
-        label = f"{number} {text}" if number and ctx.profile.number_headings else text
+        label = f"{number} {text}" if number and derive else text
         info = HeadingInfo(
             block_id=b.id,
             level=level,
             original_level=b.level,
             title=text,
             original_title=original,
-            number=number if ctx.profile.number_headings else None,
+            number=number if derive else None,
             anchor=anchor if ctx.profile.anchors else None,
             path=[*[p.label for p in parents if p.level <= 6], label],
             time_start=b.provenance.time_start,
@@ -123,7 +144,7 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             child=ctx.children.prefix_of(b.id),
             child_section=section,
         )
-        info.number = number if ctx.profile.number_headings and level <= 6 else None
+        info.number = number if derive and level <= 6 else None
         ctx.headings[b.id] = info
         stack.append((shifted, info))
         if anchor and ctx.profile.anchors:
