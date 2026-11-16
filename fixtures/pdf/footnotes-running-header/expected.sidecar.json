@@ -750,7 +750,7 @@
   "footnotes": [],
   "frontmatter": {
     "author": "ezmd fixtures",
-    "content_hash": "sha256:ee7a13b0b1d2dd7b698b1b4762f1a8e1ca87bfc9660e25a7deab43803bf6826e",
+    "content_hash": "sha256:89994676bbb9123649ebd4b7d43f1c7742a99581a40fa3d03dfe58735cad3c5c",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
     "converter_version": "<normalized>",
@@ -773,9 +773,9 @@
     "source_type": "pdf",
     "title": "Harbor Lane Works Bulletin",
     "tokens": {
-      "cl100k_base": 238,
-      "claude_approx": 255,
-      "o200k_base": 236
+      "cl100k_base": 241,
+      "claude_approx": 258,
+      "o200k_base": 239
     },
     "truncated": false,
     "warnings": [
@@ -1039,40 +1039,40 @@
       "block_id": "b0003",
       "id": "sec-1",
       "level": 2,
-      "number": "1",
-      "offset_end": 389,
+      "number": null,
+      "offset_end": 390,
       "offset_start": 54,
       "original_level": 2,
       "original_title": "1. Channel dredging",
       "time_end": null,
       "time_start": null,
-      "title": "Channel dredging"
+      "title": "1. Channel dredging"
     },
     {
       "block_id": "b0008",
       "id": "sec-2",
       "level": 2,
-      "number": "2",
-      "offset_end": 723,
-      "offset_start": 389,
+      "number": null,
+      "offset_end": 725,
+      "offset_start": 390,
       "original_level": 2,
       "original_title": "2. Breakwater repairs",
       "time_end": null,
       "time_start": null,
-      "title": "Breakwater repairs"
+      "title": "2. Breakwater repairs"
     },
     {
       "block_id": "b0013",
       "id": "sec-3",
       "level": 2,
-      "number": "3",
-      "offset_end": 1034,
-      "offset_start": 723,
+      "number": null,
+      "offset_end": 1037,
+      "offset_start": 725,
       "original_level": 2,
       "original_title": "3. Navigation aids",
       "time_end": null,
       "time_start": null,
-      "title": "Navigation aids"
+      "title": "3. Navigation aids"
     }
   ],
   "segments": [],
@@ -1080,7 +1080,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 536,
+  "tokens_total": 533,
   "warnings": [
     {
       "block_id": null,

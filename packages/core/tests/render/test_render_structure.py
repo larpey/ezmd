@@ -48,6 +48,49 @@ def test_single_h1_title_shift_clamp_and_numbering() -> None:
     assert pre["original_title"] == "3.2 Pre-numbered" and pre["original_level"] == 2
 
 
+def _agreement():  # type: ignore[no-untyped-def]
+    return make_result(
+        [
+            heading("Deposit Agreement", 1),
+            para("Intro."),
+            heading("I. Definitions", 1),
+            heading("A. Personal accounts", 2),
+            heading("31. Our liability", 1),
+            heading("31.1 Transfers we fail to complete", 2),
+            heading("Schedule of fees", 1),
+            heading("Appendix B Rates", 1),
+        ],
+        title=None,
+    )
+
+
+def test_a_document_that_numbers_its_own_sections_keeps_its_numbers() -> None:
+    """Derived numbers would turn "31.1" into "2.1" and double-number letters ("1.1 A. Personal")."""
+    body = render(_agreement(), "full").body
+    assert "## I. Definitions {#sec-1}" in body
+    assert "### A. Personal accounts {#sec-1-1}" in body
+    assert "## 31. Our liability {#sec-2}" in body
+    assert "### 31.1 Transfers we fail to complete {#sec-2-1}" in body
+    assert "## Schedule of fees {#sec-3}" in body
+    assert "## Appendix B Rates {#sec-4}" in body
+    assert "1.1 A." not in body and "2.1 31.1" not in body
+
+
+def test_two_numbered_headings_do_not_switch_numbering_off() -> None:
+    doc = make_result([heading("Doc", 1), heading("1. Intro", 1), heading("Body", 1), heading("2. End", 1)], title=None)
+    body = render(doc, "full").body
+    assert "## 1 Intro {#sec-1}" in body and "## 2 Body {#sec-2}" in body and "## 3 End {#sec-3}" in body
+
+
+def test_a_title_word_is_not_a_section_label() -> None:
+    doc = make_result(
+        [heading("Doc", 1), heading("A Guide to tides", 1), heading("I think so", 1), heading("Part of it", 1)],
+        title=None,
+    )
+    body = render(doc, "full").body
+    assert "## 1 A Guide to tides {#sec-1}" in body and "## 3 Part of it {#sec-3}" in body
+
+
 def test_long_heading_truncated_with_overflow_paragraph() -> None:
     body = render(_headings_chaos(), "full").body
     line = next(x for x in body.split("\n") if x.startswith("### 1.3 "))

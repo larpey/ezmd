@@ -791,3 +791,26 @@ Consequences: `test_injection_false_positives.py` carries the twenty-one Gutenbe
 government sentences and the three XML fragments as negatives, and twenty-two more attacks as positives, among them the
 DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
 runs with the new patterns is the measure; the numbers are in the PR that made this change.
+
+## D-0083: A document that numbers its own sections keeps its numbers
+
+Date: 2026-11-15. Status: accepted.
+
+Context: the full profile stripped a leading arabic number from every heading and wrote the derived outline
+number instead (part3 section 14). On my privacy-notice study set 18 of 68 PDFs are agreements that number their
+own sections (`31.1`, `A.`, `II.`, `6`). Their headings came out as the outline position, so "31.1 Your liability"
+became "4.2 Your liability" and a citation of section 31.1 no longer matched; letter and roman labels were not
+stripped and were numbered twice ("1.2 A. General terms"). My call on 2026-11-15: show the source numbers as
+printed.
+
+Decision: when at least three headings, and at least half of them, open with a section label (arabic, dotted,
+`A.`/`A)`, roman with a period or parenthesis, `(a)`, optionally after Section, Article, Part, Chapter, Appendix,
+Schedule, Exhibit or Annex), the renderer derives no numbers: headings keep their text, the sidecar `number` is
+null, and anchors stay `sec-N-M`. Documents without their own numbering are unchanged.
+
+Alternatives rejected: turning derived numbering off everywhere (outline numbers help in documents that print
+none); keeping derived numbers and only fixing the double numbering (the citation mismatch stays).
+
+Consequences: `test_render_structure.py` has the agreement shape, the two-headings threshold and title words that
+look like labels ("A Guide", "Part of it"). Two PDF fixtures print `1.` on their headings and now keep the period.
+
