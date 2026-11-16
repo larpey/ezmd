@@ -74,6 +74,32 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Web pages keep sections whose id was generated from their heading. `id="how-we-share-this-log"` read as a share
+  widget to both the rule extractor's patterns and Trafilatura's discard rules, so `web.trafilatura` and
+  `web.rules` dropped the whole section, while the only warning on the page was about unrelated hidden elements.
+  On a long saved page the fallback ratio could not see it either, because the cleaned page it measures against
+  had lost the same section. An id now counts as an anchor, not as evidence, when it names the heading that opens
+  the element among siblings that form an outline (D-0077).
+- `backface-visibility:hidden` no longer counts as hidden. The hidden-content rules matched `visibility:hidden`
+  anywhere in a declaration, so a page that sets it on its main wrapper (a common compositing hint) lost its whole
+  content and came back as `empty_body_js_required`, exit code 3.
+- A short server-rendered page is no longer called a JavaScript shell. Any `#root`, `#app` or `#__next` element
+  counted as an empty app root, so a page with under 300 extracted characters got `empty_body_js_required` and
+  exit code 3 although its text was in the output. The root must now hold under 300 characters itself.
+- Collapsed accordion and FAQ panels are kept. The hygiene pass removed any element with the `hidden` attribute,
+  `display:none` or a hiding page rule, so a page's answers disappeared while their questions, which sit in a
+  `<button>`, went with the boilerplate. A panel now counts as content when a visible, labelled, interactive
+  control says `aria-expanded="false"` for it, nothing else hides it, it is not a menu of links, and the injection
+  scanner finds nothing in it; the question stays as plain text, `extra.collapsed_panels` counts the panels, and the
+  text still goes to the scanner as hidden text (D-0078).
+- List items wrapped in `<div>`s or custom elements inside a `<ul>` are converted; the rule extractor dropped them.
+- `web.trafilatura` hands over to the rule extractor when it leaves out 5 percent of the page text and the rule
+  extractor loses at most half as much (`engine_fallback` with `detail.dropped_chars`). Across 306 saved pages this
+  took `extraction_dropped_text` from 54 pages to 20 (D-0078).
+- New warning `extraction_dropped_text`: when an extractor leaves out a headed section or 5 percent of the text
+  the page body holds, the warning gives the characters lost and names the sections. It compares against the body
+  with only structural boilerplate removed, so a loss from class and id rules cannot hide on both sides of the
+  ratio (D-0077).
 - The injection scanner no longer marks dialogue, job titles or XML configuration `high`. On the 2026-10-27
   runs, 12 of 998 Project Gutenberg novels and 10 of the 13 `high` outputs in 16,509 held-out government files
   were "you are now the head of the family", "forget all your kindness", "from now on you will discontinue",

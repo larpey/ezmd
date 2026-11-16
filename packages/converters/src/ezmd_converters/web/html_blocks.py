@@ -155,7 +155,7 @@ def _item(li: HtmlElement, b: Builder, depth: int) -> ListItem:
             if ordered is None:
                 ordered = tag_of(child) == "ol"
                 start = _start(child)
-            children.extend(_item(c, b, depth + 1) for c in child if is_element(c) and tag_of(c) == "li")
+            children.extend(_item(c, b, depth + 1) for c in _list_items(child))
         elif is_element(child):
             acc.child(child, (), None, 0)
         acc.add_text(child.tail or "", (), None)
@@ -174,9 +174,23 @@ def _start(el: HtmlElement) -> int:
     return int(raw) if raw.lstrip("-").isdigit() and abs(int(raw)) < 1_000_000 else 1
 
 
+def _list_items(el: HtmlElement) -> list[HtmlElement]:
+    """The items of a list, in order. Component frameworks wrap them in `<div>`s and custom elements, which the
+    parser leaves in place; an item is any `<li>` not inside a deeper list."""
+    items: list[HtmlElement] = []
+    stack = [c for c in reversed(el) if is_element(c)]
+    while stack:
+        node = stack.pop()
+        if tag_of(node) == "li":
+            items.append(node)
+        elif tag_of(node) not in ("ul", "ol", "menu"):
+            stack.extend(c for c in reversed(node) if is_element(c))
+    return items
+
+
 def _list(el: HtmlElement, b: Builder) -> None:
     pos = len(b.blocks)
-    items = [_item(li, b, 1) for li in el if is_element(li) and tag_of(li) == "li"]
+    items = [_item(li, b, 1) for li in _list_items(el)]
     items = [it for it in items if it.spans or it.children]
     if not items:
         return

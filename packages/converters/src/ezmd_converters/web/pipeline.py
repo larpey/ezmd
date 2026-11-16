@@ -28,8 +28,8 @@ from ezmd.ir import (
     spans_text,
 )
 from ezmd.registry import ConvertOptions
+from ezmd_converters.web import coverage, signals
 from ezmd_converters.web import meta as page_meta
-from ezmd_converters.web import signals
 from ezmd_converters.web.boilerplate import main_content, strip_boilerplate
 from ezmd_converters.web.build import Builder
 from ezmd_converters.web.dom import base_url, body_of, decode_html, parse_html, same_origin, truncate_on_tag
@@ -43,6 +43,8 @@ DEFAULT_MAX_BYTES = 50 * 1024 * 1024
 """Local default HTML cap (part2 13.4, web page row). The public profile lowers it through Limits."""
 MIN_EXTRACT_CHARS = 200
 MIN_EXTRACT_RATIO = 0.25
+RECOVERY_RATIO = 0.5
+"""The rule extractor replaces Trafilatura's article when it loses at most this share of what Trafilatura lost."""
 
 
 @dataclass(slots=True)
@@ -108,9 +110,12 @@ def load_page(ref: InputRef, options: ConvertOptions) -> Page:
     )
 
 
+def _plain(blocks: list[Block]) -> str:
+    return Document(metadata=Metadata(source="x", source_type=SourceType.HTML), blocks=list(blocks)).plain_text()
+
+
 def _chars(blocks: list[Block]) -> int:
-    doc_text = Document(metadata=Metadata(source="x", source_type=SourceType.HTML), blocks=list(blocks)).plain_text()
-    return len(doc_text)
+    return len(_plain(blocks))
 
 
 def _rules(page: Page, b: Builder) -> None:
@@ -171,6 +176,8 @@ def extract(page: Page, engine: Engine, conv_id: str, options: ConvertOptions) -
                 )
             b = fresh()
             _rules(page, b)
+        else:
+            b = _recover(page, b, fresh(), notes)
     elif engine == "rules":
         _rules(page, b)
     options.ctx.check_deadline()
@@ -186,6 +193,39 @@ def extract(page: Page, engine: Engine, conv_id: str, options: ConvertOptions) -
         )
     normalize_headings(b.blocks, page.meta.title)
     return b, notes
+
+
+def _recover(page: Page, kept: Builder, rules: Builder, notes: list[Warning]) -> Builder:
+    """Trafilatura's article, unless it left out text the page holds and the rule extractor keeps most of that text
+    (lists wrapped in a `<div>`, panels in a class it discards). The ratio check above cannot see this: most of a
+    long page survives. Returns the builder to use."""
+    loss = coverage.dropped_text(page.body, _plain(kept.blocks))
+    if loss is None:
+        return kept
+    _rules(page, rules)
+    other = coverage.dropped_text(page.body, _plain(rules.blocks))
+    lost, other_lost = _dropped(loss), _dropped(other)
+    if lost < coverage.MIN_PAGE_RATIO * int(loss.detail["page_chars"]) or other_lost > RECOVERY_RATIO * lost:
+        return kept
+    reason = "left out page text"
+    notes.append(
+        Warning(
+            kind=WarningKind.ENGINE_FALLBACK,
+            severity="info",
+            message=f"Trafilatura left out {lost} page characters; the rule-based extractor left out {other_lost}.",
+            detail={
+                "engine": "trafilatura",
+                "reason": reason,
+                "dropped_chars": lost,
+                "rules_dropped_chars": other_lost,
+            },
+        )
+    )
+    return rules
+
+
+def _dropped(loss: Warning | None) -> int:
+    return int(loss.detail["dropped_chars"]) if loss is not None else 0
 
 
 _STUB_TEXT = {
@@ -255,6 +295,8 @@ def build_document(ref: InputRef, options: ConvertOptions, engine: Engine, conv_
         encoding=page.encoding,
         encoding_confidence=page.encoding_confidence,
     )
+    if page.hygiene.collapsed:
+        metadata.extra["collapsed_panels"] = page.hygiene.collapsed
     doc = Document(metadata=metadata, blocks=b.blocks, truncated=page.truncated)
     extracted = _chars(b.blocks)
     if page.clean_chars:
@@ -266,6 +308,11 @@ def build_document(ref: InputRef, options: ConvertOptions, engine: Engine, conv_
         metadata.extra["canonical_cross_origin"] = True
     doc.warnings.extend(notes)
     doc.warnings.extend(page_warnings(page, b, extracted, metadata))
+    if not any(w.kind == WarningKind.READABILITY_FALLBACK_FULL_BODY for w in notes):
+        options.ctx.check_deadline()
+        loss = coverage.dropped_text(page.body, doc.plain_text())
+        if loss is not None:
+            doc.warnings.append(loss)
     if not doc.blocks:
         doc.blocks.append(_stub(doc, page.source))
     options.ctx.progress("done", 1.0, "converted")
