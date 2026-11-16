@@ -97,6 +97,15 @@ opens the element, the element is not mostly links, and it sits among siblings t
 three of them have ids free of the pattern vocabulary, and those outnumber the rest. The rule extractor skips such
 ids; Trafilatura gets a copy of the tree without them. Classes still count, and ids in the output are untouched.
 
+## Notes in page chrome
+
+Boilerplate removal takes footers, asides and complementary regions whole, and some sites keep their footnotes
+there. A removed block that opens with a marker (`<sup>2</sup>`, `2.`, `2)`, `²`, `*`, `†`) is kept as a footnote
+when the body outside those regions carries the same marker as a `<sup>` or a superscript character and the
+extracted text does not already hold it. Notes inside dialogs, forms or consent banners are never kept. Other
+removed prose of 40 words or more inside `main` or `article` raises `boilerplate_prose_removed`; the site's own
+footer and sidebars outside the article do not, since they repeat on every page.
+
 ## Warnings
 
 | code | when |
@@ -105,7 +114,8 @@ ids; Trafilatura gets a copy of the tree without them. Classes still count, and 
 | `injection_suspected` | the removed hidden text matches injection patterns |
 | `engine_fallback` | Trafilatura under-extracted, or left out 5 percent of the page text that the rule extractor keeps at least half of (`detail.dropped_chars`, `detail.rules_dropped_chars`), and the rule extractor was used |
 | `readability_fallback_full_body` | no article was found, the full body was converted (always on `web.html_raw`) |
-| `extraction_dropped_text` | a headed section lost at least 200 characters and over half its text, or at least 200 characters and 5 percent of the page are gone; the page here is the body with only structural boilerplate removed (what `web.html_raw` keeps), blocks are matched by word shingles, and blocks that are mostly links or under five words are not counted. `detail` has `page_chars`, `dropped_chars` and `sections` (up to 12 headings). Not raised on `web.html_raw` or after the full-body fallback |
+| `extraction_dropped_text` | a headed section lost at least 200 characters and over half its text, or at least 200 characters and 5 percent of the page are gone; the page here is the body with only structural boilerplate removed (what `web.html_raw` keeps), blocks (paragraphs, list items, cells, headings, and divs, sections or spans with no block inside) are matched by word shingles, and blocks that are mostly links or under five words are not counted. `detail` has `page_chars`, `dropped_chars` and `sections` (up to 12 headings). Not raised on `web.html_raw` or after the full-body fallback |
+| `boilerplate_prose_removed` | blocks of 40 or more words inside `main`/`article` went with removed chrome (aside, footer, complementary) and are not footnotes, dialogs, forms, consent banners or link lists; `detail` has `chars` and up to five `samples` |
 | `paywall_detected` | JSON-LD `isAccessibleForFree: false`, paywall selectors, or wall phrasing, and under 600 extracted characters; short subscribe/sign-in prompts inside paywall-marked elements are removed from the body (`detail.wall_prompts_removed`) |
 | `empty_body_js_required` | the static HTML is a JavaScript shell (empty `#root`/`#app`/`#__next`, or over 50 KB of inline script) with under 300 characters of text; the body is a stub note |
 | `lazy_content_possible` | lazy-loaded images were resolved from `data-*` attributes, or an infinite-scroll marker exists |

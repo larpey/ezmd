@@ -153,6 +153,42 @@ def test_material_unheaded_loss_warns_with_the_amount() -> None:
     assert isinstance(w.detail["dropped_chars"], int) and w.detail["dropped_chars"] > 0
 
 
+def _div_table(*rows: tuple[str, str]) -> str:
+    cells = "".join(
+        f'<div class="divTableRow"><div class="divTableCell"><b>{k}</b></div><div class="divTableCell">{v}</div></div>'
+        for k, v in rows
+    )
+    return f'<div class="divTable"><div class="divTableBody">{cells}</div></div>'
+
+
+def test_a_table_drawn_with_divs_is_page_text() -> None:
+    """A facts table built from divs has no p or td, so the cells it lost were invisible to the check."""
+    table = _div_table(("Keepers", TENDER), ("Lamps", FOG))
+    body = body_of(parse_html(f"<html><body><main><p>{PROSE}</p>{table}</main></body></html>"))
+    w = dropped_text(body, PROSE)
+    assert w is not None and isinstance(w.detail["dropped_chars"], int) and w.detail["dropped_chars"] >= len(FOG)
+    assert dropped_text(body, PROSE + TENDER + FOG) is None
+
+
+def test_text_in_a_span_inside_a_paragraph_is_counted_once() -> None:
+    body = body_of(parse_html(f"<html><body><main><p><span>{PROSE}</span></p><p>{FOG}</p></main></body></html>"))
+    w = dropped_text(body, FOG)
+    assert w is not None and w.detail["page_chars"] == len(PROSE.strip()) + len(FOG.strip())
+
+
+def test_a_lost_question_heading_is_page_text() -> None:
+    faq = "".join(
+        f'<div class="faq"><h3 class="faq__question">How does the keeper signal the tender number {n}?</h3>'
+        f"<p>{PROSE}</p></div>"
+        for n in range(30)
+    )
+    body = body_of(parse_html(f"<html><body><main>{faq}</main></body></html>"))
+    total = dropped_text(body, "")
+    assert total is not None
+    w = dropped_text(body, PROSE * 30)
+    assert w is not None and isinstance(w.detail["dropped_chars"], int) and w.detail["dropped_chars"] > 1000
+
+
 def test_boilerplate_is_not_counted_as_page_text() -> None:
     html = f"<html><body><main><p>{PROSE}</p></main><nav><p>Tide index and notes. {FOG}</p></nav></body></html>"
     body = body_of(parse_html(html))
