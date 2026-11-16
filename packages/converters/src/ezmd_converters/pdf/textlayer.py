@@ -369,6 +369,54 @@ def figure_forms(
     return boxes, owners
 
 
+BULLET_GLYPHS = "".join(
+    chr(c) for c in (0x2022, 0x25E6, 0x25AA, 0x2023, 0x2219, 0x00B7, 0x25CF, 0x25A0, 0x2013, 0x2043)
+)
+"""Glyphs that open a list item when they start a line."""
+BULLET_REACH_EM = 2.0
+"""A bullet sits at most this many ems (of the text beside it) left of the text."""
+
+
+def attach_bullets(lines: list[Line], order_base: int) -> list[Line]:
+    """Merge a line that is one bullet glyph into the line it marks. Slide exports draw a small bullet on its
+    own baseline beside larger text, so `_lines` makes it a line of its own and a lone bullet paragraph splits
+    the item. The bullet belongs to the nearest line to its right (not itself a bullet) whose vertical extent
+    holds the bullet's and whose left edge is within `BULLET_REACH_EM` of the bullet's right edge. Orders are
+    renumbered from `order_base` after lines disappear."""
+    marks = [k for k, ln in enumerate(lines) if len(ln.text) == 1 and ln.text in BULLET_GLYPHS]
+    if not marks:
+        return lines
+    drop: set[int] = set()
+    out = list(lines)
+    for k in marks:
+        b = lines[k]
+        best: int | None = None
+        for j, ln in enumerate(lines):
+            if j == k or j in drop or ln.turn != b.turn or ln.figure != b.figure or ln.text[:1] in BULLET_GLYPHS:
+                continue
+            gap = ln.x0 - b.x1
+            if gap < -0.5 * ln.size or gap > BULLET_REACH_EM * ln.size:
+                continue
+            if b.y0 < ln.y0 - 0.1 * ln.size or b.y1 > ln.y1 + 0.1 * ln.size:
+                continue
+            if best is None or ln.x0 < lines[best].x0:
+                best = j
+        if best is None:
+            continue
+        t = out[best]
+        out[best] = dataclasses.replace(
+            t,
+            x0=min(t.x0, b.x0),
+            y0=min(t.y0, b.y0),
+            y1=max(t.y1, b.y1),
+            runs=[(b.text + " ", None, None), *t.runs],
+            mcids=t.mcids | b.mcids,
+        )
+        drop.add(k)
+    kept = [ln for i, ln in enumerate(out) if i not in drop]
+    return [dataclasses.replace(ln, order=order_base + i) for i, ln in enumerate(kept)]
+
+
 def demote_prose_forms(lines: list[Line]) -> list[Line]:
     """Return `lines` with the figure index cleared on every form whose lines are mostly `PROSE_LINE_CHARS` long
     or longer: an included page or a framed text box drawn with a few rules, not a plot."""
@@ -413,7 +461,9 @@ def read_page(
             textpage.close()
     finally:
         page.close()
-    lines = demote_prose_forms(_lines(_compose_accents(glyphs), index + 1, order_base, stats))
+    lines = demote_prose_forms(
+        attach_bullets(_lines(_compose_accents(glyphs), index + 1, order_base, stats), order_base)
+    )
     chars = sum(1 for g in glyphs if g is not None and not g.ch.isspace())
     return PageText(
         number=index + 1,

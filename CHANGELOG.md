@@ -74,6 +74,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Slide-deck PDFs: a small bullet drawn on its own baseline beside larger text is attached to that text as its
+  list marker, so a wrapped item is no longer split by a lone bullet paragraph and the page no longer warns of
+  an uncertain reading order (#28).
+- Slide-deck PDFs: a line that starts with a bullet glyph, and the lines wrapped under it, are never headings;
+  a run of same-size lines longer than a heading is prose, not one truncated heading repeated as a paragraph;
+  and on a page with a single title line and one larger body size, that size is the page's body text (#33).
 - The injection scanner no longer marks dialogue, job titles or XML configuration `high`. On the 2026-10-27
   runs, 12 of 998 Project Gutenberg novels and 10 of the 13 `high` outputs in 16,509 held-out government files
   were "you are now the head of the family", "forget all your kindness", "from now on you will discontinue",
