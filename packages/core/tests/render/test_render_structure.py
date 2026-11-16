@@ -91,13 +91,30 @@ def test_a_title_word_is_not_a_section_label() -> None:
     assert "## 1 A Guide to tides {#sec-1}" in body and "## 3 Part of it {#sec-3}" in body
 
 
-def test_long_heading_truncated_with_overflow_paragraph() -> None:
-    body = render(_headings_chaos(), "full").body
-    line = next(x for x in body.split("\n") if x.startswith("### 1.3 "))
-    assert line.endswith("... {#sec-1-3}")
-    assert len(line.split(" {#")[0]) <= 210
+def test_a_heading_longer_than_any_heading_is_a_paragraph_once() -> None:
+    """Cut at 200 characters and repeated in full below it, a styled paragraph read twice (D-0087)."""
+    out = render(_headings_chaos(), "full")
+    body = out.body
     full_text = ("Word " * 70).strip()
-    assert f"\n\n{full_text}\n\n" in body
+    assert body.count(full_text) == 1 and f"\n\n{full_text}\n\n" in body
+    assert not any(x.startswith("#") and "Word Word" in x for x in body.split("\n"))
+    assert "### 1.3 " not in body and "## 2 Second top {#sec-2}" in body
+    assert all("Word Word" not in s["title"] for s in out.sidecar["sections"])  # type: ignore[index]
+
+
+def test_a_first_paragraph_that_repeats_the_title_is_consumed() -> None:
+    doc = make_result(
+        [para("Harbor Lane Survey."), para("The survey covers the outer berths.")], title="Harbor Lane Survey"
+    )
+    body = render(doc, "full").body
+    assert "# Harbor Lane Survey {#doc}" in body
+    assert body.count("Harbor Lane Survey") == 1 + body.count("Harbor Lane Survey]")
+    assert "The survey covers the outer berths." in body
+
+
+def test_a_first_paragraph_that_only_starts_with_the_title_stays() -> None:
+    doc = make_result([para("Harbor Lane Survey of the outer berths, 2024.")], title="Harbor Lane Survey")
+    assert "Harbor Lane Survey of the outer berths, 2024." in render(doc, "full").body
 
 
 def test_compact_has_no_numbers_or_anchors() -> None:

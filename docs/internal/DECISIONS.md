@@ -814,3 +814,25 @@ none); keeping derived numbers and only fixing the double numbering (the citatio
 Consequences: `test_render_structure.py` has the agreement shape, the two-headings threshold and title words that
 look like labels ("A Guide", "Part of it"). Two PDF fixtures print `1.` on their headings and now keep the period.
 
+## D-0087: A heading longer than any heading is a paragraph, and the title is not repeated
+
+Date: 2026-11-16. Status: accepted.
+
+Context: the held-out Govdocs1 run of the 0.1.2 candidate gated 79 outputs on `heading_repeated`, a heading whose
+text the next paragraph repeats (51 on 2026-10-27; derived section numbers had hidden 28 of them from the
+scorer). Two shapes. 109 hits were source "headings" over 200 characters, numbered paragraphs that Word files and
+web pages set in a heading style: part3 section 14 cut them at 200 characters with `...` and put the full text in
+the next paragraph, so the text read twice. 52 were a document whose first paragraph is its title again (a title
+from the file's properties or `<title>`, then the same words as the first line) under the H1.
+
+Decision: a source heading whose plain text is over 200 characters is not planned as a heading: no number, anchor
+or Contents entry, and it renders once as a paragraph with its inline formatting. A first paragraph whose text,
+ignoring case, spacing and trailing punctuation, equals the title is consumed like a title paragraph. A paragraph
+that only starts with the title stays.
+
+Alternatives rejected: keeping the cut heading without the overflow paragraph (the text after 200 characters
+is lost); raising the cap (a 400-character heading is still a paragraph, and Contents fills with them).
+
+Consequences: `test_render_structure.py` replaces the truncation test; both new tests fail with their change
+turned off. No fixture golden changes.
+
