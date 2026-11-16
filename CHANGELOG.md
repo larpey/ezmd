@@ -74,6 +74,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- FAQ and accordion pages keep their questions. A question set inside the button that opens its answer was
+  removed with the page's other buttons when the answer was already open; a button inside or around a heading,
+  or controlling a panel of text, is now converted as text.
 - Web pages built with Adobe Experience Manager, and privacy pages with `ccpa`, `gdpr` or `consent` in their
   class names, no longer lose most of their content to boilerplate removal. Any class or id holding one of those
   words, or `cmp`, was taken for a cookie banner; `cmp-` prefixes every AEM component, so one bank's page lost 683 of

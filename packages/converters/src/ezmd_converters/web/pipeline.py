@@ -31,7 +31,7 @@ from ezmd.ir import (
 from ezmd.registry import ConvertOptions
 from ezmd_converters.web import chrome, coverage, signals
 from ezmd_converters.web import meta as page_meta
-from ezmd_converters.web.boilerplate import main_content, strip_boilerplate
+from ezmd_converters.web.boilerplate import label_disclosures, main_content, strip_boilerplate
 from ezmd_converters.web.build import Builder
 from ezmd_converters.web.dom import (
     base_url,
@@ -95,6 +95,7 @@ def load_page(ref: InputRef, options: ConvertOptions) -> Page:
     options.ctx.check_deadline()
     hygiene = pre_clean(root)
     body = body_of(root)
+    label_disclosures(body)
     walls = signals.remove_walls(body)
     full_text = signals.visible_text(body)
     stripped = deepcopy(body)

@@ -923,3 +923,22 @@ Consequences: `test_web_consent_names.py` holds the AEM, CCPA, GDPR and consent-
 banners that must go; against the old pattern the four keep cases fail, and two banners it missed (`qc-cmp2`,
 `privacy-banner`) were kept.
 
+## D-0086: A button that titles a section is text
+
+Date: 2026-11-15. Status: accepted.
+
+Context: FAQ and accordion pages put each question inside the `<button>` that opens its answer
+(`<h3><button>Can I ...?</button></h3>`). `<button>` is a boilerplate tag, so on pages whose answers were already
+open the structural pass removed every question and kept the answers; D-0078 only relabels the control of a
+collapsed panel it reopens. On my study set this took FAQ questions from two pages with no warning.
+
+Decision: before any engine reads the page, a button whose label is at least two words and which sits inside a
+heading, holds a heading, or controls (`aria-controls`) a panel of at least five words that is not mostly links
+becomes plain text (span inside a heading, div around one, else p). Other buttons stay boilerplate.
+
+Alternatives rejected: keeping every button with `aria-expanded` (menu and "Show more" toggles would leave stray
+labels on every page); keeping every button (the same, and form controls with it).
+
+Consequences: `test_web_disclosure_labels.py`: three question shapes under all three engines, which all fail
+without the relabel, and menu, "Show more" and icon toggles that stay out.
+

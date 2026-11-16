@@ -134,6 +134,7 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
     """Remove boilerplate in place; returns how many elements were removed."""
     removed = 0
     anchors = section_anchors(body)
+    label_disclosures(body)
     for tag in _BOILER_TAGS:
         for el in list(body.iter(tag)):
             if el.getparent() is not None and not (tag == "form" and _protected(el)):
@@ -163,6 +164,40 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
             else:
                 stack.append(child)
     return removed
+
+
+def label_disclosures(body: HtmlElement) -> int:
+    """Turn the buttons that title a section (`_is_disclosure_label`) into plain text, in place; returns how many.
+    Runs on the page before any engine reads it, so Trafilatura sees the questions too."""
+    panels = {str(el.get("id")): el for el in body.iter() if is_element(el) and el.get("id")}
+    done = 0
+    for el in list(body.iter("button")):
+        if _is_disclosure_label(el, panels):
+            holds_heading = next(el.iterdescendants(*_HEADINGS), None) is not None
+            el.tag = "div" if holds_heading else "span" if _in_heading(el) else "p"
+            el.attrib.clear()
+            done += 1
+    return done
+
+
+def _in_heading(el: HtmlElement) -> bool:
+    return any(is_element(a) and tag_of(a) in _HEADINGS for a in el.iterancestors())
+
+
+def _is_disclosure_label(button: HtmlElement, panels: dict[str, HtmlElement]) -> bool:
+    """A `<button>` that titles a section (an FAQ question, an accordion header): it sits inside a heading or holds
+    one, or the panel it controls (`aria-controls`) holds at least five words; and its label is words, not an
+    icon. Its text is the section's title, so it becomes plain text instead of going with the other buttons. A
+    "Show more" or menu toggle controls a link list or nothing, and stays a button (D-0086)."""
+    if len(words(text_of(button))) < 2:
+        return False
+    if _in_heading(button) or button.find(".//h2") is not None or button.find(".//h3") is not None:
+        return True
+    for ref in (button.get("aria-controls") or "").split():
+        panel = panels.get(ref)
+        if panel is not None and len(words(text_of(panel))) >= 5 and link_density(panel) < MAX_ANCHOR_LINK_DENSITY:
+            return True
+    return False
 
 
 def _mostly_content(el: HtmlElement, body: HtmlElement) -> bool:
