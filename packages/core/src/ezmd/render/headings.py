@@ -26,20 +26,32 @@ MAX_HEADING_CHARS = 200
 _SOURCE_NUM = re.compile(r"^\d+(?:\.\d+)*\\?\.?\s+(?=\S)")
 _TRAIL_PUNCT = re.compile(r"[.:;,!]+$")
 _SOURCE_LABEL = re.compile(
-    r"^(?:(?i:section|article|part|chapter|appendix|schedule|exhibit|annex)\s+)?"
-    r"(?:\d+(?:\.\d+)*\\?\.?|[A-Z]\\?[.)]|\([a-zA-Z0-9]{1,4}\)|[IVXLC]+\\?[.)])\s+(?=\S)"
+    r"^(?:"
+    # After a keyword the number or letter needs no punctuation and may be the whole heading.
+    r"(?i:section|article|part|chapter|appendix|schedule|exhibit|annex)\s+"
+    r"(?:\d+(?:\.\d+)*|[A-Z]|[IVXLC]+|\([a-zA-Z0-9]{1,4}\))\\?[.):]?(?=\s|$)"
+    # On its own it needs title text after it, and a letter or roman numeral needs punctuation.
+    r"|(?:\d+(?:\.\d+)*\\?\.?|[A-Z]\\?[.)]|\([a-zA-Z0-9]{1,4}\)|[IVXLC]+\\?[.)])\s+(?=\S)"
+    r")"
 )
-"""A section label a document prints on its own heading: `31.1`, `6`, `A.`, `II.`, `(a)`, `Section 4`."""
+"""A section label a document prints on its own heading: `31.1`, `6`, `A.`, `II.`, `(a)`, `Section 4`,
+`Appendix B`."""
 MIN_SOURCE_NUMBERED = 3
 
 
-def _numbers_its_own_headings(ctx: RenderContext, consumed: set[str]) -> bool:
+def _numbers_its_own_headings(ctx: RenderContext, consumed: set[str], child: str | None) -> bool:
     """True when at least MIN_SOURCE_NUMBERED headings, and at least half of them, open with a section label: the
-    document numbers its own sections, so derived numbers would contradict the ones it prints (D-0083)."""
+    document numbers its own sections, so derived numbers would contradict the ones it prints (D-0083).
+
+    `child` selects whose headings are judged: None for the parent, a child prefix for an embedded document. The
+    synthetic section heading of a child belongs to neither."""
     texts = [
         plain_spans(ctx, b.spans).strip()
         for b in ctx.doc.blocks
-        if isinstance(b, Heading) and b.id not in consumed and CHILD_SECTION_ATTR not in b.attrs
+        if isinstance(b, Heading)
+        and b.id not in consumed
+        and CHILD_SECTION_ATTR not in b.attrs
+        and ctx.children.prefix_of(b.id) == child
     ]
     labelled = sum(bool(_SOURCE_LABEL.match(t)) for t in texts)
     return labelled >= MIN_SOURCE_NUMBERED and labelled * 2 >= len(texts)
@@ -111,7 +123,11 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             for b in ctx.doc.blocks
         )
     )
-    derive = ctx.profile.number_headings and not _numbers_its_own_headings(ctx, consumed)
+    # Decided per document: the parent and each embedded document are judged on their own headings.
+    derive_by_doc = {
+        child: ctx.profile.number_headings and not _numbers_its_own_headings(ctx, consumed, child)
+        for child in (None, *(info.prefix for info in ctx.children.infos))
+    }
     stack: list[tuple[int, HeadingInfo]] = []
     counters = [0] * 8
     for b in ctx.doc.blocks:
@@ -129,6 +145,8 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
         original = plain_spans(ctx, b.spans)
         text = render_spans(ctx, b.spans, heading=True)
         section = CHILD_SECTION_ATTR in b.attrs
+        # A child's section heading is part of the parent's outline.
+        derive = derive_by_doc[None if section else ctx.children.prefix_of(b.id)]
         if derive and not section:
             text = _SOURCE_NUM.sub("", text, count=1)
         if not section:

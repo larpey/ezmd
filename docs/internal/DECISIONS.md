@@ -833,7 +833,9 @@ printed.
 Decision: when at least three headings, and at least half of them, open with a section label (arabic, dotted,
 `A.`/`A)`, roman with a period or parenthesis, `(a)`, optionally after Section, Article, Part, Chapter, Appendix,
 Schedule, Exhibit or Annex), the renderer derives no numbers: headings keep their text, the sidecar `number` is
-null, and anchors stay `sec-N-M`. Documents without their own numbering are unchanged.
+null, and anchors stay `sec-N-M`. Documents without their own numbering are unchanged. After a keyword the label
+needs no punctuation and may be the whole heading (`Appendix B Rates`, `Section 4`). The parent and each attached or
+embedded document are judged separately on their own headings; a child's section heading follows the parent.
 
 Alternatives rejected: turning derived numbering off everywhere (outline numbers help in documents that print
 none); keeping derived numbers and only fixing the double numbering (the citation mismatch stays).
