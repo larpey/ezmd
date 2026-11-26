@@ -74,6 +74,37 @@ def test_bwrap_wraps() -> None:
     assert r.sandboxed_with == "bwrap"
 
 
+@pytest.mark.skipif(not sandbox.bwrap_available(), reason="bubblewrap not installed")
+def test_bwrap_runs_a_tool_outside_the_system_dirs() -> None:
+    """A venv interpreter (or LibreOffice under /opt) is not under /usr; bwrap exited 1 on the exec."""
+    r = run([PY, "-c", "print('inside')"], timeout=30)
+    assert r.sandboxed_with == "bwrap" and r.returncode == 0 and r.stdout.strip() == b"inside"
+
+
+@pytest.mark.skipif(not sandbox.bwrap_available(), reason="bubblewrap not installed")
+def test_bwrap_failure_is_an_error_not_an_exit_code(tmp_path: Path) -> None:
+    with pytest.raises(SandboxError, match="could not start in the sandbox: bwrap: "):
+        run(["/bin/true"], timeout=10, ro_binds=[tmp_path / "missing"])
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="POSIX install layouts")
+def test_tool_binds_cover_the_install_prefix(tmp_path: Path) -> None:
+    lo = tmp_path / "opt" / "libreoffice" / "program"
+    lo.mkdir(parents=True)
+    (lo / "soffice").write_bytes(b"")
+    assert sandbox.tool_binds(str(lo / "soffice")) == [lo.parent]
+    real = tmp_path / "python" / "bin"
+    real.mkdir(parents=True)
+    (real / "python3").write_bytes(b"")
+    venv = tmp_path / "venv" / "bin"
+    venv.mkdir(parents=True)
+    (venv / "python").symlink_to(real / "python3")
+    assert sandbox.tool_binds(str(venv / "python")) == [venv.parent, real.parent]
+    assert sandbox.tool_binds("/usr/bin/true") == []
+    local = Path.home() / "bin" / "tool"
+    assert sandbox.tool_binds(str(local)) == [local.parent]
+
+
 def test_default_process_limit_defers_to_a_cgroup_pids_limit(tmp_path: Path) -> None:
     """RLIMIT_NPROC counts every thread of the uid on the whole kernel, so 64 broke soffice, bwrap and
     pandoc in the worker (all containers run as uid 10001) and on any Linux desktop with a browser open."""

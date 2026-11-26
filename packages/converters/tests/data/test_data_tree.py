@@ -92,10 +92,15 @@ def test_json_deep_nesting_truncated(convert: Convert) -> None:
     assert doc.blocks  # rendered without recursion errors
 
 
-def test_json_extreme_nesting_is_a_clean_error(convert: Convert) -> None:
+def test_json_extreme_nesting_is_a_clean_outcome(convert: Convert) -> None:
+    """Python 3.14 bounds the JSON parser by stack size, not recursion count: on Linux's 8 MB stack it parses
+    100,000 levels, elsewhere it stops. Either way the result is a clean error or a warned truncation."""
     deep = "[" * 100_000 + "]" * 100_000
-    with pytest.raises(ConversionError):
-        convert(JsonConverter(), deep.encode(), "d.json")
+    try:
+        doc = convert(JsonConverter(), deep.encode(), "d.json")
+    except ConversionError:
+        return
+    assert WarningKind.DEPTH_TRUNCATED in _kinds(doc) and doc.blocks
 
 
 def test_json_records_sampled(convert: Convert) -> None:
