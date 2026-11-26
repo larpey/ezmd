@@ -80,6 +80,12 @@ All notable changes are generated from Conventional Commits. This project uses s
 - Slide-deck PDFs: a line that starts with a bullet glyph, and the lines wrapped under it, are never headings;
   a run of same-size lines longer than a heading is prose, not one truncated heading repeated as a paragraph;
   and on a page with a single title line and one larger body size, that size is the page's body text (#33).
+- The sandbox runs tools installed outside the system directories. Under bubblewrap only /usr, /etc, /bin and
+  /lib were bound, so a tool under /opt (LibreOffice's own packages), a virtualenv or ~/.local could not be
+  executed: bwrap exited 1 before the tool started and the caller saw that as the tool's exit code, with empty
+  output. The tool's install prefix is now bound read-only, at each symlink hop, and a failure of bwrap itself
+  raises `SandboxError` with bwrap's message. Found when GitHub's runners moved to Ubuntu 26.04, where bwrap
+  can run, and the nightly went red.
 - The injection scanner no longer marks dialogue, job titles or XML configuration `high`. On the 2026-10-27
   runs, 12 of 998 Project Gutenberg novels and 10 of the 13 `high` outputs in 16,509 held-out government files
   were "you are now the head of the family", "forget all your kindness", "from now on you will discontinue",
