@@ -78,6 +78,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   so an agreement's "31.1 Your liability" could come out as "4.2 Your liability", and letter or roman sections
   were numbered twice ("1.2 A. General terms"). When most of a document's headings carry their own label (`31.1`,
   `A.`, `II.`, `Section 4`), no numbers are derived; documents without their own numbering are unchanged.
+- The sandbox runs tools installed outside the system directories. Under bubblewrap only /usr, /etc, /bin and
+  /lib were bound, so a tool under /opt (LibreOffice's own packages), a virtualenv or ~/.local could not be
+  executed: bwrap exited 1 before the tool started and the caller saw that as the tool's exit code, with empty
+  output. The tool's install prefix is now bound read-only, at each symlink hop, and a failure of bwrap itself
+  raises `SandboxError` with bwrap's message. Found when GitHub's runners moved to Ubuntu 26.04, where bwrap
+  can run, and the nightly went red.
 - The injection scanner no longer marks dialogue, job titles or XML configuration `high`. On the 2026-10-27
   runs, 12 of 998 Project Gutenberg novels and 10 of the 13 `high` outputs in 16,509 held-out government files
   were "you are now the head of the family", "forget all your kindness", "from now on you will discontinue",
