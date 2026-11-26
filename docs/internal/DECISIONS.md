@@ -968,4 +968,3 @@ labels on every page); keeping every button (the same, and form controls with it
 
 Consequences: `test_web_disclosure_labels.py`: three question shapes under all three engines, which all fail
 without the relabel, and menu, "Show more" and icon toggles that stay out.
-
