@@ -74,6 +74,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Headings keep the section numbers a document prints. The full profile replaced them with outline positions,
+  so an agreement's "31.1 Your liability" could come out as "4.2 Your liability", and letter or roman sections
+  were numbered twice ("1.2 A. General terms"). When most of a document's headings carry their own label (`31.1`,
+  `A.`, `II.`, `Section 4`), no numbers are derived; documents without their own numbering are unchanged.
+
 - Slide-deck PDFs: a small bullet drawn on its own baseline beside larger text is attached to that text as its
   list marker, so a wrapped item is no longer split by a lone bullet paragraph and the page no longer warns of
   an uncertain reading order (#28). A lone en dash or middle dot (a table's empty cell) is left alone.

@@ -208,16 +208,16 @@ def test_cursor_is_opaque_and_profile_bound() -> None:
 def test_agent_cursor_paging() -> None:
     blocks = []
     for i in range(6):
-        blocks += [heading(f"Part {i}", 1), para("Some words in a sentence. " * 40)]
+        blocks += [heading(f"Topic {i}", 1), para("Some words in a sentence. " * 40)]
     res = make_result(blocks)
     first = render(res, "agent", max_tokens=700)
     m = re.search('<!-- ezmd: continued; next_cursor="([A-Za-z0-9_-]+)" -->', first.body)
     assert m and first.frontmatter["truncation"]["reason"] == "max_tokens"  # type: ignore[index]
     assert first.frontmatter["truncation"]["next_cursor"] == m.group(1)  # type: ignore[index]
     nxt = render(res, "agent", max_tokens=700, cursor=m.group(1))
-    assert "## 1 Part 0" not in nxt.body and "## 3 Part 2" in nxt.body
-    # A heading anchor is still accepted (the Part 3 example cursor).
-    assert "Part 2" in render(res, "agent", max_tokens=700, cursor="sec-3").body
+    assert "## 1 Topic 0" not in nxt.body and "## 3 Topic 2" in nxt.body
+    # A heading anchor is still accepted (the Topic 3 example cursor).
+    assert "Topic 2" in render(res, "agent", max_tokens=700, cursor="sec-3").body
     with pytest.raises(ValueError, match="unknown cursor"):
         render(res, "agent", cursor="sec-99")
     with pytest.raises(ValueError, match="unknown cursor"):
