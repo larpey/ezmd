@@ -108,6 +108,55 @@ def test_order_items_columns() -> None:
     assert [it.line.text.split()[0] for it in ordered if it.line] == ["Title"] + ["left"] * 4 + ["right"] * 4
 
 
+def _full_width(y0: float, n: int, order: int) -> list[Line]:
+    return [_line(1, 54, y0 + 14 * r, f"full {r} " + "w" * 90, order + r) for r in range(n)]
+
+
+def test_order_items_reads_a_sidebar_between_full_width_text_column_by_column() -> None:
+    # Full-width prose above and below a band where a left column runs beside a callout in a larger size, so most
+    # of the page crosses the gutter: the band alone reads left column, then right.
+    lines = _full_width(50, 8, 0)
+    lines += [_line(1, 54, 200 + 13 * r, f"left {r} " + "w" * 26, 20 + r) for r in range(5)]
+    lines += [_line(1, 280, 205 + 15 * r, f"right {r} " + "w" * 38, 30 + r, size=11.0) for r in range(4)]
+    lines += _full_width(280, 6, 40)
+    items = [Item(ln.x0, ln.y0, ln.x1, ln.y1, ln.order, line=ln) for ln in lines]
+    ordered, columns = order_items(items, 0, 612)
+    assert columns
+    words = [it.line.text.split()[0] for it in ordered if it.line]
+    assert words == ["full"] * 8 + ["left"] * 5 + ["right"] * 4 + ["full"] * 6
+    assert {it.column for it in ordered if it.line and it.line.text.startswith("left")} == {1}
+
+    # Labels one per row beside values of several lines are a table, not two columns: rows keep their order.
+    table = _full_width(50, 8, 0)
+    for r in range(4):
+        table.append(_line(1, 54, 200 + 50 * r, f"label {r} words", 20 + 5 * r))
+        table += [_line(1, 280, 200 + 50 * r + 13 * k, f"value {r} " + "w" * 38, 21 + 5 * r + k) for k in range(3)]
+    table += _full_width(420, 6, 60)
+    items = [Item(ln.x0, ln.y0, ln.x1, ln.y1, ln.order, line=ln) for ln in table]
+    ordered, columns = order_items(items, 0, 612)
+    assert not columns
+    assert [it.line.order for it in ordered if it.line] == sorted(ln.order for ln in table)
+
+    # A question of two lines level with an answer of three, row after row, is a table too.
+    rows = _full_width(50, 8, 0)
+    for r in range(3):
+        top = 200 + 60 * r
+        rows += [_line(1, 54, top + 13 * k, f"question {r} part {k}", 20 + 10 * r + k) for k in range(2)]
+        rows += [_line(1, 280, top + 13 * k, f"answer {r} " + "w" * 38, 25 + 10 * r + k) for k in range(3)]
+    rows += _full_width(400, 6, 60)
+    items = [Item(ln.x0, ln.y0, ln.x1, ln.y1, ln.order, line=ln) for ln in rows]
+    ordered, columns = order_items(items, 0, 612)
+    assert not columns
+    assert [it.line.text.split()[1] for it in ordered if it.line and it.line.text.startswith("question")] == [
+        "0",
+        "0",
+        "1",
+        "1",
+        "2",
+        "2",
+    ]
+
+
 def test_size_levels() -> None:
     page = PageText(
         1,
