@@ -44,11 +44,8 @@ def _is_leaf(el: HtmlElement) -> bool:
 
 
 def _is_text_container(el: HtmlElement) -> bool:
-    """A div-like leaf: none of its descendants is a block, a heading or another container, and no counted block
-    is its ancestor (so a span inside a counted `<p>` is not counted twice)."""
-    if next(el.iterdescendants(*_NESTED), None) is not None:
-        return False
-    return next(el.iterancestors(*_BLOCKS, *_HEADINGS, *_CONTAINERS[2:]), None) is None
+    """A div-like leaf: no block, heading, div, section, table or list sits inside it."""
+    return next(el.iterdescendants(*_NESTED), None) is None
 
 
 def _is_kept(tokens: list[str], kept: set[int]) -> bool:
@@ -84,6 +81,9 @@ class _Tally:
 
 def _tally(body: HtmlElement, kept: set[int]) -> _Tally:
     tally = _Tally()
+    taken: set[HtmlElement] = set()
+    """Headings and counted elements. Their text is spoken for, so nothing inside them is counted again; the walk is
+    in document order, so an ancestor is always decided before its descendants."""
     for el in body.iter(*_HEADINGS, *_BLOCKS, *_CONTAINERS):
         if not is_element(el):
             continue
@@ -91,10 +91,13 @@ def _tally(body: HtmlElement, kept: set[int]) -> _Tally:
         if tag in _HEADINGS:
             text = collapse(text_of(el))
             tally.open(text)
+        elif any(a in taken for a in el.iterancestors()):
+            continue
         elif (tag in _BLOCKS and _is_leaf(el)) or (tag in _CONTAINERS and _is_text_container(el)):
             text = collapse(text_of(el))
         else:
             continue
+        taken.add(el)
         tokens = words(text)
         if len(tokens) >= SHINGLE_WORDS and link_density(el) < MAX_ANCHOR_LINK_DENSITY:
             tally.add(len(text), kept=_is_kept(tokens, kept))

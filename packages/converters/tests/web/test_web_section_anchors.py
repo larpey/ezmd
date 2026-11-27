@@ -176,6 +176,27 @@ def test_text_in_a_span_inside_a_paragraph_is_counted_once() -> None:
     assert w is not None and w.detail["page_chars"] == len(PROSE.strip()) + len(FOG.strip())
 
 
+@pytest.mark.parametrize(
+    "markup",
+    [
+        "<div><span>{0}</span></div>",
+        "<section><div><span>{0}</span></div></section>",
+        "<span><span>{0}</span></span>",
+        "<div><span><font><span>{0}</span></font></span></div>",
+        "<span><div>{0}</div></span>",
+        "<section><span><div><span>{0}</span></div></span></section>",
+        "<ul><li><span>{0}</span><ul><li>Oil</li></ul></li></ul>",
+        "<table><tr><td><div><span>{0}</span></div></td></tr></table>",
+        "<h2><span>{0}</span></h2>",
+    ],
+)
+def test_nested_text_is_counted_exactly_once(markup: str) -> None:
+    body = body_of(parse_html(f"<html><body><main>{markup.format(FOG)}</main></body></html>"))
+    w = dropped_text(body, "")
+    assert w is not None
+    assert (w.detail["page_chars"], w.detail["dropped_chars"]) == (len(FOG.strip()), len(FOG.strip()))
+
+
 def test_a_lost_question_heading_is_page_text() -> None:
     faq = "".join(
         f'<div class="faq"><h3 class="faq__question">How does the keeper signal the tender number {n}?</h3>'
