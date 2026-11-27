@@ -188,7 +188,7 @@ def _is_disclosure_label(button: HtmlElement, panels: dict[str, HtmlElement]) ->
     """A `<button>` that titles a section (an FAQ question, an accordion header): it sits inside a heading or holds
     one, or the panel it controls (`aria-controls`) holds at least five words; and its label is words, not an
     icon. Its text is the section's title, so it becomes plain text instead of going with the other buttons. A
-    "Show more" or menu toggle controls a link list or nothing, and stays a button (D-0088)."""
+    "Show more" or menu toggle controls a link list or nothing, and stays a button (D-0090)."""
     if len(words(text_of(button))) < 2:
         return False
     if _in_heading(button) or button.find(".//h2") is not None or button.find(".//h3") is not None:

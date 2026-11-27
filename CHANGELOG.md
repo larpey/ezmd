@@ -74,6 +74,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- PDF list bullets set a tab stop before their text (word processors' hanging indent) attach to the item instead
+  of standing alone as a paragraph; on held-out government PDFs, files with lone bullets fall from 132 to 58.
+
 - Text no longer prints twice under long headings or repeated titles. A source heading over 200 characters (a
   numbered paragraph set in a heading style) was cut with `...` and then printed in full below; it is now a
   paragraph, printed once. A first paragraph that is the title again is dropped like the title paragraph.
