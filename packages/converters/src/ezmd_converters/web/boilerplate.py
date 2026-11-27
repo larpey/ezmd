@@ -105,7 +105,7 @@ def _reads_as_chrome(attrs: str) -> bool:
     return bool(_COOKIE.search(attrs) or _BOILER_CLASS.search(attrs))
 
 
-def _protected(el: HtmlElement) -> bool:
+def protected(el: HtmlElement) -> bool:
     """An element that contains the page's h1 or an <article>/<main> is content, whatever its class says."""
     tag = tag_of(el)
     if tag in ("article", "main", "body", "html"):
@@ -129,7 +129,7 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
     anchors = section_anchors(body)
     for tag in _BOILER_TAGS:
         for el in list(body.iter(tag)):
-            if el.getparent() is not None and not (tag == "form" and _protected(el)):
+            if el.getparent() is not None and not (tag == "form" and protected(el)):
                 _remove(el)
                 removed += 1
     for el in list(body.iter("header", "footer")):
@@ -146,10 +146,10 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
                 continue
             role = (child.get("role") or "").strip().lower()
             attrs = _attrs(child, anchors)
-            kill = role in _BOILER_ROLES and not _protected(child)
-            kill = kill or (bool(_COOKIE.search(attrs)) and not _protected(child))
+            kill = role in _BOILER_ROLES and not protected(child)
+            kill = kill or (bool(_COOKIE.search(attrs)) and not protected(child))
             if aggressive and not kill and attrs and _BOILER_CLASS.search(attrs) and not _CONTENT_CLASS.search(attrs):
-                kill = not _protected(child) and not _mostly_content(child, body)
+                kill = not protected(child) and not mostly_content(child, body)
             if kill:
                 _remove(child)
                 removed += 1
@@ -158,7 +158,7 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
     return removed
 
 
-def _mostly_content(el: HtmlElement, body: HtmlElement) -> bool:
+def mostly_content(el: HtmlElement, body: HtmlElement) -> bool:
     """True when `el` holds over half of the page's paragraph text (a mislabeled wrapper, not a widget)."""
     total = sum(len(collapse(text_of(p))) for p in body.iter("p")) or 1
     mine = sum(len(collapse(text_of(p))) for p in el.iter("p"))

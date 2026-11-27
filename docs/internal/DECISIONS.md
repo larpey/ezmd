@@ -955,3 +955,25 @@ long bold run, the pages that must keep their headings (sparse chapter, contents
 subheads, body-size text) and the lone dash and middle dot. A portrait slide export keeps its larger body text
 as headings. No fixture golden changed. Not addressed: numbered agreement paragraphs ("1. The Services. The
 Services enable you ...") that are set in a heading size; they are left for a change with its own evidence.
+
+## D-0086: A switch to the rule extractor needs 500 lost characters and may not lose structure
+
+Date: 2026-11-26. Status: proposed.
+
+Context: a corpus study of 388 documents found the D-0078 hand-over switching to the rule extractor on many bad
+pages. Short app-store-style pages lose 27 to 48 percent of their text, but under 500 characters of it. On other
+pages the rules output kept the words and lost their shape: a 30-row table came out as one 2,708-word paragraph.
+`extraction_dropped_text` also counted browser-upgrade and exit-popup banners as lost page text.
+
+Decision: `_recover` keeps the 5 percent threshold and also requires 500 dropped characters. It keeps Trafilatura,
+whose result then carries `extraction_dropped_text`, when the rules output has fewer table rows, or its longest
+paragraph has at least 300 words and at least double the words of Trafilatura's longest. `web/coverage.py` counts
+heading text as kept, and leaves out of the measure containers named by class or id as browser-upgrade or exit
+banners and blocks of at most 300 characters whose text says so.
+
+Alternatives rejected: raising the percentage (long pages lose whole lists at 5 percent); comparing table counts
+(a table can survive with most of its rows gone); dropping banners from the output (this change is about the
+measure, and the extractors already decide what they keep).
+
+Consequences: a short page that really lost text now only warns. Counting headings makes the page total larger, so
+a loss near 5 percent can fall under it. The banner patterns are English.

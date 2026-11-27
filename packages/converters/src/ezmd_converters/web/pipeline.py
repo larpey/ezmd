@@ -23,6 +23,7 @@ from ezmd.ir import (
     Paragraph,
     Provenance,
     SourceType,
+    Table,
     Warning,
     WarningKind,
     spans_text,
@@ -45,6 +46,10 @@ MIN_EXTRACT_CHARS = 200
 MIN_EXTRACT_RATIO = 0.25
 RECOVERY_RATIO = 0.5
 """The rule extractor replaces Trafilatura's article when it loses at most this share of what Trafilatura lost."""
+RECOVERY_MIN_CHARS = 500
+"""Trafilatura must also leave out this many characters: on a short page 5 percent, or even 40, is a few lines."""
+COLLAPSED_PARAGRAPH_WORDS = 300
+"""A longest paragraph this long, and double Trafilatura's longest, is structure run together into prose."""
 
 
 @dataclass(slots=True)
@@ -202,10 +207,12 @@ def _recover(page: Page, kept: Builder, rules: Builder, notes: list[Warning]) ->
     loss = coverage.dropped_text(page.body, _plain(kept.blocks))
     if loss is None:
         return kept
+    lost = _dropped(loss)
+    if lost < max(RECOVERY_MIN_CHARS, coverage.MIN_PAGE_RATIO * int(loss.detail["page_chars"])):
+        return kept
     _rules(page, rules)
-    other = coverage.dropped_text(page.body, _plain(rules.blocks))
-    lost, other_lost = _dropped(loss), _dropped(other)
-    if lost < coverage.MIN_PAGE_RATIO * int(loss.detail["page_chars"]) or other_lost > RECOVERY_RATIO * lost:
+    other_lost = _dropped(coverage.dropped_text(page.body, _plain(rules.blocks)))
+    if other_lost > RECOVERY_RATIO * lost or _loses_structure(kept.blocks, rules.blocks):
         return kept
     reason = "left out page text"
     notes.append(
@@ -222,6 +229,24 @@ def _recover(page: Page, kept: Builder, rules: Builder, notes: list[Warning]) ->
         )
     )
     return rules
+
+
+def _loses_structure(kept: list[Block], other: list[Block]) -> bool:
+    """True when `other` holds more of the text in a worse shape: fewer table rows than `kept`, or a far longer
+    paragraph (a table or list run together into prose)."""
+    if _table_rows(other) < _table_rows(kept):
+        return True
+    longest = _longest_paragraph(other)
+    return longest >= COLLAPSED_PARAGRAPH_WORDS and longest >= 2 * _longest_paragraph(kept)
+
+
+def _table_rows(blocks: list[Block]) -> int:
+    return sum(x.n_rows for x in blocks if isinstance(x, Table))
+
+
+def _longest_paragraph(blocks: list[Block]) -> int:
+    """Words in the longest paragraph."""
+    return max((len(spans_text(x.spans).split()) for x in blocks if isinstance(x, Paragraph)), default=0)
 
 
 def _dropped(loss: Warning | None) -> int:

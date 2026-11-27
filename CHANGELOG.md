@@ -96,6 +96,10 @@ All notable changes are generated from Conventional Commits. This project uses s
 - `web.trafilatura` hands over to the rule extractor when it leaves out 5 percent of the page text and the rule
   extractor loses at most half as much (`engine_fallback` with `detail.dropped_chars`). Across 306 saved pages this
   took `extraction_dropped_text` from 54 pages to 20 (D-0078).
+- That hand-over now also needs 500 lost characters, so a short page no longer switches over a few lines, and it is
+  refused when the rule extractor's output has fewer table rows or runs text together into a paragraph of 300 words
+  or more and double Trafilatura's longest. `extraction_dropped_text` counts heading text as kept and ignores
+  browser-upgrade and exit-popup banners (D-0086).
 - New warning `extraction_dropped_text`: when an extractor leaves out a headed section or 5 percent of the text
   the page body holds, the warning gives the characters lost and names the sections. It compares against the body
   with only structural boilerplate removed, so a loss from class and id rules cannot hide on both sides of the

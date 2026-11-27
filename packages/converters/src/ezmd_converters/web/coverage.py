@@ -5,16 +5,27 @@ a section those rules take is missing from both sides of the ratio. Here the pag
 structural boilerplate gone (what `web.html_raw` keeps), and each block of it is looked up in the extracted text
 by its word shingles. The cost is linear in the page. Blocks that are mostly links and blocks too short to
 shingle are not counted: they are the related-story lists and button labels extraction is there to remove.
+Browser-upgrade and exit-popup banners are not counted either, and heading text always counts as kept.
 """
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterator
 from copy import deepcopy
 
 from ezmd.ir import Warning, WarningKind
-from ezmd_converters.web.boilerplate import MAX_ANCHOR_LINK_DENSITY, link_density, strip_boilerplate, words
+from ezmd_converters.web.boilerplate import (
+    MAX_ANCHOR_LINK_DENSITY,
+    link_density,
+    mostly_content,
+    protected,
+    section_anchors,
+    strip_boilerplate,
+    words,
+)
 from ezmd_converters.web.dom import HtmlElement, collapse, is_element, tag_of, text_of
+from ezmd_converters.web.hygiene import _remove
 
 _HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 _BLOCKS = ("p", "li", "dd", "dt", "td", "th", "blockquote", "pre")
@@ -27,6 +38,20 @@ MIN_PAGE_RATIO = 0.05
 """Share of the page's text that must be gone for a loss with no headed section to be reported. The same 5 percent
 the benchmark calls silent loss (tools/bench)."""
 MAX_NAMED_SECTIONS = 12
+MAX_BANNER_BLOCK_CHARS = 300
+"""A block longer than this is prose that mentions browsers or leaving a site, not a banner saying so."""
+_BANNER_ATTR = re.compile(
+    r"(^|[-_ ])((outdated|unsupported|old)[-_]?browser|browser[-_]?(upgrade|update|warning|notice|alert|banner)|"
+    r"upgrade[-_]?browser|browsehappy|buorg|exit[-_]?(intent|popup|pop-up|modal|overlay|disclaimer))([-_ ]|$)",
+    re.I,
+)
+_BANNER_TEXT = re.compile(
+    r"\b(you(['’]re| are) (currently )?using an? (outdated|unsupported|old(er)?)( version of)?( web)? ?browser|"
+    r"your (web )?browser is (out of date|outdated|unsupported|(not|no longer) supported)|"
+    r"(please )?(upgrade|update) your (web )?browser (to|for)\b|"
+    r"you(['’]re| are) (now )?(leaving|about to leave) (this|our|the) (web ?)?site)",
+    re.I,
+)
 
 
 def _shingles(tokens: list[str]) -> Iterator[int]:
@@ -74,19 +99,38 @@ def _tally(body: HtmlElement, kept: set[int]) -> _Tally:
         if not is_element(el):
             continue
         if tag_of(el) in _HEADINGS:
-            tally.open(collapse(text_of(el)))
+            title = collapse(text_of(el))
+            tally.open(title)
+            tally.add(len(title), kept=True)
         elif _is_leaf(el):
             text = collapse(text_of(el))
             tokens = words(text)
-            if len(tokens) >= SHINGLE_WORDS and link_density(el) < MAX_ANCHOR_LINK_DENSITY:
-                tally.add(len(text), kept=_is_kept(tokens, kept))
+            if len(tokens) < SHINGLE_WORDS or link_density(el) >= MAX_ANCHOR_LINK_DENSITY:
+                continue
+            if len(text) <= MAX_BANNER_BLOCK_CHARS and _BANNER_TEXT.search(text):
+                continue
+            # Headings inside the block are counted, as kept, when the walk reaches them.
+            own = len(text) - sum(len(collapse(text_of(h))) for h in el.iterdescendants(*_HEADINGS))
+            tally.add(max(0, own), kept=_is_kept(tokens, kept))
     return tally
+
+
+def _remove_banners(body: HtmlElement) -> None:
+    """Drop browser-upgrade and exit-popup containers, named so by class or id."""
+    anchors = section_anchors(body)
+    for el in list(body.iterdescendants()):
+        if not is_element(el) or el.getparent() is None or el in anchors:
+            continue
+        attrs = f"{el.get('class') or ''} {el.get('id') or ''}"
+        if _BANNER_ATTR.search(attrs) and not protected(el) and not mostly_content(el, body):
+            _remove(el)
 
 
 def dropped_text(body: HtmlElement, extracted: str) -> Warning | None:
     """An `extraction_dropped_text` warning when `extracted` lacks a headed section or a material share of `body`."""
     page = deepcopy(body)
     strip_boilerplate(page, aggressive=False)
+    _remove_banners(page)
     tally = _tally(page, set(_shingles(words(extracted))))
     page_chars, dropped = sum(tally.total), sum(tally.lost)
     sections = tally.dropped_sections()
