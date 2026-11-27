@@ -111,6 +111,8 @@ class RenderContext:
     pending_refs: list[str] = field(default_factory=list)
     anchors: dict[str, str] = field(default_factory=dict)
     headings: dict[str, HeadingInfo] = field(default_factory=dict)
+    demoted: dict[str, str] = field(default_factory=dict)
+    """Heading block id -> its text, for source headings too long to be one: rendered once as a paragraph."""
     current_heading: HeadingInfo | None = None
     table_count: int = 0
     figure_count: int = 0

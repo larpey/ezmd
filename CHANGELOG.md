@@ -77,6 +77,10 @@ All notable changes are generated from Conventional Commits. This project uses s
 - PDF list bullets set a tab stop before their text (word processors' hanging indent) attach to the item instead
   of standing alone as a paragraph; on held-out government PDFs, files with lone bullets fall from 132 to 58.
 
+- Text no longer prints twice under long headings or repeated titles. A source heading over 200 characters (a
+  numbered paragraph set in a heading style) was cut with `...` and then printed in full below; it is now a
+  paragraph, printed once. A first paragraph that is the title again is dropped like the title paragraph.
+
 - Web pages keep sections whose id was generated from their heading. `id="how-we-share-this-log"` read as a share
   widget to both the rule extractor's patterns and Trafilatura's discard rules, so `web.trafilatura` and
   `web.rules` dropped the whole section, while the only warning on the page was about unrelated hidden elements.
