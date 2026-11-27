@@ -836,9 +836,13 @@ within two ems of the bullet, as that line's prefix, right after `_lines` and be
 headings see the page; orders are renumbered. In heading planning, a line that starts with a bullet glyph is
 never a heading, nor are the lines wrapped under it (same size, indented past the bullet, closer than a line
 space). Runs of consecutive lines of one size and weight whose joined text is longer than `HEADING_MAX_CHARS`
-are prose, so a heading is never the thing the renderer has to truncate. On a page whose text above the body
-size comes in exactly two sizes, the larger a single line (the slide title) and the smaller most of the page's
-characters, the smaller size is that slide's body text and is not a heading.
+are prose, so a heading is never the thing the renderer has to truncate. Only the glyphs that are always
+bullets are attached: a lone en dash or middle dot stays a line of its own, because tables use it for "no
+value". On a landscape page (at least 1.2 times wider than tall) with no body-size text, whose text above the
+body size comes in exactly two sizes, the larger a single line (the slide title) and the smaller most of the
+page's characters, the smaller size is that slide's body text and is not a heading; a bold line or a line the
+outline names is never demoted this way. The size counts alone also describe a sparse chapter or contents
+page, which is why the slide evidence is required.
 
 Alternatives rejected: merging the bullet in the assembler (tables and headings would already have seen two
 lines); raising the baseline tolerance in `_lines` (it would also join real superscripts and drop caps); a
@@ -847,8 +851,10 @@ second-largest size per page as body (a paper's first page has a title and secti
 body, and most of its text is body size, which the character-share condition keeps).
 
 Consequences: `test_pdf_slides.py` covers the bullet attached on its own baseline, a wrapped item, a distant
-bullet left alone, a slide at 24 pt, a slide with a subtitle (three sizes, so the bullet rule decides), and a
-long bold run. No fixture golden changed. Not addressed: numbered agreement paragraphs ("1. The Services. The
+bullet left alone, a slide at 24 pt, a slide with a subtitle (three sizes, so the bullet rule decides), a
+long bold run, the pages that must keep their headings (sparse chapter, contents, bold or bookmarked
+subheads, body-size text) and the lone dash and middle dot. A portrait slide export keeps its larger body text
+as headings. No fixture golden changed. Not addressed: numbered agreement paragraphs ("1. The Services. The
 Services enable you ...") that are set in a heading size; they are left for a change with its own evidence.
 
 ## D-0088: A bullet reaches its text across a tab stop

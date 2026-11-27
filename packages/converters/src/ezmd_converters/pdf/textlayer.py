@@ -373,6 +373,9 @@ BULLET_GLYPHS = "".join(
     chr(c) for c in (0x2022, 0x25E6, 0x25AA, 0x2023, 0x2219, 0x00B7, 0x25CF, 0x25A0, 0x2013, 0x2043)
 )
 """Glyphs that open a list item when they start a line."""
+ATTACH_GLYPHS = "".join(c for c in BULLET_GLYPHS if c not in "\u00b7\u2013")
+"""The glyphs that are only ever bullets, so one alone on a line can be moved onto the text beside it. A lone
+en dash is a table's "no value" and a lone middle dot a separator: both stay where they are."""
 BULLET_REACH_EM = 4.5
 """A bullet sits at most this many ems (of the text beside it) left of the text. A slide puts its text about an
 em past the bullet; a word processor tabs it to the hanging indent, up to half an inch on (3.6 em at 10 pt,
@@ -380,12 +383,12 @@ em past the bullet; a word processor tabs it to the hanging indent, up to half a
 
 
 def attach_bullets(lines: list[Line], order_base: int) -> list[Line]:
-    """Merge a line that is one bullet glyph into the line it marks. Slide exports draw a small bullet on its
-    own baseline beside larger text, so `_lines` makes it a line of its own and a lone bullet paragraph splits
-    the item. The bullet belongs to the nearest line to its right (not itself a bullet) whose vertical extent
-    holds the bullet's and whose left edge is within `BULLET_REACH_EM` of the bullet's right edge. Orders are
-    renumbered from `order_base` after lines disappear."""
-    marks = [k for k, ln in enumerate(lines) if len(ln.text) == 1 and ln.text in BULLET_GLYPHS]
+    """Merge a line that is one bullet glyph (`ATTACH_GLYPHS`) into the line it marks. Slide exports draw a small
+    bullet on its own baseline beside larger text, so `_lines` makes it a line of its own and a lone bullet
+    paragraph splits the item. The bullet belongs to the nearest line to its right (not itself a bullet) whose
+    vertical extent holds the bullet's and whose left edge is within `BULLET_REACH_EM` of the bullet's right
+    edge. Orders are renumbered from `order_base` after lines disappear."""
+    marks = [k for k, ln in enumerate(lines) if len(ln.text) == 1 and ln.text in ATTACH_GLYPHS]
     if not marks:
         return lines
     drop: set[int] = set()
@@ -394,7 +397,9 @@ def attach_bullets(lines: list[Line], order_base: int) -> list[Line]:
         b = lines[k]
         best: int | None = None
         for j, ln in enumerate(lines):
-            if j == k or j in drop or ln.turn != b.turn or ln.figure != b.figure or ln.text[:1] in BULLET_GLYPHS:
+            if j == k or j in drop or ln.turn != b.turn or ln.figure != b.figure:
+                continue
+            if not ln.text or ln.text[0] in BULLET_GLYPHS:
                 continue
             gap = ln.x0 - b.x1
             if gap < -0.5 * ln.size or gap > BULLET_REACH_EM * ln.size:

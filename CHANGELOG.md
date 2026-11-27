@@ -78,10 +78,11 @@ All notable changes are generated from Conventional Commits. This project uses s
   of standing alone as a paragraph; on held-out government PDFs, files with lone bullets fall from 132 to 58.
 - Slide-deck PDFs: a small bullet drawn on its own baseline beside larger text is attached to that text as its
   list marker, so a wrapped item is no longer split by a lone bullet paragraph and the page no longer warns of
-  an uncertain reading order (#28).
+  an uncertain reading order (#28). A lone en dash or middle dot (a table's empty cell) is left alone.
 - Slide-deck PDFs: a line that starts with a bullet glyph, and the lines wrapped under it, are never headings;
   a run of same-size lines longer than a heading is prose, not one truncated heading repeated as a paragraph;
-  and on a page with a single title line and one larger body size, that size is the page's body text (#33).
+  and on a slide (a landscape page with no body-size text) with a single title line and one larger body size,
+  that size is the page's body text, except bold lines and lines the outline names (#33).
 - The sandbox runs tools installed outside the system directories. Under bubblewrap only /usr, /etc, /bin and
   /lib were bound, so a tool under /opt (LibreOffice's own packages), a virtualenv or ~/.local could not be
   executed: bwrap exited 1 before the tool started and the caller saw that as the tool's exit code, with empty

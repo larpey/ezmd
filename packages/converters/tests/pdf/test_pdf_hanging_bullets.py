@@ -10,6 +10,7 @@ import pytest
 from conftest import TextOp, convert_path
 
 from ezmd.ir import ListBlock, Paragraph, spans_text
+from ezmd_converters.pdf.textlayer import Line, attach_bullets
 
 BULLET = "•"
 ITEMS = [
@@ -60,3 +61,12 @@ def test_a_bullet_a_column_away_from_the_text_is_left_alone(make_pdf: Callable[.
     doc = convert_path(make_pdf([_page(10.0, 90.0, 126.0) + ops]))
     items = [spans_text(i.spans) for b in doc.blocks if isinstance(b, ListBlock) for i in b.items]
     assert items == ITEMS
+
+
+@pytest.mark.parametrize(("gap_em", "attached"), [(4.4, True), (5.0, False)])
+def test_a_bullet_reaches_four_and_a_half_ems_and_no_further(gap_em: float, attached: bool) -> None:
+    mark = Line(1, 72.0, 200.0, 77.0, 210.0, 10.0, False, [(BULLET, None, None)], 0)
+    x0 = mark.x1 + 10.0 * gap_em
+    text = Line(1, x0, 200.0, x0 + 50.0, 210.0, 10.0, False, [("Tide tables", None, None)], 1)
+    expected = [f"{BULLET} Tide tables"] if attached else [BULLET, "Tide tables"]
+    assert [ln.text for ln in attach_bullets([mark, text], 0)] == expected
