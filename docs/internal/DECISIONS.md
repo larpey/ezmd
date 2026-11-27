@@ -881,6 +881,30 @@ the nightly. The JSON extreme-nesting test accepts either outcome Python 3.14 pr
 on Linux's 8 MB stack followed by the existing depth clip with `depth_truncated`). opentelemetry-api moves to
 1.45.2 for CVE-2026-126360.
 
+## D-0083: A document that numbers its own sections keeps its numbers
+
+Date: 2026-11-15. Status: accepted.
+
+Context: the full profile stripped a leading arabic number from every heading and wrote the derived outline
+number instead (part3 section 14). On my privacy-notice study set 18 of 68 PDFs are agreements that number their
+own sections (`31.1`, `A.`, `II.`, `6`). Their headings came out as the outline position, so "31.1 Your liability"
+became "4.2 Your liability" and a citation of section 31.1 no longer matched; letter and roman labels were not
+stripped and were numbered twice ("1.2 A. General terms"). My call on 2026-11-15: show the source numbers as
+printed.
+
+Decision: when at least three headings, and at least half of them, open with a section label (arabic, dotted,
+`A.`/`A)`, roman with a period or parenthesis, `(a)`, optionally after Section, Article, Part, Chapter, Appendix,
+Schedule, Exhibit or Annex), the renderer derives no numbers: headings keep their text, the sidecar `number` is
+null, and anchors stay `sec-N-M`. Documents without their own numbering are unchanged. After a keyword the label
+needs no punctuation and may be the whole heading (`Appendix B Rates`, `Section 4`). The parent and each attached or
+embedded document are judged separately on their own headings; a child's section heading follows the parent.
+
+Alternatives rejected: turning derived numbering off everywhere (outline numbers help in documents that print
+none); keeping derived numbers and only fixing the double numbering (the citation mismatch stays).
+
+Consequences: `test_render_structure.py` has the agreement shape, the two-headings threshold and title words that
+look like labels ("A Guide", "Part of it"). Two PDF fixtures print `1.` on their headings and now keep the period.
+
 ## D-0084: Column gutters per page region, and paragraphs joined across a column or page boundary
 
 Date: 2026-11-15. Status: accepted.

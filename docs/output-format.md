@@ -82,7 +82,7 @@ result query parameters (for example `?profile=rag&chunks.chunk_tokens=600`). Sh
 4. The body, one blank line between blocks.
 
 Headings are numbered by position (`## 3 Results`, `### 3.2 Harsh braking`) and carry stable anchors
-with dots replaced by dashes (`{#sec-3-2}`). Source numbering is replaced so it stays consistent.
+with dots replaced by dashes (`{#sec-3-2}`). Stray source numbers are replaced so the outline stays consistent; a document that numbers its own sections keeps the labels it prints and gets no derived numbers (anchors stay derived).
 
 Markers are HTML comments on their own line: `<!-- page N -->`, `<!-- slide N -->`,
 `<!-- sheet "Name" -->`, `<!-- image: ... -->`, and `<!-- ezmd: note -->` for converter notes.
