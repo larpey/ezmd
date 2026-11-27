@@ -855,3 +855,41 @@ this change: list markers set on a line of their own ("ii." apart from its text)
 paragraph (the weight test splits it), labels set in the left margin beside body text, and table cells the table
 heuristic misses. Tests: `test_order_items_reads_a_sidebar_between_full_width_text_column_by_column`, and the
 page and column joins in `test_pdf_paragraphs.py`.
+
+## D-0085: Slide-deck bullets are attached before lines are read, and slide body text is not a heading
+
+Date: 2026-11-15. Status: accepted.
+
+Context: Slide-deck PDFs set a small bullet glyph (7.7 pt) on its own baseline beside 17 pt text, so `_lines`
+made the bullet a line of its own: the Markdown had a lone bullet paragraph that split a wrapped item (#28).
+The same decks size body text per slide (17, 24 or 32 pt), and `HeadingPlanner.level()` ranks every size above
+the document's most common one as a heading, so a slide set in 24 pt became a run of H3s with the bullet glyph
+inside, and a six-line question at 32 pt joined into one 230-character heading that the renderer truncated and
+then repeated as a paragraph (#33).
+
+Decision: I attach a line that is one bullet glyph (the set `assemble` already uses, now `BULLET_GLYPHS` in
+`textlayer.py`) to the nearest line on its right whose vertical extent holds the bullet's and whose left edge is
+within two ems of the bullet, as that line's prefix, right after `_lines` and before tables, ordering and
+headings see the page; orders are renumbered. In heading planning, a line that starts with a bullet glyph is
+never a heading, nor are the lines wrapped under it (same size, indented past the bullet, closer than a line
+space). Runs of consecutive lines of one size and weight whose joined text is longer than `HEADING_MAX_CHARS`
+are prose, so a heading is never the thing the renderer has to truncate. Only the glyphs that are always
+bullets are attached: a lone en dash or middle dot stays a line of its own, because tables use it for "no
+value". On a landscape page (at least 1.2 times wider than tall) with no body-size text, whose text above the
+body size comes in exactly two sizes, the larger a single line (the slide title) and the smaller most of the
+page's characters, the smaller size is that slide's body text and is not a heading; a bold line or a line the
+outline names is never demoted this way. The size counts alone also describe a sparse chapter or contents
+page, which is why the slide evidence is required.
+
+Alternatives rejected: merging the bullet in the assembler (tables and headings would already have seen two
+lines); raising the baseline tolerance in `_lines` (it would also join real superscripts and drop caps); a
+per-document "slide deck" flag (decks mix pages, and the page-level rule needs no detection); treating any
+second-largest size per page as body (a paper's first page has a title and section headings set above the
+body, and most of its text is body size, which the character-share condition keeps).
+
+Consequences: `test_pdf_slides.py` covers the bullet attached on its own baseline, a wrapped item, a distant
+bullet left alone, a slide at 24 pt, a slide with a subtitle (three sizes, so the bullet rule decides), a
+long bold run, the pages that must keep their headings (sparse chapter, contents, bold or bookmarked
+subheads, body-size text) and the lone dash and middle dot. A portrait slide export keeps its larger body text
+as headings. No fixture golden changed. Not addressed: numbered agreement paragraphs ("1. The Services. The
+Services enable you ...") that are set in a heading size; they are left for a change with its own evidence.

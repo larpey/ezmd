@@ -24,9 +24,9 @@ from ezmd.ir import (
 )
 from ezmd_converters.pdf.headings import HeadingSources
 from ezmd_converters.pdf.layout import FigureText, Item, TableGrid
-from ezmd_converters.pdf.textlayer import Line, Run
+from ezmd_converters.pdf.textlayer import BULLET_GLYPHS, Line, Run
 
-_BULLETS = "".join(chr(c) for c in (0x2022, 0x25E6, 0x25AA, 0x2023, 0x2219, 0x00B7, 0x25CF, 0x25A0, 0x2013, 0x2043))
+_BULLETS = BULLET_GLYPHS
 _BULLET = re.compile("^[" + re.escape(_BULLETS + "-*") + r"]\s+")
 _NUMBERED = re.compile(r"^(\d{1,3}|[a-z])[.)]\s+")
 _HYPHEN_END = re.compile(r"([A-Za-z]+)-$")
