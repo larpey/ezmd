@@ -5,7 +5,8 @@
   which case the printed labels stay and no numbers are added (D-0083); anchors are `sec-3-2` either way (the H1 is
   `doc`).
 - Headings deeper than H6 become bold paragraphs. Text is one line, formatting stripped except code spans,
-  no trailing punctuation except `?`, max 200 chars (the full text overflows into the next paragraph).
+  no trailing punctuation except `?`, max 200 chars; a longer source heading is rendered once as a paragraph
+  (D-0087).
 """
 
 from __future__ import annotations
@@ -96,7 +97,19 @@ def _consumed_ids(ctx: RenderContext, title: str) -> set[str]:
     for b in own:
         if isinstance(b, Paragraph) and b.role == "title" and plain_spans(ctx, b.spans).casefold() == key:
             consumed.add(b.id)
+    # The document's own first line is often its title again (a title taken from the file's properties or the
+    # page's <title>, then the same words as the first paragraph): printed under the H1 it read twice.
+    first = next((b for b in own if isinstance(b, (Heading, Paragraph)) and b.id not in consumed), None)
+    if isinstance(first, Paragraph) and _same_title(plain_spans(ctx, first.spans), title):
+        consumed.add(first.id)
     return consumed
+
+
+def _same_title(text: str, title: str) -> bool:
+    def norm(s: str) -> str:
+        return " ".join(_TRAIL_PUNCT.sub("", s.strip()).split()).casefold()
+
+    return bool(norm(title)) and norm(text) == norm(title)
 
 
 def plan_headings(ctx: RenderContext, title: str) -> set[str]:
@@ -119,6 +132,11 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
     counters = [0] * 8
     for b in ctx.doc.blocks:
         if not isinstance(b, Heading) or b.id in consumed:
+            continue
+        if CHILD_SECTION_ATTR not in b.attrs and len(" ".join(plain_spans(ctx, b.spans).split())) > MAX_HEADING_CHARS:
+            # A "heading" longer than any heading is a paragraph a converter styled as one (a numbered paragraph
+            # in a Word heading style): cut to 200 characters and repeated in full below it, it read twice.
+            ctx.demoted[b.id] = render_spans(ctx, b.spans)
             continue
         shifted = b.level + 1
         while stack and stack[-1][0] >= shifted:
