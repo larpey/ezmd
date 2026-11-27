@@ -17,6 +17,7 @@ from ezmd.inputs import InputRef
 from ezmd.ir import (
     Block,
     Document,
+    Footnote,
     Heading,
     InlineSpan,
     Metadata,
@@ -29,11 +30,19 @@ from ezmd.ir import (
     spans_text,
 )
 from ezmd.registry import ConvertOptions
-from ezmd_converters.web import coverage, signals
+from ezmd_converters.web import chrome, coverage, signals
 from ezmd_converters.web import meta as page_meta
-from ezmd_converters.web.boilerplate import main_content, strip_boilerplate
+from ezmd_converters.web.boilerplate import label_disclosures, main_content, strip_boilerplate
 from ezmd_converters.web.build import Builder
-from ezmd_converters.web.dom import base_url, body_of, decode_html, parse_html, same_origin, truncate_on_tag
+from ezmd_converters.web.dom import (
+    base_url,
+    body_of,
+    decode_html,
+    parse_html,
+    same_origin,
+    text_of,
+    truncate_on_tag,
+)
 from ezmd_converters.web.html_blocks import convert_block, convert_children, register_footnotes
 from ezmd_converters.web.hygiene import HygieneReport, pre_clean
 from ezmd_converters.web.report import page_warnings
@@ -91,6 +100,7 @@ def load_page(ref: InputRef, options: ConvertOptions) -> Page:
     options.ctx.check_deadline()
     hygiene = pre_clean(root)
     body = body_of(root)
+    label_disclosures(body)
     walls = signals.remove_walls(body)
     full_text = signals.visible_text(body)
     stripped = deepcopy(body)
@@ -249,6 +259,51 @@ def _longest_paragraph(blocks: list[Block]) -> int:
     return max((len(spans_text(x.spans).split()) for x in blocks if isinstance(x, Paragraph)), default=0)
 
 
+MAX_PROSE_SAMPLES = 5
+
+
+def keep_chrome_notes(page: Page, b: Builder) -> list[Warning]:
+    """Append the footnotes the body points at that sit in removed chrome (D-0081), and report other long prose
+    the structural pass removed. Runs after any engine, so all three keep the same notes."""
+    _, leaves = chrome.removed_by_boilerplate(page.body)
+    if not leaves:
+        return []
+    kept = coverage.shingles_of(_plain(b.blocks))
+    found = chrome.chrome_footnotes(page.body, leaves)
+    taken = {n.element for n in found}
+    notes = [n for n in found if not coverage.holds(kept, text_of(n.element))]
+    for i, note in enumerate(notes, start=1):
+        spans = chrome.note_spans(note, b)
+        if spans:
+            b.blocks.append(
+                Footnote(
+                    id=f"fn-page-{i}",
+                    marker=note.marker,
+                    spans=spans,
+                    attrs={"source": "page_chrome"},
+                    provenance=b.prov(note.element),
+                )
+            )
+    prose = [t for t in chrome.chrome_prose(leaves, exclude=taken) if not coverage.holds(kept, t)]
+    if not prose:
+        return []
+    chars = sum(len(t) for t in prose)
+    return [
+        Warning(
+            kind=WarningKind.BOILERPLATE_PROSE_REMOVED,
+            message=(
+                f"Removed {len(prose)} blocks of prose ({chars} characters) with the page's footer, sidebars or "
+                "other chrome; the first ones are in the warning detail."
+            ),
+            count=len(prose),
+            detail={
+                "chars": chars,
+                "samples": " | ".join(t[:120] for t in prose[:MAX_PROSE_SAMPLES]),
+            },
+        )
+    ]
+
+
 def _dropped(loss: Warning | None) -> int:
     return int(loss.detail["dropped_chars"]) if loss is not None else 0
 
@@ -301,6 +356,7 @@ def build_document(ref: InputRef, options: ConvertOptions, engine: Engine, conv_
     page = load_page(ref, options)
     options.ctx.progress("extract", 0.4, "extracting the article")
     b, notes = extract(page, engine, conv_id, options)
+    notes.extend(keep_chrome_notes(page, b))
     pm = page.meta
     metadata = Metadata(
         source=page.source,

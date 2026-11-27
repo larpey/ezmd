@@ -80,7 +80,22 @@ All notable changes are generated from Conventional Commits. This project uses s
 - Text no longer prints twice under long headings or repeated titles. A source heading over 200 characters (a
   numbered paragraph set in a heading style) was cut with `...` and then printed in full below; it is now a
   paragraph, printed once. A first paragraph that is the title again is dropped like the title paragraph.
-
+- FAQ and accordion pages keep their questions. A question set inside the button that opens its answer was
+  removed with the page's other buttons when the answer was already open; a button inside or around a heading,
+  or controlling a panel of text, is now converted as text.
+- Web pages built with Adobe Experience Manager, and privacy pages with `ccpa`, `gdpr` or `consent` in their
+  class names, no longer lose most of their content to boilerplate removal. Any class or id holding one of those
+  words, or `cmp`, was taken for a cookie banner; `cmp-` prefixes every AEM component, so one bank's page lost 683 of
+  its 870 elements. Consent banners are now recognised by banner words and by the consent tools' own names.
+- Web pages keep the footnotes their text points at when the site puts them in a footer, an aside or a
+  complementary region: "Text alerts are free²" next to a footer line "2. Message and data rates may apply" now
+  gives a footnote 2 instead of losing it with the footer. Other prose of 40 words or more that boilerplate removal
+  takes from inside the article raises the new `boilerplate_prose_removed` warning with samples, so it is no longer
+  silent; the site's own footer, sidebars, dialogs, consent banners and link lists stay out without a warning.
+- `extraction_dropped_text` sees text that is not in a paragraph tag. The check counted only p, li, td, dd,
+  blockquote and pre leaves, so a table drawn with divs (a privacy notice's facts table), a sentence in a span and
+  a lost question heading were not page text, and losing them raised nothing. Leaf divs, sections and spans now
+  count, without counting text twice, and so does a lost heading whose text was kept.
 - Web pages keep sections whose id was generated from their heading. `id="how-we-share-this-log"` read as a share
   widget to both the rule extractor's patterns and Trafilatura's discard rules, so `web.trafilatura` and
   `web.rules` dropped the whole section, while the only warning on the page was about unrelated hidden elements.
@@ -105,8 +120,8 @@ All notable changes are generated from Conventional Commits. This project uses s
   took `extraction_dropped_text` from 54 pages to 20 (D-0078).
 - That hand-over now also needs 500 lost characters, so a short page no longer switches over a few lines, and it is
   refused when the rule extractor's output has fewer table rows or runs text together into a paragraph of 300 words
-  or more and double Trafilatura's longest. `extraction_dropped_text` counts heading text as kept and ignores
-  browser-upgrade and exit-popup banners (D-0086).
+  or more and double Trafilatura's longest. `extraction_dropped_text` ignores browser-upgrade and exit-popup
+  banners (D-0086), and counts a missing heading as lost only when the text under it was kept (D-0089).
 - New warning `extraction_dropped_text`: when an extractor leaves out a headed section or 5 percent of the text
   the page body holds, the warning gives the characters lost and names the sections. It compares against the body
   with only structural boilerplate removed, so a loss from class and id rules cannot hide on both sides of the

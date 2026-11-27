@@ -82,6 +82,7 @@ Generated from `packages/core/src/ezmd/warnings/codes.py` by `tools/gen_warnings
 | `paywall_detected` | warning | web | A paywall was detected; only the free portion was converted. | Save the page from a logged-in browser and upload it, or use the browser extension. |
 | `readability_fallback_full_body` | info | web | Main-content extraction failed, so the full page body was kept. | Expect navigation text; use the extension's selection mode to convert only the article. |
 | `extraction_dropped_text` | warning | web | Main-content extraction left out text the page shows, possibly whole sections. | Check the sections the warning names, or convert with web.html_raw to keep the whole body. |
+| `boilerplate_prose_removed` | warning | web | Long prose in a footer, sidebar or other page-chrome region was removed with it. | Read the samples in the warning detail; convert with web.html_raw to keep the whole body. |
 | `multipage_article` | info | web | The article spans multiple pages, which were joined. | Check the page joins, or pass the site's single-page or print URL. |
 | `lazy_content_possible` | info | web | The page may load more content on scroll that was not captured. | Enable browser rendering, or convert with the extension after scrolling to the end. |
 | `images_without_alt` | info | web | Some images have no alt text and are listed without description. | Enable image description or OCR if the images carry information. |

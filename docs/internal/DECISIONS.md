@@ -854,6 +854,7 @@ have a `md:hidden` twin, so the text is already there and would print twice).
 Consequences: an attacker can add a control, so panel text is scanned before it is kept, and whatever the scanner rates
 below medium reaches the body, where the body scan sees it too. More text in the body lets the capped
 `imperative_cluster` heuristic reach medium on a few instruction-heavy pages (5 of 306).
+
 ## D-0079: The sandbox binds a tool's install prefix read-only
 
 Date: 2026-11-15. Status: accepted.
@@ -880,6 +881,74 @@ on an Ubuntu 26.04 container as a non-root user with Python 3.14, where origin/m
 the nightly. The JSON extreme-nesting test accepts either outcome Python 3.14 produces (a clean error, or a parse
 on Linux's 8 MB stack followed by the existing depth clip with `depth_truncated`). opentelemetry-api moves to
 1.45.2 for CVE-2026-126360.
+
+## D-0080: The dropped-text check counts text wherever it sits
+
+Date: 2026-11-15. Status: accepted.
+
+Context: D-0077 added `extraction_dropped_text`, which compares the extracted text with the page by word
+shingles. It counted only p, li, dd, dt, td, th, blockquote and pre leaves. Rerunning the 388 saved pages of my
+privacy-notice study found pages that lost their own text with no warning because that text sat elsewhere: the
+definition cells of a facts table built from `divTableCell` divs, a component's sentence in a span, and the
+question headings of an FAQ list.
+
+Decision: besides those blocks, the check counts leaf containers (div, section, span, font, center, summary,
+figcaption, caption, label with no block, heading or other container inside and no counted block or span-like
+container around them) and headings, each once, with the same five-word and link-density floors.
+
+Alternatives rejected: counting every text node (inline runs inside a counted paragraph would count twice and
+skew the 5 percent rule); counting the regions the structural pass removes (footer, aside, complementary), which
+is a separate question about what those regions hold.
+
+Consequences: on the study set the warnings rise from 20 to 31 pages and unwarned own-text loss falls from 85 to
+75 pages. What remains sits in footers, asides, complementary regions, dialogs and app-store review lists.
+
+## D-0081: Notes the body points at survive chrome removal; other prose removed from the article warns
+
+Date: 2026-11-15. Status: accepted.
+
+Context: after D-0080 the pages of my privacy-notice study that still lost their own text with no warning lost it
+with the regions the structural pass removes (footer, aside, complementary, contentinfo): disclosure footers that
+the body points at with superscript numbers, and asides inside the article. My call on 2026-11-15: keep footnotes
+the body references wherever they sit; let other text in removed regions stay out but report long prose; leave
+dialogs, cookie banners and review lists out.
+
+Decision: `web/chrome.py` runs `strip_boilerplate(aggressive=False)` on an index-marked copy of the body to learn
+exactly which leaf blocks it removes. A removed block is a note when it opens with a marker (a leading `<sup>`,
+`2.`, `2)`, a superscript digit, `*`, a dagger) that the body outside removed regions also carries as a `<sup>` or a
+superscript character, and it is not inside a dialog, form or consent banner. Notes the extracted text does not
+already hold are appended as `Footnote` blocks (`attrs.source = page_chrome`), whatever engine ran. Removed blocks
+of at least 40 words inside `main`, `article` or `[role=main]` that are not notes, dialogs, forms, consent banners
+or link lists raise `boilerplate_prose_removed` with the count, the characters and the first five samples.
+
+Alternatives rejected: warning on any long prose in removed regions (it fired on 107 of the 388 study pages, almost
+all the site's own legal footer and promo cards, which repeat on every page and tell a reader nothing about this
+one); keeping whole footer regions (navigation and link lists come back with the notes); unnumbered disclosure
+footers kept as notes (nothing ties them to the page's text, and they are the same site-wide footer again).
+
+Consequences: `test_web_chrome.py`. Numbers on the study set are in the PR that made this change.
+
+## D-0082: Consent banners are recognised by name, not by the words a privacy page is about
+
+Date: 2026-11-15. Status: accepted.
+
+Context: the structural boilerplate pass removed any element whose class or id held the token `consent`, `gdpr`,
+`ccpa` or `cmp`. On a bank's page built with Adobe Experience Manager it removed 683 of 870 elements, because `cmp-`
+prefixes every AEM core component (`cmp-container`, `cmp-text`, `cmp-listpro`); the article survived only because
+Trafilatura reads the raw tree, and the rule extractor and the dropped-text check saw a page with most of its
+text gone. The other tokens name what a privacy notice is about: a `ccpa-rights` section, a GDPR notice, a
+biometric consent form.
+
+Decision: `_COOKIE` matches `cookie` anywhere, `consent`, `gdpr`, `ccpa` or `privacy` only when followed by a
+banner word (banner, bar, box, modal, popup, overlay, manager, prompt), and the consent tools by name (OneTrust,
+Cookiebot, Quantcast's `qc-cmp`, Didomi, Usercentrics, TrustArc, Osano, Termly).
+
+Alternatives rejected: keeping `cmp` but exempting `cmp-` followed by AEM component names (the list is open-ended
+and sites add their own); dropping the banner names entirely (cookie banners are the commonest chrome there is).
+
+Consequences: `test_web_consent_names.py` holds the AEM, CCPA, GDPR and consent-form cases that must stay and six
+banners that must go; against the old pattern the four keep cases fail, and two banners it missed (`qc-cmp2`,
+`privacy-banner`) were kept.
 
 ## D-0083: A document that numbers its own sections keeps its numbers
 
@@ -1044,3 +1113,45 @@ measure, and the extractors already decide what they keep).
 
 Consequences: a short page that really lost text now only warns. Counting headings makes the page total larger, so
 a loss near 5 percent can fall under it. The banner patterns are English.
+
+## D-0090: A button that titles a section is text
+
+Date: 2026-11-15. Status: accepted.
+
+Context: FAQ and accordion pages put each question inside the `<button>` that opens its answer
+(`<h3><button>Can I ...?</button></h3>`). `<button>` is a boilerplate tag, so on pages whose answers were already
+open the structural pass removed every question and kept the answers; D-0078 only relabels the control of a
+collapsed panel it reopens. On my study set this took FAQ questions from two pages with no warning.
+
+Decision: before any engine reads the page, a button whose label is at least two words and which sits inside a
+heading, holds a heading, or controls (`aria-controls`) a panel of at least five words that is not mostly links
+becomes plain text (span inside a heading, div around one, else p). Other buttons stay boilerplate.
+
+Alternatives rejected: keeping every button with `aria-expanded` (menu and "Show more" toggles would leave stray
+labels on every page); keeping every button (the same, and form controls with it).
+
+Consequences: `test_web_disclosure_labels.py`: three question shapes under all three engines, which all fail
+without the relabel, and menu, "Show more" and icon toggles that stay out.
+
+## D-0089: A missing heading is lost only when the text under it was kept
+
+Date: 2026-11-27. Status: accepted.
+
+Context: D-0080 counted a heading missing from the output as lost page text, so that a dropped FAQ question is
+seen. D-0086 counted all heading text as kept, so that headings do not read as loss. The two changes met in one
+function. My call on 2026-11-27: count a missing heading as lost only if the text under it survived.
+
+Decision: all heading text is part of the page total, counted once, including a heading inside a list item or cell.
+A heading counts as lost when it has at least five words, is not mostly links or banner text, is not in the output,
+and at least half of the body characters under it were kept. "Under it" runs to the next heading of the same or a
+higher level, so a section title whose subsections survived counts. Every other heading counts as kept. The text
+of a list item or cell that holds a heading belongs to that heading's section.
+
+Reason: a dropped question whose answer survived is a real loss that no body block shows. A heading missing along
+with its section is already reported by the section's text.
+
+Alternatives rejected: counting every missing heading (D-0080) and counting none (D-0086); counting the heading as
+lost when any one block under it survived (a section that is nearly all gone is a lost section).
+
+Consequences: this replaces the heading rule in D-0080 and in D-0086. A heading whose only text is under five words
+has no counted body, so it counts as kept. Tests: `test_web_heading_loss.py`.

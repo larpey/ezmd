@@ -153,6 +153,71 @@ def test_material_unheaded_loss_warns_with_the_amount() -> None:
     assert isinstance(w.detail["dropped_chars"], int) and w.detail["dropped_chars"] > 0
 
 
+def _div_table(*rows: tuple[str, str]) -> str:
+    cells = "".join(
+        f'<div class="divTableRow"><div class="divTableCell"><b>{k}</b></div><div class="divTableCell">{v}</div></div>'
+        for k, v in rows
+    )
+    return f'<div class="divTable"><div class="divTableBody">{cells}</div></div>'
+
+
+def test_a_table_drawn_with_divs_is_page_text() -> None:
+    """A facts table built from divs has no p or td, so the cells it lost were invisible to the check."""
+    table = _div_table(("Keepers", TENDER), ("Lamps", FOG))
+    body = body_of(parse_html(f"<html><body><main><p>{PROSE}</p>{table}</main></body></html>"))
+    w = dropped_text(body, PROSE)
+    assert w is not None and isinstance(w.detail["dropped_chars"], int) and w.detail["dropped_chars"] >= len(FOG)
+    assert dropped_text(body, PROSE + TENDER + FOG) is None
+
+
+def test_text_in_a_span_inside_a_paragraph_is_counted_once() -> None:
+    body = body_of(parse_html(f"<html><body><main><p><span>{PROSE}</span></p><p>{FOG}</p></main></body></html>"))
+    w = dropped_text(body, FOG)
+    assert w is not None and w.detail["page_chars"] == len(PROSE.strip()) + len(FOG.strip())
+
+
+@pytest.mark.parametrize(
+    "markup",
+    [
+        "<div><span>{0}</span></div>",
+        "<section><div><span>{0}</span></div></section>",
+        "<span><span>{0}</span></span>",
+        "<div><span><font><span>{0}</span></font></span></div>",
+        "<span><div>{0}</div></span>",
+        "<section><span><div><span>{0}</span></div></span></section>",
+        "<ul><li><span>{0}</span><ul><li>Oil</li></ul></li></ul>",
+        "<table><tr><td><div><span>{0}</span></div></td></tr></table>",
+    ],
+)
+def test_nested_text_is_counted_exactly_once(markup: str) -> None:
+    body = body_of(parse_html(f"<html><body><main>{markup.format(FOG)}</main></body></html>"))
+    w = dropped_text(body, "")
+    assert w is not None
+    assert (w.detail["page_chars"], w.detail["dropped_chars"]) == (len(FOG.strip()), len(FOG.strip()))
+
+
+def test_text_nested_in_a_heading_is_counted_exactly_once() -> None:
+    """The text under the heading survives, so the missing heading is the loss (D-0089)."""
+    html = f"<html><body><main><h2><span>{FOG}</span></h2><div><span>{PROSE}</span></div></main></body></html>"
+    w = dropped_text(body_of(parse_html(html)), PROSE)
+    assert w is not None
+    heading = len(FOG.strip())
+    assert (w.detail["page_chars"], w.detail["dropped_chars"]) == (heading + len(PROSE.strip()), heading)
+
+
+def test_a_lost_question_heading_is_page_text() -> None:
+    faq = "".join(
+        f'<div class="faq"><h3 class="faq__question">How does the keeper signal the tender number {n}?</h3>'
+        f"<p>{PROSE}</p></div>"
+        for n in range(30)
+    )
+    body = body_of(parse_html(f"<html><body><main>{faq}</main></body></html>"))
+    total = dropped_text(body, "")
+    assert total is not None
+    w = dropped_text(body, PROSE * 30)
+    assert w is not None and isinstance(w.detail["dropped_chars"], int) and w.detail["dropped_chars"] > 1000
+
+
 def test_boilerplate_is_not_counted_as_page_text() -> None:
     html = f"<html><body><main><p>{PROSE}</p></main><nav><p>Tide index and notes. {FOG}</p></nav></body></html>"
     body = body_of(parse_html(html))
