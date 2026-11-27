@@ -114,3 +114,17 @@ def test_tag_character_runs_kept_raw_in_hidden_text() -> None:
     text, kinds, hidden, chars = _clean(f"<p>visible{tags} words</p>")
     assert text == "visible words" and kinds == {}
     assert hidden == tags and chars == len(tags)
+
+
+def test_backface_visibility_is_not_visibility() -> None:
+    style = "<style>.stage{backface-visibility:hidden;height:auto}.gone{content-visibility:hidden}</style>"
+    body = (
+        '<div class="stage"><p>on the stage</p></div>'
+        '<div style="-webkit-backface-visibility: hidden"><p>inline stage</p></div>'
+        '<div class="gone"><p>not rendered</p></div>'
+    )
+    root = parse_html(f"<html><head>{style}</head><body>{body}</body></html>")
+    rep = pre_clean(root)
+    text = " ".join(root.find("body").itertext())
+    assert "on the stage" in text and "inline stage" in text
+    assert "not rendered" not in text and dict(rep.by_type) == {"stylesheet_hidden": 1}

@@ -18,6 +18,7 @@ from lxml import etree  # type: ignore[import-untyped]
 
 from ezmd.ir import CodeBlock, Heading, Image, InlineSpan, InlineStyle, ListBlock, ListItem, Paragraph, Quote, Table
 from ezmd.ir import TableCell as Cell
+from ezmd_converters.web.boilerplate import section_anchors
 from ezmd_converters.web.build import LAZY_ATTRS, LAZY_SRCSET, Builder
 from ezmd_converters.web.dom import HtmlElement, is_element, match_key, tag_of
 from ezmd_converters.web.html_blocks import convert_block, is_footnote_section, is_layout_table
@@ -47,13 +48,19 @@ _REND_STYLE = {
 
 
 def run_trafilatura(root: HtmlElement, url: str | None) -> Any | None:
-    """Run Trafilatura on a copy of the cleaned tree and parse its XML safely. None when it finds nothing."""
+    """Run Trafilatura on a copy of the cleaned tree and parse its XML safely. None when it finds nothing.
+
+    Its discard rules match substrings of ids (`share`, `social`, `cookie`, `author`, `nav`), so the copy loses
+    the ids that only anchor the page's outline; the copy is never the DOM the blocks are rebuilt from."""
     import trafilatura
     from trafilatura.deduplication import LRUCache
 
+    tree = deepcopy(root)
+    for el in section_anchors(tree):
+        del el.attrib["id"]
     try:
         xml = trafilatura.extract(
-            deepcopy(root),
+            tree,
             url=url,
             output_format="xml",
             include_tables=True,

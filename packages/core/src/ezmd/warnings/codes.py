@@ -106,6 +106,7 @@ class WarningKind(StrEnum):
     HTTP_ERROR = "http_error"
     PAYWALL_DETECTED = "paywall_detected"
     READABILITY_FALLBACK_FULL_BODY = "readability_fallback_full_body"
+    EXTRACTION_DROPPED_TEXT = "extraction_dropped_text"
     MULTIPAGE_ARTICLE = "multipage_article"
     LAZY_CONTENT_POSSIBLE = "lazy_content_possible"
     IMAGES_WITHOUT_ALT = "images_without_alt"
@@ -469,6 +470,9 @@ _SPECS: tuple[CodeSpec, ...] = (
     CodeSpec(WarningKind.READABILITY_FALLBACK_FULL_BODY, "info", "web",
              "Main-content extraction failed, so the full page body was kept.",
              "Expect navigation text; use the extension's selection mode to convert only the article."),
+    CodeSpec(WarningKind.EXTRACTION_DROPPED_TEXT, "warning", "web",
+             "Main-content extraction left out text the page shows, possibly whole sections.",
+             "Check the sections the warning names, or convert with web.html_raw to keep the whole body."),
     CodeSpec(WarningKind.MULTIPAGE_ARTICLE, "info", "web", "The article spans multiple pages, which were joined.",
              "Check the page joins, or pass the site's single-page or print URL."),
     CodeSpec(WarningKind.LAZY_CONTENT_POSSIBLE, "info", "web",
