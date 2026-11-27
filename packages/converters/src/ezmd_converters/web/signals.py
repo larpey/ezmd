@@ -46,7 +46,8 @@ def measure(root: HtmlElement) -> Signals:
         if not is_element(el):
             continue
         el_id = (el.get("id") or "").strip()
-        if sig.spa_root is None and (el_id in _ROOT_IDS or el.get("data-reactroot") is not None):
+        is_root = el_id in _ROOT_IDS or el.get("data-reactroot") is not None
+        if sig.spa_root is None and is_root and len(collapse(el.text_content() or "")) < SHELL_TEXT_CHARS:
             sig.spa_root = f"#{el_id}" if el_id else "[data-reactroot]"
         classes = el.get("class") or ""
         if _PAYWALL_CLASS.search(classes) or _PAYWALL_ID.match(el_id) or el.get("data-paywall") is not None:

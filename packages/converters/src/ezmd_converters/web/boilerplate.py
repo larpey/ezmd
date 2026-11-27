@@ -9,12 +9,14 @@ Two operations on an already hygiene-cleaned tree:
 - `main_content(body)`: picks the element holding the article: a single `<article>`, `<main>`,
   `[role=main]`, a known content class, else the block with the best text-density score, else `<body>`.
 
-Elements that hold the page's `<h1>` or most of its paragraphs are never stripped by class patterns.
+Elements that hold the page's `<h1>` or most of its paragraphs are never stripped by class patterns, and an id
+that only names a section of the page's outline (`section_anchors`) says nothing about what the element is.
 """
 
 from __future__ import annotations
 
 import re
+from itertools import islice
 
 from ezmd_converters.web.dom import HtmlElement, collapse, is_element, tag_of, text_of
 from ezmd_converters.web.hygiene import _remove
@@ -37,13 +39,73 @@ _CONTENT_CLASS = re.compile(
     re.I,
 )
 _PARA_TAGS = ("p", "pre", "li", "blockquote", "table", "h2", "h3")
+_HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+_WORD = re.compile(r"[^\W_]+")
+HEADING_WINDOW = 6
+"""How many leading descendants may come before the heading that opens a section."""
+MIN_OUTLINE_ANCHORS = 3
+"""Plain siblings named after their heading that it takes before the ids read as an outline, not as widgets."""
+MAX_ANCHOR_LINK_DENSITY = 0.5
 
 
-def _attrs(el: HtmlElement) -> str:
-    return f"{el.get('class') or ''} {el.get('id') or ''}".strip()
+def _attrs(el: HtmlElement, anchors: frozenset[HtmlElement] = frozenset()) -> str:
+    ident = "" if el in anchors else el.get("id") or ""
+    return f"{el.get('class') or ''} {ident}".strip()
 
 
-def _protected(el: HtmlElement) -> bool:
+def words(text: str) -> list[str]:
+    """Casefolded word tokens, so a slug and the heading it came from compare equal."""
+    return _WORD.findall(text.casefold())
+
+
+def _opening_heading(el: HtmlElement) -> HtmlElement | None:
+    if tag_of(el) in _HEADINGS:
+        return el
+    for node in islice(el.iterdescendants(), HEADING_WINDOW):
+        if is_element(node) and tag_of(node) in _HEADINGS:
+            return node
+    return None
+
+
+def _named_after_heading(el: HtmlElement) -> bool:
+    ident = words(el.get("id") or "")
+    heading = _opening_heading(el)
+    if not ident or heading is None:
+        return False
+    return f" {' '.join(ident)} " in f" {' '.join(words(text_of(heading)))} "
+
+
+def section_anchors(root: HtmlElement) -> frozenset[HtmlElement]:
+    """Elements whose id is only a link target for the page's outline.
+
+    Sites generate these ids from the heading, so `id="how-we-share-our-data"` holds the word `share` for the
+    same reason the heading does, and class and id vocabularies (ours and Trafilatura's) read it as a share
+    widget. An element counts when its id is a run of its own heading's words, it is not mostly links, and its
+    siblings form an outline: at least MIN_OUTLINE_ANCHORS of them have ids free of those vocabularies, and they
+    outnumber the rest. `<div id="related-posts"><h3>Related posts</h3>` beside `<div id="comments">` stays
+    chrome, however many such widgets a page stacks."""
+    groups: dict[HtmlElement, list[HtmlElement]] = {}
+    for el in root.iter():
+        if (
+            is_element(el)
+            and el.get("id")
+            and _named_after_heading(el)
+            and (tag_of(el) in _HEADINGS or link_density(el) < MAX_ANCHOR_LINK_DENSITY)
+        ):
+            groups.setdefault(el.getparent(), []).append(el)
+    return frozenset(el for group in groups.values() if _is_outline(group) for el in group)
+
+
+def _is_outline(group: list[HtmlElement]) -> bool:
+    plain = sum(not _reads_as_chrome(el.get("id") or "") for el in group)
+    return plain >= MIN_OUTLINE_ANCHORS and plain > len(group) - plain
+
+
+def _reads_as_chrome(attrs: str) -> bool:
+    return bool(_COOKIE.search(attrs) or _BOILER_CLASS.search(attrs))
+
+
+def protected(el: HtmlElement) -> bool:
     """An element that contains the page's h1 or an <article>/<main> is content, whatever its class says."""
     tag = tag_of(el)
     if tag in ("article", "main", "body", "html"):
@@ -64,9 +126,10 @@ def _header_is_boiler(el: HtmlElement) -> bool:
 def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
     """Remove boilerplate in place; returns how many elements were removed."""
     removed = 0
+    anchors = section_anchors(body)
     for tag in _BOILER_TAGS:
         for el in list(body.iter(tag)):
-            if el.getparent() is not None and not (tag == "form" and _protected(el)):
+            if el.getparent() is not None and not (tag == "form" and protected(el)):
                 _remove(el)
                 removed += 1
     for el in list(body.iter("header", "footer")):
@@ -82,11 +145,11 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
             if not is_element(child):
                 continue
             role = (child.get("role") or "").strip().lower()
-            attrs = _attrs(child)
-            kill = role in _BOILER_ROLES and not _protected(child)
-            kill = kill or (bool(_COOKIE.search(attrs)) and not _protected(child))
+            attrs = _attrs(child, anchors)
+            kill = role in _BOILER_ROLES and not protected(child)
+            kill = kill or (bool(_COOKIE.search(attrs)) and not protected(child))
             if aggressive and not kill and attrs and _BOILER_CLASS.search(attrs) and not _CONTENT_CLASS.search(attrs):
-                kill = not _protected(child) and not _mostly_content(child, body)
+                kill = not protected(child) and not mostly_content(child, body)
             if kill:
                 _remove(child)
                 removed += 1
@@ -95,7 +158,7 @@ def strip_boilerplate(body: HtmlElement, *, aggressive: bool = True) -> int:
     return removed
 
 
-def _mostly_content(el: HtmlElement, body: HtmlElement) -> bool:
+def mostly_content(el: HtmlElement, body: HtmlElement) -> bool:
     """True when `el` holds over half of the page's paragraph text (a mislabeled wrapper, not a widget)."""
     total = sum(len(collapse(text_of(p))) for p in body.iter("p")) or 1
     mine = sum(len(collapse(text_of(p))) for p in el.iter("p"))

@@ -792,6 +792,68 @@ government sentences and the three XML fragments as negatives, and twenty-two mo
 DAN, developer-mode and "from now on, answer" shapes the old patterns missed. Rescanning the two 2026-10-27
 runs with the new patterns is the measure; the numbers are in the PR that made this change.
 
+## D-0077: An id named after its heading is an anchor; extraction loss is measured against the body
+
+Date: 2026-11-06. Status: proposed.
+
+Context: a long saved page lost a whole section under `web.trafilatura` and `web.rules` and kept it under
+`web.html_raw`, with only `removed_hidden_elements` on the result. The section was
+`<section id="how-we-share-...">`: `-share-` matches `_BOILER_CLASS` in `strip_boilerplate`, and `share` matches
+Trafilatura's OVERALL_DISCARD_XPATH (`contains(@id, ...)`), so both engines removed it independently. Trafilatura's
+own output kept only the table-of-contents line. Neither check saw it: the 25 percent fallback is far from
+triggering, and `clean_chars` is measured after `strip_boilerplate`, so the section was gone from both sides of the
+ratio. `_COOKIE` applies even to the non-aggressive pass, so `id="cookies-and-..."` was lost on `web.html_raw` too.
+
+Decision: `boilerplate.section_anchors` finds elements whose id is a run of the words of their opening heading, are
+not mostly links, and sit among siblings of which at least three have ids free of the vocabulary and outnumber the
+rest. `strip_boilerplate` ignores those ids (classes still count) and `run_trafilatura` deletes them on its private
+copy of the tree. `web/coverage.py` adds `extraction_dropped_text` (warning): each leaf block of the body, with only
+structural boilerplate removed, is looked up in the extracted text by five-word shingles; a headed section that lost
+200 characters and over half its text, or a page that lost 200 characters and 5 percent, raises it with the amounts
+and the headings.
+
+Alternatives rejected: dropping id matches altogether (`id="comments"` and `id="related-posts"` are how widgets are
+marked); requiring only that an id match its heading (`<div id="related-posts"><h3>Related posts</h3>` matches, and
+blogs stack those beside `#comments`); passing `favor_recall` to Trafilatura (changes article output and does not
+touch the xpath); recovering dropped sections into the output (the same measure sees author bios and upgrade notices,
+which extraction removes on purpose, so it reports and leaves the choice to the reader).
+
+Two more false removals from the same corpus are fixed with this decision. `visibility:hidden` matched inside
+`backface-visibility:hidden`, which hid the main wrapper of 37 of 45 pages that exited 3. `spa_root` was set by a root
+element's id alone; it now needs the root to hold under SHELL_TEXT_CHARS, as docs/converters/web.md already said.
+
+Consequences: a warning, not a rewrite, for what the anchor rule does not cover. Other losses the warning surfaces
+stay as they are: list items inside a `<div>` inside a `<ul>`, which Trafilatura skips; ids with a prefix before the
+slug; text in custom elements.
+
+## D-0078: A collapsed panel is content when a reader has a way in
+
+Date: 2026-11-06. Status: proposed.
+
+Context: a saved page lost the answers of its FAQ, and the questions too. `pre_clean` removed `<div hidden>` as
+`hidden_attribute`, and `strip_boilerplate` removed the `<button>` holding the question. The hygiene rule is right for
+injected text and wrong for an accordion, which a reader opens. In a survey of 306 saved pages, hidden elements of 100
+characters or more that a control pointed at were hidden by the `hidden` attribute or a page rule. Those under
+`aria-hidden` or hidden classes were modals and menus, and elements with no control were chrome.
+
+Decision: the line is whether the page gives a reader a way in. `hygiene._Disclosure` keeps a panel when a visible,
+labelled, interactive element says `aria-expanded="false"` for it, it is shut only by `hidden`, `display:none` or a page
+rule, it is not mostly links, and `ezmd.render.injection.scan` rates it below medium. Otherwise it is removed exactly as
+before. Kept text still enters `hidden_text`, so the scanner keeps its raised severity on it, and the page says how
+many panels it kept (`extra.collapsed_panels`). The control becomes plain text so the question survives.
+
+Measuring the rest found two more causes. Items wrapped in a `<div>` inside `<ul>` were skipped by `_list`, and
+Trafilatura's article could lose over 5 percent of a long page, far above the 25 percent floor of the fallback. The
+extractor chain now compares both engines against the body when `extraction_dropped_text` would fire, and uses the rule
+extractor when it loses at most half as much. Only pages that would warn can change, so ordinary articles do not.
+
+Alternatives rejected: keeping every `hidden` element (that is the injection channel); requiring `aria-controls` (the
+reported page has a bare `aria-expanded` button before the panel); treating `hidden md:table` as visible (those tables
+have a `md:hidden` twin, so the text is already there and would print twice).
+
+Consequences: an attacker can add a control, so panel text is scanned before it is kept, and whatever the scanner rates
+below medium reaches the body, where the body scan sees it too. More text in the body lets the capped
+`imperative_cluster` heuristic reach medium on a few instruction-heavy pages (5 of 306).
 ## D-0079: The sandbox binds a tool's install prefix read-only
 
 Date: 2026-11-15. Status: accepted.
@@ -939,3 +1001,24 @@ Consequences: `test_pdf_hanging_bullets.py` (three tab-stop shapes that fail at 
 left alone). On the 132 files, lone-bullet outputs fall to 58 and total words move by 30 of 3.68 million, all from
 item text that had also been a heading and a Contents entry.
 
+## D-0086: A switch to the rule extractor needs 500 lost characters and may not lose structure
+
+Date: 2026-11-26. Status: proposed.
+
+Context: a corpus study of 388 documents found the D-0078 hand-over switching to the rule extractor on many bad
+pages. Short app-store-style pages lose 27 to 48 percent of their text, but under 500 characters of it. On other
+pages the rules output kept the words and lost their shape: a 30-row table came out as one 2,708-word paragraph.
+`extraction_dropped_text` also counted browser-upgrade and exit-popup banners as lost page text.
+
+Decision: `_recover` keeps the 5 percent threshold and also requires 500 dropped characters. It keeps Trafilatura,
+whose result then carries `extraction_dropped_text`, when the rules output has fewer table rows, or its longest
+paragraph has at least 300 words and at least double the words of Trafilatura's longest. `web/coverage.py` counts
+heading text as kept, and leaves out of the measure containers named by class or id as browser-upgrade or exit
+banners and blocks of at most 300 characters whose text says so.
+
+Alternatives rejected: raising the percentage (long pages lose whole lists at 5 percent); comparing table counts
+(a table can survive with most of its rows gone); dropping banners from the output (this change is about the
+measure, and the extractors already decide what they keep).
+
+Consequences: a short page that really lost text now only warns. Counting headings makes the page total larger, so
+a loss near 5 percent can fall under it. The banner patterns are English.

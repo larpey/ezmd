@@ -304,6 +304,11 @@
     "suggestion": "Install the extra named in the message, e.g. pip install 'ezmd[docs]'.",
     "aliases": []
   },
+  "extraction_dropped_text": {
+    "severity": "warning",
+    "suggestion": "Check the sections the warning names, or convert with web.html_raw to keep the whole body.",
+    "aliases": []
+  },
   "extraction_empty": {
     "severity": "error",
     "suggestion": "If the source is scanned or image-only, enable OCR; otherwise confirm the file is not empty.",
