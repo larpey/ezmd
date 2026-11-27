@@ -376,8 +376,10 @@ BULLET_GLYPHS = "".join(
 ATTACH_GLYPHS = "".join(c for c in BULLET_GLYPHS if c not in "\u00b7\u2013")
 """The glyphs that are only ever bullets, so one alone on a line can be moved onto the text beside it. A lone
 en dash is a table's "no value" and a lone middle dot a separator: both stay where they are."""
-BULLET_REACH_EM = 2.0
-"""A bullet sits at most this many ems (of the text beside it) left of the text."""
+BULLET_REACH_EM = 4.5
+"""A bullet sits at most this many ems (of the text beside it) left of the text. A slide puts its text about an
+em past the bullet; a word processor tabs it to the hanging indent, up to half an inch on (3.6 em at 10 pt,
+4.5 em at 8 pt). Further away, the dot is a chart marker or a table cell of its own."""
 
 
 def attach_bullets(lines: list[Line], order_base: int) -> list[Line]:
