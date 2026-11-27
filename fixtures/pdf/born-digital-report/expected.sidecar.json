@@ -1225,7 +1225,7 @@
   "footnotes": [],
   "frontmatter": {
     "author": "ezmd fixtures",
-    "content_hash": "sha256:1416b0adade01223fdd1ad6b583a689a07c0ec1231cb22b2ed762bfa4631aca1",
+    "content_hash": "sha256:ce081a27cc1033b703814b6dfc21b83d27acb43f670063d96196b380802f031e",
     "converted_at": "2026-01-01T00:00:00Z",
     "converter": "documents.pdfium_text",
     "converter_version": "<normalized>",
@@ -1248,9 +1248,9 @@
     "source_type": "pdf",
     "title": "Harbor Lane Annual Report",
     "tokens": {
-      "cl100k_base": 631,
-      "claude_approx": 666,
-      "o200k_base": 617
+      "cl100k_base": 643,
+      "claude_approx": 679,
+      "o200k_base": 629
     },
     "truncated": false,
     "warnings": [
@@ -1661,92 +1661,92 @@
       "block_id": "b0003",
       "id": "sec-1",
       "level": 2,
-      "number": "1",
-      "offset_end": 863,
-      "offset_start": 360,
+      "number": null,
+      "offset_end": 872,
+      "offset_start": 368,
       "original_level": 2,
       "original_title": "1. Overview",
       "time_end": null,
       "time_start": null,
-      "title": "Overview"
+      "title": "1. Overview"
     },
     {
       "block_id": "b0006",
       "id": "sec-1-1",
       "level": 3,
-      "number": "1.1",
-      "offset_end": 1136,
-      "offset_start": 863,
+      "number": null,
+      "offset_end": 1145,
+      "offset_start": 872,
       "original_level": 3,
       "original_title": "1.1 Scope",
       "time_end": null,
       "time_start": null,
-      "title": "Scope"
+      "title": "1.1 Scope"
     },
     {
       "block_id": "b0011",
       "id": "sec-2",
       "level": 2,
-      "number": "2",
-      "offset_end": 1644,
-      "offset_start": 1136,
+      "number": null,
+      "offset_end": 1654,
+      "offset_start": 1145,
       "original_level": 2,
       "original_title": "2. Berth condition",
       "time_end": null,
       "time_start": null,
-      "title": "Berth condition"
+      "title": "2. Berth condition"
     },
     {
       "block_id": "b0014",
       "id": "sec-2-1",
       "level": 3,
-      "number": "2.1",
-      "offset_end": 1873,
-      "offset_start": 1644,
+      "number": null,
+      "offset_end": 1883,
+      "offset_start": 1654,
       "original_level": 3,
       "original_title": "2.1 Repairs scheduled",
       "time_end": null,
       "time_start": null,
-      "title": "Repairs scheduled"
+      "title": "2.1 Repairs scheduled"
     },
     {
       "block_id": "b0018",
       "id": "sec-3",
       "level": 2,
-      "number": "3",
-      "offset_end": 2093,
-      "offset_start": 1873,
+      "number": null,
+      "offset_end": 2104,
+      "offset_start": 1883,
       "original_level": 2,
       "original_title": "3. Cargo volumes",
       "time_end": null,
       "time_start": null,
-      "title": "Cargo volumes"
+      "title": "3. Cargo volumes"
     },
     {
       "block_id": "b0021",
       "id": "sec-3-1",
       "level": 3,
-      "number": "3.1",
-      "offset_end": 2242,
-      "offset_start": 2093,
+      "number": null,
+      "offset_end": 2253,
+      "offset_start": 2104,
       "original_level": 3,
       "original_title": "3.1 Staffing",
       "time_end": null,
       "time_start": null,
-      "title": "Staffing"
+      "title": "3.1 Staffing"
     },
     {
       "block_id": "b0024",
       "id": "sec-4",
       "level": 2,
-      "number": "4",
-      "offset_end": 2434,
-      "offset_start": 2242,
+      "number": null,
+      "offset_end": 2446,
+      "offset_start": 2253,
       "original_level": 2,
       "original_title": "4. Capital plan",
       "time_end": null,
       "time_start": null,
-      "title": "Capital plan"
+      "title": "4. Capital plan"
     }
   ],
   "segments": [],
@@ -1754,7 +1754,7 @@
   "speakers": [],
   "tables": [],
   "tokens_estimated": false,
-  "tokens_total": 912,
+  "tokens_total": 922,
   "warnings": [
     {
       "block_id": null,

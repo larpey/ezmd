@@ -51,8 +51,13 @@ and its lines are short) becomes one paragraph per figure where the figure sits,
 as prose, an included page, is treated as page text); tables are detected best-effort (two or more
 consecutive rows of short cells in consistent columns; bold first row is the header); column gutters are found
 by the x position crossed by the fewest lines, and full-width lines split the page into bands read left column
-then right column (`reading_order_uncertain` when the content stream was interleaved); lines are joined into
-paragraphs by spacing, size, and indent; bullet and numbered lines become lists (nesting by indent); line-end
+then right column; where a gutter holds in part of a page only (a sidebar or callout beside body text), just
+the bands with three or more lines of running text on each side are read column by column
+(`reading_order_uncertain` when the content stream was interleaved); lines are joined into
+paragraphs by spacing, size, and indent, and across a column or page boundary when the last line stops
+mid-sentence (a lowercase letter, comma or broken word) near its column's right edge and the next column or
+page opens in lowercase in the same size and weight (a paragraph continued over a page keeps the first page's
+provenance, sits before the next page marker, and lists its pages in `attrs.pdf_paragraph_pages`); bullet and numbered lines become lists (nesting by indent); line-end
 hyphens are joined when the joined word appears elsewhere in the document (`pdf.dehyphenate`); ligatures are
 NFKC-expanded; URI link annotations become inline links (http, https, mailto only).
 

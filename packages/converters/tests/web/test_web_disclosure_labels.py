@@ -1,4 +1,4 @@
-"""Buttons that title an open section (FAQ questions, accordion headers) are text, not chrome (D-0086)."""
+"""Buttons that title an open section (FAQ questions, accordion headers) are text, not chrome (D-0088)."""
 
 from __future__ import annotations
 

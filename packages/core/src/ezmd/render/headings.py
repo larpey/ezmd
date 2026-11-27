@@ -1,9 +1,12 @@
 """ezmd.render.headings: title selection and the heading plan (docs/internal/spec/part3.md section 14, "Headings").
 
 - Exactly one H1: the title. Source headings shift down one level and are clamped to parent + 1.
-- Derived numbering (`3.2`) replaces any source numbering; anchors are `sec-3-2` (the H1 is `doc`).
+- Derived numbering (`3.2`) replaces source numbering, unless the document numbers most of its own headings, in
+  which case the printed labels stay and no numbers are added (D-0083); anchors are `sec-3-2` either way (the H1 is
+  `doc`).
 - Headings deeper than H6 become bold paragraphs. Text is one line, formatting stripped except code spans,
-  no trailing punctuation except `?`, max 200 chars (the full text overflows into the next paragraph).
+  no trailing punctuation except `?`, max 200 chars; a longer source heading is rendered once as a paragraph
+  (D-0087).
 """
 
 from __future__ import annotations
@@ -22,6 +25,36 @@ __all__ = ["MAX_HEADING_CHARS", "heading_markdown", "plan_headings", "resolve_ti
 MAX_HEADING_CHARS = 200
 _SOURCE_NUM = re.compile(r"^\d+(?:\.\d+)*\\?\.?\s+(?=\S)")
 _TRAIL_PUNCT = re.compile(r"[.:;,!]+$")
+_SOURCE_LABEL = re.compile(
+    r"^(?:"
+    # After a keyword the number or letter needs no punctuation and may be the whole heading.
+    r"(?i:section|article|part|chapter|appendix|schedule|exhibit|annex)\s+"
+    r"(?:\d+(?:\.\d+)*|[A-Z]|[IVXLC]+|\([a-zA-Z0-9]{1,4}\))\\?[.):]?(?=\s|$)"
+    # On its own it needs title text after it, and a letter or roman numeral needs punctuation.
+    r"|(?:\d+(?:\.\d+)*\\?\.?|[A-Z]\\?[.)]|\([a-zA-Z0-9]{1,4}\)|[IVXLC]+\\?[.)])\s+(?=\S)"
+    r")"
+)
+"""A section label a document prints on its own heading: `31.1`, `6`, `A.`, `II.`, `(a)`, `Section 4`,
+`Appendix B`."""
+MIN_SOURCE_NUMBERED = 3
+
+
+def _numbers_its_own_headings(ctx: RenderContext, consumed: set[str], child: str | None) -> bool:
+    """True when at least MIN_SOURCE_NUMBERED headings, and at least half of them, open with a section label: the
+    document numbers its own sections, so derived numbers would contradict the ones it prints (D-0083).
+
+    `child` selects whose headings are judged: None for the parent, a child prefix for an embedded document. The
+    synthetic section heading of a child belongs to neither."""
+    texts = [
+        plain_spans(ctx, b.spans).strip()
+        for b in ctx.doc.blocks
+        if isinstance(b, Heading)
+        and b.id not in consumed
+        and CHILD_SECTION_ATTR not in b.attrs
+        and ctx.children.prefix_of(b.id) == child
+    ]
+    labelled = sum(bool(_SOURCE_LABEL.match(t)) for t in texts)
+    return labelled >= MIN_SOURCE_NUMBERED and labelled * 2 >= len(texts)
 
 
 def resolve_title(ctx: RenderContext) -> str:
@@ -64,7 +97,19 @@ def _consumed_ids(ctx: RenderContext, title: str) -> set[str]:
     for b in own:
         if isinstance(b, Paragraph) and b.role == "title" and plain_spans(ctx, b.spans).casefold() == key:
             consumed.add(b.id)
+    # The document's own first line is often its title again (a title taken from the file's properties or the
+    # page's <title>, then the same words as the first paragraph): printed under the H1 it read twice.
+    first = next((b for b in own if isinstance(b, (Heading, Paragraph)) and b.id not in consumed), None)
+    if isinstance(first, Paragraph) and _same_title(plain_spans(ctx, first.spans), title):
+        consumed.add(first.id)
     return consumed
+
+
+def _same_title(text: str, title: str) -> bool:
+    def norm(s: str) -> str:
+        return " ".join(_TRAIL_PUNCT.sub("", s.strip()).split()).casefold()
+
+    return bool(norm(title)) and norm(text) == norm(title)
 
 
 def plan_headings(ctx: RenderContext, title: str) -> set[str]:
@@ -78,10 +123,20 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             for b in ctx.doc.blocks
         )
     )
+    # Decided per document: the parent and each embedded document are judged on their own headings.
+    derive_by_doc = {
+        child: ctx.profile.number_headings and not _numbers_its_own_headings(ctx, consumed, child)
+        for child in (None, *(info.prefix for info in ctx.children.infos))
+    }
     stack: list[tuple[int, HeadingInfo]] = []
     counters = [0] * 8
     for b in ctx.doc.blocks:
         if not isinstance(b, Heading) or b.id in consumed:
+            continue
+        if CHILD_SECTION_ATTR not in b.attrs and len(" ".join(plain_spans(ctx, b.spans).split())) > MAX_HEADING_CHARS:
+            # A "heading" longer than any heading is a paragraph a converter styled as one (a numbered paragraph
+            # in a Word heading style): cut to 200 characters and repeated in full below it, it read twice.
+            ctx.demoted[b.id] = render_spans(ctx, b.spans)
             continue
         shifted = b.level + 1
         while stack and stack[-1][0] >= shifted:
@@ -90,7 +145,9 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
         original = plain_spans(ctx, b.spans)
         text = render_spans(ctx, b.spans, heading=True)
         section = CHILD_SECTION_ATTR in b.attrs
-        if ctx.profile.number_headings and not section:
+        # A child's section heading is part of the parent's outline.
+        derive = derive_by_doc[None if section else ctx.children.prefix_of(b.id)]
+        if derive and not section:
             text = _SOURCE_NUM.sub("", text, count=1)
         if not section:
             text = _TRAIL_PUNCT.sub("", text).strip()
@@ -107,14 +164,14 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             number = ".".join(str(counters[i]) for i in range(2, level + 1))
             anchor = "sec-" + number.replace(".", "-")
         parents = [info for _, info in stack]
-        label = f"{number} {text}" if number and ctx.profile.number_headings else text
+        label = f"{number} {text}" if number and derive else text
         info = HeadingInfo(
             block_id=b.id,
             level=level,
             original_level=b.level,
             title=text,
             original_title=original,
-            number=number if ctx.profile.number_headings else None,
+            number=number if derive else None,
             anchor=anchor if ctx.profile.anchors else None,
             path=[*[p.label for p in parents if p.level <= 6], label],
             time_start=b.provenance.time_start,
@@ -123,7 +180,7 @@ def plan_headings(ctx: RenderContext, title: str) -> set[str]:
             child=ctx.children.prefix_of(b.id),
             child_section=section,
         )
-        info.number = number if ctx.profile.number_headings and level <= 6 else None
+        info.number = number if derive and level <= 6 else None
         ctx.headings[b.id] = info
         stack.append((shifted, info))
         if anchor and ctx.profile.anchors:

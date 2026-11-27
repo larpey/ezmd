@@ -48,13 +48,73 @@ def test_single_h1_title_shift_clamp_and_numbering() -> None:
     assert pre["original_title"] == "3.2 Pre-numbered" and pre["original_level"] == 2
 
 
-def test_long_heading_truncated_with_overflow_paragraph() -> None:
-    body = render(_headings_chaos(), "full").body
-    line = next(x for x in body.split("\n") if x.startswith("### 1.3 "))
-    assert line.endswith("... {#sec-1-3}")
-    assert len(line.split(" {#")[0]) <= 210
+def _agreement():  # type: ignore[no-untyped-def]
+    return make_result(
+        [
+            heading("Deposit Agreement", 1),
+            para("Intro."),
+            heading("I. Definitions", 1),
+            heading("A. Personal accounts", 2),
+            heading("31. Our liability", 1),
+            heading("31.1 Transfers we fail to complete", 2),
+            heading("Schedule of fees", 1),
+            heading("Appendix B Rates", 1),
+        ],
+        title=None,
+    )
+
+
+def test_a_document_that_numbers_its_own_sections_keeps_its_numbers() -> None:
+    """Derived numbers would turn "31.1" into "2.1" and double-number letters ("1.1 A. Personal")."""
+    body = render(_agreement(), "full").body
+    assert "## I. Definitions {#sec-1}" in body
+    assert "### A. Personal accounts {#sec-1-1}" in body
+    assert "## 31. Our liability {#sec-2}" in body
+    assert "### 31.1 Transfers we fail to complete {#sec-2-1}" in body
+    assert "## Schedule of fees {#sec-3}" in body
+    assert "## Appendix B Rates {#sec-4}" in body
+    assert "1.1 A." not in body and "2.1 31.1" not in body
+
+
+def test_two_numbered_headings_do_not_switch_numbering_off() -> None:
+    doc = make_result([heading("Doc", 1), heading("1. Intro", 1), heading("Body", 1), heading("2. End", 1)], title=None)
+    body = render(doc, "full").body
+    assert "## 1 Intro {#sec-1}" in body and "## 2 Body {#sec-2}" in body and "## 3 End {#sec-3}" in body
+
+
+def test_a_title_word_is_not_a_section_label() -> None:
+    doc = make_result(
+        [heading("Doc", 1), heading("A Guide to tides", 1), heading("I think so", 1), heading("Part of it", 1)],
+        title=None,
+    )
+    body = render(doc, "full").body
+    assert "## 1 A Guide to tides {#sec-1}" in body and "## 3 Part of it {#sec-3}" in body
+
+
+def test_a_heading_longer_than_any_heading_is_a_paragraph_once() -> None:
+    """Cut at 200 characters and repeated in full below it, a styled paragraph read twice (D-0087)."""
+    out = render(_headings_chaos(), "full")
+    body = out.body
     full_text = ("Word " * 70).strip()
-    assert f"\n\n{full_text}\n\n" in body
+    assert body.count(full_text) == 1 and f"\n\n{full_text}\n\n" in body
+    assert not any(x.startswith("#") and "Word Word" in x for x in body.split("\n"))
+    assert "### 1.3 " not in body and "## 2 Second top {#sec-2}" in body
+    assert all("Word Word" not in s["title"] for s in out.sidecar["sections"])  # type: ignore[index]
+
+
+def test_a_first_paragraph_that_repeats_the_title_is_consumed() -> None:
+    doc = make_result(
+        [para("Harbor Lane Survey."), para("The survey covers the outer berths.")], title="Harbor Lane Survey"
+    )
+    body = render(doc, "full").body
+    assert "# Harbor Lane Survey {#doc}" in body
+    assert body.count("Harbor Lane Survey") == 1 + body.count("Harbor Lane Survey]")
+    assert "The survey covers the outer berths." in body
+
+
+def test_a_first_paragraph_that_only_starts_with_the_title_stays() -> None:
+    doc = make_result([para("Harbor Lane Survey of the outer berths, 2024.")], title="Harbor Lane Survey")
+    assert "Harbor Lane Survey of the outer berths, 2024." in render(doc, "full").body
 
 
 def test_compact_has_no_numbers_or_anchors() -> None:

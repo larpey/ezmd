@@ -950,7 +950,150 @@ Consequences: `test_web_consent_names.py` holds the AEM, CCPA, GDPR and consent-
 banners that must go; against the old pattern the four keep cases fail, and two banners it missed (`qc-cmp2`,
 `privacy-banner`) were kept.
 
-## D-0086: A button that titles a section is text
+## D-0083: A document that numbers its own sections keeps its numbers
+
+Date: 2026-11-15. Status: accepted.
+
+Context: the full profile stripped a leading arabic number from every heading and wrote the derived outline
+number instead (part3 section 14). On my privacy-notice study set 18 of 68 PDFs are agreements that number their
+own sections (`31.1`, `A.`, `II.`, `6`). Their headings came out as the outline position, so "31.1 Your liability"
+became "4.2 Your liability" and a citation of section 31.1 no longer matched; letter and roman labels were not
+stripped and were numbered twice ("1.2 A. General terms"). My call on 2026-11-15: show the source numbers as
+printed.
+
+Decision: when at least three headings, and at least half of them, open with a section label (arabic, dotted,
+`A.`/`A)`, roman with a period or parenthesis, `(a)`, optionally after Section, Article, Part, Chapter, Appendix,
+Schedule, Exhibit or Annex), the renderer derives no numbers: headings keep their text, the sidecar `number` is
+null, and anchors stay `sec-N-M`. Documents without their own numbering are unchanged. After a keyword the label
+needs no punctuation and may be the whole heading (`Appendix B Rates`, `Section 4`). The parent and each attached or
+embedded document are judged separately on their own headings; a child's section heading follows the parent.
+
+Alternatives rejected: turning derived numbering off everywhere (outline numbers help in documents that print
+none); keeping derived numbers and only fixing the double numbering (the citation mismatch stays).
+
+Consequences: `test_render_structure.py` has the agreement shape, the two-headings threshold and title words that
+look like labels ("A Guide", "Part of it"). Two PDF fixtures print `1.` on their headings and now keep the period.
+
+## D-0087: A heading longer than any heading is a paragraph, and the title is not repeated
+
+Date: 2026-11-16. Status: accepted.
+
+Context: the held-out Govdocs1 run of the 0.1.2 candidate gated 79 outputs on `heading_repeated`, a heading whose
+text the next paragraph repeats (51 on 2026-10-27; derived section numbers had hidden 28 of them from the
+scorer). Two shapes. 109 hits were source "headings" over 200 characters, numbered paragraphs that Word files and
+web pages set in a heading style: part3 section 14 cut them at 200 characters with `...` and put the full text in
+the next paragraph, so the text read twice. 52 were a document whose first paragraph is its title again (a title
+from the file's properties or `<title>`, then the same words as the first line) under the H1.
+
+Decision: a source heading whose plain text is over 200 characters is not planned as a heading: no number, anchor
+or Contents entry, and it renders once as a paragraph with its inline formatting. A first paragraph whose text,
+ignoring case, spacing and trailing punctuation, equals the title is consumed like a title paragraph. A paragraph
+that only starts with the title stays.
+
+Alternatives rejected: keeping the cut heading without the overflow paragraph (the text after 200 characters
+is lost); raising the cap (a 400-character heading is still a paragraph, and Contents fills with them).
+
+Consequences: `test_render_structure.py` replaces the truncation test; both new tests fail with their change
+turned off. No fixture golden changes.
+
+## D-0084: Column gutters per page region, and paragraphs joined across a column or page boundary
+
+Date: 2026-11-15. Status: accepted.
+
+Context: On the agreements and privacy notices from my study set (68 born-digital PDFs), the text-layer engine
+left 1,245 mid-sentence breaks: a paragraph ending in a lowercase letter or comma followed by one that starts in
+lowercase. Three causes. The column gutter was searched over the whole page and rejected when more than a fifth
+of the lines crossed it, so a callout set beside one paragraph of full-width body text never counted as a column
+and its lines interleaved with the paragraph beside it. The assembler flushed every paragraph at the end of a
+page, so a sentence running over a page break became two paragraphs; this was most of the breaks. And a sentence
+running from the foot of one column to the top of the next failed the vertical-gap test, because the next line
+sits above the previous one.
+
+Decision: When no page-wide gutter holds, I look for one that holds in part of the page: the x position in the
+middle half that puts the most lines into bands (runs of lines between lines that cross it) with three or more
+lines on each side, each side dense (median gap under 0.8 em), the sides overlapping vertically, the band framed
+by lines that span the whole gap, and the sides' blocks not starting level row after row. Only those bands read
+left side then right; the rest of the page keeps top-to-bottom order. Across a column boundary (the next line is
+above the previous one and starts right of where it ends) or a page boundary (the first line of the next page),
+a paragraph continues when its last line ends in a lowercase letter, a comma or a broken word, fills at least 70%
+of its column, and the next line starts in lowercase in the same size, weight and direction. A paragraph taken
+over a page stays where it was, before the next page marker (as a table continued over a page does), keeps the
+first page's provenance, and lists its pages in `attrs.pdf_paragraph_pages`.
+
+Alternatives rejected: lowering the page-wide crossing threshold (single-column pages with a few short lines
+would find gutters that are not there); a full XY-cut of every page (a large change to the order of pages that
+read correctly now); joining across boundaries on lowercase alone (a label or heading at the foot of a page ends
+in a lowercase letter too, hence the fill test); reading every two-sided band column by column (the question and
+answer cells of a privacy "facts" form then read all questions, then all answers, hence the row test).
+
+Consequences: Mid-sentence breaks on the study set fall from 1,245 to 924, with no document worse and no words
+or letters lost (688,328 words before, 688,329 after). No fixture golden changed. Most of what remains is outside
+this change: list markers set on a line of their own ("ii." apart from its text), a bold sentence inside a regular
+paragraph (the weight test splits it), labels set in the left margin beside body text, and table cells the table
+heuristic misses. Tests: `test_order_items_reads_a_sidebar_between_full_width_text_column_by_column`, and the
+page and column joins in `test_pdf_paragraphs.py`.
+
+## D-0085: Slide-deck bullets are attached before lines are read, and slide body text is not a heading
+
+Date: 2026-11-15. Status: accepted.
+
+Context: Slide-deck PDFs set a small bullet glyph (7.7 pt) on its own baseline beside 17 pt text, so `_lines`
+made the bullet a line of its own: the Markdown had a lone bullet paragraph that split a wrapped item (#28).
+The same decks size body text per slide (17, 24 or 32 pt), and `HeadingPlanner.level()` ranks every size above
+the document's most common one as a heading, so a slide set in 24 pt became a run of H3s with the bullet glyph
+inside, and a six-line question at 32 pt joined into one 230-character heading that the renderer truncated and
+then repeated as a paragraph (#33).
+
+Decision: I attach a line that is one bullet glyph (the set `assemble` already uses, now `BULLET_GLYPHS` in
+`textlayer.py`) to the nearest line on its right whose vertical extent holds the bullet's and whose left edge is
+within two ems of the bullet, as that line's prefix, right after `_lines` and before tables, ordering and
+headings see the page; orders are renumbered. In heading planning, a line that starts with a bullet glyph is
+never a heading, nor are the lines wrapped under it (same size, indented past the bullet, closer than a line
+space). Runs of consecutive lines of one size and weight whose joined text is longer than `HEADING_MAX_CHARS`
+are prose, so a heading is never the thing the renderer has to truncate. Only the glyphs that are always
+bullets are attached: a lone en dash or middle dot stays a line of its own, because tables use it for "no
+value". On a landscape page (at least 1.2 times wider than tall) with no body-size text, whose text above the
+body size comes in exactly two sizes, the larger a single line (the slide title) and the smaller most of the
+page's characters, the smaller size is that slide's body text and is not a heading; a bold line or a line the
+outline names is never demoted this way. The size counts alone also describe a sparse chapter or contents
+page, which is why the slide evidence is required.
+
+Alternatives rejected: merging the bullet in the assembler (tables and headings would already have seen two
+lines); raising the baseline tolerance in `_lines` (it would also join real superscripts and drop caps); a
+per-document "slide deck" flag (decks mix pages, and the page-level rule needs no detection); treating any
+second-largest size per page as body (a paper's first page has a title and section headings set above the
+body, and most of its text is body size, which the character-share condition keeps).
+
+Consequences: `test_pdf_slides.py` covers the bullet attached on its own baseline, a wrapped item, a distant
+bullet left alone, a slide at 24 pt, a slide with a subtitle (three sizes, so the bullet rule decides), a
+long bold run, the pages that must keep their headings (sparse chapter, contents, bold or bookmarked
+subheads, body-size text) and the lone dash and middle dot. A portrait slide export keeps its larger body text
+as headings. No fixture golden changed. Not addressed: numbered agreement paragraphs ("1. The Services. The
+Services enable you ...") that are set in a heading size; they are left for a change with its own evidence.
+
+## D-0086: A switch to the rule extractor needs 500 lost characters and may not lose structure
+
+Date: 2026-11-26. Status: proposed.
+
+Context: a corpus study of 388 documents found the D-0078 hand-over switching to the rule extractor on many bad
+pages. Short app-store-style pages lose 27 to 48 percent of their text, but under 500 characters of it. On other
+pages the rules output kept the words and lost their shape: a 30-row table came out as one 2,708-word paragraph.
+`extraction_dropped_text` also counted browser-upgrade and exit-popup banners as lost page text.
+
+Decision: `_recover` keeps the 5 percent threshold and also requires 500 dropped characters. It keeps Trafilatura,
+whose result then carries `extraction_dropped_text`, when the rules output has fewer table rows, or its longest
+paragraph has at least 300 words and at least double the words of Trafilatura's longest. `web/coverage.py` counts
+heading text as kept, and leaves out of the measure containers named by class or id as browser-upgrade or exit
+banners and blocks of at most 300 characters whose text says so.
+
+Alternatives rejected: raising the percentage (long pages lose whole lists at 5 percent); comparing table counts
+(a table can survive with most of its rows gone); dropping banners from the output (this change is about the
+measure, and the extractors already decide what they keep).
+
+Consequences: a short page that really lost text now only warns. Counting headings makes the page total larger, so
+a loss near 5 percent can fall under it. The banner patterns are English.
+
+## D-0088: A button that titles a section is text
 
 Date: 2026-11-15. Status: accepted.
 
@@ -968,3 +1111,26 @@ labels on every page); keeping every button (the same, and form controls with it
 
 Consequences: `test_web_disclosure_labels.py`: three question shapes under all three engines, which all fail
 without the relabel, and menu, "Show more" and icon toggles that stay out.
+
+## D-0089: A missing heading is lost only when the text under it was kept
+
+Date: 2026-11-27. Status: accepted.
+
+Context: D-0080 counted a heading missing from the output as lost page text, so that a dropped FAQ question is
+seen. D-0086 counted all heading text as kept, so that headings do not read as loss. The two changes met in one
+function. My call on 2026-11-27: count a missing heading as lost only if the text under it survived.
+
+Decision: all heading text is part of the page total, counted once, including a heading inside a list item or cell.
+A heading counts as lost when it has at least five words, is not mostly links or banner text, is not in the output,
+and at least half of the body characters under it were kept. "Under it" runs to the next heading of the same or a
+higher level, so a section title whose subsections survived counts. Every other heading counts as kept. The text
+of a list item or cell that holds a heading belongs to that heading's section.
+
+Reason: a dropped question whose answer survived is a real loss that no body block shows. A heading missing along
+with its section is already reported by the section's text.
+
+Alternatives rejected: counting every missing heading (D-0080) and counting none (D-0086); counting the heading as
+lost when any one block under it survived (a section that is nearly all gone is a lost section).
+
+Consequences: this replaces the heading rule in D-0080 and in D-0086. A heading whose only text is under five words
+has no counted body, so it counts as kept. Tests: `test_web_heading_loss.py`.

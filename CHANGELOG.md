@@ -74,6 +74,9 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- Text no longer prints twice under long headings or repeated titles. A source heading over 200 characters (a
+  numbered paragraph set in a heading style) was cut with `...` and then printed in full below; it is now a
+  paragraph, printed once. A first paragraph that is the title again is dropped like the title paragraph.
 - FAQ and accordion pages keep their questions. A question set inside the button that opens its answer was
   removed with the page's other buttons when the answer was already open; a button inside or around a heading,
   or controlling a panel of text, is now converted as text.
@@ -89,8 +92,7 @@ All notable changes are generated from Conventional Commits. This project uses s
 - `extraction_dropped_text` sees text that is not in a paragraph tag. The check counted only p, li, td, dd,
   blockquote and pre leaves, so a table drawn with divs (a privacy notice's facts table), a sentence in a span and
   a lost question heading were not page text, and losing them raised nothing. Leaf divs, sections and spans now
-  count, and so do headings, without counting text twice. On a 388-page set of saved privacy notices this raised
-  31 warnings where there were 20, and pages losing their own text with no warning went from 85 to 75.
+  count, without counting text twice, and so does a lost heading whose text was kept.
 - Web pages keep sections whose id was generated from their heading. `id="how-we-share-this-log"` read as a share
   widget to both the rule extractor's patterns and Trafilatura's discard rules, so `web.trafilatura` and
   `web.rules` dropped the whole section, while the only warning on the page was about unrelated hidden elements.
@@ -113,10 +115,33 @@ All notable changes are generated from Conventional Commits. This project uses s
 - `web.trafilatura` hands over to the rule extractor when it leaves out 5 percent of the page text and the rule
   extractor loses at most half as much (`engine_fallback` with `detail.dropped_chars`). Across 306 saved pages this
   took `extraction_dropped_text` from 54 pages to 20 (D-0078).
+- That hand-over now also needs 500 lost characters, so a short page no longer switches over a few lines, and it is
+  refused when the rule extractor's output has fewer table rows or runs text together into a paragraph of 300 words
+  or more and double Trafilatura's longest. `extraction_dropped_text` ignores browser-upgrade and exit-popup
+  banners (D-0086), and counts a missing heading as lost only when the text under it was kept (D-0089).
 - New warning `extraction_dropped_text`: when an extractor leaves out a headed section or 5 percent of the text
   the page body holds, the warning gives the characters lost and names the sections. It compares against the body
   with only structural boilerplate removed, so a loss from class and id rules cannot hide on both sides of the
   ratio (D-0077).
+
+- Headings keep the section numbers a document prints. The full profile replaced them with outline positions,
+  so an agreement's "31.1 Your liability" could come out as "4.2 Your liability", and letter or roman sections
+  were numbered twice ("1.2 A. General terms"). When most of a document's headings carry their own label (`31.1`,
+  `A.`, `II.`, `Section 4`), no numbers are derived; documents without their own numbering are unchanged.
+
+- Slide-deck PDFs: a small bullet drawn on its own baseline beside larger text is attached to that text as its
+  list marker, so a wrapped item is no longer split by a lone bullet paragraph and the page no longer warns of
+  an uncertain reading order (#28). A lone en dash or middle dot (a table's empty cell) is left alone.
+- Slide-deck PDFs: a line that starts with a bullet glyph, and the lines wrapped under it, are never headings;
+  a run of same-size lines longer than a heading is prose, not one truncated heading repeated as a paragraph;
+  and on a slide (a landscape page with no body-size text) with a single title line and one larger body size,
+  that size is the page's body text, except bold lines and lines the outline names (#33).
+- PDF text layer: two-column text no longer interleaves, and sentences no longer split at a column or page end.
+  A gutter that holds in part of a page (a callout beside body text) now orders that band left column, then
+  right; a paragraph whose last line stops mid-sentence continues into the next column or page when it opens in
+  lowercase in the same size and weight, and a paragraph continued over a page lists its pages in
+  `attrs.pdf_paragraph_pages` (D-0084). On 68 agreements and privacy notices, mid-sentence breaks fall from
+  1,245 to 924 with no words lost.
 - The sandbox runs tools installed outside the system directories. Under bubblewrap only /usr, /etc, /bin and
   /lib were bound, so a tool under /opt (LibreOffice's own packages), a virtualenv or ~/.local could not be
   executed: bwrap exited 1 before the tool started and the caller saw that as the tool's exit code, with empty

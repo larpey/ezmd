@@ -32,7 +32,7 @@ def content(ops: Sequence[TextOp]) -> bytes:
     return pikepdf.unparse_content_stream(out)
 
 
-def new_pdf(pages: Sequence[Sequence[TextOp]], *, rotate: int = 0) -> pikepdf.Pdf:
+def new_pdf(pages: Sequence[Sequence[TextOp]], *, rotate: int = 0, size: tuple[int, int] = (612, 792)) -> pikepdf.Pdf:
     pdf = pikepdf.new()
     fonts = Dictionary(
         F1=Dictionary(Type=Name.Font, Subtype=Name.Type1, BaseFont=Name.Helvetica, Encoding=Name.WinAnsiEncoding),
@@ -43,7 +43,7 @@ def new_pdf(pages: Sequence[Sequence[TextOp]], *, rotate: int = 0) -> pikepdf.Pd
     for ops in pages:
         page = Dictionary(
             Type=Name.Page,
-            MediaBox=Array([0, 0, 612, 792]),
+            MediaBox=Array([0, 0, *size]),
             Resources=Dictionary(Font=fonts),
             Contents=pdf.make_indirect(pikepdf.Stream(pdf, content(ops))),
         )
@@ -75,6 +75,8 @@ def make_pdf(tmp_path: Path) -> Callable[..., Path]:
 
     def build(pages: Sequence[Sequence[TextOp]], **kw: object) -> Path:
         rotate = int(kw.pop("rotate", 0))  # type: ignore[call-overload]
-        return save(new_pdf(pages, rotate=rotate), tmp_path / f"t{next(counter)}.pdf", **kw)
+        size = kw.pop("size", (612, 792))
+        pdf = new_pdf(pages, rotate=rotate, size=size)  # type: ignore[arg-type]
+        return save(pdf, tmp_path / f"t{next(counter)}.pdf", **kw)
 
     return build

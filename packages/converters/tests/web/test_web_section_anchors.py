@@ -187,7 +187,6 @@ def test_text_in_a_span_inside_a_paragraph_is_counted_once() -> None:
         "<section><span><div><span>{0}</span></div></span></section>",
         "<ul><li><span>{0}</span><ul><li>Oil</li></ul></li></ul>",
         "<table><tr><td><div><span>{0}</span></div></td></tr></table>",
-        "<h2><span>{0}</span></h2>",
     ],
 )
 def test_nested_text_is_counted_exactly_once(markup: str) -> None:
@@ -195,6 +194,15 @@ def test_nested_text_is_counted_exactly_once(markup: str) -> None:
     w = dropped_text(body, "")
     assert w is not None
     assert (w.detail["page_chars"], w.detail["dropped_chars"]) == (len(FOG.strip()), len(FOG.strip()))
+
+
+def test_text_nested_in_a_heading_is_counted_exactly_once() -> None:
+    """The text under the heading survives, so the missing heading is the loss (D-0089)."""
+    html = f"<html><body><main><h2><span>{FOG}</span></h2><div><span>{PROSE}</span></div></main></body></html>"
+    w = dropped_text(body_of(parse_html(html)), PROSE)
+    assert w is not None
+    heading = len(FOG.strip())
+    assert (w.detail["page_chars"], w.detail["dropped_chars"]) == (heading + len(PROSE.strip()), heading)
 
 
 def test_a_lost_question_heading_is_page_text() -> None:

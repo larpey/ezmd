@@ -12,7 +12,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 from ezmd_converters.pdf.layout import HEADING_RATIO, norm_text
-from ezmd_converters.pdf.textlayer import Line, PageText
+from ezmd_converters.pdf.textlayer import BULLET_GLYPHS, Line, PageText
 
 SECTION_NUMBER = re.compile(r"^(\d{1,2}(?:\.\d{1,2}){0,4})\.?\s+(?=\S)")
 """A leading section number: "3", "3.2.1", "4." followed by the title."""
@@ -35,6 +35,14 @@ OUTLINE_MIN_MATCHES = 3
 """The outline drives headings when at least this many of its titles (or all of them, if fewer) are found."""
 PROSE_RUN = 3
 """This many consecutive heading-sized, non-bold, tightly spaced lines are a paragraph, not a heading."""
+SLIDE_BODY_SIZES = 2
+"""A page whose text above the body size comes in exactly this many sizes, the larger one a single line and the
+smaller most of the page, can be a slide: the smaller of the two is then the slide's body text."""
+SLIDE_ASPECT = 1.2
+"""A slide page is at least this much wider than tall (4:3 and 16:9 decks); a portrait page never is one."""
+SLIDE_BODY_TEXT = 0.9
+"""A line from this share of the body size up to heading size is body text, which a slide does not have;
+smaller lines (a footer, a slide number) do not count."""
 NUMBERED_MAX_WORDS = 12
 """A bold body-size line with a section number is a heading only when its title is at most this many words,
 starts with a capital, and does not end like a sentence."""
@@ -119,11 +127,14 @@ class HeadingSources:
     """Added to outline levels when a first-page title sits above them."""
     _top: int = 2
     _outline_started: bool = False
+    _bullet: Line | None = None
 
     def level(self, ln: Line) -> int | None:
         """Heading level of `ln`, or None. Call once per line, in reading order: outline bookmarks are consumed
         and the depth of "3.1" headings is measured from the last top-level numbered heading."""
         if ln.order in self.turned or ln.order in self.prose or ln.order in self.front or ln.order in self.contents:
+            return None
+        if self._list_text(ln):
             return None
         if not HEADING_WORD.search(ln.text) or DOT_LEADERS.search(ln.text):
             return None
@@ -154,6 +165,25 @@ class HeadingSources:
                 self._top = size_level
             return self._count("font_size", size_level)
         return self._count("font_size", self._numbered_level(ln, base=self._top))
+
+    def _list_text(self, ln: Line) -> bool:
+        """A line that starts with a bullet glyph is a list item, whatever its size, and so are the lines that
+        wrap below it (same size, indented past the bullet, closer than a line space)."""
+        last = self._bullet
+        if ln.text and ln.text[0] in BULLET_GLYPHS:
+            self._bullet = ln
+            return True
+        if (
+            last is not None
+            and last.page == ln.page
+            and abs(last.size - ln.size) <= 0.15 * ln.size
+            and ln.x0 > last.x0 + 2.0
+            and 0 <= ln.y0 - last.y1 <= 0.8 * ln.size
+        ):
+            self._bullet = ln
+            return True
+        self._bullet = None
+        return False
 
     def _outline_mode_level(self, ln: Line) -> int | None:
         if ln.order in self.title_orders:
@@ -243,25 +273,70 @@ def outline_key(ln: Line, body: float, left: Counter[str], numbered: set[str]) -
     return None
 
 
-def prose_runs(pages: Sequence[PageText], body: float, skip: set[int]) -> set[int]:
+def prose_runs(
+    pages: Sequence[PageText], body: float, skip: set[int], bookmarked: frozenset[str] = frozenset()
+) -> set[int]:
     """Orders of heading-sized lines that form a paragraph: `PROSE_RUN` or more consecutive non-bold lines of
-    one size, each starting within 0.6 em below the previous."""
+    one size, or two or more of one size and weight that together are longer than `HEADING_MAX_CHARS` (a
+    heading never is), each starting within 0.6 em below the previous. On a slide (`slide_body`) the lines of
+    the page's body size are prose too, except bold ones and the titles in `bookmarked` (outline keys)."""
     out: set[int] = set()
+
+    def close(run: list[Line]) -> None:
+        long = len(run) > 1 and len(" ".join(r.text for r in run)) > HEADING_MAX_CHARS
+        if long or (len(run) >= PROSE_RUN and not run[0].bold):
+            out.update(r.order for r in run)
+
     for p in pages:
         run: list[Line] = []
         for ln in sorted((ln for ln in p.lines if ln.order not in skip), key=lambda ln: ln.order):
-            big = ln.size >= body * HEADING_RATIO and not ln.bold
+            big = ln.size >= body * HEADING_RATIO
             if big and run:
                 prev = run[-1]
-                if round(prev.size * 2) == round(ln.size * 2) and 0 <= ln.y0 - prev.y1 <= 0.6 * ln.size:
+                same = round(prev.size * 2) == round(ln.size * 2) and prev.bold == ln.bold
+                if same and 0 <= ln.y0 - prev.y1 <= 0.6 * ln.size:
                     run.append(ln)
                     continue
-            if len(run) >= PROSE_RUN:
-                out.update(r.order for r in run)
+            close(run)
             run = [ln] if big else []
-        if len(run) >= PROSE_RUN:
-            out.update(r.order for r in run)
+        close(run)
+        out |= slide_body(p, body, skip, bookmarked)
     return out
+
+
+def slide_body(page: PageText, body: float, skip: set[int], bookmarked: frozenset[str]) -> set[int]:
+    """Orders of a slide's body lines when they are set above the document's body size. Slide decks size the
+    text per slide (17, 24 or 32 pt), so on a landscape page with no body-size text whose larger text comes in
+    two sizes, the larger a single line (the title), the smaller is that slide's body text and not a heading.
+    A sparse ordinary page (a chapter title over a few subheads) can have the same sizes, so a bold line and a
+    line the outline names are never demoted."""
+    if page.width < SLIDE_ASPECT * page.height:
+        return set()
+    upright = [ln for ln in page.lines if ln.order not in skip and not ln.turn]
+    if any(SLIDE_BODY_TEXT * body <= ln.size < HEADING_RATIO * body for ln in upright):
+        return set()
+    lines = [ln for ln in upright if ln.size >= body * HEADING_RATIO]
+    sizes = sorted({round(ln.size * 2) / 2 for ln in lines}, reverse=True)
+    if len(sizes) != SLIDE_BODY_SIZES:
+        return set()
+    top, rest = sizes
+    if sum(1 for ln in lines if round(ln.size * 2) / 2 == top) != 1:
+        return set()
+    mine = [ln for ln in lines if round(ln.size * 2) / 2 == rest]
+    chars = sum(len(ln.text) for ln in page.lines if ln.order not in skip)
+    if len(mine) < 2 or sum(len(ln.text) for ln in mine) * 2 <= chars:
+        return set()  # mostly small print (a footer block) under a title and a few subheads
+    return {ln.order for ln in mine if not ln.bold and not _names_bookmark(ln.text, bookmarked)}
+
+
+def _names_bookmark(text: str, bookmarked: frozenset[str]) -> bool:
+    """`text` is an outline title, with or without its numbering, or the first line of a wrapped one."""
+    key, _ = heading_key(text)
+    if key in bookmarked or norm_text(text) in bookmarked:
+        return True
+    return len(key) >= WRAPPED_MIN_CHARS and any(
+        title.startswith(key) and len(key) >= 0.5 * len(title) for title in bookmarked
+    )
 
 
 def heading_sizes(pages: Sequence[PageText], body: float, skip: set[int]) -> tuple[dict[float, int], set[float]]:
@@ -402,7 +477,8 @@ def plan_headings(
 ) -> HeadingSources:
     """Heading sources for the document; `skip` holds running header/footer orders."""
     turned = minority_turned(pages)
-    prose = prose_runs(pages, body, skip | turned)
+    bookmarked = frozenset(heading_key(title)[0] for _level, title, _page in outline)
+    prose = prose_runs(pages, body, skip | turned, bookmarked)
     sizes, bold_sizes = heading_sizes(pages, body, skip | prose | turned)
     src = HeadingSources(sizes=sizes, bold_sizes=bold_sizes, body=body, prose=prose, turned=turned)
     src.front = front_matter_lines(pages, skip)
