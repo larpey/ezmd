@@ -77,6 +77,38 @@ All notable changes are generated from Conventional Commits. This project uses s
 - Text no longer prints twice under long headings or repeated titles. A source heading over 200 characters (a
   numbered paragraph set in a heading style) was cut with `...` and then printed in full below; it is now a
   paragraph, printed once. A first paragraph that is the title again is dropped like the title paragraph.
+
+- Web pages keep sections whose id was generated from their heading. `id="how-we-share-this-log"` read as a share
+  widget to both the rule extractor's patterns and Trafilatura's discard rules, so `web.trafilatura` and
+  `web.rules` dropped the whole section, while the only warning on the page was about unrelated hidden elements.
+  On a long saved page the fallback ratio could not see it either, because the cleaned page it measures against
+  had lost the same section. An id now counts as an anchor, not as evidence, when it names the heading that opens
+  the element among siblings that form an outline (D-0077).
+- `backface-visibility:hidden` no longer counts as hidden. The hidden-content rules matched `visibility:hidden`
+  anywhere in a declaration, so a page that sets it on its main wrapper (a common compositing hint) lost its whole
+  content and came back as `empty_body_js_required`, exit code 3.
+- A short server-rendered page is no longer called a JavaScript shell. Any `#root`, `#app` or `#__next` element
+  counted as an empty app root, so a page with under 300 extracted characters got `empty_body_js_required` and
+  exit code 3 although its text was in the output. The root must now hold under 300 characters itself.
+- Collapsed accordion and FAQ panels are kept. The hygiene pass removed any element with the `hidden` attribute,
+  `display:none` or a hiding page rule, so a page's answers disappeared while their questions, which sit in a
+  `<button>`, went with the boilerplate. A panel now counts as content when a visible, labelled, interactive
+  control says `aria-expanded="false"` for it, nothing else hides it, it is not a menu of links, and the injection
+  scanner finds nothing in it; the question stays as plain text, `extra.collapsed_panels` counts the panels, and the
+  text still goes to the scanner as hidden text (D-0078).
+- List items wrapped in `<div>`s or custom elements inside a `<ul>` are converted; the rule extractor dropped them.
+- `web.trafilatura` hands over to the rule extractor when it leaves out 5 percent of the page text and the rule
+  extractor loses at most half as much (`engine_fallback` with `detail.dropped_chars`). Across 306 saved pages this
+  took `extraction_dropped_text` from 54 pages to 20 (D-0078).
+- That hand-over now also needs 500 lost characters, so a short page no longer switches over a few lines, and it is
+  refused when the rule extractor's output has fewer table rows or runs text together into a paragraph of 300 words
+  or more and double Trafilatura's longest. `extraction_dropped_text` counts heading text as kept and ignores
+  browser-upgrade and exit-popup banners (D-0086).
+- New warning `extraction_dropped_text`: when an extractor leaves out a headed section or 5 percent of the text
+  the page body holds, the warning gives the characters lost and names the sections. It compares against the body
+  with only structural boilerplate removed, so a loss from class and id rules cannot hide on both sides of the
+  ratio (D-0077).
+
 - Headings keep the section numbers a document prints. The full profile replaced them with outline positions,
   so an agreement's "31.1 Your liability" could come out as "4.2 Your liability", and letter or roman sections
   were numbered twice ("1.2 A. General terms"). When most of a document's headings carry their own label (`31.1`,

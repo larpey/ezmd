@@ -49,7 +49,8 @@ on the page (OpenGraph, Twitter, `<title>` or `<h1>`), so Wikipedia's short-desc
 and OpenGraph/Twitter titles lose a trailing site name ("Albert Einstein - Wikipedia"). Fields: title, author(s), published, modified, site_name, description, keywords (tags),
 canonical_url, language (`<html lang>`, `language_source=declared`), encoding. The canonical URL becomes the
 document source only when it is same-origin with the final URL; otherwise `extra.canonical_cross_origin` is set.
-`extra.readability_ratio` is extracted characters over cleaned-page characters; `extra.outbound_pdfs` lists
+`extra.readability_ratio` is extracted characters over cleaned-page characters (the cleaned page has already lost
+whatever the class and id rules removed, so `extraction_dropped_text` is the loss measure, not this ratio); `extra.outbound_pdfs` lists
 linked PDFs (not fetched); `extra.next_page` records `rel=next`.
 
 ## Hidden content and prompt injection
@@ -69,14 +70,42 @@ tag characters are stripped from text nodes.
   `injection_suspected` with `detail.location = "hidden"`. Visible text that looks like an injection stays
   verbatim in the body and is flagged by the renderer's scanner as usual.
 
+## Collapsed panels
+
+An accordion answer is hidden in the saved HTML but a reader opens it with one click, so it is content. Text with no
+way in stays removed. A panel is kept only when all of these hold:
+
+- a control points at it: `aria-controls` on the control, `aria-labelledby` on the panel, or the control is the
+  element right before it (and names no other panel);
+- the control says `aria-expanded="false"`, is a `<button>`, `<a>` or `role="button"`, has a label, and neither it nor
+  an ancestor is hidden;
+- the panel is shut by the `hidden` attribute, `display:none` or a page rule, and by nothing else: `aria-hidden`,
+  hidden classes, opacity, zero size, off-screen positioning and same-color text stay removed;
+- under half its text is links (a dropdown menu is not a panel), and the injection scanner rates it below medium.
+
+Hidden elements inside a kept panel are removed as usual. The control's label stays as plain text, in place in a
+heading. Kept panel text is also added to the hidden text, so the scanner scores it as it did when it was removed.
+`extra.collapsed_panels` counts the panels. Tabs (`aria-selected`) are not panels and stay removed.
+
+## Section anchors
+
+Class and id patterns tell a widget from content, but sites generate ids from headings, so
+`<section id="how-we-share-this-log">` holds the word `share` for the same reason its heading does. Both the rule
+extractor's patterns and Trafilatura's discard rules (which match substrings of ids: `share`, `social`, `cookie`,
+`author`, `nav`) would remove it. An id is ignored as evidence when it is a run of the words of the heading that
+opens the element, the element is not mostly links, and it sits among siblings that form an outline: at least
+three of them have ids free of the pattern vocabulary, and those outnumber the rest. The rule extractor skips such
+ids; Trafilatura gets a copy of the tree without them. Classes still count, and ids in the output are untouched.
+
 ## Warnings
 
 | code | when |
 |---|---|
 | `removed_hidden_elements` | hidden elements or invisible characters were removed (info) |
 | `injection_suspected` | the removed hidden text matches injection patterns |
-| `engine_fallback` | Trafilatura under-extracted and the rule extractor was used |
+| `engine_fallback` | Trafilatura under-extracted, or left out 5 percent of the page text and at least 500 characters, the rule extractor keeps at least half of that, and its output has no fewer table rows and no run-together paragraph (300 words or more and double Trafilatura's longest) (`detail.dropped_chars`, `detail.rules_dropped_chars`), and the rule extractor was used |
 | `readability_fallback_full_body` | no article was found, the full body was converted (always on `web.html_raw`) |
+| `extraction_dropped_text` | a headed section lost at least 200 characters and over half its text, or at least 200 characters and 5 percent of the page are gone; the page here is the body with only structural boilerplate removed (what `web.html_raw` keeps), blocks are matched by word shingles, and blocks that are mostly links or under five words are not counted. Heading text counts as kept, and browser-upgrade and exit-popup banners (by class or id, or a block of at most 300 characters saying so in English) are ignored. `detail` has `page_chars`, `dropped_chars` and `sections` (up to 12 headings). Not raised on `web.html_raw` or after the full-body fallback |
 | `paywall_detected` | JSON-LD `isAccessibleForFree: false`, paywall selectors, or wall phrasing, and under 600 extracted characters; short subscribe/sign-in prompts inside paywall-marked elements are removed from the body (`detail.wall_prompts_removed`) |
 | `empty_body_js_required` | the static HTML is a JavaScript shell (empty `#root`/`#app`/`#__next`, or over 50 KB of inline script) with under 300 characters of text; the body is a stub note |
 | `lazy_content_possible` | lazy-loaded images were resolved from `data-*` attributes, or an infinite-scroll marker exists |
@@ -95,9 +124,16 @@ comments) belongs with the fetcher and the Phase 3 renderer.
 
 - No language detection beyond `<html lang>`/`og:locale` (lingua is not a dependency yet).
 - No JavaScript rendering: SPA shells produce the `empty_body_js_required` stub (Phase 3, Crawl4AI extra).
+- `<style>` rules are read without the cascade: a rule inside `@media` counts as unconditional, and a later rule
+  that shows the element again is ignored.
 - CSS from external stylesheets is not evaluated, so text hidden only by an external stylesheet is kept;
   white text is removed only when its background is declared inline on it or an ancestor.
 - Comment sections are always excluded (`include_comments` is not wired yet).
+- A section that takes no outline exemption (the only anchored section on the page, or an id that adds words its
+  heading lacks, such as a `p-` prefix) is still removed by the patterns; `extraction_dropped_text` reports it. A
+  comment section whose id repeats its heading, beside three or more plainly anchored sections, is kept.
+- `extraction_dropped_text` counts text once: a block repeated verbatim elsewhere on the page reads as kept. Prose
+  that extraction removes on purpose (a long author bio) can raise it.
 - `hr` is dropped rather than emitted as a `Raw("---")` block.
 - readability-lxml is not used as a separate fallback; the rule extractor fills that slot.
 - `amp-img` is handled; other AMP components are not.
