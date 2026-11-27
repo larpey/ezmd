@@ -81,6 +81,20 @@ All notable changes are generated from Conventional Commits. This project uses s
   so an agreement's "31.1 Your liability" could come out as "4.2 Your liability", and letter or roman sections
   were numbered twice ("1.2 A. General terms"). When most of a document's headings carry their own label (`31.1`,
   `A.`, `II.`, `Section 4`), no numbers are derived; documents without their own numbering are unchanged.
+
+- Slide-deck PDFs: a small bullet drawn on its own baseline beside larger text is attached to that text as its
+  list marker, so a wrapped item is no longer split by a lone bullet paragraph and the page no longer warns of
+  an uncertain reading order (#28). A lone en dash or middle dot (a table's empty cell) is left alone.
+- Slide-deck PDFs: a line that starts with a bullet glyph, and the lines wrapped under it, are never headings;
+  a run of same-size lines longer than a heading is prose, not one truncated heading repeated as a paragraph;
+  and on a slide (a landscape page with no body-size text) with a single title line and one larger body size,
+  that size is the page's body text, except bold lines and lines the outline names (#33).
+- PDF text layer: two-column text no longer interleaves, and sentences no longer split at a column or page end.
+  A gutter that holds in part of a page (a callout beside body text) now orders that band left column, then
+  right; a paragraph whose last line stops mid-sentence continues into the next column or page when it opens in
+  lowercase in the same size and weight, and a paragraph continued over a page lists its pages in
+  `attrs.pdf_paragraph_pages` (D-0084). On 68 agreements and privacy notices, mid-sentence breaks fall from
+  1,245 to 924 with no words lost.
 - The sandbox runs tools installed outside the system directories. Under bubblewrap only /usr, /etc, /bin and
   /lib were bound, so a tool under /opt (LibreOffice's own packages), a virtualenv or ~/.local could not be
   executed: bwrap exited 1 before the tool started and the caller saw that as the tool's exit code, with empty
