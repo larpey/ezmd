@@ -101,6 +101,32 @@ def _join(acc: list[Run], nxt: list[Run], vocab: set[str], dehyphenate: bool) ->
     acc.extend(nxt)
 
 
+def _across(prev: Line, ln: Line, right: float) -> bool:
+    """Does `ln`, at the top of the next column or page, continue the sentence `prev` (the last line before the
+    boundary) stopped in? `prev` ends mid-sentence near its column's right edge (`right`), `ln` starts in
+    lowercase, and both are set in the same size, weight and direction."""
+    if abs(prev.size - ln.size) > 0.15 * max(prev.size, ln.size) or prev.bold != ln.bold or prev.turn != ln.turn:
+        return False
+    if prev.x1 - prev.x0 < BOUNDARY_FILL * (right - prev.x0):
+        return False
+    return bool(_OPEN_END.search(prev.text) and _LOWER_START.match(ln.text))
+
+
+def _column_jump(prev: Line, ln: Line) -> bool:
+    """`ln` is the top of the column after `prev`'s: above it and starting right of where it ends (reading order
+    only goes back up the page when it moves to the next column)."""
+    return ln.y1 < prev.y0 and ln.x0 >= prev.x1 - ln.size
+
+
+def _segment_start(lines: list[Line]) -> int:
+    """Index of the first of `lines` (a paragraph) after its last column or page boundary."""
+    for k in range(len(lines) - 1, 0, -1):
+        a, b = lines[k - 1], lines[k]
+        if a.page != b.page or _column_jump(a, b):
+            return k
+    return 0
+
+
 def _marker(text: str) -> tuple[bool, str, int] | None:
     """(ordered, text without marker, start number) when the line starts a list item."""
     m = _BULLET.match(text)
@@ -124,6 +150,16 @@ MAX_INDENT_EM = 4.0
 """A first-line indent is at most this wide; a bigger step left is a new block, not a return to the margin."""
 SHORT_LINE_EM = 1.0
 """A line ending this far before the column's right edge stopped short: the end of a paragraph."""
+BOUNDARY_FILL = 0.7
+"""Across a column or page boundary the last line must fill at least this share of its column (from its left edge
+to the column's right edge) to be continued: ragged-right text ends a line a few words early, a label or a
+heading ends far earlier."""
+_OPEN_END = re.compile(r"(?:[a-z,]|[A-Za-z]-)$")
+"""A line ending in a lowercase letter, a comma or a broken word stops mid-sentence."""
+_LOWER_START = re.compile(r"^[a-z]")
+PAGES_ATTR = "pdf_paragraph_pages"
+"""`Paragraph.attrs` key on a paragraph continued across a page break: its pages, comma-separated. Its provenance
+is the part on the first page."""
 
 
 def line_spacing(lines: list[Line]) -> float:
@@ -181,6 +217,15 @@ class Assembler:
         double-spaced)."""
         self._right: dict[int, float] = {}
         """Line order -> right edge of the column that line sits in."""
+        self._para_geom = self._geom
+        """The page a paragraph taken up again from an earlier page started on."""
+        self._last_para: tuple[Paragraph, list[Line], list[Run], float, PageGeom] | None = None
+        """The paragraph flushed last: (block, lines, runs, right edge of its last line's column, its page), kept
+        so the first line of the next page can continue it (`_reopen`)."""
+        self._page_start = False
+        """No item of the current page has been handled yet."""
+        self._insert_at: int | None = None
+        """Where the open paragraph goes back when it was taken up again from the previous page."""
 
     # -- page level ---------------------------------------------------------
     def page(self, geom: PageGeom, ordered: list[Item], marker: bool) -> None:
@@ -189,11 +234,15 @@ class Assembler:
         lines = [it.line for it in ordered if it.line is not None]
         self._spacing = line_spacing(lines)
         self._right = column_right_edges(lines)
+        self._page_start = True
         if marker:
             self.blocks.append(
                 PageBreak(page_number=geom.number, provenance=Provenance(source=self.source, source_page=geom.number))
             )
         for it in ordered:
+            if it.line is not None and self._page_start:
+                self._reopen(it.line)
+            self._page_start = False
             if it.table is not None:
                 self.flush()
                 self._append_table(self._table(it.table))
@@ -264,18 +313,40 @@ class Assembler:
         self._para.append(ln)
         _join(self._runs, ln.runs, self.vocab, self.dehyphenate)
 
+    def _reopen(self, ln: Line) -> None:
+        """When `ln`, the first item of a page, continues the sentence the previous page's last paragraph stopped
+        in (`_across`), take that paragraph back up; it stays in place before the page marker (spec part2.md
+        1f.9 does the same for a table)."""
+        last = self._last_para
+        if last is None or self._para or self._list is not None:
+            return
+        block, lines, runs, right, geom = last
+        k = next((i for i in range(len(self.blocks) - 1, -1, -1) if not isinstance(self.blocks[i], PageBreak)), -1)
+        if k < 0 or self.blocks[k] is not block or lines[-1].page != ln.page - 1 or not _across(lines[-1], ln, right):
+            return
+        del self.blocks[k]
+        self._insert_at = k
+        self._para, self._runs, self._para_geom = list(lines), list(runs), geom
+        self._last_para = None
+
     def _continues(self, prev: Line, ln: Line) -> bool:
         """Does `ln` continue the open paragraph? Same size and weight; a vertical gap no larger than the page's
         own line spacing allows (single-spaced text continues within 0.7 em, a double-spaced manuscript within
         its measured spacing plus a little); and a left edge that fits the paragraph: at its left edge, or
         returning to the margin after an indented first line. A line indented past the paragraph's left edge
         after a short line is a new paragraph (the first-line indent of body text)."""
+        if prev.page != ln.page:
+            return True  # taken back up across a page break by `_reopen`, which checked the join
         if abs(prev.size - ln.size) > 0.15 * max(prev.size, ln.size) or prev.bold != ln.bold:
             return False
+        if _column_jump(prev, ln):
+            # The top of the next column: continued only when the sentence runs on into it.
+            return _across(prev, ln, self._right.get(prev.order, prev.x1))
         limit = max(CONTINUE_EM, self._spacing + SPACING_SLACK_EM)
         if not -0.2 * ln.size <= ln.y0 - prev.y1 <= limit * ln.size:
             return False
-        left = min(line.x0 for line in self._para)
+        part = self._para[_segment_start(self._para) :]  # the paragraph's lines in this column of this page
+        left = min(line.x0 for line in part)
         if ln.x0 < left - 2.0:
             # The first line was indented and this one returns to the margin.
             return len(self._para) == 1 and left - ln.x0 <= MAX_INDENT_EM * ln.size
@@ -287,10 +358,12 @@ class Assembler:
                 return False
         return ln.x0 <= left + 3.0 * ln.size
 
-    def _lprov(self, lines: list[Line]) -> Provenance:
+    def _lprov(self, lines: list[Line], geom: PageGeom | None = None) -> Provenance:
+        g = geom or self._geom
+        lines = [ln for ln in lines if ln.page == g.number] or lines
         return _prov(
             self.source,
-            self._geom,
+            g,
             min(ln.x0 for ln in lines),
             min(ln.y0 for ln in lines),
             max(ln.x1 for ln in lines),
@@ -304,10 +377,21 @@ class Assembler:
         self._flush_list()
 
     def _flush_para(self) -> None:
+        at, self._insert_at = self._insert_at, None
         if self._para:
             spans = _spans(self._runs)
             if spans:
-                self.blocks.append(Paragraph(spans=spans, provenance=self._lprov(self._para)))
+                geom = self._geom if at is None else self._para_geom
+                pages = sorted({ln.page for ln in self._para})
+                attrs = {PAGES_ATTR: ",".join(str(n) for n in pages)} if len(pages) > 1 else {}
+                block = Paragraph(spans=spans, provenance=self._lprov(self._para, geom), attrs=attrs)
+                if at is None:
+                    self.blocks.append(block)
+                else:
+                    self.blocks.insert(at, block)
+                last = self._para[-1]
+                right = self._right.get(last.order, last.x1)
+                self._last_para = (block, self._para, self._runs, right, geom)
         self._para, self._runs = [], []
 
     def _flush_list(self) -> None:

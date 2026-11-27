@@ -74,6 +74,12 @@ All notable changes are generated from Conventional Commits. This project uses s
   the marker reads it from the frontmatter `content_hash` or the sidecar.
 
 ### Fixed
+- PDF text layer: two-column text no longer interleaves, and sentences no longer split at a column or page end.
+  A gutter that holds in part of a page (a callout beside body text) now orders that band left column, then
+  right; a paragraph whose last line stops mid-sentence continues into the next column or page when it opens in
+  lowercase in the same size and weight, and a paragraph continued over a page lists its pages in
+  `attrs.pdf_paragraph_pages` (D-0084). On 68 agreements and privacy notices, mid-sentence breaks fall from
+  1,245 to 924 with no words lost.
 - The sandbox runs tools installed outside the system directories. Under bubblewrap only /usr, /etc, /bin and
   /lib were bound, so a tool under /opt (LibreOffice's own packages), a virtualenv or ~/.local could not be
   executed: bwrap exited 1 before the tool started and the caller saw that as the tool's exit code, with empty
